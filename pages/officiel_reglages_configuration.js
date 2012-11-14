@@ -34,17 +34,25 @@ $(document).ready
 		// Afficher masquer des éléments du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		$('#f_releve_etat_acquisition').click
+		(
+			function()
+			{
+				$("#span_releve_etat_acquisition").toggle();
+			}
+		);
+
 		$('#f_releve_moyenne_scores , #f_releve_pourcentage_acquis').click
 		(
 			function()
 			{
 				if( ($('#f_releve_moyenne_scores').is(':checked')) || ($('#f_releve_pourcentage_acquis').is(':checked')) )
 				{
-					$('label[for=f_releve_conv_sur20]').show();
+					$('label[for=f_releve_conversion_sur_20]').show();
 				}
 				else
 				{
-					$('label[for=f_releve_conv_sur20]').hide();
+					$('label[for=f_releve_conversion_sur_20]').hide();
 				}
 			}
 		);

@@ -31,16 +31,20 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <?php
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 Form::load_choix_memo();
-$check_type_generique  = (Form::$tab_choix['type_generique'])    ? ' checked' : '' ;
-$class_form_generique  = (Form::$tab_choix['type_generique'])    ? 'hide'     : 'show' ;
-$check_type_individuel = (Form::$tab_choix['type_individuel'])   ? ' checked' : '' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])     ? ' checked' : '' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
-$check_only_socle      = (Form::$tab_choix['only_socle'])        ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
+$check_type_generique  = (Form::$tab_choix['type_generique'])     ? ' checked' : '' ;
+$check_type_individuel = (Form::$tab_choix['type_individuel'])    ? ' checked' : '' ;
+$check_type_synthese   = (Form::$tab_choix['type_synthese'])      ? ' checked' : '' ;
+$check_retro_auto      = (Form::$tab_choix['retroactif']=='auto') ? ' checked' : '' ;
+$check_retro_non       = (Form::$tab_choix['retroactif']=='non')  ? ' checked' : '' ;
+$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui')  ? ' checked' : '' ;
+$check_only_socle      = (Form::$tab_choix['only_socle'])         ? ' checked' : '' ;
+$check_aff_coef        = (Form::$tab_choix['aff_coef'])           ? ' checked' : '' ;
+$check_aff_socle       = (Form::$tab_choix['aff_socle'])          ? ' checked' : '' ;
+$check_aff_lien        = (Form::$tab_choix['aff_lien'])           ? ' checked' : '' ;
+$class_form_generique  = (Form::$tab_choix['type_generique'])     ? 'hide'     : 'show' ;
+$class_form_individuel = (Form::$tab_choix['type_individuel'])    ? 'show'     : 'hide' ;
+$class_form_synthese   = (Form::$tab_choix['type_synthese'])      ? 'show'     : 'hide' ;
+
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
@@ -83,6 +87,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
+$tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_tri_objet     = Form::afficher_select(Form::$tab_select_tri_objet     , $select_nom='f_tri_objet'     , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');
 $select_tri_mode      = Form::afficher_select(Form::$tab_select_tri_mode      , $select_nom='f_tri_mode'      , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_mode']  , $optgroup='non');
@@ -91,13 +96,53 @@ $select_colonne_bilan = Form::afficher_select(Form::$tab_select_colonne_bilan , 
 $select_colonne_vide  = Form::afficher_select(Form::$tab_select_colonne_vide  , $select_nom='f_colonne_vide'  , $option_first='non' , $selection=Form::$tab_choix['colonne_vide']      , $optgroup='non');
 $select_matiere       = Form::afficher_select($tab_matieres                   , $select_nom='f_matiere'       , $option_first='oui' , $selection=Form::$tab_choix['matiere_id']        , $optgroup='non');
 $select_groupe        = Form::afficher_select($tab_groupes                    , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                , $optgroup=$og_g);
+$select_periode       = Form::afficher_select($tab_periodes                   , $select_nom='f_periode'       , $option_first='val' , $selection=FALSE                                 , $optgroup='non');
 $select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , $select_nom='f_orientation'   , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
 $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , $select_nom='f_marge_min'     , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
 $select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , $select_nom='f_couleur'       , $option_first='non' , $selection=Form::$tab_choix['couleur']           , $optgroup='non');
 $select_legende       = Form::afficher_select(Form::$tab_select_legende       , $select_nom='f_legende'       , $option_first='non' , $selection=Form::$tab_choix['legende']           , $optgroup='non');
 $select_cases_nb      = Form::afficher_select(Form::$tab_select_cases_nb      , $select_nom='f_cases_nb'      , $option_first='non' , $selection=Form::$tab_choix['cases_nb']          , $optgroup='non');
 $select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , $select_nom='f_cases_larg'    , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
+
+// Affichage ou non du formulaire de période
+if($of_g == 'oui')
+{
+	$class_form_periode='hide';
+}
+elseif(Form::$tab_choix['type_generique'])
+{
+	$class_form_periode='hide';
+}
+elseif(Form::$tab_choix['type_synthese'])
+{
+	$class_form_periode='show';
+}
+elseif(Form::$tab_choix['type_individuel'])
+{
+	if( (Form::$tab_choix['remplissage']=='plein') || (Form::$tab_choix['colonne_bilan']=='oui') )
+	{
+		$class_form_periode='show';
+	}
+	else
+	{
+		$class_form_periode='hide';
+	}
+}
+else
+{
+	$class_form_periode='hide';
+}
+
+// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 ?>
+
+<script type="text/javascript">
+	var profil = "<?php echo $_SESSION['USER_PROFIL'] ?>";
+	var date_mysql="<?php echo TODAY_MYSQL ?>";
+	var periode_requise = <?php echo ($class_form_periode=='show') ? 'true' : 'false' ?>;
+	<?php echo $tab_groupe_periode_js ?> 
+</script>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
 
@@ -118,6 +163,17 @@ $select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , 
 	<p id="generique_non_3" class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj_groupe">&nbsp;</label><br />
 		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]"<?php echo $multiple_eleve ?>><?php echo $select_eleves ?></select>
+	</p>
+	<p id="zone_periodes" class="<?php echo $class_form_periode ?>">
+		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
+		<span id="dates_perso" class="show">
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		</span><br />
+		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
+			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
 	</p>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

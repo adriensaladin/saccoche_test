@@ -200,52 +200,54 @@ class Form
   private static function init_tab_choix()
   {
     Form::init_variables();
-    $check_type_individuel = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
-    $check_bilan_MS        = ( (in_array($_SESSION['USER_PROFIL'],array('directeur','professeur'))) || (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE'],$_SESSION['USER_PROFIL'])) ) ? 1 : 0 ;
-    $check_bilan_PA        = ( (in_array($_SESSION['USER_PROFIL'],array('directeur','professeur'))) || (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ) ? 1 : 0 ;
-    $check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-    $check_aff_lien        = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
+    $check_type_individuel    = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
+    $check_etat_acquisition   = ( (in_array($_SESSION['USER_PROFIL'],array('directeur','professeur'))) || (mb_substr_count($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']  ,$_SESSION['USER_PROFIL'])) ) ? 1 : 0 ;
+    $check_moyenne_score      = ( (in_array($_SESSION['USER_PROFIL'],array('directeur','professeur'))) || (mb_substr_count($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ) ? 1 : 0 ;
+    $check_pourcentage_acquis = ( (in_array($_SESSION['USER_PROFIL'],array('directeur','professeur'))) || (mb_substr_count($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ) ? 1 : 0 ;
+    $check_conversion_sur_20  = (mb_substr_count($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
+    $check_aff_lien           = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
     Form::$tab_choix = array(
-      'matiere_id'        => 0 ,
-      'niveau_id'         => 0 ,
-      'palier_id'         => 0 ,
-      'orientation'       => 'portrait' ,
-      'couleur'           => 'oui' ,
-      'legende'           => 'oui' , 
-      'marge_min'         => 5 ,
-      'pages_nb'          => 'optimise' ,
-      'cart_contenu'      => 'AVEC_nom_SANS_result' ,
-      'cart_detail'       => 'complet' ,
-      'only_niveau'       => 0 ,
-      'only_presence'     => 0 ,
-      'only_socle'        => 0 ,
-      'aff_coef'          => 0 ,
-      'aff_socle'         => 1 ,
-      'aff_lien'          => $check_aff_lien ,
-      'aff_start'         => 0 ,
-      'aff_domaine'       => 0 ,
-      'aff_theme'         => 0 ,
-      'cases_nb'          => 4 ,
-      'cases_largeur'     => 5 ,
-      'remplissage'       => 'plein' ,
-      'colonne_bilan'     => 'oui' ,
-      'colonne_vide'      => 0 ,
-      'type_generique'    => 0 ,
-      'type_individuel'   => $check_type_individuel ,
-      'type_synthese'     => 0 ,
-      'type_bulletin'     => 0 ,
-      'aff_bilan_MS'      => $check_bilan_MS ,
-      'aff_bilan_PA'      => $check_bilan_PA ,
-      'aff_conv_sur20'    => $check_conv_sur20 ,
-      'tableau_tri_objet' => 'eleve',
-      'tableau_tri_mode'  => 'score',
-      'with_coef'         => 1 ,
-      'retroactif'        => 'auto' ,
-      'mode_synthese'     => 'predefini' ,
-      'aff_socle_PA'      => 1 ,
-      'aff_socle_EV'      => 1 ,
-      'type'              => '' ,
-      'mode'              => 'auto'
+      'matiere_id'             => 0 ,
+      'niveau_id'              => 0 ,
+      'palier_id'              => 0 ,
+      'orientation'            => 'portrait' ,
+      'couleur'                => 'oui' ,
+      'legende'                => 'oui' , 
+      'marge_min'              => 5 ,
+      'pages_nb'               => 'optimise' ,
+      'cart_contenu'           => 'AVEC_nom_SANS_result' ,
+      'cart_detail'            => 'complet' ,
+      'only_niveau'            => 0 ,
+      'only_presence'          => 0 ,
+      'only_socle'             => 0 ,
+      'aff_coef'               => 0 ,
+      'aff_socle'              => 1 ,
+      'aff_lien'               => $check_aff_lien ,
+      'aff_start'              => 0 ,
+      'aff_domaine'            => 0 ,
+      'aff_theme'              => 0 ,
+      'cases_nb'               => 4 ,
+      'cases_largeur'          => 5 ,
+      'remplissage'            => 'plein' ,
+      'colonne_bilan'          => 'oui' ,
+      'colonne_vide'           => 0 ,
+      'type_generique'         => 0 ,
+      'type_individuel'        => $check_type_individuel ,
+      'type_synthese'          => 0 ,
+      'type_bulletin'          => 0 ,
+      'aff_etat_acquisition'   => $check_etat_acquisition ,
+      'aff_moyenne_scores'     => $check_moyenne_score ,
+      'aff_pourcentage_acquis' => $check_pourcentage_acquis ,
+      'conversion_sur_20'      => $check_conversion_sur_20 ,
+      'tableau_tri_objet'      => 'eleve',
+      'tableau_tri_mode'       => 'score',
+      'with_coef'              => 1 ,
+      'retroactif'             => 'auto' ,
+      'mode_synthese'          => 'predefini' ,
+      'aff_socle_PA'           => 1 ,
+      'aff_socle_EV'           => 1 ,
+      'type'                   => '' ,
+      'mode'                   => 'auto'
     );
   }
 
@@ -290,20 +292,20 @@ class Form
         $tab_choix_new = compact('orientation','couleur','legende','marge_min','cart_contenu','cart_detail');
         break;
       case 'grille_referentiel' :
-        global $matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_tri_objet,$tableau_tri_mode,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min;
+        global $matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min;
         $tab_choix_new = compact('matiere_id','niveau_id','type_generique','type_individuel','type_synthese','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','legende','marge_min');
         break;
       case 'items_matiere' :
-        global $matiere_id,$type_individuel,$type_synthese,$type_bulletin,$aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('matiere_id','type_individuel','type_synthese','type_bulletin','aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','tableau_tri_objet','tableau_tri_mode','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $matiere_id,$type_individuel,$type_synthese,$type_bulletin,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('matiere_id','type_individuel','type_synthese','type_bulletin','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_tri_objet','tableau_tri_mode','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_selection' :
-        global $type_individuel,$type_synthese,$type_bulletin,$aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$tableau_tri_objet,$tableau_tri_mode,$with_coef,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('type_individuel','type_synthese','type_bulletin','aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','tableau_tri_objet','tableau_tri_mode','with_coef','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $type_individuel,$type_synthese,$type_bulletin,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_tri_objet,$tableau_tri_mode,$with_coef,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('type_individuel','type_synthese','type_bulletin','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_tri_objet','tableau_tri_mode','with_coef','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_multimatiere' :
-        global $aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'synthese_matiere' :
         global $matiere_id,$mode_synthese,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
@@ -351,7 +353,7 @@ class Form
   /**
    * Afficher un élément select de formulaire à partir d'un tableau de données et d'options
    * 
-   * @param array             $DB_TAB       tableau des données [valeur texte]
+   * @param array             $DB_TAB       tableau des données [i] => [valeur texte optgroup class]
    * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select
    * @param string            $option_first 1ère option éventuelle [non] [oui] [val]
    * @param string|bool|array $selection    préselection éventuelle [FALSE] [TRUE] [val] [ou $...] [ou array(...)]
@@ -438,6 +440,101 @@ class Form
     // On insère dans un select si demandé
     return ($select_nom) ? '<select id="'.$select_nom.'" name="'.$select_nom.'">'.$options.'</select>' : $options ;
   }
+
+  /**
+   * Fabrication de tableau javascript de jointures à partir des groupes
+   * 
+   * @param array     $tab_groupes               tableau des données [i] => [valeur texte optgroup class]
+   * @param bool      $return_jointure_periode   renvoyer ou non "tab_groupe_periode" pour les jointures groupes/périodes
+   * @param bool      $return_jointure_niveau    renvoyer ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
+   * @return array                               ( $tab_groupe_periode_js , $tab_groupe_niveau_js )
+   */
+  public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$return_jointure_periode,$return_jointure_niveau)
+  {
+		$tab_groupe_periode_js = '';
+		$tab_groupe_niveau_js  = '';
+		if(is_array($tab_groupes))
+		{
+			// On liste les ids des classes et groupes
+			$tab_id_classe_groupe = array();
+			foreach($tab_groupes as $tab_groupe_infos)
+			{
+				if( !isset($tab_groupe_infos['optgroup']) || ($tab_groupe_infos['optgroup']!='besoin') )
+				{
+					$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
+				}
+			}
+			if(count($tab_id_classe_groupe))
+			{
+				$listing_groupe_id = implode(',',$tab_id_classe_groupe);
+				// Fabrication du tableau js $tab_groupe_periode_js de jointures groupes/périodes
+				if($return_jointure_periode)
+				{
+					$tab_groupe_periode_js .= 'var tab_groupe_periode = new Array();';
+					$tab_memo_groupes = array();
+					$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
+					foreach($DB_TAB as $DB_ROW)
+					{
+						if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+						{
+							$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
+							$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+						}
+						$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+					}
+				}
+				// Fabrication du tableau js $tab_groupe_periode_js de jointures groupes/périodes
+				if($return_jointure_niveau)
+				{
+					$tab_groupe_niveau_js .= 'var tab_groupe_niveau = new Array();';
+					$DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id);
+					foreach($DB_TAB as $DB_ROW)
+					{
+						$tab_groupe_niveau_js  .= 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
+					}
+				}
+			}
+		}
+		return array( $tab_groupe_periode_js , $tab_groupe_niveau_js );
+	}
+
+  /**
+   * Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+   * 
+   * @param array             $tab_groupes   tableau des données [i] => [valeur texte optgroup class]
+   * @return string
+   */
+  public static function fabriquer_tab_groupe_niveau_js($tab_groupes)
+  {
+		$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
+		if(is_array($tab_groupes))
+		{
+			$tab_id_classe_groupe = array();
+			foreach($tab_groupes as $tab_groupe_infos)
+			{
+				if( !isset($tab_groupe_infos['optgroup']) || ($tab_groupe_infos['optgroup']!='besoin') )
+				{
+					$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
+				}
+			}
+			if(count($tab_id_classe_groupe))
+			{
+				$tab_memo_groupes = array();
+				$listing_groupe_id = implode(',',$tab_id_classe_groupe);
+				$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
+				foreach($DB_TAB as $DB_ROW)
+				{
+					if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+					{
+						$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
+						$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+					}
+					$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+				}
+			}
+		}
+		return $tab_groupe_periode_js;
+	}
 
 }
 ?>

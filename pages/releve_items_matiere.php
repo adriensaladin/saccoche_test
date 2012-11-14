@@ -33,31 +33,34 @@ $TITRE = "Relevé d'items d'une matière";
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 // L'élève ne choisit pas non plus son type de bilan (=>individuel), et les options du relevé sont prédéfinies.
 Form::load_choix_memo();
-$check_type_individuel = (Form::$tab_choix['type_individuel'])   ? ' checked' : '' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])     ? ' checked' : '' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
-$check_type_bulletin   = (Form::$tab_choix['type_bulletin'])     ? ' checked' : '' ;
-$check_bilan_MS        = (Form::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
-$check_bilan_PA        = (Form::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
-$check_conv_sur20      = (Form::$tab_choix['aff_conv_sur20'])    ? ' checked' : '' ;
+$check_type_individuel    = (Form::$tab_choix['type_individuel'])        ? ' checked' : '' ;
+$class_form_individuel    = (Form::$tab_choix['type_individuel'])        ? 'show'     : 'hide' ;
+$check_type_synthese      = (Form::$tab_choix['type_synthese'])          ? ' checked' : '' ;
+$class_form_synthese      = (Form::$tab_choix['type_synthese'])          ? 'show'     : 'hide' ;
+$check_type_bulletin      = (Form::$tab_choix['type_bulletin'])          ? ' checked' : '' ;
+$check_etat_acquisition   = (Form::$tab_choix['aff_etat_acquisition'])   ? ' checked' : '' ;
+$check_moyenne_score      = (Form::$tab_choix['aff_moyenne_scores'])     ? ' checked' : '' ;
+$check_pourcentage_acquis = (Form::$tab_choix['aff_pourcentage_acquis']) ? ' checked' : '' ;
+$check_conversion_sur_20  = (Form::$tab_choix['conversion_sur_20'])      ? ' checked' : '' ;
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	// Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
-	$check_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
-	$check_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
-	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_etat_acquisition   = (mb_substr_count($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']  ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_moyenne_score      = (mb_substr_count($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_pourcentage_acquis = (mb_substr_count($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_conversion_sur_20  = (mb_substr_count($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'] ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
-$class_conv_sur20      = ($check_bilan_MS || $check_bilan_PA)     ? 'show'     : 'hide' ;
-$check_retro_auto      = (Form::$tab_choix['retroactif']=='auto') ? ' checked' : '' ;
-$check_retro_non       = (Form::$tab_choix['retroactif']=='non')  ? ' checked' : '' ;
-$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui')  ? ' checked' : '' ;
-$check_only_socle      = (Form::$tab_choix['only_socle'])         ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])           ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])          ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])           ? ' checked' : '' ;
-$check_aff_domaine     = (Form::$tab_choix['aff_domaine'])        ? ' checked' : '' ;
-$check_aff_theme       = (Form::$tab_choix['aff_theme'])          ? ' checked' : '' ;
+$class_etat_acquisition   = ($check_etat_acquisition)                           ? 'show' : 'hide' ;
+$class_conversion_sur_20  = ($check_moyenne_score || $check_pourcentage_acquis) ? 'show' : 'hide' ;
+$check_retro_auto         = (Form::$tab_choix['retroactif']=='auto')     ? ' checked' : '' ;
+$check_retro_non          = (Form::$tab_choix['retroactif']=='non')      ? ' checked' : '' ;
+$check_retro_oui          = (Form::$tab_choix['retroactif']=='oui')      ? ' checked' : '' ;
+$check_only_socle         = (Form::$tab_choix['only_socle'])             ? ' checked' : '' ;
+$check_aff_coef           = (Form::$tab_choix['aff_coef'])               ? ' checked' : '' ;
+$check_aff_socle          = (Form::$tab_choix['aff_socle'])              ? ' checked' : '' ;
+$check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
+$check_aff_domaine        = (Form::$tab_choix['aff_domaine'])            ? ' checked' : '' ;
+$check_aff_theme          = (Form::$tab_choix['aff_theme'])              ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
@@ -116,32 +119,7 @@ $select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , $sel
 $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
-if(is_array($tab_groupes))
-{
-	$tab_id_classe_groupe = array();
-	foreach($tab_groupes as $tab_groupe_infos)
-	{
-		if($tab_groupe_infos['optgroup']!='besoin')
-		{
-			$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
-		}
-	}
-	if(count($tab_id_classe_groupe))
-	{
-		$tab_memo_groupes = array();
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-		foreach($DB_TAB as $DB_ROW)
-		{
-			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
-			{
-				$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
-				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
-			}
-			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
-		}
-	}
-}
+list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 ?>
 
 <script type="text/javascript">
@@ -160,7 +138,7 @@ if(is_array($tab_groupes))
 	<p class="<?php echo $class_form_type ?>">
 		<label class="tab">Type de document :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type[]" value="bulletin"<?php echo $check_type_bulletin ?> /> Bulletin (moyenne &amp; appréciation)</label><br />
 		<span id="options_individuel" class="<?php echo $class_form_individuel ?>">
-			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> Opt. relevé :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20" class="<?php echo $class_conv_sur20 ?>"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1"<?php echo $check_conv_sur20 ?> /> Proposition de note sur 20</label><br />
+			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, une colonne et deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> Opt. relevé :</label><label for="f_etat_acquisition"><input type="checkbox" id="f_etat_acquisition" name="f_etat_acquisition" value="1"<?php echo $check_etat_acquisition ?> /> Colonne état d'acquisition</label><span id="span_etat_acquisition" class="<?php echo $class_etat_acquisition ?>">&nbsp;&nbsp;&nbsp;<label for="f_moyenne_scores"><input type="checkbox" id="f_moyenne_scores" name="f_moyenne_scores" value="1"<?php echo $check_moyenne_score ?> /> Ligne moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_pourcentage_acquis"><input type="checkbox" id="f_pourcentage_acquis" name="f_pourcentage_acquis" value="1"<?php echo $check_pourcentage_acquis ?> /> Ligne pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conversion_sur_20" class="<?php echo $class_conversion_sur_20 ?>"><input type="checkbox" id="f_conversion_sur_20" name="f_conversion_sur_20" value="1"<?php echo $check_conversion_sur_20 ?> /> Conversion en note sur 20</label></span><br />
 		</span>
 		<span id="options_synthese" class="<?php echo $class_form_synthese ?>">
 			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_tri_objet ?> <?php echo $select_tri_mode ?><br />
@@ -177,7 +155,7 @@ if(is_array($tab_groupes))
 			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
 		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
-			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
 			<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
 			<label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
 	</p>
@@ -190,7 +168,7 @@ if(is_array($tab_groupes))
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab">Restriction :</label><label for="f_restriction"><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés du socle</label><br />
-		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, les paramètres des items peuvent être affichés." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_domaine"><input type="checkbox" id="f_domaine" name="f_domaine" value="1"<?php echo $check_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_theme"><input type="checkbox" id="f_theme" name="f_theme" value="1"<?php echo $check_aff_theme ?> /> Thèmes</label><br />
+		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, les paramètres des items peuvent être affichés." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_domaine"><input type="checkbox" id="f_domaine" name="f_domaine" value="1"<?php echo $check_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_theme"><input type="checkbox" id="f_theme" name="f_theme" value="1"<?php echo $check_aff_theme ?> /> Thèmes</label><br />
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?> <?php echo $select_pages_nb ?><br />
 		<label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?>
 	</div>

@@ -600,7 +600,7 @@ if( $step==20 )
 		// Étape 2d - Extraction tableur_professeurs_directeurs
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -678,7 +678,7 @@ if( $step==20 )
 		// Étape 2e - Extraction tableur_eleves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -743,7 +743,7 @@ if( $step==20 )
 		// Étape 2f - Extraction base-eleves_eleves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		// Utiliser la 1e ligne pour repérer les colonnes intéressantes

@@ -238,7 +238,7 @@ public static function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_
 public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
 {
 	$DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
-	$DB_SQL.= 'item_cart, item_lien, matiere_id, referentiel_calcul_methode, referentiel_calcul_limite, ';
+	$DB_SQL.= 'item_cart, item_lien, matiere_id, referentiel_calcul_methode, referentiel_calcul_limite, referentiel_calcul_retroactif, ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';

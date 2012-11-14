@@ -60,12 +60,11 @@ $select_eleve   = '';
 $select_periode = '';
 $tab_niveau_js  = 'var tab_niveau = new Array();';
 $tab_groupe_js  = 'var tab_groupe = new Array();';
-$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
+
 if($TYPE=='groupe')
 {
 	// Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
 	// Fabrication de tableaux javascript "tab_niveau" et "tab_groupe" indiquant le niveau et le nom d'un groupe
-	$tab_id_classe_groupe = array();
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_professeur($_SESSION['USER_ID']);
 	$tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
 	foreach($DB_TAB as $DB_ROW)
@@ -74,10 +73,6 @@ if($TYPE=='groupe')
 		$tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
 		$tab_niveau_js .= 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
 		$tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
-		if($DB_ROW['groupe_type']!='besoin')
-		{
-			$tab_id_classe_groupe[] = $DB_ROW['groupe_id'];
-		}
 	}
 	foreach($tab_options as $type => $contenu)
 	{
@@ -90,22 +85,10 @@ if($TYPE=='groupe')
 	$select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=FALSE , $optgroup='non');
 	// On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
 	$select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
-	// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-	if(count($tab_id_classe_groupe))
-	{
-		$tab_memo_groupes = array();
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-		foreach($DB_TAB as $DB_ROW)
-		{
-			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
-			{
-				$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
-				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
-			}
-			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
-		}
-	}
 }
+
+// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 
 // Dates par défaut
 $date_debut    = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant

@@ -149,28 +149,29 @@ $make_graph    = FALSE;
 
 if($BILAN_TYPE=='releve')
 {
-	$format          = 'multimatiere';
-	$aff_bilan_MS    = 0; // Inutile pour un examen de précence des appréciations
-	$aff_bilan_PA    = 0; // Inutile pour un examen de précence des appréciations
-	$aff_conv_sur20  = 0; // Inutile pour un examen de précence des appréciations
-	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-	$matiere_id      = TRUE;
-	$matiere_nom     = '';
-	$groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-	$date_debut      = '';
-	$date_fin        = '';
-	$retroactif      = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-	$only_socle      = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
-	$aff_domaine     = 0;
-	$aff_theme       = 0;
-	$tab_eleve       = $tab_eleve_id;
-	$liste_eleve     = $liste_eleve_id;
-	$tab_type[]      = 'individuel';
-	$type_individuel = 1;
-	$type_synthese   = 0;
-	$type_bulletin   = 0;
-	$tab_matiere_id  = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
+	$format                 = 'multimatiere';
+	$aff_etat_acquisition   = 0; // Inutile pour un examen de précence des appréciations
+	$aff_moyenne_scores     = 0; // Inutile pour un examen de précence des appréciations
+	$aff_pourcentage_acquis = 0; // Inutile pour un examen de précence des appréciations
+	$conversion_sur_20      = 0; // Inutile pour un examen de précence des appréciations
+	$with_coef              = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
+	$matiere_id             = TRUE;
+	$matiere_nom            = '';
+	$groupe_id              = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+	$groupe_nom             = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+	$date_debut             = '';
+	$date_fin               = '';
+	$retroactif             = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
+	$only_socle             = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
+	$aff_domaine            = 0;
+	$aff_theme              = 0;
+	$tab_eleve              = $tab_eleve_id;
+	$liste_eleve            = $liste_eleve_id;
+	$tab_type[]             = 'individuel';
+	$type_individuel        = 1;
+	$type_synthese          = 0;
+	$type_bulletin          = 0;
+	$tab_matiere_id         = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
 	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 }
 elseif($BILAN_TYPE=='bulletin')

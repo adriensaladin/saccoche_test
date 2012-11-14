@@ -54,7 +54,7 @@ $tab_objets[]  = array( 'droit_modifier_mdp'=>'modifier son mot de passe' );
 // 5
 $tab_titres[]  = 'Relevé d\'items (matière ou pluridisciplinaire)';
 $tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_bilan_moyenne_score'=>'afficher la ligne avec la moyenne des scores d\'acquisitions' , 'droit_bilan_pourcentage_acquis'=>'afficher la ligne avec le pourcentage d\'items acquis' , 'droit_bilan_note_sur_vingt'=>'ajouter la conversion en note sur 20' );
+$tab_objets[]  = array( 'droit_releve_etat_acquisition'=>'afficher la colonne avec les états d\'acquisitions' , 'droit_releve_moyenne_score'=>'afficher la ligne avec la moyenne des scores d\'acquisitions' , 'droit_releve_pourcentage_acquis'=>'afficher la ligne avec le pourcentage d\'items acquis' , 'droit_releve_conversion_sur_20'=>'ajouter la conversion en note sur 20' );
 // 6
 $tab_titres[]  = 'Relevé de maîtrise du socle';
 $tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
@@ -83,7 +83,7 @@ $tab_false = array(
 	'droit_annulation_pilier__professeur','droit_annulation_pilier__profprincipal',
 	'droit_gerer_referentiel__professeur','droit_gerer_referentiel__aucunprof',
 	'droit_gerer_ressource__profcoordonnateur','droit_gerer_ressource__aucunprof',
-	'droit_bilan_note_sur_vingt__parent','droit_bilan_note_sur_vingt__eleve',
+	'droit_releve_conversion_sur_20__parent','droit_releve_conversion_sur_20__eleve',
 	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve',
 	'droit_officiel_releve_modifier_statut__professeur','droit_officiel_releve_modifier_statut__profprincipal',
 	'droit_officiel_releve_appreciation_generale__professeur','droit_officiel_releve_appreciation_generale__aucunprof',

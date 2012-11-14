@@ -308,23 +308,27 @@ class Html
    * Afficher un score bilan pour une sortie HTML.
    *
    * @param int|FALSE $score
-   * @param string    $methode_tri   'score' | 'etat'
-   * @param string    $pourcent      '%' | ''
+   * @param string    $methode_tri    'score' | 'etat'
+   * @param string    $pourcent       '%' | ''
+   * @param bool      $make_officiel  TRUE pour un bulletin
    * @return string
    */
-  public static function td_score( $score , $methode_tri , $pourcent='' )
+  public static function td_score( $score , $methode_tri , $pourcent='' , $make_officiel=FALSE )
   {
-    if($score===FALSE)
+    // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
+    $profil = ($make_officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
+    $afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
+   if($score===FALSE)
     {
-      $score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? '-' : '' ;
-      return '<td class="hc">'.$score_affiche.'</td>';
+      $affichage = ($afficher_score) ? '-' : '' ;
+      return '<td class="hc">'.$affichage.'</td>';
     }
     elseif($score<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
     elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
     else                                          {$etat = 'o';}
-    $score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score.$pourcent : '' ;
+    $affichage = ($afficher_score) ? $score.$pourcent : '' ;
     $tri = ($methode_tri=='score') ? sprintf("%03u",$score) : Html::$tab_tri_etat[$etat] ;  // le sprintf et le tab_tri_etat servent pour le tri du tableau
-    return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score_affiche.'</td>';
+    return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$affichage.'</td>';
   }
 
   /**

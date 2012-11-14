@@ -68,6 +68,18 @@ class To
     return ( (!perso_mb_detect_encoding_utf8($text)) || (!mb_check_encoding($text,'UTF-8')) ) ? mb_convert_encoding($text,'UTF-8','Windows-1252') : $text ;
   }
 
+  /**
+   * Nettoie le BOM éventuel d'un contenu UTF-8.
+   * Code inspiré de http://libre-d-esprit.thinking-days.net/2009/03/et-bom-le-script/
+   * 
+   * @param string
+   * @return string
+   */
+  public static function deleteBOM($text)
+  {
+    return (substr($text,0,3) == "\xEF\xBB\xBF") ? substr($text,3) : $text ; // Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+  }
+
 }
 
 ?>

@@ -170,11 +170,10 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 	var BILAN_TYPE = "<?php echo $BILAN_TYPE ?>";
 	var APP_RUBRIQUE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'] ?>;
 	var APP_GENERALE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] ?>;
-	var NOTE_SUR_20  = <?php echo $_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'] ?>;
+	var CONVERSION_SUR_20 = <?php echo $_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'] ?>;
 	var BACKGROUND_NA = "<?php echo $_SESSION['BACKGROUND_NA'] ?>";
 	var BACKGROUND_VA = "<?php echo $_SESSION['BACKGROUND_VA'] ?>";
 	var BACKGROUND_A  = "<?php echo $_SESSION['BACKGROUND_A'] ?>";
-	"'..'"
 </script>
 
 <hr />

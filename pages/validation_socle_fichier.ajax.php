@@ -196,7 +196,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 		exit('Erreur : '.$result);
 	}
 	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-	$fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	$xml = @simplexml_load_string($fichier_contenu);
 	if($xml===FALSE)
 	{

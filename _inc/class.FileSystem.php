@@ -388,6 +388,23 @@ class FileSystem
   }
 
   /**
+   * Nettoie le BOM éventuel d'un fichier UTF-8.
+   * Code inspiré de http://libre-d-esprit.thinking-days.net/2009/03/et-bom-le-script/
+   * Ne semble plus utilisé par SACoche... ?!
+   * 
+   * @param string   $fichier_chemin
+   * @return void
+   */
+  public static function deleteBOM($fichier_chemin)
+  {
+    $fcontenu = file_get_contents($fichier_chemin);
+    if (substr($fcontenu,0,3) == "\xEF\xBB\xBF") // Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+    {
+      FileSystem::ecrire_fichier($fichier_chemin, substr($fcontenu,3)); // Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+    }
+  }
+
+  /**
    * Effacer d'anciens fichiers temporaires sur le serveur.
    * 
    * @param string   $dossier      le dossier à vider

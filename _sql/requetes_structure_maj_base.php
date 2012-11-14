@@ -2290,27 +2290,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MAJ 2012-11-05 => 2012-11-12
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-11-05')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-11-12';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// ajout de paramètres et renommage d'autres
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_releve_etat_acquisition"    , "parent,eleve" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_etat_acquisition" , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_releve_moyenne_score"          WHERE parametre_nom="droit_bilan_moyenne_score"'      );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_releve_pourcentage_acquis"     WHERE parametre_nom="droit_bilan_pourcentage_acquis"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_releve_conversion_sur_20"      WHERE parametre_nom="droit_bilan_note_sur_vingt"'     );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_releve_conversion_sur_20"   WHERE parametre_nom="officiel_releve_conv_sur20"'     );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_bulletin_conversion_sur_20" WHERE parametre_nom="officiel_bulletin_note_sur_20"'  );
-		}
-	}
-
 }
 
 }

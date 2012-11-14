@@ -497,8 +497,8 @@ $(document).ready
 			if(memo_rubrique_type=='note')
 			{
 				memo_html = obj_lieu.closest('tr').html();
-				var pourcent = (CONVERSION_SUR_20) ? '' : '%' ;
-				var texte    = (CONVERSION_SUR_20) ? 'en note sur 20' : 'en pourcentage' ;
+				var pourcent = (NOTE_SUR_20) ? '' : '%' ;
+				var texte    = (NOTE_SUR_20) ? 'en note sur 20' : 'en pourcentage' ;
 				var formulaire_saisie = '<div><b>Moyenne '+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_moyenne" name="f_moyenne" type="text" size="3" value="" />'+pourcent+'</div>'
 															+ '<div><button id="valider_note_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_note" type="button" class="valider">Valider</button> <button id="valider_note_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_note_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_note" type="button" class="annuler">Annuler</button> <button id="annuler_note_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_note">&nbsp;</label></div>';
 			}
@@ -522,7 +522,7 @@ $(document).ready
 			}
 			if(memo_rubrique_type=='note')
 			{
-				var valeur = (CONVERSION_SUR_20) ? parseFloat(champ_contenu,10) : parseInt(champ_contenu.substr(0,champ_contenu.length-1),10) ;
+				var valeur = (NOTE_SUR_20) ? parseFloat(champ_contenu,10) : parseInt(champ_contenu.substr(0,champ_contenu.length-1),10) ;
 				valeur = (isNaN(valeur)) ? '' : valeur ;
 				$('#f_moyenne').focus().val(valeur);
 			}
@@ -610,7 +610,7 @@ $(document).ready
 						$('#f_moyenne').focus();
 						return false;
 					}
-					if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le code VV pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+					if( (note<0) || ((note>40)&&(NOTE_SUR_20)) || ((note>200)&&(!NOTE_SUR_20)) ) // Le code VV pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
 					{
 						$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Valeur incorrecte !");
 						$('#f_moyenne').focus();

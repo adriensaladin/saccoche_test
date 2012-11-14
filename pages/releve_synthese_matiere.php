@@ -94,8 +94,40 @@ $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']    , $optgroup='non');
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-// Fabrication du tableau javascript "tab_groupe_niveau" pour les jointures groupes/niveaux
-list( $tab_groupe_periode_js , $tab_groupe_niveau_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , TRUE /*return_jointure_niveau*/ );
+$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
+if(is_array($tab_groupes))
+{
+	$tab_id_classe_groupe = array();
+	foreach($tab_groupes as $tab_groupe_infos)
+	{
+		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
+	}
+	if(count($tab_id_classe_groupe))
+	{
+		$tab_memo_groupes = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+		foreach($DB_TAB as $DB_ROW)
+		{
+			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+			{
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
+				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			}
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+		}
+	}
+}
+
+// Fabrication du tableau javascript "tab_groupe_niveau" pour les jointures groupes/niveau
+$tab_groupe_niveau_js  = 'var tab_groupe_niveau = new Array();';
+if(is_array($tab_groupes))
+{
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id); // $listing_groupe_id a été obtenu 15 lignes plus haut
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_groupe_niveau_js  .= 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
+	}
+}
 ?>
 
 <script type="text/javascript">
@@ -127,7 +159,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
 		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
-			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
 			<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
 			<label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
 	</p>

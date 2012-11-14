@@ -36,20 +36,12 @@ $(document).ready
 
 		function view_bilans()
 		{
-			// "droit_releve_etat_acquisition" => "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis"
-			var opacite_parent = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="parent"]').is(':checked') ) ? 1 : 0 ;
-			var opacite_eleve  = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="eleve"]' ).is(':checked') ) ? 1 : 0 ;
+			var opacite_parent = ( $('#form_autorisations input[name="droit_bilan_moyenne_score"][value="parent"]').is(':checked') || $('#form_autorisations input[name="droit_bilan_pourcentage_acquis"][value="parent"]').is(':checked') ) ? 1 : 0 ;
+			var opacite_eleve  = ( $('#form_autorisations input[name="droit_bilan_moyenne_score"][value="eleve"]' ).is(':checked') || $('#form_autorisations input[name="droit_bilan_pourcentage_acquis"][value="eleve"]' ).is(':checked') ) ? 1 : 0 ;
 			var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
-			$('#tr_droit_releve_moyenne_score , #tr_droit_releve_pourcentage_acquis').fadeTo(0,opacite_ligne);
-			$('#form_autorisations input[name="droit_releve_moyenne_score"][value="parent"] , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_releve_moyenne_score"][value="eleve"]  , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			// "droit_releve_etat_acquisition" + "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis" => droit_releve_conversion_sur_20
-			var opacite_parent = ( opacite_parent && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="parent"]').is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="parent"]').is(':checked') ) ) ? 1 : 0 ;
-			var opacite_eleve  = ( opacite_eleve  && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="eleve"]' ).is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="eleve"]' ).is(':checked') ) ) ? 1 : 0 ;
-			var opacite_ligne  = ( opacite_ligne  && ( opacite_parent || opacite_eleve ) ) ? 1 : 0 ;
-			$('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			$('#tr_droit_releve_conversion_sur_20').fadeTo(0,opacite_ligne);
+			$('#form_autorisations input[name="droit_bilan_note_sur_vingt"][value="parent"]').parent().fadeTo(0,opacite_parent);
+			$('#form_autorisations input[name="droit_bilan_note_sur_vingt"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
+			$('#tr_droit_bilan_note_sur_vingt').fadeTo(0,opacite_ligne);
 		}
 		view_bilans();
 
@@ -77,7 +69,7 @@ $(document).ready
 			{
 				var objet = $(this).attr('name');
 				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-				if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
+				if( (objet=='droit_bilan_moyenne_score') || (objet=='droit_bilan_pourcentage_acquis') )
 				{
 					view_bilans();
 				}
@@ -102,7 +94,7 @@ $(document).ready
 					$('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').prop('checked',tab_init[objet][value]);
 				}
 				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-				if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
+				if( (objet=='droit_bilan_moyenne_score') || (objet=='droit_bilan_pourcentage_acquis') )
 				{
 					view_bilans();
 				}

@@ -1209,7 +1209,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 		exit('Erreur : '.$result);
 	}
 	$contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-	$contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+	$contenu_csv = To::utf8($contenu_csv); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Pas de ligne d'en-tête à supprimer

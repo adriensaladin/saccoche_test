@@ -50,54 +50,11 @@ $(document).ready
 		// Afficher masquer des éléments du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function view_periode()
-		{
-			// On détermine
-			groupe_type = $("#f_groupe option:selected").parent().attr('label');
-			if(typeof(groupe_type)=='undefined')
-			{
-				periode_requise = false;
-			}
-			else if($('#f_type_generique').is(':checked'))
-			{
-				periode_requise = false;
-			}
-			else if($('#f_type_synthese').is(':checked'))
-			{
-				periode_requise = true;
-			}
-			else if($('#f_type_individuel').is(':checked'))
-			{
-				if( ($('#f_remplissage option:selected').val()=='plein') || ($('#f_colonne_bilan option:selected').val()=='oui') )
-				{
-					periode_requise = true;
-				}
-				else
-				{
-					periode_requise = false;
-				}
-			}
-			else
-			{
-				periode_requise = false;
-			}
-			// On affiche / masque
-			if(periode_requise)
-			{
-				$('#zone_periodes').show();
-			}
-			else
-			{
-				$('#zone_periodes').hide();
-			}
-		}
-
 		$('#f_type_generique').click
 		(
 			function()
 			{
-				$('#generique_non_1 , #generique_non_2 , #generique_non_3').toggle();
-				view_periode();
+				$("#generique_non_1 , #generique_non_2 , #generique_non_3").toggle();
 			}
 		);
 
@@ -105,8 +62,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#options_individuel').toggle();
-				view_periode();
+				$("#options_individuel").toggle();
 			}
 		);
 
@@ -114,40 +70,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#options_synthese').toggle();
-				view_periode();
-			}
-		);
-
-		$('#f_remplissage , #f_colonne_bilan').change
-		(
-			function()
-			{
-				view_periode();
-			}
-		);
-
-		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
-
-		function view_dates_perso()
-		{
-			var periode_val = $("#f_periode").val();
-			if(periode_val!=0)
-			{
-				$("#dates_perso").attr("class","hide");
-			}
-			else
-			{
-				$("#dates_perso").attr("class","show");
-			}
-		}
-
-		$('#f_periode').change
-		(
-			function()
-			{
-				view_dates_perso();
-				autoperiode = false;
+				$("#options_synthese").toggle();
 			}
 		);
 
@@ -200,80 +123,6 @@ $(document).ready
 			}
 		);
 		maj_niveau();
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement de groupe
-// -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
-// -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
-// -> afficher ou non le formulaire de périodes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		function selectionner_periode_adaptee()
-		{
-			var id_groupe = $('#f_groupe option:selected').val();
-			if(typeof(tab_groupe_periode[id_groupe])!='undefined')
-			{
-				for(var id_periode in tab_groupe_periode[id_groupe]) // Parcourir un tableau associatif...
-				{
-					var tab_split = tab_groupe_periode[id_groupe][id_periode].split('_');
-					if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
-					{
-						$("#f_periode option[value="+id_periode+"]").prop('selected',true);
-						view_dates_perso();
-						break;
-					}
-				}
-			}
-		}
-
-		$('#f_groupe').change
-		(
-			function()
-			{
-				groupe_type = $("#f_groupe option:selected").parent().attr('label');
-				$("#f_periode option").each
-				(
-					function()
-					{
-						periode_id = $(this).val();
-						// La période personnalisée est tout le temps accessible
-						if(periode_id!=0)
-						{
-							// classe ou groupe classique -> toutes périodes accessibles
-							if(groupe_type!='Besoins')
-							{
-								$(this).prop('disabled',false);
-							}
-							// groupe de besoin -> desactiver les périodes prédéfinies
-							else
-							{
-								$(this).prop('disabled',true);
-							}
-						}
-					}
-				);
-				// Sélectionner si besoin la période personnalisée
-				if(groupe_type=='Besoins')
-				{
-					$("#f_periode option[value=0]").prop('selected',true);
-					$("#dates_perso").attr("class","show");
-				}
-				// Modification automatique du formulaire : périodes
-				if(autoperiode)
-				{
-					if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
-					{
-						// Rechercher automatiquement la meilleure période
-						selectionner_periode_adaptee();
-					}
-					// Afficher / masquer la zone de choix des périodes
-					view_periode();
-				}
-			}
-		);
-
-		// Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-		selectionner_periode_adaptee();
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Charger le select f_eleve en ajax (au changement de f_groupe)
@@ -384,14 +233,10 @@ $(document).ready
 					f_colonne_vide  : { required:true },
 					f_tri_objet     : { required:true },
 					f_tri_mode      : { required:true },
-					f_retroactif    : { required:true },
 					f_matiere       : { required:true },
 					f_niveau        : { required:true },
 					f_groupe        : { required:function(){return !$('#f_type_generique').is(':checked');} },
 					'f_eleve[]'     : { required:function(){return $("#f_groupe").val()!=0;} },
-					f_periode       : { required:function(){return periode_requise;} },
-					f_date_debut    : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
-					f_date_fin      : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
 					f_restriction   : { required:false },
 					f_coef          : { required:false },
 					f_socle         : { required:false },
@@ -411,14 +256,10 @@ $(document).ready
 					f_colonne_vide  : { required:"contenu manquant" },
 					f_tri_objet     : { required:"choix manquant" },
 					f_tri_mode      : { required:"choix manquant" },
-					f_retroactif    : { required:"choix manquant" },
 					f_matiere       : { required:"matière manquante" },
 					f_niveau        : { required:"niveau manquant" },
 					f_groupe        : { required:"classe/groupe manquant" },
 					'f_eleve[]'     : { required:"élève(s) manquant(s)" },
-					f_periode       : { required:"période manquante" },
-					f_date_debut    : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_date_fin      : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_restriction   : { },
 					f_coef          : { },
 					f_socle         : { },
@@ -435,8 +276,6 @@ $(document).ready
 				errorPlacement : function(error,element)
 				{
 					if(element.attr("id")=='f_matiere') { element.next().after(error); }
-					else if(element.attr("type")=="checkbox") {element.parent().next().after(error);}
-					else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
 					else {element.after(error);}
 				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP

@@ -39,14 +39,10 @@ $groupe_id         = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['
 $groupe_nom        = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])    : '';
 $niveau_id         = (isset($_POST['f_niveau']))        ? Clean::entier($_POST['f_niveau'])       : 0;
 $niveau_nom        = (isset($_POST['f_niveau_nom']))    ? Clean::texte($_POST['f_niveau_nom'])    : '';
-$periode_id        = (isset($_POST['f_periode']))       ? Clean::entier($_POST['f_periode'])      : 0;
-$date_debut        = (isset($_POST['f_date_debut']))    ? Clean::texte($_POST['f_date_debut'])    : '';
-$date_fin          = (isset($_POST['f_date_fin']))      ? Clean::texte($_POST['f_date_fin'])      : '';
-$retroactif        = (isset($_POST['f_retroactif']))    ? Clean::texte($_POST['f_retroactif'])    : '';
-$only_socle        = (isset($_POST['f_restriction']))   ? 1                                       : 0;
-$aff_coef          = (isset($_POST['f_coef']))          ? 1                                       : 0;
-$aff_socle         = (isset($_POST['f_socle']))         ? 1                                       : 0;
-$aff_lien          = (isset($_POST['f_lien']))          ? 1                                       : 0;
+$only_socle        = (isset($_POST['f_restriction']))   ? 1                                      : 0;
+$aff_coef          = (isset($_POST['f_coef']))          ? 1                                      : 0;
+$aff_socle         = (isset($_POST['f_socle']))         ? 1                                      : 0;
+$aff_lien          = (isset($_POST['f_lien']))          ? 1                                      : 0;
 $orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f_orientation'])   : '';
 $couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])       : '';
 $legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])       : '';
@@ -83,21 +79,17 @@ if($type_generique)
 
 $liste_eleve = implode(',',$tab_eleve_id);
 
+if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || !$orientation || !$couleur || !$legende || !$marge_min || !$cases_nb || !$cases_largeur || !count($tab_type) )
+{
+	exit('Erreur avec les données transmises !');
+}
+
 // Ces 3 choix sont passés de modifiables à imposés pour élèves & parents (25 février 2012) ; il faut les rétablir à leur bonnes valeurs si besoin (1ère soumission du formulaire depuis ce changement).
-// Remarque : pour le profil élève on a besoin des notes pour le panier afin de solliciter une évaluation.
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	$remplissage   = 'plein';
 	$colonne_bilan = 'oui';
 	$colonne_vide  = 0;
-}
-
-// Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
-$besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
-
-if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || !$cases_nb || !$cases_largeur || !count($tab_type) )
-{
-	exit('Erreur avec les données transmises !');
 }
 
 // Enregistrer les préférences utilisateurs
@@ -132,43 +124,6 @@ $tab_item_synthese  = array();	// [item_id] => array(item_ref,item_nom);
 $tab_liste_item     = array();	// [i] => item_id
 $tab_eleve          = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 $tab_eval           = array();	// [eleve_id][item_id] => array(note,date,info)
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Période concernée
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($besoin_notes)
-{
-	if($periode_id==0)
-	{
-		$date_mysql_debut = convert_date_french_to_mysql($date_debut);
-		$date_mysql_fin   = convert_date_french_to_mysql($date_fin);
-	}
-	else
-	{
-		$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
-		if(empty($DB_ROW))
-		{
-			exit('La classe et la période ne sont pas reliées !');
-		}
-		$date_mysql_debut = $DB_ROW['jointure_date_debut'];
-		$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-		$date_debut = convert_date_mysql_to_french($date_mysql_debut);
-		$date_fin   = convert_date_mysql_to_french($date_mysql_fin);
-	}
-	if($date_mysql_debut>$date_mysql_fin)
-	{
-		exit('La date de début est postérieure à la date de fin !');
-	}
-
-	$tab_precision = array
-	(
-		'auto' => 'notes antérieures comptées selon les référentiels',
-		'oui'  => 'notes antérieures prises en compte',
-		'non'  => 'notes antérieures ignorées'
-	);
-	$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
-}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items pour la matière et le niveau sélectionné
@@ -244,20 +199,12 @@ else
 $eleve_nb = count($tab_eleve);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération de la liste des résultats
+// Récupération de la liste des résultats (si pas grille générique et si demandé ou si besoin pour colonne bilan ou si besoin pour synthèse ou si besoin car profil élève donc panier afin de solliciter une évaluation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($besoin_notes)
+if( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese || ($_SESSION['USER_PROFIL']=='eleve') ) )
 {
-	// Récupération de calcul_methode ; calcul_limite ; calcul_retroactif
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id , $niveau_id );
-	$calcul_methode    = $DB_TAB[0]['referentiel_calcul_methode'];
-	$calcul_limite     = $DB_TAB[0]['referentiel_calcul_limite'];
-	$calcul_retroactif = $DB_TAB[0]['referentiel_calcul_retroactif'];
-	// Détermination de la date de départ
-	$retroactif = ($retroactif=='auto') ? $calcul_retroactif : $retroactif ; // Ne peut plus valoir que "oui" ou "non" à présent
-	$date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ;
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL'] ) ;
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , FALSE /*date_debut*/ , FALSE /*date_fin*/ , $_SESSION['USER_PROFIL'] ) ;
 	if(!empty($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -266,6 +213,10 @@ if($besoin_notes)
 			$tab_eval[$user_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 		}
 	}
+	// Récupération de calcul_methode et calcul_limite
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id , $niveau_id );
+	$calcul_methode = $DB_TAB[0]['referentiel_calcul_methode'];
+	$calcul_limite  = $DB_TAB[0]['referentiel_calcul_limite'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,38 +365,19 @@ if( $type_synthese )
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On tronque les notes les plus anciennes s'il y en a trop par rapport au nombre de colonnes affichées.
-// On tronque les notes antérieures qui n'auraient été récupérées que pour le calcul du score. => Non, on les affiche aussi
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( $type_individuel && ($remplissage=='plein') )
+if( $type_individuel )
 {
 	foreach($tab_eleve_id as $eleve_id)
 	{
 		foreach($tab_liste_item as $item_id)
 		{
-			$eval_nb = (isset($tab_eval[$eleve_id][$item_id])) ? count($tab_eval[$eleve_id][$item_id]) : 0 ;
-			// test si trop de notes par rapport au nb de cases
+			$eval_nb = (isset($tab_eval[$eleve_id][$item_id])) ? count($tab_eval[$eleve_id][$item_id]) : 0;
 			if($eval_nb>$cases_nb)
 			{
 				$tab_eval[$eleve_id][$item_id] = array_slice($tab_eval[$eleve_id][$item_id],$eval_nb-$cases_nb);
 			}
-/*
-			if( ($eval_nb) && ($retroactif=='oui') )
-			{
-				while(isset($tab_eval[$eleve_id][$item_id][0]))
-				{
-					// test si note à ne pas afficher
-					if( $tab_eval[$eleve_id][$item_id][0]['date'] < $date_mysql_debut )
-					{
-						array_shift($tab_eval[$eleve_id][$item_id]);
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-*/
 		}
 	}
 }
@@ -468,10 +400,9 @@ if( $type_generique || $type_individuel )
 	// Les variables $releve_HTML_individuel et $releve_PDF vont contenir les sorties
 	$colspan = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
 	$msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
-	$msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
 	$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
-	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>';
+	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle).'</h2>';
 	$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
@@ -528,26 +459,21 @@ if( $type_generique || $type_individuel )
 								// Pour chaque case...
 								for($i=0;$i<$cases_nb;$i++)
 								{
+									if(isset($tab_eval[$eleve_id][$item_id][$i]))
+									{
+										extract($tab_eval[$eleve_id][$item_id][$i]);	// $note $date $info
+									}
+									else
+									{
+										$note = '-'; $date = ''; $info = '';
+									}
 									if($remplissage=='plein')
 									{
-										if(isset($tab_eval[$eleve_id][$item_id][$i]))
-										{
-											extract($tab_eval[$eleve_id][$item_id][$i]);	// $note $date $info
-										}
-										else
-										{
-											$note = '-'; $date = ''; $info = '';
-										}
 										$pdf_bg = ''; $td_class = '';
 										if( $date && ($date<$jour_debut_annee_scolaire) )
 										{
 											$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
 											$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
-										}
-										elseif( $date && ($date<$date_mysql_debut) )
-										{
-											$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
-											$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
 										}
 										$releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
 										$releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$colspan),$pdf_bg);
@@ -591,8 +517,7 @@ if($type_synthese)
 {
 	$tab_titre = 'd\'items d\'un référentiel';
 	$msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
-	$msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
-	$matiere_et_niveau = $matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode ;
+	$matiere_et_niveau = $matiere_nom.' - Niveau '.$niveau_nom.$msg_socle ;
 	$releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre.'</h1>';
 	$releve_HTML_synthese .= '<h2>'.html($matiere_et_niveau).'</h2>';

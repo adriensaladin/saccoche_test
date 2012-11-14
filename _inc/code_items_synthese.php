@@ -40,7 +40,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
 // D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
 // En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
-// D'où une combinaison de toutes ces pistes, plus une détection par javascript du statusCode.
+// D'où une combinaison avec une détection par javascript du statusCode.
 
 augmenter_memory_limit();
 register_shutdown_function('rapporter_erreur_fatale_memoire');
@@ -99,11 +99,11 @@ if($date_mysql_debut>$date_mysql_fin)
 
 $tab_precision = array
 (
-	'auto' => 'notes antérieures comptées selon les référentiels',
-	'oui'  => 'notes antérieures prises en compte',
-	'non'  => 'notes antérieures ignorées'
+	'auto' => ' (notes antérieures comptées selon les référentiels)',
+	'oui'  => ' (notes antérieures prises en compte)',
+	'non'  => ''
 );
-$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
+$texte_periode = 'Du '.$date_debut.' au '.$date_fin.$tab_precision[$retroactif].'.';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
@@ -160,7 +160,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
 	{
 		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
 		{
-			if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
+			if( ($retroactif!='auto') || $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'] || ($DB_ROW['date']>=$date_mysql_debut) )
 			{
 				$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 			}
@@ -372,10 +372,10 @@ foreach($tab_eleve as $tab)
 						$tab_graph_data['series_data_A'][$matiere_id]  = $tab_infos_matiere['total']['A'];
 						if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
 						{
-							$tab_graph_data['series_data_MoyEleve'][$matiere_id] = ($tab_saisie[$eleve_id][$matiere_id][0]['note']!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $tab_saisie[$eleve_id][$matiere_id][0]['note'] : round($tab_saisie[$eleve_id][$matiere_id][0]['note']*5) ) : 'null' ;
+							$tab_graph_data['series_data_MoyEleve'][$matiere_id] = ($tab_saisie[$eleve_id][$matiere_id][0]['note']!==NULL) ? $tab_saisie[$eleve_id][$matiere_id][0]['note'] : 'null' ;
 							if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
 							{
-								$tab_graph_data['series_data_MoyClasse'][$matiere_id] = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] : round($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]*5) ) : 'null' ;
+								$tab_graph_data['series_data_MoyClasse'][$matiere_id] = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] : 'null' ;
 							}
 						}
 					}
@@ -446,13 +446,13 @@ foreach($tab_eleve as $tab)
 							extract($tab_saisie[$eleve_id][$matiere_id][0]);	// $prof_info $appreciation $note
 							$bouton_nettoyer  = ($appreciation!='') ? ' <button type="button" class="nettoyer">Effacer et recalculer.</button>' : '' ;
 							$bouton_supprimer = ($note!==NULL)      ? ' <button type="button" class="supprimer">Supprimer sans recalculer</button>' : '' ;
-							$note = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ) : '-' ;
+							$note = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ) : '-' ;
 							$appreciation = ($appreciation!='') ? $appreciation : 'Moyenne calculée / reportée / actualisée automatiquement.' ;
 							$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button>'.$bouton_nettoyer.$bouton_supprimer : '' ;
 							$moyenne_classe = '';
 							if( ($make_action=='consulter') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) )
 							{
-								$note_moyenne = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id],1,'.','') : round($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]*5).'&nbsp;%' ) : '-' ;
+								$note_moyenne = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id],1,'.','') : round($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]*5).'&nbsp;%' ) : '-' ;
 								$moyenne_classe = ' Moyenne de classe : '.$note_moyenne;
 							}
 							$releve_HTML .= '<tr id="note_'.$matiere_id.'_0"><td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span>'.$moyenne_classe.'</td></tr>'."\r\n";
@@ -509,11 +509,11 @@ foreach($tab_eleve as $tab)
 					$releve_HTML .= '<tr><th colspan="2">Synthèse générale</th></tr>'."\r\n";
 					if( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']) )
 					{
-						$note = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id] : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]*5).'&nbsp;%' ) : '-' ;
+						$note = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id] : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]*5).'&nbsp;%' ) : '-' ;
 						$moyenne_classe = '';
 						if( ($make_action=='consulter') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) )
 						{
-							$note_moyenne = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0],1,'.','') : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]*5).'&nbsp;%' ) : '-' ;
+							$note_moyenne = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0],1,'.','') : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]*5).'&nbsp;%' ) : '-' ;
 							$moyenne_classe = ' Moyenne de classe : '.$note_moyenne;
 						}
 						$releve_HTML .= '<tr><td class="now moyenne">'.$note.'</td><td class="now" style="width:850px"><span class="notnow">Moyenne générale (calculée / actualisée automatiquement).</span>'.$moyenne_classe.'</td></tr>'."\r\n";
@@ -611,7 +611,7 @@ if( $make_graph && (count($tab_graph_data)) )
 	}
 	else
 	{
-		$ymax = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? 20 : 100 ;
+		$ymax = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? 20 : 100 ;
 		$js_graph .= 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };';
 	}
 	// Séries de valeurs

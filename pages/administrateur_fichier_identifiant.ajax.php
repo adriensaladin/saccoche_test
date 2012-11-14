@@ -178,7 +178,7 @@ if($action=='import_loginmdp')
 	$tab_users_fichier['nom']    = array();
 	$tab_users_fichier['prenom'] = array();
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-	$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -379,7 +379,7 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
 	$tab_users_fichier['prenom']     = array();
 	$tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-	$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Pas de ligne d'en-tête à supprimer
@@ -525,7 +525,7 @@ if($action=='import_ent')
 	$tab_users_fichier['prenom']    = array();
 	$tab_users_fichier['id_sconet'] = array();
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-	$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Supprimer la ou les première(s) ligne(s) ou aucune

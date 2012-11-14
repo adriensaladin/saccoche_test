@@ -68,7 +68,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
 	{
 		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
 		{
-			if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
+			if( ($retroactif!='auto') || $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'] || ($DB_ROW['date']>=$date_mysql_debut) )
 			{
 				$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
 			}

@@ -472,10 +472,11 @@ if( $type_generique || $type_individuel )
 	$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>';
-	$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
+	$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
+	$legende_nb_lignes = 1 + ($retroactif!='non') + ($colonne_bilan=='oui') ;
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
-	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_bilan,$colonne_vide);
+	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$legende_nb_lignes,$colonne_bilan,$colonne_vide);
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
 
 	// Pour chaque élève...
@@ -574,7 +575,7 @@ if( $type_generique || $type_individuel )
 		$releve_HTML_individuel .= '</table>';
 		if($legende=='oui')
 		{
-			$releve_PDF->grille_referentiel_legende();
+			$releve_PDF->grille_referentiel_legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*etat_acquisition*/ );
 			$releve_HTML_individuel .= $legende_html;
 		}
 	}

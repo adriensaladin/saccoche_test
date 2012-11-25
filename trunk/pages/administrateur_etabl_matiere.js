@@ -162,7 +162,7 @@ $(document).ready
 
 		var retirer_partage = function()
 		{
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$('#ajax_msg').parent().children('q').hide();
 			$.ajax
 			(
@@ -289,7 +289,7 @@ $(document).ready
 
 		function maj_resultat_recherche(data_action,data_parametre)
 		{
-			$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -371,7 +371,7 @@ $(document).ready
 			{
 				// afficher_masquer_images_action('hide');
 				var matiere_id = $(this).attr('id').substr(4); // add_
-				$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -443,7 +443,7 @@ $(document).ready
 					return false;
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg_move').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_move').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -545,7 +545,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

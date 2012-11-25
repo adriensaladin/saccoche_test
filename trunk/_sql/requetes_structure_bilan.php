@@ -184,7 +184,7 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
 	$where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
 	$where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT item_id , item_coef , matiere_id , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL = 'SELECT item_id , item_coef , matiere_id , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';

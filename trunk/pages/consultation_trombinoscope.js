@@ -57,7 +57,7 @@ $(document).ready
 				groupe_id   = groupe_val;
 			}
 			groupe_nom = $("#f_groupe option:selected").text();
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{

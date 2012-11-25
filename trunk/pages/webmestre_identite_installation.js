@@ -36,7 +36,7 @@ $(document).ready
 
 		function chargement_select_logo()
 		{
-			$('#ajax_logo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_logo').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -72,7 +72,7 @@ $(document).ready
 
 		function chargement_ul_logo()
 		{
-			$('#ajax_listing').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_listing').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -112,7 +112,7 @@ $(document).ready
 			{
 				memo_li = $(this).parent();
 				logo = $(this).prev().attr('alt');
-				$('#ajax_listing').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_listing').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -184,7 +184,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -326,7 +326,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

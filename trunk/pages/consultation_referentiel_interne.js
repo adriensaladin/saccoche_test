@@ -39,7 +39,7 @@ $(document).ready
 			{
 				ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Connexion au serveur&hellip;</label>';
+				new_label = '<label for="'+ids+'" class="loader">Envoi en cours&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(

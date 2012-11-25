@@ -34,44 +34,42 @@ $TITRE = "Liste des évaluations";
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
+	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'true';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
+	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'true';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show';
+	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';
 	$select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non');
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
+	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'false';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
+	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'false';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
-// Dates par défaut de début et de fin
-$date_debut = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
-$date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+4,date("d"),date("Y"))); // 4 mois après
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 ?>
 
 <script type="text/javascript">
 	var tab_dates = new Array();
+	var aff_nom_eleve = <?php echo $js_aff_nom_eleve ?>;
 </script>
 
 <form action="#" method="post" id="form"><fieldset>
@@ -81,7 +79,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 	<div class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_eleve">Élève :</label><select id="f_eleve" name="f_eleve"><?php echo $select_eleves ?></select>
 	</div>
-	<label class="tab">Période :</label>du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q> au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+	<label class="tab">Période :</label>du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q> au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo jour_fin_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
@@ -121,7 +119,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 			<tr><td class="nu" colspan="4"></td></tr>
 		</tbody>
 	</table>
-	<?php echo Html::legende( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
+	<?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">
@@ -139,5 +137,5 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 		</tbody>
 	</table>
 	<p class="ti"><?php echo $bouton_valider_autoeval ?><input type="hidden" name="f_devoir" id="f_devoir" value="" /> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="msg_saisir"></label></p>
-	<?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
+	<?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </form>

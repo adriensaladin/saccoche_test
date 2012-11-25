@@ -83,7 +83,7 @@ $(document).ready
 				niveau_id   = tab_id[2];
 				matiere_ref = $(this).parent().parent().attr('class').substring(3);
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+id+'" class="loader">Connexion au serveur&hellip;</label>';
+				new_label = '<label for="'+id+'" class="loader">Envoi en cours&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -199,7 +199,7 @@ $(document).ready
 					return false;
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#n3_'+item_id).children('label').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#n3_'+item_id).children('label').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -250,7 +250,7 @@ $(document).ready
 				// reporter le nom de l'item
 				$('#zone_ressources span.f_nom').html(item_nom);
 				// appel ajax
-				$.fancybox( '<label class="loader">'+'Connexion au serveur&hellip;'+'</label>' , {'centerOnScroll':true} );
+				$.fancybox( '<label class="loader">'+'Envoi en cours&hellip;'+'</label>' , {'centerOnScroll':true} );
 				$.ajax
 				(
 					{
@@ -597,7 +597,7 @@ $(document).ready
 					return false;
 				}
 				// appel ajax
-				$('#ajax_ressources_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_ressources_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -651,7 +651,7 @@ $(document).ready
 					return false;
 				}
 				// appel ajax
-				$('#zone_resultat_recherche_liens').html('<label class="loader">Connexion au serveur&hellip;</label>');
+				$('#zone_resultat_recherche_liens').html('<label class="loader">Envoi en cours&hellip;</label>');
 				$.ajax
 				(
 					{
@@ -755,7 +755,7 @@ $(document).ready
 			else
 			{
 				$('#zone_ressources_upload button').prop('disabled',true);
-				$('#ajax_ressources_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_ressources_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -807,7 +807,7 @@ $(document).ready
 			function()
 			{
 				// appel ajax
-				$('#zone_resultat_recherche_ressources').html('<label class="loader">Connexion au serveur&hellip;</label>');
+				$('#zone_resultat_recherche_ressources').html('<label class="loader">Envoi en cours&hellip;</label>');
 				$.ajax
 				(
 					{

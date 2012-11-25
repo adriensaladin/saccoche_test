@@ -73,7 +73,7 @@ $(document).ready
 			function()
 			{
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$.ajax
 				(

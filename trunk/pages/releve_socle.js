@@ -92,7 +92,7 @@ $(document).ready
 			palier_id = $("#f_palier").val();
 			if(palier_id)
 			{
-				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -172,7 +172,7 @@ $(document).ready
 				if(groupe_val)
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					maj_eleve(groupe_val,type);
 				}
 				else
@@ -271,7 +271,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

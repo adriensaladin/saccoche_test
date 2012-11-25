@@ -155,7 +155,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

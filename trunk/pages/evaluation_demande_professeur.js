@@ -211,7 +211,7 @@ $(document).ready
 			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#form1').hide();
 			}
 			return readytogo;
@@ -280,7 +280,7 @@ $(document).ready
 		function maj_evaluation()
 		{
 			$("#f_devoir").html('<option value=""></option>');
-			$('#ajax_maj1').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_maj1').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			eval_type = $('#f_qui option:selected').val();
 			groupe_id = $("#f_groupe_id").val();
 			$.ajax
@@ -494,7 +494,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

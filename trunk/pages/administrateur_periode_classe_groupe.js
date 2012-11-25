@@ -79,7 +79,7 @@ $(document).ready
 					}
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -115,7 +115,7 @@ $(document).ready
 
 		// Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Connexion au serveur&hellip;");
+		$('#ajax_msg').addClass("loader").html("Envoi en cours&hellip;");
 		$.ajax
 		(
 			{

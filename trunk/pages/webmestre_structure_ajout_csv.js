@@ -73,7 +73,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -234,7 +234,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{

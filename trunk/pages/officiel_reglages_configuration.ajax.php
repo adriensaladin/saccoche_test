@@ -30,10 +30,12 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $objet                          = (isset($_POST['objet']))                            ? $_POST['objet']                                           : '';
 
-$releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::texte($_POST['f_releve_retroactif'])               : '';
-$releve_only_socle              = (isset($_POST['f_releve_only_socle']))              ? 1                                                         : 0;
 $releve_appreciation_rubrique   = (isset($_POST['f_releve_appreciation_rubrique']))   ? Clean::entier($_POST['f_releve_appreciation_rubrique'])   : 0;
 $releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale']))   ? Clean::entier($_POST['f_releve_appreciation_generale'])   : 0;
+$releve_ligne_supplementaire    = (isset($_POST['f_releve_check_supplementaire']))    ? Clean::texte($_POST['f_releve_ligne_supplementaire'])     : '';
+$releve_assiduite               = (isset($_POST['f_releve_assiduite']))               ? 1                                                         : 0;
+$releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::texte($_POST['f_releve_retroactif'])               : '';
+$releve_only_socle              = (isset($_POST['f_releve_only_socle']))              ? 1                                                         : 0;
 $releve_etat_acquisition        = (isset($_POST['f_releve_etat_acquisition']))        ? 1                                                         : 0;
 $releve_moyenne_scores          = (isset($_POST['f_releve_moyenne_scores']))          ? 1                                                         : 0;
 $releve_pourcentage_acquis      = (isset($_POST['f_releve_pourcentage_acquis']))      ? 1                                                         : 0;
@@ -46,10 +48,12 @@ $releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))         
 $releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? Clean::texte($_POST['f_releve_couleur'])                  : '';
 $releve_legende                 = (isset($_POST['f_releve_legende']))                 ? Clean::texte($_POST['f_releve_legende'])                  : '';
 
-$bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::texte($_POST['f_bulletin_retroactif'])             : '';
-$bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? Clean::entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
 $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
+$bulletin_ligne_supplementaire  = (isset($_POST['f_bulletin_check_supplementaire']))  ? Clean::texte($_POST['f_bulletin_ligne_supplementaire'])   : '';
+$bulletin_assiduite             = (isset($_POST['f_bulletin_assiduite']))             ? 1                                                         : 0;
+$bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::texte($_POST['f_bulletin_retroactif'])             : '';
+$bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_barre_acquisitions    = (isset($_POST['f_bulletin_barre_acquisitions']))    ? 1                                                         : 0;
 $bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                         : 0;
 $bulletin_conversion_sur_20     = (isset($_POST['f_bulletin_conversion_sur_20']))     ? Clean::entier($_POST['f_bulletin_conversion_sur_20'])     : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
@@ -60,6 +64,8 @@ $bulletin_legende               = (isset($_POST['f_bulletin_legende']))         
 
 $socle_appreciation_rubrique    = (isset($_POST['f_socle_appreciation_rubrique']))    ? Clean::entier($_POST['f_socle_appreciation_rubrique'])    : 0;
 $socle_appreciation_generale    = (isset($_POST['f_socle_appreciation_generale']))    ? Clean::entier($_POST['f_socle_appreciation_generale'])    : 0;
+$socle_ligne_supplementaire     = (isset($_POST['f_socle_check_supplementaire']))     ? Clean::texte($_POST['f_socle_ligne_supplementaire'])      : '';
+$socle_assiduite                = (isset($_POST['f_socle_assiduite']))                ? 1                                                         : 0;
 $socle_only_presence            = (isset($_POST['f_socle_only_presence']))            ? 1                                                         : 0;
 $socle_pourcentage_acquis       = (isset($_POST['f_socle_pourcentage_acquis']))       ? 1                                                         : 0;
 $socle_etat_validation          = (isset($_POST['f_socle_etat_validation']))          ? 1                                                         : 0;
@@ -71,9 +77,9 @@ $socle_legende                  = (isset($_POST['f_socle_legende']))            
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_variables = array(
-	'releve'   => array( 'retroactif', 'only_socle', 'appreciation_rubrique', 'appreciation_generale', 'etat_acquisition', 'moyenne_scores', 'pourcentage_acquis', 'conversion_sur_20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
-	'bulletin' => array( 'retroactif', 'only_socle', 'appreciation_rubrique', 'appreciation_generale', 'barre_acquisitions', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
-	'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
+	'releve'   => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'etat_acquisition', 'moyenne_scores', 'pourcentage_acquis', 'conversion_sur_20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
+	'bulletin' => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'barre_acquisitions', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
+	'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
 );
 
 if( isset($tab_variables[$objet]) )

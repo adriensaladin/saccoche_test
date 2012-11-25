@@ -76,7 +76,7 @@ $(document).ready
 				// type = $("#f_groupe option:selected").parent().attr('label');
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				maj_eleve(groupe_id,groupe_type);
 			}
 			else
@@ -137,7 +137,7 @@ $(document).ready
 				}
 				// on envoie
 				$('button.enabled').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#ajax_info').html("");
 				$.ajax
 				(
@@ -239,7 +239,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}

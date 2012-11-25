@@ -95,7 +95,7 @@ if($affichage_direct)
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
-	echo $releve_html;
+	echo $releve_HTML;
 }
 else
 {

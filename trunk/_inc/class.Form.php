@@ -293,7 +293,7 @@ class Form
         break;
       case 'grille_referentiel' :
         global $matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('matiere_id','niveau_id','type_generique','type_individuel','type_synthese','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','legende','marge_min');
+        $tab_choix_new = compact('matiere_id','niveau_id','type_generique','type_individuel','type_synthese','retroactif','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','legende','marge_min');
         break;
       case 'items_matiere' :
         global $matiere_id,$type_individuel,$type_synthese,$type_bulletin,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;

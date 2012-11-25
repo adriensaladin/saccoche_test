@@ -224,7 +224,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
 		return false;
 	}
 	var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-	$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+	$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 	$.ajax
 	(
 		{
@@ -1016,7 +1016,7 @@ $(document).ready
 				posY = e.pageY-5;
 				$("#calque").css('left',posX + 'px');
 				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Connexion au serveur&hellip;</label>').show();
+				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Envoi en cours&hellip;</label>').show();
 				// Charger en Ajax le contenu du calque
 				$.ajax
 				(
@@ -1178,7 +1178,7 @@ $(document).ready
 			function()
 			{
 				$('#form_demande_evaluation button').prop('disabled',true);
-				$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

@@ -36,7 +36,7 @@ $(document).ready
 
 		var charger_formulaire_structures = function()
 		{
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -202,7 +202,7 @@ $(document).ready
 					return false;
 				}
 				$('#rechercher').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -248,7 +248,7 @@ $(document).ready
 				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
 				longueur_sup   = $(this).prev().text().length;
 				description    = description.substring(0,description.length-longueur_sup);
-				new_label = '<label id="temp" class="loader">Connexion au serveur&hellip;</label>';
+				new_label = '<label id="temp" class="loader">Envoi en cours&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(

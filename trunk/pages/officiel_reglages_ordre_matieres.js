@@ -76,7 +76,7 @@ $(document).ready
 						}
 					);
 					$('#form_ordonner button').prop('disabled',true);
-					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					$.ajax
 					(
 						{

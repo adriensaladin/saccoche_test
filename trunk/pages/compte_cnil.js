@@ -57,7 +57,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

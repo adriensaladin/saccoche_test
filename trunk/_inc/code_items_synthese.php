@@ -269,7 +269,10 @@ foreach($tab_eleve as $key => $tab)
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
 $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 / 2 ;
-$nb_lignes_appreciation_generale_avec_intitule = 1+8 ;
+$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] ) ? 1+6     : 0 ;
+$nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                  ? 0.5+1.5 : 0 ;
+$nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )  ? 0.5+1.5 : 0 ;
+$nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + 1 : 0 ;
 $nb_lignes_matiere_marge    = 1 ;
 $nb_lignes_matiere_intitule = 2 ;
 $nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_matiere_intitule ;
@@ -325,13 +328,13 @@ $tab_graph_data = array();
 // Préparatifs
 if( ($make_html) || ($make_graph) )
 {
-	$bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="imprimer_appreciations" type="button" class="imprimer">Imprimer ses appréciations</button>' : '' ;
+	$bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button>' : '' ;
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
+	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
+	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	$width_barre = (!$make_officiel) ? 180 : 50 ;
 	$width_texte = 900 - $width_barre;
 }
@@ -353,8 +356,7 @@ foreach($tab_eleve as $tab)
 			if($make_html) { $releve_HTML .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom).'</h2>' : '' ; }
 			if($make_pdf)
 			{
-				$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
-				$eleve_nb_lignes += ( $make_officiel && $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE'] ) ? $nb_lignes_appreciation_generale_avec_intitule : 0 ;
+				$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
 				$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
 				$releve_PDF->bilan_synthese_entete( $format , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 			}
@@ -569,7 +571,25 @@ foreach($tab_eleve as $tab)
 						$moyenne_generale_classe = $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0];
 					}
 				}
-				$releve_PDF->bilan_synthese_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $moyenne_generale_eleve , $moyenne_generale_classe );
+				$releve_PDF->bilan_synthese_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_supplementaires+$nb_lignes_legendes , $moyenne_generale_eleve , $moyenne_generale_classe );
+			}
+			// Bulletin - Absences et retard
+			if( ($make_officiel) && ($affichage_assiduite) )
+			{
+				$texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
+				if( ($make_html) || ($make_graph) )
+				{
+					$releve_HTML .= '<p class="i">'.$texte_assiduite.'</p>'."\r\n";
+				}
+				elseif($make_action=='imprimer')
+				{
+					$releve_PDF->afficher_assiduite($texte_assiduite);
+				}
+			}
+			// Bulletin - Ligne additionnelle
+			if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )
+			{
+				$releve_PDF->afficher_ligne_additionnelle($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']);
 			}
 			// Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
 			if($make_action=='imprimer')

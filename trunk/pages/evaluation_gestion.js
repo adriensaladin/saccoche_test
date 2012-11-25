@@ -346,7 +346,7 @@ $(document).ready
 			$('#msg_import').removeAttr("class").html('&nbsp;');
 			$('#zone_saisir').css("display","block");
 			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
-			$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#msg_saisir').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -415,7 +415,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
 			$('#titre_voir').html('Voir les acquisitions d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
-			$('#msg_voir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#msg_voir').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -471,7 +471,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");
 			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date_fr+' | '+description);
-			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -516,6 +516,7 @@ $(document).ready
 		var choisir_compet = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
+			$('#f_selection_items option:first').prop('selected',true);
 			cocher_matieres_items( $('#f_compet_liste').val() );
 			// Afficher la zone
 			$.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
@@ -553,7 +554,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_ordonner').css("display","block");
 			$('#titre_ordonner').html('Réordonner les items d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
-			$('#msg_ordonner').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#msg_ordonner').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -966,7 +967,7 @@ $(document).ready
 			function()
 			{
 				$('button').prop('disabled',true);
-				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#zone_imprimer_retour').html("&nbsp;");
 				$.ajax
 				(
@@ -1028,7 +1029,7 @@ $(document).ready
 					return false;
 				}
 				$('button').prop('disabled',true);
-				$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -1540,7 +1541,7 @@ $(document).ready
 						}
 					);
 					$('button').prop('disabled',true);
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					$.ajax
 					(
 						{
@@ -1590,7 +1591,7 @@ $(document).ready
 				else
 				{
 					$('button').prop('disabled',true);
-					$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#msg_saisir').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					// Grouper les saisies dans une variable unique afin d'éviter tout problème dû à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
 					var f_notes = new Array();
 					$("#table_saisir tbody input").each
@@ -1739,7 +1740,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}
@@ -1846,7 +1847,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#msg_import').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#msg_import').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -1960,7 +1961,7 @@ $(document).ready
 			else
 			{
 				$('#zone_upload button').prop('disabled',true);
-				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -1998,7 +1999,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_upload button').prop('disabled',true);
-				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				var objet = $(this).attr('id').substring(17);
 				var ref   = uploader_sujet['_settings']['data']['f_ref'];
 				var url   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
@@ -2064,7 +2065,7 @@ $(document).ready
 				else
 				{
 					$('#zone_upload button').prop('disabled',true);
-					$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					$.ajax
 					(
 						{
@@ -2268,7 +2269,7 @@ $(document).ready
 			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

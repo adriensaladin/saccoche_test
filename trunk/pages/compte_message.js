@@ -153,7 +153,7 @@ $(document).ready
 			}
 			else
 			{
-				new_label = '<label id="temp" class="loader">Connexion au serveur&hellip;</label>';
+				new_label = '<label id="temp" class="loader">Envoi en cours&hellip;</label>';
 				$(this).parent().parent().children('td:last').append(new_label);
 				$.ajax
 				(
@@ -267,7 +267,7 @@ $(document).ready
 				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
 				groupe_id   = groupe_val;
 			}
-			$('#ajax_msg_destinataires').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg_destinataires').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$('#bilan tbody').html('');
 			$.ajax
 			(
@@ -485,7 +485,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

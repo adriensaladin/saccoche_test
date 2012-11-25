@@ -220,10 +220,10 @@ if( ($ACTION=='imprimer') && ($etape==4) )
 	$releve_pdf = new PDFMerger;
 	$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, pour impression, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, pour archivage, les bilans officiels dans des documents individuels.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>';
 	echo'</ul>';
-	echo'<p class="danger">Archivez soigneusement ces bilans : les originaux ne sont pas conservés sur le serveur !</p>';
+	echo'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>';
 	unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
 	exit();
 }
@@ -242,12 +242,14 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 
 $tab_saisie    = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
 $tab_signature = array(0=>NULL);	// [prof_id] => array(contenu,format,largeur,hauteur);
+$tab_assiduite = array();	// [eleve_id] => array(absence,non_justifie,retard);
 $tab_prof_id = array();
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ );
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 	$tab_signature[$DB_ROW['prof_id']] = NULL ; // Initialisé
+	$tab_assiduite[$DB_ROW['eleve_id']] = array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ); // Initialisé
 	$tab_prof_id[$DB_ROW['prof_id']] = $DB_ROW['prof_id']; // Pour savoir ensuite la liste des profs à chercher
 }
 
@@ -271,6 +273,19 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['image_contenu']) , $DB_ROW['image_format'] , $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] );
+	}
+}
+
+// Récupérer les absences / retards
+
+$affichage_assiduite = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_ASSIDUITE']) ? TRUE : FALSE ;
+
+if($affichage_assiduite)
+{
+	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id );
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_assiduite[$DB_ROW['user_id']] = array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] );
 	}
 }
 
@@ -446,7 +461,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_eleve_id   = $tab_eleve_id;
 	$tab_matiere_id = array();
 	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
-	$nom_bilan_html = 'releve_html';
+	$nom_bilan_html = 'releve_HTML';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

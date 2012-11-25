@@ -529,8 +529,8 @@ public static function DB_lister_users($profil,$statut,$liste_champs,$with_class
 	$DB_VAR = array();
 	$left_join = '';
 	$where     = '';
-	$select_add = ($tri_statut) ? ', (user_sortie_date>NOW()) AS statut ' : ' ' ;
-	$order_by   = ($tri_statut) ? 'statut DESC, ' : '' ;
+	$liste_champs .= ($tri_statut) ? ', (user_sortie_date>NOW()) AS statut ' : ' ' ;
+	$order_by      = ($tri_statut) ? 'statut DESC, ' : '' ;
 	if(is_string($profil))
 	{
 		$where .= 'user_profil=:profil ';
@@ -549,13 +549,14 @@ public static function DB_lister_users($profil,$statut,$liste_champs,$with_class
 	}
 	if($with_classe)
 	{
+		$liste_champs .= ', groupe_ref, groupe_nom ';
 		$left_join .= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
 		$left_join .= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 		$order_by  .= 'niveau_ordre ASC, groupe_ref ASC, ';
 	}
 	$where .= ($statut==1) ? 'AND user_sortie_date>NOW() ' : ( ($statut==0) ? 'AND user_sortie_date<NOW() ' : '' ) ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	// On peut maintenant assembler les morceaux de la requête !
-	$DB_SQL = 'SELECT '.$liste_champs.$select_add;
+	$DB_SQL = 'SELECT '.$liste_champs;
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= $left_join;
 	$DB_SQL.= 'WHERE '.$where;

@@ -185,15 +185,12 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 // Utile pour les profils administrateurs / directeurs, et requis concernant les professeurs pour une recherche s'il est affecté à des groupes.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/);
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_classes_etabl_for_bilan_officiel();
 
 $tab_classe_etabl = array(); // tableau temporaire avec les noms des classes de l'établissement
-if(is_array($DB_TAB))
+foreach($DB_TAB as $DB_ROW)
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_classe_etabl[$DB_ROW['valeur']] = $DB_ROW['texte'];
-	}
+	$tab_classe_etabl[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,10 +471,11 @@ if(count($tab_classe))
 				$tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
 			}
 			echo'
-				<form action="#" method="post" id="cadre_statut">
-					<h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>
-					<div>'.implode('<br />',$tab_radio).'</div>
-					<p><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
+				<form action="#" method="post" id="form_gestion">
+					<hr />
+					<p><span class="tab"></span><span class="u">Pour les cases cochées du tableau (classes uniquement) :</span><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /></p>
+					<div><label class="tab">Accès / Statut :</label>'.implode('<br /><span class="tab"></span>',$tab_radio).'</div>
+					<p><span class="tab"></span><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
 				</form>
 			';
 		}

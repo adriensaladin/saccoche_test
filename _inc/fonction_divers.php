@@ -748,21 +748,6 @@ function jour_debut_annee_scolaire($format)
 }
 
 /**
- * Renvoyer le dernier jour de l'année scolaire en cours, au format français JJ/MM/AAAA ou MySQL AAAA-MM-JJ.
- * En fait, c'est plus exactement le 1er jour de l'année scolaire suivante...
- *
- * @param string $format   'mysql'|'french'
- * @return string
- */
-function jour_fin_annee_scolaire($format)
-{
-	$jour  = '01';
-	$mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y") : date("Y")+1 ;
-	return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
-}
-
-/**
  * Renvoyer une taille de fichier lisible pour un humain :)
  * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
  *

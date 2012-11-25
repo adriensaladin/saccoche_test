@@ -260,7 +260,7 @@ $(document).ready
 					$('#bilan table tbody').hide();
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;").show();
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;").show();
 			}
 			return readytogo;
 		}

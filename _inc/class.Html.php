@@ -337,44 +337,35 @@ class Html
    * Normalement au moins un des paramètres est passé à TRUE.
    *
    * @param bool $codes_notation
-   * @param bool $anciennete_notation
    * @param bool $etat_acquisition
    * @param bool $pourcentage_acquis
    * @param bool $etat_validation
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $etat_acquisition , $pourcentage_acquis , $etat_validation )
+  public static function legende( $codes_notation=FALSE , $etat_acquisition=FALSE , $pourcentage_acquis=FALSE , $etat_validation=FALSE )
   {
     // initialisation variables
     $retour = '';
+    $espace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     // légende codes_notation
     if($codes_notation)
     {
       $tab_notes = array('RR','R','V','VV');
-      $retour .= '<div><b>Notes aux évaluations :</b>';
+      $retour .= '<div class="ti">';
       foreach($tab_notes as $note)
       {
-        $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" />'.html($_SESSION['NOTE_LEGENDE'][$note]);
+        $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" /> '.html($_SESSION['NOTE_LEGENDE'][$note]).$espace;
       }
-      $retour .= '</div>';
-    }
-    // légende ancienneté notation
-    if($anciennete_notation)
-    {
-      $retour .= '<div><b>Ancienneté des notes :</b>';
-      $retour .= '<span class="cadre">Sur la période.</span>';
-      $retour .= '<span class="cadre prev_date">Début d\'année scolaire.</span>';
-      $retour .= '<span class="cadre prev_year">Année scolaire précédente.</span>';
       $retour .= '</div>';
     }
     // légende etat_acquisition
     if($etat_acquisition)
     {
       $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
-      $retour .= '<div><b>Etats d\'acquisitions :</b>';
+      $retour .= '<div class="ti">';
       foreach($tab_etats as $etat => $couleur)
       {
-        $retour .= '<span class="cadre '.$couleur.'">'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
+        $retour .= '<span class="'.$couleur.'">&nbsp;'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'&nbsp;</span> '.html($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace;
       }
       $retour .= '</div>';
     }
@@ -383,22 +374,22 @@ class Html
     {
       $endroit = ($etat_validation) ? ' (à gauche)' : '' ;
       $tab_seuils = array('r'=>'&lt;&nbsp;'.$_SESSION['CALCUL_SEUIL']['R'].'%','o'=>'médian','v'=>'&gt;&nbsp;'.$_SESSION['CALCUL_SEUIL']['V'].'%');
-      $retour .= '<div><b>Pourcentages d\'items acquis'.$endroit.' :</b>';
+      $retour .= '<div class="ti">Pourcentages d\'items acquis'.$endroit.' :'.$espace;
       foreach($tab_seuils as $couleur => $texte)
       {
-        $retour .= '<span class="cadre '.$couleur.'">'.$texte.'</span>';
+        $retour .= '<span class="'.$couleur.'">&nbsp;'.$texte.'&nbsp;</span>'.$espace;
       }
       $retour .= '</div>';
     }
     // légende etat_validation
     if($etat_validation)
     {
-      $endroit = ($pourcentage_acquis) ? ' (à droite)' : '' ;
+      $endroit = ($pourcentage_acquis) ? ' (à droite) ' : '' ;
       $tab_etats = array(1=>'Validé',0=>'Invalidé',2=>'Non renseigné');
-      $retour .= '<div><b>États de validation'.$endroit.' :</b>';
+      $retour .= '<div class="ti">États de validation'.$endroit.' :'.$espace;
       foreach($tab_etats as $couleur => $texte)
       {
-        $retour .= '<span class="cadre v'.$couleur.'">'.$texte.'</span>';
+        $retour .= '<span class="v'.$couleur.'">&nbsp;'.$texte.'&nbsp;</span>'.$espace;
       }
       $retour .= '</div>';
     }

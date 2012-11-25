@@ -58,7 +58,7 @@ $(document).ready
 			$('#form1').remove();
 			if($('#f_groupes option:selected').val())
 			{
-				$('#ajax_msg0').addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
 				$('#form0').submit();
 			}
 		}
@@ -237,6 +237,7 @@ $(document).ready
 			if(e.which==13)	// touche entrée
 			{
 				$('q.valider').click();
+
 			}
 			else if(e.which==27)	// touche escape
 			{
@@ -351,7 +352,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -421,7 +422,7 @@ $(document).ready
 				}
 				if(continuer)
 				{
-					$('#ajax_msg1').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+					$('#ajax_msg1').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					$('#zone_actions button').prop('disabled',true);
 					$.ajax
 					(

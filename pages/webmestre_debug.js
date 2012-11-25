@@ -63,7 +63,7 @@ $(document).ready
 			function()
 			{
 				$('#bouton_debug').prop('disabled',true);
-				$('#ajax_debug').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_debug').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -105,7 +105,7 @@ $(document).ready
 			function()
 			{
 				$('#bouton_save_chemin').prop('disabled',true);
-				$('#ajax_save_chemin').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_save_chemin').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -162,7 +162,7 @@ $(document).ready
 				var f_action  = $(this).attr('class');
 				var f_fichier = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				new_label  = '<label class="loader">Envoi en cours&hellip;</label>';
+				new_label  = '<label class="loader">Connexion au serveur&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(

@@ -139,7 +139,6 @@ $tab_droits_par_page = array
 	// Profil professeur | directeur | administrateur
 	'officiel'                                => $tab_droits_profil_prof_dir_admin,
 	'officiel_accueil'                        => $tab_droits_profil_prof_dir_admin,
-	'officiel_assiduite'                      => $tab_droits_profil_prof_dir_admin,
 	'compte_message'                          => $tab_droits_profil_prof_dir_admin,
 	'consultation_date_connexion'             => $tab_droits_profil_prof_dir_admin,
 	'export_fichier'                          => $tab_droits_profil_prof_dir_admin,

@@ -401,11 +401,7 @@ if( $type_synthese || $type_bulletin )
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
 $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']<250) ? 1 : 2 ;
-$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE'] ) ? 1+6     : 0 ;
-$nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                ? 0.5+1.5 : 0 ;
-$nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE'] )  ? 0.5+1.5 : 0 ;
-$nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + 1 + ($retroactif!='non') + ($aff_etat_acquisition) : 0 ;
-
+$nb_lignes_appreciation_generale_avec_intitule = 1+8 ;
 $nb_lignes_matiere_intitule_et_marge = 1.5 ;
 $nb_lignes_matiere_synthese = $aff_moyenne_scores + $aff_pourcentage_acquis ;
 
@@ -456,18 +452,16 @@ if($type_individuel)
 		$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-		$releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button></div>';
 		$bilan_colspan = $cases_nb + 2 ;
 		$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
+		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , $aff_etat_acquisition /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	}
 	if($make_pdf)
 	{
 		// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 		$lignes_nb = ($format=='matiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
-		$legende_nb_lignes = 1 + ($retroactif!='non') + ($aff_etat_acquisition) ;
 		$releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
-		$releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $cases_nb , $cases_largeur , $lignes_nb , $legende_nb_lignes , $eleve_nb , $pages_nb );
+		$releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
 	}
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
@@ -482,9 +476,10 @@ if($type_individuel)
 				if($make_html) { $releve_HTML_individuel .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '' ; }
 				if($make_pdf)
 				{
-					$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
+					$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
+					$eleve_nb_lignes += ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE'] ) ? $nb_lignes_appreciation_generale_avec_intitule : 0 ;
 					$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
-					$releve_PDF->bilan_item_individuel_entete( $format , $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes , $legende_nb_lignes );
+					$releve_PDF->bilan_item_individuel_entete( $format , $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 				}
 				// Pour chaque matiere...
 				foreach($tab_matiere as $matiere_id => $matiere_nom)
@@ -733,25 +728,7 @@ if($type_individuel)
 						$tab_infos = array('prof_info'=>'','appreciation'=>'');
 						$tab_image_tampon_signature = ( ($numero_tirage>0) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
 					}
-					$releve_PDF->bilan_item_individuel_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_supplementaires+$nb_lignes_legendes );
-				}
-				// Relevé de notes - Absences et retard
-				if( ($make_officiel) && ($affichage_assiduite) )
-				{
-					$texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
-					if($make_html)
-					{
-						$releve_HTML_individuel .= '<p class="i">'.$texte_assiduite.'</p>'."\r\n";
-					}
-					elseif($make_action=='imprimer')
-					{
-						$releve_PDF->afficher_assiduite($texte_assiduite);
-					}
-				}
-				// Relevé de notes - Ligne additionnelle
-				if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )
-				{
-					$releve_PDF->afficher_ligne_additionnelle($_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']);
+					$releve_PDF->bilan_item_individuel_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule );
 				}
 				// Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
 				if($make_action=='imprimer')
@@ -763,7 +740,7 @@ if($type_individuel)
 				if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
 				{
 					if($make_html) { $releve_HTML_individuel .= $legende_html; }
-					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende( $format, TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($aff_etat_acquisition) /*etat_acquisition*/ ); }
+					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende($format,$aff_etat_acquisition); }
 				}
 			}
 		}

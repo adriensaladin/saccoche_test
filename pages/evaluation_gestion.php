@@ -90,6 +90,11 @@ if($TYPE=='groupe')
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 
+// Dates par défaut
+$date_debut    = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
+$date_fin      = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
+$date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
+
 $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 ?>
 
@@ -101,7 +106,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 	var url_export = "<?php echo URL_DIR_EXPORT ?>";
 	var input_date = "<?php echo TODAY_FR ?>";
 	var date_mysql = "<?php echo TODAY_MYSQL ?>";
-	var input_autoeval = "<?php echo date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))) ?>"; // J + 1 semaine
+	var input_autoeval = "<?php echo $date_autoeval ?>";
 	var tab_items    = new Array();
 	var tab_profs    = new Array();
 	var tab_eleves   = new Array();
@@ -126,8 +131,8 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 	<div id="zone_periodes">
 		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
 		<span id="dates_perso" class="show">
-			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo jour_fin_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
 		<span class="tab"></span><input type="hidden" name="f_action" value="lister_evaluations" /><input type="hidden" name="f_type" value="<?php echo $TYPE ?>" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 	</div>

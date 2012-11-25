@@ -2311,32 +2311,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MAJ 2012-11-12 => 2012-11-17
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-11-12')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-11-17';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// modif champ table sacoche_parametre
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_valeur parametre_valeur VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
-			// nouvelle table sacoche_officiel_assiduite
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_officiel_assiduite.sql');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-			DB::close(SACOCHE_STRUCTURE_BD_NAME);
-			// ajout de paramètres
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_assiduite"   , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_assiduite" , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_assiduite"    , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_ligne_supplementaire"   , "" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_ligne_supplementaire" , "" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_ligne_supplementaire"    , "" )' );
-		}
-	}
-
 }
 
 }

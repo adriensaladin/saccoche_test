@@ -257,7 +257,7 @@ $(document).ready
 				if(groupe_val)
 				{
 					groupe_type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					maj_eleve(groupe_val,groupe_type);
 				}
 				else
@@ -273,7 +273,7 @@ $(document).ready
 
 		var choisir_compet = function()
 		{
-			$('#f_selection_items option:first').prop('selected',true);
+			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
 			cocher_matieres_items( $('#f_compet_liste').val() );
 			$.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
@@ -461,7 +461,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#bilan').html('');
 			}
 			return readytogo;
@@ -511,7 +511,7 @@ $(document).ready
 			function()
 			{
 				$('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);
-				$('#ajax_msg_report').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_msg_report').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

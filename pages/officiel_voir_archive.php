@@ -44,6 +44,7 @@ foreach($tab_types as $BILAN_TYPE => $tab)
 	$droit_voir_archives_pdf = $droit_voir_archives_pdf || (strpos($_SESSION['DROIT_OFFICIEL_'.$tab['droit'].'_VOIR_ARCHIVE'],$_SESSION['USER_PROFIL'])!==FALSE) ;
 }
 
+$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
 $fin = ($droit_voir_archives_pdf) ? 'oui' : 'non' ;
 require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

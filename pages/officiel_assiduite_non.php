@@ -26,9 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Algorithme de calcul";
-
-$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
-$fin = (mb_substr_count($_SESSION['DROIT_VOIR_ALGORITHME'],$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
-require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
+if(empty($page_maitre)) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
+
+<div class="travaux">Page en construction ; utiliser un profil administrateur ou directeur !</div>

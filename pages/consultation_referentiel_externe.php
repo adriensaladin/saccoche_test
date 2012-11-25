@@ -28,6 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Référentiels partagés (serveur communautaire)";
 
+$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
 $fin = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? 'oui' : 'non' ;
 require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

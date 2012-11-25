@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(empty($page_maitre)) {exit('Ce fichier ne peut être appelé directement !');}
 
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
 

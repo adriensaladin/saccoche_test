@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(empty($page_maitre)) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
 <p><span class="astuce">Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</span></p>

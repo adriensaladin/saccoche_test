@@ -40,7 +40,7 @@ $(document).ready
 			{
 				$("button").prop('disabled',true);
 				$("#ajax_info").html('');
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#ajax_msg2').removeAttr("class").html('');
 				$.ajax
 				(
@@ -118,7 +118,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}

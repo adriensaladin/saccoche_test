@@ -62,7 +62,7 @@ $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom
 		<tbody>
 			<?php
 			// Lister les professeurs
-			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , $statut , FALSE /*with_classe*/ );
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , $statut , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_reference,user_nom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , FALSE /*with_classe*/ );
 			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)

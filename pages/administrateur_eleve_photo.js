@@ -56,7 +56,7 @@ $(document).ready
 				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
 				groupe_id   = groupe_val;
 			}
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -172,7 +172,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -220,7 +220,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -257,7 +257,7 @@ $(document).ready
 				var memo_div = $(this).parent();
 				var user_id = memo_div.parent().attr('id').substring(4); // "div_" + id
 				afficher_masquer_images_action('hide');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

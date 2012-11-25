@@ -155,7 +155,7 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$tab_accueil['info'][$key] = '<p class="b u">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
+			$tab_accueil['info'][$key] = '<p><span class="b u fluo">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')</span></p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
 		}
 	}
 	elseif($_SESSION['USER_PROFIL']!='administrateur')

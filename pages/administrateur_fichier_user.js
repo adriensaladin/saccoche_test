@@ -194,7 +194,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -214,7 +214,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -257,7 +257,7 @@ $(document).ready
 				$("#step li").removeAttr("class");
 				$('#form2 fieldset table').remove();
 				$("#step"+li_step).addClass("on");
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -323,7 +323,7 @@ $(document).ready
 				{
 					var f_step = $(this).attr('href').substring(5);
 					$('#form2 fieldset table').hide(0);
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					$.ajax
 					(
 						{
@@ -377,7 +377,7 @@ $(document).ready
 					}
 				);
 				$('#form2 fieldset table').hide(0);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -417,7 +417,7 @@ $(document).ready
 			function()
 			{
 				$('#form2 fieldset table').remove();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

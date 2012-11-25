@@ -34,11 +34,38 @@ $(document).ready
 		// Afficher masquer des éléments du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		$('#f_releve_check_supplementaire').click
+		(
+			function()
+			{
+				$('#f_releve_ligne_factice , #f_releve_ligne_supplementaire').toggle();
+				$('#f_releve_ligne_supplementaire').focus();
+			}
+		);
+
+		$('#f_bulletin_check_supplementaire').click
+		(
+			function()
+			{
+				$('#f_bulletin_ligne_factice , #f_bulletin_ligne_supplementaire').toggle();
+				$('#f_bulletin_ligne_supplementaire').focus();
+			}
+		);
+
+		$('#f_socle_check_supplementaire').click
+		(
+			function()
+			{
+				$('#f_socle_ligne_factice , #f_socle_ligne_supplementaire').toggle();
+				$('#f_socle_ligne_supplementaire').focus();
+			}
+		);
+
 		$('#f_releve_etat_acquisition').click
 		(
 			function()
 			{
-				$("#span_releve_etat_acquisition").toggle();
+				$('#span_releve_etat_acquisition').toggle();
 			}
 		);
 
@@ -131,8 +158,14 @@ $(document).ready
 					$('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Cocher au moins une indication à faire figurer sur le bilan !");
 					return false;
 				}
+				if( ($('#f_'+objet+'_check_supplementaire').is(':checked')) && (!$('#f_'+objet+'_ligne_supplementaire').val()) )
+				{
+					$('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Indiquer le texte de la ligne additionnelle à faire figurer sur le bilan !");
+					$('#f_'+objet+'_ligne_supplementaire').focus();
+					return false;
+				}
 				$('#bouton_valider_'+objet).prop('disabled',true);
-				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

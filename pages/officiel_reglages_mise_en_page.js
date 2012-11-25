@@ -97,7 +97,7 @@ $(document).ready
 					}
 				}
 				$("#bouton_valider_mise_en_page").prop('disabled',true);
-				$('#ajax_msg_mise_en_page').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_mise_en_page').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -172,7 +172,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				return true;
 			}
 		}
@@ -209,7 +209,7 @@ $(document).ready
 		( 'click' , function()
 			{
 				var sgn_id = $(this).parent().attr('id').substr(4);
-				$('#ajax_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

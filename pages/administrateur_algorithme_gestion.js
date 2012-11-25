@@ -271,7 +271,7 @@ $(document).ready
 				memoriser_valeurs();
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;").show();
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;").show();
 			}
 			return readytogo;
 		}

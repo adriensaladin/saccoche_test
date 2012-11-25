@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_parametre;
 
 CREATE TABLE sacoche_parametre (
 	parametre_nom    VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	parametre_valeur VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	parametre_valeur VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (parametre_nom)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -116,6 +116,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_releve_retroactif"                    , "non" ),
 ( "officiel_releve_appreciation_rubrique"         , "300" ),
 ( "officiel_releve_appreciation_generale"         , "400" ),
+( "officiel_releve_ligne_supplementaire"          , "" ),
+( "officiel_releve_assiduite"                     , "0" ),
 ( "officiel_releve_etat_acquisition"              , "1" ),
 ( "officiel_releve_moyenne_scores"                , "1" ),
 ( "officiel_releve_pourcentage_acquis"            , "1" ),
@@ -131,6 +133,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_bulletin_retroactif"                  , "non" ),
 ( "officiel_bulletin_appreciation_rubrique"       , "200" ),
 ( "officiel_bulletin_appreciation_generale"       , "400" ),
+( "officiel_bulletin_ligne_supplementaire"        , "" ),
+( "officiel_bulletin_assiduite"                   , "0" ),
 ( "officiel_bulletin_barre_acquisitions"          , "1" ),
 ( "officiel_bulletin_moyenne_scores"              , "1" ),
 ( "officiel_bulletin_conversion_sur_20"           , "1" ),
@@ -140,6 +144,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_bulletin_legende"                     , "oui" ),
 ( "officiel_socle_appreciation_rubrique"          , "0" ),
 ( "officiel_socle_appreciation_generale"          , "400" ),
+( "officiel_socle_ligne_supplementaire"           , "" ),
+( "officiel_socle_assiduite"                      , "0" ),
 ( "officiel_socle_only_presence"                  , "0" ),
 ( "officiel_socle_pourcentage_acquis"             , "1" ),
 ( "officiel_socle_etat_validation"                , "1" ),

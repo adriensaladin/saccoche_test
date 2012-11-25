@@ -160,7 +160,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			base_id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span id="init_form"><label id="ajax_msg" class="loader">Connexion au serveur&hellip;</label></span>';
+			new_span  = '<span id="init_form"><label id="ajax_msg" class="loader">Envoi en cours&hellip;</label></span>';
 			$(this).after(new_span);
 			$.ajax
 			(
@@ -318,7 +318,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -495,7 +495,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			}
 			return readytogo;
 		}

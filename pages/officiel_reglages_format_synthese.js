@@ -80,7 +80,7 @@ $(document).ready
 				var f_niveau  = tab_infos[1];
 				$('#bouton_'+ids).prop('disabled',true);
 				// $("#form_synthese button").prop('disabled',true);
-				$('#label_'+ids).removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#label_'+ids).removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

@@ -35,7 +35,7 @@ $TITRE = "Délai avant déconnexion";
 
 <?php
 $options = '';
-for($delai=10 ; $delai<100 ; $delai+=10)
+for($delai=10 ; $delai<130 ; $delai+=10)
 {
 	$selected = ($delai==$_SESSION['DUREE_INACTIVITE']) ? ' selected' : '' ;
 	$options .= '<option value="'.$delai.'"'.$selected.'>'.$delai.' minutes</option>';

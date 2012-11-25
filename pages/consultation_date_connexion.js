@@ -76,7 +76,7 @@ $(document).ready
 				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
 				groupe_id   = groupe_val;
 			}
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$('#bilan tbody').html('');
 			$.ajax
 			(

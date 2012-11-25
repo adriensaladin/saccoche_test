@@ -100,7 +100,7 @@ $(document).ready
 				if(groupe_id)
 				{
 					groupe_type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					maj_eleve(groupe_id,groupe_type);
 				}
 				else
@@ -171,7 +171,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#actualiser").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#zone_eval_choix').hide();
 			}
 			return readytogo;
@@ -196,7 +196,10 @@ $(document).ready
 				$('table.form tbody').html( responseHTML.substring(0,position_script) );
 				trier_tableau();
 				infobulle();
-				$('#zone_eval_choix h2').html($('#f_eleve option:selected').text());
+				if(aff_nom_eleve)
+				{
+					$('#zone_eval_choix h2').html($('#f_eleve option:selected').text());
+				}
 				$('#zone_eval_choix').show();
 				eval( responseHTML.substring(position_script+8) );
 			}
@@ -248,7 +251,7 @@ $(document).ready
 				var texte_date = $(this).parent().prev().prev().prev().prev().html();
 				var date_fr    = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
 				$('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
-				$('#msg_voir').removeAttr("class").addClass("loader").html('Connexion au serveur&hellip;');
+				$('#msg_voir').removeAttr("class").addClass("loader").html('Envoi en cours&hellip;');
 				$('#form , #zone_eval_choix').hide(0);
 				$('#zone_eval_voir').show(0);
 				$.ajax
@@ -299,7 +302,7 @@ $(document).ready
 				var date_fr    = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
 				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
 				$('#zone_eval_saisir').hide();
-				new_label = '<label for="'+td_id+'" class="loader">Connexion au serveur&hellip;</label>';
+				new_label = '<label for="'+td_id+'" class="loader">Envoi en cours&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -400,7 +403,7 @@ $(document).ready
 				else
 				{
 					$('button').prop('disabled',true);
-					$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#msg_saisir').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					// On ne risque pas de problème dû à une limitation du module "suhosin" pour un seul élève (nb champs envoyés = nb items + 1).
 					$.ajax
 					(

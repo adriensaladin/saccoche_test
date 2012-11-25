@@ -36,6 +36,7 @@ $TITRE = "Synthèses / Bilans";
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_configuration">Configuration des bilans officiels.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_mise_en_page">Mise en page des bilans officiels.</a>	<br />
 	<?php if($_SESSION['USER_PROFIL']=='administrateur'): ?>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=assiduite">Absences / Retards.</a>	<br />
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_releve">[ Relevé d'évaluations ]</a>
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_bulletin">[ Bulletin scolaire ]</a>
 	<?php
@@ -60,6 +61,12 @@ if($SECTION=='reglages')
 	$nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 	$s = ($nb_inconnu>1) ? 's' : '' ;
 	echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
+}
+elseif($SECTION=='assiduite')
+{
+	$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+	$PAGE = $PAGE.'_'.$SECTION ;
+	require($fichier_section);
 }
 else
 {

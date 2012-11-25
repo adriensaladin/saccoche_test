@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_image".
+// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_officiel_assiduite", "sacoche_image".
 
 class DB_STRUCTURE_OFFICIEL extends DB
 {
@@ -74,18 +74,27 @@ public static function DB_recuperer_pays_majoritaire()
  * @param string $officiel_type
  * @param int    $periode_id
  * @param string $liste_eleve_id
- * @param int    $prof_id     Pour restreindre aux saisies d'un prof, auquel cas on récupère aussi le nom de la matière correspondante (que pour $officiel_type="bulletin" actuellement).
+ * @param int    $prof_id     Pour restreindre aux saisies d'un prof.
+ * @param bool   $with_rubrique_nom     On récupère aussi le nom de la matière correspondante (pas prévu pour le socle).
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_saisies($officiel_type,$periode_id,$liste_eleve_id,$prof_id)
+public static function DB_recuperer_bilan_officiel_saisies($officiel_type,$periode_id,$liste_eleve_id,$prof_id,$with_rubrique_nom)
 {
+	if($with_rubrique_nom)
+	{
+		$rubrique_table       = (substr($officiel_type,0,6)!='palier') ? 'sacoche_matiere' : 'sacoche_socle_pilier' ;
+		$rubrique_champ_id    = (substr($officiel_type,0,6)!='palier') ? 'matiere_id'      : 'pilier_id' ;
+		$rubrique_champ_nom   = (substr($officiel_type,0,6)!='palier') ? 'matiere_nom'     : 'CONCAT("Compétence ",pilier_ref)' ;
+		$rubrique_champ_ordre = (substr($officiel_type,0,6)!='palier') ? 'matiere_ordre'   : 'pilier_ordre' ;
+	}
 	$DB_SQL = 'SELECT prof_id, eleve_id, rubrique_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
-	$DB_SQL.= ($prof_id) ? ', matiere_nom ' : '' ;
+	$DB_SQL.= ($with_rubrique_nom) ? ', '.$rubrique_champ_nom.' as rubrique_nom ' : '' ;
 	$DB_SQL.= 'FROM sacoche_officiel_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_officiel_saisie.prof_id=sacoche_user.user_id ';
-	$DB_SQL.= ($prof_id) ? 'LEFT JOIN sacoche_matiere ON sacoche_officiel_saisie.rubrique_id=sacoche_matiere.matiere_id ' : '' ;
+	$DB_SQL.= ($with_rubrique_nom) ? 'LEFT JOIN '.$rubrique_table.' ON sacoche_officiel_saisie.rubrique_id='.$rubrique_table.'.'.$rubrique_champ_id.' ' : '' ;
 	$DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_id IN('.$liste_eleve_id.') ';
 	$DB_SQL.= ($prof_id) ? ( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) ? 'AND prof_id IN(:prof_id,0) ' :  'AND prof_id=:prof_id ' ) : '' ;
+	$DB_SQL.= ($with_rubrique_nom) ? 'ORDER BY '.$rubrique_champ_ordre.' ASC, prof_info ASC ' : '' ;
 	$DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':prof_id'=>$prof_id);
 	$prof_key = ($prof_id) ? TRUE : FALSE ;
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $prof_key);
@@ -105,6 +114,22 @@ public static function DB_recuperer_bilan_officiel_notes($periode_id,$tab_eleve_
 	$DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_id IN ('.implode(',',$tab_eleve_id).') AND prof_id=:prof_id ';
 	$DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':prof_id'=>0);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * recuperer_officiel_assiduite
+ * @param int    $periode_id
+ * @param array  $eleve_id
+ *
+ * @return array
+ */
+public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
+{
+	$DB_SQL = 'SELECT assiduite_absence, assiduite_non_justifie, assiduite_retard ';
+	$DB_SQL.= 'FROM sacoche_officiel_assiduite ';
+	$DB_SQL.= 'WHERE periode_id=:periode_id AND user_id=:user_id ';
+	$DB_VAR = array(':periode_id'=>$periode_id,':user_id'=>$eleve_id);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -157,6 +182,22 @@ public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode
 	$DB_SQL.= ($officiel_type) ? '' : 'ORDER BY officiel_type ASC ' ;
 	$DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $key_eleve_id);
+}
+
+/**
+ * lister_officiel_assiduite
+ * @param int    $periode_id
+ * @param array  $tab_eleve_id
+ *
+ * @return array
+ */
+public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
+{
+	$DB_SQL = 'SELECT user_id, assiduite_absence, assiduite_non_justifie, assiduite_retard ';
+	$DB_SQL.= 'FROM sacoche_officiel_assiduite ';
+	$DB_SQL.= 'WHERE periode_id=:periode_id AND user_id IN ('.implode(',',$tab_eleve_id).') ';
+	$DB_VAR = array(':periode_id'=>$periode_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -228,6 +269,24 @@ public static function DB_modifier_signature($user_id,$image_contenu,$image_form
 	$DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
 	$DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
 	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>'signature',':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_officiel_assiduite
+ *
+ * @param int     $periode_id
+ * @param int     $user_id
+ * @param int     $nb_absence
+ * @param int     $nb_non_justifie
+ * @param int     $nb_retard
+ * @return void
+ */
+public static function DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard)
+{
+	$DB_SQL = 'REPLACE INTO sacoche_officiel_assiduite (periode_id, user_id, assiduite_absence, assiduite_non_justifie, assiduite_retard) ';
+	$DB_SQL.= 'VALUES(:periode_id, :user_id, :assiduite_absence, :assiduite_non_justifie, :assiduite_retard) ';
+	$DB_VAR = array(':periode_id'=>$periode_id,':user_id'=>$user_id,':assiduite_absence'=>$nb_absence,':assiduite_non_justifie'=>$nb_non_justifie,':assiduite_retard'=>$nb_retard);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

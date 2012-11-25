@@ -113,6 +113,7 @@ $(document).ready
 
 		var choisir_matieres_items = function()
 		{
+			$('#f_selection_items option:first').prop('selected',true);
 			cocher_matieres_items( $('#f_matiere_items_liste').val() );
 			$.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
@@ -326,7 +327,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#bilan').html('');
 			}
 			return readytogo;

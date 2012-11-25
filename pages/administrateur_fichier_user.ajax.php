@@ -177,7 +177,7 @@ if( $step==20 )
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
 		$editeur_prive_edt = (string)$xml->PARAMETRES->APPLICATION_SOURCE;
-		if($xml->PARAMETRES->APPLICATION_SOURCE)
+		if($editeur_prive_edt)
 		{
 			exit('Erreur : le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !');
 		}
@@ -557,7 +557,7 @@ if( $step==20 )
 		// L'import Sconet peut apporter beaucoup de parents rattachés à des élèves sortis de l'établissement et encore présents dans le fichier.
 		// Alors on récupère la liste des id_sconet des élèves actuels et on contrôle par la suite qu'il y en a au moins un dans la liste des enfants du parent.
 		$tab_eleves_actuels = array();
-		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil*/ , 1 /*only_actuels*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil*/ , 1 /*only_actuels*/ , 'user_sconet_id' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eleves_actuels[$DB_ROW['user_sconet_id']] = TRUE;
@@ -1380,7 +1380,7 @@ if( $step==51 )
 	$tab_users_base['adresse']    = array();
 	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
 	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , $with_classe , FALSE /*tri_statut*/ );
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['sconet_id'][$DB_ROW['user_id']]  = $DB_ROW['user_sconet_id'];
@@ -1733,7 +1733,7 @@ if( $step==52 )
 	$nb_fin_ancien = 0;
 	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
 	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , $with_classe , TRUE /*tri_statut*/ );
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , $with_classe , TRUE /*tri_statut*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;

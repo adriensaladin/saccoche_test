@@ -192,9 +192,10 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
  * @param int    $classe_id
  * @param int    $eleve_id
  * @param array  $matiere_id
+ * @param string $retroactif   oui|non|auto
  * @return float   la moyenne en question (FALSE si pb)
  */
-function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id,$eleve_id,$matiere_id)
+function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id,$eleve_id,$matiere_id,$retroactif)
 {
 	// Dates période
 	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($classe_id,$periode_id);
@@ -208,13 +209,17 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 	$tab_liste_item = array_keys($tab_item);
 	$liste_item_id = implode(',',$tab_liste_item);
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-	$date_mysql_debut = FALSE;
+	$date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
 	if(empty($DB_TAB)) return FALSE;
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+		if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
+		{
+			$tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+		}
 	}
+	if(empty($tab_eval)) return FALSE;
 	// On calcule la moyenne voulue
 	$tab_score = array();
 	// Pour chaque item...
@@ -243,6 +248,54 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 	$moyennes_calculee = round($somme_scores_ponderes/$somme_coefs,0) / 5 ;
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie('bulletin',$periode_id,$eleve_id,$matiere_id,0,$moyennes_calculee,'');
 	return $moyennes_calculee;
+}
+
+/**
+ * Retourner le texte indiquant les absences et retard à partir des données transmises.
+ * 
+ * @param array  $tab_assiduite
+ * @return string
+ */
+function texte_ligne_assiduite($tab_assiduite)
+{
+	$intro = 'Assiduité et ponctualité : ';
+	extract($tab_assiduite); // $absence $non_justifie $retard
+	if( ($absence===NULL) && ($non_justifie===NULL) && ($retard===NULL) )
+	{
+		return $intro.'aucune saisie renseignée.';
+	}
+	if(!$absence)
+	{
+		$txt_absences = 'aucune absence, ';
+	}
+	else
+	{
+		$s = ($absence>1) ? 's' : '' ;
+		$txt_absences = $absence.' demi-journée'.$s.' d\'absence, ';
+		if(!$non_justifie)
+		{
+			$txt_absences .= ($s) ? 'toutes justifiées, ' : 'justifiée, ' ;
+		}
+		elseif($non_justifie==$absence)
+		{
+			$txt_absences .= ($s) ? 'dont aucune justifiée, ' : 'non justifiée, ' ;
+		}
+		else
+		{
+			$s = ($non_justifie>1) ? 's' : '' ;
+			$txt_absences .= 'dont '.$non_justifie.' non justifiée'.$s.', ';
+		}
+	}
+	if(!$retard)
+	{
+		$txt_retards = 'et aucun retard.';
+	}
+	else
+	{
+		$s = ($retard>1) ? 's' : '' ;
+		$txt_retards = 'et '.$retard.' retard'.$s.'.';
+	}
+	return $intro.$txt_absences.$txt_retards;
 }
 
 ?>

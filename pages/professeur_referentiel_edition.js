@@ -545,7 +545,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -669,7 +669,7 @@ $(document).ready
 				// On récupère l'id de l'élément concerné (domaine ou theme ou item)
 				element_id = $(this).parent().parent().attr('id').substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -741,7 +741,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -798,7 +798,7 @@ $(document).ready
 				li_id_arrivee = $(this).parent().attr('id');
 				element2_id = li_id_arrivee.substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -908,7 +908,7 @@ $(document).ready
 					);
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{
@@ -1049,7 +1049,7 @@ $(document).ready
 		{
 			var id_matieres = (matiere_id_a_eviter) ? listing_id_matieres_autorisees.replace(','+matiere_id_a_eviter+',',',') : listing_id_matieres_autorisees ;
 			id_matieres = id_matieres.substring(1,id_matieres.length-1);
-			$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 			$.ajax
 			(
 				{
@@ -1222,7 +1222,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

@@ -28,9 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action             = (isset($_POST['f_action']))             ? $_POST['f_action']                          : '';
+$action             = (isset($_POST['f_action']))             ? $_POST['f_action']                           : '';
 
-$tab_coordonnees    = (isset($_POST['f_coordonnees']))        ? $_POST['f_coordonnees']                     : array();
+$tab_coordonnees    = (isset($_POST['f_coordonnees']))        ? $_POST['f_coordonnees']                      : array();
 $infos_responsables = (isset($_POST['f_infos_responsables'])) ? Clean::texte($_POST['f_infos_responsables']) : '';
 $horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? Clean::entier($_POST['f_horizontal_gauche']) : 0;
 $horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? Clean::entier($_POST['f_horizontal_milieu']) : 0;

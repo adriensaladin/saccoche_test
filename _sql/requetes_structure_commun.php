@@ -248,23 +248,6 @@ public static function DB_lister_niveaux_etablissement($with_specifiques)
 }
 
 /**
- * lister_classes_etabl_for_bilan_officiel
- *
- * @param void
- * @return array
- */
-public static function DB_lister_classes_etabl_for_bilan_officiel()
-{
-	$DB_SQL = 'SELECT groupe_id, groupe_nom ';
-	$DB_SQL.= 'FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE groupe_type=:type1 ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-	$DB_VAR = array(':type1'=>'classe');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_identite_coordonnateurs_par_matiere
  *
  * @param void
@@ -1042,12 +1025,13 @@ public static function DB_OPT_groupes_professeur($user_id)
 /**
  * Retourner un tableau [valeur texte] des classes de l'établissement
  *
- * @param void
+ * @param bool   $with_ref   Avec la référence de la classe entre parenthèses.
  * @return array|string
  */
-public static function DB_OPT_classes_etabl()
+public static function DB_OPT_classes_etabl($with_ref)
 {
-	$DB_SQL = 'SELECT groupe_id AS valeur, CONCAT(groupe_nom," (",groupe_ref,")") AS texte ';
+	$texte = ($with_ref) ? 'CONCAT(groupe_nom," (",groupe_ref,")")' : 'groupe_nom' ;
+	$DB_SQL = 'SELECT groupe_id AS valeur, '.$texte.' AS texte ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';

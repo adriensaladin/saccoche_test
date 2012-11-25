@@ -279,7 +279,7 @@ $(document).ready
 				if(groupe_id)
 				{
 					groupe_type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 					if(profil=='directeur')
 					{
 						maj_matiere(groupe_id,matiere_id);
@@ -454,7 +454,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$('#bilan').html('');
 			}
 			return readytogo;
@@ -505,7 +505,7 @@ $(document).ready
 			function()
 			{
 				$('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);
-				$('#ajax_msg_report').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#ajax_msg_report').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
 				$.ajax
 				(
 					{

@@ -26,6 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if(empty($page_maitre)) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
 <p class="astuce">L'administrateur de <em>SACoche</em> pour votre établissement ne vous a pas autorisé cet accès.</p>

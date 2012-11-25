@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Changer son mot de passe";
 
+$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
 $fin = ( (in_array($_SESSION['USER_PROFIL'],array('administrateur','webmestre'))) || (mb_substr_count($_SESSION['DROIT_MODIFIER_MDP'],$_SESSION['USER_PROFIL'])) ) ? 'oui' : 'non' ;
-
 require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

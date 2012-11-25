@@ -26,6 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if(empty($page_maitre)) {exit('Ce fichier ne peut être appelé directement !');}
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 ?>

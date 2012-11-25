@@ -99,14 +99,25 @@ $tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nett
 
 if( $step==10 )
 {
-	// Nom du cichier à extraire si c'est un fichier zippé
+	// Nom du fichier à extraire si c'est un fichier zippé
+	$alerte = '';
 	if($action=='sconet_eleves')
 	{
 		$nom_fichier_extrait = 'ElevesSansAdresses.xml';
+		if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesAvecAdresses')) )
+		{
+			$nom_fichier_extrait = 'ElevesAvecAdresses.xml';
+			$alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">avec</span> adresses ! Vous pouvez toutefois poursuivre&hellip;</p>';
+		}
 	}
 	elseif($action=='sconet_parents')
 	{
 		$nom_fichier_extrait = 'ResponsablesAvecAdresses.xml';
+		if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesSansAdresses')) )
+		{
+			$nom_fichier_extrait = 'ResponsablesSansAdresses.xml';
+			$alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">sans</span> adresses ! Si vous poursuivez, sachez que les adresses ne seront pas trouvées&hellip;</p>';
+		}
 	}
 	else
 	{
@@ -123,6 +134,7 @@ if( $step==10 )
 	echo'<hr />';
 	echo'<fieldset>';
 	echo'<div><label class="valide">Votre fichier a été correctement réceptionné.</label></div>';
+	echo $alerte;
 	echo'<p class="li"><a href="#step20" id="passer_etape_suivante">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></p>';
 	echo'</fieldset>';
 	exit();

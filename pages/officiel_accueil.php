@@ -25,9 +25,6 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');}
-
 $tab_types = array
 (
 	'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre'=>'Relevé d\'évaluations' , 'modif_rubrique'=>'les appréciations par matière' ) ,
@@ -37,6 +34,8 @@ $tab_types = array
 	'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 3'  , 'modif_rubrique'=>'les appréciations par compétence' )
 );
 
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = $tab_types[$BILAN_TYPE]['titre'];
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]

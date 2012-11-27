@@ -568,13 +568,12 @@ public static function DB_lister_users($profil,$statut,$liste_champs,$with_class
  * lister_parents_avec_infos_enfants
  *
  * @param bool     $with_adresse
- * @param int      $statut            1 pour actuel, 0 pour ancien
- * @param string   $debut_nom         premières lettres du nom
- * @param string   $debut_prenom      premières lettres du prénom
- * @param string   $liste_parent_id   liste des id de parents
+ * @param int      $statut         1 pour actuel, 0 pour ancien
+ * @param string   $debut_nom      premières lettres du nom
+ * @param string   $debut_prenom   premières lettres du prénom
  * @return array
  */
-public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='')
+public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='')
 {
 	$test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	$DB_SQL = 'SELECT ' ;
@@ -586,37 +585,12 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
 	$DB_SQL.= 'WHERE parent.user_profil=:profil AND parent.'.$test_date_sortie.' ';
-	if(!$liste_parent_id)
-	{
-		$DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;
-		$DB_SQL.= ($debut_prenom) ? 'AND parent.user_prenom LIKE :prenom ' : '' ;
-		$order = 'parent.user_nom ASC, parent.user_prenom ASC ';
-	}
-	else
-	{
-		$DB_SQL.= 'AND parent.user_id IN('.$liste_parent_id.') ';
-		$order = 'eleve.user_nom ASC, parent.user_nom ASC ';
-	}
+	$DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;
+	$DB_SQL.= ($debut_prenom) ? 'AND parent.user_prenom LIKE :prenom ' : '' ;
 	$DB_SQL.= 'GROUP BY parent.user_id ';
-	$DB_SQL.= 'ORDER BY '.$order;
+	$DB_SQL.= 'ORDER BY parent.user_nom ASC, parent.user_prenom ASC ';
 	$DB_VAR = array(':profil'=>'parent',':nom'=>$debut_nom.'%',':prenom'=>$debut_prenom.'%');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_parents_adresses_par_enfant
- *
- * @return array
- */
-public static function lister_parents_adresses_par_enfant()
-{
-	$DB_SQL = 'SELECT eleve_id, parent_id, sacoche_parent_adresse.* ';
-	$DB_SQL.= 'FROM sacoche_user AS enfant ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON enfant.user_id=sacoche_jointure_parent_eleve.eleve_id ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
-	$DB_SQL.= 'LEFT JOIN sacoche_parent_adresse USING (parent_id) ';
-	$DB_SQL.= 'WHERE enfant.user_profil="eleve" AND enfant.user_sortie_date>NOW()  AND parent.user_sortie_date>NOW() ';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE);
 }
 
 /**

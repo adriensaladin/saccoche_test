@@ -343,7 +343,7 @@ class Html
    * @param bool $etat_validation
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel )
+  public static function legende( $codes_notation , $anciennete_notation , $etat_acquisition , $pourcentage_acquis , $etat_validation )
   {
     // initialisation variables
     $retour = '';
@@ -366,24 +366,6 @@ class Html
       $retour .= '<span class="cadre prev_date">Début d\'année scolaire.</span>';
       $retour .= '<span class="cadre prev_year">Année scolaire précédente.</span>';
       $retour .= '</div>';
-    }
-    // légende scores bilan
-    if($score_bilan)
-    {
-      // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $profil = ($make_officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
-      $afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
-      $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
-      $tab_seuils = array
-      (
-        TRUE  => array( 'NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'] , 'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] , 'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100' ) ,
-        FALSE => array( 'NA'=>''                                    , 'VA'=>''                                                                  , 'A'=>'' )
-      );
-      $retour .= '<div><b>Etats d\'acquisitions :</b>';
-      foreach($tab_etats as $etat => $couleur)
-      {
-        $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$afficher_score][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
-      }
     }
     // légende etat_acquisition
     if($etat_acquisition)

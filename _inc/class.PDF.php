@@ -709,10 +709,10 @@ class PDF extends FPDF
 	// Méthode pour afficher un score bilan (bilan sur 100 et couleur de fond suivant le seuil)
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function afficher_score_bilan($score,$br)
+	public function afficher_score_bilan($score,$br,$make_officiel=FALSE)
 	{
 		// Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-		$profil = ($this->officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
+		$profil = ($make_officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
 		$afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
 		if($score===FALSE)
 		{
@@ -888,28 +888,6 @@ class PDF extends FPDF
 				$this->Write($hauteur , To::pdf($texte) , '');
 			}
 		}
-		// Afficher la légende des scores bilan
-		if($type_legende=='score_bilan')
-		{
-			// Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-			$profil = ($this->officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
-			$afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
-			$this->SetFont('Arial' , 'B' , $size);
-			$this->Write($hauteur , To::pdf('Etats d\'acquisitions :') , '');
-			$this->SetFont('Arial' , '' , $size);
-			$tab_seuils = array
-			(
-				TRUE  => array( 'NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'] , 'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] , 'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100' ) ,
-				FALSE => array( 'NA'=>''                                    , 'VA'=>''                                                                  , 'A'=>'' )
-			);
-			foreach($tab_seuils[$afficher_score] as $etat => $texte)
-			{
-				$this->Write($hauteur , $espace , '');
-				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
-				$this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-				$this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
-			}
-		}
 		// Afficher la légende des états d'acquisition
 		if($type_legende=='etat_acquisition')
 		{
@@ -931,12 +909,12 @@ class PDF extends FPDF
 			$this->SetFont('Arial' , 'B' , $size);
 			$this->Write($hauteur , To::pdf('Pourcentages d\'items acquis (à gauche) :') , '');
 			$this->SetFont('Arial' , '' , $size);
-			$tab_seuils = array('NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'],'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'],'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100');
+			$tab_seuils = array('NA'=>'< '.$_SESSION['CALCUL_SEUIL']['R'].'%','VA'=>'médian','A'=>'> '.$_SESSION['CALCUL_SEUIL']['V'].'%');
 			foreach($tab_seuils as $etat => $texte)
 			{
 				$this->Write($hauteur , $espace , '');
 				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
-				$this->Cell(2*$case_hauteur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell(20 , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 			}
 		}
 		// Afficher la légende des états de validation
@@ -950,7 +928,7 @@ class PDF extends FPDF
 			{
 				$this->Write($hauteur , $espace , '');
 				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
-				$this->Cell(2*$case_hauteur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell(20 , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 			}
 		}
 		$this->SetXY($this->marge_gauche , $ordonnee+$hauteur);
@@ -972,12 +950,10 @@ class PDF extends FPDF
 		}
 		else
 		{
-			$this->SetFont( 'Arial' , '' , 4 );
+			$this->SetXY( 0 , -$this->distance_pied - 2 );
+			$this->SetFont( 'Arial' , 'B' , 5 );
 			$this->choisir_couleur_texte('gris_fonce');
-			$this->SetXY( 0 , -$this->distance_pied - 3 );
-			$this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
-			$this->SetXY( 0 , -$this->distance_pied - 1.5 );
-			$this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf(SERVEUR_PROJET) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
+			$this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('SACoche - Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
 		}
 	}
 
@@ -1413,8 +1389,8 @@ class PDF extends FPDF
 			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
 			$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
 			$lignes_nb = ( $hauteur_entete / 3 ) + $eleve_nb_lignes + ($this->legende*$legende_nb_lignes) ; // entête + matières(marge+intitulé) & lignes dont résumés + légendes
-			$hauteur_ligne_minimale = ($this->officiel) ? 3.5 : 3 ;
-			$hauteur_ligne_maximale = $hauteur_ligne_minimale + 2;
+			$hauteur_ligne_minimale = 3;
+			$hauteur_ligne_maximale = 3+2;
 			$nb_pages = 0;
 			do
 			{
@@ -1536,14 +1512,14 @@ class PDF extends FPDF
 		$this->Cell( $this->synthese_largeur  , $this->cases_hauteur , To::pdf($bilan_texte) , 1 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , TRUE  /*remplissage*/ );
 	}
 
-	public function bilan_item_individuel_legende($format,$codes_notation,$anciennete_notation,$score_bilan)
+	public function bilan_item_individuel_legende($format,$codes_notation,$anciennete_notation,$etat_acquisition)
 	{
-		$nb_lignes = (int)$codes_notation + (int)$anciennete_notation + (int)$score_bilan ;
+		$nb_lignes = (int)$codes_notation + (int)$anciennete_notation + (int)$etat_acquisition ;
 		// Légende : à la suite si 'matiere' , en bas de page si 'multimatiere' ou 'selection',
 		$ordonnee = ($format=='matiere') ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$nb_lignes*0.9 ;
 		if($codes_notation)      { $this->afficher_legende( 'codes_notation'      /*type_legende*/ , $ordonnee     /*ordonnée*/ ); }
 		if($anciennete_notation) { $this->afficher_legende( 'anciennete_notation' /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
-		if($score_bilan)         { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
+		if($etat_acquisition)    { $this->afficher_legende( 'etat_acquisition'    /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1665,13 +1641,13 @@ class PDF extends FPDF
 		$this->choisir_couleur_fond('blanc');
 	}
 
-	public function grille_referentiel_legende( $codes_notation , $anciennete_notation , $score_bilan )
+	public function grille_referentiel_legende( $codes_notation , $anciennete_notation , $etat_acquisition )
 	{
-		$nb_lignes = (int)$codes_notation + (int)$anciennete_notation + (int)$score_bilan ;
+		$nb_lignes = (int)$codes_notation + (int)$anciennete_notation + (int)$etat_acquisition ;
 		$ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$nb_lignes*0.9 ;
 		if($codes_notation)      { $this->afficher_legende( 'codes_notation'      /*type_legende*/ , $ordonnee     /*ordonnée*/ ); }
 		if($anciennete_notation) { $this->afficher_legende( 'anciennete_notation' /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
-		if($score_bilan)         { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
+		if($etat_acquisition)    { $this->afficher_legende( 'etat_acquisition'    /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////

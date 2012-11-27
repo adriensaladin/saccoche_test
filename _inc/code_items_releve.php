@@ -459,7 +459,7 @@ if($type_individuel)
 		$releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button></div>';
 		$bilan_colspan = $cases_nb + 2 ;
 		$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
+		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	}
 	if($make_pdf)
 	{
@@ -510,7 +510,7 @@ if($type_individuel)
 									{
 										$releve_HTML_table_head .= '<th></th>';	// Pas de colspan sinon pb avec le tri
 									}
-									$releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
+									$releve_HTML_table_head .= ($calcul_acquisitions) ? '<th>score</th>' : '' ;
 									$releve_HTML_table_head .= '</tr></thead>';
 									$releve_HTML_table_body = '<tbody>';
 								}
@@ -594,10 +594,10 @@ if($type_individuel)
 										}
 									}
 									// affichage du bilan de l'item
-									if($aff_etat_acquisition)
+									if($calcul_acquisitions)
 									{
 										if($make_html) { $releve_HTML_table_body .= Html::td_score($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score','',$make_officiel).'</tr>'."\r\n"; }
-										if($make_pdf)  { $releve_PDF->afficher_score_bilan($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],$br=1); }
+										if($make_pdf)  { $releve_PDF->afficher_score_bilan($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],$br=1,$make_officiel); }
 									}
 									else
 									{
@@ -611,7 +611,7 @@ if($type_individuel)
 									$releve_HTML_table_foot = '';
 								}
 								// affichage des bilans des scores
-								if($aff_etat_acquisition)
+								if($calcul_acquisitions)
 								{
 									// ... un pour la moyenne des pourcentages d'acquisition
 									if( $aff_moyenne_scores )
@@ -763,7 +763,7 @@ if($type_individuel)
 				if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
 				{
 					if($make_html) { $releve_HTML_individuel .= $legende_html; }
-					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende( $format, TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($aff_etat_acquisition) /*score_bilan*/ ); }
+					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende( $format, TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($aff_etat_acquisition) /*etat_acquisition*/ ); }
 				}
 			}
 		}

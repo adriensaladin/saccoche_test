@@ -331,7 +331,7 @@ class Session
       {
         // 2.2. Session retrouvée, mais louche car IP ou navigateur modifié (tentative de piratage ? c'est cependant difficile de récupérer le cookie d'un tiers, voire impossible avec les autres protections dont SACoche bénéficie).
         Session::close();
-        exit_error( 'Session incompatible avec votre connexion' /*titre*/ , 'Modification d\'adresse IP ou de navigateur a été détectée !<br />Par sécurité, vous devez vous reconnecter.' /*contenu*/ );
+        exit_error( 'Session incompatible avec votre connexion' /*titre*/ , 'Modification d\'adresse IP ou de navigateur détectée !<br />Par sécurité, vous devez vous reconnecter.' /*contenu*/ );
       }
       elseif($_SESSION['USER_PROFIL'] == 'public')
       {

@@ -28,6 +28,7 @@
 // Tableau avec les équivalents textes par défaut des symboles colorés utilisés pour la notation
 
 $tab_notes_txt['Albert']     = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'VV' );
+$tab_notes_txt['Aubrac']     = array( 'RR'=>'J'  , 'R'=>'V'   , 'V'=>'B'  , 'VV'=>'N'  );
 $tab_notes_txt['Blaye']      = array( 'RR'=>'NA' , 'R'=>'VA'  , 'V'=>'AR' , 'VV'=>'A'  );
 $tab_notes_txt['CitesUnies'] = array( 'RR'=>'Rou', 'R'=>'Ora' , 'V'=>'Ver', 'VV'=>'Dor');
 $tab_notes_txt['Courbet']    = array( 'RR'=>'NA' , 'R'=>'ECA' , 'V'=>'A'  , 'VV'=>'M'  );

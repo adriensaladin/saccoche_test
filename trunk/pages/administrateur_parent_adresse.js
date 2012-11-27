@@ -50,7 +50,7 @@ $(document).ready
 				$('table.form').trigger('sorton',[sorting]);
 			}
 		}
-		trier_tableau();
+		// trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et poru la recherche levenshtein il faut conserver un tri élève
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -150,7 +150,7 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form1');
+		var formulaire = $('#form_individuel');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation = formulaire.validate
@@ -261,7 +261,7 @@ $(document).ready
 						$('q.valider').parent().parent().remove();
 						break;
 				}
-				trier_tableau();
+				// trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et poru la recherche levenshtein il faut conserver un tri élève
 				afficher_masquer_images_action('show');
 				infobulle();
 			}

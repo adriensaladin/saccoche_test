@@ -26,10 +26,49 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');}
+if(!isset($recherche))  {exit('Ce fichier ne peut être appelé directement !');}
+
+// Lister les parents, par nom / prénom ou recherche d'adresses proches
+if($nom_prenom)
+{
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , $debut_nom , $debut_prenom );
+}
+elseif($levenshtein) // (forcément)
+{
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::lister_parents_adresses_par_enfant();
+	if(!empty($DB_TAB))
+	{
+		$tab_parents_id = array();
+		foreach($DB_TAB as $enfant_id => $DB_TAB_parents)
+		{
+			if(count($DB_TAB_parents)>1)
+			{
+				$adresse_parent0 = $DB_TAB_parents[0]['adresse_ligne1'].$DB_TAB_parents[0]['adresse_ligne2'].$DB_TAB_parents[0]['adresse_ligne3'].$DB_TAB_parents[0]['adresse_ligne4'].$DB_TAB_parents[0]['adresse_postal_code'].$DB_TAB_parents[0]['adresse_postal_libelle'].$DB_TAB_parents[0]['adresse_pays_nom'];
+				$adresse_parent1 = $DB_TAB_parents[1]['adresse_ligne1'].$DB_TAB_parents[1]['adresse_ligne2'].$DB_TAB_parents[1]['adresse_ligne3'].$DB_TAB_parents[1]['adresse_ligne4'].$DB_TAB_parents[1]['adresse_postal_code'].$DB_TAB_parents[1]['adresse_postal_libelle'].$DB_TAB_parents[1]['adresse_pays_nom'];
+				if($adresse_parent0!=$adresse_parent1)
+				{
+					// Voir levenshtein() voir http://fr.php.net/levenshtein
+					// Autre méthode dénichée mais non essayée : http://tonyarchambeau.com/blog/400-php-coefficient-de-dice/
+					if( levenshtein($adresse_parent0,$adresse_parent1) < 10 )
+					{
+						$parent_id0 = $DB_TAB_parents[0]['parent_id'];
+						$parent_id1 = $DB_TAB_parents[1]['parent_id'];
+						if( !isset($tab_parents_id[$parent_id0]) && !isset($tab_parents_id[$parent_id1]) )
+						{
+							$tab_parents_id[] = $parent_id0;
+							$tab_parents_id[] = $parent_id1;
+						}
+					}
+				}
+			}
+		}
+		$DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id) ) : array() ;
+	}
+}
+
 ?>
 
-<form action="#" method="post" id="form1">
+<form action="#" method="post" id="form_individuel">
 	<table class="form t9 hsort">
 		<thead>
 			<tr>
@@ -44,8 +83,6 @@ if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');
 		</thead>
 		<tbody>
 			<?php
-			// Lister les parents
-			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , $debut_nom , $debut_prenom );
 			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)

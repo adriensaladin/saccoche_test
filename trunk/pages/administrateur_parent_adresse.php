@@ -32,21 +32,24 @@ $TITRE = "Adresses des parents";
 <?php
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
-$afficher     = (isset($_POST['f_afficher']))     ? TRUE                                    : FALSE ;
+$nom_prenom   = (isset($_POST['f_nomprenom']))    ? TRUE                                    : FALSE ;
+$levenshtein  = (isset($_POST['f_levenshtein']))  ? TRUE                                    : FALSE ;
+$recherche    = ( $nom_prenom || $levenshtein )   ? TRUE                                    : FALSE ;
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
 
-<form action="./index.php?page=administrateur_parent&amp;section=adresse" method="post" id="form0">
-	<div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <input type="hidden" id="f_afficher" name="f_afficher" value="1" /><button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
+<form action="./index.php?page=administrateur_parent&amp;section=adresse" method="post" id="form_recherche">
+	<div class="ti"><button id="f_nomprenom" name="f_nomprenom" type="submit" class="rechercher">Rechercher</button> des responsables dont le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> et/ou le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" />.</div>
+	<div class="ti"><button id="f_levenshtein" name="f_levenshtein" type="submit" class="rechercher">Rechercher</button> des responsables d'un même élève dont les adresses sont proches sans être identiques.</div>
 </form>
 
 <hr />
 
 <?php
-if($afficher)
+if($recherche)
 {
 	require(CHEMIN_DOSSIER_PAGES.'administrateur_parent_adresse.inc.php');
 }

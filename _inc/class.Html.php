@@ -384,6 +384,7 @@ class Html
       {
         $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$afficher_score][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
       }
+      $retour .= '</div>';
     }
     // légende etat_acquisition
     if($etat_acquisition)

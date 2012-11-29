@@ -104,7 +104,7 @@ if($action=='maj_etape1')
 	{
 		exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS !');
 	}
-	$contenu_zip = url_get_contents( SERVEUR_TELECHARGEMENT ,FALSE /*tab_post*/ , 60 /*timeout*/ );
+	$contenu_zip = url_get_contents( SERVEUR_TELECHARGEMENT ,FALSE /*tab_post*/ , 90 /*timeout*/ );
 	if(substr($contenu_zip,0,6)=='Erreur')
 	{
 		exit(']¤['.'pb'.']¤['.$contenu_zip);

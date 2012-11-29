@@ -405,7 +405,7 @@ class FileSystem
       {
         $fichier = $dossier.$ds.$fichier_nom;
         $extension = pathinfo($fichier,PATHINFO_EXTENSION);
-        $date_unix = filemtime($fichier);
+        $date_unix = @filemtime($fichier); // @ car dans de rares cas le fichier est simultanément supprimé par un autre processus
         if( (is_file($fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
         {
           unlink($fichier);

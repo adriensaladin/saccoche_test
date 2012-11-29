@@ -1478,7 +1478,7 @@ class PDF extends FPDF
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		if( $test_nouvelle_page )
 		{
-			$this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($matiere_nom) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($matiere_nom)                            , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
 			$this->SetFont('Arial' , 'B' , $this->taille_police);
 			$this->choisir_couleur_texte('gris_fonce');
 			$this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
@@ -1519,17 +1519,6 @@ class PDF extends FPDF
 
 	public function bilan_item_individuel_debut_ligne_item($item_ref,$item_texte)
 	{
-		$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
-		$hauteur_requise = $this->lignes_hauteur;
-		if($hauteur_requise > $hauteur_restante)
-		{
-			// Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève (y a des bilans avec tellement d'items qu'il faut aussi mettre le test ici...
-			$this->AddPage($this->orientation , 'A4');
-			$this->choisir_couleur_texte('gris_fonce');
-			$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
-			$this->choisir_couleur_texte('noir');
-			$this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
-		}
 		list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
 		$this->choisir_couleur_fond('gris_clair');
 		$this->SetFont('Arial' , '' , $this->taille_police*0.8);

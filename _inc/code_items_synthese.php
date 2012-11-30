@@ -62,7 +62,7 @@ $tab_eval       = array();	// [eleve_id][item_id][devoir] => array(note,date,inf
 
 if( ($make_html) || ($make_pdf) || ($make_graph) )
 {
-	$tab_titre = array('matiere'=>'d\'une matière' , 'multimatiere'=>'multidisciplinaire');
+	$tab_titre = array('matiere'=>'d\'une matière' , 'multimatiere'=>'pluridisciplinaire');
 	if(!$aff_coef)  { $texte_coef       = ''; }
 	if(!$aff_socle) { $texte_socle      = ''; }
 	if(!$aff_lien)  { $texte_lien_avant = ''; }

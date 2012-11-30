@@ -262,7 +262,7 @@ function texte_ligne_assiduite($tab_assiduite)
 	extract($tab_assiduite); // $absence $non_justifie $retard
 	if( ($absence===NULL) && ($non_justifie===NULL) && ($retard===NULL) )
 	{
-		return $intro.'aucune saisie renseignée.';
+		return $intro.'aucune absence ni retard.';
 	}
 	if(!$absence)
 	{

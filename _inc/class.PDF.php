@@ -929,28 +929,30 @@ class PDF extends FPDF
 		if($type_legende=='pourcentage_acquis')
 		{
 			$this->SetFont('Arial' , 'B' , $size);
-			$this->Write($hauteur , To::pdf('Pourcentages d\'items acquis (à gauche) :') , '');
+			$indication_position = ($this->orientation=='portrait') ? ' (à gauche)' : '' ;
+			$this->Write($hauteur , To::pdf('Pourcentages d\'items acquis'.$indication_position.' :') , '');
 			$this->SetFont('Arial' , '' , $size);
 			$tab_seuils = array('NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'],'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'],'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100');
 			foreach($tab_seuils as $etat => $texte)
 			{
 				$this->Write($hauteur , $espace , '');
 				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
-				$this->Cell(2*$case_hauteur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 			}
 		}
 		// Afficher la légende des états de validation
 		if($type_legende=='etat_validation')
 		{
 			$this->SetFont('Arial' , 'B' , $size);
-			$this->Write($hauteur , To::pdf('États de validation (à droite) :') , '');
+			$indication_position = ($this->orientation=='portrait') ? ' (à droite)' : '' ;
+			$this->Write($hauteur , To::pdf('États de validation'.$indication_position.' :') , '');
 			$this->SetFont('Arial' , '' , $size);
 			$tab_etats = array('v1'=>'Validé','v0'=>'Invalidé','v2'=>'Non renseigné');
 			foreach($tab_etats as $etat => $texte)
 			{
 				$this->Write($hauteur , $espace , '');
 				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
-				$this->Cell(2*$case_hauteur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell(3.5*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 			}
 		}
 		$this->SetXY($this->marge_gauche , $ordonnee+$hauteur);

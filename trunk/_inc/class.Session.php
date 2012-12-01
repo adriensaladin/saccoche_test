@@ -71,7 +71,7 @@ class Session
       $ip_candidate = $tab_forwarded[0];
       $ip_composantes = explode('.', $ip_candidate);
       // On vérifie que ça ressemble à une ip (au cas où on aurait une chaîne bizarre ou vide on garde notre REMOTE_ADDR)
-      if (count($ip_composantes) == 4 && min($ip_composantes) >=0 && max($ip_composantes) < 256 && max($ip_composantes) > 0)
+      if ( (count($ip_composantes)==4) && (min($ip_composantes)>=0) && (max($ip_composantes)<256) && (max($ip_composantes)>0) )
       {
         $ip = $ip_candidate;
       }

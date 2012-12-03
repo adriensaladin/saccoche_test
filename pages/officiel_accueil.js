@@ -595,7 +595,7 @@ $(document).ready
 			{
 				if(memo_rubrique_type=='appr')
 				{
-					if( !$('#f_appreciation').val().trim().length )
+					if( !$.trim($('#f_appreciation').val()).length )
 					{
 						$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Absence d'appréciation !");
 						$('#f_appreciation').focus();

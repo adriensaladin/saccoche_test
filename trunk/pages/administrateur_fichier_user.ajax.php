@@ -193,10 +193,10 @@ if( $step==20 )
 		{
 			exit('Erreur : le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !');
 		}
-		$uai = (string)$xml->PARAMETRES->UAJ->attributes()->CODE;
+		$uai = @(string)$xml->PARAMETRES->UAJ->attributes()->CODE;
 		if(!$uai)
 		{
-			exit('Erreur : le fichier transmis ne comporte pas de numéro UAI !');
+			exit('Erreur : le contenu du fichier transmis ne correspond pas à ce qui est attendu !');
 		}
 		if($uai!=$_SESSION['WEBMESTRE_UAI'])
 		{

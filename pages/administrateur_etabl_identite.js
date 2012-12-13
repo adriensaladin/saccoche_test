@@ -697,5 +697,105 @@ $(document).ready
 			}
 		);
 
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Upload d'un fichier image avec jquery.ajaxupload.js
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Envoi du fichier avec jquery.ajaxupload.js
+		var uploader_signature = new AjaxUpload
+		('#f_upload',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'csrf':CSRF,'action':'upload_logo'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier,
+				onSubmit: verifier_fichier,
+				onComplete: retourner_fichier
+			}
+		);
+
+		function changer_fichier(fichier_nom,fichier_extension)
+		{
+			$("#f_upload").prop('disabled',true);
+			$('#ajax_upload').removeAttr("class").html('&nbsp;');
+			return true;
+		}
+
+		function verifier_fichier(fichier_nom,fichier_extension)
+		{
+			if (fichier_nom==null || fichier_nom.length<5)
+			{
+				$("#f_upload").prop('disabled',false);
+				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+				return false;
+			}
+			else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+			{
+				$("#f_upload").prop('disabled',false);
+				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (jpg jpeg gif png).');
+				return false;
+			}
+			else
+			{
+				$('#ajax_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				return true;
+			}
+		}
+
+		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+		{
+			if(responseHTML.substring(0,4)!='<li>')
+			{
+				$("#f_upload").prop('disabled',false);
+				$('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+			else
+			{
+				initialiser_compteur();
+				$("#f_upload").prop('disabled',false);
+				$('#ajax_upload').removeAttr("class").addClass("valide").html('Logo ajouté');
+				$('#puce_logo').html(responseHTML);
+			}
+		}
+
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Appel en ajax pour supprimer le logo de l'établissement
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		$('q.supprimer').live
+		( 'click' , function()
+			{
+				$('#ajax_upload').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'csrf='+CSRF+'&action=delete_logo',
+						dataType : "html",
+						error : function(jqXHR, textStatus, errorThrown)
+						{
+							$('#ajax_upload').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML!='ok')
+							{
+								$('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_upload').removeAttr("class").html('');
+								$('#puce_logo').html('<li>Pas de logo actuellement enregistré.</li>');
+							}
+						}
+					}
+				);
+			}
+		);
+
 	}
 );

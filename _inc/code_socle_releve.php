@@ -468,7 +468,7 @@ $titre1 = ($mode=='manuel') ? 'Relevé de maîtrise du socle commun [matières r
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
 if($make_html)
 {
-	$bouton_print_appr = ($make_officiel) ? ' <button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button>' : '' ;
+	$bouton_print_appr = ($make_officiel) ? ' <button id="imprimer_appreciations_perso" type="button" class="imprimer">Archiver mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Archiver toutes les appréciations</button>' : '' ;
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
@@ -494,7 +494,7 @@ foreach($tab_eleve as $tab)
 		if($make_pdf)
 		{
 			$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-			$tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
+			$tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
 			$releve_PDF->releve_socle_entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 		}
 		if($make_html)

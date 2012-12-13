@@ -2356,6 +2356,24 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	// MAJ 2012-12-01 => 2012-12-12
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-12-01')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-12-12';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modif index et champ table sacoche_image
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image DROP INDEX image_objet' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image DROP PRIMARY KEY , ADD UNIQUE (user_id , image_objet )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image CHANGE image_objet image_objet ENUM( "signature", "photo", "logo" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "photo"' );
+		}
+	}
+
+
 }
 
 }

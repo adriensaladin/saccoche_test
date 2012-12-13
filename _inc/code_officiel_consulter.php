@@ -263,7 +263,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 
 if(!count($tab_eval))
 {
-	${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période pour cet élève selon les paramètres choisis !</div>' ;
+	${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période selon les paramètres choisis !</div>' ;
 }
 
 if($ACTION=='initialiser')

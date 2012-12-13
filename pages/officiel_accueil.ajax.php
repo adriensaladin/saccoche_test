@@ -122,6 +122,13 @@ if( ($action=='imprimer_appreciations_perso') || ($action=='imprimer_appreciatio
 
 	// Récupérer les saisies effectuées pour le bilan officiel concerné et pour le prof concerné
 
+	function suppression_sauts_de_ligne($texte)
+	{
+		$tab_bad = array( "\r\n" , "\r" , "\n" );
+		$tab_bon = ' ';
+		return str_replace( $tab_bad , $tab_bon , $texte );
+	}
+
 	$tab_saisie = array();	// [eleve_id][rubrique_id] => array(rubrique_nom,note,appreciation);
 	$prof_id = ($type_contenu=='perso') ? $_SESSION['USER_ID'] : 0 ;
 	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , $prof_id , TRUE /*with_rubrique_nom*/ );
@@ -137,7 +144,7 @@ if( ($action=='imprimer_appreciations_perso') || ($action=='imprimer_appreciatio
 		foreach($DB_TAB[$_SESSION['USER_ID']] as $DB_ROW)
 		{
 			$rubrique_nom = ($DB_ROW['rubrique_nom']!==NULL) ? $DB_ROW['rubrique_nom'] : 'Appréciation générale' ;
-			$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']] = array( 'rubrique_nom'=>$rubrique_nom , 'note'=>NULL , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
+			$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']] = array( 'rubrique_nom'=>$rubrique_nom , 'note'=>NULL , 'appreciation'=>suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']) );
 			$nb_appreciations++;
 		}
 		// Les notes qui vont avec (attention, la requête renvoie les notes de toutes les rubriques, il faut ne prendre que celles qui vont avec les appréciations).
@@ -165,7 +172,7 @@ if( ($action=='imprimer_appreciations_perso') || ($action=='imprimer_appreciatio
 			if($DB_ROW['prof_id'])
 			{
 				// Les appréciations
-				$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][] = $DB_ROW['prof_info'].' - '.$DB_ROW['saisie_appreciation'];
+				$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][] = suppression_sauts_de_ligne($DB_ROW['prof_info'].' - '.$DB_ROW['saisie_appreciation']);
 				$nb_appreciations++;
 			}
 		}

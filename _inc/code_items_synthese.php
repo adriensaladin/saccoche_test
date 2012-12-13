@@ -99,9 +99,9 @@ if($date_mysql_debut>$date_mysql_fin)
 
 $tab_precision = array
 (
-	'auto' => 'notes antérieures comptées selon les référentiels',
-	'oui'  => 'notes antérieures prises en compte',
-	'non'  => 'notes antérieures ignorées'
+	'auto' => 'notes antérieures selon référentiels',
+	'oui'  => 'avec notes antérieures',
+	'non'  => 'sans notes antérieures'
 );
 $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
 
@@ -328,7 +328,7 @@ $tab_graph_data = array();
 // Préparatifs
 if( ($make_html) || ($make_graph) )
 {
-	$bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button>' : '' ;
+	$bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="imprimer_appreciations_perso" type="button" class="imprimer">Archiver mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Archiver toutes les appréciations</button>' : '' ;
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
@@ -357,7 +357,7 @@ foreach($tab_eleve as $tab)
 			if($make_pdf)
 			{
 				$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-				$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
+				$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
 				$releve_PDF->bilan_synthese_entete( $format , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 			}
 			// On passe en revue les matières...

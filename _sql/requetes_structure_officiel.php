@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_officiel_assiduite", "sacoche_image".
+// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_officiel_assiduite".
 
 class DB_STRUCTURE_OFFICIEL extends DB
 {
@@ -133,35 +133,6 @@ public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
 }
 
 /**
- * recuperer_signatures
- *
- * @param string   $listing_user_id
- * @return array
- */
-public static function DB_recuperer_signatures($listing_user_id)
-{
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') ';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * lister_signatures
- *
- * @return array
- */
-public static function DB_lister_signatures()
-{
-	$DB_SQL = 'SELECT sacoche_image.*, user_nom, user_prenom ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE image_objet="signature" ';
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * lister_bilan_officiel_fichiers
  * @param string $officiel_type  rien pour tous les types
  * @param int    $periode_id     0 pour toutes les périodes
@@ -206,7 +177,7 @@ public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
  * @param string   $listing_user_id
  * @return array   array( eleve_id => array( i => array(info_resp) ) )
  */
-public static function lister_adresses_parents_for_enfants($listing_user_id)
+public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
 {
 	$DB_SQL = 'SELECT eleve_id, resp_legal_num, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.* ';
 	$DB_SQL.= 'FROM sacoche_user AS enfant ';
@@ -255,24 +226,6 @@ public static function DB_modifier_bilan_officiel_fichier($user_id,$officiel_typ
 }
 
 /**
- * modifier_signature
- *
- * @param int    $user_id   0 pour le tampon de l'établissement
- * @param string $image_contenu
- * @param string $image_format
- * @param int    $image_largeur
- * @param int    $image_hauteur
- * @return void
- */
-public static function DB_modifier_signature($user_id,$image_contenu,$image_format,$image_largeur,$image_hauteur)
-{
-	$DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
-	$DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>'signature',':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * modifier_officiel_assiduite
  *
  * @param int     $periode_id
@@ -306,20 +259,6 @@ public static function DB_supprimer_bilan_officiel_saisie($officiel_type,$period
 	$DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_id=:eleve_id AND rubrique_id=:rubrique_id ';
 	$DB_SQL.= ($rubrique_id>0) ? 'AND prof_id=:prof_id ' : '' ;
 	$DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':eleve_id'=>$eleve_id,':rubrique_id'=>$rubrique_id,':prof_id'=>$prof_id);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * supprimer_signature
- *
- * @param int    $user_id   0 pour le tampon de l'établissement
- * @return void
- */
-public static function DB_supprimer_signature($user_id)
-{
-	$DB_SQL = 'DELETE FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

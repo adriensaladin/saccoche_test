@@ -1699,7 +1699,7 @@ if( $step==52 )
 				$nb_add++;
 				$tab_password[$user_id] = $password;
 				$classe_ou_profil = ($is_profil_eleve) ? $tab_nom_classe[$tab_memo_analyse['ajouter'][$i_fichier]['classe']] : mb_strtoupper($tab_memo_analyse['ajouter'][$i_fichier]['profil']) ;
-				$fcontenu_csv .= $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'].$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
+				$fcontenu_csv .= $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
 				$ligne1 = $classe_ou_profil;
 				$ligne2 = $tab_memo_analyse['ajouter'][$i_fichier]['nom'].' '.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'];
 				$ligne3 = 'Utilisateur : '.$login;

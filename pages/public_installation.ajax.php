@@ -195,12 +195,14 @@ if( $step==41 )
 	$password     = (isset($_POST['f_password1']))    ? Clean::password($_POST['f_password1']) : '';
 	if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
 	{
-		// Vérifier le domaine du serveur mail
-		$mail_domaine = tester_domaine_courriel_valide($courriel);
+		// On ne vérifie pas le domaine du serveur mail car ce peut être une installation sur un serveur local non ouvert sur l'extérieur, ou dont le proxy n'a pas encore été configuré.
+		/*
+		$mail_domaine = ester_domaine_courriel_valide($courriel);
 		if($mail_domaine!==TRUE)
 		{
 			exit('Erreur avec le domaine '.$mail_domaine.' !');
 		}
+		*/
 		// Il faut tout transmettre car à ce stade le fichier n'existe pas.
 		FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_INSTALLATION'=>$installation,'HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>'','CNIL_NUMERO'=>'non renseignée','CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'','WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel,'WEBMESTRE_PASSWORD_MD5'=>crypter_mdp($password),'WEBMESTRE_ERREUR_DATE'=>0,'SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'','FICHIER_TAILLE_MAX'=>500,'FICHIER_DUREE_CONSERVATION'=>12,'CHEMIN_LOGS_PHPCAS'=>CHEMIN_DOSSIER_TMP) );
 		$affichage .= '<p><label class="valide">Les informations concernant le webmestre et l\'hébergement sont maintenant renseignées.</label></p>'."\r\n";

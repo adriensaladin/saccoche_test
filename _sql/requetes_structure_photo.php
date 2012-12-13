@@ -28,24 +28,23 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent que la table "sacoche_image".
+// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_image".
 
-class DB_STRUCTURE_IMAGE extends DB
+class DB_STRUCTURE_PHOTO extends DB
 {
 
 /**
- * recuperer_image
+ * recuperer_photo
  *
- * @param int    $user_id       0 pour le logo ou le tampon de l'établissement
- * @param string $image_objet   "photo" | "signature" | "logo"
+ * @param int   $user_id
  * @return array
  */
-public static function DB_recuperer_image($user_id,$image_objet)
+public static function recuperer_photo($user_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_VAR = array(':user_id'=>$user_id);
 	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -53,64 +52,44 @@ public static function DB_recuperer_image($user_id,$image_objet)
  * lister_photos
  *
  * @param string   $listing_user_id
- * @param string   $image_objet   "photo" | "signature" | "logo"
  * @return array
  */
-public static function DB_lister_images($listing_user_id,$image_objet)
+public static function lister_photos($listing_user_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND image_objet=:image_objet ';
-	$DB_VAR = array(':image_objet'=>$image_objet);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_signatures_avec_identite
- *
- * @return array
- */
-public static function DB_lister_signatures_avec_identite()
-{
-	$DB_SQL = 'SELECT sacoche_image.*, user_nom, user_prenom ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE image_objet="signature" ';
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
- * modifier_image
+ * modifier_photo
  *
- * @param int    $user_id       0 pour le logo ou le tampon de l'établissement
- * @param string $image_objet   "photo" | "signature" | "logo"
+ * @param int    $user_id   0 pour le tampon de l'établissement
  * @param string $image_contenu
- * @param string $image_format   "jpeg" sauf peut-être pour le logo
  * @param int    $image_largeur
  * @param int    $image_hauteur
  * @return void
  */
-public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$image_format,$image_largeur,$image_hauteur)
+public static function DB_modifier_photo($user_id,$image_contenu,$image_largeur,$image_hauteur)
 {
 	$DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
 	$DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet,':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
+	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>'photo',':image_contenu'=>$image_contenu,':image_format'=>'jpeg',':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
- * supprimer_image
+ * supprimer_photo
  *
- * @param int    $user_id       0 pour le logo ou le tampon de l'établissement
- * @param string $image_objet   "photo" | "signature" | "logo"
+ * @param int    $user_id
  * @return void
  */
-public static function DB_supprimer_image($user_id,$image_objet)
+public static function DB_supprimer_photo($user_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_VAR = array(':user_id'=>$user_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

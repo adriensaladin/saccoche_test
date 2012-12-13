@@ -163,9 +163,9 @@ if($besoin_notes)
 
 	$tab_precision = array
 	(
-		'auto' => 'notes antérieures selon référentiels',
-		'oui'  => 'avec notes antérieures',
-		'non'  => 'sans notes antérieures'
+		'auto' => 'notes antérieures comptées selon les référentiels',
+		'oui'  => 'notes antérieures prises en compte',
+		'non'  => 'notes antérieures ignorées'
 	);
 	$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
 }

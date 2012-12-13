@@ -195,14 +195,14 @@ $(document).ready
 				}
 				else
 				{
-					$('#listing_signatures').prepend(responseHTML);
+					$('#listing_signatures').append(responseHTML);
 				}
 				$('#sgn_none').remove();
 			}
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Appel en ajax pour supprimer le tampon de l'établissement | une signature
+		// Appel en ajax pour supprimer le tampon de l'établissement
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.supprimer').live

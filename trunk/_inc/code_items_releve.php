@@ -109,9 +109,9 @@ if($date_mysql_debut>$date_mysql_fin)
 
 $tab_precision = array
 (
-	'auto' => 'notes antérieures comptées selon les référentiels',
-	'oui'  => 'notes antérieures prises en compte',
-	'non'  => 'notes antérieures ignorées'
+	'auto' => 'notes antérieures selon référentiels',
+	'oui'  => 'avec notes antérieures',
+	'non'  => 'sans notes antérieures'
 );
 $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
 
@@ -456,7 +456,7 @@ if($type_individuel)
 		$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-		$releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="imprimer_appreciations_perso" type="button" class="imprimer">Imprimer mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Imprimer toutes les appréciations</button></div>';
+		$releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="imprimer_appreciations_perso" type="button" class="imprimer">Archiver mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Archiver toutes les appréciations</button></div>';
 		$bilan_colspan = $cases_nb + 2 ;
 		$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
@@ -465,9 +465,9 @@ if($type_individuel)
 	{
 		// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 		$lignes_nb = ($format=='matiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
-		$legende_nb_lignes = 1 + ($retroactif!='non') + ($aff_etat_acquisition) ;
+		$aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
 		$releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
-		$releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $cases_nb , $cases_largeur , $lignes_nb , $legende_nb_lignes , $eleve_nb , $pages_nb );
+		$releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
 	}
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
@@ -483,8 +483,8 @@ if($type_individuel)
 				if($make_pdf)
 				{
 					$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-					$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
-					$releve_PDF->bilan_item_individuel_entete( $format , $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes , $legende_nb_lignes );
+					$tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
+					$releve_PDF->bilan_item_individuel_entete( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 				}
 				// Pour chaque matiere...
 				foreach($tab_matiere as $matiere_id => $matiere_nom)
@@ -763,7 +763,7 @@ if($type_individuel)
 				if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
 				{
 					if($make_html) { $releve_HTML_individuel .= $legende_html; }
-					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende( $format, TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($aff_etat_acquisition) /*score_bilan*/ ); }
+					if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
 				}
 			}
 		}

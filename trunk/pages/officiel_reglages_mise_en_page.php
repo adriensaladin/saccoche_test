@@ -32,6 +32,7 @@ $check_adresse   = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT']
 $check_telephone = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone')) ? ' checked' : '' ;
 $check_fax       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))       ? ' checked' : '' ;
 $check_courriel  = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))  ? ' checked' : '' ;
+$check_logo      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))      ? ' checked' : '' ;
 
 $options_infos_responsables = '<option value="non">ne pas indiquer les coordonnées des responsables</option><option value="oui_libre">indiquer les coordonnées des responsables, emplacement libre</option><option value="oui_force">indiquer les coordonnées des responsables, emplacement forcé (enveloppe à fenêtre)</option>';
 $options_infos_responsables = str_replace( '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'"' , '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'" selected' , $options_infos_responsables );
@@ -72,7 +73,7 @@ $select_user = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_dir
 
 // Récupérer les signatures existantes, dont le tampon de l'établissement.
 $li_signatures = '';
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_signatures();
+$DB_TAB = DB_STRUCTURE_IMAGE::DB_lister_signatures_avec_identite();
 foreach($DB_TAB as $DB_ROW)
 {
 	// Enregistrer temporairement le fichier sur le disque
@@ -83,7 +84,7 @@ foreach($DB_TAB as $DB_ROW)
 	list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$li_signatures .= '<li id="sgn_'.$DB_ROW['user_id'].'">'.html($texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
-$li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fichier image trouvé !</li>';
+$li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fichier image trouvé !</li>' ;
 
 ?>
 
@@ -97,7 +98,8 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
 		<label for="f_coordonnees_adresse"><input type="checkbox" id="f_coordonnees_adresse" name="f_coordonnees[]" value="adresse"<?php echo $check_adresse ?> /> adresse</label>&nbsp;&nbsp;&nbsp;
 		<label for="f_coordonnees_telephone"><input type="checkbox" id="f_coordonnees_telephone" name="f_coordonnees[]" value="telephone"<?php echo $check_telephone ?> /> téléphone</label>&nbsp;&nbsp;&nbsp;
 		<label for="f_coordonnees_fax"><input type="checkbox" id="f_coordonnees_fax" name="f_coordonnees[]" value="fax"<?php echo $check_fax ?> /> fax</label>&nbsp;&nbsp;&nbsp;
-		<label for="f_coordonnees_courriel"><input type="checkbox" id="f_coordonnees_courriel" name="f_coordonnees[]" value="courriel"<?php echo $check_courriel ?> /> courriel</label>
+		<label for="f_coordonnees_courriel"><input type="checkbox" id="f_coordonnees_courriel" name="f_coordonnees[]" value="courriel"<?php echo $check_courriel ?> /> courriel</label>&nbsp;&nbsp;&nbsp;
+		<label for="f_coordonnees_logo"><input type="checkbox" id="f_coordonnees_logo" name="f_coordonnees[]" value="logo"<?php echo $check_logo ?> /> logo</label>
 	</p>
 	<p>
 		<label class="tab" for="f_infos_responsables">Coord. responsables :</label><select id="f_infos_responsables" name="f_infos_responsables"><?php echo $options_infos_responsables; ?></select>

@@ -305,7 +305,6 @@ class FileSystem
    */
   public static function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
   {
-    $fichier_nom = CHEMIN_DOSSIER_CONFIG.'constantes.php';
     $tab_constantes_requises = array(
       'HEBERGEUR_INSTALLATION',
       'HEBERGEUR_DENOMINATION',
@@ -336,14 +335,29 @@ class FileSystem
     $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
     foreach($tab_constantes_requises as $constante_nom)
     {
-      $constante_valeur = (isset($tab_constantes_modifiees[$constante_nom])) ? $tab_constantes_modifiees[$constante_nom] : constant($constante_nom);
+      if(isset($tab_constantes_modifiees[$constante_nom]))
+      {
+        $constante_valeur = $tab_constantes_modifiees[$constante_nom];
+      }
+      else if(defined($constante_nom))
+      {
+        $constante_valeur = constant($constante_nom);
+      }
+      else
+      {
+        // Il est déjà arrivé que cette fonction soit appelée de façon inopportune :
+        // le fichier existe mais il n'est pas lu (problème du système de fichier ?), 
+        // du coup on tente de le réécrire avec des constantes vides (puisque non récupérées),
+        // ce qui pose un gros souci (fichier de configuration de l'hébergement corrompu).
+        exit_error( 'Constante manquante' /*titre*/ , 'Pour la mise à jour du fichier de configuration de l\'hébergement, la constante "'.$constante_nom.'" s\'avère manquer.<br />Par sécurité, arrêt de l\'application.' /*contenu*/ );
+      }
       $espaces = str_repeat(' ',26-strlen($constante_nom));
       $quote = '\'';
       // var_export() permet d'échapper \ ' et inclus des ' autour.
       $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'."\r\n";
     }
     $fichier_contenu.= '?>'."\r\n";
-    FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
+    FileSystem::ecrire_fichier(CHEMIN_FICHIER_CONFIG_INSTALL,$fichier_contenu);
   }
 
   /**

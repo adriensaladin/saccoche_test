@@ -30,6 +30,20 @@ $TITRE = "Identité de l'établissement";
 
 $options_mois = '<option value="1">calquée sur l\'année civile</option><option value="2">bascule au 1er février</option><option value="3">bascule au 1er mars</option><option value="4">bascule au 1er avril</option><option value="5">bascule au 1er mai</option><option value="6">bascule au 1er juin</option><option value="7">bascule au 1er juillet</option><option value="8">bascule au 1er août</option><option value="9">bascule au 1er septembre</option><option value="10">bascule au 1er octobre</option><option value="11">bascule au 1er novembre</option><option value="12">bascule au 1er décembre</option>';
 $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'" selected' , $options_mois );
+
+
+// Récupérer le logo, si présent.
+$li_logo = '<li>Pas de logo actuellement enregistré.</li>';
+$DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
+if(!empty($DB_ROW))
+{
+	// Enregistrer temporairement le fichier sur le disque
+	$fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
+	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
+	// Générer la balise html pour afficher l'image
+	list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+	$li_logo = '<li><img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
+}
 ?>
 
 <div id="div_instance">
@@ -79,6 +93,15 @@ $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , 
 			<span class="tab"></span><button id="bouton_valider_etablissement" type="submit" class="parametre">Valider.</button><label id="ajax_msg_etablissement">&nbsp;</label>
 		</p>
 	</form>
+
+	<hr />
+
+	<h2>Logo de l'établissement</h2>
+
+	<form action="#" method="post" id="form_logo">
+		<p><label class="tab" for="f_upload">Uploader image :</label> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
+	</form>
+	<ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
 
 	<hr />
 

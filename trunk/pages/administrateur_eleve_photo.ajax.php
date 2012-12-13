@@ -91,7 +91,7 @@ function photo_file_to_base($user_id,$fichier_chemin)
 	imagedestroy($image_new);
 	// stocker l'image dans la base
 	$image_contenu_base_64 = base64_encode(file_get_contents($fichier_chemin_vignette)) ;
-	DB_STRUCTURE_PHOTO::DB_modifier_photo( $user_id , $image_contenu_base_64 , $largeur_new , $hauteur_new );
+	DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'photo' , $image_contenu_base_64 , 'jpeg' , $largeur_new , $hauteur_new );
 	// effacer les fichiers images
 	unlink($fichier_chemin);
 	unlink($fichier_chemin_vignette);
@@ -125,7 +125,7 @@ if($action=='afficher')
 	}
 	// On récupère les photos
 	$listing_user_id = implode(',',array_keys($tab_vignettes));
-	$DB_TAB = DB_STRUCTURE_PHOTO::lister_photos($listing_user_id);
+	$DB_TAB = DB_STRUCTURE_IMAGE::DB_lister_images( $listing_user_id , 'photo' );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_vignettes[$DB_ROW['user_id']]['image'] = '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" /><q class="supprimer" title="Supprimer cette photo (aucune confirmation ne sera demandée)."></q>';
@@ -248,7 +248,7 @@ if( ($action=='envoyer_photo') && $user_id )
 
 if( ($action=='supprimer_photo') && $user_id )
 {
-	DB_STRUCTURE_PHOTO::DB_supprimer_photo($user_id);
+	DB_STRUCTURE_IMAGE::DB_supprimer_image( $user_id , 'photo' );
 	exit('ok');
 }
 

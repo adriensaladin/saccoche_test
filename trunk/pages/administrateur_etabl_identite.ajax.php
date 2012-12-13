@@ -139,6 +139,51 @@ if( $etablissement_denomination )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_logo (upload d'un fichier image)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='upload_logo')
+{
+	$fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
+	{
+		exit('Erreur : '.$result);
+	}
+	// vérifier la conformité du fichier image, récupérer les infos le concernant
+	$tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+	if($tab_infos==FALSE)
+	{
+		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+		exit('Erreur : le fichier image ne semble pas valide !');
+	}
+	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
+	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
+	// vérifier le type 
+	if(!isset($tab_extension_types[$image_type]))
+	{
+		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+		exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
+	}
+	$image_format = $tab_extension_types[$image_type];
+	// stocker l'image dans la base
+	DB_STRUCTURE_IMAGE::DB_modifier_image( 0 /*user_id*/ , 'logo' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
+	// Générer la balise html et afficher le retour
+	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+	exit('<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Supprimer un fichier image (logo de l'établissement)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='delete_logo')
+{
+	DB_STRUCTURE_IMAGE::DB_supprimer_image( 0 /*user_id*/ , 'logo' );
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mettre à jour mois_bascule_annee_scolaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

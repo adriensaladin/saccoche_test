@@ -431,9 +431,9 @@ function __autoload($class_name)
 
 		'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
 		'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
+		'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
 		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
 		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-		'DB_STRUCTURE_PHOTO'          => '_sql'.DS.'requetes_structure_photo.php' ,
 		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
 		'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
 

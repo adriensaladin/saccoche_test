@@ -122,7 +122,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	}
 	$image_format = $tab_extension_types[$image_type];
 	// stocker l'image dans la base
-	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
+	DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'signature' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
 	// Générer la balise html et afficher le retour
 	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
@@ -135,7 +135,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 
 if( ($action=='delete_signature') && ($user_id>=0) )
 {
-	DB_STRUCTURE_OFFICIEL::DB_supprimer_signature($user_id);
+	DB_STRUCTURE_IMAGE::DB_supprimer_image( $user_id , 'signature' );
 	exit('ok');
 }
 

@@ -2034,7 +2034,7 @@ public static function DB_corriger_anomalies()
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures élève/classe : '.$message.'.</label>';
 	// Recherche d'anomalies : signature associée à un user supprimé...
-	// Attention, l'id de user à 0 est normal pour le tampon de l'établissement
+	// Attention, l'id de user à 0 est normal pour le tampon et le logo de l'établissement
 	$DB_SQL = 'DELETE sacoche_image ';
 	$DB_SQL.= 'FROM sacoche_image ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';

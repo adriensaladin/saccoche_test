@@ -95,39 +95,10 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 // Jeton CSRF
 Session::verifier_jeton_anti_CSRF($PAGE);
 
-// Patch fichier de config
+// MAJ fichier de config hébergement si besoin
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
-	// DEBUT PATCH CONFIG 1
-	// A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [TODO] peut être retiré dans un an environ
-	if(!defined('SERVEUR_PROXY_USED'))
-	{
-		FileSystem::fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
-	}
-	// FIN PATCH CONFIG 1
-	// DEBUT PATCH CONFIG 2
-	// A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [TODO] peut être retiré dans un an environ
-	if(!defined('CNIL_NUMERO'))
-	{
-		FileSystem::fabriquer_fichier_hebergeur_info( array('CNIL_NUMERO'=>HEBERGEUR_CNIL,'CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'') );
-	}
-	// FIN PATCH CONFIG 2
-	// DEBUT PATCH CONFIG 3
-	// A compter du 14/03/2012, ajout de paramètres dans le fichier de constantes pour les fichiers associés aux devoirs. [TODO] peut être retiré dans un an environ
-	if(!defined('FICHIER_DUREE_CONSERVATION'))
-	{
-		FileSystem::fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>500,'FICHIER_DUREE_CONSERVATION'=>12) );
-		$ancien_fichier = CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt';
-		if(is_file($ancien_fichier)) unlink($ancien_fichier);
-	}
-	// FIN PATCH CONFIG 3
-	// DEBUT PATCH CONFIG 4
-	// A compter du 18/10/2012, ajout de paramètre dans le fichier de constantes pour le chemin des logs phpCAS. [TODO] peut être retiré dans un an environ
-	if(!defined('CHEMIN_LOGS_PHPCAS'))
-	{
-		FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>CHEMIN_DOSSIER_TMP) );
-	}
-	// FIN PATCH CONFIG 4
+	require(CHEMIN_DOSSIER_INCLUDE.'maj_fichier_constantes_hebergement.php');
 }
 
 // Interface de connexion à la base, chargement et config (test sur CHEMIN_FICHIER_CONFIG_INSTALL car à éviter si procédure d'installation non terminée).

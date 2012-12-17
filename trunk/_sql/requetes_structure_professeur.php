@@ -51,12 +51,30 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
 }
 
 /**
+ * compter_demandes_eleves_en_attente
+ *
+ * @param int  $prof_id
+ * @return int
+ */
+public static function DB_compter_demandes_eleves_en_attente($prof_id)
+{
+	$listing_eleves_id = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur($prof_id);
+	if(!$listing_eleves_id) return 0;
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_demande ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
+	$DB_SQL.= 'WHERE demande_statut=:statut AND sacoche_demande.user_id IN('.$listing_eleves_id.') AND sacoche_jointure_user_matiere.user_id=:user_id ';
+	$DB_VAR = array(':statut'=>'eleve',':user_id'=>$prof_id);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Retourner les niveaux et matières des référentiels auxquels un professeur a accès.
  *
- * @param int  $user_id
+ * @param int  $prof_id
  * @return array
  */
-public static function DB_lister_matieres_niveaux_referentiels_professeur($user_id)
+public static function DB_lister_matieres_niveaux_referentiels_professeur($prof_id)
 {
 	$DB_SQL = 'SELECT matiere_id, matiere_ref, matiere_nom, niveau_id, niveau_nom, jointure_coord ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
@@ -65,7 +83,7 @@ public static function DB_lister_matieres_niveaux_referentiels_professeur($user_
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 AND niveau_actif=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC';
-	$DB_VAR = array(':user_id'=>$user_id);
+	$DB_VAR = array(':user_id'=>$prof_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -75,14 +93,14 @@ public static function DB_lister_matieres_niveaux_referentiels_professeur($user_
  * @param int $user_id
  * @return array|string
  */
-public static function DB_lister_matieres_professeur_infos_referentiel($user_id)
+public static function DB_lister_matieres_professeur_infos_referentiel($prof_id)
 {
 	$DB_SQL = 'SELECT matiere_id, matiere_nom, matiere_nb_demandes, jointure_coord ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
-	$DB_VAR = array(':user_id'=>$user_id);
+	$DB_VAR = array(':user_id'=>$prof_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -250,15 +268,71 @@ public static function DB_lister_users_avec_groupes_besoins($listing_groupes_id)
 }
 
 /**
+ * Retourner un tableau [valeur texte optgroup] des élèves d'un professeur identifié
+ *
+ * @param int $user_id
+ * @return array|string
+ */
+public static function DB_OPT_lister_eleves_professeur($prof_id)
+{
+	// sous-requêtes [http://dev.mysql.com/doc/refman/5.0/fr/subqueries.html]
+	$requete_id_classes = 'SELECT groupe_id FROM sacoche_jointure_user_groupe LEFT JOIN sacoche_groupe USING (groupe_id) WHERE user_id=:user_id AND groupe_type=:type1';
+	$requete_id_groupes = 'SELECT groupe_id FROM sacoche_jointure_user_groupe LEFT JOIN sacoche_groupe USING (groupe_id) WHERE user_id=:user_id AND groupe_type=:type2';
+	// éléments des deux requêtes
+	$sql_select = 'SELECT sacoche_user.user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, groupe_nom AS optgroup , groupe_type, niveau_ordre ';
+	$sql_from   = 'FROM sacoche_groupe LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$sql_where  = 'WHERE user_profil=:profil ';
+	$sql_join_classe = 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_id = sacoche_user.eleve_classe_id ';
+	$sql_join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) LEFT JOIN sacoche_user USING(user_id) ';
+	// les deux requêtes
+	$DB_SQL_CLASSE = $sql_select.$sql_from.$sql_join_classe.$sql_where.'AND groupe_id IN ('.$requete_id_classes.')';
+	$DB_SQL_GROUPE = $sql_select.$sql_from.$sql_join_groupe.$sql_where.'AND groupe_id IN ('.$requete_id_groupes.')';
+	// Union des deux requêtes [http://dev.mysql.com/doc/refman/5.0/fr/union.html]
+	$DB_SQL = '( '.$DB_SQL_CLASSE.' ) UNION ( '.$DB_SQL_GROUPE.' ) ORDER BY niveau_ordre ASC, groupe_type ASC, optgroup ASC, texte ASC ';
+	$DB_VAR = array(':user_id'=>$prof_id,':profil'=>'eleve',':type1'=>'classe',':type2'=>'groupe');
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève ne vous est affecté.' ;
+}
+
+/**
+ * Retourner le listing des ids des élèves d'un professeur identifié
+ *
+ * @param int $user_id
+ * @return string   liste des ids séparés par des virgules
+ */
+public static function DB_lister_ids_eleves_professeur($prof_id)
+{
+	// sous-requêtes [http://dev.mysql.com/doc/refman/5.0/fr/subqueries.html]
+	$requete_id_classes = 'SELECT groupe_id FROM sacoche_jointure_user_groupe LEFT JOIN sacoche_groupe USING (groupe_id) WHERE user_id=:user_id AND groupe_type=:type1';
+	$requete_id_groupes = 'SELECT groupe_id FROM sacoche_jointure_user_groupe LEFT JOIN sacoche_groupe USING (groupe_id) WHERE user_id=:user_id AND groupe_type=:type2';
+	// éléments des deux requêtes
+	$sql_select = 'SELECT GROUP_CONCAT(DISTINCT sacoche_user.user_id SEPARATOR ",") AS listing_eleves_id ';
+	$sql_from   = 'FROM sacoche_groupe LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$sql_where  = 'WHERE user_profil=:profil ';
+	$sql_join_classe = 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_id = sacoche_user.eleve_classe_id ';
+	$sql_join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) LEFT JOIN sacoche_user USING(user_id) ';
+	// les deux requêtes
+	$DB_SQL_CLASSE = $sql_select.$sql_from.$sql_join_classe.$sql_where.'AND groupe_id IN ('.$requete_id_classes.')';
+	$DB_SQL_GROUPE = $sql_select.$sql_from.$sql_join_groupe.$sql_where.'AND groupe_id IN ('.$requete_id_groupes.')';
+	// Union des deux requêtes [http://dev.mysql.com/doc/refman/5.0/fr/union.html]
+	$DB_SQL = '( '.$DB_SQL_CLASSE.' ) UNION ( '.$DB_SQL_GROUPE.' )';
+	$DB_VAR = array(':user_id'=>$prof_id,':profil'=>'eleve',':type1'=>'classe',':type2'=>'groupe');
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * lister_demandes_prof
  *
- * @param int    $matiere_id        id de la matière du prof
+ * @param int    $matiere_id        id de la matière du prof ; si 0 alors chercher parmi toutes les matières du prof
  * @param int    $listing_user_id   id des élèves du prof séparés par des virgules
  * @return array
  */
 public static function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 {
-	$DB_SQL = 'SELECT sacoche_demande.*, ';
+	$select_matiere = ($matiere_id) ? '' : 'matiere_nom, ';
+	$order_matiere  = ($matiere_id) ? '' : 'matiere_nom ASC, ';
+
+	$DB_SQL = 'SELECT sacoche_demande.*, '.$select_matiere;
 	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
 	$DB_SQL.= 'item_nom, user_nom, user_prenom ';
 	$DB_SQL.= 'FROM sacoche_demande ';
@@ -267,9 +341,18 @@ public static function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') AND sacoche_demande.matiere_id=:matiere_id ';
-	$DB_SQL.= 'ORDER BY niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_VAR = array(':matiere_id'=>$matiere_id);
+	if($matiere_id)
+	{
+		$DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') AND sacoche_demande.matiere_id=:matiere_id ';
+	}
+	else
+	{
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
+		$DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_jointure_user_matiere.matiere_id=sacoche_matiere.matiere_id ';
+		$DB_SQL.= 'WHERE sacoche_user.user_id IN('.$listing_user_id.') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
+	}
+	$DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':prof_id'=>$_SESSION['USER_ID']);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -410,12 +493,12 @@ public static function DB_lister_saisies_devoir($devoir_id,$with_REQ)
  * @param int   $user_id
  * @return array
  */
-public static function DB_lister_selection_items($user_id)
+public static function DB_lister_selection_items($prof_id)
 {
 	$DB_SQL = 'SELECT selection_item_id, selection_item_nom, selection_item_liste ';
 	$DB_SQL.= 'FROM sacoche_selection_item ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id);
+	$DB_VAR = array(':user_id'=>$prof_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -444,13 +527,13 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
  * @param int $user_id
  * @return int
  */
-public static function DB_tester_prof_principal($user_id)
+public static function DB_tester_prof_principal($prof_id)
 {
 	$DB_SQL = 'SELECT groupe_id ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp ';
 	$DB_SQL.= 'LIMIT 1'; // utile
-	$DB_VAR = array(':user_id'=>$user_id,':pp'=>1);
+	$DB_VAR = array(':user_id'=>$prof_id,':pp'=>1);
 	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -480,14 +563,14 @@ public static function DB_tester_groupe_nom($groupe_nom,$groupe_id=FALSE)
  * @param int    $selection_item_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public static function DB_tester_selection_items_nom($user_id,$selection_item_nom,$selection_item_id=FALSE)
+public static function DB_tester_selection_items_nom($prof_id,$selection_item_nom,$selection_item_id=FALSE)
 {
 	$DB_SQL = 'SELECT selection_item_id ';
 	$DB_SQL.= 'FROM sacoche_selection_item ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND selection_item_nom=:selection_item_nom ';
 	$DB_SQL.= ($selection_item_id) ? 'AND selection_item_id!=:selection_item_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
-	$DB_VAR = array(':user_id'=>$user_id,':selection_item_nom'=>$selection_item_nom,':selection_item_id'=>$selection_item_id);
+	$DB_VAR = array(':user_id'=>$prof_id,':selection_item_nom'=>$selection_item_nom,':selection_item_id'=>$selection_item_id);
 	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -547,12 +630,12 @@ public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$
  * @param string $tab_id_items   tableau des id des items
  * @return int
  */
-public static function DB_ajouter_selection_items($user_id,$selection_item_nom,$tab_id_items)
+public static function DB_ajouter_selection_items($prof_id,$selection_item_nom,$tab_id_items)
 {
 	$listing_id_items = ','.implode(',',$tab_id_items).',' ;
 	$DB_SQL = 'INSERT INTO sacoche_selection_item(user_id,selection_item_nom,selection_item_liste) ';
 	$DB_SQL.= 'VALUES(:user_id,:selection_item_nom,:selection_item_liste)';
-	$DB_VAR = array(':user_id'=>$user_id,':selection_item_nom'=>$selection_item_nom,':selection_item_liste'=>$listing_id_items);
+	$DB_VAR = array(':user_id'=>$prof_id,':selection_item_nom'=>$selection_item_nom,':selection_item_liste'=>$listing_id_items);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }

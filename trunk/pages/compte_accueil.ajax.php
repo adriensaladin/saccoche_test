@@ -37,7 +37,7 @@ $f_etat = (isset($_POST['f_etat'])) ? Clean::entier($_POST['f_etat']) : -1;
 // Vérification des informations transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_types = array( 'user'=>'modifiable' , 'alert'=>'imposé' , 'info'=>'imposé' , 'help'=>'modifiable' , 'ecolo'=>'modifiable' );
+$tab_types = array( 'user'=>'modifiable' , 'alert'=>'imposé' , 'messages'=>'imposé' , 'demandes'=>'modifiable' , 'help'=>'modifiable' , 'ecolo'=>'modifiable' );
 
 if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_etat==-1) )
 {

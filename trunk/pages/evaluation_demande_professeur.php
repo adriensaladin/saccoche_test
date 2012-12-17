@@ -61,8 +61,8 @@ $date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); //
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=FALSE , $optgroup='non');
-$select_groupe  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID'])  , $select_nom='f_groupe'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='val' , $selection=FALSE , $optgroup='non');
+$select_groupe  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID'])  , $select_nom='f_groupe'  , $option_first='val' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <form action="#" method="post" id="form0"><fieldset>

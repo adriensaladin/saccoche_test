@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_demandes')){exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';			// pour le form0
-$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action;	// pour le form1
+$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';      // pour le form0
+$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action; // pour le form1
 $matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])      : 0;
 $matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])   : '';
-$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])    : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
+$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])    : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
 $groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])   : '';
 $groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])    : '';
 
@@ -79,52 +79,58 @@ list($devoir_id,$devoir_groupe_id) = (substr_count($devoir_ids,'_')==1) ? explod
 // Afficher une liste de demandes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id && (isset($tab_types[$groupe_type])) && $groupe_nom )
+$selection_matiere = ($matiere_id) ? TRUE : FALSE ;
+$selection_groupe  = ($groupe_id)  ? TRUE : FALSE ;
+
+if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) && ( ( (isset($tab_types[$groupe_type])) && $groupe_nom ) || !$selection_groupe ) )
 {
 	$retour = '';
 	// Récupérer la liste des élèves concernés
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1);
+	$DB_TAB = ($selection_groupe) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1) : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur($_SESSION['USER_ID']) ;
 	if(!is_array($DB_TAB))
 	{
-		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n'est enregistré !
+		exit($DB_TAB);	// Aucun élève trouvé. | Aucun élève ne vous est affecté.
 	}
-	$tab_eleves = array();
-	$tab_autres = array();
+	$tab_eleves  = array();
+	$tab_autres  = array();
+	$tab_groupes = array();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eleves[$DB_ROW['valeur']] = $DB_ROW['texte'];
-		$tab_autres[$DB_ROW['valeur']] = $DB_ROW['texte'];
+		$tab_eleves[ $DB_ROW['valeur']] = $DB_ROW['texte'];
+		$tab_autres[ $DB_ROW['valeur']] = $DB_ROW['texte'];
+		$tab_groupes[$DB_ROW['valeur']] = ($selection_groupe) ? $groupe_nom : $DB_ROW['optgroup'] ;
 	}
 	$listing_user_id = implode(',', array_keys($tab_eleves) );
 	// Lister les demandes (et les messages associés)
 	$fnom_export = 'messages_'.$_SESSION['BASE'].'_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$separateur = ';';
 	$messages_html = '<p><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom_export.'.zip'.'"><span class="file file_zip">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></p>';
-	$messages_html.= '<table><thead><tr><th>Item</th><th>Élève</th><th>Message</th></tr></thead><tbody>';
-	$messages_csv  = $matiere_nom."\r\n".$groupe_nom."\r\n\r\n".'Item'.$separateur.'Élève'.$separateur.'Message'.$separateur."\r\n";
+	$messages_html.= '<table><thead><tr><th>Matière</th><th>Item</th><th>Groupe</th><th>Élève</th><th>Message</th></tr></thead><tbody>';
+	$messages_csv  = 'Matière'.$separateur.'Item'.$separateur.'Groupe'.$separateur.'Élève'.$separateur.'Message'.$separateur."\r\n";
 	$tab_demandes = array();
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_demandes_prof($matiere_id,$listing_user_id);
 	if(empty($DB_TAB))
 	{
-		exit('Aucune demande n\'a été formulée pour ces élèves et cette matière !');
+		exit('Aucune demande n\'a été formulée selon les critères indiqués !');
 	}
 	foreach($DB_TAB as $DB_ROW)
 	{
 		unset($tab_autres[$DB_ROW['user_id']]);
-		$tab_demandes[] = $DB_ROW['demande_id'] ;
+		$tab_demandes[] = $DB_ROW['demande_id'];
 		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
+		$matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
 		$commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'" />' : 'non' ;
-		$messages_html .= '<tr><td>'.html($DB_ROW['item_ref']).'</td><td>'.html($tab_eleves[$DB_ROW['user_id']]).'</td><td>'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'</td></tr>';
-		$messages_csv  .= '"'.$DB_ROW['item_ref'].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['user_id']].'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
+		$messages_html .= '<tr><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['item_ref']).'</td><td>'.html($tab_groupes[$DB_ROW['user_id']]).'</td><td>'.html($tab_eleves[$DB_ROW['user_id']]).'</td><td>'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'</td></tr>';
+		$messages_csv  .= '"'.$matiere_nom.'"'.$separateur.'"'.$DB_ROW['item_ref'].'"'.$separateur.'"'.$tab_groupes[$DB_ROW['user_id']].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['user_id']].'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
 		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" /></td>';
 		$retour .= '<td class="label">'.html($matiere_nom).'</td>';
 		$retour .= '<td class="label">'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 		$retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
-		$retour .= '<td class="label">'.html($groupe_nom).'</td>';
+		$retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['user_id']]).'</td>';
 		$retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
 		$retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score($score,'score',$pourcent='') );
 		$retour .= '<td class="label"><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
@@ -147,14 +153,15 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	// Enregistrer le csv des commentaires
 	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.zip' , $fnom_export.'.csv' , To::csv($messages_csv) );
 	// Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
-	exit('ok'.'<¤>'.$messages_html.'<¤>'.'<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
+	$chaine_autres = ( $selection_matiere && $selection_groupe ) ? implode('<br />',$tab_autres) : 'sur choix d\'une matière et d\'un regroupement' ;
+	exit('ok'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Créer une nouvelle évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
+if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (isset($tab_types[$groupe_type])) && $groupe_id ) ) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
 	if($qui=='select')
@@ -201,7 +208,7 @@ if( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_
 // Compléter une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible )
+if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (isset($tab_types[$groupe_type])) ) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')

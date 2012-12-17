@@ -34,6 +34,21 @@ class DB_STRUCTURE_ELEVE extends DB
 {
 
 /**
+ * compter_reponses_professeur_en_attente
+ *
+ * @param int  $eleve_id
+ * @return int
+ */
+public static function DB_compter_reponses_professeur_en_attente($eleve_id)
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_demande ';
+	$DB_SQL.= 'WHERE demande_statut=:statut AND user_id=:eleve_id ';
+	$DB_VAR = array(':statut'=>'prof',':eleve_id'=>$eleve_id);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Récupérer le nombre de demandes d'évaluations autorisées par matière
  *
  * @param int   $matiere_id

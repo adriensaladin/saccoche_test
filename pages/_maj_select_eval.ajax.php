@@ -35,7 +35,7 @@ $groupe_id = (isset($_POST['groupe_id'])) ? Clean::entier($_POST['groupe_id']) :
 
 $tab_types = array('groupe','select');
 
-if( (!$groupe_id) || (!in_array($eval_type,$tab_types)) )
+if( ( (!$groupe_id) && ($eval_type=='groupe') ) || (!in_array($eval_type,$tab_types)) )
 {
 	exit('Erreur avec les données transmises !');
 }

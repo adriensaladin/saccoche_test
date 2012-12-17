@@ -1082,7 +1082,7 @@ $(document).ready
 				// Afficher la zone
 				$.fancybox( { 'href':'#zone_signaler' , onStart:function(){$('#zone_signaler').css("display","block");} , onClosed:function(){$('#zone_signaler').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 				$('#f_message_contenu').focus().html(message_contenu);
-				afficher_textarea_reste( $('#f_message_contenu') , 255 );
+				afficher_textarea_reste( $('#f_message_contenu') , 999 );
 			}
 		);
 
@@ -1094,7 +1094,7 @@ $(document).ready
 		(
 			function()
 			{
-				afficher_textarea_reste($(this),255);
+				afficher_textarea_reste( $(this) , 999 );
 			}
 		);
 

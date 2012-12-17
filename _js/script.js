@@ -1158,7 +1158,7 @@ $(document).ready
 				(
 					function()
 					{
-						afficher_textarea_reste($(this),250);
+						afficher_textarea_reste( $(this) , 500 );
 					}
 				);
 			}

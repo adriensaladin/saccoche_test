@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[8,0],[1,0],[3,1],[2,0]];
+		var sorting = [[8,0],[3,1],[2,0]];
 		$('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},9:{sorter:false}} });
 		function trier_tableau()
 		{
@@ -46,6 +46,7 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 		function maj_visible()
 		{
@@ -150,13 +151,13 @@ $(document).ready
 			{
 				rules :
 				{
-					f_matiere : { required:false },
-					f_groupe  : { required:false }
+					f_matiere : { required:true },
+					f_groupe  : { required:true }
 				},
 				messages :
 				{
-					f_matiere : { },
-					f_groupe  : { }
+					f_matiere : { required:"matière manquante" },
+					f_groupe  : { required:"classe / groupe manquant" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -244,26 +245,11 @@ $(document).ready
 				format_liens('#zone_messages');
 				trier_tableau();
 				infobulle();
-				var etat_disabled = ($("#f_groupe_id").val()>0) ? false : true ;
 				$('#form1').show();
-				$("#f_qui option[value=groupe]").text($("#f_groupe_nom").val()).prop('disabled',etat_disabled);
-				if(etat_disabled) { $("#f_qui option[value=select]").prop('selected',true); }
-				maj_evaluation();
+				$("#f_qui option[value=groupe]").text($("#f_groupe_nom").val());
 				$("#zone_actions").show(0);
 			}
 		}
-
-		// Soumettre au chargement pour initialiser l'affichage, et au changement d'un select initial
-
-		formulaire0.submit();
-
-		$('#f_matiere , #f_groupe').change
-		(
-			function()
-			{
-				formulaire0.submit();
-			}
-		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic pour voir les messages des élèves
@@ -416,7 +402,7 @@ $(document).ready
 		(
 			function()
 			{
-				afficher_textarea_reste( $(this) , 500 );
+				afficher_textarea_reste($(this),250);
 			}
 		);
 

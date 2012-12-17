@@ -689,7 +689,6 @@ public static function DB_OPT_matieres_famille($matiere_famille_id)
  */
 public static function DB_OPT_matieres_professeur($user_id)
 {
-	Form::$tab_select_option_first = array(0,'Toutes les matières','');
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -1010,7 +1009,7 @@ public static function DB_OPT_groupes_etabl()
  */
 public static function DB_OPT_groupes_professeur($user_id)
 {
-	Form::$tab_select_option_first = array(0,'Tous les regroupements','');
+	Form::$tab_select_option_first = array(0,'Fiche générique','');
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';

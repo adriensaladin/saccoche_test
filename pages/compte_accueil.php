@@ -29,13 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Bienvenue dans votre espace identifié";
 
 // user + help + ecolo peuvent être masqués
-// alert + messages sont obligatoires
-$tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'messages'=>array() , 'demandes'=>'' , 'help'=>'' , 'ecolo'=>'' );
+// alert + info sont obligatoires
+$tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'info'=>array() , 'help'=>'' , 'ecolo'=>'' );
+$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
 
 // Le temps de la mise à jour [2012-06-08], pour éviter tout souci ; [TODO] peut être retiré dans un an environ.
 if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
 {
-	$_SESSION['USER_PARAM_ACCUEIL'] = 'user,alert,messages,demandes,help,ecolo';
+	$_SESSION['USER_PARAM_ACCUEIL'] = 'user,alert,info,help,ecolo';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,35 +155,12 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$tab_accueil['messages'][$key] = '<p><span class="b u fluo">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')</span></p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
+			$tab_accueil['info'][$key] = '<p><span class="b u fluo">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')</span></p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
 		}
 	}
 	elseif($_SESSION['USER_PROFIL']!='administrateur')
 	{
 		$tab_accueil['ecolo'] = '<p class="b"><TG> Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
-	}
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Info Demandes d'évaluations
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($_SESSION['USER_PROFIL']=='professeur')
-{
-	$nb_demandes = DB_STRUCTURE_PROFESSEUR::DB_compter_demandes_eleves_en_attente($_SESSION['USER_ID']);
-	if($nb_demandes)
-	{
-		$s = ($nb_demandes>1) ? 's' : '' ;
-		$tab_accueil['demandes'] = '<p class="b i"><TG> Demandes d\'évaluations</p><p>Vous avez <a href="./index.php?page=evaluation_demande_professeur"><span class="b">'.$nb_demandes.' demande'.$s.' d\'évaluation'.$s.' d\'élève'.$s.'</span></a> en attente.</p>';
-	}
-}
-elseif($_SESSION['USER_PROFIL']=='eleve')
-{
-	$nb_demandes = DB_STRUCTURE_ELEVE::DB_compter_reponses_professeur_en_attente($_SESSION['USER_ID']);
-	if($nb_demandes)
-	{
-		$s = ($nb_demandes>1) ? 's' : '' ;
-		$tab_accueil['demandes'] = '<p class="b i"><TG> Demandes d\'évaluations</p><p>Vous avez <a href="./index.php?page=evaluation_demande_eleve"><span class="b">'.$nb_demandes.' demande'.$s.' d\'évaluation'.$s.'</span></a> en cours de préparation.</p>';
 	}
 }
 
@@ -223,7 +201,7 @@ if($astuce_nombre)
 // Alerte si pas de javascript activé
 echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
 
-$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'demandes'=>'Demandes d\'évaluations' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
+$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'L\'astuce du moment' , 'ecolo'=>'Protégeons l\'environnement !' );
 
 foreach($tab_accueil as $type => $contenu)
 {

@@ -2391,6 +2391,25 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	// MAJ 2012-12-14 => 2012-12-27
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-12-14')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-12-27';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modifier un paramètre CAS pour l'ENT Agora06
+			$connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+			if($connexion_nom=='ent_06')
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="www.agora06.fr" WHERE parametre_nom="cas_serveur_host"' );
+			}
+		}
+	}
+
 }
 
 }

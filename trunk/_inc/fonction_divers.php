@@ -264,15 +264,17 @@ function compacter($chemin,$methode)
 	$fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
 	if(SERVEUR_TYPE == 'PROD')
 	{
-		// On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
-		// Pour un css l'extension doit être conservée (pour un js aussi, le serveur pouvant se baser sur les extensions pour sa gestion du cache et des charset)
+		// On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux.
+		// En cas d'appel depuis le site du projet il faut éventuellement respecter le chemin vers le site du projet.
+		$tmp_appli = ( (!defined('APPEL_SITE_PROJET')) || (strpos($chemin,'/sacoche/')!==FALSE) ) ? TRUE : FALSE ;
+		// Conserver les extensions des js et css (le serveur pouvant se baser sur les extensions pour sa gestion du cache et des charsets).
 		$fichier_original_extension = pathinfo($fichier_original_chemin,PATHINFO_EXTENSION);
 		$fichier_chemin_sans_slash  = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $fichier_original_chemin ) , 0 , -(strlen($fichier_original_extension)+1) );
 		$fichier_compact_nom        = $fichier_chemin_sans_slash.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_original_extension;
-		$fichier_compact_chemin     = (!defined('APPEL_SITE_PROJET')) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : str_replace(DS.'sacoche'.DS,DS ,CHEMIN_DOSSIER_TMP).$fichier_compact_nom ;
-		$fichier_compact_url        = (!defined('APPEL_SITE_PROJET')) ? URL_DIR_TMP       .$fichier_compact_nom : str_replace('/sacoche/'    ,'/',URL_DIR_TMP       ).$fichier_compact_nom ;
+		$fichier_compact_chemin     = ($tmp_appli) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : CHEMIN_DOSSIER_TMP_PROJET.$fichier_compact_nom ;
+		$fichier_compact_url        = ($tmp_appli) ?        URL_DIR_TMP.$fichier_compact_nom :        URL_DIR_TMP_PROJET.$fichier_compact_nom ;
 		$fichier_compact_date       = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
-		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas
+		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas.
 		if($fichier_compact_date<$fichier_original_date)
 		{
 			$fichier_original_contenu = file_get_contents($fichier_original_chemin);

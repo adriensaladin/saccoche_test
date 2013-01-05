@@ -2410,34 +2410,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MAJ 2012-12-27 => 2013-01-05
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-12-27')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2013-01-05';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// distinction des ENT agora06 et ent_nice
-			$connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-			if($connexion_nom=='ent_06')
-			{
-				$sesamath_uai = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="sesamath_uai"' );
-				if(substr($sesamath_uai,0,3)=='006')
-				{
-					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="agora06" WHERE parametre_nom="connexion_nom"' );
-				}
-				else
-				{
-					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="ent_nice" WHERE parametre_nom="connexion_nom"' );
-					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas.enteduc.fr" WHERE parametre_nom="cas_serveur_host"' );
-				}
-			}
-		}
-	}
-
 }
 
 }

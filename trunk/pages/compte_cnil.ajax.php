@@ -38,9 +38,9 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
 
 if($action=='Valider_CNIL')
 {
-	DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $_SESSION['USER_ID'] );
-	unset($_SESSION['STOP_CNIL']);
-	exit('ok');
+  DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $_SESSION['USER_ID'] );
+  unset($_SESSION['STOP_CNIL']);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

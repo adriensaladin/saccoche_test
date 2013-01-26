@@ -41,32 +41,37 @@ class DB_STRUCTURE_WEBMESTRE extends DB
  */
 public static function DB_recuperer_statistiques()
 {
-	// La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
-	$test_sortie = (!empty($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
-	// nb professeurs enregistrés ; nb élèves enregistrés
-	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE '.$test_sortie.' ';
-	$DB_SQL.= 'GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-	$prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
-	$eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
-	// nb professeurs connectés ; nb élèves connectés
-	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
-	$DB_SQL.= 'GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
-	$eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
-	// nb notes saisies
-	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_saisie';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-	$score_nb = $DB_ROW['nombre'];
-	// Retour
-	return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb);
+  // La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
+  $test_sortie = (!empty($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
+  // La révision du 5 janvier 2013 a modifié le champ "user_profil" en "user_profil_sigle".
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
+  $champ_profil = (!empty($DB_TAB)) ? 'user_profil_sigle' : 'user_profil' ;
+  $valeur_prof  = (!empty($DB_TAB)) ? 'ENS'               : 'professeur' ;
+  $valeur_eleve = (!empty($DB_TAB)) ? 'ELV'               : 'eleve' ;
+  // nb professeurs enregistrés ; nb élèves enregistrés
+  $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'WHERE '.$test_sortie.' ';
+  $DB_SQL.= 'GROUP BY '.$champ_profil;
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $prof_nb  = (isset($DB_TAB[$valeur_prof]))  ? $DB_TAB[$valeur_prof]['nombre']  : 0 ;
+  $eleve_nb = (isset($DB_TAB[$valeur_eleve])) ? $DB_TAB[$valeur_eleve]['nombre'] : 0 ;
+  // nb professeurs connectés ; nb élèves connectés
+  $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+  $DB_SQL.= 'GROUP BY '.$champ_profil;
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $prof_use  = (isset($DB_TAB[$valeur_prof]))  ? $DB_TAB[$valeur_prof]['nombre']  : 0 ;
+  $eleve_use = (isset($DB_TAB[$valeur_eleve])) ? $DB_TAB[$valeur_eleve]['nombre'] : 0 ;
+  // nb notes saisies
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_saisie';
+  $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $score_nb = $DB_ROW['nombre'];
+  // Retour
+  return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb);
 }
 
 /**
@@ -77,11 +82,11 @@ public static function DB_recuperer_statistiques()
  */
 public static function DB_recuperer_admin_identite($admin_id)
 {
-	$DB_SQL = 'SELECT user_nom,user_prenom,user_login ';
-	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_id=:admin_id ';
-	$DB_VAR = array(':admin_id'=>$admin_id);
-	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT user_nom, user_prenom, user_login ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'WHERE user_id=:admin_id ';
+  $DB_VAR = array(':admin_id'=>$admin_id);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -93,11 +98,11 @@ public static function DB_recuperer_admin_identite($admin_id)
  */
 public static function DB_modifier_admin_mdp($admin_id,$password_crypte)
 {
-	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET user_password=:password_crypte ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$admin_id,':password_crypte'=>$password_crypte);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'UPDATE sacoche_user ';
+  $DB_SQL.= 'SET user_password=:password_crypte ';
+  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_VAR = array(':user_id'=>$admin_id,':password_crypte'=>$password_crypte);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -108,13 +113,13 @@ public static function DB_modifier_admin_mdp($admin_id,$password_crypte)
  */
 public static function DB_supprimer_tables_structure()
 {
-	$tab_tables = array();
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"');
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_tables[] = $DB_ROW['Name'];
-	}
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
+  $tab_tables = array();
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"');
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_tables[] = $DB_ROW['Name'];
+  }
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
 }
 
 }

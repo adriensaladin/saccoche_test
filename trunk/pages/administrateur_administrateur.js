@@ -27,298 +27,312 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var mode = false;
+    var mode = false;
+    var profil = 'ADM';
+    var memo_login = '';
 
-		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[2,0],[3,0]];
-		$('table.form').tablesorter({ headers:{6:{sorter:false}} });
-		function trier_tableau()
-		{
-			if($('table.form tbody tr').length>1)
-			{
-				$('table.form').trigger('update');
-				$('table.form').trigger('sorton',[sorting]);
-			}
-		}
-		trier_tableau();
+    // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[2,0],[3,0]];
+    $('table.form').tablesorter({ headers:{6:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
+    trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le checkbox pour affecter ou non un nouveau mot de passe
+// Clic sur le checkbox pour choisir ou non un login
+// Clic sur le checkbox pour choisir ou non un mot de passe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('#box_password').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				if($(this).is(':checked'))
-				{
-					$(this).next().show(0).next().hide(0);
-				}
-				else
-				{
-					$(this).next().hide(0).next().show(0);
-				}
-			}
-		);
+
+    $('#box_login , #box_password').click
+    (
+      function()
+      {
+        if($(this).is(':checked'))
+        {
+          $(this).next().show(0).next().hide(0);
+        }
+        else
+        {
+          $(this).next().hide(0).next().show(0);
+        }
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		/**
-		 * Ajouter un administrateur : mise en place du formulaire
-		 * @return void
-		 */
-		var ajouter = function()
-		{
-			mode = $(this).attr('class');
-			// Fabriquer la ligne avec les éléments de formulaires
-			afficher_masquer_images_action('hide');
-			new_tr  = '<tr>';
-			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
-			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="15" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_login" name="f_login" size="15" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_password" name="f_password" size="8" type="text" value="" /></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cet administrateur."></q><q class="annuler" title="Annuler l\'ajout de cet administrateur."></q> <label id="ajax_msg">&nbsp;</label></td>';
-			new_tr += '</tr>';
-			// Ajouter cette nouvelle ligne
-			$(this).parent().parent().after(new_tr);
-			infobulle();
-			$('#f_nom').focus();
-		};
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , profil , nom , prenom , login )
+    {
+      $('#f_action').val(mode);
+      $('#f_id').val(id);
+      $('#f_id_ent').val(id_ent);
+      $('#f_id_gepi').val(id_gepi);
+      $('#f_nom').val(nom);
+      $('#f_prenom').val(prenom);
+      // login
+      memo_login = login;
+      var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
+      $('#f_login').val(login).parent().hide(0);
+      $('#box_login').prop('checked',true).next().show(0).html(texte_box);
+      // mot de passe
+      var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
+      $('#f_password').val('').parent().hide(0);
+      $('#box_password').prop('checked',true).next().show(0).html(texte_box);
+      // pour finir
+      $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un utilisateur");
+      if(mode!='supprimer')
+      {
+        $('#gestion_edit').show(0);
+        $('#gestion_delete').hide(0);
+      }
+      else
+      {
+        $('#gestion_delete_identite').html(prenom+" "+nom);
+        $('#gestion_edit').hide(0);
+        $('#gestion_delete').show(0);
+      }
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#form_gestion label[generated=true]').removeAttr('class').html("");
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      if(mode=='ajouter') { $('#f_nom').focus(); }
+    }
 
-		/**
-		 * Modifier un administrateur : mise en place du formulaire
-		 * @return void
-		 */
-		var modifier = function()
-		{
-			mode = $(this).attr('class');
-			afficher_masquer_images_action('hide');
-			// Récupérer les informations de la ligne concernée
-			id      = $(this).parent().parent().attr('id').substring(3);
-			id_ent  = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			id_gepi = $(this).parent().prev().prev().prev().prev().prev().html();
-			nom     = $(this).parent().prev().prev().prev().prev().html();
-			prenom  = $(this).parent().prev().prev().prev().html();
-			login   = $(this).parent().prev().prev().html();
-			// Retirer une éventuelle balise image présente
-			position_image = login.indexOf('<');
-			if (position_image!=-1)
-			{
-				login = login.substring(0,position_image-1);
-			}
-			// Fabriquer la ligne avec les éléments de formulaires
-			new_tr  = '<tr>';
-			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+escapeQuote(id_ent)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
-			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+escapeQuote(id_gepi)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
-			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+escapeQuote(prenom)+'" /></td>';
-			new_tr += '<td><input id="f_login" name="f_login" size="'+Math.max(login.length,10)+'" type="text" value="'+login+'" /></td>';
-			new_tr += '<td><input id="box_password" name="box_password" value="1" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">inchangé</span><span class="hide"><input id="f_password" name="f_password" size="6" type="text" value="" /></span></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce administrateur."></q><q class="annuler" title="Annuler les modifications de ce administrateur."></q> <label id="ajax_msg">&nbsp;</label></td>';
-			new_tr += '</tr>';
-			// Cacher la ligne en cours et ajouter la nouvelle
-			$(this).parent().parent().hide();
-			$(this).parent().parent().after(new_tr);
-			infobulle();
-			$('#f_nom').focus();
-		};
+    /**
+     * Ajouter un administrateur : mise en place du formulaire
+     * @return void
+     */
+    var ajouter = function()
+    {
+      mode = $(this).attr('class');
+      // Afficher le formulaire
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ );
+    };
 
-		/**
-		 * Retirer un administrateur : mise en place du formulaire
-		 * @return void
-		 */
-		var supprimer = function()
-		{
-			mode = $(this).attr('class');
-			afficher_masquer_images_action('hide');
-			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="astuce"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Le compte de l\'administrateur sera supprimé.<q class="valider" title="Confirmer le retrait de cet administrateur."></q><q class="annuler" title="Annuler le retrait de cet administrateur."></q> <label id="ajax_msg">&nbsp;</label></span>';
-			$(this).after(new_span);
-			infobulle();
-		};
+    /**
+     * Modifier un administrateur : mise en place du formulaire
+     * @return void
+     */
+    var modifier = function()
+    {
+      mode = $(this).attr('class');
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var id         = objet_tr.attr('id').substring(3);
+      var id_ent     = objet_tds.eq(0).html();
+      var id_gepi    = objet_tds.eq(1).html();
+      var nom        = objet_tds.eq(2).html();
+      var prenom     = objet_tds.eq(3).html();
+      var login      = objet_tds.eq(4).html();
+      // Retirer une éventuelle balise image présente dans login
+      position_image = login.indexOf('<');
+      if (position_image!=-1)
+      {
+        login = login.substring(0,position_image-1);
+      }
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) );
+    };
 
-		/**
-		 * Annuler une action
-		 * @return void
-		 */
-		var annuler = function()
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			switch (mode)
-			{
-				case 'ajouter':
-					$(this).parent().parent().remove();
-					break;
-				case 'modifier':
-					$(this).parent().parent().remove();
-					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
-					break;
-				case 'supprimer':
-					$(this).parent().remove();
-					break;
-			}
-			afficher_masquer_images_action('show');
-			mode = false;
-		};
+    /**
+     * Retirer un administrateur : mise en place du formulaire
+     * @return void
+     */
+    var supprimer = function()
+    {
+      mode = $(this).attr('class');
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var id         = objet_tr.attr('id').substring(3);
+      var nom        = objet_tds.eq(2).html();
+      var prenom     = objet_tds.eq(3).html();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , '' /*id_ent*/ , '' /*id_gepi*/ , profil , unescapeHtml(nom) , unescapeHtml(prenom) , '' /*login*/ );
+    };
 
-		/**
-		 * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
-		 * @return void
-		 */
-		function intercepter(e)
-		{
-			if(e.which==13)	// touche entrée
-			{
-				$('q.valider').click();
-			}
-			else if(e.which==27)	// touche escape
-			{
-				$('q.annuler').click();
-			}
-		}
+    /**
+     * Annuler une action
+     * @return void
+     */
+    var annuler = function()
+    {
+      $.fancybox.close();
+      mode = false;
+    };
+
+    /**
+     * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
+     * @return void
+     */
+    function intercepter(e)
+    {
+      if(mode)
+      {
+        if(e.which==13)  // touche entrée
+        {
+          $('#bouton_valider').click();
+        }
+        else if(e.which==27)  // touche escape
+        {
+          $('#bouton_annuler').click();
+        }
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.ajouter').click( ajouter );
-		$('q.modifier').live(  'click' , modifier );
-		$('q.supprimer').live( 'click' , supprimer );
-		$('q.annuler').live(   'click' , annuler );
-		$('q.valider').live(   'click' , function(){formulaire.submit();} );
-		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
+    $('q.ajouter').click( ajouter );
+    $('q.modifier').live(  'click' , modifier );
+    $('q.supprimer').live( 'click' , supprimer );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form_gestion');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_id_ent   : { required:false , maxlength:63 },
-					f_id_gepi  : { required:false , maxlength:63 },
-					f_nom      : { required:true , maxlength:25 },
-					f_prenom   : { required:true , maxlength:25 },
-					f_login    : { required:true , maxlength:20 },
-					f_password : { required:function(){return !$('#box_password').is(':checked');} , minlength:mdp_longueur_mini , maxlength:20 }
-				},
-				messages :
-				{
-					f_id_ent   : { maxlength:"identifiant ENT de 63 caractères maximum" },
-					f_id_gepi  : { maxlength:"identifiant Gepi de 63 caractères maximum" },
-					f_nom      : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
-					f_prenom   : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-					f_login    : { required:"login manquant"  , maxlength:"20 caractères maximum" },
-					f_password : { required:"mot de passe manquant" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_id_ent   : { required:false , maxlength:63 },
+          f_id_gepi  : { required:false , maxlength:63 },
+          f_nom      : { required:true , maxlength:25 },
+          f_prenom   : { required:true , maxlength:25 },
+          f_login    : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
+          f_password : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 }
+        },
+        messages :
+        {
+          f_id_ent   : { maxlength:"identifiant ENT de 63 caractères maximum" },
+          f_id_gepi  : { maxlength:"identifiant Gepi de 63 caractères maximum" },
+          f_nom      : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
+          f_prenom   : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
+          f_login    : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+          f_password : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { element.after(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_gestion",
+      beforeSerialize : action_form_avant_serialize,
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire.submit
-		(
-			function()
-			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		); 
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire.submit
+    (
+      function()
+      {
+        if (!please_wait)
+        {
+          $(this).ajaxSubmit(ajaxOptions);
+          return false;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				please_wait = true;
-				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent le traitement du formulaire (avec jquery.form.js)
+    function action_form_avant_serialize(jqForm, options)
+    {
+      if($('#box_login').is(':checked'))
+      {
+        $('#f_login').val(memo_login); // Pas de risque d'enregistrement d'un mauvais login, mais d'un retour trompeur à afficher si login modifié puis case recochée.
+      }
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        please_wait = true;
+        $('#form_gestion button').prop('disabled',true);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			if(responseHTML.substring(0,2)!='<t')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				action = $('#f_action').val();
-				switch (action)
-				{
-					case 'ajouter':
-						$('table.form tbody').append(responseHTML);
-						$('q.valider').parent().parent().remove();
-						break;
-					case 'modifier':
-						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).show();
-						$('q.valider').parent().parent().remove();
-						break;
-					case 'supprimer':
-						$('q.valider').closest('tr').remove();
-						break;
-				}
-				trier_tableau();
-				afficher_masquer_images_action('show');
-				infobulle();
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-	}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      if(responseHTML.substring(0,2)!='<t')
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        switch (mode)
+        {
+          case 'ajouter':
+            $('table.form tbody').prepend(responseHTML);
+            break;
+          case 'modifier':
+            $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
+            break;
+          case 'supprimer':
+            $('#id_'+$('#f_id').val()).remove();
+            break;
+        }
+        $.fancybox.close();
+        mode = false;
+        infobulle();
+      }
+    }
+
+  }
 );

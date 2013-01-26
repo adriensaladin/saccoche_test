@@ -32,66 +32,82 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 ?>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__gestion_regroupements_items">DOC : Gestion des regroupements d'items.</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__gestion_regroupements_items">DOC : Gestion des regroupements d'items.</a></span></li>
 </ul>
 
 <hr />
 
-<form action="#" method="post">
-	<table class="form hsort">
-		<thead>
-			<tr>
-				<th>Nom</th>
-				<th>Items</th>
-				<th class="nu"><q class="ajouter" title="Ajouter un regroupement d'items."></q></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-			$tab_listing_js = '';
-			$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_selection_items($_SESSION['USER_ID']);
-			if(!empty($DB_TAB))
-			{
-				foreach($DB_TAB as $DB_ROW)
-				{
-					$items_liste  = str_replace(',','_',mb_substr($DB_ROW['selection_item_liste'],1,-1));
-					$items_nombre = (mb_substr_count($DB_ROW['selection_item_liste'],',')-1);
-					$items_texte  = ($items_nombre>1) ? $items_nombre.' items' : '1 item' ;
-					// Afficher une ligne du tableau
-					echo'<tr id="id_'.$DB_ROW['selection_item_id'].'">';
-					echo	'<td>'.$DB_ROW['selection_item_nom'].'</td>';
-					echo	'<td>'.$items_texte.'</td>';
-					echo	'<td class="nu">';
-					echo		'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-					echo		'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-					echo	'</td>';
-					echo'</tr>';
-					// Pour js
-					$tab_listing_js .= 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";';
-				}
-			}
-			else
-			{
-				echo'<tr><td class="nu" colspan="3"></td></tr>';
-			}
-			?>
-		</tbody>
-	</table>
-</form>
+<table class="form hsort">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Items</th>
+      <th class="nu"><q class="ajouter" title="Ajouter un regroupement d'items."></q></th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    $tab_listing_js = '';
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_selection_items($_SESSION['USER_ID']);
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $items_liste  = str_replace(',','_',mb_substr($DB_ROW['selection_item_liste'],1,-1));
+        $items_nombre = (mb_substr_count($DB_ROW['selection_item_liste'],',')-1);
+        $items_texte  = ($items_nombre>1) ? $items_nombre.' items' : '1 item' ;
+        // Afficher une ligne du tableau
+        echo'<tr id="id_'.$DB_ROW['selection_item_id'].'">';
+        echo  '<td>'.$DB_ROW['selection_item_nom'].'</td>';
+        echo  '<td>'.$items_texte.'</td>';
+        echo  '<td class="nu">';
+        echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
+        echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
+        echo  '</td>';
+        echo'</tr>';
+        // Pour js
+        $tab_listing_js .= 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";';
+      }
+    }
+    else
+    {
+      echo'<tr><td class="nu" colspan="3"></td></tr>';
+    }
+    ?>
+  </tbody>
+</table>
 
 <script type="text/javascript">
-	var tab_items = new Array();
-	<?php echo $tab_listing_js ?>
+  var tab_items = new Array();
+  <?php echo $tab_listing_js ?>
 </script>
 
+<form action="#" method="post" id="form_gestion" class="hide">
+  <h2>Ajouter | Modifier un regroupements d'items</h2>
+  <div id="gestion_edit">
+    <p>
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="20" maxlength="20" />
+    </p>
+    <p>
+      <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q>
+    </p>
+  </div>
+  <div id="gestion_delete">
+    <p>Confirmez-vous la suppression du regroupements d'items &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
+  </div>
+  <p>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><input id="f_origine" name="f_origine" type="hidden" value="<?php echo $PAGE ?>" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+  </p>
+</form>
+
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
-	<div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
-	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-	<?php
-	// Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur, sur tous les niveaux
-	$user_id = ($_SESSION['USER_PROFIL']=='professeur') ? $_SESSION['USER_ID'] : 0 ;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
-	echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
-	?>
-	<div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
+  <div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
+  <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
+  <?php
+  // Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur, sur tous les niveaux
+  $user_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? $_SESSION['USER_ID'] : 0 ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+  echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
+  ?>
+  <div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

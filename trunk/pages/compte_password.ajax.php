@@ -37,14 +37,14 @@ $password_nouveau = (isset($_POST['f_password1'])) ? Clean::password($_POST['f_p
 
 if( ($password_ancien!='') && ($password_nouveau!='') )
 {
-	if($_SESSION['USER_PROFIL']!='webmestre')
-	{
-		exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
-	}
-	else
-	{
-		exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
-	}
+  if($_SESSION['USER_PROFIL_TYPE']!='webmestre')
+  {
+    exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
+  }
+  else
+  {
+    exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

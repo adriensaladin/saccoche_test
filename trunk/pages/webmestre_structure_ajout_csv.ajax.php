@@ -31,8 +31,8 @@ $tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier
 $nb_bases    = count($tab_base_id);
 
 $action         = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])        : '';
-$num            = (isset($_POST['num']))            ? (int)$_POST['num']                     : 0 ;	// Numéro de l'étape en cours
-$max            = (isset($_POST['max']))            ? (int)$_POST['max']                     : 0 ;	// Nombre d'étapes à effectuer
+$num            = (isset($_POST['num']))            ? (int)$_POST['num']                     : 0 ;  // Numéro de l'étape en cours
+$max            = (isset($_POST['max']))            ? (int)$_POST['max']                     : 0 ;  // Nombre d'étapes à effectuer
 $courriel_envoi = (isset($_POST['courriel_envoi'])) ? Clean::entier($_POST['courriel_envoi']) : 0;
 
 $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
@@ -43,109 +43,109 @@ $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea(
 
 if($action=='importer_csv')
 {
-	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_csv_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-	if($result!==TRUE)
-	{
-		exit('Erreur : '.$result);
-	}
-	// On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
-	$tab_geo = array();
-	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_geo[$DB_ROW['geo_id']] = TRUE;
-	}
-	// Tester si le contenu est correct, et mémoriser les infos en session
-	$_SESSION['tab_info'] = array();
-	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
-	$contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
-	unset($tab_lignes[0]); // Supprimer la 1e ligne
-	$tab_nouvel_uai = array();
-	$tab_nouvel_id  = array();
-	$nb_lignes_trouvees = 0;
-	$tab_erreur = array(
-		'info' => array('nb'=>0,'txt'=>' manquant d\'informations !') ,
-		'geo'  => array('nb'=>0,'txt'=>' avec identifiant géographique incorrect !') ,
-		'uai'  => array('nb'=>0,'txt'=>' avec UAI déjà présent ou en double ou incorrect !') ,
-		'mail' => array('nb'=>0,'txt'=>' avec adresse de courriel incorrecte !') ,
-		'id'   => array('nb'=>0,'txt'=>' avec identifiant de base déjà utilisé ou en double !')
-	);
-	foreach ($tab_lignes as $ligne_contenu)
-	{
-		$tab_elements = explode($separateur,$ligne_contenu);
-		$tab_elements = array_slice($tab_elements,0,8);
-		if(count($tab_elements)==8)
-		{
-			$nb_lignes_trouvees++;
-			$tab_elements = Clean::map_quotes($tab_elements);
-			list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
-			$import_id        = Clean::entier($import_id);
-			$geo_id           = Clean::entier($geo_id);
-			$localisation     = $localisation; // Ne pas appliquer trim()
-			$denomination     = Clean::texte($denomination);
-			$uai              = Clean::uai($uai);
-			$contact_nom      = Clean::nom($contact_nom);
-			$contact_prenom   = Clean::prenom($contact_prenom);
-			$contact_courriel = Clean::courriel($contact_courriel);
-			$_SESSION['tab_info'][$nb_lignes_trouvees] = array( 'import_id'=>$import_id , 'geo_id'=>$geo_id , 'localisation'=>$localisation , 'denomination'=>$denomination , 'uai'=>$uai , 'contact_nom'=>$contact_nom , 'contact_prenom'=>$contact_prenom , 'contact_courriel'=>$contact_courriel );
-			// Vérifier la présence des informations
-			if( !$geo_id || !$localisation || !$denomination || !$contact_nom || !$contact_prenom || !$contact_courriel )
-			{
-				$tab_erreur['info']['nb']++;
-			}
-			// Vérifier que l'id géographique est correct
-			if(!isset($tab_geo[$geo_id]))
-			{
-				$tab_erreur['geo']['nb']++;
-			}
-			// Vérifier que le n°UAI est disponible et correct
-			if($uai)
-			{
-				if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
-				{
-					$tab_erreur['uai']['nb']++;
-				}
-				$tab_nouvel_uai[$uai] = TRUE;
-			}
-			// Vérifier que l'adresse de courriel est correcte
-			if(!tester_courriel($contact_courriel))
-			{
-				$tab_erreur['mail']['nb']++;
-			}
-			// Vérifier le domaine du serveur mail
-			$mail_domaine = tester_domaine_courriel_valide($contact_courriel);
-			if($mail_domaine!==TRUE)
-			{
-				$tab_erreur['mail']['nb']++;
-			}
-			// Vérifier que l'identifiant est disponible
-			if($import_id)
-			{
-				if((isset($tab_nouvel_id[$import_id])) || (DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($import_id)!==NULL) )
-				{
-					$tab_erreur['id']['nb']++;
-				}
-				$tab_nouvel_id[$import_id] = TRUE;
-			}
-		}
-	}
-	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
-	if(!$nb_lignes_trouvees)
-	{
-		exit('Erreur : aucune ligne du fichier ne semble correcte !');
-	}
-	$info_lignes_trouvees = ($nb_lignes_trouvees>1) ? $nb_lignes_trouvees.' lignes trouvées' : '1 ligne trouvée' ;
-	foreach($tab_erreur as $key => $tab)
-	{
-		if($tab['nb'])
-		{
-			$s = ($tab['nb']>1) ? 's' : '' ;
-			exit('Erreur : '.$info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt']);
-		}
-	}
-	exit(']¤['.$info_lignes_trouvees);
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_csv_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  if($result!==TRUE)
+  {
+    exit('Erreur : '.$result);
+  }
+  // On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
+  $tab_geo = array();
+  $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_geo[$DB_ROW['geo_id']] = TRUE;
+  }
+  // Tester si le contenu est correct, et mémoriser les infos en session
+  $_SESSION['tab_info'] = array();
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  $tab_nouvel_uai = array();
+  $tab_nouvel_id  = array();
+  $nb_lignes_trouvees = 0;
+  $tab_erreur = array(
+    'info' => array('nb'=>0,'txt'=>' manquant d\'informations !') ,
+    'geo'  => array('nb'=>0,'txt'=>' avec identifiant géographique incorrect !') ,
+    'uai'  => array('nb'=>0,'txt'=>' avec UAI déjà présent ou en double ou incorrect !') ,
+    'mail' => array('nb'=>0,'txt'=>' avec adresse de courriel incorrecte !') ,
+    'id'   => array('nb'=>0,'txt'=>' avec identifiant de base déjà utilisé ou en double !')
+  );
+  foreach ($tab_lignes as $ligne_contenu)
+  {
+    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = array_slice($tab_elements,0,8);
+    if(count($tab_elements)==8)
+    {
+      $nb_lignes_trouvees++;
+      $tab_elements = Clean::map_quotes($tab_elements);
+      list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
+      $import_id        = Clean::entier($import_id);
+      $geo_id           = Clean::entier($geo_id);
+      $localisation     = $localisation; // Ne pas appliquer trim()
+      $denomination     = Clean::texte($denomination);
+      $uai              = Clean::uai($uai);
+      $contact_nom      = Clean::nom($contact_nom);
+      $contact_prenom   = Clean::prenom($contact_prenom);
+      $contact_courriel = Clean::courriel($contact_courriel);
+      $_SESSION['tab_info'][$nb_lignes_trouvees] = array( 'import_id'=>$import_id , 'geo_id'=>$geo_id , 'localisation'=>$localisation , 'denomination'=>$denomination , 'uai'=>$uai , 'contact_nom'=>$contact_nom , 'contact_prenom'=>$contact_prenom , 'contact_courriel'=>$contact_courriel );
+      // Vérifier la présence des informations
+      if( !$geo_id || !$localisation || !$denomination || !$contact_nom || !$contact_prenom || !$contact_courriel )
+      {
+        $tab_erreur['info']['nb']++;
+      }
+      // Vérifier que l'id géographique est correct
+      if(!isset($tab_geo[$geo_id]))
+      {
+        $tab_erreur['geo']['nb']++;
+      }
+      // Vérifier que le n°UAI est disponible et correct
+      if($uai)
+      {
+        if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
+        {
+          $tab_erreur['uai']['nb']++;
+        }
+        $tab_nouvel_uai[$uai] = TRUE;
+      }
+      // Vérifier que l'adresse de courriel est correcte
+      if(!tester_courriel($contact_courriel))
+      {
+        $tab_erreur['mail']['nb']++;
+      }
+      // Vérifier le domaine du serveur mail
+      $mail_domaine = tester_domaine_courriel_valide($contact_courriel);
+      if($mail_domaine!==TRUE)
+      {
+        $tab_erreur['mail']['nb']++;
+      }
+      // Vérifier que l'identifiant est disponible
+      if($import_id)
+      {
+        if((isset($tab_nouvel_id[$import_id])) || (DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($import_id)!==NULL) )
+        {
+          $tab_erreur['id']['nb']++;
+        }
+        $tab_nouvel_id[$import_id] = TRUE;
+      }
+    }
+  }
+  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
+  if(!$nb_lignes_trouvees)
+  {
+    exit('Erreur : aucune ligne du fichier ne semble correcte !');
+  }
+  $info_lignes_trouvees = ($nb_lignes_trouvees>1) ? $nb_lignes_trouvees.' lignes trouvées' : '1 ligne trouvée' ;
+  foreach($tab_erreur as $key => $tab)
+  {
+    if($tab['nb'])
+    {
+      $s = ($tab['nb']>1) ? 's' : '' ;
+      exit('Erreur : '.$info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt']);
+    }
+  }
+  exit(']¤['.$info_lignes_trouvees);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,62 +154,62 @@ if($action=='importer_csv')
 
 if( ($action=='ajouter') && $num && $max )
 {
-	if(!count($_SESSION['tab_info']))
-	{
-		exit('Erreur : données du fichier CSV perdues !');
-	}
-	require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
-	// Récupérer la série d'infos
-	extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / nom / prenom / courriel
-	// Insérer l'enregistrement dans la base du webmestre
-	// Créer le fichier de connexion de la base de données de la structure
-	// Créer la base de données de la structure
-	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	$base_id = Webmestre::ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
-	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
-	foreach($tab_sous_dossier as $sous_dossier)
-	{
-		FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-		FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-	}
-	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-	charger_parametres_mysql_supplementaires($base_id);
-	// Lancer les requêtes pour créer et remplir les tables
-	charger_parametres_mysql_supplementaires($base_id);
-	DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
-	// Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
-	// Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
-	// Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
-	// En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
-	@sleep(1);
-	// Personnaliser certains paramètres de la structure
-	$tab_parametres = array();
-	$tab_parametres['version_base']               = VERSION_BASE;
-	$tab_parametres['webmestre_uai']              = $uai;
-	$tab_parametres['webmestre_denomination']     = $denomination;
-	$tab_parametres['etablissement_denomination'] = $denomination;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	// Insérer le compte administrateur dans la base de cette structure
-	$password = fabriquer_mdp();
-	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
-	// Et lui envoyer un courriel
-	if($courriel_envoi)
-	{
-		$courriel_contenu = Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
-		$courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $courriel_contenu );
-		if(!$courriel_bilan)
-		{
-			exit('Erreur lors de l\'envoi du courriel !');
-		}
-	}
-	// Mini-ménage si dernier appel
-	if($num==$max)
-	{
-		unset($_SESSION['tab_info']);
-	}
-	// Retour de l'affichage, appel suivant
-	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
+  if(!count($_SESSION['tab_info']))
+  {
+    exit('Erreur : données du fichier CSV perdues !');
+  }
+  require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
+  // Récupérer la série d'infos
+  extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / nom / prenom / courriel
+  // Insérer l'enregistrement dans la base du webmestre
+  // Créer le fichier de connexion de la base de données de la structure
+  // Créer la base de données de la structure
+  // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
+  $base_id = Webmestre::ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+  // Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
+  $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
+  foreach($tab_sous_dossier as $sous_dossier)
+  {
+    FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+    FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+  }
+  // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
+  charger_parametres_mysql_supplementaires($base_id);
+  // Lancer les requêtes pour créer et remplir les tables
+  charger_parametres_mysql_supplementaires($base_id);
+  DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
+  // Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
+  // Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
+  // Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
+  // En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
+  @sleep(1);
+  // Personnaliser certains paramètres de la structure
+  $tab_parametres = array();
+  $tab_parametres['version_base']               = VERSION_BASE;
+  $tab_parametres['webmestre_uai']              = $uai;
+  $tab_parametres['webmestre_denomination']     = $denomination;
+  $tab_parametres['etablissement_denomination'] = $denomination;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // Insérer le compte administrateur dans la base de cette structure
+  $password = fabriquer_mdp();
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','ADM',$contact_nom,$contact_prenom,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
+  // Et lui envoyer un courriel
+  if($courriel_envoi)
+  {
+    $courriel_contenu = Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
+    $courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $courriel_contenu );
+    if(!$courriel_bilan)
+    {
+      exit('Erreur lors de l\'envoi du courriel !');
+    }
+  }
+  // Mini-ménage si dernier appel
+  if($num==$max)
+  {
+    unset($_SESSION['tab_info']);
+  }
+  // Retour de l'affichage, appel suivant
+  exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,11 +218,11 @@ if( ($action=='ajouter') && $num && $max )
 
 if( ($action=='supprimer') && $nb_bases )
 {
-	foreach($tab_base_id as $base_id)
-	{
-		Webmestre::supprimer_multi_structure($base_id);
-	}
-	exit('<ok>');
+  foreach($tab_base_id as $base_id)
+  {
+    Webmestre::supprimer_multi_structure($base_id);
+  }
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

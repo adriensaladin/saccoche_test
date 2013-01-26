@@ -36,12 +36,12 @@ $daltonisme  = (isset($_POST['daltonisme']))  ? Clean::entier($_POST['daltonisme
 
 if( in_array($daltonisme,array(0,1)) )
 {
-	$_SESSION['USER_DALTONISME'] = $daltonisme;
-	DB_STRUCTURE_COMMUN::DB_modifier_user_daltonisme( $_SESSION['USER_ID'] , $daltonisme );
-	// Enregistrer en session le CSS personnalisé
-	SessionUser::adapter_daltonisme();
-	SessionUser::actualiser_style();
-	exit('ok');
+  $_SESSION['USER_DALTONISME'] = $daltonisme;
+  DB_STRUCTURE_COMMUN::DB_modifier_user_daltonisme( $_SESSION['USER_ID'] , $daltonisme );
+  // Enregistrer en session le CSS personnalisé
+  SessionUser::adapter_daltonisme();
+  SessionUser::actualiser_style();
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

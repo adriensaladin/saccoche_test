@@ -37,12 +37,28 @@ var please_wait = false;
  */
 function escapeHtml(unsafe)
 {
-	return unsafe
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#039;");
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * Fonction réciproque de htmlspecialchars() en javascript
+ *
+ * @param unsafe
+ * @return string
+ */
+function unescapeHtml(safe)
+{
+  return safe
+    .replace(/&amp;/g , "&")
+    .replace(/&lt;/g  , "<")
+    .replace(/&gt;/g  , ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#039;/g, "'");
 }
 
 /**
@@ -53,7 +69,7 @@ function escapeHtml(unsafe)
  */
 function escapeQuote(unsafe)
 {
-	return unsafe.replace(/"/g, "&quot;");
+  return unsafe.replace(/"/g, "&quot;");
 }
 
 /**
@@ -66,14 +82,14 @@ function escapeQuote(unsafe)
  */
 function afficher_masquer_images_action(why)
 {
-	if(why=='show')
-	{
-		$('form q').show();
-	}
-	else if(why=='hide')
-	{
-		$('form q').hide();
-	}
+  if(why=='show')
+  {
+    $('form q').show();
+  }
+  else if(why=='hide')
+  {
+    $('form q').hide();
+  }
 }
 
 /**
@@ -88,10 +104,10 @@ function afficher_masquer_images_action(why)
  */
 function format_liens(element)
 {
-	$(element).find("a.lien_ext" ).attr("target","_blank");
-	$(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/puce/puce_popup_onglet.gif) no-repeat right"});
-	$(element).find("a.pop_up" ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
-	$(element).find("a.lien_mail").css({"padding-left":"15px" , "background":"url(./_img/puce/puce_mail.gif) no-repeat left"});
+  $(element).find("a.lien_ext" ).attr("target","_blank");
+  $(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/puce/puce_popup_onglet.gif) no-repeat right"});
+  $(element).find("a.pop_up" ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
+  $(element).find("a.lien_mail").css({"padding-left":"15px" , "background":"url(./_img/puce/puce_mail.gif) no-repeat left"});
 }
 
 /**
@@ -104,7 +120,7 @@ function format_liens(element)
  */
 function infobulle()
 {
-	$('img[title] , th[title] , td[title] , a[title] , q[title] , input[title]').tooltip({showURL:false});
+  $('img[title] , th[title] , td[title] , a[title] , q[title] , input[title]').tooltip({showURL:false});
 }
 
 /**
@@ -115,31 +131,31 @@ function infobulle()
  */
 function analyse_mdp(mdp)
 {
-	mdp.replace(/^\s+/g,'').replace(/\s+$/g,'');	// équivalent de trim() en javascript
-	mdp = mdp.substring(0,20);
-	var nb_min = 0;
-	var nb_maj = 0;
-	var nb_num = 0;
-	var nb_spe = 0;
-	var longueur = mdp.length;
-	for (i=0 ; i<longueur ; i++)
-	{
-		var car = mdp.charAt(i);
-				 if((/[a-z]/).test(car)) {nb_min++;}	// 2 points maxi pour des minuscules
-		else if((/[A-Z]/).test(car)) {nb_maj++;}	// 2 points maxi pour des majuscules
-		else if((/[0-9]/).test(car)) {nb_num++;}	// 2 points maxi pour des chiffres
-		else                         {nb_spe++;}	// 6 points maxi pour des caractères autres
-	}
-	var coef = Math.min(nb_min,2) + Math.min(nb_maj,2) + Math.min(nb_num,2) + Math.min(nb_spe*2,6) ;
-	if(longueur>7)
-	{
-		coef += Math.floor( (longueur-5)/3 );	// 6 points maxi pour la longueur du mdp
-	}
-	coef = Math.min(coef,12);	// total 18 points maxi, plafonné à 12
-	var rouge = 255 - 16*Math.max(0,coef-6) ; // 255 -> 255 -> 159
-	var vert  = 159 + 16*Math.min(6,coef) ;   // 159 -> 255 -> 255
-	var bleu  = 159 ;
-	$('#robustesse').css('background-color','rgb('+rouge+','+vert+','+bleu+')').children('span').html(coef);
+  mdp.replace(/^\s+/g,'').replace(/\s+$/g,'');  // équivalent de trim() en javascript
+  mdp = mdp.substring(0,20);
+  var nb_min = 0;
+  var nb_maj = 0;
+  var nb_num = 0;
+  var nb_spe = 0;
+  var longueur = mdp.length;
+  for (i=0 ; i<longueur ; i++)
+  {
+    var car = mdp.charAt(i);
+         if((/[a-z]/).test(car)) {nb_min++;}  // 2 points maxi pour des minuscules
+    else if((/[A-Z]/).test(car)) {nb_maj++;}  // 2 points maxi pour des majuscules
+    else if((/[0-9]/).test(car)) {nb_num++;}  // 2 points maxi pour des chiffres
+    else                         {nb_spe++;}  // 6 points maxi pour des caractères autres
+  }
+  var coef = Math.min(nb_min,2) + Math.min(nb_maj,2) + Math.min(nb_num,2) + Math.min(nb_spe*2,6) ;
+  if(longueur>7)
+  {
+    coef += Math.floor( (longueur-5)/3 );  // 6 points maxi pour la longueur du mdp
+  }
+  coef = Math.min(coef,12);  // total 18 points maxi, plafonné à 12
+  var rouge = 255 - 16*Math.max(0,coef-6) ; // 255 -> 255 -> 159
+  var vert  = 159 + 16*Math.min(6,coef) ;   // 159 -> 255 -> 255
+  var bleu  = 159 ;
+  $('#robustesse').css('background-color','rgb('+rouge+','+vert+','+bleu+')').children('span').html(coef);
 }
 
 /**
@@ -153,9 +169,9 @@ function analyse_mdp(mdp)
  */
 function imprimer(contenu)
 {
-	var wp = window.open("","SACochePrint","toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=no,resizable=no,copyhistory=no,width=1,height=1,top=0,left=0");
-	wp.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="./_css/style.css" /><title>SACoche - Impression</title></head><body onload="window.print();window.close()">'+document.getElementById('top_info').innerHTML+contenu+'</body></html>');
-	wp.document.close();
+  var wp = window.open("","SACochePrint","toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=no,resizable=no,copyhistory=no,width=1,height=1,top=0,left=0");
+  wp.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="./_css/style.css" /><title>SACoche - Impression</title></head><body onload="window.print();window.close()">'+document.getElementById('top_info').innerHTML+contenu+'</body></html>');
+  wp.document.close();
 }
 
 /**
@@ -166,34 +182,34 @@ function imprimer(contenu)
  */
 function cocher_matieres_items(matieres_items_liste)
 {
-	// Replier tout sauf le plus haut niveau
-	$('#zone_matieres_items ul').css("display","none");
-	$('#zone_matieres_items ul.ul_m1').css("display","block");
-	// Décocher tout
-	$("#zone_matieres_items input[type=checkbox]").each
-	(
-		function()
-		{
-			this.checked = false;
-		}
-	);
-	// Cocher ce qui doit l'être (initialisation)
-	if(matieres_items_liste.length)
-	{
-		var tab_id = matieres_items_liste.split('_');
-		for(i in tab_id)
-		{
-			id = 'id_'+tab_id[i];
-			if($('#'+id).length)
-			{
-				$('#'+id).prop('checked',true);
-				$('#'+id).closest('ul.ul_n3').css("display","block");	// les items
-				$('#'+id).closest('ul.ul_n2').css("display","block");	// le thème
-				$('#'+id).closest('ul.ul_n1').css("display","block");	// le domaine
-				$('#'+id).closest('ul.ul_m2').css("display","block");	// le niveau
-			}
-		}
-	}
+  // Replier tout sauf le plus haut niveau
+  $('#zone_matieres_items ul').css("display","none");
+  $('#zone_matieres_items ul.ul_m1').css("display","block");
+  // Décocher tout
+  $("#zone_matieres_items input[type=checkbox]").each
+  (
+    function()
+    {
+      this.checked = false;
+    }
+  );
+  // Cocher ce qui doit l'être (initialisation)
+  if(matieres_items_liste.length)
+  {
+    var tab_id = matieres_items_liste.split('_');
+    for(i in tab_id)
+    {
+      id = 'id_'+tab_id[i];
+      if($('#'+id).length)
+      {
+        $('#'+id).prop('checked',true);
+        $('#'+id).closest('ul.ul_n3').css("display","block");  // les items
+        $('#'+id).closest('ul.ul_n2').css("display","block");  // le thème
+        $('#'+id).closest('ul.ul_n1').css("display","block");  // le domaine
+        $('#'+id).closest('ul.ul_m2').css("display","block");  // le niveau
+      }
+    }
+  }
 }
 
 /**
@@ -204,55 +220,55 @@ function cocher_matieres_items(matieres_items_liste)
  */
 function memoriser_selection_matieres_items(selection_items_nom)
 {
-	if(!selection_items_nom)
-	{
-		$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
-		$("#f_liste_items_nom").focus();
-		return false;
-	}
-	var compet_liste = '';
-	$("#zone_matieres_items input[type=checkbox]:checked").each
-	(
-		function()
-		{
-			compet_liste += $(this).val()+'_';
-		}
-	);
-	if(!compet_liste)
-	{
-		$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
-		return false;
-	}
-	var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-	$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-	$.ajax
-	(
-		{
-			type : 'POST',
-			url : 'ajax.php?page=compte_selection_items',
-			data : 'f_action='+'ajouter'+'&f_origine='+PAGE+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(selection_items_nom),
-			dataType : "html",
-			error : function(jqXHR, textStatus, errorThrown)
-			{
-				$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-			},
-			success : function(responseHTML)
-			{
-				initialiser_compteur();
-				if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
-					$("#f_selection_items option:disabled").remove();
-					$("#f_selection_items").append(responseHTML);
-				}
-				else
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
-					$("#f_liste_items_nom").focus();
-				}
-			}
-		}
-	);
+  if(!selection_items_nom)
+  {
+    $('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
+    $("#f_liste_items_nom").focus();
+    return false;
+  }
+  var compet_liste = '';
+  $("#zone_matieres_items input[type=checkbox]:checked").each
+  (
+    function()
+    {
+      compet_liste += $(this).val()+'_';
+    }
+  );
+  if(!compet_liste)
+  {
+    $('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
+    return false;
+  }
+  var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
+  $('#ajax_msg_memo').removeAttr("class").addClass("loader").html("En cours&hellip;");
+  $.ajax
+  (
+    {
+      type : 'POST',
+      url : 'ajax.php?page=compte_selection_items',
+      data : 'f_action='+'ajouter'+'&f_origine='+PAGE+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(selection_items_nom),
+      dataType : "html",
+      error : function(jqXHR, textStatus, errorThrown)
+      {
+        $('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      },
+      success : function(responseHTML)
+      {
+        initialiser_compteur();
+        if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+        {
+          $('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+          $("#f_selection_items option:disabled").remove();
+          $("#f_selection_items").append(responseHTML);
+        }
+        else
+        {
+          $('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
+          $("#f_liste_items_nom").focus();
+        }
+      }
+    }
+  );
 }
 
 /**
@@ -263,38 +279,38 @@ function memoriser_selection_matieres_items(selection_items_nom)
  */
 function cocher_socle_item(socle_item_id)
 {
-	// Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
-	if(cocher_socle_item_first_appel)
-	{
-		$('#zone_socle_item ul').css("display","none");
-		$('#zone_socle_item ul.ul_m1').css("display","block");
-		cocher_socle_item_first_appel = false;
-	}
-	$('#zone_socle_item ul.ul_n1').css("display","block"); // zone "Hors socle" éventuelle
-	// Décocher tout
-	$("#zone_socle_item input[type=radio]").each
-	(
-		function()
-		{
-			this.checked = false;
-		}
-	);
-	// Cocher ce qui doit l'être (initialisation)
-	if(socle_item_id!='0')
-	{
-		if($('#socle_'+socle_item_id).length)
-		{
-			$('#socle_'+socle_item_id).prop('checked',true);
-			$('#socle_'+socle_item_id).closest('ul.ul_n3').css("display","block");	// les items
-			$('#socle_'+socle_item_id).closest('ul.ul_n2').css("display","block");	// la section
-			$('#socle_'+socle_item_id).closest('ul.ul_n1').css("display","block");	// le pilier
-		}
-	}
-	else
-	{
-		$('#socle_0').prop('checked',true);
-	}
-	$('#socle_'+socle_item_id).focus();
+  // Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
+  if(cocher_socle_item_first_appel)
+  {
+    $('#zone_socle_item ul').css("display","none");
+    $('#zone_socle_item ul.ul_m1').css("display","block");
+    cocher_socle_item_first_appel = false;
+  }
+  $('#zone_socle_item ul.ul_n1').css("display","block"); // zone "Hors socle" éventuelle
+  // Décocher tout
+  $("#zone_socle_item input[type=radio]").each
+  (
+    function()
+    {
+      this.checked = false;
+    }
+  );
+  // Cocher ce qui doit l'être (initialisation)
+  if(socle_item_id!='0')
+  {
+    if($('#socle_'+socle_item_id).length)
+    {
+      $('#socle_'+socle_item_id).prop('checked',true);
+      $('#socle_'+socle_item_id).closest('ul.ul_n3').css("display","block");  // les items
+      $('#socle_'+socle_item_id).closest('ul.ul_n2').css("display","block");  // la section
+      $('#socle_'+socle_item_id).closest('ul.ul_n1').css("display","block");  // le pilier
+    }
+  }
+  else
+  {
+    $('#socle_0').prop('checked',true);
+  }
+  $('#socle_'+socle_item_id).focus();
 }
 
 var cocher_socle_item_first_appel = true;
@@ -307,30 +323,30 @@ var cocher_socle_item_first_appel = true;
  */
 function cocher_profs(prof_liste)
 {
-	// Décocher tout
-	$("#zone_profs input[type=checkbox]").each
-	(
-		function()
-		{
-			if(this.disabled == false)
-			{
-				this.checked = false;
-			}
-		}
-	);
-	// Cocher des cases des profs
-	if(prof_liste.length)
-	{
-		var tab_id = prof_liste.split('_');
-		for(i in tab_id)
-		{
-			var id = 'p_'+tab_id[i];
-			if($('#'+id).length)
-			{
-				$('#'+id).prop('checked',true);
-			}
-		}
-	}
+  // Décocher tout
+  $("#zone_profs input[type=checkbox]").each
+  (
+    function()
+    {
+      if(this.disabled == false)
+      {
+        this.checked = false;
+      }
+    }
+  );
+  // Cocher des cases des profs
+  if(prof_liste.length)
+  {
+    var tab_id = prof_liste.split('_');
+    for(i in tab_id)
+    {
+      var id = 'p_'+tab_id[i];
+      if($('#'+id).length)
+      {
+        $('#'+id).prop('checked',true);
+      }
+    }
+  }
 }
 
 /**
@@ -341,32 +357,32 @@ function cocher_profs(prof_liste)
  */
 function cocher_eleves(eleve_liste)
 {
-	// Replier les classes
-		$('#zone_eleve ul').css("display","none");
-		$('#zone_eleve ul.ul_m1').css("display","block");
-	// Décocher tout
-	$("#zone_eleve input[type=checkbox]").each
-	(
-		function()
-		{
-			this.checked = false;
-			$(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuelles d'élèves associés à une évaluation de même nom
-		}
-	);
-	// Cocher ce qui doit l'être (initialisation)
-	if(eleve_liste.length)
-	{
-		var tab_id = eleve_liste.split('_');
-		for(i in tab_id)
-		{
-			var id_debut = 'id_'+tab_id[i]+'_';
-			if($('input[id^='+id_debut+']').length)
-			{
-				$('input[id^='+id_debut+']').prop('checked',true);
-				$('input[id^='+id_debut+']').parent().parent().css("display","block");	// le regroupement
-			}
-		}
-	}
+  // Replier les classes
+    $('#zone_eleve ul').css("display","none");
+    $('#zone_eleve ul.ul_m1').css("display","block");
+  // Décocher tout
+  $("#zone_eleve input[type=checkbox]").each
+  (
+    function()
+    {
+      this.checked = false;
+      $(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuelles d'élèves associés à une évaluation de même nom
+    }
+  );
+  // Cocher ce qui doit l'être (initialisation)
+  if(eleve_liste.length)
+  {
+    var tab_id = eleve_liste.split('_');
+    for(i in tab_id)
+    {
+      var id_debut = 'id_'+tab_id[i]+'_';
+      if($('input[id^='+id_debut+']').length)
+      {
+        $('input[id^='+id_debut+']').prop('checked',true);
+        $('input[id^='+id_debut+']').parent().parent().css("display","block");  // le regroupement
+      }
+    }
+  }
 }
 
 /**
@@ -382,17 +398,17 @@ function cocher_eleves(eleve_liste)
  */
 function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
 {
-	var textarea_contenu = textarea_obj.val();
-	var textarea_longueur = textarea_contenu.length;
-	if(textarea_contenu.length > textarea_maxi_length)
-	{
-		textarea_obj.val( textarea_contenu.substring(0,textarea_maxi_length) );
-		textarea_longueur = textarea_maxi_length;
-	}
-	var reste_nb    = textarea_maxi_length - textarea_longueur;
-	var reste_str   = (reste_nb>1) ? ' caractères restants' : ' caractère restant' ;
-	var reste_class = (reste_nb>9) ? 'valide' : 'alerte' ;
-	$('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr("class").addClass(reste_class);
+  var textarea_contenu = textarea_obj.val();
+  var textarea_longueur = textarea_contenu.length;
+  if(textarea_contenu.length > textarea_maxi_length)
+  {
+    textarea_obj.val( textarea_contenu.substring(0,textarea_maxi_length) );
+    textarea_longueur = textarea_maxi_length;
+  }
+  var reste_nb    = textarea_maxi_length - textarea_longueur;
+  var reste_str   = (reste_nb>1) ? ' caractères restants' : ' caractère restant' ;
+  var reste_class = (reste_nb>9) ? 'valide' : 'alerte' ;
+  $('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr("class").addClass(reste_class);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,17 +425,17 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
  */
 function SetCookie(name,value)
 {
-	var argv = SetCookie.arguments;
-	var argc = SetCookie.arguments.length;
-	var expires = (argc > 2) ? argv[2] : null ;
-	var path    = (argc > 3) ? argv[3] : null ;
-	var domain  = (argc > 4) ? argv[4] : null ;
-	var secure  = (argc > 5) ? argv[5] : false ;
-	document.cookie = name + "=" + escape(value) +
-	                  ((expires==null) ? "" : ("; expires="+expires.toGMTString())) +
-	                  ((path==null) ? "" : ("; path="+path)) +
-	                  ((domain==null) ? "" : ("; domain="+domain)) +
-	                  ((secure==true) ? "; secure" : "") ;
+  var argv = SetCookie.arguments;
+  var argc = SetCookie.arguments.length;
+  var expires = (argc > 2) ? argv[2] : null ;
+  var path    = (argc > 3) ? argv[3] : null ;
+  var domain  = (argc > 4) ? argv[4] : null ;
+  var secure  = (argc > 5) ? argv[5] : false ;
+  document.cookie = name + "=" + escape(value) +
+                    ((expires==null) ? "" : ("; expires="+expires.toGMTString())) +
+                    ((path==null) ? "" : ("; path="+path)) +
+                    ((domain==null) ? "" : ("; domain="+domain)) +
+                    ((secure==true) ? "; secure" : "") ;
 }
 
 /**
@@ -430,33 +446,33 @@ function SetCookie(name,value)
  */
 function GetCookie(name)
 {
-	var arg  = name + "=";
-	var alen = arg.length;
-	var clen = document.cookie.length;
-	var i = 0;
-	while(i<clen)
-	{
-		var j = i+alen;
-		if(document.cookie.substring(i,j)==arg)
-		{
-			return getCookieVal(j);
-		}
-		i = document.cookie.indexOf(" ",i)+1;
-		if(i==0)
-		{
-			break;
-		}
-	}
-	return null;
+  var arg  = name + "=";
+  var alen = arg.length;
+  var clen = document.cookie.length;
+  var i = 0;
+  while(i<clen)
+  {
+    var j = i+alen;
+    if(document.cookie.substring(i,j)==arg)
+    {
+      return getCookieVal(j);
+    }
+    i = document.cookie.indexOf(" ",i)+1;
+    if(i==0)
+    {
+      break;
+    }
+  }
+  return null;
 }
 function getCookieVal(offset)
 {
-	var endstr = document.cookie.indexOf(";", offset);
-	if (endstr==-1)
-	{
-		endstr = document.cookie.length;
-	}
-	return unescape(document.cookie.substring(offset, endstr));
+  var endstr = document.cookie.indexOf(";", offset);
+  if (endstr==-1)
+  {
+    endstr = document.cookie.length;
+  }
+  return unescape(document.cookie.substring(offset, endstr));
 }
 
 /**
@@ -467,10 +483,10 @@ function getCookieVal(offset)
  */
 function initialiser_compteur()
 {
-	var date = new Date();
-	SetCookie('SACoche-compteur',date.getTime());
-	DUREE_AFFICHEE = DUREE_AUTORISEE;
-	$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
+  var date = new Date();
+  SetCookie('SACoche-compteur',date.getTime());
+  DUREE_AFFICHEE = DUREE_AUTORISEE;
+  $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
 }
 
 /**
@@ -481,34 +497,34 @@ function initialiser_compteur()
  */
 function tester_compteur()
 {
-	var date  = new Date();
-	var now   = date.getTime();
-	var avant = GetCookie('SACoche-compteur');
-	var duree_ecoulee  = Math.floor((now-avant)/60/1000);
-	var duree_restante = DUREE_AUTORISEE-duree_ecoulee;
-	if(duree_restante!=DUREE_AFFICHEE)
-	{
-		DUREE_AFFICHEE = Math.max(duree_restante,0);
-		if(DUREE_AFFICHEE>5)
-		{
-			$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
-			if(DUREE_AFFICHEE%10==0)
-			{
-				// Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
-				conserver_session_active();
-			}
-			
-		}
-		else
-		{
-			setVolume(100);play("bip");
-			$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_anim");
-			if(DUREE_AFFICHEE==0)
-			{
-				fermer_session();
-			}
-		}
-	}
+  var date  = new Date();
+  var now   = date.getTime();
+  var avant = GetCookie('SACoche-compteur');
+  var duree_ecoulee  = Math.floor((now-avant)/60/1000);
+  var duree_restante = DUREE_AUTORISEE-duree_ecoulee;
+  if(duree_restante!=DUREE_AFFICHEE)
+  {
+    DUREE_AFFICHEE = Math.max(duree_restante,0);
+    if(DUREE_AFFICHEE>5)
+    {
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
+      if(DUREE_AFFICHEE%10==0)
+      {
+        // Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
+        conserver_session_active();
+      }
+      
+    }
+    else
+    {
+      setVolume(100);play("bip");
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_anim");
+      if(DUREE_AFFICHEE==0)
+      {
+        fermer_session();
+      }
+    }
+  }
 }
 
 /**
@@ -519,26 +535,26 @@ function tester_compteur()
  */
 function conserver_session_active()
 {
-	$.ajax
-	(
-		{
-			type : 'GET',
-			url : 'ajax.php?page=conserver_session_active',
-			data : '',
-			dataType : "html",
-			error : function(jqXHR, textStatus, errorThrown)
-			{
-				alert('Avertissement : échec lors de la connexion au serveur !\nLe travail en cours pourrait ne pas pouvoir être sauvegardé...');
-			},
-			success : function(responseHTML)
-			{
-				if(responseHTML != 'ok')
-				{
-					alert(responseHTML);
-				}
-			}
-		}
-	);
+  $.ajax
+  (
+    {
+      type : 'GET',
+      url : 'ajax.php?page=conserver_session_active',
+      data : '',
+      dataType : "html",
+      error : function(jqXHR, textStatus, errorThrown)
+      {
+        alert('Avertissement : échec lors de la connexion au serveur !\nLe travail en cours pourrait ne pas pouvoir être sauvegardé...');
+      },
+      success : function(responseHTML)
+      {
+        if(responseHTML != 'ok')
+        {
+          alert(responseHTML);
+        }
+      }
+    }
+  );
 }
 
 /**
@@ -549,37 +565,37 @@ function conserver_session_active()
  */
 function fermer_session()
 {
-	$.ajax
-	(
-		{
-			type : 'GET',
-			url : 'ajax.php?page=fermer_session',
-			data : '',
-			dataType : "html",
-			error : function(jqXHR, textStatus, errorThrown)
-			{
-				return false;
-			},
-			success : function(responseHTML)
-			{
-				if(responseHTML != 'ok')
-				{
-					return false;
-				}
-				$("body").stopTime('compteur');
-				$('#menu').remove();
-				if(CONNEXION_USED=='normal')
-				{
-					$('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="./index.php">Se reconnecter&hellip;</a></span>');
-				}
-				else
-				{
-					$('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
-				}
-				$.fancybox( '<div class="danger">Délai de '+DUREE_AUTORISEE+'min sans activité atteint &rarr; session fermée.<br />Toute action ultérieure ne sera pas enregistrée.</div>' , {'centerOnScroll':true} );
-			}
-		}
-	);
+  $.ajax
+  (
+    {
+      type : 'GET',
+      url : 'ajax.php?page=fermer_session',
+      data : '',
+      dataType : "html",
+      error : function(jqXHR, textStatus, errorThrown)
+      {
+        return false;
+      },
+      success : function(responseHTML)
+      {
+        if(responseHTML != 'ok')
+        {
+          return false;
+        }
+        $("body").stopTime('compteur');
+        $('#menu').remove();
+        if(CONNEXION_USED=='normal')
+        {
+          $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="./index.php">Se reconnecter&hellip;</a></span>');
+        }
+        else
+        {
+          $('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
+        }
+        $.fancybox( '<div class="danger">Délai de '+DUREE_AUTORISEE+'min sans activité atteint &rarr; session fermée.<br />Toute action ultérieure ne sera pas enregistrée.</div>' , {'centerOnScroll':true} );
+      }
+    }
+  );
 }
 
 /**
@@ -591,53 +607,53 @@ var myListener = new Object();
 // Initialisation
 myListener.onInit = function()
 {
-	this.position = 0;
+  this.position = 0;
 };
 // Update
 myListener.onUpdate = function()
 {
-	info_playing  = this.isPlaying;
-	info_url      = this.url;
-	info_volume   = this.volume;
-	info_position = this.position;
-	info_duration = this.duration;
-	info_bytes    = this.bytesLoaded + "/" + this.bytesTotal + " (" + this.bytesPercent + "%)";
-	var isPlaying = (this.isPlaying == "true");
+  info_playing  = this.isPlaying;
+  info_url      = this.url;
+  info_volume   = this.volume;
+  info_position = this.position;
+  info_duration = this.duration;
+  info_bytes    = this.bytesLoaded + "/" + this.bytesTotal + " (" + this.bytesPercent + "%)";
+  var isPlaying = (this.isPlaying == "true");
 };
 // Le lecteur flash
 function getFlashObject()
 {
-	return document.getElementById("myFlash");
+  return document.getElementById("myFlash");
 }
 // Play
 function play(file)
 {
-	if (myListener.position == 0)
-	{
-		getFlashObject().SetVariable("method:setUrl", "./_mp3/"+file+".mp3");
-	}
-	getFlashObject().SetVariable("method:play", "");
-	getFlashObject().SetVariable("enabled", "true");
+  if (myListener.position == 0)
+  {
+    getFlashObject().SetVariable("method:setUrl", "./_mp3/"+file+".mp3");
+  }
+  getFlashObject().SetVariable("method:play", "");
+  getFlashObject().SetVariable("enabled", "true");
 }
 // Pause
 function pause()
 {
-	getFlashObject().SetVariable("method:pause", "");
+  getFlashObject().SetVariable("method:pause", "");
 }
 // Stop
 function stop()
 {
-	getFlashObject().SetVariable("method:stop", "");
+  getFlashObject().SetVariable("method:stop", "");
 }
 // setPosition
 function setPosition(position)
 {
-	getFlashObject().SetVariable("method:setPosition", position);
+  getFlashObject().SetVariable("method:setPosition", position);
 }
 // setVolume
 function setVolume(volume)
 {
-	getFlashObject().SetVariable("method:setVolume", volume);
+  getFlashObject().SetVariable("method:setVolume", volume);
 }
 
 /**
@@ -647,99 +663,99 @@ function setVolume(volume)
 // Méthode pour vérifier le format du numéro UAI
 function test_uai_format(value)
 {
-	var uai = value.toUpperCase();
-	if(uai.length!=8)
-	{
-		return false;
-	}
-	else
-	{
-		var uai_fin = uai.substring(7,8);
-		if((uai_fin<"A")||(uai_fin>"Z"))
-		{
-			return false;
-		}
-		else
-		{
-			for(i=0;i<7;i++)
-			{
-				var t = uai.substring(i,i+1);
-				if((t<"0")||(t>"9"))
-				{
-					return false;
-				}
-			}
-		}
-	}
-	return true;
+  var uai = value.toUpperCase();
+  if(uai.length!=8)
+  {
+    return false;
+  }
+  else
+  {
+    var uai_fin = uai.substring(7,8);
+    if((uai_fin<"A")||(uai_fin>"Z"))
+    {
+      return false;
+    }
+    else
+    {
+      for(i=0;i<7;i++)
+      {
+        var t = uai.substring(i,i+1);
+        if((t<"0")||(t>"9"))
+        {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
 }
 jQuery.validator.addMethod
 (
-	"uai_format", function(value, element)
-	{
-		return this.optional(element) || test_uai_format(value) ;
-	}
-	, "il faut 7 chiffres suivis d'une lettre"
+  "uai_format", function(value, element)
+  {
+    return this.optional(element) || test_uai_format(value) ;
+  }
+  , "il faut 7 chiffres suivis d'une lettre"
 ); 
 
 // Méthode pour vérifier la clef de contrôle du numéro UAI
 function test_uai_clef(value)
 {
-	var uai = value.toUpperCase();
-	var uai_valide = true;
-	var uai_nombre = uai.substring(0,7);
-	var uai_fin = uai.substring(7,8);
-	alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-	reste = uai_nombre-(23*Math.floor(uai_nombre/23));
-	clef = alphabet.substring(reste,reste+1);;
-	return (clef==uai_fin) ? true : false ;
+  var uai = value.toUpperCase();
+  var uai_valide = true;
+  var uai_nombre = uai.substring(0,7);
+  var uai_fin = uai.substring(7,8);
+  alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+  reste = uai_nombre-(23*Math.floor(uai_nombre/23));
+  clef = alphabet.substring(reste,reste+1);;
+  return (clef==uai_fin) ? true : false ;
 }
 jQuery.validator.addMethod
 (
-	"uai_clef", function(value, element)
-	{
-		return this.optional(element) || test_uai_clef(value) ;
-	}
-	, "clef de contrôle incompatible"
+  "uai_clef", function(value, element)
+  {
+    return this.optional(element) || test_uai_clef(value) ;
+  }
+  , "clef de contrôle incompatible"
 ); 
 
 // Méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
 function test_dateITA(value)
 {
-	var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/ ;
-	if( re.test(value))
-	{
-		var adata = value.split('/');
-		var gg = parseInt(adata[0],10);
-		var mm = parseInt(adata[1],10);
-		var aaaa = parseInt(adata[2],10);
-		var xdata = new Date(aaaa,mm-1,gg);
-		if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
-			return true;
-		else
-			return false;
-	}
-	else
-		return false;
+  var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/ ;
+  if( re.test(value))
+  {
+    var adata = value.split('/');
+    var gg = parseInt(adata[0],10);
+    var mm = parseInt(adata[1],10);
+    var aaaa = parseInt(adata[2],10);
+    var xdata = new Date(aaaa,mm-1,gg);
+    if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
+      return true;
+    else
+      return false;
+  }
+  else
+    return false;
 }
 jQuery.validator.addMethod
 (
-	"dateITA",
-	function(value, element)
-	{
-		return this.optional(element) || test_dateITA(value);
-	}, 
-	"Veuillez entrer une date correcte."
+  "dateITA",
+  function(value, element)
+  {
+    return this.optional(element) || test_dateITA(value);
+  }, 
+  "Veuillez entrer une date correcte."
 );
 
 // Ajout d'une méthode pour vérifier le format hexadécimal
 jQuery.validator.addMethod
 (
-	"hexa_format", function(value, element)
-	{
-		return this.optional(element) || ( (/^\#[0-9a-f]{3,6}$/i.test(value)) && (value.length!=5) && (value.length!=6) ) ;
-	}
-	, "format incorrect"
+  "hexa_format", function(value, element)
+  {
+    return this.optional(element) || ( (/^\#[0-9a-f]{3,6}$/i.test(value)) && (value.length!=5) && (value.length!=6) ) ;
+  }
+  , "format incorrect"
 ); 
 
 /**
@@ -750,15 +766,15 @@ jQuery.validator.addMethod
  */
 function testURL(lien)
 {
-	return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)*(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(lien);
+  return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)*(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(lien);
 }
 jQuery.validator.addMethod
 (
-	"testURL", function(value, element)
-	{
-		return this.optional(element) || testURL(value) ;
-	}
-	, "URL invalide"
+  "testURL", function(value, element)
+  {
+    return this.optional(element) || testURL(value) ;
+  }
+  , "URL invalide"
 ); 
 
 /**
@@ -766,451 +782,458 @@ jQuery.validator.addMethod
  */
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// Initialisation
-		format_liens('body');
-		infobulle();
+    // Initialisation
+    format_liens('body');
+    infobulle();
 
-		/**
-		 * MENU - Rendre transparente la page au survol.
-		 *
-		 * Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
-		 * Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
-		 * Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
-		 */
-		var test_over_avant = false;
-		var test_over_apres = false;
-		$('#menu li').mouseenter( function(){test_over_apres = true; });
-		$('#menu li').mouseleave( function(){test_over_apres = false;});
-		function page_transparente()
-		{
-			$("body").everyTime
-			('5ds', function()
-				{
-					if( test_over_avant != test_over_apres )
-					{
-						test_over_avant = test_over_apres ;
-						if(test_over_apres)
-						{
-							$('#cadre_bas').fadeTo('normal',0.2);
-						}
-						else
-						{
-							$('#cadre_bas').fadeTo('fast',1);
-						}
-					}
-				}
-			);
-		}
-		page_transparente();
+    /**
+     * MENU - Rendre transparente la page au survol.
+     *
+     * Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
+     * Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
+     * Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
+     */
+    var test_over_avant = false;
+    var test_over_apres = false;
+    $('#menu li').mouseenter( function(){test_over_apres = true; });
+    $('#menu li').mouseleave( function(){test_over_apres = false;});
+    function page_transparente()
+    {
+      $("body").everyTime
+      ('5ds', function()
+        {
+          if( test_over_avant != test_over_apres )
+          {
+            test_over_avant = test_over_apres ;
+            if(test_over_apres)
+            {
+              $('#cadre_bas').fadeTo('normal',0.2);
+            }
+            else
+            {
+              $('#cadre_bas').fadeTo('fast',1);
+            }
+          }
+        }
+      );
+    }
+    page_transparente();
 
-		/**
-		 * Si on appuie sur la touche entrée, le premier élèment de formulaire est actionné.
-		 * S'il s'agit d'un input type image, cela peut dé-cocher tout un ensemble de cases à l'insu de l'utilisateur.
-		 * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.
-		 * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
-		 */
-		// 
-		$('input[name=leurre]').live
-		(
-			'click' , function()
-			{
-				return false;
-			}
-		);
+    /**
+     * Si on appuie sur la touche entrée, le premier élèment de formulaire est actionné.
+     * S'il s'agit d'un input type image, cela peut dé-cocher tout un ensemble de cases à l'insu de l'utilisateur.
+     * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.
+     * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
+     */
+    // 
+    $('input[name=leurre]').live
+    (
+      'click' , function()
+      {
+        return false;
+      }
+    );
 
-		/**
-		 * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
-		 */
-		$('.arbre_dynamique li span').siblings('ul').hide('fast');
-		$('.arbre_dynamique li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$(this).siblings('ul').toggle();
-			}
-		);
+    /**
+     * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
+     */
+    $('.arbre_dynamique li span').siblings('ul').hide('fast');
+    $('.arbre_dynamique li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $(this).siblings('ul').toggle();
+      }
+    );
 
-		/**
-		 * Réagir aux clics pour cocher / décocher un ensemble de cases d'un arbre (items)
-		 */
-		$('.arbre_check input[name=all_check]').click
-		(
-			function()
-			{
-				$(this).parent().find('ul').show();
-				$(this).parent().find('input[type=checkbox]').prop('checked',true);
-				return false;
-			}
-		);
-		$('.arbre_check input[name=all_uncheck]').click
-		(
-			function()
-			{
-				$(this).parent().find('ul').hide();
-				$(this).parent().find('input[type=checkbox]').prop('checked',false);
-				return false;
-			}
-		);
+    /**
+     * Réagir aux clics pour cocher / décocher un ensemble de cases d'un arbre (items)
+     */
+    $('.arbre_check input[name=all_check]').click
+    (
+      function()
+      {
+        $(this).parent().find('ul').show();
+        $(this).parent().find('input[type=checkbox]').prop('checked',true);
+        return false;
+      }
+    );
+    $('.arbre_check input[name=all_uncheck]').click
+    (
+      function()
+      {
+        $(this).parent().find('ul').hide();
+        $(this).parent().find('input[type=checkbox]').prop('checked',false);
+        return false;
+      }
+    );
 
-		/**
-		 * Réagir aux clics pour déployer / contracter l'ensemble d'un arbre à une étape donnée
-		 */
-		$('a.all_extend').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				var stade = $(this).attr('href');
-				var id_arbre = $(this).parent().parent().attr('id');
-				$('#'+id_arbre+' ul').css("display","none");
-				switch(stade)
-				{
-					case 'n3' :	// item
-						$('#'+id_arbre+' ul.ul_n3').css("display","block");
-					case 'n2' :	// thème
-						$('#'+id_arbre+' ul.ul_n2').css("display","block");
-					case 'n1' :	// domaine
-						$('#'+id_arbre+' ul.ul_n1').css("display","block");
-					case 'm2' :	// niveau
-						$('#'+id_arbre+' ul.ul_m2').css("display","block");
-					case 'm1' :	// matière
-						$('#'+id_arbre+' ul.ul_m1').css("display","block");
-				}
-				return false;
-			}
-		);
+    /**
+     * Réagir aux clics pour déployer / contracter l'ensemble d'un arbre à une étape donnée
+     */
+    $('a.all_extend').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        var stade = $(this).attr('href');
+        var id_arbre = $(this).parent().parent().attr('id');
+        $('#'+id_arbre+' ul').css("display","none");
+        switch(stade)
+        {
+          case 'n3' :  // item
+            $('#'+id_arbre+' ul.ul_n3').css("display","block");
+          case 'n2' :  // thème
+            $('#'+id_arbre+' ul.ul_n2').css("display","block");
+          case 'n1' :  // domaine
+            $('#'+id_arbre+' ul.ul_n1').css("display","block");
+          case 'm2' :  // niveau
+            $('#'+id_arbre+' ul.ul_m2').css("display","block");
+          case 'm1' :  // matière
+            $('#'+id_arbre+' ul.ul_m1').css("display","block");
+        }
+        return false;
+      }
+    );
 
-		/**
-		 * Lien pour se déconnecter
-		 */
-		$('#deconnecter').click
-		(
-			function()
-			{
-				window.document.location.href='./index.php';
-			}
-		);
+    /**
+     * Lien pour se déconnecter
+     */
+    $('#deconnecter').click
+    (
+      function()
+      {
+        window.document.location.href='./index.php';
+      }
+    );
 
-		/**
-		 * Clic sur une image-lien pour imprimer un referentiel en consultation
-		 */
-		$('#fancybox_contenu q.imprimer').live
-		('click',
-			function()
-			{
-				imprimer(document.getElementById('fancybox_contenu').innerHTML);
-			}
-		);
+    /**
+     * Clic sur une image-lien pour imprimer un referentiel en consultation
+     */
+    $('#fancybox_contenu q.imprimer').live
+    ('click',
+      function()
+      {
+        imprimer(document.getElementById('fancybox_contenu').innerHTML);
+      }
+    );
 
-		/**
-		 * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
-		 */
-		$('a.toggle').click
-		(
-			function()
-			{
-				$("div.toggle").toggle("slow");
-				return false;
-			}
-		);
+    /**
+     * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
+     */
+    $('a.toggle').click
+    (
+      function()
+      {
+        $("div.toggle").toggle("slow");
+        return false;
+      }
+    );
 
-		/**
-		 * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
-		 */
-		$('img.toggle').live
-		('click',
-			function()
-			{
-				id = $(this).parent().attr('id').substring(3); // 'to_' + id
-				$('#'+id).toggle('fast');
-				src = $(this).attr('src');
-				if( src.indexOf("plus") > 0 )
-				{
-					$(this).attr('src',src.replace('plus','moins'));
-				}
-				else
-				{
-					$(this).attr('src',src.replace('moins','plus'));
-				}
-				return false;
-			}
-		);
+    /**
+     * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
+     */
+    $('img.toggle').live
+    ('click',
+      function()
+      {
+        id = $(this).parent().attr('id').substring(3); // 'to_' + id
+        $('#'+id).toggle('fast');
+        src = $(this).attr('src');
+        if( src.indexOf("plus") > 0 )
+        {
+          $(this).attr('src',src.replace('plus','moins'));
+        }
+        else
+        {
+          $(this).attr('src',src.replace('moins','plus'));
+        }
+        return false;
+      }
+    );
 
-		/**
-		 * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
-		 */
-		$('a.pop_up').live
-		('click',
-			function()
-			{
-				adresse = $(this).attr("href");
-				// Fenêtre principale ; si ce n'est pas le pop-up, on la redimensionne / repositionne
-				if(window.name!='popup')
-				{
-					var largeur = Math.max( 1000 , screen.width - 600 );
-					var hauteur = screen.height * 1 ;
-					var gauche = 0 ;
-					var haut  = 0 ;
-					window.moveTo(gauche,haut);
-					window.resizeTo(largeur,hauteur);
-				}
-				// Fenêtre pop-up
-				var largeur = 600 ;
-				var hauteur = screen.height * 1 ;
-				var gauche = screen.width - largeur ;
-				var haut  = 0 ;
-				w = window.open( adresse , 'popup' ,"toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width="+largeur+",height="+hauteur+",top="+haut+",left="+gauche ) ;
-				w.focus() ;
-				return false;
-			}
-		);
+    /**
+     * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
+     */
+    $('a.pop_up').live
+    ('click',
+      function()
+      {
+        adresse = $(this).attr("href");
+        // Fenêtre principale ; si ce n'est pas le pop-up, on la redimensionne / repositionne
+        if(window.name!='popup')
+        {
+          var largeur = Math.max( 1000 , screen.width - 600 );
+          var hauteur = screen.height * 1 ;
+          var gauche = 0 ;
+          var haut  = 0 ;
+          window.moveTo(gauche,haut);
+          window.resizeTo(largeur,hauteur);
+        }
+        // Fenêtre pop-up
+        var largeur = 600 ;
+        var hauteur = screen.height * 1 ;
+        var gauche = screen.width - largeur ;
+        var haut  = 0 ;
+        w = window.open( adresse , 'popup' ,"toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width="+largeur+",height="+hauteur+",top="+haut+",left="+gauche ) ;
+        w.focus() ;
+        return false;
+      }
+    );
 
-		/**
-		 * Gestion de la durée d'inactivité
-		 *
-		 * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
-		 */
-		if(PAGE.substring(0,6)!='public')
-		{
-			initialiser_compteur();
-			$("body").everyTime
-			('15s', 'compteur' , function()
-				{
-					tester_compteur();
-				}
-			);
-		}
+    /**
+     * Gestion de la durée d'inactivité
+     *
+     * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
+     */
+    if(PAGE.substring(0,6)!='public')
+    {
+      initialiser_compteur();
+      $("body").everyTime
+      ('15s', 'compteur' , function()
+        {
+          tester_compteur();
+        }
+      );
+    }
 
-		/**
-		 * Ajoute au document un calque qui est utilisé pour afficher un calendrier
-		 */
-		$('<div id="calque"></div>').appendTo(document.body).hide();
-		var leave_erreur = false;
+    /**
+     * Ajoute au document un calque qui est utilisé pour afficher un calendrier
+     */
+    $('<div id="calque"></div>').appendTo(document.body).hide();
+    var leave_erreur = false;
 
-		/**
-		 * Afficher le calque et le compléter : calendrier
-		 */
-		$('q.date_calendrier').live
-		('click',
-			function(e)
-			{
-				// Récupérer les infos associées
-				champ   = $(this).prev().attr("id");    // champ dans lequel retourner les valeurs
-				date_fr = $(this).prev().attr("value");
-				tab_date = date_fr.split('/');
-				if(tab_date.length==3)
-				{
-					jour  = tab_date[0];
-					mois  = tab_date[1];
-					annee = tab_date[2];
-					get_data = 'j='+jour+'&m='+mois+'&a='+annee;
-				}
-				else
-				{
-					get_data='';
-				}
-				// Afficher le calque
-				posX = e.pageX-5;
-				posY = e.pageY-5;
-				$("#calque").css('left',posX + 'px');
-				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Envoi en cours&hellip;</label>').show();
-				// Charger en Ajax le contenu du calque
-				$.ajax
-				(
-					{
-						type : 'GET',
-						url : 'ajax.php?page=calque_date_calendrier',
-						data : get_data,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							leave_erreur = true;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML.substring(0,4)=='<h5>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#calque').html(responseHTML);
-								leave_erreur = false;
-							}
-							else
-							{
-								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
-								leave_erreur = true;
-							}
-						}
-					}
-				);
-			}
-		);
+    /**
+     * Afficher le calque et le compléter : calendrier
+     */
+    $('q.date_calendrier').live
+    ('click',
+      function(e)
+      {
+        // Récupérer les infos associées
+        champ   = $(this).prev().attr("id");    // champ dans lequel retourner les valeurs
+        date_fr = $(this).prev().attr("value");
+        tab_date = date_fr.split('/');
+        if(tab_date.length==3)
+        {
+          jour  = tab_date[0];
+          mois  = tab_date[1];
+          annee = tab_date[2];
+          get_data = 'j='+jour+'&m='+mois+'&a='+annee;
+        }
+        else
+        {
+          get_data='';
+        }
+        // Afficher le calque
+        posX = e.pageX-5;
+        posY = e.pageY-5;
+        $("#calque").css('left',posX + 'px');
+        $("#calque").css('top',posY + 'px');
+        $("#calque").html('<label id="ajax_alerte_calque" class="loader">En cours&hellip;</label>').show();
+        // Charger en Ajax le contenu du calque
+        $.ajax
+        (
+          {
+            type : 'GET',
+            url : 'ajax.php?page=calque_date_calendrier',
+            data : get_data,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              leave_erreur = true;
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML.substring(0,4)=='<h5>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                $('#calque').html(responseHTML);
+                leave_erreur = false;
+              }
+              else
+              {
+                $('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
+                leave_erreur = true;
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// Masquer le calque ; mouseout ne fonctionne pas à cause des éléments contenus dans le div ; mouseleave est mieux, mais pb qd même avec les select du calendrier
-		$("#calque").mouseleave
-		(
-			function()
-			{
-				if(leave_erreur)
-				{
-					$("#calque").html('&nbsp;').hide();
-				}
-			}
-		);
+    // Masquer le calque ; mouseout ne fonctionne pas à cause des éléments contenus dans le div ; mouseleave est mieux, mais pb qd même avec les select du calendrier
+    $("#calque").mouseleave
+    (
+      function()
+      {
+        if(leave_erreur)
+        {
+          $("#calque").html('&nbsp;').hide();
+        }
+      }
+    );
 
-		// Fermer le calque
-		$("#form_calque #fermer_calque").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#calque").html('&nbsp;').hide();
-				return false;
-			}
-		);
+    // Fermer le calque
+    $("#form_calque #fermer_calque").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $("#calque").html('&nbsp;').hide();
+        return false;
+      }
+    );
 
-		// Envoyer dans l'input une date du calendrier
-		$("#form_calque a.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				retour = $(this).attr("href").substring(0,10); // substring() car si l'identifiant de session est passé dans l'URL (session.use-trans-sid à ON) on peut récolter un truc comme "14/08/2012?SACoche-session=507ac2c6e1007ce8d311ab221fb41aeabaf879f79317c" !
-				retour = retour.replace(/\-/g,"/"); // http://javascript.developpez.com/sources/?page=tips#replaceall
-				$("#"+champ).val( retour ).focus();
-				$("#calque").html('&nbsp;').hide();
-				return false;
-			}
-		);
+    // Envoyer dans l'input une date du calendrier
+    $("#form_calque a.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        retour = $(this).attr("href").substring(0,10); // substring() car si l'identifiant de session est passé dans l'URL (session.use-trans-sid à ON) on peut récolter un truc comme "14/08/2012?SACoche-session=507ac2c6e1007ce8d311ab221fb41aeabaf879f79317c" !
+        retour = retour.replace(/\-/g,"/"); // http://javascript.developpez.com/sources/?page=tips#replaceall
+        $("#"+champ).val( retour ).focus();
+        $("#calque").html('&nbsp;').hide();
+        return false;
+      }
+    );
 
-		// Recharger le calendrier
-		function reload_calendrier(mois,annee)
-		{
-			$.ajax
-			(
-				{
-					type : 'GET',
-					url : 'ajax.php?page=calque_date_calendrier',
-					data : 'm='+mois+'&a='+annee,
-					dataType : "html",
-					success : function(responseHTML)
-					{
-						if(responseHTML.substring(0,4)=='<h5>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-						{
-							$('#calque').html(responseHTML);
-						}
-					}
-				}
-			);
-		}
-		$("#form_calque select.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('change',
-			function()
-			{
-				m = $("#m option:selected").val();
-				a = $("#a option:selected").val();
-				reload_calendrier(m,a);
-				return false;
-			}
-		);
-		$("#form_calque input.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				tab = $(this).attr('id').split('_'); // 'calendrier_' + mois + '_' + année
-				m = tab[1];
-				a = tab[2];
-				reload_calendrier(m,a);
-				return false;
-			}
-		);
+    // Recharger le calendrier
+    function reload_calendrier(mois,annee)
+    {
+      $.ajax
+      (
+        {
+          type : 'GET',
+          url : 'ajax.php?page=calque_date_calendrier',
+          data : 'm='+mois+'&a='+annee,
+          dataType : "html",
+          success : function(responseHTML)
+          {
+            if(responseHTML.substring(0,4)=='<h5>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#calque').html(responseHTML);
+            }
+          }
+        }
+      );
+    }
+    $("#form_calque select.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('change',
+      function()
+      {
+        m = $("#m option:selected").val();
+        a = $("#a option:selected").val();
+        reload_calendrier(m,a);
+        return false;
+      }
+    );
+    $("#form_calque input.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        tab = $(this).attr('id').split('_'); // 'calendrier_' + mois + '_' + année
+        m = tab[1];
+        a = tab[2];
+        reload_calendrier(m,a);
+        return false;
+      }
+    );
 
-		/**
-		 * Calque pour une demande d'évaluation élève
-		 */
+    /**
+     * Calque pour une demande d'évaluation élève
+     */
 
-		$('q.demander_add').live
-		('click',
-			function()
-			{
-				// Récupérer les infos associées
-				infos = $(this).attr('id');    // 'demande_' + matiere_id + '_' + item_id + '_' + score
-				tab_infos = infos.split('_');
-				if(tab_infos.length!=4)
-				{
-					return false;
-				}
-				matiere_id = tab_infos[1];
-				item_id    = tab_infos[2];
-				score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
-				item_nom   = $(this).parent().text();
-				var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
-				            + '<form action="#" method="post" id="form_demande_evaluation">'
-				            + '<p class="b">'+item_nom+'</p>'
-				            + '<p>Message (facultatif) : <textarea id="zone_message" name="message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
-				            + '<p><span class="tab"></span><input name="matiere_id" type="hidden" value="'+matiere_id+'" /><input name="item_id" type="hidden" value="'+item_id+'" /><input name="score" type="hidden" value="'+score+'" />'
-				            + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
-				            + '</form>';
-				$.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
-				$('#form_demande_evaluation textarea').focus();
-				// Indiquer le nombre de caractères restant autorisés dans le textarea
-				$('#zone_message').keyup
-				(
-					function()
-					{
-						afficher_textarea_reste( $(this) , 500 );
-					}
-				);
-			}
-		);
+    $('q.demander_add').live
+    ('click',
+      function()
+      {
+        // Récupérer les infos associées
+        infos = $(this).attr('id');    // 'demande_' + matiere_id + '_' + item_id + '_' + score
+        tab_infos = infos.split('_');
+        if(tab_infos.length!=4)
+        {
+          return false;
+        }
+        matiere_id = tab_infos[1];
+        item_id    = tab_infos[2];
+        score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
+        item_nom   = $(this).parent().text();
+        var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
+                    + '<form action="#" method="post" id="form_demande_evaluation">'
+                    + '<p class="b">'+item_nom+'</p>'
+                    + '<p>Message (facultatif) : <textarea id="zone_message" name="message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
+                    + '<p><span class="tab"></span><input name="matiere_id" type="hidden" value="'+matiere_id+'" /><input name="item_id" type="hidden" value="'+item_id+'" /><input name="score" type="hidden" value="'+score+'" />'
+                    + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
+                    + '</form>';
+        $.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
+        $('#form_demande_evaluation textarea').focus();
+        // Indiquer le nombre de caractères restant autorisés dans le textarea
+        $('#zone_message').keyup
+        (
+          function()
+          {
+            afficher_textarea_reste( $(this) , 500 );
+          }
+        );
+      }
+    );
 
-		$('#fermer_demande_evaluation').live
-		('click',
-			function()
-			{
-				$.fancybox.close();
-				return(false);
-			}
-		);
+    $('#fermer_demande_evaluation').live
+    ('click',
+      function()
+      {
+        if(PAGE!='evaluation_voir')
+        {
+          $.fancybox.close();
+        }
+        else
+        {
+          $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );
+        }
+        return(false);
+      }
+    );
 
-		$('#confirmer_demande_evaluation').live
-		('click',
-			function()
-			{
-				$('#form_demande_evaluation button').prop('disabled',true);
-				$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=evaluation_demande_eleve_ajout',
-						data : $("#form_demande_evaluation").serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							$('#form_demande_evaluation button').prop('disabled',false);
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML.substring(0,6)!='<label')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$("#form_demande_evaluation").html( responseHTML + '<p><span class="tab"></span><button id="fermer_demande_evaluation" type="button" class="retourner">Fermer.</button></p>' );
-								if (typeof(DUREE_AUTORISEE)!=='undefined')
-								{
-									initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
-								}
-							}
-							$('#form_demande_evaluation button').prop('disabled',false);
-						}
-					}
-				);
-			}
-		);
+    $('#confirmer_demande_evaluation').live
+    ('click',
+      function()
+      {
+        $('#form_demande_evaluation button').prop('disabled',true);
+        $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page=evaluation_demande_eleve_ajout',
+            data : $("#form_demande_evaluation").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#form_demande_evaluation button').prop('disabled',false);
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML.substring(0,6)!='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $("#form_demande_evaluation").html( responseHTML + '<p><span class="tab"></span><button id="fermer_demande_evaluation" type="button" class="retourner">Fermer.</button></p>' );
+                if (typeof(DUREE_AUTORISEE)!=='undefined')
+                {
+                  initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
+                }
+              }
+              $('#form_demande_evaluation button').prop('disabled',false);
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

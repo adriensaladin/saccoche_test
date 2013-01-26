@@ -28,7 +28,115 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Relevé de maîtrise du socle";
 
-$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
-$fin = (mb_substr_count($_SESSION['DROIT_SOCLE_ACCES'].',professeur,directeur',$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
-require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
+if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
+{
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
+  // echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  // echo afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
+Form::load_choix_memo();
+$check_only_presence = (Form::$tab_choix['only_presence']) ? ' checked' : '' ;
+$check_aff_coef      = (Form::$tab_choix['aff_coef'])      ? ' checked' : '' ;
+$check_aff_socle     = (Form::$tab_choix['aff_socle'])     ? ' checked' : '' ;
+$check_aff_lien      = (Form::$tab_choix['aff_lien'])      ? ' checked' : '' ;
+$check_aff_start     = (Form::$tab_choix['aff_start'])     ? ' checked' : '' ;
+$check_socle_PA      = (Form::$tab_choix['aff_socle_PA'])  ? ' checked' : '' ;
+$check_socle_EV      = (Form::$tab_choix['aff_socle_EV'])  ? ' checked' : '' ;
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
+{
+  // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
+  $check_socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
+  $check_socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? ' checked' : '' ;
+}
+$check_mode_auto   = (Form::$tab_choix['mode']=='auto')   ? ' checked' : '' ;
+$check_mode_manuel = (Form::$tab_choix['mode']=='manuel') ? ' checked' : '' ;
+$class_div_matiere = (Form::$tab_choix['mode']=='manuel') ? 'show'     : 'hide' ;
+$socle_PA = '<label for="f_socle_PA"><input type="checkbox" id="f_socle_PA" name="f_socle_PA" value="1"'.$check_socle_PA.' /> Pourcentage d\'items acquis</label>';
+$socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1"'.$check_socle_EV.' /> État de validation</label>';
+if($_SESSION['USER_PROFIL_TYPE']=='directeur')
+{
+  $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
+  $multiple_eleve = ' multiple size="7"';
+  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $of_g = 'val'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
+}
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
+{
+  $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+  $multiple_eleve = ' multiple size="7"';
+  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $of_g = 'val'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
+}
+
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+{
+  $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
+  $multiple_eleve = ''; // volontaire
+  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $of_g = 'oui'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'hide';
+  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+}
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
+{
+  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
+  $multiple_eleve = '';
+  $select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+  $of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
+  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+}
+
+elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
+{
+  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
+  $multiple_eleve = '';
+  $select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+  $of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
+  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+}
+$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
+$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
+
+$select_palier    = Form::afficher_select($tab_paliers                , $select_nom='f_palier'    , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe    = Form::afficher_select($tab_groupes                , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                        , $optgroup=$og_g);
+$select_matiere   = Form::afficher_select($tab_matieres               , $select_nom=FALSE         , $option_first='non' , $selection=TRUE                          , $optgroup='non');
+$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min'] , $optgroup='non');
+$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']   , $optgroup='non');
+$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']   , $optgroup='non');
 ?>
+
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></p>
+
+<form action="#" method="post" id="form_select"><fieldset>
+  <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
+  <label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier[]" multiple size="7" class="hide"><option></option></select>
+  <p class="<?php echo $class_form_eleve ?>">
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
+    <label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]"<?php echo $multiple_eleve ?>><?php echo $select_eleves ?></select>
+  </p>
+  <div id="option_groupe" class="<?php echo $class_option_groupe ?>">
+    <label class="tab">Restriction :</label><label for="f_only_presence"><input type="checkbox" id="f_only_presence" name="f_only_presence" value="1"<?php echo $check_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés par défaut</label><br />
+    <label class="tab">Indications :</label><?php echo $socle_PA.'&nbsp;&nbsp;&nbsp;'.$socle_EV ?>
+    <div id="option_mode" class="<?php echo $class_option_mode ?>">
+      <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
+      <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
+    </div>
+  </div>
+  <div class="toggle">
+    <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
+  </div>
+  <div class="toggle hide">
+    <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
+  </div>
+  <p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
+</fieldset></form>
+
+<div id="bilan">
+</div>

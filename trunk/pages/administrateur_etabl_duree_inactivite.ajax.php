@@ -28,21 +28,45 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$delai = (isset($_POST['f_delai'])) ? min(120,Clean::entier($_POST['f_delai'])) : 0;
+$profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
+$delai  = (isset($_POST['f_delai']))  ? Clean::entier($_POST['f_delai']) : 0  ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Choix du délai avant une déconnexion automatique pour inactivité
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-if($delai)
+
+if($profil && $delai)
 {
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('duree_inactivite'=>$delai) );
-	// ne pas oublier de mettre aussi à jour la session
-	$_SESSION['DUREE_INACTIVITE'] = $delai;
-	echo'ok';
+  if( ($profil!='ALL') && !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
+  {
+    exit('Profil incorrect !');
+  }
+  if( ($delai%10) || ($delai>120) )
+  {
+    exit('Délai incorrect !');
+  }
+  // Mettre à jour les paramètres dans la base
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_duree_inactivite' , $delai );
+  // Mettre aussi à jour la session
+  if( ($profil=='ALL') || ($profil=='ADM') )
+  {
+    $_SESSION['USER_DUREE_INACTIVITE'] = $delai;
+  }
+  if($profil=='ALL')
+  {
+    $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'] = array_fill_keys ( $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'] , $delai );
+  }
+  else
+  {
+    $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'][$profil] = $delai;
+  }
+  exit('ok');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
+
 ?>

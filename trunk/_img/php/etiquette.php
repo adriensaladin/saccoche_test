@@ -69,95 +69,95 @@ $fichier = $chemin.Clean::login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.
 
 if(!file_exists($fichier))
 {
-	// S'assurer que le dossier, lui, existe bien au moins, sinon ce n'est pas la peine de poursuivre
-	if(!is_dir($chemin))
-	{
-		header('Status: 404 Not Found', true, 404);
-		exit();
-	}
-	// On commence par créer une image temporaire plus large et plus haute que nécessaire
-	$interligne     = $font_size*1.2;
-	$hauteur_tmp    = $font_size*2*$br_line;
-	$largeur_tmp    = $font_size*40;
-	// imagecreatetruecolor() n'est pas utilisé ici sinon imagecopy() utilisé ensuite peut faire apparaitre une bande noire...
-	// $image_tmp      = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_tmp,$hauteur_tmp) : imagecreate($largeur_tmp,$hauteur_tmp) ;
-	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp) ;
-	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond si imagecreate().
-	$couleur_fill   = imagefill($image_tmp, 0, 0, $couleur_fond); // Si imagecreatetruecolor(), l'image est noire et il faut la remplir explicitement.
-	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
-	$police         = './arial.ttf'; // Dans le même dossier que ce script.
-	// imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
-	if($br_line==1)
-	{
-		$b_g_y_demande = $hauteur_tmp - 5 ;
-		list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
-	}
-	else
-	{
-		// en deux fois au lieu d'utiliser $nom."\r\n".$prenom car l'interligne est sinon trop important
-		$b_g_y_demande = 5 + $interligne ;
-		list($b_g_x1 , $delete , $b_d_x1 , $delete , $h_d_x1 , $h_d_y1 , $h_g_x1 , $h_g_y ) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom);
-		$b_g_y_demande += $interligne ;
-		list($b_g_x2 , $b_g_y2 , $b_d_x2 , $b_d_y  , $h_d_x2 , $delete , $h_g_x2 , $delete) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$prenom);
-		$b_d_x = max($b_d_x1,$b_d_x2);
-		$h_g_x = min($h_g_x1,$h_g_x2);
-	}
-	// Maintenant on peut connaître les dimensions de l'image finale
-	$largeur_finale = $b_d_x - $h_g_x + 2 ; // +2 car 1px de marge en bordure
-	$hauteur_finale = $b_d_y - $h_g_y + 2 ; // idem
-	// Les caractères minuscules parmi g,j,p,q,y provoquent un décalage non pris en compte par imagettftext()
-	// sur certains serveurs pour des librairies gd pourtant rigoureusement identiques (gd_info() renvoyant [GD Version] => bundled 2.0.34 compatible).
-	// On peut lire qu'appeler avant imagealphablending() est censé réglé le problème [http://fr.php.net/manual/fr/function.imagettftext.php#100184], mais un décalage demeure.
-	// Enfin, sur les serveurs qui prennent en compte le décalage, il est d'1px trop grand.
-	$test_pb_serveur = ($b_g_y_demande == $b_d_y) ? true : false ;
-	$prenom_amoindri = str_replace( array('g','j','p','q','y') , '' , mb_substr($prenom,1) , $test_pb_lettres );
-	if($test_pb_lettres && !$test_pb_serveur)
-	{
-		if($br_line==2) {$hauteur_finale -= 1;}
-		if($br_line==1) {$h_g_y -= 1;}
-	}
-	elseif($test_pb_lettres && $test_pb_serveur)
-	{
-		if($br_line==2) {$hauteur_finale += 3;}
-		if($br_line==1) {$h_g_y += 3;}
-	}
-	// Dans le cas d'une seule colonne, prévoir exactement 15px de hauteur (donc de largeur une fois tourné, ce qui centre le texte et normalise la largeur de la colonne).
-	if($br_line==1)
-	{
-		$marge_complementaire = 15 - $hauteur_finale;
-		if($marge_complementaire)
-		{
-			$arrondi_pair = ($test_pb_lettres) ? 1 : -1 ;
-			$h_g_y -= ($marge_complementaire%2) ? ($marge_complementaire+$arrondi_pair)/2 : $marge_complementaire/2 ;
-			$hauteur_finale = 15;
-		}
-	}
-	// Créer l'image finale aux bonnes dimensions
-	$image_finale = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_finale,$hauteur_finale) : imagecreate($largeur_finale,$hauteur_finale) ;
-	// imagettftext() : 3e et 4e param = coordonnées du point de destination ; 5e et 6e param = coordonnées du point source
-	imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
-	imagedestroy($image_tmp);
-	// Tourner l'image de 90°
-	// Attention : la fonction imagerotate() n'est disponible que si PHP est compilé avec la version embarquée de la bibliothèque GD. 
-	function imagerotateEmulation($image_depart)
-	{
-		$largeur = imagesx($image_depart);
-		$hauteur = imagesy($image_depart);
-		$image_tournee = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($hauteur,$largeur) : imagecreate($hauteur,$largeur) ;
-		if($image_tournee)
-		{
-			for( $i=0 ; $i<$largeur ; $i++)
-			{
-				for( $j=0 ; $j<$hauteur ; $j++)
-				{
-					imagecopy($image_tournee , $image_depart , $j , $largeur-1-$i , $i , $j , 1 , 1);
-				}
-			}
-		}
-		return $image_tournee;
-	}
-	$image_finale = (function_exists("imagerotate")) ? imagerotate($image_finale,90,0) : imagerotateEmulation($image_finale) ;
-	imagepng($image_finale,$fichier);
+  // S'assurer que le dossier, lui, existe bien au moins, sinon ce n'est pas la peine de poursuivre
+  if(!is_dir($chemin))
+  {
+    header('Status: 404 Not Found', true, 404);
+    exit();
+  }
+  // On commence par créer une image temporaire plus large et plus haute que nécessaire
+  $interligne     = $font_size*1.2;
+  $hauteur_tmp    = $font_size*2*$br_line;
+  $largeur_tmp    = $font_size*40;
+  // imagecreatetruecolor() n'est pas utilisé ici sinon imagecopy() utilisé ensuite peut faire apparaitre une bande noire...
+  // $image_tmp      = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_tmp,$hauteur_tmp) : imagecreate($largeur_tmp,$hauteur_tmp) ;
+  $image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp) ;
+  $couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond si imagecreate().
+  $couleur_fill   = imagefill($image_tmp, 0, 0, $couleur_fond); // Si imagecreatetruecolor(), l'image est noire et il faut la remplir explicitement.
+  $couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
+  $police         = './arial.ttf'; // Dans le même dossier que ce script.
+  // imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
+  if($br_line==1)
+  {
+    $b_g_y_demande = $hauteur_tmp - 5 ;
+    list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
+  }
+  else
+  {
+    // en deux fois au lieu d'utiliser $nom."\r\n".$prenom car l'interligne est sinon trop important
+    $b_g_y_demande = 5 + $interligne ;
+    list($b_g_x1 , $delete , $b_d_x1 , $delete , $h_d_x1 , $h_d_y1 , $h_g_x1 , $h_g_y ) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom);
+    $b_g_y_demande += $interligne ;
+    list($b_g_x2 , $b_g_y2 , $b_d_x2 , $b_d_y  , $h_d_x2 , $delete , $h_g_x2 , $delete) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$prenom);
+    $b_d_x = max($b_d_x1,$b_d_x2);
+    $h_g_x = min($h_g_x1,$h_g_x2);
+  }
+  // Maintenant on peut connaître les dimensions de l'image finale
+  $largeur_finale = $b_d_x - $h_g_x + 2 ; // +2 car 1px de marge en bordure
+  $hauteur_finale = $b_d_y - $h_g_y + 2 ; // idem
+  // Les caractères minuscules parmi g,j,p,q,y provoquent un décalage non pris en compte par imagettftext()
+  // sur certains serveurs pour des librairies gd pourtant rigoureusement identiques (gd_info() renvoyant [GD Version] => bundled 2.0.34 compatible).
+  // On peut lire qu'appeler avant imagealphablending() est censé réglé le problème [http://fr.php.net/manual/fr/function.imagettftext.php#100184], mais un décalage demeure.
+  // Enfin, sur les serveurs qui prennent en compte le décalage, il est d'1px trop grand.
+  $test_pb_serveur = ($b_g_y_demande == $b_d_y) ? true : false ;
+  $prenom_amoindri = str_replace( array('g','j','p','q','y') , '' , mb_substr($prenom,1) , $test_pb_lettres );
+  if($test_pb_lettres && !$test_pb_serveur)
+  {
+    if($br_line==2) {$hauteur_finale -= 1;}
+    if($br_line==1) {$h_g_y -= 1;}
+  }
+  elseif($test_pb_lettres && $test_pb_serveur)
+  {
+    if($br_line==2) {$hauteur_finale += 3;}
+    if($br_line==1) {$h_g_y += 3;}
+  }
+  // Dans le cas d'une seule colonne, prévoir exactement 15px de hauteur (donc de largeur une fois tourné, ce qui centre le texte et normalise la largeur de la colonne).
+  if($br_line==1)
+  {
+    $marge_complementaire = 15 - $hauteur_finale;
+    if($marge_complementaire)
+    {
+      $arrondi_pair = ($test_pb_lettres) ? 1 : -1 ;
+      $h_g_y -= ($marge_complementaire%2) ? ($marge_complementaire+$arrondi_pair)/2 : $marge_complementaire/2 ;
+      $hauteur_finale = 15;
+    }
+  }
+  // Créer l'image finale aux bonnes dimensions
+  $image_finale = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_finale,$hauteur_finale) : imagecreate($largeur_finale,$hauteur_finale) ;
+  // imagettftext() : 3e et 4e param = coordonnées du point de destination ; 5e et 6e param = coordonnées du point source
+  imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
+  imagedestroy($image_tmp);
+  // Tourner l'image de 90°
+  // Attention : la fonction imagerotate() n'est disponible que si PHP est compilé avec la version embarquée de la bibliothèque GD. 
+  function imagerotateEmulation($image_depart)
+  {
+    $largeur = imagesx($image_depart);
+    $hauteur = imagesy($image_depart);
+    $image_tournee = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($hauteur,$largeur) : imagecreate($hauteur,$largeur) ;
+    if($image_tournee)
+    {
+      for( $i=0 ; $i<$largeur ; $i++)
+      {
+        for( $j=0 ; $j<$hauteur ; $j++)
+        {
+          imagecopy($image_tournee , $image_depart , $j , $largeur-1-$i , $i , $j , 1 , 1);
+        }
+      }
+    }
+    return $image_tournee;
+  }
+  $image_finale = (function_exists("imagerotate")) ? imagerotate($image_finale,90,0) : imagerotateEmulation($image_finale) ;
+  imagepng($image_finale,$fichier);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ if(!file_exists($fichier))
 
 else
 {
-	$image_finale = imagecreatefrompng($fichier);
+  $image_finale = imagecreatefrompng($fichier);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

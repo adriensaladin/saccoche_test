@@ -38,8 +38,8 @@ $user_id   = (isset($_POST['user_id']))   ? Clean::entier($_POST['user_id'])   :
 
 if( ($action=='ajouter') && ($groupe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',TRUE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',TRUE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,8 @@ if( ($action=='ajouter') && ($groupe_id) && ($user_id) )
 
 if( ($action=='retirer') && ($groupe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',FALSE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',FALSE);
+  exit('ok');
 }
 
 

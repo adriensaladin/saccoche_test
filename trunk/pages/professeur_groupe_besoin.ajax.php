@@ -44,14 +44,15 @@ $tab_profs = Clean::map_entier($tab_profs);
 $tab_profs = array_filter($tab_profs,'positif');
 $nb_profs = count($tab_profs);
 // Si profs transmis, en retirer le responsable (si le responsable est le seul prof, rien n'est transmis)
+$indice = NULL;
 if(count($tab_profs))
 {
-	$indice = array_search($_SESSION['USER_ID'],$tab_profs);
-	if($indice===FALSE)
-	{
-		exit('Erreur : absent de la liste des professeurs !');
-	}
-	unset($tab_profs[$indice]);
+  $indice = array_search($_SESSION['USER_ID'],$tab_profs);
+  if($indice===FALSE)
+  {
+    exit('Erreur : absent de la liste des collègues !');
+  }
+  unset($tab_profs[$indice]);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,32 +61,37 @@ if(count($tab_profs))
 
 if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
 {
-	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom) )
-	{
-		exit('Erreur : nom de groupe déjà existant !');
-	}
-	// Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
-	$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('besoin',$groupe_nom,$niveau);
-	// Affecter les élèves et les profs au groupe
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'creer' /*mode*/ , 0 /*devoir_id*/ );
-	// Afficher le retour
-	$eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
-	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
-	echo'<tr id="id_'.$groupe_id.'" class="new">';
-	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.html($groupe_nom).'</td>';
-	echo	'<td>'.$eleves_texte.'</td>';
-	echo	'<td>'.$profs_texte.'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-	echo		'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-	echo	'</td>';
-	echo'</tr>';
-	echo'<SCRIPT>';
-	echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
-	echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
-	exit();
+  // Vérifier que le nom du groupe est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom) )
+  {
+    exit('Erreur : nom de groupe déjà existant !');
+  }
+  // Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
+  $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('besoin',$groupe_nom,$niveau);
+  // Affecter les élèves et les profs au groupe
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'creer' /*mode*/ , 0 /*devoir_id*/ );
+  // Remettre le prof responsable (si partagé avec d'autres collègues)
+  if($indice)
+  {
+    $tab_profs[$indice] = $_SESSION['USER_ID'];
+  }
+  // Afficher le retour
+  $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
+  $profs_texte   = ($nb_profs>1)  ? $nb_profs.' collègues'   : 'moi seul' ;
+  echo'<tr id="id_'.$groupe_id.'" class="new">';
+  echo  '<td>{{NIVEAU_NOM}}</td>';
+  echo  '<td>'.html($groupe_nom).'</td>';
+  echo  '<td>'.$eleves_texte.'</td>';
+  echo  '<td>'.$profs_texte.'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
+  echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
+  echo  '</td>';
+  echo'</tr>';
+  echo'<SCRIPT>';
+  echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
+  echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,30 +100,35 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
 
 if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves )
 {
-	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom,$groupe_id) )
-	{
-		exit('Erreur : nom de groupe de besoin déjà existant !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau);
-	// Mettre les affectations des élèves et des profs au groupe
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'substituer' /*mode*/ , 0 /*devoir_id*/ );
-	// Afficher le retour
-	$eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
-	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
-	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.html($groupe_nom).'</td>';
-	echo'<td>'.$eleves_texte.'</td>';
-	echo'<td>'.$profs_texte.'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-	echo	'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-	echo'</td>';
-	echo'<SCRIPT>';
-	echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
-	echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
-	exit();
+  // Vérifier que le nom du groupe est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom,$groupe_id) )
+  {
+    exit('Erreur : nom de groupe de besoin déjà existant !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau);
+  // Mettre les affectations des élèves et des profs au groupe
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'substituer' /*mode*/ , 0 /*devoir_id*/ );
+  // Remettre le prof responsable (si partagé avec d'autres collègues)
+  if($indice)
+  {
+    $tab_profs[$indice] = $_SESSION['USER_ID'];
+  }
+  // Afficher le retour
+  $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
+  $profs_texte   = ($nb_profs>1)  ? $nb_profs.' collègues'   : 'moi seul' ;
+  echo'<td>{{NIVEAU_NOM}}</td>';
+  echo'<td>'.html($groupe_nom).'</td>';
+  echo'<td>'.$eleves_texte.'</td>';
+  echo'<td>'.$profs_texte.'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
+  echo  '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
+  echo'</td>';
+  echo'<SCRIPT>';
+  echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
+  echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,12 +137,12 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
 
 if( ($action=='supprimer') && $groupe_id )
 {
-	// Effacer l'enregistrement
-	DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
-	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
-	// Afficher le retour
-	exit('<td>ok</td>');
+  // Effacer l'enregistrement
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
+  // Log de l'action
+  SACocheLog::ajouter('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
+  // Afficher le retour
+  exit('<td>ok</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

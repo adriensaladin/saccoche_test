@@ -29,12 +29,72 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Zones géographiques";
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
-if(HEBERGEUR_INSTALLATION=='multi-structures')
+if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_multi.php');
-}
-else
-{
-	echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
+
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__zones_geographiques">DOC : Zones géographiques</a></span></p>
+
+<hr />
+
+<table class="form hsort">
+  <thead>
+    <tr>
+      <th>Identifiant</th>
+      <th>Ordre</th>
+      <th>Nom</th>
+      <th class="nu"><q class="ajouter" title="Ajouter une zone."></q></th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    // Lister les zones
+    $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        // Afficher une ligne du tableau
+        echo'<tr id="id_'.$DB_ROW['geo_id'].'">';
+        echo  '<td>'.$DB_ROW['geo_id'].'</td>';
+        echo  '<td>'.$DB_ROW['geo_ordre'].'</td>';
+        echo  '<td>'.html($DB_ROW['geo_nom']).'</td>';
+        echo  '<td class="nu">';
+        echo    '<q class="modifier" title="Modifier cette zone."></q>';
+        echo    '<q class="dupliquer" title="Dupliquer cette zone."></q>';
+        // La zone d'id 1 ne peut être supprimée, c'est la zone par défaut.
+        echo ($DB_ROW['geo_id']!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
+        echo  '</td>';
+        echo'</tr>';
+      }
+    }
+    else
+    {
+      echo'<tr><td class="nu" colspan="4"></td></tr>';
+    }
+    ?>
+  </tbody>
+</table>
+
+<form action="#" method="post" id="form_gestion" class="hide">
+  <h2>Ajouter | Modifier | Dupliquer | Supprimer une zone</h2>
+  <div id="gestion_edit">
+    <p>
+      <label class="tab" for="f_ordre">Ordre :</label><input id="f_ordre" name="f_ordre" size="3" maxlength="2" type="text" value="" /><br />
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="25" maxlength="25" />
+    </p>
+  </div>
+  <div id="gestion_delete">
+    <p class="danger">Les structures associées seront rattachées à la zone d'identifiant 1 !</p>
+    <p>Confirmez-vous la suppression de la zone &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
+  </div>
+  <p>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+  </p>
+</form>
+
+<p>&nbsp;</p>
+

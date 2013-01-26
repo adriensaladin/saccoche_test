@@ -27,84 +27,84 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Voir le détail d'un palier du socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('q.voir').click
-		(
-			function()
-			{
-				id  = $(this).attr('id').substring(3);
-				$('#zone_paliers li.li_m1').css("display","none");
-				$('#palier_'+id).css("display","block");
-			}
-		);
+    $('q.voir').click
+    (
+      function()
+      {
+        id  = $(this).attr('id').substring(3);
+        $('#zone_paliers li.li_m1').css("display","none");
+        $('#palier_'+id).css("display","block");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('td.label').click
-		(
-			function()
-			{
-				$(this).parent().find("input[type=checkbox]").click();
-			}
-		);
+    $('td.label').click
+    (
+      function()
+      {
+        $(this).parent().find("input[type=checkbox]").click();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur un checkbox
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('input[type=checkbox]').click
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-			}
-		);
+    $('input[type=checkbox]').click
+    (
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Validation du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('#bouton_valider').click
-		(
-			function()
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=Choix_paliers'+'&tab_id='+check_ids,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$("#bouton_valider").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#bouton_valider').click
+    (
+      function()
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=Choix_paliers'+'&tab_id='+check_ids,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $("#bouton_valider").prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

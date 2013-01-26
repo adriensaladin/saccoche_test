@@ -39,9 +39,9 @@ $periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]           
 
 // On vérifie les paramètres principaux
 
-if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL']!='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
+if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL_TYPE']=='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 // On passe en revue les données
@@ -53,23 +53,23 @@ $nb_reports = 0;
 
 foreach($tab_eleves_moyennes as $eleve_moyenne)
 {
-	list($eleve_id,$moyenne) = explode('_',$eleve_moyenne);
-	$eleve_id = (int)$eleve_id;
-	$note = round($moyenne,1);
-	// $tab_eleve_id contient la liste des élèves dont il faut changer les notes ; ce peut n'être qu'une intersection groupe x classe
-	// $tab_eleves_moyennes contient les moyennes de tous les élèves du groupe ou de la classe
-	if(in_array($eleve_id,$tab_eleve_id))
-	{
-		DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' /*BILAN_TYPE*/ , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
-		$nb_reports++;
-	}
+  list($eleve_id,$moyenne) = explode('_',$eleve_moyenne);
+  $eleve_id = (int)$eleve_id;
+  $note = round($moyenne,1);
+  // $tab_eleve_id contient la liste des élèves dont il faut changer les notes ; ce peut n'être qu'une intersection groupe x classe
+  // $tab_eleves_moyennes contient les moyennes de tous les élèves du groupe ou de la classe
+  if(in_array($eleve_id,$tab_eleve_id))
+  {
+    DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' /*BILAN_TYPE*/ , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
+    $nb_reports++;
+  }
 }
 
 // On affiche le résultat
 
 if(!$nb_reports)
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 $s = ($nb_reports>1) ? 's' : '' ;
 exit('Note'.$s.' reportée'.$s.' pour '.$nb_reports.' élève'.$s.'.');

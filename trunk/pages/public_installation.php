@@ -30,21 +30,21 @@ $TITRE = "Procédure d'installation";
 ?>
 
 <ul id="step">
-	<li id="step1">Étape 1 - Création de dossiers supplémentaires et de leurs droits</li>
-	<li id="step2">Étape 2 - Remplissage de ces dossiers avec le contenu approprié</li>
-	<li id="step3">Étape 3 - Choix du type d'installation</li>
-	<li id="step4">Étape 4 - Informations concernant l'hébergement et le webmestre</li>
-	<li id="step5">Étape 5 - Indication des paramètres de connexion MySQL</li>
-	<li id="step6">Étape 6 - Installation des tables de la base de données</li>
+  <li id="step1">Étape 1 - Création de dossiers supplémentaires et de leurs droits</li>
+  <li id="step2">Étape 2 - Remplissage de ces dossiers avec le contenu approprié</li>
+  <li id="step3">Étape 3 - Choix du type d'installation</li>
+  <li id="step4">Étape 4 - Informations concernant l'hébergement et le webmestre</li>
+  <li id="step5">Étape 5 - Indication des paramètres de connexion MySQL</li>
+  <li id="step6">Étape 6 - Installation des tables de la base de données</li>
 </ul>
 
 <hr />
 
 <form action="#" method="post" id="form_start">
-	<h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
-	<p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a class="lien_ext" href="http://www.rodage.org/gpl-3.0.fr.html">licence libre GNU GPL3</a>.</p>
-	<p class="danger">Webmestre et administrateurs sont responsables de toute conséquence d'une mauvaise manipulation ou négligence de leur part.</p>
-	<p><span class="tab"><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>
+  <h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
+  <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a class="lien_ext" href="http://www.rodage.org/gpl-3.0.fr.html">licence libre GNU GPL3</a>.</p>
+  <p class="danger">Webmestre et administrateurs sont responsables de toute conséquence d'une mauvaise manipulation ou négligence de leur part.</p>
+  <p><span class="tab"><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>
 </form>
 <form action="#" method="post" id="form_type_install">
 </form>

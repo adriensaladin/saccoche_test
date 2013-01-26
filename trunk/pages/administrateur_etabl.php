@@ -34,7 +34,7 @@ $TITRE = "Paramétrages";
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 ?>

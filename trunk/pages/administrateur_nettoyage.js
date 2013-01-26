@@ -27,68 +27,67 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Appel en ajax pour lancer un nettoyage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Appel en ajax pour lancer un nettoyage
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_numeroter , #bouton_nettoyer , #bouton_purger , #bouton_supprimer , #bouton_effacer').click
-		(
-			function()
-			{
-				var action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
-				if(action=='purger')
-				{
-					var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nAttention : les données des bulletins seront effacées !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
-				}
-				else if(action=='supprimer')
-				{
-					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? ( (confirm("DERNIER AVERTISSEMENT !!!\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOUS VOULEZ VRAIMENT REPARTIR DE ZÉRO ?")) ? true : false ) : false ;
-				}
-				else
-				{
-					var continuer = true;
-				}
-				if(continuer)
-				{
-					$("button").prop('disabled',true);
-					$("label").removeAttr("class").html('');
-					$("#ajax_info").html('<li></li>').hide();
-					$('#ajax_msg_'+action).addClass("loader").html("Envoi en cours&hellip;");
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?page='+PAGE,
-							data : 'csrf='+CSRF+'&f_action='+action,
-							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
-							{
-								$("button").prop('disabled',false);
-								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								$("button").prop('disabled',false);
-								if(responseHTML.substring(0,4)!='<li>')
-								{
-									$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html(responseHTML);
-								}
-								else
-								{
-									$('#ajax_msg_'+action).removeAttr("class").html('');
-									$('#ajax_info').html(responseHTML).show().appendTo('#form_'+action);
-									initialiser_compteur();
-								}
-							}
-						}
-					);
-				}
-			}
-		);
+    $('#bouton_numeroter , #bouton_nettoyer , #bouton_purger , #bouton_supprimer , #bouton_effacer').click
+    (
+      function()
+      {
+        var action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
+        if(action=='purger')
+        {
+          var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nAttention : les données des bulletins seront effacées !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
+        }
+        else if(action=='supprimer')
+        {
+          var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? ( (confirm("DERNIER AVERTISSEMENT !!!\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOUS VOULEZ VRAIMENT REPARTIR DE ZÉRO ?")) ? true : false ) : false ;
+        }
+        else
+        {
+          var continuer = true;
+        }
+        if(continuer)
+        {
+          $("button").prop('disabled',true);
+          $("label").removeAttr("class").html('');
+          $('#ajax_msg_'+action).addClass("loader").html("En cours&hellip;");
+          $.ajax
+          (
+            {
+              type : 'POST',
+              url : 'ajax.php?page='+PAGE,
+              data : 'csrf='+CSRF+'&f_action='+action,
+              dataType : "html",
+              error : function(jqXHR, textStatus, errorThrown)
+              {
+                $("button").prop('disabled',false);
+                $('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                return false;
+              },
+              success : function(responseHTML)
+              {
+                $("button").prop('disabled',false);
+                if(responseHTML.substring(0,4)!='<li>')
+                {
+                  $('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html(responseHTML);
+                }
+                else
+                {
+                  $('#ajax_msg_'+action).removeAttr("class").html('');
+                  $.fancybox( '<ul class="puce">'+responseHTML+'</ul>' , {'centerOnScroll':true} );
+                  initialiser_compteur();
+                }
+              }
+            }
+          );
+        }
+      }
+    );
 
-	}
+  }
 );

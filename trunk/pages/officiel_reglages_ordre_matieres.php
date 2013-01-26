@@ -34,22 +34,22 @@ $TITRE = "Ordre d'affichage des matières";
 <hr />
 
 <form action="#" method="post" id="form_ordonner"><fieldset>
-	<?php
-	// liste des matières
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
-	if(empty($DB_TAB))
-	{
-		echo'<p class="danger">Aucune matière enregistrée ou associée à l\'établissement !</p>'; // impossible vu qu'il y a au moins la matière transversale...
-	}
-	else
-	{
-		echo'<ul id="sortable">';
-		foreach($DB_TAB as $DB_ROW)
-		{
-			echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</li>';
-		}
-		echo'</ul>';
-		echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
-	}
-	?>
+  <?php
+  // liste des matières
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
+  if(empty($DB_TAB))
+  {
+    echo'<p class="danger">Aucune matière enregistrée ou associée à l\'établissement !</p>'; // impossible vu qu'il y a au moins la matière transversale...
+  }
+  else
+  {
+    echo'<ul id="sortable">';
+    foreach($DB_TAB as $DB_ROW)
+    {
+      echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</li>';
+    }
+    echo'</ul>';
+    echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
+  }
+  ?>
 </fieldset></form>

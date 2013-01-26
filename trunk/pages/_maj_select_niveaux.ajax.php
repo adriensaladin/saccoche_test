@@ -34,7 +34,7 @@ $matiere = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0
 
 if(!$matiere)
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 Form::load_choix_memo();

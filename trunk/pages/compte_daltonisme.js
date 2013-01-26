@@ -27,104 +27,104 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alerter sur la nécessité de valider
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#form_notes input').click
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Penser à enregistrer le choix.");
-			}
-		);
+    $('#form_notes input').click
+    (
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Penser à enregistrer le choix.");
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Traitement du formulaire
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form_notes');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form_notes');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					user_daltonisme  : { required:true }
-				},
-				messages :
-				{
-					user_daltonisme  : { required:"choix manquant" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) {$('#ajax_msg').html(error);}
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          user_daltonisme  : { required:true }
+        },
+        messages :
+        {
+          user_daltonisme  : { required:"choix manquant" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) {$('#ajax_msg').html(error);}
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider").prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			$("#bouton_valider").prop('disabled',false);
-			if(responseHTML=='ok')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Choix mémorisé !");
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider").prop('disabled',false);
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Choix mémorisé !");
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-	}
+  }
 );

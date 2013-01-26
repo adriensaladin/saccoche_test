@@ -27,21 +27,21 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,1],[0,0]];
-		$('table#bilan').tablesorter({ headers:{} });
-		function trier_tableau()
-		{
-			if($('table#bilan tbody tr td').length>1)
-			{
-				$('table#bilan').trigger('update');
-				$('table#bilan').trigger('sorton',[sorting]);
-			}
-		}
-		trier_tableau();
+    // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[1,1],[0,0]];
+    $('table#bilan').tablesorter({ headers:{} });
+    function trier_tableau()
+    {
+      if($('table#bilan tbody tr td').length>1)
+      {
+        $('table#bilan').trigger('update');
+        $('table#bilan').trigger('sorton',[sorting]);
+      }
+    }
+    trier_tableau();
 
-	}
+  }
 );

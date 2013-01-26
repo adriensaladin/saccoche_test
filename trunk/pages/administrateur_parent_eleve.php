@@ -41,20 +41,20 @@ $select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_et
 <hr />
 
 <form action="#" method="post">
-	<fieldset id="fieldset_eleves">
-		<label class="tab" for="f_groupe">Élève :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
-	</fieldset>
+  <fieldset id="fieldset_eleves">
+    <label class="tab" for="f_groupe">Élève :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
+  </fieldset>
 
-	<hr />
+  <hr />
 
-	<fieldset id="fieldset_parents">
-	</fieldset>
-	<p id="p_valider" class="hide"><span class="tab"></span><button id="Enregistrer" type="button" class="valider">Enregistrer les modifications</button><label id="ajax_msg2">&nbsp;</label></p>
+  <fieldset id="fieldset_parents">
+  </fieldset>
+  <p id="p_valider" class="hide"><span class="tab"></span><button id="Enregistrer" type="button" class="valider">Enregistrer les modifications</button><label id="ajax_msg2">&nbsp;</label></p>
 
 </form>
 
 <script type="text/javascript">
-	// <![CDATA[
-	var select_parent="<?php echo str_replace('"','\"',$select_f_parents); ?>";
-	// ]]>
+  // <![CDATA[
+  var select_parent="<?php echo str_replace('"','\"',$select_f_parents); ?>";
+  // ]]>
 </script>

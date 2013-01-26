@@ -45,12 +45,12 @@ ob_start();
 $filename_html = CHEMIN_DOSSIER_EXPORT.$FICHIER.'.html';
 if(is_file($filename_html))
 {
-	require($filename_html);
+  require($filename_html);
 }
 else
 {
-	echo'<h2>Relevé manquant</h2>';
-	echo'Les relevés sont conservés sur le serveur pendant une durée limitée...';
+  echo'<h2>Relevé manquant</h2>';
+  echo'Les relevés sont conservés sur le serveur pendant une durée limitée...';
 }
 // Affichage dans une variable
 $CONTENU_PAGE = ob_get_contents();
@@ -60,12 +60,12 @@ ob_end_clean();
 $position_css = mb_strpos($CONTENU_PAGE,'</style>');
 if($position_css)
 {
-	$CSS_PERSO    = mb_substr($CONTENU_PAGE,0,$position_css+8);
-	$CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
+  $CSS_PERSO    = mb_substr($CONTENU_PAGE,0,$position_css+8);
+  $CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
 }
 else
 {
-	$CSS_PERSO    = NULL;
+  $CSS_PERSO    = NULL;
 }
 
 // Titre du navigateur
@@ -81,9 +81,9 @@ $tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // 
 declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
 ?>
 <body>
-	<?php echo $CONTENU_PAGE; ?>
-	<script type="text/javascript">
-		var PAGE='public_anti_maj_clock';
-	</script>
+  <?php echo $CONTENU_PAGE; ?>
+  <script type="text/javascript">
+    var PAGE='public_anti_maj_clock';
+  </script>
 </body>
 </html>

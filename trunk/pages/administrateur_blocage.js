@@ -27,130 +27,130 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher / masquer le choix du motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Afficher / masquer le choix du motif du blocage
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#f_debloquer , #f_bloquer').click
-		(
-			function()
-			{
-				if($('#f_bloquer').is(':checked'))
-				{
-					$('#span_motif').show();
-					$('#f_motif').focus();
-				}
-				else
-				{
-					$('#span_motif').hide();
-				}
-			}
-		);
+    $('#f_debloquer , #f_bloquer').click
+    (
+      function()
+      {
+        if($('#f_bloquer').is(':checked'))
+        {
+          $('#span_motif').show();
+          $('#f_motif').focus();
+        }
+        else
+        {
+          $('#span_motif').hide();
+        }
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Autocompléter le motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Autocompléter le motif du blocage
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		tab_proposition = new Array();
-		tab_proposition["rien"]         = "";
-		tab_proposition["demenagement"] = "Déménagement de l'application à l'adresse http://...";
+    tab_proposition = new Array();
+    tab_proposition["rien"]         = "";
+    tab_proposition["demenagement"] = "Déménagement de l'application à l'adresse http://...";
 
-		$('#f_proposition').change
-		(
-			function()
-			{
-				$('#f_motif').val( tab_proposition[ $(this).val() ] ).focus();
-			}
-		);
+    $('#f_proposition').change
+    (
+      function()
+      {
+        $('#f_motif').val( tab_proposition[ $(this).val() ] ).focus();
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Traitement du formulaire principal
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire principal
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_action : { required:true }
-				},
-				messages :
-				{
-					f_action : { required:"choix manquant" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').html(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_action : { required:true }
+        },
+        messages :
+        {
+          f_action : { required:"choix manquant" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { $('#ajax_msg').html(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider").prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			$("#bouton_valider").prop('disabled',false);
-			if(responseHTML.substring(0,13)=='<label class=')
-			{
-				
-				$('#ajax_msg').removeAttr("class").html("");
-				$('#ajax_acces_actuel').html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider").prop('disabled',false);
+      if(responseHTML.substring(0,13)=='<label class=')
+      {
+        
+        $('#ajax_msg').removeAttr("class").html("");
+        $('#ajax_acces_actuel').html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-	}
+  }
 );

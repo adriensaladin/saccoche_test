@@ -41,7 +41,7 @@ $tab_types = array( 'user'=>'modifiable' , 'alert'=>'imposé' , 'messages'=>'imp
 
 if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_etat==-1) )
 {
-	exit();
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +50,8 @@ if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_eta
 
 foreach($tab_types as $key => $kill)
 {
-	$val = ($key==$f_type) ? $f_etat : ( (strpos($_SESSION['USER_PARAM_ACCUEIL'],$key)===FALSE) ? 0 : 1 ) ;
-	$tab_types[$key] = $val ;
+  $val = ($key==$f_type) ? $f_etat : ( (strpos($_SESSION['USER_PARAM_ACCUEIL'],$key)===FALSE) ? 0 : 1 ) ;
+  $tab_types[$key] = $val ;
 }
 
 $_SESSION['USER_PARAM_ACCUEIL'] = implode( ',' , array_keys( array_filter($tab_types) ) );

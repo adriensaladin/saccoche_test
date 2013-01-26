@@ -52,21 +52,21 @@ $tab_eleve_id   = array_filter( Clean::map_entier($tab_eleve_id)   , 'positif' )
 $tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
-if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-	$aff_socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$aff_socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION']   ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$only_presence = 0;
+  $aff_socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? 1 : 0 ;
+  $aff_socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? 1 : 0 ;
+  $only_presence = 0;
 }
-if($_SESSION['USER_PROFIL']=='eleve')
+if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-	$groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
-	$tab_eleve_id = array($_SESSION['USER_ID']);
+  $groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
+  $tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
 if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende || !$marge_min )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('releve_socle');
@@ -91,18 +91,18 @@ require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
 
 if($affichage_direct)
 {
-	echo'<hr />';
-	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'</ul>';
-	echo $releve_HTML;
+  echo'<hr />';
+  echo'<ul class="puce">';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+  echo'</ul>';
+  echo $releve_HTML;
 }
 else
 {
-	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
-	echo'</ul>';
+  echo'<ul class="puce">';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+  echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
+  echo'</ul>';
 }
 
 ?>

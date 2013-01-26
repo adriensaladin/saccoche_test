@@ -29,27 +29,27 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Synthèses / Bilans";
 ?>
 
-<?php if( ($_SESSION['USER_PROFIL']=='administrateur') || (($_SESSION['USER_PROFIL']=='directeur')&&(substr($SECTION,0,8)=='reglages')) ): ?>
+<?php if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFIL_TYPE']=='directeur')&&(substr($SECTION,0,8)=='reglages')) ): ?>
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_ordre_matieres">Ordre d'affichage des matières.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_format_synthese">Format de synthèse par référentiel.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_configuration">Configuration des bilans officiels.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_mise_en_page">Mise en page des bilans officiels.</a>	<br />
-	<?php if($_SESSION['USER_PROFIL']=='administrateur'): ?>
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=assiduite">Absences / Retards.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_releve">[ Relevé d'évaluations ]</a>
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_bulletin">[ Bulletin scolaire ]</a>
-	<?php
-	$tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-	for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
-	{
-		if(in_array($palier_id,$tab_paliers_actifs))
-		{
-			echo'<a href="./index.php?page='.$PAGE.'&amp;section=accueil_palier'.$palier_id.'">[ Maîtrise du palier '.$palier_id.' ]</a>'."\r\n";
-		}
-	}
-	?>
-	<?php endif; ?>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_ordre_matieres">Ordre d'affichage des matières.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_format_synthese">Format de synthèse par référentiel.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_configuration">Configuration des bilans officiels.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_mise_en_page">Mise en page des bilans officiels.</a>  <br />
+  <?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=assiduite">Absences / Retards.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_releve">[ Relevé d'évaluations ]</a>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_bulletin">[ Bulletin scolaire ]</a>
+  <?php
+  $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+  for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
+  {
+    if(in_array($palier_id,$tab_paliers_actifs))
+    {
+      echo'<a href="./index.php?page='.$PAGE.'&amp;section=accueil_palier'.$palier_id.'">[ Maîtrise du palier '.$palier_id.' ]</a>'."\r\n";
+    }
+  }
+  ?>
+  <?php endif; ?>
 </div>
 <hr />
 <?php endif; ?>
@@ -57,41 +57,41 @@ $TITRE = "Synthèses / Bilans";
 <?php
 if($SECTION=='reglages')
 {
-	echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
-	$nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
-	$s = ($nb_inconnu>1) ? 's' : '' ;
-	echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
+  echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+  $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
+  $s = ($nb_inconnu>1) ? 's' : '' ;
+  echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
 }
 elseif($SECTION=='assiduite')
 {
-	$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 else
 {
-	if(substr($SECTION,0,8)=='accueil_')
-	{
-		$BILAN_TYPE = substr($SECTION,8);
-		$SECTION = 'accueil';
-	}
-	// Afficher la bonne page et appeler le bon js / ajax par la suite
-	$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-	if(is_file($fichier_section))
-	{
-		if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin','palier1','palier2','palier3')) )
-		{
-			$PAGE = $PAGE.'_'.$SECTION ;
-			require($fichier_section);
-		}
-		else
-		{
-			echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
-		}
-	}
-	else
-	{
-		echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
-	}
+  if(substr($SECTION,0,8)=='accueil_')
+  {
+    $BILAN_TYPE = substr($SECTION,8);
+    $SECTION = 'accueil';
+  }
+  // Afficher la bonne page et appeler le bon js / ajax par la suite
+  $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+  if(is_file($fichier_section))
+  {
+    if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin','palier1','palier2','palier3')) )
+    {
+      $PAGE = $PAGE.'_'.$SECTION ;
+      require($fichier_section);
+    }
+    else
+    {
+      echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
+    }
+  }
+  else
+  {
+    echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
+  }
 }
 ?>

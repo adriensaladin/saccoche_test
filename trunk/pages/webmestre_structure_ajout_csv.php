@@ -29,12 +29,65 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Ajout CSV d'établissements";
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
-if(HEBERGEUR_INSTALLATION=='multi-structures')
+if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_multi.php');
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-else
-{
-	echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
-}
+
+// Créer un csv d'exemple
+$separateur  = ';';
+$fichier_csv = 'ajout_structures.csv';
+$contenu_csv = 'Id_Import'.$separateur.'Id_Zone'.$separateur.'Localisation'.$separateur.'Dénomination'.$separateur.'UAI'.$separateur.'Contact_Nom'.$separateur.'Contact_Prénom'.$separateur.'Contact_Courriel'."\r\n";
+$contenu_csv.= ''.$separateur.'1'.$separateur.'Jolieville'.$separateur.'CLG du Bonheur'.$separateur.'0123456A'.$separateur.'EDISON'.$separateur.'Thomas'.$separateur.'t.edison@mail.fr'."\r\n";
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 ?>
+
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures)</a></span></p>
+
+<ul class="puce">
+  <li><a class="lien_ext" href="<?php echo URL_DIR_TMP.$fichier_csv ?>"><span class="file file_txt">Récupérer le modèle de fichier <em>CSV</em> à utiliser.</span></a></li>
+</ul>
+
+<hr />
+
+<h2>Importer un listing d'établissements</h2>
+
+<form action="#" method="post" id="form_importer"><fieldset>
+  <label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label><br />
+  <span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
+  <div id="div_import" class="hide">
+    <span class="tab"></span><button id="bouton_importer" type="button" class="valider">Ajouter les établissements du fichier.</button><label id="ajax_msg_import">&nbsp;</label>
+  </div>
+</fieldset></form>
+
+<div id="div_info_import" class="hide">
+  <ul id="puce_info_import" class="puce"><li></li></ul>
+  <span id="ajax_import_num" class="hide"></span>
+  <span id="ajax_import_max" class="hide"></span>
+</div>
+
+<p>&nbsp;</p>
+
+<form action="#" method="post" id="structures" class="hide">
+  <table class="form" id="transfert">
+    <thead>
+      <tr>
+        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+        <th>Id</th>
+        <th>Structure</th>
+        <th>Contact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      </tr>
+    </tbody>
+  </table>
+  <p id="zone_actions">
+    Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
+    <button id="bouton_newsletter" type="button" class="mail_ecrire">Écrire un courriel.</button>
+    <button id="bouton_supprimer" type="button" class="supprimer">Supprimer.</button>
+    <label id="ajax_supprimer">&nbsp;</label>
+  </p>
+</form>

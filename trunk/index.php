@@ -48,25 +48,25 @@ else                             { $SECTION = ''; }
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
-	require(CHEMIN_FICHIER_CONFIG_INSTALL);
+  require(CHEMIN_FICHIER_CONFIG_INSTALL);
 }
 elseif($PAGE!='public_installation')
 {
-	exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
+  exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
 if(!Session::verif_droit_acces($PAGE))
 {
-	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
-	// La page vers laquelle rediriger sera définie après ouverture de la session
+  $tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
+  // La page vers laquelle rediriger sera définie après ouverture de la session
 }
 
 // Ouverture de la session et gestion des droits d'accès
 Session::execute();
 if(count($tab_messages_erreur))
 {
-	$PAGE = ($_SESSION['USER_PROFIL'] == 'public') ? 'public_accueil' : 'compte_accueil' ;
+  $PAGE = ($_SESSION['USER_PROFIL_TYPE'] == 'public') ? 'public_accueil' : 'compte_accueil' ;
 }
 
 // Infos DEBUG dans FirePHP
@@ -81,59 +81,59 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 // MAJ fichier de config hébergement si besoin
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
-	require(CHEMIN_DOSSIER_INCLUDE.'maj_fichier_constantes_hebergement.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'maj_fichier_constantes_hebergement.php');
 }
 
 // Interface de connexion à la base, chargement et config (test sur CHEMIN_FICHIER_CONFIG_INSTALL car à éviter si procédure d'installation non terminée).
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
-	// Choix des paramètres de connexion à la base de données adaptée...
-	// ...multi-structure ; base sacoche_structure_***
-	if( (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur','professeur','parent','eleve'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
-	{
-		$fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
-		$fichier_class_config = 'class.DB.config.sacoche_structure';
-	}
-	// ...multi-structure ; base sacoche_webmestre
-	elseif( (in_array($_SESSION['USER_PROFIL'],array('webmestre','public'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
-	{
-		$fichier_mysql_config = 'serveur_sacoche_webmestre';
-		$fichier_class_config = 'class.DB.config.sacoche_webmestre';
-	}
-	// ...mono-structure ; base sacoche_structure
-	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
-	{
-		$fichier_mysql_config = 'serveur_sacoche_structure';
-		$fichier_class_config = 'class.DB.config.sacoche_structure';
-	}
-	else
-	{
-		exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.<br />HEBERGEUR_INSTALLATION vaut '.HEBERGEUR_INSTALLATION.'<br />$_SESSION["USER_PROFIL"] vaut '.$_SESSION['USER_PROFIL'] /*contenu*/ );
-	}
-	// Chargement du fichier de connexion à la BDD
-	define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
-	if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
-	{
-		require(CHEMIN_FICHIER_CONFIG_MYSQL);
-		require(CHEMIN_DOSSIER_INCLUDE.$fichier_class_config.'.php');
-	}
-	elseif($PAGE!='public_installation')
-	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
-	}
+  // Choix des paramètres de connexion à la base de données adaptée...
+  // ...multi-structure ; base sacoche_structure_*** (si connecté sur un établissement)
+  if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($_SESSION['BASE']>0) )
+  {
+    $fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
+    $fichier_class_config = 'class.DB.config.sacoche_structure';
+  }
+  // ...multi-structure ; base sacoche_webmestre (si non connecté ou connecté comme webmestre)
+  elseif(HEBERGEUR_INSTALLATION=='multi-structures')
+  {
+    $fichier_mysql_config = 'serveur_sacoche_webmestre';
+    $fichier_class_config = 'class.DB.config.sacoche_webmestre';
+  }
+  // ...mono-structure ; base sacoche_structure
+  elseif(HEBERGEUR_INSTALLATION=='mono-structure')
+  {
+    $fichier_mysql_config = 'serveur_sacoche_structure';
+    $fichier_class_config = 'class.DB.config.sacoche_structure';
+  }
+  else
+  {
+    exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement empêche l\'application de se poursuivre.<br />HEBERGEUR_INSTALLATION vaut '.HEBERGEUR_INSTALLATION /*contenu*/ );
+  }
+  // Chargement du fichier de connexion à la BDD
+  define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
+  if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
+  {
+    require(CHEMIN_FICHIER_CONFIG_MYSQL);
+    require(CHEMIN_DOSSIER_INCLUDE.$fichier_class_config.'.php');
+  }
+  elseif($PAGE!='public_installation')
+  {
+    exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
+  }
 }
 
 // Authentification requise par SSO
 if(Session::$_sso_redirect)
 {
-	require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
+  require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
 }
 
 // Page CNIL si message d'information CNIL non validé.
 if(isset($_SESSION['STOP_CNIL']))
 {
-	$tab_messages_erreur[] = 'Avant d\'utiliser <em>SACoche</em>, vous devez valider le formulaire ci-dessous.';
-	$PAGE = 'compte_cnil';
+  $tab_messages_erreur[] = 'Avant d\'utiliser <em>SACoche</em>, vous devez valider le formulaire ci-dessous.';
+  $PAGE = 'compte_cnil';
 }
 
 ob_start();
@@ -141,9 +141,9 @@ ob_start();
 $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 if(!is_file($filename_php))
 {
-	$tab_messages_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
-	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' : ( (isset($_SESSION['STOP_CNIL'])) ? 'compte_cnil' : 'compte_accueil' ) ;
-	$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
+  $tab_messages_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
+  $PAGE = ($_SESSION['USER_PROFIL_TYPE']=='public') ? 'public_accueil' : ( (isset($_SESSION['STOP_CNIL'])) ? 'compte_cnil' : 'compte_accueil' ) ;
+  $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 }
 require($filename_php);
 // Affichage dans une variable
@@ -151,7 +151,7 @@ $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
 // Titre du navigateur
-$TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL'].' » ';
+$TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL_NOM_COURT'].' » ';
 $TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par compétences et valider le socle commun' ;
 
 // Css personnalisé
@@ -173,85 +173,85 @@ Session::generer_jeton_anti_CSRF($PAGE);
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
 ?>
 <body>
-	<?php 
-	if($_SESSION['USER_PROFIL']!='public')
-	{
-		// Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
-		echo'<div id="cadre_haut">'."\r\n";
-		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
-		echo'	<div id="top_info">'."\r\n";
-		echo'		<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
-		echo'		<span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'."\r\n";
-		echo'		<span class="button profil_'.$_SESSION['USER_PROFIL'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
-		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
-		echo'		<button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
-		echo'	</div>'."\r\n";
-		// Le menu '<ul id="menu">...</ul>
-		if($_SESSION['USER_PROFIL']=='webmestre')
-		{
-			require(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION.'.html');
-		}
-		else
-		{
-			$contenu_menu = file_get_contents(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL'].'.html');
-			// La présence de certains éléments du menu dépend des choix de l'établissement
-			if( ($_SESSION['USER_PROFIL']=='professeur') || ($_SESSION['USER_PROFIL']=='directeur') )
-			{
-				$tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-				for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
-				{
-					if(!in_array($palier_id,$tab_paliers_actifs))
-					{
-						$tab_bad = array(      '<li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li>'     );
-						$tab_bon = array( '<!-- <li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li> -->' );
-						$contenu_menu = str_replace( $tab_bad , $tab_bon , $contenu_menu );
-					}
-				}
-			}
-			echo $contenu_menu;
-		}
-		
-		echo'</div>'."\r\n";
-		echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'."\r\n";
-		echo'<div id="cadre_bas">'."\r\n";
-		echo'	<h1>» '.$TITRE.'</h1>';
-	}
-	else
-	{
-		// Accueil (identification ou procédure d'installation) : cadre unique (avec image SACoche & image hébergeur).
-		echo'<div id="cadre_milieu">'."\r\n";
-		if($PAGE=='public_accueil')
-		{
-			$tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO)) ) ? getimagesize(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO) : array() ;
-			$hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="'.URL_DIR_LOGO.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
-			$hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
-			$SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
-			echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>';
-		}
-		else
-		{
-			echo'<h1>» '.$TITRE.'</h1>';
-		}
-	}
-	if(count($tab_messages_erreur))
-	{
-		echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>';
-	}
-	echo $CONTENU_PAGE;
-	echo'<span id="ancre_bas"></span></div>'."\r\n";
-	?>
-	<script type="text/javascript">
-		var PAGE='<?php echo $PAGE ?>';
-		var CSRF='<?php echo Session::$_CSRF_value ?>';
-		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
-		var DUREE_AFFICHEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
-		var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
-	</script>
-	<!-- Objet flash pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/ -->
-	<h6><object class="playerpreview" id="myFlash" type="application/x-shockwave-flash" data="./_mp3/player_mp3_js.swf" height="1" width="1">
-		<param name="movie" value="./_mp3/player_mp3_js.swf" />
-		<param name="AllowScriptAccess" value="always" />
-		<param name="FlashVars" value="listener=myListener&amp;interval=500" />
-	</object></h6>
+  <?php 
+  if($_SESSION['USER_PROFIL_TYPE']!='public')
+  {
+    // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
+    echo'<div id="cadre_haut">'."\r\n";
+    echo'  <img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
+    echo'  <div id="top_info">'."\r\n";
+    echo'    <span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
+    echo'    <span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'."\r\n";
+    echo'    <span class="button profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].')</span>'."\r\n";
+    echo'    <span class="button clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span>'."\r\n";
+    echo'    <button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
+    echo'  </div>'."\r\n";
+    // Le menu '<ul id="menu">...</ul>
+    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
+    {
+      require(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL_TYPE'].'_'.HEBERGEUR_INSTALLATION.'.html');
+    }
+    else
+    {
+      $contenu_menu = file_get_contents(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL_TYPE'].'.html');
+      // La présence de certains éléments du menu dépend des choix de l'établissement
+      if(in_array($_SESSION['USER_PROFIL_TYPE'],array('directeur','professeur')))
+      {
+        $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+        for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
+        {
+          if(!in_array($palier_id,$tab_paliers_actifs))
+          {
+            $tab_bad = array(      '<li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li>'     );
+            $tab_bon = array( '<!-- <li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li> -->' );
+            $contenu_menu = str_replace( $tab_bad , $tab_bon , $contenu_menu );
+          }
+        }
+      }
+      echo $contenu_menu;
+    }
+    
+    echo'</div>'."\r\n";
+    echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'."\r\n";
+    echo'<div id="cadre_bas">'."\r\n";
+    echo'  <h1>» '.$TITRE.'</h1>';
+  }
+  else
+  {
+    // Accueil (identification ou procédure d'installation) : cadre unique (avec image SACoche & image hébergeur).
+    echo'<div id="cadre_milieu">'."\r\n";
+    if($PAGE=='public_accueil')
+    {
+      $tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO)) ) ? getimagesize(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO) : array() ;
+      $hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="'.URL_DIR_LOGO.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
+      $hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
+      $SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
+      echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>';
+    }
+    else
+    {
+      echo'<h1>» '.$TITRE.'</h1>';
+    }
+  }
+  if(count($tab_messages_erreur))
+  {
+    echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>';
+  }
+  echo $CONTENU_PAGE;
+  echo'<span id="ancre_bas"></span></div>'."\r\n";
+  ?>
+  <script type="text/javascript">
+    var PAGE='<?php echo $PAGE ?>';
+    var CSRF='<?php echo Session::$_CSRF_value ?>';
+    var DUREE_AUTORISEE='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
+    var DUREE_AFFICHEE='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
+    var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
+  </script>
+  <!-- Objet flash pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/ -->
+  <h6><object class="playerpreview" id="myFlash" type="application/x-shockwave-flash" data="./_mp3/player_mp3_js.swf" height="1" width="1">
+    <param name="movie" value="./_mp3/player_mp3_js.swf" />
+    <param name="AllowScriptAccess" value="always" />
+    <param name="FlashVars" value="listener=myListener&amp;interval=500" />
+  </object></h6>
 </body>
 </html>

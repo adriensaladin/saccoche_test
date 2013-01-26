@@ -15,12 +15,12 @@ Fichiers de polices Arial incorporés dans /font/ en n'ayant conservé que les c
 Pour infos : http://www.fpdf.org/fr/tutorial/tuto7.htm
 
 D'autres extensions de FPDF sont aussi utilisées par SACoche (parfois modifiées, parfois partiellement) :
-http://www.fpdf.org/fr/script/script18.php	Pour optimiser la gestion de la mémoire.
-http://www.fpdf.org/fr/script/script31.php	Pour écrire un texte tourné.
-http://www.fpdf.org/fr/script/script6.php 	Pour tracer un cercle (ou une ellipse).
-http://www.fpdf.org/fr/script/script62.php	Pour ajuster un texte à la taille d'une cellule.
-http://www.fpdf.org/fr/script/script49.php	Pour savoir le nombre de lignes requises pour écrire un texte.
-http://www.fpdf.org/fr/script/script45.php	Pour afficher des images chargées en mémoire sans avoir besoin de passer par un fichier temporaire.
+http://www.fpdf.org/fr/script/script18.php  Pour optimiser la gestion de la mémoire.
+http://www.fpdf.org/fr/script/script31.php  Pour écrire un texte tourné.
+http://www.fpdf.org/fr/script/script6.php   Pour tracer un cercle (ou une ellipse).
+http://www.fpdf.org/fr/script/script62.php  Pour ajuster un texte à la taille d'une cellule.
+http://www.fpdf.org/fr/script/script49.php  Pour savoir le nombre de lignes requises pour écrire un texte.
+http://www.fpdf.org/fr/script/script45.php  Pour afficher des images chargées en mémoire sans avoir besoin de passer par un fichier temporaire.
 
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
 http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024
@@ -30,20 +30,20 @@ http://www.fpdf.org/?go=forum&i=56830&t=56830
 
 function _loadfont($font)
 {
-	// Load a font definition file from the font directory
-	if(!file_exists($this->fontpath.$font))
-	{
-		$this->Error('Could not include font definition file');
-	}
-	include($this->fontpath.$font);
-	$a_var = array('type','name','desc','up','ut','cw','enc','file','diff','size1','size2','originalsize');
-	$a = array();
-	foreach($a_var as $var)
-	{
-		if(isset(${$var}))
-		{
-			 $a[$var] = ${$var};
-		}
-	}
-	return $a;
+  // Load a font definition file from the font directory
+  if(!file_exists($this->fontpath.$font))
+  {
+    $this->Error('Could not include font definition file');
+  }
+  include($this->fontpath.$font);
+  $a_var = array('type','name','desc','up','ut','cw','enc','file','diff','size1','size2','originalsize');
+  $a = array();
+  foreach($a_var as $var)
+  {
+    if(isset(${$var}))
+    {
+       $a[$var] = ${$var};
+    }
+  }
+  return $a;
 }

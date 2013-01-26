@@ -28,281 +28,281 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// Ajout alerte si usage frame / iframe
-		if(top.frames.length!=0)
-		{
-			$('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
-			format_liens('#cadre_milieu');
-		}
+    // Ajout alerte si usage frame / iframe
+    if(top.frames.length!=0)
+    {
+      $('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
+      format_liens('#cadre_milieu');
+    }
 
-		function curseur()
-		{
-			if($("#f_profil").val()=='webmestre')
-			{
-				$('#f_password').focus();
-			}
-			else if($("#f_login").length)
-			{
-				$('#f_login').focus();
-			}
-		}
+    function curseur()
+    {
+      if($("#f_profil").val()=='webmestre')
+      {
+        $('#f_password').focus();
+      }
+      else if($("#f_login").length)
+      {
+        $('#f_login').focus();
+      }
+    }
 
-		// Appel en ajax pour initialiser le formulaire au chargement
-		function chargement()
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-						else
-						{
-							$("fieldset").html(responseHTML);
-							curseur();
-						}
-					}
-				}
-			);
-		}
-		chargement();
+    // Appel en ajax pour initialiser le formulaire au chargement
+    function chargement()
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+            else
+            {
+              $("fieldset").html(responseHTML);
+              curseur();
+            }
+          }
+        }
+      );
+    }
+    chargement();
 
-		// Choix dans le formulaire des structures => Afficher le formulaire de la structure
-		$('#f_choisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=charger'+'&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('button').prop('disabled',false);
-							if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$("fieldset").html(responseHTML);
-								curseur();
-							}
-						}
-					}
-				);
-			}
-		);
+    // Choix dans le formulaire des structures => Afficher le formulaire de la structure
+    $('#f_choisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=charger'+'&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $("fieldset").html(responseHTML);
+                curseur();
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// Clic sur le lien pour changer de structure
-		$('#f_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#f_changer').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=choisir'+'&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#f_changer').show();
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('#f_changer').show();
-							if(responseHTML.substring(0,18)!='<label class="tab"')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$("fieldset").html(responseHTML);
-								curseur();
-							}
-						}
-					}
-				);
-			}
-		);
+    // Clic sur le lien pour changer de structure
+    $('#f_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $('#f_changer').hide();
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=choisir'+'&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#f_changer').show();
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('#f_changer').show();
+              if(responseHTML.substring(0,18)!='<label class="tab"')
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $("fieldset").html(responseHTML);
+                curseur();
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
-		$('input[type=radio]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('change',
-			function()
-			{
-				if($('#f_mode_normal').is(':checked'))
-				{
-					$("#fieldset_normal").show();
-					$('#f_login').focus();
-				}
-				else
-				{
-					$("#fieldset_normal").hide();
-				}
-			}
-		);
+    // Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
+    $('input[type=radio]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('change',
+      function()
+      {
+        if($('#f_mode_normal').is(':checked'))
+        {
+          $("#fieldset_normal").show();
+          $('#f_login').focus();
+        }
+        else
+        {
+          $("#fieldset_normal").hide();
+        }
+      }
+    );
 
-		// Appel en ajax pour tester le numéro de la dernière version (et le comparer avec l'actuelle).
-		function tester_version()
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=tester_version',
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_version').addClass("alerte").html('Échec de la connexion avec le serveur communautaire !');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						if( (responseHTML.length!=10) && (responseHTML.length!=11) )
-						{
-							$('#ajax_version').addClass("alerte").html(responseHTML);
-						}
-						else if(responseHTML!=VERSION_PROG)
-						{
-							$('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.').after(' &rarr; <a class="lien_ext" href="'+SERVEUR_NEWS+'">Nouveautés</a>');
-							format_liens('#cadre_milieu');
-						}
-						else
-						{
-							$('#ajax_version').addClass("valide").html('Cette version est la dernière disponible.');
-						}
-					}
-				}
-			);
-		}
-		tester_version();
+    // Appel en ajax pour tester le numéro de la dernière version (et le comparer avec l'actuelle).
+    function tester_version()
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=tester_version',
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_version').addClass("alerte").html('Échec de la connexion avec le serveur communautaire !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            if( (responseHTML.length!=10) && (responseHTML.length!=11) )
+            {
+              $('#ajax_version').addClass("alerte").html(responseHTML);
+            }
+            else if(responseHTML!=VERSION_PROG)
+            {
+              $('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.').after(' &rarr; <a class="lien_ext" href="'+SERVEUR_NEWS+'">Nouveautés</a>');
+              format_liens('#cadre_milieu');
+            }
+            else
+            {
+              $('#ajax_version').addClass("valide").html('Cette version est la dernière disponible.');
+            }
+          }
+        }
+      );
+    }
+    tester_version();
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('form');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_base     : { required:true },
-					f_login    : { required:true , maxlength:20 },
-					f_password : { required:true , maxlength:20 }
-				},
-				messages :
-				{
-					f_base     : { required:"établissement manquant" },
-					f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
-					f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.after(error); }
-				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_base     : { required:true },
+          f_login    : { required:true , maxlength:20 },
+          f_password : { required:true , maxlength:20 }
+        },
+        messages :
+        {
+          f_base     : { required:"établissement manquant" },
+          f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
+          f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { element.after(error); }
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire.submit
-		(
-			function()
-			{
-				if( ($('#fieldset_normal').length) && !($('#f_mode_normal').is(':checked')) )
-				{
-					document.location.href = './index.php?sso&base='+$('#f_base').val();
-					return false;
-				}
-				else
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-			}
-		);
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire.submit
+    (
+      function()
+      {
+        if( ($('#fieldset_normal').length) && !($('#f_mode_normal').is(':checked')) )
+        {
+          document.location.href = './index.php?sso&base='+$('#f_base').val();
+          return false;
+        }
+        else
+        {
+          $(this).ajaxSubmit(ajaxOptions);
+          return false;
+        }
+      }
+    );
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$('button').prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $('button').prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			$('button').prop('disabled',false);
-			if(responseHTML=='ok')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
-				document.location.href = './index.php?page=compte_accueil&verif_cookie';
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      $('button').prop('disabled',false);
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
+        document.location.href = './index.php?page=compte_accueil&verif_cookie';
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-	}
+  }
 );

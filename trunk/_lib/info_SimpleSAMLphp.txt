@@ -49,11 +49,11 @@ Modifications non répercutées
 
 
 Fichier /lib/SimpleSAML/Utilities.php
--		$selfURLhost .= $_SERVER['SCRIPT_NAME'];
--		if (isset($_SERVER['PATH_INFO'])) {
--			$selfURLhost .= $_SERVER['PATH_INFO'];
--		}
-+		$selfURLhost .= str_replace( '?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI'] );
+-    $selfURLhost .= $_SERVER['SCRIPT_NAME'];
+-    if (isset($_SERVER['PATH_INFO'])) {
+-      $selfURLhost .= $_SERVER['PATH_INFO'];
+-    }
++    $selfURLhost .= str_replace( '?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI'] );
 Motif : "Le reverse proxy ne fonctionne pas sur la version 1.8".
 C'est aux auteurs de la librairie d'y remédier si c'est pertinent.
 
@@ -77,7 +77,7 @@ Ajout d'un .htaccess à la racine de SACoche
 +RewriteEngine On
 +# acces simplesaml forcé en https.
 +RewriteCond %{HTTPS} off
-+RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,R,L]	# redirige en https pour l'authentification
++RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,R,L]  # redirige en https pour l'authentification
 +# fin forcage https
 +
 +RewriteRule ^simplesaml(.*)$ _simplesaml/www$1

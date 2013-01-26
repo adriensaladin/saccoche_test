@@ -34,40 +34,40 @@ $TITRE = "Paliers du socle";
 <hr />
 
 <form action="#" method="post" id="socle">
-	<table class="form">
-		<thead>
-			<tr><th class="nu"></th><th>Palier</th><th class="nu">&nbsp;</th></tr>
-		</thead>
-		<tbody>
-			<?php
-			// Lister les paliers
-			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_paliers_SACoche();
-			foreach($DB_TAB as $DB_ROW)
-			{
-				// Afficher une ligne du tableau
-				$checked = ($DB_ROW['palier_actif']) ? ' checked' : '' ;
-				echo'<tr>';
-				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['palier_id'].'"'.$checked.' /></td>';
-				echo	'<td class="label">'.html($DB_ROW['palier_nom']).'</td>';
-				echo	'<td class="nu"><q class="voir" id="id_'.$DB_ROW['palier_id'].'" title="Voir le détail de ce palier du socle."></q></td>';
-				echo'</tr>';
-			}
-			?>
-		</tbody>
-	</table>
-	<p>
-		<span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce choix de paliers.</button><label id="ajax_msg">&nbsp;</label>
-	</p>
+  <table class="form">
+    <thead>
+      <tr><th class="nu"></th><th>Palier</th><th class="nu">&nbsp;</th></tr>
+    </thead>
+    <tbody>
+      <?php
+      // Lister les paliers
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_paliers_SACoche();
+      foreach($DB_TAB as $DB_ROW)
+      {
+        // Afficher une ligne du tableau
+        $checked = ($DB_ROW['palier_actif']) ? ' checked' : '' ;
+        echo'<tr>';
+        echo  '<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['palier_id'].'"'.$checked.' /></td>';
+        echo  '<td class="label">'.html($DB_ROW['palier_nom']).'</td>';
+        echo  '<td class="nu"><q class="voir" id="id_'.$DB_ROW['palier_id'].'" title="Voir le détail de ce palier du socle."></q></td>';
+        echo'</tr>';
+      }
+      ?>
+    </tbody>
+  </table>
+  <p>
+    <span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce choix de paliers.</button><label id="ajax_msg">&nbsp;</label>
+  </p>
 </form>
 
 <hr />
 
 <div id="zone_paliers" class="arbre_dynamique">
-	<?php
-	// Affichage de la liste des items du socle pour chaque palier
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();
-	echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , FALSE /*aff_input*/ , FALSE /*ids*/ ) );
-	?>
+  <?php
+  // Affichage de la liste des items du socle pour chaque palier
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();
+  echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , FALSE /*aff_input*/ , FALSE /*ids*/ ) );
+  ?>
 </div>
 
 

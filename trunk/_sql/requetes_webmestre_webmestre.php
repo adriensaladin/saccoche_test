@@ -41,11 +41,11 @@ class DB_WEBMESTRE_WEBMESTRE extends DB
  */
 public static function DB_recuperer_structure_by_Id($base_id)
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_VAR = array(':base_id'=>$base_id);
-	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE sacoche_base=:base_id ';
+  $DB_VAR = array(':base_id'=>$base_id);
+  return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -56,10 +56,10 @@ public static function DB_recuperer_structure_by_Id($base_id)
  */
 public static function DB_lister_zones()
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_geo ';
-	$DB_SQL.= 'ORDER BY geo_ordre ASC';
-	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_geo ';
+  $DB_SQL.= 'ORDER BY geo_ordre ASC';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -70,12 +70,12 @@ public static function DB_lister_zones()
  */
 public static function DB_lister_structures($listing_base_id=FALSE)
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
-	$DB_SQL.= ($listing_base_id==FALSE) ? '' : 'WHERE sacoche_base IN('.$listing_base_id.') ' ;
-	$DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
-	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
+  $DB_SQL.= ($listing_base_id==FALSE) ? '' : 'WHERE sacoche_base IN('.$listing_base_id.') ' ;
+  $DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -86,10 +86,10 @@ public static function DB_lister_structures($listing_base_id=FALSE)
  */
 public static function DB_lister_contacts_cibles($listing_base_id)
 {
-	$DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base IN('.$listing_base_id.') ';
-	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE sacoche_base IN('.$listing_base_id.') ';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -100,11 +100,11 @@ public static function DB_lister_contacts_cibles($listing_base_id)
  */
 public static function DB_tester_structure_Id($base_id)
 {
-	$DB_SQL = 'SELECT structure_denomination ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_VAR = array(':base_id'=>$base_id);
-	return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT structure_denomination ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE sacoche_base=:base_id ';
+  $DB_VAR = array(':base_id'=>$base_id);
+  return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -116,12 +116,12 @@ public static function DB_tester_structure_Id($base_id)
  */
 public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
 {
-	$DB_SQL = 'SELECT geo_id ';
-	$DB_SQL.= 'FROM sacoche_geo ';
-	$DB_SQL.= 'WHERE geo_nom=:geo_nom ';
-	$DB_SQL.= ($geo_id) ? 'AND geo_id!=:geo_id ' : '' ;
-	$DB_VAR = array(':geo_nom'=>$geo_nom,':geo_id'=>$geo_id);
-	return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT geo_id ';
+  $DB_SQL.= 'FROM sacoche_geo ';
+  $DB_SQL.= 'WHERE geo_nom=:geo_nom ';
+  $DB_SQL.= ($geo_id) ? 'AND geo_id!=:geo_id ' : '' ;
+  $DB_VAR = array(':geo_nom'=>$geo_nom,':geo_id'=>$geo_id);
+  return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -133,12 +133,12 @@ public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
  */
 public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
 {
-	$DB_SQL = 'SELECT sacoche_base ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE structure_uai=:structure_uai ';
-	$DB_SQL.= ($base_id) ? 'AND sacoche_base!=:base_id ' : '' ;
-	$DB_VAR = array(':structure_uai'=>$structure_uai,':base_id'=>$base_id);
-	return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT sacoche_base ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE structure_uai=:structure_uai ';
+  $DB_SQL.= ($base_id) ? 'AND sacoche_base!=:base_id ' : '' ;
+  $DB_VAR = array(':structure_uai'=>$structure_uai,':base_id'=>$base_id);
+  return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -150,11 +150,11 @@ public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
  */
 public static function DB_ajouter_zone($geo_ordre,$geo_nom)
 {
-	$DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
-	$DB_SQL.= 'VALUES(:geo_ordre,:geo_nom)';
-	$DB_VAR = array(':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
+  $DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
+  $DB_SQL.= 'VALUES(:geo_ordre,:geo_nom)';
+  $DB_VAR = array(':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
 }
 
 /**
@@ -173,23 +173,23 @@ public static function DB_ajouter_zone($geo_ordre,$geo_nom)
  */
 public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
 {
-	$chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
-	if($base_id==0)
-	{
-		$DB_SQL = 'INSERT INTO sacoche_structure(geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
-		$DB_SQL.= 'VALUES(:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
-		$DB_VAR = array(':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
-		DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-		$base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
-	}
-	else
-	{
-		$DB_SQL = 'INSERT INTO sacoche_structure(sacoche_base,geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
-		$DB_SQL.= 'VALUES(:base_id,:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
-		$DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
-		DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-	}
-	return $base_id;
+  $chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
+  if($base_id==0)
+  {
+    $DB_SQL = 'INSERT INTO sacoche_structure(geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
+    $DB_SQL.= 'VALUES(:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
+    $DB_VAR = array(':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+    $base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
+  }
+  else
+  {
+    $DB_SQL = 'INSERT INTO sacoche_structure(sacoche_base,geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
+    $DB_SQL.= 'VALUES(:base_id,:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
+    $DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
+  return $base_id;
 }
 
 /**
@@ -203,14 +203,14 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
  */
 public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_user,$BD_pass)
 {
-	// Créer la base de données de la structure
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
-	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	// On doit créer en réalité un user sur "localhost" et un autre sur "%" car on doit pouvoir se connecter suivant les configurations depuis la machine locale comme depuis n'importe quel autre serveur (http://dev.mysql.com/doc/refman/5.0/fr/adding-users.html).
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"localhost" IDENTIFIED BY "'.$BD_pass.'"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"%" IDENTIFIED BY "'.$BD_pass.'"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"localhost"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"%"' );
+  // Créer la base de données de la structure
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
+  // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
+  // On doit créer en réalité un user sur "localhost" et un autre sur "%" car on doit pouvoir se connecter suivant les configurations depuis la machine locale comme depuis n'importe quel autre serveur (http://dev.mysql.com/doc/refman/5.0/fr/adding-users.html).
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"localhost" IDENTIFIED BY "'.$BD_pass.'"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"%" IDENTIFIED BY "'.$BD_pass.'"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"localhost"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"%"' );
 }
 
 /**
@@ -228,11 +228,11 @@ public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name
  */
 public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
 {
-	$DB_SQL = 'UPDATE sacoche_structure ';
-	$DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
-	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'UPDATE sacoche_structure ';
+  $DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
+  $DB_SQL.= 'WHERE sacoche_base=:base_id ';
+  $DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -245,11 +245,11 @@ public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$lo
  */
 public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 {
-	$DB_SQL = 'UPDATE sacoche_geo ';
-	$DB_SQL.= 'SET geo_ordre=:geo_ordre,geo_nom=:geo_nom ';
-	$DB_SQL.= 'WHERE geo_id=:geo_id ';
-	$DB_VAR = array(':geo_id'=>$geo_id,':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'UPDATE sacoche_geo ';
+  $DB_SQL.= 'SET geo_ordre=:geo_ordre,geo_nom=:geo_nom ';
+  $DB_SQL.= 'WHERE geo_id=:geo_id ';
+  $DB_VAR = array(':geo_id'=>$geo_id,':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -260,16 +260,16 @@ public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  */
 public static function DB_supprimer_zone($geo_id)
 {
-	$DB_SQL = 'DELETE FROM sacoche_geo ';
-	$DB_SQL.= 'WHERE geo_id=:geo_id ';
-	$DB_VAR = array(':geo_id'=>$geo_id);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-	// Il faut aussi mettre à jour les jointures avec les structures
-	$DB_SQL = 'UPDATE sacoche_structure ';
-	$DB_SQL.= 'SET geo_id=1 ';
-	$DB_SQL.= 'WHERE geo_id=:geo_id ';
-	$DB_VAR = array(':geo_id'=>$geo_id);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'DELETE FROM sacoche_geo ';
+  $DB_SQL.= 'WHERE geo_id=:geo_id ';
+  $DB_VAR = array(':geo_id'=>$geo_id);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  // Il faut aussi mettre à jour les jointures avec les structures
+  $DB_SQL = 'UPDATE sacoche_structure ';
+  $DB_SQL.= 'SET geo_id=1 ';
+  $DB_SQL.= 'WHERE geo_id=:geo_id ';
+  $DB_VAR = array(':geo_id'=>$geo_id);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -280,10 +280,10 @@ public static function DB_supprimer_zone($geo_id)
  */
 public static function DB_supprimer_structure($BASE)
 {
-	$DB_SQL = 'DELETE FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:base ';
-	$DB_VAR = array(':base'=>$BASE);
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'DELETE FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE sacoche_base=:base ';
+  $DB_VAR = array(':base'=>$BASE);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -295,14 +295,14 @@ public static function DB_supprimer_structure($BASE)
  */
 public static function DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user)
 {
-	// Supprimer la base associée à la structure
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );
-	// Retirer les droits et supprimer l'utilisateur pour la base de données de la structure
-	// Apparemment et curieusement, il faut le droit 'CREATE TEMPORARY TABLES' pour pouvoir effectuer un REVOKE...
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"localhost"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"%"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"localhost"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"%"' );
+  // Supprimer la base associée à la structure
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );
+  // Retirer les droits et supprimer l'utilisateur pour la base de données de la structure
+  // Apparemment et curieusement, il faut le droit 'CREATE TEMPORARY TABLES' pour pouvoir effectuer un REVOKE...
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"localhost"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"%"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"localhost"' );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"%"' );
 }
 
 }

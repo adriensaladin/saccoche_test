@@ -28,7 +28,27 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Changer son mot de passe";
 
-$page_maitre = TRUE; // Atteste le passage par cette page avant inclusion de la sous-page.
-$fin = ( (in_array($_SESSION['USER_PROFIL'],array('administrateur','webmestre'))) || (mb_substr_count($_SESSION['DROIT_MODIFIER_MDP'],$_SESSION['USER_PROFIL'])) ) ? 'oui' : 'non' ;
-require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
+if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
+{
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
 ?>
+
+<p><span class="astuce">Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</span></p>
+
+<form action="#" method="post"><fieldset>
+  <label class="tab" for="f_password0">Actuel :</label><input id="f_password0" name="f_password0" size="20" type="password" value="" /><br />
+  <label class="tab" for="f_password1"><img alt="" src="./_img/bulle_aide.png" title="La robustesse du mot de passe indiqué dans ce champ est estimée ci-dessous." /> Nouveau 1/2 :</label><input id="f_password1" name="f_password1" size="20" type="password" value="" /><br />
+  <label class="tab" for="f_password2">Nouveau 2/2 :</label><input id="f_password2" name="f_password2" size="20" type="password" value="" /><br />
+  <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Valider le changement.</button><label id="ajax_msg">&nbsp;</label>
+</fieldset></form>
+<hr />
+<p><span class="astuce">Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.</span></p>
+<div id="robustesse">indicateur de robustesse : <span>0</span> / 12</div>
+
+<script type="text/javascript">
+  var mdp_longueur_mini=<?php echo $_SESSION['USER_MDP_LONGUEUR_MINI'] ?>;
+</script>

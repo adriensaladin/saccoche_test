@@ -38,8 +38,8 @@ $niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])  
 
 if( in_array($methode,array('inconnu','sans','domaine','theme')) && $matiere_id && $niveau_id )
 {
-	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
-	exit('ok');
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

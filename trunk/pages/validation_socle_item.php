@@ -27,43 +27,39 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les items du socle";
-// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
-?>
 
-<?php
-// Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
-$tab_profils = array('directeur','professeur','profprincipal');
-$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_VALIDATION_ENTREE'] );
-foreach($tab_profils as $profil)
+if(!test_user_droit_specifique($_SESSION['DROIT_VALIDATION_ENTREE']))
 {
-	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_VALIDATION_ENTREE'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+
+// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès parmi les profs, ils ne peuvent trier les élèves que par classes
 
 Form::load_choix_memo();
 $check_mode_auto   = (Form::$tab_choix['mode']=='auto')   ? ' checked' : '' ;
 $check_mode_manuel = (Form::$tab_choix['mode']=='manuel') ? ' checked' : '' ;
 $class_div_matiere = (Form::$tab_choix['mode']=='manuel') ? 'show'     : 'hide' ;
-if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'directeur')!==FALSE) )
+
+if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-	$of_g = 'oui'; $og_g = 'oui'; 
+  $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
+  $of_g = 'oui'; $og_g = 'oui';
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'professeur')!==FALSE) )
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $og_g = 'oui'; 
-}
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'profprincipal')!==FALSE) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
-{
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
-	$of_g = 'non'; $og_g = 'non'; 
-}
-else
-{
-	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
-	$of_g = 'non'; $og_g = 'non'; 
+  if(test_droit_specifique_restreint($_SESSION['DROIT_VALIDATION_ENTREE'],'ONLY_PP'))
+  {
+    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
+    $of_g = 'non'; $og_g = 'non';
+  }
+  else
+  {
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+    $of_g = 'oui'; $og_g = 'oui'; 
+  }
 }
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
@@ -75,45 +71,44 @@ $select_matiere = Form::afficher_select($tab_matieres , $select_nom=FALSE      ,
 ?>
 
 <script type="text/javascript">
-	var seuil_R = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>");
-	var seuil_V = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>");
+  var seuil_R = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>");
+  var seuil_V = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>");
 </script>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>
-	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>
 </ul>
 
 <hr />
 
 <form action="#" method="post" id="zone_choix"><fieldset>
-	<p>
-		<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
-		<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
-		<label class="tab" for="f_domaine"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Domaine(s) :</label><select id="f_domaine" name="f_domaine[]" multiple size="5" class="hide"><option></option></select>
-	</p>
-	<p>
-		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select>
-	</p>
-	<label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
-	<div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
-	<p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
+  <p>
+    <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
+    <label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
+    <label class="tab" for="f_domaine"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Domaine(s) :</label><select id="f_domaine" name="f_domaine[]" multiple size="5" class="hide"><option></option></select>
+  </p>
+  <p>
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
+    <label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select>
+  </p>
+  <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
+  <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
+  <p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_validation" class="hide">
-	<table id="tableau_validation">
-		<tbody><tr><td></td></tr></tbody>
-	</table>
+  <table id="tableau_validation">
+    <tbody><tr><td></td></tr></tbody>
+  </table>
 </form>
 
 <div id="zone_information" class="hide" style="height:25ex">
-	<h4>Aide à la décision : bilan des évaluations associées à un item du socle <span id="span_restriction"></span></h4>
-	<ul class="puce">
-		<li><img alt="" src="./_img/socle_info_eleve.png" /> <span id="identite"></span></li>
-		<li><img alt="" src="./_img/folder/folder_n3.png" /> <span id="entree"></span></li>
-		<li><img alt="" src="./_img/socle_info_stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
-	</ul>
-	<div id="items">
-	</div>
+  <h4>Aide à la décision : bilan des évaluations associées à un item du socle <span id="span_restriction"></span></h4>
+  <ul class="puce">
+    <li><img alt="" src="./_img/socle_info_eleve.png" /> <span id="identite"></span></li>
+    <li><img alt="" src="./_img/folder/folder_n3.png" /> <span id="entree"></span></li>
+    <li><img alt="" src="./_img/socle_info_stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
+  </ul>
+  <div id="items">
+  </div>
 </div>

@@ -27,47 +27,32 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gestion des référentiels";
-
-// Indication des profils ayant accès à ces pages
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
-$tab_profils = array('professeur','profcoordonnateur','aucunprof');
-$texte_profil_gestion = $_SESSION['DROIT_GERER_REFERENTIEL'];
-foreach($tab_profils as $profil)
-{
-	$texte_profil_gestion = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$texte_profil_gestion);
-}
-$texte_profil_ressource = $_SESSION['DROIT_GERER_RESSOURCE'];
-foreach($tab_profils as $profil)
-{
-	$texte_profil_ressource = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$texte_profil_ressource);
-}
 ?>
 
 <p class="astuce">Choisir une rubrique ci-dessus ou ci-dessous&hellip;</p>
 <table class="simulation">
-	<thead>
-		<tr>
-			<th>Rubrique</th>
-			<th>Profils autorisés</th>
-			<th>Documentation</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a></td>
-			<td><?php echo $texte_profil_gestion ?></td>
-			<td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC</a></span></td>
-		</tr>
-		<tr>
-			<td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a></td>
-			<td><?php echo $texte_profil_gestion ?></td>
-			<td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC</a></span></td>
-		</tr>
-		<tr>
-			<td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=ressources">Associer des ressources aux items.</a></td>
-			<td><?php echo $texte_profil_ressource ?></td>
-			<td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_lier_ressources">DOC</a></span></td>
-		</tr>
-	</tbody>
+  <thead>
+    <tr>
+      <th>Rubrique</th>
+      <th>Profils autorisés</th>
+      <th>Documentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a></td>
+      <td rowspan="2"><?php echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'br') ?></td>
+      <td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC</a></span></td>
+    </tr>
+    <tr>
+      <td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a></td>
+      <td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC</a></span></td>
+    </tr>
+    <tr>
+      <td><a href="./index.php?page=<?php echo $PAGE ?>&amp;section=ressources">Associer des ressources aux items.</a></td>
+      <td><?php echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'br') ?></td>
+      <td><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_lier_ressources">DOC</a></span></td>
+    </tr>
+  </tbody>
 </table>
 <p>&nbsp;</p>

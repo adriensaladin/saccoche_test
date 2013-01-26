@@ -300,7 +300,7 @@ class Html
   {
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
     $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
-    $title = ( ($date!='') || ($info!='') ) ? ' title="'.html($info).'<br />'.Html::date($date).'"' : '' ;
+    $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
   }
 
@@ -316,8 +316,7 @@ class Html
   public static function td_score( $score , $methode_tri , $pourcent='' , $make_officiel=FALSE )
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $profil = ($make_officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
-    $afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
+    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , $make_officiel /*forcer_parent*/ );
    if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
@@ -371,8 +370,7 @@ class Html
     if($score_bilan)
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $profil = ($make_officiel) ? 'parent' : $_SESSION['USER_PROFIL'] ;
-      $afficher_score = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$profil)) ? TRUE : FALSE ;
+      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , $make_officiel /*forcer_parent*/ );
       $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
       $tab_seuils = array
       (

@@ -34,11 +34,11 @@ $TITRE = "Relevés / Synthèses";
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 else
 {
-	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
+  echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
 }
 ?>

@@ -63,17 +63,17 @@ $tab_type[] = 'individuel';
 $type_individuel = 1;
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
-if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-	$aff_moyenne_scores     = (mb_substr_count($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$aff_pourcentage_acquis = (mb_substr_count($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$conversion_sur_20      = (mb_substr_count($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'] ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
+  $aff_moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? 1 : 0 ;
+  $aff_pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? 1 : 0 ;
+  $conversion_sur_20      = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? 1 : 0 ;
 }
-if($_SESSION['USER_PROFIL']=='eleve')
+if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-	$groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
-	$groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
-	$tab_eleve  = array($_SESSION['USER_ID']);
+  $groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
+  $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
+  $tab_eleve  = array($_SESSION['USER_ID']);
 }
 
 $type_individuel = 1;
@@ -84,7 +84,7 @@ $liste_eleve = implode(',',$tab_eleve);
 
 if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('items_multimatiere');
@@ -109,18 +109,18 @@ require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 
 if($affichage_direct)
 {
-	echo'<hr />';
-	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'</ul>';
-	echo $releve_HTML_individuel;
+  echo'<hr />';
+  echo'<ul class="puce">';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+  echo'</ul>';
+  echo $releve_HTML_individuel;
 }
 else
 {
-	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-	echo'</ul>';
+  echo'<ul class="puce">';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+  echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+  echo'</ul>';
 }
 
 ?>

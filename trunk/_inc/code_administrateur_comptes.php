@@ -37,7 +37,7 @@ $nb_user = count($tab_user_id);
 
 if( !$nb_user )
 {
-	exit('Aucun compte récupéré !');
+  exit('Aucun compte récupéré !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,8 @@ if( !$nb_user )
 
 if($action=='retirer')
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,FALSE);
-	exit('ok,'.implode(',',$tab_user_id));
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,FALSE);
+  exit('ok,'.implode(',',$tab_user_id));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +56,8 @@ if($action=='retirer')
 
 if($action=='reintegrer')
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,TRUE);
-	exit('ok,'.implode(',',$tab_user_id));
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,TRUE);
+  exit('ok,'.implode(',',$tab_user_id));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,21 +66,21 @@ if($action=='reintegrer')
 
 if($action=='supprimer')
 {
-	// Récupérer le profil des utilisateurs indiqués, vérifier qu'ils sont déjà sortis et qu'on y a pas glissé l'id d'un administrateur
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_profil,user_sortie_date' , '' /*avec_info*/ );
-	$tab_user_id = array();
-	foreach($DB_TAB as $DB_ROW)
-	{
-		if( ($DB_ROW['user_sortie_date']<=TODAY_MYSQL) && ($DB_ROW['user_profil']!='administrateur') )
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil'] );
-			$tab_user_id[] = $DB_ROW['user_id'];
-			// Log de l'action
-			SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
-		}
-	}
-	$retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;
-	exit($retour);
+  // Récupérer le profil des utilisateurs indiqués, vérifier qu'ils sont déjà sortis et qu'on y a pas glissé l'id d'un administrateur
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_profil_sigle,user_sortie_date' , '' /*avec_info*/ );
+  $tab_user_id = array();
+  foreach($DB_TAB as $DB_ROW)
+  {
+    if( ($DB_ROW['user_sortie_date']<=TODAY_MYSQL) && ($DB_ROW['user_profil_sigle']!='ADM') )
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil_sigle'] );
+      $tab_user_id[] = $DB_ROW['user_id'];
+      // Log de l'action
+      SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
+    }
+  }
+  $retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;
+  exit($retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

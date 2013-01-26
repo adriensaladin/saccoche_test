@@ -27,134 +27,102 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
+
+    var profil = '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alerter sur la nécessité de valider
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("input").change
-		(
-			function()
-			{
-				$('#ajax_msg_login').removeAttr("class").addClass("erreur").html("Penser à valider les modifications.");
-			}
-		);
+    $('input').change
+    (
+      function()
+      {
+        profil = $(this).attr('id').substr(8); // f_login_XXX
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
+      }
+    );
 
-		$("select").change
-		(
-			function()
-			{
-				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("erreur").html("Penser à valider la modification.");
-			}
-		);
+    $('select').change
+    (
+      function()
+      {
+        profil = $(this).attr('id').substr(6); // f_mdp_XXX
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Format des noms d'utilisateurs
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function test_format_login(format)
-		{
-			var reg1 = new RegExp("^p+[._-]?n+$","g"); // prénom puis nom
-			var reg2 = new RegExp("^n+[._-]?p+$","g"); // nom puis prénom
-			var reg3 = new RegExp("^p+$","g"); // prénom seul
-			var reg4 = new RegExp("^n+$","g"); // nom seul
-			test = ( reg1.test(format) || reg2.test(format) || reg3.test(format) || reg4.test(format) ) ? true : false ;
-			return test;
-		}
-
-		$('#bouton_valider_login').click
-		(
-			function()
-			{
-				var tab_profil = new Array('directeur','professeur','eleve','parent');
-				var tab_value  = new Array();
-				var datas = '';
-				var imax = tab_profil.length;
-				for ( var i=0 ; i<imax ; i++ )
-				{
-					tab_value[i] = $('#f_login_'+tab_profil[i]).val();
-					if( test_format_login(tab_value[i])==false )
-					{
-						$('#ajax_msg_login').removeAttr("class").addClass("erreur").html("Le format du nom d'utilisateur "+tab_profil[i]+" est incorrect !");
-						return(false);
-					}
-					datas += '&f_login_'+tab_profil[i]+'='+tab_value[i];
-				}
-				$("#bouton_valider_login").prop('disabled',true);
-				$('#ajax_msg_login').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=login'+datas,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$("#bouton_valider_login").prop('disabled',false);
-							$('#ajax_msg_login').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$("#bouton_valider_login").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_login').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_login').removeAttr("class").addClass("valide").html("Formats enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
+    function test_format_login(format)
+    {
+      var reg1 = new RegExp("^p+[._-]?n+$","g"); // prénom puis nom
+      var reg2 = new RegExp("^n+[._-]?p+$","g"); // nom puis prénom
+      var reg3 = new RegExp("^p+$","g"); // prénom seul
+      var reg4 = new RegExp("^n+$","g"); // nom seul
+      test = ( reg1.test(format) || reg2.test(format) || reg3.test(format) || reg4.test(format) ) ? true : false ;
+      return test;
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Longueur minimale d'un mot de passe
+// Validation du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_valider_mdp_mini').click
-		(
-			function()
-			{
-				$("#bouton_valider_mdp_mini").prop('disabled',true);
-				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=mdp_mini'+'&f_mdp_mini='+$('#f_mdp_mini option:selected').val(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$("#bouton_valider_mdp_mini").prop('disabled',false);
-							$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$("#bouton_valider_mdp_mini").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_mdp_mini').removeAttr("class").addClass("valide").html("Valeur enregistrée !");
-							}
-						}
-					}
-				);
-			}
-		);
+    $('button[class=parametre]').click
+    (
+      function()
+      {
+        profil = $(this).attr('id').substr(15); // bouton_valider_XXX
+        var login = $('#f_login_'+profil).val();
+        var mdp   = $('#f_mdp_'+profil+' option:selected').val();
+        if( test_format_login(login)==false )
+        {
+          $('#ajax_msg_'+profil).removeAttr('class').addClass("erreur").html("Modèle de nom d'utilisateur incorrect !");
+          return(false);
+        }
+        $('#bouton_valider_'+profil).prop('disabled',true);
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_profil='+profil+'&f_login='+login+'&f_mdp='+mdp,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#bouton_valider_'+profil).prop('disabled',false);
+              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('#bouton_valider_'+profil).prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseHTML);
+              }
+              else
+              {
+                if(profil=='ALL')
+                {
+                  $('input[type=text]').val(login);
+                  $('select option[value='+mdp+']').prop('selected',true);
+                  $('label[id^=ajax_msg_]').removeAttr('class').html("&nbsp;");
+                }
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeurs enregistrées !");
+                initialiser_compteur();
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

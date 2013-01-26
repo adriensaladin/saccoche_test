@@ -27,164 +27,171 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var mode = false;
+    var mode = false;
 
-		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,0],[2,0]];
-		$('table.form').tablesorter({ headers:{5:{sorter:false},6:{sorter:false}} });
-		function trier_tableau()
-		{
-			if($('table.form tbody tr').length>1)
-			{
-				$('table.form').trigger('update');
-				$('table.form').trigger('sorton',[sorting]);
-			}
-		}
-		trier_tableau();
+    // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[1,0],[2,0]];
+    $('table.form').tablesorter({ headers:{5:{sorter:false},6:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
+    trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		/**
-		 * Supprimer une demande : mise en place du formulaire
-		 * @return void
-		 */
-		var supprimer = function()
-		{
-			mode = $(this).attr('class');
-			afficher_masquer_images_action('hide');
-			ids = $(this).parent().parent().attr('id');
-			tableau = ids.split('_');
-			demande_id = tableau[1];
-			item_id    = tableau[2];
-			matiere_id = tableau[3];
-			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_demande_id" name="f_demande_id" type="hidden" value="'+demande_id+'" /><input id="f_item_id" name="f_item_id" type="hidden" value="'+item_id+'" /><input id="f_matiere_id" name="f_matiere_id" type="hidden" value="'+matiere_id+'" />Confirmez vous ?<q class="valider" title="Confirmer la suppression de cette demande."></q><q class="annuler" title="Annuler la suppression de cette demande."></q> <label id="ajax_msg">&nbsp;</label></span>';
-			$(this).after(new_span);
-			infobulle();
-		};
+    /**
+     * Supprimer une demande : mise en place du formulaire
+     * @return void
+     */
+    var supprimer = function()
+    {
+      mode = $(this).attr('class');
+      var objet_tr  = $(this).parent().parent();
+      var objet_tds = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var tab_ids   = objet_tr.attr('id').split('_');
+      var matiere   = objet_tds.eq(1).html();
+      var item      = objet_tds.eq(2).text();
+      // Reporter les données
+      $('#f_action').val(mode);
+      $('#f_demande_id').val(tab_ids[1]);
+      $('#f_item_id'   ).val(tab_ids[2]);
+      $('#f_matiere_id').val(tab_ids[3]);
+      $('#gestion_delete_identite').html(matiere+' | '+item);
+      // pour finir
+      infobulle();
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#form_gestion label[generated=true]').removeAttr('class').html("");
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+    };
 
-		/**
-		 * Annuler une action
-		 * @return void
-		 */
-		var annuler = function()
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			$(this).parent().remove();
-			afficher_masquer_images_action('show');
-			mode = false;
-		};
+    /**
+     * Annuler une action
+     * @return void
+     */
+    var annuler = function()
+    {
+      $.fancybox.close();
+      mode = false;
+    };
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.supprimer').click( supprimer );
-		$('q.annuler').live( 'click' , annuler );
-		$('q.valider').live( 'click' , function(){formulaire.submit();} );
+    $('q.supprimer').click( supprimer );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form_gestion');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-				},
-				messages :
-				{
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+        },
+        messages :
+        {
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { $('#ajax_msg_gestion').after(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_gestion",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire.submit
-		(
-			function()
-			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		); 
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire.submit
+    (
+      function()
+      {
+        if (!please_wait)
+        {
+          $(this).ajaxSubmit(ajaxOptions);
+          return false;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				please_wait = true;
-				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        please_wait = true;
+        $('#form_gestion button').prop('disabled',true);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			if(responseHTML!='ok')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('q.valider').closest('tr').remove();
-				afficher_masquer_images_action('show');
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      if(responseHTML!='ok')
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ids_'+$('#f_demande_id').val()+'_'+$('#f_item_id').val()+'_'+$('#f_matiere_id').val()).remove();
+        $.fancybox.close();
+        mode = false;
+      }
+    }
 
-	}
+  }
 );

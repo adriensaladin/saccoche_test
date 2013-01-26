@@ -35,25 +35,25 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $BASE = 0;
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	// Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
-	// Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
-	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
-	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
-	// Test si UAI d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
-	if(!$BASE)
-	{
-		if(isset($_GET['uai']))
-		{
-			exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
-		}
-		else
-		{
-			exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
-		}
-	}
-	charger_parametres_mysql_supplementaires($BASE);
+  // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
+  $BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
+  // Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
+  $BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
+  $BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
+  // Test si UAI d'établissement transmis dans l'URL
+  $BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
+  if(!$BASE)
+  {
+    if(isset($_GET['uai']))
+    {
+      exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
+    }
+    else
+    {
+      exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
+    }
+  }
+  charger_parametres_mysql_supplementaires($BASE);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,11 +66,11 @@ maj_base_si_besoin($BASE);
 $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
-	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
+  ${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 }
 if($connexion_mode=='normal')
 {
-	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ );
+  exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,35 +79,35 @@ if($connexion_mode=='normal')
 
 if($connexion_mode=='cas')
 {
-	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
-	if (DEBUG_PHPCAS)
-	{
-		$fichier_nom_debut = 'debugcas_'.$BASE;
-		$fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
-		phpCAS::setDebug(CHEMIN_LOGS_PHPCAS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
-	}
-	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
-	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
-	phpCAS::setLang(PHPCAS_LANG_FRENCH);
-	// On indique qu'il n'y a pas de validation du certificat SSL à faire
-	phpCAS::setNoCasServerValidation();
-	// Gestion du single sign-out
-	phpCAS::handleLogoutRequests(FALSE);
-	// Appliquer un proxy si défini par le webmestre ; voir url_get_contents() pour les commentaires.
-	if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
-	{
-		phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
-		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
-		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
-		if(SERVEUR_PROXY_AUTH_USED)
-		{
-			phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
-			phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
-		}
-	}
-	// Déconnexion de CAS
-	phpCAS::logout();
-	exit();
+  // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
+  if (DEBUG_PHPCAS)
+  {
+    $fichier_nom_debut = 'debugcas_'.$BASE;
+    $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+    phpCAS::setDebug(CHEMIN_LOGS_PHPCAS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
+  }
+  // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+  phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
+  phpCAS::setLang(PHPCAS_LANG_FRENCH);
+  // On indique qu'il n'y a pas de validation du certificat SSL à faire
+  phpCAS::setNoCasServerValidation();
+  // Gestion du single sign-out
+  phpCAS::handleLogoutRequests(FALSE);
+  // Appliquer un proxy si défini par le webmestre ; voir url_get_contents() pour les commentaires.
+  if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
+  {
+    phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
+    phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
+    phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
+    if(SERVEUR_PROXY_AUTH_USED)
+    {
+      phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
+      phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
+    }
+  }
+  // Déconnexion de CAS
+  phpCAS::logout();
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,35 +116,35 @@ if($connexion_mode=='cas')
 
 if($connexion_mode=='gepi')
 {
-	// Mise en session d'informations dont SimpleSAMLphp a besoin ; utiliser des constantes ne va pas car Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
-	$_SESSION['SACoche-SimpleSAMLphp'] = array(
-		'GEPI_URL'                  => $gepi_url,
-		'GEPI_RNE'                  => $gepi_rne,
-		'GEPI_CERTIFICAT_EMPREINTE' => $gepi_certificat_empreinte,
-		'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
-		'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
-		'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
-		'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
-	);
-	// Initialiser la classe
-	$auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
-	// Déconnexion de GEPI
-	if ($auth->isAuthenticated())
-	{
-		$auth->logout();
-		exit();
-	}
-	elseif(isset($_SESSION['SimpleSAMLphp_SESSION']))
-	{
-		// On revient très probablement de la déconnexion de GEPI (en effet, au contraire de CAS, la page de déconnexion distante renvoie vers l'application au lieu de marquer un arrêt).
-		unset($_SESSION['SimpleSAMLphp_SESSION']);
-		exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Déconnexion du service d\'authentification Gepi effectuée.<br />Fermez votre navigateur par sécurité.' /*contenu*/ );
-	}
-	else
-	{
-		// Bizarre... a priori on n'était pas connecté à GEPI... appel direct ?
-		exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Votre authentification sur Gepi n\'a pas été retrouvée.<br />Fermez votre navigateur par sécurité pour être certain d\'en être déconnecté.' /*contenu*/ );
-	}
+  // Mise en session d'informations dont SimpleSAMLphp a besoin ; utiliser des constantes ne va pas car Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
+  $_SESSION['SACoche-SimpleSAMLphp'] = array(
+    'GEPI_URL'                  => $gepi_url,
+    'GEPI_RNE'                  => $gepi_rne,
+    'GEPI_CERTIFICAT_EMPREINTE' => $gepi_certificat_empreinte,
+    'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
+    'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
+    'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
+    'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
+  );
+  // Initialiser la classe
+  $auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
+  // Déconnexion de GEPI
+  if ($auth->isAuthenticated())
+  {
+    $auth->logout();
+    exit();
+  }
+  elseif(isset($_SESSION['SimpleSAMLphp_SESSION']))
+  {
+    // On revient très probablement de la déconnexion de GEPI (en effet, au contraire de CAS, la page de déconnexion distante renvoie vers l'application au lieu de marquer un arrêt).
+    unset($_SESSION['SimpleSAMLphp_SESSION']);
+    exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Déconnexion du service d\'authentification Gepi effectuée.<br />Fermez votre navigateur par sécurité.' /*contenu*/ );
+  }
+  else
+  {
+    // Bizarre... a priori on n'était pas connecté à GEPI... appel direct ?
+    exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Votre authentification sur Gepi n\'a pas été retrouvée.<br />Fermez votre navigateur par sécurité pour être certain d\'en être déconnecté.' /*contenu*/ );
+  }
 }
 
 ?>

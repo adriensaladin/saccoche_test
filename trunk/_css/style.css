@@ -353,7 +353,7 @@ body q.n3_fus             {background-position: 0 -1160px}
 body q.n3_fus2            {background-position: 0 -1180px}
 body q.n3_move            {background-position: 0 -1200px}
 body q.n3_move2           {background-position: 0 -1220px}
-body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
+body q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les formulaires                                                                          */
@@ -447,7 +447,7 @@ th,td {padding:0 2px;text-align:left;white-space:nowrap}
 table tr {background:#EEF}
 table th {border:1px solid #66F;background:#DDF}
 table td {border:1px solid #66F;vertical-align:top}
-th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 tr.new{background:#CFC}
 td.new{font-weight:bold}
 /* colorer une ligne au survol */
@@ -597,6 +597,10 @@ th.v- , td.v- , span.v- {background:#---}
 
 table.vm_nug td {vertical-align:middle}
 table.vm_nug td.nu {text-align:left}
+/* Pour rester indépendant des préférences établissements pour les background NA / VA A */
+td.br{background-color:#F99}
+td.bj{background-color:#FD3}
+td.bv{background-color:#9F9}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau webmestre présentant les statistiques                                             */
@@ -609,6 +613,7 @@ table#statistiques td {text-align:center}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table i {display:none}
+table.xdebug-error i {display:inline-block} /* pour éviter une répercussion sur les notifications d'erreurs de Xdebug */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Infobulles                                                                                          */
@@ -637,13 +642,13 @@ ul.ul_m1 {font-size:95%}
 ul.ul_m1 li, ul.ul_n1 li {margin:0;padding-left:19px}
 ul.ul_m1 li span:hover {cursor:pointer}
 ul.ul_n1 li span:hover {cursor:pointer}
-li.li_m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;color:#081}	/* matiere ; socle_palier */
-li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top left;color:#04F}	/* niveau */
-li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}	/* referentiel_domaine ; socle_pilier */
-li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
-li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
-#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
-#zone_upload {min-width:600px;min-height:300px}	/* pour le fancybox qui se montre radin en place allouée */
+li.li_m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;color:#081}  /* matiere ; socle_palier */
+li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top left;color:#04F}  /* niveau */
+li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}  /* referentiel_domaine ; socle_pilier */
+li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}  /* referentiel_theme ; socle_section */
+li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}  /* referentiel_item ; socle_entree */
+#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}  /* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
+#zone_upload {min-width:600px;min-height:300px}  /* pour le fancybox qui se montre radin en place allouée */
 
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
@@ -662,7 +667,7 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* Zone de modification d'un référentiel                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_elaboration_referentiel li {line-height:1.5em}	/* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_elaboration_referentiel li {line-height:1.5em}  /* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 #zone_elaboration_referentiel i.tab {display:inline-block;width:4.5em;}
 #zone_elaboration_referentiel .sep {margin-right:3em}
 
@@ -832,219 +837,219 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
  */
 
 .fancybox-tmp iframe, .fancybox-tmp object {
-	vertical-align: top;
-	padding: 0;
-	margin: 0;
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
 }
 
 .fancybox-wrap {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1002;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1002;
 }
 
 .fancybox-outer {
-	padding: 0;
-	margin: 0;
-	background: #f9f9f9;
-	color: #444;
-	text-shadow: none;
-	border-radius: 4px;
+  padding: 0;
+  margin: 0;
+  background: #fff;
+  color: #444;
+  text-shadow: none;
+  border-radius: 4px;
 }
 
 .fancybox-opened {
-	z-index: 1003;	
+  z-index: 1003;  
 }
 
 .fancybox-opened .fancybox-outer {
-	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .fancybox-inner {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	position: relative;
-	outline: none;
-	overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  outline: none;
+  overflow: hidden;
 }
 
 .fancybox-error {
-	color: #444;
+  color: #444;
     font: 14px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
     margin: 0;
     padding: 10px;
 }
 
 .fancybox-image, .fancybox-iframe {
-	display: block;
-	width: 100%;
-	height: 100%;
-	border: 0;
-	padding: 0;
-	margin: 0;
-	vertical-align: top;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
 }
 
 .fancybox-image {
-	max-width: 100%;
-	max-height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #fancybox-loading {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-top: -21px;
-	margin-left: -21px;
-	width: 42px;
-	height: 42px;
-	background: url('../_img/fancybox/fancybox_loading.gif');
-	opacity: 0.8;
-	cursor: pointer;
-	z-index: 1010;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -21px;
+  margin-left: -21px;
+  width: 42px;
+  height: 42px;
+  background: url('../_img/fancybox/fancybox_loading.gif');
+  opacity: 0.8;
+  cursor: pointer;
+  z-index: 1010;
 }
 
 .fancybox-close, .fancybox-prev span, .fancybox-next span {
-	background-image: url('../_img/fancybox/fancybox_sprite.png');
+  background-image: url('../_img/fancybox/fancybox_sprite.png');
 }
 
 .fancybox-close {
-	position: absolute;
-	top: -18px;
-	right: -18px;
-	width: 36px;
-	height: 36px;
-	cursor: pointer;
-	z-index: 1004;
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 1004;
 }
 
 .fancybox-prev, .fancybox-next {
-	position: absolute;
-	top: 0;
-	width: 40%;
-	height: 100%;
-	cursor: pointer;
-	background: transparent url('../_img/fancybox/blank.gif'); /* helps IE */
-	z-index: 1003;
+  position: absolute;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  cursor: pointer;
+  background: transparent url('../_img/fancybox/blank.gif'); /* helps IE */
+  z-index: 1003;
 }
 
 .fancybox-prev {
-	left: 0;	
+  left: 0;  
 }
 
 .fancybox-next {
-	right: 0;
+  right: 0;
 }
 
 .fancybox-prev span, .fancybox-next span {
-	position: absolute;
-	top: 50%;
-	left: -9999px;
-	width: 36px;
-	height: 36px;
-	margin-top: -18px;
-	cursor: pointer;
-	z-index: 1003;
+  position: absolute;
+  top: 50%;
+  left: -9999px;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  cursor: pointer;
+  z-index: 1003;
 }
 
 .fancybox-prev span {
-	background-position: 0 -36px;
+  background-position: 0 -36px;
 }
 
 .fancybox-next span {
-	background-position: 0 -72px;
+  background-position: 0 -72px;
 }
 
 .fancybox-prev:hover, .fancybox-next:hover {
-	visibility: visible;
+  visibility: visible;
 }
 
 .fancybox-prev:hover span {
-	left: 20px;
+  left: 20px;
 }
 
 .fancybox-next:hover span {
-	left: auto;
-	right: 20px;
+  left: auto;
+  right: 20px;
 }
 
 .fancybox-tmp {
-	position: absolute;
-	top: -9999px;
-	left: -9999px;
-	padding: 0;
-	overflow: visible;
-	visibility: hidden;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  padding: 0;
+  overflow: visible;
+  visibility: hidden;
 }
 
 /* Overlay helper */
 
 #fancybox-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	overflow: hidden;
-	display: none;
-	z-index: 1001;
-	background: #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  display: none;
+  z-index: 1001;
+  background: #000;
 }
 
 /* Title helper */
 
 .fancybox-title {
-	visibility: hidden;	
-	font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
-	position: relative;
-	text-shadow: none;
-	z-index: 1005;
+  visibility: hidden;  
+  font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+  position: relative;
+  text-shadow: none;
+  z-index: 1005;
 }
 
 .fancybox-opened .fancybox-title {
-	visibility: visible;
+  visibility: visible;
 }
 
 .fancybox-title-float-wrap {
-	position: absolute;
-	bottom: 0;
-	right: 50%;
-	margin-bottom: -35px;
-	z-index: 1003;
-	text-align: center;
+  position: absolute;
+  bottom: 0;
+  right: 50%;
+  margin-bottom: -35px;
+  z-index: 1003;
+  text-align: center;
 }
 
 .fancybox-title-float-wrap .child {
-	display: inline-block;
-	margin-right: -100%;
-	padding: 2px 20px;
-	background: transparent; /* Fallback for web browsers that doesn't support RGBa */
-	background: rgba(0, 0, 0, 0.7);
-	border-radius: 15px;
-	text-shadow: 0 1px 2px #222;
-	color: #FFF;
-	font-weight: bold;
-	line-height: 24px;
-	white-space: nowrap;
+  display: inline-block;
+  margin-right: -100%;
+  padding: 2px 20px;
+  background: transparent; /* Fallback for web browsers that doesn't support RGBa */
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  text-shadow: 0 1px 2px #222;
+  color: #FFF;
+  font-weight: bold;
+  line-height: 24px;
+  white-space: nowrap;
 }
 
 .fancybox-title-outside-wrap {
-	position: relative;
-	margin-top: 10px;
-	color: #FFF;
+  position: relative;
+  margin-top: 10px;
+  color: #FFF;
 }
 
 .fancybox-title-inside-wrap {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .fancybox-title-over-wrap {
-	position: absolute;
-	bottom: 0;
-	left: 0;	
-	color: #FFF;
-	padding: 10px;
-	background: #000;
-	background: rgba(0, 0, 0, .8);
+  position: absolute;
+  bottom: 0;
+  left: 0;  
+  color: #FFF;
+  padding: 10px;
+  background: #000;
+  background: rgba(0, 0, 0, .8);
 }

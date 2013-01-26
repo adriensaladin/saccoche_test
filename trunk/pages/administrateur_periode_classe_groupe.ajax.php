@@ -43,21 +43,21 @@ $tab_select_classes_groupes = array_filter( Clean::map_entier($tab_select_classe
 
 if( ($action=='ajouter') && $date_debut && $date_fin )
 {
-	// Formater les dates
-	$date_debut_mysql = convert_date_french_to_mysql($date_debut);
-	$date_fin_mysql   = convert_date_french_to_mysql($date_fin);
-	// Vérifier que le date de début est antérieure à la date de fin
-	if($date_debut_mysql>$date_fin_mysql)
-	{
-		exit('Erreur : la date de début est postérieure à la date de fin !');
-	}
-	foreach($tab_select_periodes as $periode_id)
-	{
-		foreach($tab_select_classes_groupes as $groupe_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , TRUE , $date_debut_mysql , $date_fin_mysql );
-		}
-	}
+  // Formater les dates
+  $date_debut_mysql = convert_date_french_to_mysql($date_debut);
+  $date_fin_mysql   = convert_date_french_to_mysql($date_fin);
+  // Vérifier que le date de début est antérieure à la date de fin
+  if($date_debut_mysql>$date_fin_mysql)
+  {
+    exit('Erreur : la date de début est postérieure à la date de fin !');
+  }
+  foreach($tab_select_periodes as $periode_id)
+  {
+    foreach($tab_select_classes_groupes as $groupe_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , TRUE , $date_debut_mysql , $date_fin_mysql );
+    }
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,13 +66,13 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 
 elseif($action=='retirer')
 {
-	foreach($tab_select_periodes as $periode_id)
-	{
-		foreach($tab_select_classes_groupes as $groupe_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , FALSE );
-		}
-	}
+  foreach($tab_select_periodes as $periode_id)
+  {
+    foreach($tab_select_classes_groupes as $groupe_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , FALSE );
+    }
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,22 +88,22 @@ $tab_graphique = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux();
 if(empty($DB_TAB))
 {
-	exit('Aucune classe et aucun groupe ne sont enregistrés !');
+  exit('Aucune classe et aucun groupe ne sont enregistrés !');
 }
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_groupe[$DB_ROW['groupe_id']]    = '<th>'.html($DB_ROW['groupe_nom']).'</th>';
-	$tab_graphique[$DB_ROW['groupe_id']] = '';
+  $tab_groupe[$DB_ROW['groupe_id']]    = '<th>'.html($DB_ROW['groupe_nom']).'</th>';
+  $tab_graphique[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
 if(empty($DB_TAB))
 {
-	exit('Aucune période n\'est enregistrée !');
+  exit('Aucune période n\'est enregistrée !');
 }
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
+  $tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
 }
 // Récupérer l'amplitude complète sur l'ensemble des périodes
 $DB_ROW = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_amplitude_periodes();
@@ -115,44 +115,44 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_groupe_periode_avec_in
 $memo_groupe_id = 0;
 foreach($DB_TAB as $DB_ROW)
 {
-	$groupe_id = $DB_ROW['groupe_id'];
-	$date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
-	$date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-	$tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
-	// graphique (début)
-	if($memo_groupe_id!=$groupe_id)
-	{
-		$memo_position = 0;
-		$memo_groupe_id = $groupe_id;
-	}
-	$margin_left = 100*round($DB_ROW['position_jour_debut'] / $nb_jours_total , 4);
-	$width       = 100*round( ($DB_ROW['nb_jour']+1) / $nb_jours_total , 4);	// On ajoute un jour pour dessiner les barres jusqu'au jour suivant.
-	if($memo_position+0.02<$margin_left) // Le 0.02 sert à éviter les erreurs d'arrondi et une erreur PHP style un test 12.34<12.34 qui renvoie vrai !
-	{
-		// Deux périodes ne sont pas consécutives
-		$margin_left_erreur = $memo_position;
-		$width_erreur = $margin_left - $memo_position;
-		$tab_graphique[$groupe_id] .= '<div class="graph_erreur" style="margin-left:'.$margin_left_erreur.'%;width:'.$width_erreur.'%"></div>';
-	}
-	elseif($memo_position>$margin_left+0.02) // Le 0.02 sert à éviter les erreurs d'arrondi et une erreur PHP style un test 12.34<12.34 qui renvoie vrai !
-	{
-		// Deux périodes se chevauchent
-		$margin_left_erreur = $margin_left;
-		$width_erreur = $memo_position - $margin_left;
-		$tab_graphique[$groupe_id] .= '<div class="graph_erreur" style="margin-left:'.$margin_left_erreur.'%;width:'.$width_erreur.'%"></div>';
-	}
-	$tab_graphique[$groupe_id] .= '<div class="graph_partie" style="margin-left:'.$margin_left.'%;width:'.$width.'%"></div>';
-	$memo_position = $margin_left + $width;
-	// graphique (fin)
+  $groupe_id = $DB_ROW['groupe_id'];
+  $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
+  $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
+  $tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
+  // graphique (début)
+  if($memo_groupe_id!=$groupe_id)
+  {
+    $memo_position = 0;
+    $memo_groupe_id = $groupe_id;
+  }
+  $margin_left = 100*round($DB_ROW['position_jour_debut'] / $nb_jours_total , 4);
+  $width       = 100*round( ($DB_ROW['nb_jour']+1) / $nb_jours_total , 4);  // On ajoute un jour pour dessiner les barres jusqu'au jour suivant.
+  if($memo_position+0.02<$margin_left) // Le 0.02 sert à éviter les erreurs d'arrondi et une erreur PHP style un test 12.34<12.34 qui renvoie vrai !
+  {
+    // Deux périodes ne sont pas consécutives
+    $margin_left_erreur = $memo_position;
+    $width_erreur = $margin_left - $memo_position;
+    $tab_graphique[$groupe_id] .= '<div class="graph_erreur" style="margin-left:'.$margin_left_erreur.'%;width:'.$width_erreur.'%"></div>';
+  }
+  elseif($memo_position>$margin_left+0.02) // Le 0.02 sert à éviter les erreurs d'arrondi et une erreur PHP style un test 12.34<12.34 qui renvoie vrai !
+  {
+    // Deux périodes se chevauchent
+    $margin_left_erreur = $margin_left;
+    $width_erreur = $memo_position - $margin_left;
+    $tab_graphique[$groupe_id] .= '<div class="graph_erreur" style="margin-left:'.$margin_left_erreur.'%;width:'.$width_erreur.'%"></div>';
+  }
+  $tab_graphique[$groupe_id] .= '<div class="graph_partie" style="margin-left:'.$margin_left.'%;width:'.$width.'%"></div>';
+  $memo_position = $margin_left + $width;
+  // graphique (fin)
 }
 // Fabrication du tableau résultant
 foreach($tab_groupe as $groupe_id => $groupe_text)
 {
-	foreach($tab_periode as $periode_id => $periode_text)
-	{
-		$tab_groupe[$groupe_id] .= (isset($tab_jointure[$groupe_id][$periode_id])) ? '<td>'.$tab_jointure[$groupe_id][$periode_id].'</td>' : '<td class="hc">-</td>' ;
-	}
-	$tab_groupe[$groupe_id] .= '<td>'.$tab_graphique[$groupe_id].'</td>';
+  foreach($tab_periode as $periode_id => $periode_text)
+  {
+    $tab_groupe[$groupe_id] .= (isset($tab_jointure[$groupe_id][$periode_id])) ? '<td>'.$tab_jointure[$groupe_id][$periode_id].'</td>' : '<td class="hc">-</td>' ;
+  }
+  $tab_groupe[$groupe_id] .= '<td>'.$tab_graphique[$groupe_id].'</td>';
 }
 // Affichage du tableau résultant
 echo'<table>';

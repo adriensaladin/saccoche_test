@@ -77,25 +77,25 @@ $socle_legende                  = (isset($_POST['f_socle_legende']))            
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_variables = array(
-	'releve'   => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'etat_acquisition', 'moyenne_scores', 'pourcentage_acquis', 'conversion_sur_20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
-	'bulletin' => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'barre_acquisitions', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
-	'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
+  'releve'   => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'etat_acquisition', 'moyenne_scores', 'pourcentage_acquis', 'conversion_sur_20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
+  'bulletin' => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'barre_acquisitions', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
+  'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
 );
 
 if( isset($tab_variables[$objet]) )
 {
-	$tab_parametres = array();
-	foreach( $tab_variables[$objet] as $option )
-	{
-		$variable_nom    = $objet.'_'.$option;
-		$variable_valeur = ${$variable_nom};
-		// On modifie la session
-		$_SESSION['OFFICIEL'][strtoupper($variable_nom)] = $variable_valeur;
-		// Pour modifier dans la base
-		$tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
-	}
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	exit('ok');
+  $tab_parametres = array();
+  foreach( $tab_variables[$objet] as $option )
+  {
+    $variable_nom    = $objet.'_'.$option;
+    $variable_valeur = ${$variable_nom};
+    // On modifie la session
+    $_SESSION['OFFICIEL'][strtoupper($variable_nom)] = $variable_valeur;
+    // Pour modifier dans la base
+    $tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
+  }
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

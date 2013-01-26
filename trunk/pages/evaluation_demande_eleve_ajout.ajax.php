@@ -39,14 +39,14 @@ $score      = (isset($_POST['score']))      ? Clean::entier($_POST['score'])    
 $message    = (isset($_POST['message']))    ? Clean::texte($_POST['message'])     : '' ;
 if( ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 // Vérifier que les demandes sont autorisées pour cette matière
 $nb_demandes_autorisees = DB_STRUCTURE_ELEVE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
 if(!$nb_demandes_autorisees)
 {
-	exit('<label class="erreur">Vous ne pouvez pas formuler de demandes pour les items cette matière.</label>');
+  exit('<label class="erreur">Vous ne pouvez pas formuler de demandes pour les items cette matière.</label>');
 }
 
 // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés
@@ -54,21 +54,21 @@ $nb_demandes_formulees = DB_STRUCTURE_ELEVE::DB_compter_demandes_formulees_eleve
 $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
 if(!$nb_demandes_possibles)
 {
-	$reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
-	exit($reponse);
+  $reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
+  exit($reponse);
 }
 
 // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
 if( DB_STRUCTURE_ELEVE::DB_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
 {
-	exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
+  exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
 }
 
 // Vérifier que cet item n'est pas interdit à la sollitation ; récupérer au passage sa référence et son nom
 $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_item_infos($item_id);
 if($DB_ROW['item_cart']==0)
 {
-	exit('<label class="erreur">La demande de cet item est interdite !</label>');
+  exit('<label class="erreur">La demande de cet item est interdite !</label>');
 }
 
 // Enregistrement de la demande
@@ -84,7 +84,7 @@ $guid  = 'demande_'.$demande_id.'_add';
 $DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 foreach($DB_COL as $prof_id)
 {
-	RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
+  RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
 }
 
 // Affichage du retour

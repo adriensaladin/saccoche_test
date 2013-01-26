@@ -39,7 +39,7 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 <div class="danger">Respectez les conditions légales d'utilisation (droit à l'image précisé dans la documentation ci-dessus).</div>
 
 <script type="text/javascript">
-	var url_export_rapport = "<?php echo URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.html' ?>";
+  var url_export_rapport = "<?php echo URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.html' ?>";
 </script>
 
 <hr />
@@ -47,11 +47,11 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 <h2>Ajout multiple</h2>
 
 <form action="#" method="post" id="form2"><fieldset>
-	<p class="astuce">
-		Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> (<a href="./index.php?page=compte_info_serveur">voir les caractéristiques du serveur</a>).
-	</p>
-	<label class="tab" for="f_masque">Forme noms fichiers :</label><input id="f_masque" name="f_masque" size="50" maxlength="50" type="text" value="" /><br />
-	<label class="tab" for="bouton_zip">Upload fichier <em>zip</em> :</label><button id="bouton_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
+  <p class="astuce">
+    Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> (<a href="./index.php?page=compte_info_serveur">voir les caractéristiques du serveur</a>).
+  </p>
+  <label class="tab" for="f_masque">Forme noms fichiers :</label><input id="f_masque" name="f_masque" size="50" maxlength="50" type="text" value="" /><br />
+  <label class="tab" for="bouton_zip">Upload fichier <em>zip</em> :</label><button id="bouton_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -59,7 +59,7 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 <h2>Gestion individuelle</h2>
 
 <form action="#" method="post" id="form_select"><fieldset>
-	<label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?> <label id="ajax_msg">&nbsp;</label>
+  <label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?> <label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <p id="liste_eleves">

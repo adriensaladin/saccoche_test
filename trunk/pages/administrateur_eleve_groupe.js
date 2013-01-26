@@ -27,156 +27,156 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// Initialisation
+    // Initialisation
 
-		$("#select_eleves").hide();
+    $("#select_eleves").hide();
 
-		// Charger le select f_eleve en ajax
+    // Charger le select f_eleve en ajax
 
-		function maj_eleve(groupe_id,groupe_type)
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page=_maj_select_eleves',
-					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-							$('#select_eleves').html(responseHTML).show();
-						}
-						else
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-					}
-				}
-			);
-		}
-		function changer_groupe()
-		{
-			$("#select_eleves").html('<option value=""></option>').hide();
-			var groupe_val = $("#f_groupe").val();
-			if(groupe_val)
-			{
-				// type = $("#f_groupe option:selected").parent().attr('label');
-				groupe_type = groupe_val.substring(0,1);
-				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				maj_eleve(groupe_id,groupe_type);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			}
-		}
-		$("#f_groupe").change
-		(
-			function()
-			{
-				changer_groupe();
-			}
-		);
+    function maj_eleve(groupe_id,groupe_type)
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_eleves',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
+              $('#select_eleves').html(responseHTML).show();
+            }
+            else
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+          }
+        }
+      );
+    }
+    function changer_groupe()
+    {
+      $("#select_eleves").html('<option value=""></option>').hide();
+      var groupe_val = $("#f_groupe").val();
+      if(groupe_val)
+      {
+        // type = $("#f_groupe option:selected").parent().attr('label');
+        groupe_type = groupe_val.substring(0,1);
+        groupe_id   = groupe_val.substring(1);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        maj_eleve(groupe_id,groupe_type);
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      }
+    }
+    $("#f_groupe").change
+    (
+      function()
+      {
+        changer_groupe();
+      }
+    );
 
-		// Réagir au clic dans un select multiple
+    // Réagir au clic dans un select multiple
 
-		$('select[multiple]').click
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-			}
-		);
+    $('select[multiple]').click
+    (
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+      }
+    );
 
-		// Réagir au clic sur un bouton (soumission du formulaire)
+    // Réagir au clic sur un bouton (soumission du formulaire)
 
-		$('#ajouter , #retirer').click
-		(
-			function()
-			{
-				id = $(this).attr('id');
-				if( $("#select_eleves option:selected").length==0 || $("#select_groupes option:selected").length==0 )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
-					return(false);
-				}
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'csrf='+CSRF+'&'+$("form").serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('button').prop('disabled',false);
-							if(responseHTML.substring(0,6)!='<hr />')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-								$('#bilan').html(responseHTML);
-								changer_groupe();
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#ajouter , #retirer').click
+    (
+      function()
+      {
+        id = $(this).attr('id');
+        if( $("#select_eleves option:selected").length==0 || $("#select_groupes option:selected").length==0 )
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
+          return(false);
+        }
+        $('button').prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE+'&action='+id,
+            data : 'csrf='+CSRF+'&'+$("form").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('button').prop('disabled',false);
+              if(responseHTML.substring(0,6)!='<hr />')
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                $('#bilan').html(responseHTML);
+                changer_groupe();
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// Initialisation : charger au chargement l'affichage du bilan
+    // Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Envoi en cours&hellip;");
-		$.ajax
-		(
-			{
-				type : 'POST',
-				url : 'ajax.php?page='+PAGE+'&action=initialiser',
-				data : 'csrf='+CSRF,
-				dataType : "html",
-				error : function(jqXHR, textStatus, errorThrown)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					return false;
-				},
-				success : function(responseHTML)
-				{
-					initialiser_compteur();
-					if(responseHTML.substring(0,6)!='<hr />')
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-					}
-					else
-					{
-						$('#ajax_msg').removeAttr("class").html("&nbsp;");
-						$('#bilan').html(responseHTML);
-					}
-				}
-			}
-		);
+    $('#ajax_msg').addClass("loader").html("En cours&hellip;");
+    $.ajax
+    (
+      {
+        type : 'POST',
+        url : 'ajax.php?page='+PAGE+'&action=initialiser',
+        data : 'csrf='+CSRF,
+        dataType : "html",
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+          $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          return false;
+        },
+        success : function(responseHTML)
+        {
+          initialiser_compteur();
+          if(responseHTML.substring(0,6)!='<hr />')
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+          }
+          else
+          {
+            $('#ajax_msg').removeAttr("class").html("&nbsp;");
+            $('#bilan').html(responseHTML);
+          }
+        }
+      }
+    );
 
-	}
+  }
 );

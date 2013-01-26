@@ -34,7 +34,7 @@ $matiere_famille_id = (isset($_POST['f_famille_matiere'])) ? Clean::entier($_POS
 
 if(!$matiere_famille_id)
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');

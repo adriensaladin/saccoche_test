@@ -38,24 +38,24 @@ $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 {
-	// Vérifier que le nom de la zone est disponible
-	if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom) )
-	{
-		exit('Erreur : nom de zone déjà existant !');
-	}
-	// Insérer l'enregistrement
-	$geo_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_zone($ordre,$nom);
-	// Afficher le retour
-	echo'<tr id="id_'.$geo_id.'" class="new">';
-	echo	'<td>'.$geo_id.'</td>';
-	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.html($nom).'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier cette zone."></q>';
-	echo		'<q class="dupliquer" title="Dupliquer cette zone."></q>';
-	echo		'<q class="supprimer" title="Supprimer cette zone."></q>';
-	echo	'</td>';
-	echo'</tr>';
+  // Vérifier que le nom de la zone est disponible
+  if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom) )
+  {
+    exit('Erreur : nom de zone déjà existant !');
+  }
+  // Insérer l'enregistrement
+  $geo_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_zone($ordre,$nom);
+  // Afficher le retour
+  echo'<tr id="id_'.$geo_id.'" class="new">';
+  echo  '<td>'.$geo_id.'</td>';
+  echo  '<td>'.$ordre.'</td>';
+  echo  '<td>'.html($nom).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier cette zone."></q>';
+  echo    '<q class="dupliquer" title="Dupliquer cette zone."></q>';
+  echo    '<q class="supprimer" title="Supprimer cette zone."></q>';
+  echo  '</td>';
+  echo'</tr>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,23 +63,23 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='modifier') && $id && $ordre && $nom )
 {
-	// Vérifier que le nom de la zone est disponible
-	if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom,$id) )
-	{
-		exit('Erreur : nom de zone déjà existant !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_WEBMESTRE_WEBMESTRE::DB_modifier_zone($id,$ordre,$nom);
-	// Afficher le retour
-	echo'<td>'.$id.'</td>';
-	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.html($nom).'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier cette zone."></q>';
-	echo	'<q class="dupliquer" title="Dupliquer cette zone."></q>';
-	// La zone d'id 1 ne peut être supprimée, c'est la zone par défaut.
-	echo ($id!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
-	echo'</td>';
+  // Vérifier que le nom de la zone est disponible
+  if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom,$id) )
+  {
+    exit('Erreur : nom de zone déjà existant !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_WEBMESTRE_WEBMESTRE::DB_modifier_zone($id,$ordre,$nom);
+  // Afficher le retour
+  echo'<td>'.$id.'</td>';
+  echo'<td>'.$ordre.'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier cette zone."></q>';
+  echo  '<q class="dupliquer" title="Dupliquer cette zone."></q>';
+  // La zone d'id 1 ne peut être supprimée, c'est la zone par défaut.
+  echo ($id!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,16 +87,16 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='supprimer') && ($id>1) )
 {
-	// Effacer l'enregistrement
-	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_zone($id);
-	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'une zone géographique (n°'.$geo_id.').');
-	// Afficher le retour
-	echo'<td>ok</td>';
+  // Effacer l'enregistrement
+  DB_WEBMESTRE_WEBMESTRE::DB_supprimer_zone($id);
+  // Log de l'action
+  SACocheLog::ajouter('Suppression d\'une zone géographique (n°'.$id.').');
+  // Afficher le retour
+  echo'<td>ok</td>';
 }
 
 else
 {
-	echo'Erreur avec les données transmises !';
+  echo'Erreur avec les données transmises !';
 }
 ?>

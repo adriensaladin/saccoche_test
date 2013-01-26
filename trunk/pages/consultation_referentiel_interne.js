@@ -27,52 +27,52 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Voir un référentiel de compétences
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('q.voir').click
-		(
-			function()
-			{
-				ids = $(this).parent().attr('id');
-				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Envoi en cours&hellip;</label>';
-				$(this).after(new_label);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&ids='+ids,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							else
-							{
-								initialiser_compteur();
-								$.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
-								infobulle();
-							}
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						}
-					}
-				);
-			}
-		);
+    $('q.voir').click
+    (
+      function()
+      {
+        ids = $(this).parent().attr('id');
+        afficher_masquer_images_action('hide');
+        new_label = '<label for="'+ids+'" class="loader">En cours&hellip;</label>';
+        $(this).after(new_label);
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&ids='+ids,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $('label[for='+ids+']').remove();
+              afficher_masquer_images_action('show');
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+              else
+              {
+                initialiser_compteur();
+                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
+                infobulle();
+              }
+              $('label[for='+ids+']').remove();
+              afficher_masquer_images_action('show');
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

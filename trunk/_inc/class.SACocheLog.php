@@ -59,7 +59,7 @@ class SACocheLog
     $tab_ligne = array();
     $tab_ligne[] = '<?php /*';
     $tab_ligne[] = date('d-m-Y H:i:s');
-    $tab_ligne[] = html($_SESSION['USER_PROFIL'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
+    $tab_ligne[] = html($_SESSION['USER_PROFIL_NOM_COURT'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
     $tab_ligne[] = html($contenu);
     $tab_ligne[] = '*/ ?>'."\r\n";
     FileSystem::ecrire_fichier( SACocheLog::chemin_fichier_log($_SESSION['BASE']) , implode("\t",$tab_ligne) , FILE_APPEND );

@@ -30,12 +30,12 @@ $TITRE = "Élèves";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=parent">Élèves &amp; parents.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=photo">Élèves &amp; photos.</a>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=parent">Élèves &amp; parents.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=photo">Élèves &amp; photos.</a>
 </div>
 
 <hr />
@@ -43,9 +43,9 @@ $TITRE = "Élèves";
 <?php
 if($SECTION=='parent')
 {
-	// échanger $PAGE et $SECTION pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu
-	$PAGE    = 'administrateur_'.$SECTION;
-	$SECTION = 'eleve';
+  // échanger $PAGE et $SECTION pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu
+  $PAGE    = 'administrateur_'.$SECTION;
+  $SECTION = 'eleve';
 }
 // Par défaut, faire arriver sur la page de gestion des élèves
 $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
@@ -53,12 +53,12 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 else
 {
-	echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
-	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>';
+  echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>';
 }
 ?>

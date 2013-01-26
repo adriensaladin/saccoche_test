@@ -33,13 +33,13 @@ $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
 $BASE = 0;
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	// Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
-	// Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
-	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
-	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
-	// Test si UAI d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
+  // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
+  $BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
+  // Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
+  $BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
+  $BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
+  // Test si UAI d'établissement transmis dans l'URL
+  $BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
 }
 
 // Test si affichage du formulaire spécial pour le webmestre
@@ -56,14 +56,14 @@ echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )
 {
-	echo'<hr />';
-	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier !<br />Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
+  echo'<hr />';
+  echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier !<br />Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
 }
 
 // Supprimer le cookie avec le mode d'identification, servant à une reconnexion SSO, devenu inutile puisque déconnecté à présent.
 if(isset($_COOKIE[COOKIE_AUTHMODE]))
 {
-	setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+  setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
 }
 ?>
 
@@ -71,30 +71,30 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <h2 class="identification"><?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
 <form action="#" method="post"><fieldset>
-	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
-	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
-	<label id="ajax_msg" class="loader">Chargement en cours...</label>
+  <input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
+  <input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
+  <label id="ajax_msg" class="loader">Chargement en cours...</label>
 </fieldset></form>
 
 <hr />
 
 <h2 class="hebergement">Hébergement</h2>
 <ul class="puce">
-	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-	<li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
-	<li><a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
+  <li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
+  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
+  <li><a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 
 <hr />
 
 <h2 class="informations">Informations</h2>
 <ul class="puce">
-	<li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
-	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
-	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version"></label></li>
+  <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
+  <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
+  <li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version"></label></li>
 </ul>
 
 <script type="text/javascript">
-	var VERSION_PROG = "<?php echo VERSION_PROG ?>";
-	var SERVEUR_NEWS = "<?php echo SERVEUR_NEWS ?>";
+  var VERSION_PROG = "<?php echo VERSION_PROG ?>";
+  var SERVEUR_NEWS = "<?php echo SERVEUR_NEWS ?>";
 </script>

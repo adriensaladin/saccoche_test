@@ -37,105 +37,105 @@ $li_logo = '<li>Pas de logo actuellement enregistré.</li>';
 $DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
 if(!empty($DB_ROW))
 {
-	// Enregistrer temporairement le fichier sur le disque
-	$fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
-	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
-	// Générer la balise html pour afficher l'image
-	list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
-	$li_logo = '<li><img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
+  // Enregistrer temporairement le fichier sur le disque
+  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
+  // Générer la balise html pour afficher l'image
+  list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+  $li_logo = '<li><img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
 ?>
 
 <div id="div_instance">
 
-	<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
+  <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
 
-	<hr />
+  <hr />
 
-	<h2>Données saisies par le webmestre</h2>
+  <h2>Données saisies par le webmestre</h2>
 
-	<form action="#" method="post" id="form_webmestre">
-		<p>
-			<label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
-			<label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
-		</p>
-		<ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contactez le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</li></ul>
-	</form>
+  <form action="#" method="post" id="form_webmestre">
+    <p>
+      <label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
+      <label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
+    </p>
+    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contactez le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</li></ul>
+  </form>
 
-	<hr />
+  <hr />
 
-	<h2>Identification de l'établissement dans la base Sésamath</h2>
+  <h2>Identification de l'établissement dans la base Sésamath</h2>
 
-	<form action="#" method="post" id="form_sesamath">
-		<p>
-			<label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly /><br />
-			<label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly /><br />
-			<label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly /><br />
-			<label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly /><br />
-			<span class="tab"></span><button id="bouton_valider_sesamath" type="submit" class="parametre">Valider.</button><label id="ajax_msg_sesamath">&nbsp;</label>
-		</p>
-	<ul class="puce"><li><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath</a> afin de pouvoir échanger ensuite avec le serveur communautaire.</li></ul>
-	</form>
+  <form action="#" method="post" id="form_sesamath">
+    <p>
+      <label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly /><br />
+      <label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly /><br />
+      <label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly /><br />
+      <label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly /><br />
+      <span class="tab"></span><button id="bouton_valider_sesamath" type="submit" class="parametre">Valider.</button><label id="ajax_msg_sesamath">&nbsp;</label>
+    </p>
+  <ul class="puce"><li><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath</a> afin de pouvoir échanger ensuite avec le serveur communautaire.</li></ul>
+  </form>
 
-	<hr />
+  <hr />
 
-	<h2>Coordonnées de l'établissement</h2>
+  <h2>Coordonnées de l'établissement</h2>
 
-	<form action="#" method="post" id="form_etablissement">
-		<p>
-			<label class="tab" for="f_etablissement_denomination">Dénomination :</label><input id="f_etablissement_denomination" name="f_etablissement_denomination" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['DENOMINATION']); ?>" /><br />
-			<label class="tab" for="f_etablissement_adresse1">Adresse ligne 1 :</label><input id="f_etablissement_adresse1" name="f_etablissement_adresse1" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE1']); ?>" /><br />
-			<label class="tab" for="f_etablissement_adresse2">Adresse ligne 2 :</label><input id="f_etablissement_adresse2" name="f_etablissement_adresse2" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE2']); ?>" /><br />
-			<label class="tab" for="f_etablissement_adresse3">Adresse ligne 3 :</label><input id="f_etablissement_adresse3" name="f_etablissement_adresse3" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE3']); ?>" /><br />
-			<label class="tab" for="f_etablissement_telephone">Téléphone :</label><input id="f_etablissement_telephone" name="f_etablissement_telephone" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['TELEPHONE']); ?>" /><br />
-			<label class="tab" for="f_etablissement_fax">Fax :</label><input id="f_etablissement_fax" name="f_etablissement_fax" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['FAX']); ?>" /><br />
-			<label class="tab" for="f_etablissement_courriel">Courriel :</label><input id="f_etablissement_courriel" name="f_etablissement_courriel" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['COURRIEL']); ?>" /><br />
-			<span class="tab"></span><button id="bouton_valider_etablissement" type="submit" class="parametre">Valider.</button><label id="ajax_msg_etablissement">&nbsp;</label>
-		</p>
-	</form>
+  <form action="#" method="post" id="form_etablissement">
+    <p>
+      <label class="tab" for="f_etablissement_denomination">Dénomination :</label><input id="f_etablissement_denomination" name="f_etablissement_denomination" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['DENOMINATION']); ?>" /><br />
+      <label class="tab" for="f_etablissement_adresse1">Adresse ligne 1 :</label><input id="f_etablissement_adresse1" name="f_etablissement_adresse1" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE1']); ?>" /><br />
+      <label class="tab" for="f_etablissement_adresse2">Adresse ligne 2 :</label><input id="f_etablissement_adresse2" name="f_etablissement_adresse2" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE2']); ?>" /><br />
+      <label class="tab" for="f_etablissement_adresse3">Adresse ligne 3 :</label><input id="f_etablissement_adresse3" name="f_etablissement_adresse3" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE3']); ?>" /><br />
+      <label class="tab" for="f_etablissement_telephone">Téléphone :</label><input id="f_etablissement_telephone" name="f_etablissement_telephone" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['TELEPHONE']); ?>" /><br />
+      <label class="tab" for="f_etablissement_fax">Fax :</label><input id="f_etablissement_fax" name="f_etablissement_fax" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['FAX']); ?>" /><br />
+      <label class="tab" for="f_etablissement_courriel">Courriel :</label><input id="f_etablissement_courriel" name="f_etablissement_courriel" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['COURRIEL']); ?>" /><br />
+      <span class="tab"></span><button id="bouton_valider_etablissement" type="submit" class="parametre">Valider.</button><label id="ajax_msg_etablissement">&nbsp;</label>
+    </p>
+  </form>
 
-	<hr />
+  <hr />
 
-	<h2>Logo de l'établissement</h2>
+  <h2>Logo de l'établissement</h2>
 
-	<form action="#" method="post" id="form_logo">
-		<p><label class="tab" for="f_upload">Uploader image :</label> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
-	</form>
-	<ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
+  <form action="#" method="post" id="form_logo">
+    <p><label class="tab" for="f_upload">Uploader image :</label> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
+  </form>
+  <ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
 
-	<hr />
+  <hr />
 
-	<h2>Année scolaire</h2>
+  <h2>Année scolaire</h2>
 
-	<form action="#" method="post" id="form_annee_scolaire">
-		<p>
-			<label class="tab" for="f_mois_bascule_annee_scolaire">Fonctionnement :</label><select id="f_mois_bascule_annee_scolaire" name="f_mois_bascule_annee_scolaire"><?php echo $options_mois; ?></select><br />
-			<label class="tab">Affichage obtenu :</label><span class="i">&laquo;&nbsp;Année scolaire <span id="span_simulation"></span>&nbsp;&raquo;</span><br />
-			<span class="tab"></span><button id="bouton_valider_annee_scolaire" type="button" class="parametre">Valider.</button><label id="ajax_msg_annee_scolaire">&nbsp;</label>
-		</p>
-	</form>
+  <form action="#" method="post" id="form_annee_scolaire">
+    <p>
+      <label class="tab" for="f_mois_bascule_annee_scolaire">Fonctionnement :</label><select id="f_mois_bascule_annee_scolaire" name="f_mois_bascule_annee_scolaire"><?php echo $options_mois; ?></select><br />
+      <label class="tab">Affichage obtenu :</label><span class="i">&laquo;&nbsp;Année scolaire <span id="span_simulation"></span>&nbsp;&raquo;</span><br />
+      <span class="tab"></span><button id="bouton_valider_annee_scolaire" type="button" class="parametre">Valider.</button><label id="ajax_msg_annee_scolaire">&nbsp;</label>
+    </p>
+  </form>
 
-	<hr />
+  <hr />
 
 </div>
 
 <form action="#" method="post" id="form_communautaire" class="hide">
-	<h2>Rechercher l'établissement dans la base Sésamath</h2>
-	<p><button id="rechercher_annuler" type="button" class="annuler">Annuler la recherche.</button></p>
-	<p id="f_recherche_mode">
-		<label class="tab">Technique :</label><label for="f_mode_geo"><input type="radio" id="f_mode_geo" name="f_mode" value="geo" /> recherche sur critères géographiques</label>&nbsp;&nbsp;&nbsp;<label for="f_mode_uai"><input type="radio" id="f_mode_uai" name="f_mode" value="uai" /> recherche à partir du numéro UAI (ex-RNE)</label>
-	</p>
-	<fieldset id="f_recherche_geo" class="hide">
-		<label class="tab" for="f_geo1">Etape 1/3 :</label><select id="f_geo1" name="f_geo1"><option value=""></option></select><br />
-		<label class="tab" for="f_geo2">Etape 2/3 :</label><select id="f_geo2" name="f_geo2"><option value=""></option></select><br />
-		<label class="tab" for="f_geo3">Etape 3/3 :</label><select id="f_geo3" name="f_geo3"><option value=""></option></select><br />
-	</fieldset>
-	<fieldset id="f_recherche_uai" class="hide">
-		<label class="tab" for="f_uai2">Code UAI (ex-RNE) :</label><input id="f_uai2" name="f_uai2" size="8" type="text" value="" /><br />
-		<span class="tab"></span><button id="rechercher_uai" type="button" class="rechercher">Lancer la recherche.</button>
-	</fieldset>
-	<ul id="f_recherche_resultat" class="puce p hide">
-		<li></li>
-	</ul>
-	<span class="tab"></span><label id="ajax_msg_communautaire">&nbsp;</label>
+  <h2>Rechercher l'établissement dans la base Sésamath</h2>
+  <p><button id="rechercher_annuler" type="button" class="annuler">Annuler la recherche.</button></p>
+  <p id="f_recherche_mode">
+    <label class="tab">Technique :</label><label for="f_mode_geo"><input type="radio" id="f_mode_geo" name="f_mode" value="geo" /> recherche sur critères géographiques</label>&nbsp;&nbsp;&nbsp;<label for="f_mode_uai"><input type="radio" id="f_mode_uai" name="f_mode" value="uai" /> recherche à partir du numéro UAI (ex-RNE)</label>
+  </p>
+  <fieldset id="f_recherche_geo" class="hide">
+    <label class="tab" for="f_geo1">Etape 1/3 :</label><select id="f_geo1" name="f_geo1"><option value=""></option></select><br />
+    <label class="tab" for="f_geo2">Etape 2/3 :</label><select id="f_geo2" name="f_geo2"><option value=""></option></select><br />
+    <label class="tab" for="f_geo3">Etape 3/3 :</label><select id="f_geo3" name="f_geo3"><option value=""></option></select><br />
+  </fieldset>
+  <fieldset id="f_recherche_uai" class="hide">
+    <label class="tab" for="f_uai2">Code UAI (ex-RNE) :</label><input id="f_uai2" name="f_uai2" size="8" type="text" value="" /><br />
+    <span class="tab"></span><button id="rechercher_uai" type="button" class="rechercher">Lancer la recherche.</button>
+  </fieldset>
+  <ul id="f_recherche_resultat" class="puce p hide">
+    <li></li>
+  </ul>
+  <span class="tab"></span><label id="ajax_msg_communautaire">&nbsp;</label>
 </form>

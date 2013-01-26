@@ -38,18 +38,18 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 
 if($action=='numeroter')
 {
-	// Bloquer l'application
-	LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Recherche et correction de numérotations anormales en cours.');
-	// Rechercher et corriger les anomalies
-	$tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_numerotations();
-	// Débloquer l'application
-	LockAcces::debloquer_application('automate',$_SESSION['BASE']);
-	// Afficher le retour
-	echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>';
-	exit();
+  // Bloquer l'application
+  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Recherche et correction de numérotations anormales en cours.');
+  // Rechercher et corriger les anomalies
+  $tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_numerotations();
+  // Débloquer l'application
+  LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Afficher le retour
+  echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,18 +58,18 @@ if($action=='numeroter')
 
 if($action=='nettoyer')
 {
-	// Bloquer l'application
-	LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Recherche et suppression de données orphelines en cours.');
-	// Rechercher et corriger les anomalies
-	$tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_anomalies();
-	// Débloquer l'application
-	LockAcces::debloquer_application('automate',$_SESSION['BASE']);
-	// Afficher le retour
-	echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>';
-	exit();
+  // Bloquer l'application
+  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Recherche et suppression de données orphelines en cours.');
+  // Rechercher et corriger les anomalies
+  $tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_anomalies();
+  // Débloquer l'application
+  LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Afficher le retour
+  echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,55 +79,55 @@ if($action=='nettoyer')
 if($action=='purger')
 {
 
-	// Bloquer l'application
-	LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Purge annuelle de la base en cours.');
-	// Supprimer tous les devoirs associés aux classes, mais pas les saisies associées
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_devoirs_sans_saisies();
-	SACocheLog::ajouter('Suppression de tous les devoirs sans les saisies associées.');
-	// Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_sauf_classes();
-	if(!empty($DB_TAB))
-	{
-		foreach($DB_TAB as $DB_ROW)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $DB_ROW['groupe_id'] , $DB_ROW['groupe_type'] , FALSE /*with_devoir*/ );
-		}
-	}
-	SACocheLog::ajouter('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
-	// Supprimer les jointures classes/périodes, et donc les états des bilans officiels
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
-	// Supprimer les saisies & les archives des bilans officiels
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
-	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
-	if(!empty($DB_TAB))
-	{
-		foreach($DB_TAB as $DB_ROW)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$DB_ROW['user_profil']);
-			// Log de l'action
-			SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
-		}
-	}
-	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
-	// En profiter pour optimiser les tables (une fois par an, ça ne peut pas faire de mal)
-	DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
-	// Débloquer l'application
-	LockAcces::debloquer_application('automate',$_SESSION['BASE']);
-	// Afficher le retour
-	echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
-	echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
-	echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>';
-	echo'<li><label class="valide">Bilans officiels supprimés.</label></li>';
-	echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>';
-	echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
-	echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>';
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>';
-	exit();
+  // Bloquer l'application
+  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Purge annuelle de la base en cours.');
+  // Supprimer tous les devoirs associés aux classes, mais pas les saisies associées
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_devoirs_sans_saisies();
+  SACocheLog::ajouter('Suppression de tous les devoirs sans les saisies associées.');
+  // Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_sauf_classes();
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $DB_ROW['groupe_id'] , $DB_ROW['groupe_type'] , FALSE /*with_devoir*/ );
+    }
+  }
+  SACocheLog::ajouter('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
+  // Supprimer les jointures classes/périodes, et donc les états des bilans officiels
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
+  // Supprimer les saisies & les archives des bilans officiels
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
+  // Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$DB_ROW['user_profil_sigle']);
+      // Log de l'action
+      SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
+    }
+  }
+  // Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
+  // En profiter pour optimiser les tables (une fois par an, ça ne peut pas faire de mal)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
+  // Débloquer l'application
+  LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Afficher le retour
+  echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
+  echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
+  echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>';
+  echo'<li><label class="valide">Bilans officiels supprimés.</label></li>';
+  echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>';
+  echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
+  echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,21 +136,21 @@ if($action=='purger')
 
 if($action=='supprimer')
 {
-	// Bloquer l'application
-	LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes et des validations en cours.');
-	// Supprimer toutes les saisies aux évaluations
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies();
-	// Supprimer toutes les validations du socle
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_validations();
-	// Débloquer l'application
-	LockAcces::debloquer_application('automate',$_SESSION['BASE']);
-	// Afficher le retour
-	echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>';
-	echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>';
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>';
-	exit();
+  // Bloquer l'application
+  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes et des validations en cours.');
+  // Supprimer toutes les saisies aux évaluations
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies();
+  // Supprimer toutes les validations du socle
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_validations();
+  // Débloquer l'application
+  LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Afficher le retour
+  echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>';
+  echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,12 +159,12 @@ if($action=='supprimer')
 
 if($action=='effacer')
 {
-	FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$_SESSION['BASE'] , 0);
-	// Afficher le retour
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>';
-	exit();
+  FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$_SESSION['BASE'] , 0);
+  // Afficher le retour
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

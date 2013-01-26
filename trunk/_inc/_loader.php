@@ -50,7 +50,7 @@ define('MYSQL_VERSION_MINI_CONSEILLEE','5.5'); // Version stable depuis octobre 
 // Vérifier la version de PHP
 if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
 {
-	exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
+  exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
 }
 
 // Vérifier la présence des modules nécessaires
@@ -59,7 +59,7 @@ $extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mys
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
 if(count($extensions_manquantes))
 {
-	exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
+  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
 }
 
 // Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 6.0.0).
@@ -67,14 +67,14 @@ if(count($extensions_manquantes))
 // function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
 if(get_magic_quotes_gpc())
 {
-	function tab_stripslashes(&$val,$key)
-	{
-		$val = stripslashes($val);
-	}
-	array_walk_recursive($_COOKIE ,'tab_stripslashes');
-	array_walk_recursive($_GET    ,'tab_stripslashes');
-	array_walk_recursive($_POST   ,'tab_stripslashes');
-	array_walk_recursive($_REQUEST,'tab_stripslashes');
+  function tab_stripslashes(&$val,$key)
+  {
+    $val = stripslashes($val);
+  }
+  array_walk_recursive($_COOKIE ,'tab_stripslashes');
+  array_walk_recursive($_GET    ,'tab_stripslashes');
+  array_walk_recursive($_POST   ,'tab_stripslashes');
+  array_walk_recursive($_REQUEST,'tab_stripslashes');
 }
 
 // ============================================================================
@@ -173,13 +173,13 @@ define('DEBUG_CONST',   DEBUG & 256 ? TRUE : FALSE );
 
 if(DEBUG_PHP)
 {
-	// Rapporter toutes les erreurs PHP (http://fr.php.net/manual/fr/errorfunc.constants.php)
-	ini_set('error_reporting',E_ALL | E_STRICT);
+  // Rapporter toutes les erreurs PHP (http://fr.php.net/manual/fr/errorfunc.constants.php)
+  ini_set('error_reporting',E_ALL | E_STRICT);
 }
 else
 {
-	// Rapporter les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
-	ini_set('error_reporting',E_ALL & ~E_STRICT & ~E_NOTICE);
+  // Rapporter les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
+  ini_set('error_reporting',E_ALL & ~E_STRICT & ~E_NOTICE);
 }
 
 // ============================================================================
@@ -194,37 +194,37 @@ if(SACoche=='etiquette') return;
 
 if(DEBUG>3)
 {
-	ini_set('output_buffering','On');
-	$firephp = FirePHP::getInstance(TRUE);
-	function afficher_infos_debug_FirePHP()
-	{
-		global $firephp;
-		if(DEBUG_SESSION)
-		{
-			$firephp->dump('SESSION', $_SESSION);
-		}
-		if(DEBUG_POST)
-		{
-			$firephp->dump('POST', $_POST);
-		}
-		if(DEBUG_GET)
-		{
-			$firephp->dump('GET', $_GET);
-		}
-		if(DEBUG_FILES)
-		{
-			$firephp->dump('FILES', $_FILES);
-		}
-		if(DEBUG_COOKIE)
-		{
-			$firephp->dump('COOKIE', $_COOKIE);
-		}
-		if(DEBUG_CONST)
-		{
-			$tab_constantes = get_defined_constants(TRUE);
-			$firephp->dump('CONSTANTES', $tab_constantes['user']);
-		}
-	}
+  ini_set('output_buffering','On');
+  $firephp = FirePHP::getInstance(TRUE);
+  function afficher_infos_debug_FirePHP()
+  {
+    global $firephp;
+    if(DEBUG_SESSION)
+    {
+      $firephp->dump('SESSION', $_SESSION);
+    }
+    if(DEBUG_POST)
+    {
+      $firephp->dump('POST', $_POST);
+    }
+    if(DEBUG_GET)
+    {
+      $firephp->dump('GET', $_GET);
+    }
+    if(DEBUG_FILES)
+    {
+      $firephp->dump('FILES', $_FILES);
+    }
+    if(DEBUG_COOKIE)
+    {
+      $firephp->dump('COOKIE', $_COOKIE);
+    }
+    if(DEBUG_CONST)
+    {
+      $tab_constantes = get_defined_constants(TRUE);
+      $firephp->dump('CONSTANTES', $tab_constantes['user']);
+    }
+  }
 }
 
 // ============================================================================
@@ -238,31 +238,31 @@ if(DEBUG>3)
 
 function getServerUrl()
 {
-	if (!empty($_SERVER['HTTP_X_FORWARDED_HOST']))
-	{
-		// explode the host list separated by comma and use the first host
-		$tab_hosts = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
-		return $tab_hosts[0];
-	}
-	else if (!empty($_SERVER['HTTP_X_FORWARDED_SERVER']))
-	{
-		return $_SERVER['HTTP_X_FORWARDED_SERVER'];
-	}
-	else if (!empty($_SERVER['HTTP_HOST']))
-	{
-		return $_SERVER['HTTP_HOST'];
-	}
-	else if (!empty($_SERVER['SERVER_NAME']))
-	{
-		return $_SERVER['SERVER_NAME'];
-	}
-	exit_error( 'HOST indéfini' /*titre*/ , 'SACoche n\'arrive pas à déterminer le nom du serveur hôte !<br />HTTP_X_FORWARDED_HOST, HTTP_HOST, HTTP_X_FORWARDED_SERVER et SERVER_NAME sont tous indéfinis.' /*contenu*/ );
+  if (!empty($_SERVER['HTTP_X_FORWARDED_HOST']))
+  {
+    // explode the host list separated by comma and use the first host
+    $tab_hosts = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
+    return $tab_hosts[0];
+  }
+  else if (!empty($_SERVER['HTTP_X_FORWARDED_SERVER']))
+  {
+    return $_SERVER['HTTP_X_FORWARDED_SERVER'];
+  }
+  else if (!empty($_SERVER['HTTP_HOST']))
+  {
+    return $_SERVER['HTTP_HOST'];
+  }
+  else if (!empty($_SERVER['SERVER_NAME']))
+  {
+    return $_SERVER['SERVER_NAME'];
+  }
+  exit_error( 'HOST indéfini' /*titre*/ , 'SACoche n\'arrive pas à déterminer le nom du serveur hôte !<br />HTTP_X_FORWARDED_HOST, HTTP_HOST, HTTP_X_FORWARDED_SERVER et SERVER_NAME sont tous indéfinis.' /*contenu*/ );
 }
 
 function getServerProtocole()
 {
-	// $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
-	return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
+  // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
+  return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
 define('URL_BASE',getServerProtocole().getServerUrl());
@@ -275,12 +275,12 @@ $url = URL_BASE.$_SERVER['SCRIPT_NAME'];
 $fin = mb_strpos($url,SACoche);
 if($fin)
 {
-	$url = mb_substr($url,0,$fin-1);
+  $url = mb_substr($url,0,$fin-1);
 }
 // Il manque "/sacoche" à l'URL si appelé depuis le projet
 if(defined('APPEL_SITE_PROJET'))
 {
-	$url .= '/sacoche';
+  $url .= '/sacoche';
 }
 define('URL_INSTALL_SACOCHE',$url); // la seule constante sans slash final
 define('URL_DIR_SACOCHE',$url.'/'); // avec slash final
@@ -374,14 +374,14 @@ define('JPEG_QUALITY',90);
  */
 function load_class($class_name,$chemin)
 {
-	if(is_file($chemin))
-	{
-		require($chemin);
-	}
-	else
-	{
-		exit_error( 'Classe introuvable' /*titre*/ , 'Le chemin de la classe '.$class_name.' est incorrect : '.$chemin /*contenu*/ );
-	}
+  if(is_file($chemin))
+  {
+    require($chemin);
+  }
+  else
+  {
+    exit_error( 'Classe introuvable' /*titre*/ , 'Le chemin de la classe '.$class_name.' est incorrect : '.$chemin /*contenu*/ );
+  }
 }
 
 /**
@@ -392,90 +392,90 @@ function load_class($class_name,$chemin)
  */
 function __autoload($class_name)
 {
-	$tab_classes = array(
-		'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
-		'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
-		'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
-		'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
-		'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
-		'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
-		'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
+  $tab_classes = array(
+    'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
+    'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
+    'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
+    'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
+    'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
+    'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
+    'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
 
-		'Browser'                     => '_inc'.DS.'class.Browser.php' ,
-		'Clean'                       => '_inc'.DS.'class.Clean.php' ,
-		'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
-		'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
-		'Form'                        => '_inc'.DS.'class.Form.php' ,
-		'Html'                        => '_inc'.DS.'class.Html.php' ,
-		'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
-		'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
-		'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
-		'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
-		'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
-		'PDF'                         => '_inc'.DS.'class.PDF.php' ,
-		'RSS'                         => '_inc'.DS.'class.RSS.php' ,
-		'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,
-		'ServeurCommunautaire'        => '_inc'.DS.'class.ServeurCommunautaire.php' ,
-		'Sesamail'                    => '_inc'.DS.'class.Sesamail.php' ,
-		'Session'                     => '_inc'.DS.'class.Session.php' ,
-		'SessionUser'                 => '_inc'.DS.'class.SessionUser.php' ,
-		'To'                          => '_inc'.DS.'class.To.php' ,
-		'Webmestre'                   => '_inc'.DS.'class.Webmestre.php' ,
+    'Browser'                     => '_inc'.DS.'class.Browser.php' ,
+    'Clean'                       => '_inc'.DS.'class.Clean.php' ,
+    'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
+    'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
+    'Form'                        => '_inc'.DS.'class.Form.php' ,
+    'Html'                        => '_inc'.DS.'class.Html.php' ,
+    'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
+    'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
+    'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
+    'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
+    'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
+    'PDF'                         => '_inc'.DS.'class.PDF.php' ,
+    'RSS'                         => '_inc'.DS.'class.RSS.php' ,
+    'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,
+    'ServeurCommunautaire'        => '_inc'.DS.'class.ServeurCommunautaire.php' ,
+    'Sesamail'                    => '_inc'.DS.'class.Sesamail.php' ,
+    'Session'                     => '_inc'.DS.'class.Session.php' ,
+    'SessionUser'                 => '_inc'.DS.'class.SessionUser.php' ,
+    'To'                          => '_inc'.DS.'class.To.php' ,
+    'Webmestre'                   => '_inc'.DS.'class.Webmestre.php' ,
 
-		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
-		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
-		'DB_STRUCTURE_ELEVE'          => '_sql'.DS.'requetes_structure_eleve.php' ,
-		'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DS.'requetes_structure_professeur.php' ,
-		'DB_STRUCTURE_PUBLIC'         => '_sql'.DS.'requetes_structure_public.php' ,
-		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
+    'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
+    'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
+    'DB_STRUCTURE_ELEVE'          => '_sql'.DS.'requetes_structure_eleve.php' ,
+    'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DS.'requetes_structure_professeur.php' ,
+    'DB_STRUCTURE_PUBLIC'         => '_sql'.DS.'requetes_structure_public.php' ,
+    'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
 
-		'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
-		'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
-		'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
-		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
-		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
-		'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
+    'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
+    'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
+    'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
+    'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
+    'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
+    'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
+    'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
 
-		'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
-		'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
-		'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php'
-	);
-	if(isset($tab_classes[$class_name]))
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.$tab_classes[$class_name]);
-	}
-	// Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
-	// Voir le fichier ./_lib/phpCAS/CAS/autoload.php
-	elseif(mb_substr($class_name,0,4)=='CAS_')
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.str_replace('_',DS,$class_name).'.php');
-	}
-	// Remplacement de l'autoload de SimpleSAMLphp qui n'est pas chargé à cause de celui de SACoche
-	// Voir le fichier ./_lib/SimpleSAMLphp/lib/_autoload.php
-	else if(in_array($class_name, array('XMLSecurityKey', 'XMLSecurityDSig', 'XMLSecEnc'), TRUE))
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.'xmlseclibs.php');
-	}
-	else if(mb_substr($class_name,0,7)=='sspmod_')
-	{
-		$modNameEnd  = mb_strpos($class_name, '_', 7);
-		$module      = mb_substr($class_name, 7, $modNameEnd - 7);
-		$moduleClass = mb_substr($class_name, $modNameEnd + 1);
-		if(SimpleSAML_Module::isModuleEnabled($module))
-		{
-			load_class($class_name,SimpleSAML_Module::getModuleDir($module).'/lib/'.str_replace('_', DS, $moduleClass).'.php');
-		}
-	}
-	elseif( (mb_substr($class_name,0,5)=='SAML2') || (mb_substr($class_name,0,10)=='SimpleSAML') )
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.str_replace('_','/',$class_name).'.php');
-	}
-	// La classe invoquée ne correspond pas à ce qui vient d'être passé en revue
-	else
-	{
-		exit_error( 'Classe introuvable' /*titre*/ , 'La classe '.$class_name.' est inconnue.' /*contenu*/ );
-	}
+    'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
+    'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
+    'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php'
+  );
+  if(isset($tab_classes[$class_name]))
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.$tab_classes[$class_name]);
+  }
+  // Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
+  // Voir le fichier ./_lib/phpCAS/CAS/autoload.php
+  elseif(mb_substr($class_name,0,4)=='CAS_')
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.str_replace('_',DS,$class_name).'.php');
+  }
+  // Remplacement de l'autoload de SimpleSAMLphp qui n'est pas chargé à cause de celui de SACoche
+  // Voir le fichier ./_lib/SimpleSAMLphp/lib/_autoload.php
+  else if(in_array($class_name, array('XMLSecurityKey', 'XMLSecurityDSig', 'XMLSecEnc'), TRUE))
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.'xmlseclibs.php');
+  }
+  else if(mb_substr($class_name,0,7)=='sspmod_')
+  {
+    $modNameEnd  = mb_strpos($class_name, '_', 7);
+    $module      = mb_substr($class_name, 7, $modNameEnd - 7);
+    $moduleClass = mb_substr($class_name, $modNameEnd + 1);
+    if(SimpleSAML_Module::isModuleEnabled($module))
+    {
+      load_class($class_name,SimpleSAML_Module::getModuleDir($module).'/lib/'.str_replace('_', DS, $moduleClass).'.php');
+    }
+  }
+  elseif( (mb_substr($class_name,0,5)=='SAML2') || (mb_substr($class_name,0,10)=='SimpleSAML') )
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.str_replace('_','/',$class_name).'.php');
+  }
+  // La classe invoquée ne correspond pas à ce qui vient d'être passé en revue
+  else
+  {
+    exit_error( 'Classe introuvable' /*titre*/ , 'La classe '.$class_name.' est inconnue.' /*contenu*/ );
+  }
 }
 
 // ============================================================================
@@ -491,8 +491,8 @@ function __autoload($class_name)
  */
 function html($text)
 {
-	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
-	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+  // Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+  return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
 }
 
 /**
@@ -503,7 +503,7 @@ function html($text)
  */
 function perso_mb_detect_encoding_utf8($text)
 {
-	return (mb_detect_encoding($text.' ','auto',TRUE)=='UTF-8');
+  return (mb_detect_encoding($text.' ','auto',TRUE)=='UTF-8');
 }
 
 /*
@@ -514,11 +514,11 @@ function perso_mb_detect_encoding_utf8($text)
  */
 function augmenter_memory_limit()
 {
-	if( (int)ini_get('memory_limit') < 256 )
-	{
-		@ini_set('memory_limit','256M');
-		@ini_alter('memory_limit','256M');
-	}
+  if( (int)ini_get('memory_limit') < 256 )
+  {
+    @ini_set('memory_limit','256M');
+    @ini_alter('memory_limit','256M');
+  }
 }
 
 /*
@@ -534,11 +534,11 @@ function augmenter_memory_limit()
  */
 function rapporter_erreur_fatale_memoire()
 {
-	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
-	if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) && (mb_substr($tab_last_error['message'],0,19)=='Allowed memory size') )
-	{
-		exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
-	}
+  $tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
+  if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) && (mb_substr($tab_last_error['message'],0,19)=='Allowed memory size') )
+  {
+    exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
+  }
 }
 
 /*
@@ -567,11 +567,11 @@ function rapporter_erreur_fatale_memoire()
  */
 function rapporter_erreur_fatale_phpcas()
 {
-	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
-	if( ($tab_last_error!==NULL) && ( ($tab_last_error['type']==E_ERROR) || ($tab_last_error['type']>=E_CORE_ERROR) ) )
-	{
-		exit_error( 'Erreur CAS' /*titre*/ , $tab_last_error['message'] /*contenu*/ );
-	}
+  $tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
+  if( ($tab_last_error!==NULL) && ( ($tab_last_error['type']==E_ERROR) || ($tab_last_error['type']>=E_CORE_ERROR) ) )
+  {
+    exit_error( 'Erreur CAS' /*titre*/ , $tab_last_error['message'] /*contenu*/ );
+  }
 }
 
 /*
@@ -584,34 +584,34 @@ function rapporter_erreur_fatale_phpcas()
  */
 function exit_error( $titre , $contenu , $setup=FALSE )
 {
-	if(SACoche!='ajax')
-	{
-		$tab_lien = ($setup) ? array('href'=>'index.php?page=public_installation','txt'=>'Procédure d\'installation') : array('href'=>'index.php','txt'=>'Retour en page d\'accueil') ;
-		// start html
-		header('Content-Type: text/html; charset='.CHARSET);
-		echo'<!DOCTYPE html><html>';
-		// head
-		echo'<head>';
-		echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
-		echo'<link rel="stylesheet" type="text/css" href="./_css/style.css" />';
-		echo'<style type="text/css">#cadre_milieu{color:#D00}</style>';
-		echo'<title>SACoche » '.$titre.'</title>';
-		echo'</head>';
-		// body
-		echo'<body><div id="cadre_milieu">';
-		echo'<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>';
-		echo'<h1>» '.$titre.'</h1>';
-		echo'<p>'.str_replace('<br />','</p><p>',$contenu).'</p>';
-		echo'<p><a href="./'.$tab_lien['href'].'">'.$tab_lien['txt'].' de SACoche.</a></p>';
-		echo'</div></body>';
-		// end html
-		echo'</html>';
-	}
-	else
-	{
-		echo str_replace('<br />',' ',$contenu);
-	}
-	exit();
+  if(SACoche!='ajax')
+  {
+    $tab_lien = ($setup) ? array('href'=>'index.php?page=public_installation','txt'=>'Procédure d\'installation') : array('href'=>'index.php','txt'=>'Retour en page d\'accueil') ;
+    // start html
+    header('Content-Type: text/html; charset='.CHARSET);
+    echo'<!DOCTYPE html><html>';
+    // head
+    echo'<head>';
+    echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
+    echo'<link rel="stylesheet" type="text/css" href="./_css/style.css" />';
+    echo'<style type="text/css">#cadre_milieu{color:#D00}</style>';
+    echo'<title>SACoche » '.$titre.'</title>';
+    echo'</head>';
+    // body
+    echo'<body><div id="cadre_milieu">';
+    echo'<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>';
+    echo'<h1>» '.$titre.'</h1>';
+    echo'<p>'.str_replace('<br />','</p><p>',$contenu).'</p>';
+    echo'<p><a href="./'.$tab_lien['href'].'">'.$tab_lien['txt'].' de SACoche.</a></p>';
+    echo'</div></body>';
+    // end html
+    echo'</html>';
+  }
+  else
+  {
+    echo str_replace('<br />',' ',$contenu);
+  }
+  exit();
 }
 
 // ============================================================================
@@ -624,30 +624,30 @@ function exit_error( $titre , $contenu , $setup=FALSE )
  */
 if(!function_exists('error_get_last'))
 {
-	set_error_handler(
-			create_function(
-				'$errno,$errstr,$errfile,$errline,$errcontext',
-				'
-					global $__error_get_last_retval__;
-					$__error_get_last_retval__ = array(
-						\'type\'    => $errno,
-						\'message\' => $errstr,
-						\'file\'    => $errfile,
-						\'line\'    => $errline
-					);
-					return NULL;
-				'
-			)
-	);
-	function error_get_last()
-	{
-		global $__error_get_last_retval__;
-		if( !isset($__error_get_last_retval__) )
-		{
-			return NULL;
-		}
-		return $__error_get_last_retval__;
-	}
+  set_error_handler(
+      create_function(
+        '$errno,$errstr,$errfile,$errline,$errcontext',
+        '
+          global $__error_get_last_retval__;
+          $__error_get_last_retval__ = array(
+            \'type\'    => $errno,
+            \'message\' => $errstr,
+            \'file\'    => $errfile,
+            \'line\'    => $errline
+          );
+          return NULL;
+        '
+      )
+  );
+  function error_get_last()
+  {
+    global $__error_get_last_retval__;
+    if( !isset($__error_get_last_retval__) )
+    {
+      return NULL;
+    }
+    return $__error_get_last_retval__;
+  }
 }
 
 /*
@@ -655,10 +655,10 @@ if(!function_exists('error_get_last'))
  */
 if(!function_exists('array_fill_keys'))
 {
-	function array_fill_keys($tab_clefs,$valeur)
-	{
-		return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
-	}
+  function array_fill_keys($tab_clefs,$valeur)
+  {
+    return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
+  }
 }
 
 ?>

@@ -42,11 +42,11 @@ class DB_STRUCTURE_IMAGE extends DB
  */
 public static function DB_recuperer_image($user_id,$image_objet)
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
-	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_image ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
+  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -58,11 +58,11 @@ public static function DB_recuperer_image($user_id,$image_objet)
  */
 public static function DB_lister_images($listing_user_id,$image_objet)
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND image_objet=:image_objet ';
-	$DB_VAR = array(':image_objet'=>$image_objet);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_image ';
+  $DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND image_objet=:image_objet ';
+  $DB_VAR = array(':image_objet'=>$image_objet);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -72,12 +72,12 @@ public static function DB_lister_images($listing_user_id,$image_objet)
  */
 public static function DB_lister_signatures_avec_identite()
 {
-	$DB_SQL = 'SELECT sacoche_image.*, user_nom, user_prenom ';
-	$DB_SQL.= 'FROM sacoche_image ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE image_objet="signature" ';
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT sacoche_image.*, user_nom, user_prenom ';
+  $DB_SQL.= 'FROM sacoche_image ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'WHERE image_objet="signature" ';
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -93,10 +93,10 @@ public static function DB_lister_signatures_avec_identite()
  */
 public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$image_format,$image_largeur,$image_hauteur)
 {
-	$DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
-	$DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet,':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
+  $DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet,':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -108,10 +108,10 @@ public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$i
  */
 public static function DB_supprimer_image($user_id,$image_objet)
 {
-	$DB_SQL = 'DELETE FROM sacoche_image ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'DELETE FROM sacoche_image ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
+  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

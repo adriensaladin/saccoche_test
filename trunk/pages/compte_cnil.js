@@ -27,66 +27,66 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur la checkbox et état du bouton d'enregistrement
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur la checkbox et état du bouton d'enregistrement
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#confirmation_cnil').click
-		(
-			function()
-			{
-				if($(this).is(':checked'))
-				{
-					$('#f_enregistrer').prop('disabled',false);
-				}
-				else
-				{
-					$('#f_enregistrer').prop('disabled',true);
-				}
-			}
-		);
+    $('#confirmation_cnil').click
+    (
+      function()
+      {
+        if($(this).is(':checked'))
+        {
+          $('#f_enregistrer').prop('disabled',false);
+        }
+        else
+        {
+          $('#f_enregistrer').prop('disabled',true);
+        }
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton d'enregistrement
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton d'enregistrement
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#f_enregistrer').click
-		(
-			function()
-			{
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=Valider_CNIL',
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
-								return false;
-							}
-							else
-							{
-								$('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Compte activé.");
-								document.location.href = './index.php?page=compte_accueil';
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#f_enregistrer').click
+    (
+      function()
+      {
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=Valider_CNIL',
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
+              }
+              else
+              {
+                $('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Compte activé.");
+                document.location.href = './index.php?page=compte_accueil';
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

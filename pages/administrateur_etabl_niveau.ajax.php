@@ -38,14 +38,14 @@ $niveau_id  = (isset($_POST['f_niveau']))   ? Clean::entier($_POST['f_niveau']) 
 
 if( ($action=='recherche_niveau_famille') && $famille_id )
 {
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux_famille($famille_id);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
-		$title = ($DB_ROW['niveau_actif']) ? 'Niveau déjà choisi.' : 'Ajouter ce niveau.' ;
-		echo'<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
-	}
-	exit();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux_famille($famille_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
+    $title = ($DB_ROW['niveau_actif']) ? 'Niveau déjà choisi.' : 'Ajouter ce niveau.' ;
+    echo'<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+  }
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,8 +54,8 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 
 if( ($action=='ajouter') && $niveau_id )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,1);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,1);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,8 +64,8 @@ if( ($action=='ajouter') && $niveau_id )
 
 if( ($action=='supprimer') && $niveau_id )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,0);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,0);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

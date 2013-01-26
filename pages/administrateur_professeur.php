@@ -26,14 +26,14 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Professeurs";
+$TITRE = "Professeurs / Personnels";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Professeurs (gestion).</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Professeurs &amp; groupes.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Professeurs &amp; classes / Professeurs principaux.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Professeurs &amp; matières / Professeurs coordonnateurs.</a>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Professeurs / Personnels (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Professeurs &amp; groupes.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Professeurs &amp; classes / Professeurs principaux.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Personnels &amp; matières / Personnels coordonnateurs.</a>
 </div>
 
 <hr />
@@ -45,12 +45,12 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 else
 {
-	echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
-	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span></p>';
+  echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs et personnels</a></span></p>';
 }
 ?>

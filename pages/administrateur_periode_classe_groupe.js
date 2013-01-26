@@ -27,123 +27,123 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// Réagir au clic dans un select multiple
+    // Réagir au clic dans un select multiple
 
-		$('select[multiple]').click
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-			}
-		);
+    $('select[multiple]').click
+    (
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+      }
+    );
 
-		// Réagir au clic sur une image pour reporter des dates
+    // Réagir au clic sur une image pour reporter des dates
 
-		$('#bilan input[type=image]').live
-		('click',
-			function()
-			{
-				texte = $(this).parent().html();
-				$("#f_date_debut").val( texte.substring(0,10) );
-				$("#f_date_fin").val(  texte.substring(13,23) );
-				return false;
-			}
-		);
+    $('#bilan input[type=image]').live
+    ('click',
+      function()
+      {
+        texte = $(this).parent().html();
+        $("#f_date_debut").val( texte.substring(0,10) );
+        $("#f_date_fin").val(  texte.substring(13,23) );
+        return false;
+      }
+    );
 
-		// Réagir au clic sur un bouton (soumission du formulaire)
+    // Réagir au clic sur un bouton (soumission du formulaire)
 
-		$('#ajouter , #retirer').click
-		(
-			function()
-			{
-				id = $(this).attr('id');
-				if( $("#select_periodes option:selected").length==0 || $("#select_classes_groupes option:selected").length==0 )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
-					return(false);
-				}
-				if(id=='ajouter')
-				{
-					if( !test_dateITA( $("#f_date_debut").val() ) )
-					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de début au format JJ/MM/AAAA incorrecte !");
-						return(false);
-					}
-					if( !test_dateITA( $("#f_date_fin").val() ) )
-					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de fin au format JJ/MM/AAAA incorrecte !");
-						return(false);
-					}
-				}
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'csrf='+CSRF+'&'+$("form").serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('button').prop('disabled',false);
-							if(responseHTML.substring(0,6)!='<hr />')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-								$('#bilan').html(responseHTML);
-								infobulle();
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#ajouter , #retirer').click
+    (
+      function()
+      {
+        id = $(this).attr('id');
+        if( $("#select_periodes option:selected").length==0 || $("#select_classes_groupes option:selected").length==0 )
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
+          return(false);
+        }
+        if(id=='ajouter')
+        {
+          if( !test_dateITA( $("#f_date_debut").val() ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de début au format JJ/MM/AAAA incorrecte !");
+            return(false);
+          }
+          if( !test_dateITA( $("#f_date_fin").val() ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de fin au format JJ/MM/AAAA incorrecte !");
+            return(false);
+          }
+        }
+        $('button').prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE+'&action='+id,
+            data : 'csrf='+CSRF+'&'+$("form").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('button').prop('disabled',false);
+              if(responseHTML.substring(0,6)!='<hr />')
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                $('#bilan').html(responseHTML);
+                infobulle();
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// Initialisation : charger au chargement l'affichage du bilan
+    // Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Envoi en cours&hellip;");
-		$.ajax
-		(
-			{
-				type : 'POST',
-				url : 'ajax.php?page='+PAGE+'&action=initialiser',
-				data : 'csrf='+CSRF,
-				dataType : "html",
-				error : function(jqXHR, textStatus, errorThrown)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					return false;
-				},
-				success : function(responseHTML)
-				{
-					initialiser_compteur();
-					if(responseHTML.substring(0,6)!='<hr />')
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-					}
-					else
-					{
-						$('#ajax_msg').removeAttr("class").html("&nbsp;");
-						$('#bilan').html(responseHTML);
-						infobulle();
-					}
-				}
-			}
-		);
+    $('#ajax_msg').addClass("loader").html("En cours&hellip;");
+    $.ajax
+    (
+      {
+        type : 'POST',
+        url : 'ajax.php?page='+PAGE+'&action=initialiser',
+        data : 'csrf='+CSRF,
+        dataType : "html",
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+          $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          return false;
+        },
+        success : function(responseHTML)
+        {
+          initialiser_compteur();
+          if(responseHTML.substring(0,6)!='<hr />')
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+          }
+          else
+          {
+            $('#ajax_msg').removeAttr("class").html("&nbsp;");
+            $('#bilan').html(responseHTML);
+            infobulle();
+          }
+        }
+      }
+    );
 
-	}
+  }
 );

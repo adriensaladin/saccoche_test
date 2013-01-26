@@ -48,14 +48,14 @@ sort($tab_id);
 
 if( ($action=='recherche_matiere_famille') && $famille_id )
 {
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_famille($famille_id);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
-		$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-		echo'<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
-	}
-	exit();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_famille($famille_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
+    $title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
+    echo'<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+  }
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,21 +64,21 @@ if( ($action=='recherche_matiere_famille') && $famille_id )
 
 if( ($action=='recherche_matiere_motclef') && $motclef )
 {
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matiere_motclef($motclef);
-	if(!empty($DB_TAB))
-	{
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
-			$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-			echo'<li>['.round($DB_ROW['score']).'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
-		}
-	}
-	else
-	{
-		echo'<li class="i">Recherche infructueuse...</li>';
-	}
-	exit();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matiere_motclef($motclef);
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
+      $title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
+      echo'<li>['.round($DB_ROW['score']).'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+    }
+  }
+  else
+  {
+    echo'<li class="i">Recherche infructueuse...</li>';
+  }
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,8 +87,8 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
 
 if( ($action=='ajouter_partage') && $matiere_id )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($matiere_id,1);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($matiere_id,1);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,15 +97,15 @@ if( ($action=='ajouter_partage') && $matiere_id )
 
 if( ($action=='ajouter_perso') && $ref && $nom )
 {
-	// Vérifier que la référence de la matière est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref) )
-	{
-		exit('Erreur : référence déjà existante !');
-	}
-	// Insérer l'enregistrement
-	$id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
-	// Afficher le retour
-	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+  // Vérifier que la référence de la matière est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref) )
+  {
+    exit('Erreur : référence déjà existante !');
+  }
+  // Insérer l'enregistrement
+  $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
+  // Afficher le retour
+  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,15 +114,15 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 
 if( ($action=='modifier') && $id && $ref && $nom )
 {
-	// Vérifier que la référence de la matière est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref,$id) )
-	{
-		exit('Erreur : référence officielle déjà prise !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
-	// Afficher le retour
-	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+  // Vérifier que la référence de la matière est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref,$id) )
+  {
+    exit('Erreur : référence officielle déjà prise !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
+  // Afficher le retour
+  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,26 +131,26 @@ if( ($action=='modifier') && $id && $ref && $nom )
 
 function retirer_ou_supprimer_matiere($id)
 {
-	if($id>ID_MATIERE_PARTAGEE_MAX)
-	{
-		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
-		// Log de l'action
-		SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id.').');
-		SACocheLog::ajouter('Suppression de référentiels (matière '.$id.').');
-	}
-	else
-	{
-		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
-		// Log de l'action
-		SACocheLog::ajouter('Retrait d\'une matière partagée (n°'.$id.').');
-	}
+  if($id>ID_MATIERE_PARTAGEE_MAX)
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
+    // Log de l'action
+    SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id.').');
+    SACocheLog::ajouter('Suppression de référentiels (matière '.$id.').');
+  }
+  else
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
+    // Log de l'action
+    SACocheLog::ajouter('Retrait d\'une matière partagée (n°'.$id.').');
+  }
 }
 
 if( ($action=='supprimer') && $id )
 {
-	retirer_ou_supprimer_matiere($id);
-	// Afficher le retour
-	exit(']¤['.$id);
+  retirer_ou_supprimer_matiere($id);
+  // Afficher le retour
+  exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,18 +159,18 @@ if( ($action=='supprimer') && $id )
 
 if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=$id_apres) )
 {
-	// Déplacement après vérification que c'est possible matière de destination vierge de données)
-	// 
-	$is_ok = DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
-	if(!$is_ok)
-	{
-		exit('Erreur : la nouvelle matière contient déjà des données !');
-	}
-	// Log de l'action
-	SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
-	// Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
-	retirer_ou_supprimer_matiere($id_avant);
-	exit('ok');
+  // Déplacement après vérification que c'est possible matière de destination vierge de données)
+  // 
+  $is_ok = DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+  if(!$is_ok)
+  {
+    exit('Erreur : la nouvelle matière contient déjà des données !');
+  }
+  // Log de l'action
+  SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
+  // Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
+  retirer_ou_supprimer_matiere($id_avant);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

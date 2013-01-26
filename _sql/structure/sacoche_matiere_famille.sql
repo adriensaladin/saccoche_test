@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS sacoche_matiere_famille;
 
 CREATE TABLE sacoche_matiere_famille (
-	matiere_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-	matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques",
-	matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	PRIMARY KEY (matiere_famille_id)
+  matiere_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+  matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques",
+  matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  PRIMARY KEY (matiere_famille_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_matiere_famille DISABLE KEYS;

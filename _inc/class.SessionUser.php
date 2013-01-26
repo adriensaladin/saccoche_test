@@ -92,13 +92,13 @@ class SessionUser
       switch($mode_connection)
       {
         case 'normal' : $message = 'Nom d\'utilisateur incorrect !'; break;
-        case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;ENT] de la ligne correspondant à votre compte.'; break;
-        case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;Gepi] de la ligne correspondant à votre compte.'; break;
+        case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
+        case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
       }
       return array($message,array());
     }
     // Blocage éventuel par le webmestre ou un administrateur ou l'automate
-    LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil'] );
+    LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil_sigle'] );
     // Si tentatives trop rapprochées...
     if($DB_ROW['user_tentative_date']!==NULL) // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
     {
@@ -125,7 +125,7 @@ class SessionUser
       return array('Identification réussie mais ce compte est desactivé !',array());
     }
     // Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
-    if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+    if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_sigle'],array('webmestre','administrateur')) )
     {
       DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
     }
@@ -147,18 +147,22 @@ class SessionUser
   {
     // Numéro de la base
     $_SESSION['BASE']                          = 0;
-    // Données associées à l'utilisateur.
-    $_SESSION['USER_PROFIL']                   = 'webmestre';
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']             = 'WBM';
+    $_SESSION['USER_PROFIL_TYPE']              = 'webmestre';
+    $_SESSION['USER_PROFIL_NOM_COURT']         = 'webmestre';
+    $_SESSION['USER_PROFIL_NOM_LONG']          = 'responsable du serveur (webmestre)';
+    $_SESSION['USER_MDP_LONGUEUR_MINI']        = 6;
+    $_SESSION['USER_DUREE_INACTIVITE']         = 15;
+    // Données personnelles de l'utilisateur.
     $_SESSION['USER_ID']                       = 0;
     $_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
     $_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
-    $_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+    $_SESSION['USER_DESCR']                    = '['.$_SESSION['USER_PROFIL_NOM_COURT'].'] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;
     $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
-    $_SESSION['MODE_CONNEXION']                = 'normal';
-    $_SESSION['DUREE_INACTIVITE']              = 15;
-    $_SESSION['MDP_LONGUEUR_MINI']             = 6;
+    $_SESSION['CONNEXION_MODE']                = 'normal';
   }
 
   /**
@@ -172,44 +176,78 @@ class SessionUser
   {
     // On en profite pour effacer les fichiers inutiles
     FileSystem::nettoyer_fichiers_temporaires($BASE);
-    // Enregistrer en session le numéro de la base
-    $_SESSION['BASE']               = $BASE;
-    // Enregistrer en session les données associées à l'utilisateur (indices du tableau de session en majuscules).
-    $_SESSION['USER_PROFIL']        = $DB_ROW['user_profil'];
-    $_SESSION['USER_ID']            = (int) $DB_ROW['user_id'];
-    $_SESSION['USER_NOM']           = $DB_ROW['user_nom'];
-    $_SESSION['USER_PRENOM']        = $DB_ROW['user_prenom'];
-    $_SESSION['USER_LOGIN']         = $DB_ROW['user_login'];
-    $_SESSION['USER_DESCR']         = '['.$DB_ROW['user_profil'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
-    $_SESSION['USER_DALTONISME']    = $DB_ROW['user_daltonisme'];
-    $_SESSION['USER_ID_ENT']        = $DB_ROW['user_id_ent'];
-    $_SESSION['USER_ID_GEPI']       = $DB_ROW['user_id_gepi'];
-    $_SESSION['USER_PARAM_ACCUEIL'] = $DB_ROW['user_param_accueil'];
-    $_SESSION['ELEVE_CLASSE_ID']    = (int) $DB_ROW['eleve_classe_id'];
-    $_SESSION['ELEVE_CLASSE_NOM']   = $DB_ROW['groupe_nom'];
-    $_SESSION['ELEVE_LANGUE']       = (int) $DB_ROW['eleve_langue'];
-    $_SESSION['DELAI_CONNEXION']    = (int) $DB_ROW['delai_connexion_secondes']; // Vaut (int)NULL = 0 à la 1e connexion, mais dans ce cas $_SESSION['FIRST_CONNEXION'] est testé avant.
-    $_SESSION['FIRST_CONNEXION']    = ($DB_ROW['user_connexion_date']===NULL) ? TRUE : FALSE ;
-    if( ($DB_ROW['user_connexion_date']===NULL) && !in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+    // Enregistrer en session le numéro de la base.
+    $_SESSION['BASE']                   = $BASE;
+    // Enregistrer en session les données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']      = $DB_ROW['user_profil_sigle'];
+    $_SESSION['USER_PROFIL_TYPE']       = $DB_ROW['user_profil_type'];
+    $_SESSION['USER_PROFIL_NOM_COURT']  = $DB_ROW['user_profil_nom_court_singulier'];
+    $_SESSION['USER_PROFIL_NOM_LONG']   = $DB_ROW['user_profil_nom_long_singulier'];
+    $_SESSION['USER_JOIN_GROUPES']      = $DB_ROW['user_profil_join_groupes'];   // Seuls les enseignants sont rattachés à des classes et groupes définis ; les autres le sont à tout l'établissement.
+    $_SESSION['USER_JOIN_MATIERES']     = $DB_ROW['user_profil_join_matieres'] ; // Seuls les directeurs sont rattachés à toutes les matières ; les autres le sont à des matières définies.
+    $_SESSION['USER_MDP_LONGUEUR_MINI'] = (int) $DB_ROW['user_profil_mdp_longueur_mini'];
+    $_SESSION['USER_DUREE_INACTIVITE']  = (int) $DB_ROW['user_profil_duree_inactivite'];
+    // Enregistrer en session les données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']                = (int) $DB_ROW['user_id'];
+    $_SESSION['USER_NOM']               = $DB_ROW['user_nom'];
+    $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];
+    $_SESSION['USER_LOGIN']             = $DB_ROW['user_login'];
+    $_SESSION['USER_DESCR']             = '['.$_SESSION['USER_PROFIL_NOM_COURT'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
+    $_SESSION['USER_DALTONISME']        = $DB_ROW['user_daltonisme'];
+    $_SESSION['USER_ID_ENT']            = $DB_ROW['user_id_ent'];
+    $_SESSION['USER_ID_GEPI']           = $DB_ROW['user_id_gepi'];
+    $_SESSION['USER_PARAM_ACCUEIL']     = $DB_ROW['user_param_accueil'];
+    $_SESSION['ELEVE_CLASSE_ID']        = (int) $DB_ROW['eleve_classe_id'];
+    $_SESSION['ELEVE_CLASSE_NOM']       = $DB_ROW['groupe_nom'];
+    $_SESSION['ELEVE_LANGUE']           = (int) $DB_ROW['eleve_langue'];
+    $_SESSION['DELAI_CONNEXION']        = (int) $DB_ROW['delai_connexion_secondes']; // Vaut (int)NULL = 0 à la 1e connexion, mais dans ce cas $_SESSION['FIRST_CONNEXION'] est testé avant.
+    $_SESSION['FIRST_CONNEXION']        = ($DB_ROW['user_connexion_date']===NULL) ? TRUE : FALSE ;
+    if( ($DB_ROW['user_connexion_date']===NULL) && !in_array($DB_ROW['user_profil_sigle'],array('webmestre','administrateur')) )
     {
       $_SESSION['STOP_CNIL'] = TRUE;
     }
     // Récupérer et Enregistrer en session les données des élèves associées à un responsable légal.
-    if($_SESSION['USER_PROFIL']=='parent')
+    if($_SESSION['USER_PROFIL_SIGLE']=='TUT')
     {
-      $_SESSION['OPT_PARENT_ENFANTS'] = DB_STRUCTURE_COMMUN::DB_OPT_enfants_parent($_SESSION['USER_ID']);
-      $_SESSION['OPT_PARENT_CLASSES'] = DB_STRUCTURE_COMMUN::DB_OPT_classes_parent($_SESSION['USER_ID']);
+      $_SESSION['OPT_PARENT_ENFANTS']   = DB_STRUCTURE_COMMUN::DB_OPT_enfants_parent($_SESSION['USER_ID']);
+      $_SESSION['OPT_PARENT_CLASSES']   = DB_STRUCTURE_COMMUN::DB_OPT_classes_parent($_SESSION['USER_ID']);
       $_SESSION['NB_ENFANTS'] = (is_array($_SESSION['OPT_PARENT_ENFANTS'])) ? count($_SESSION['OPT_PARENT_ENFANTS']) : 0 ;
       if( ($_SESSION['NB_ENFANTS']==1) && (is_array($_SESSION['OPT_PARENT_CLASSES'])) )
       {
-        $_SESSION['ELEVE_CLASSE_ID']  = (int) $_SESSION['OPT_PARENT_CLASSES'][0]['valeur'];
-        $_SESSION['ELEVE_CLASSE_NOM'] = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
+        $_SESSION['ELEVE_CLASSE_ID']    = (int) $_SESSION['OPT_PARENT_CLASSES'][0]['valeur'];
+        $_SESSION['ELEVE_CLASSE_NOM']   = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
+      }
+    }
+    // Récupérer et Enregistrer en session les données associées aux profils utilisateurs d'un établissement, activés ou non.
+    if($_SESSION['USER_PROFIL_SIGLE']=='ADM')
+    {
+      $_SESSION['TAB_PROFILS_ADMIN'] = array( 'TYPE'=>array() , 'LOGIN_MODELE'=>array() , 'MDP_LONGUEUR_MINI'=>array() , 'DUREE_INACTIVITE'=>array() );
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_login_modele,user_profil_mdp_longueur_mini,user_profil_duree_inactivite' /*listing_champs*/ , FALSE /*only_actif*/ );
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $_SESSION['TAB_PROFILS_ADMIN']['TYPE']             [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_type'];
+        $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']     [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_login_modele'];
+        $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_mdp_longueur_mini'];
+        $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'] [$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_duree_inactivite'];
+      }
+    }
+    // Récupérer et Enregistrer en session les noms des profils utilisateurs d'un établissement (activés) pour afficher les droits de certaines pages.
+    else
+    {
+      $_SESSION['TAB_PROFILS_DROIT'] = array( 'TYPE'=>array() , 'JOIN_GROUPES'=>array() , 'JOIN_MATIERES'=>array() , 'NOM_LONG_PLURIEL'=>array() );
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_long_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $_SESSION['TAB_PROFILS_DROIT']['TYPE']            [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_type'];
+        $_SESSION['TAB_PROFILS_DROIT']['JOIN_GROUPES']    [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_join_groupes'];
+        $_SESSION['TAB_PROFILS_DROIT']['JOIN_MATIERES']   [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_join_matieres'];
+        $_SESSION['TAB_PROFILS_DROIT']['NOM_LONG_PLURIEL'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_pluriel'];
       }
     }
     // Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
     $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
     $tab_type_entier  = array(
-      'SESAMATH_ID','MOIS_BASCULE_ANNEE_SCOLAIRE','MDP_LONGUEUR_MINI','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE',
+      'SESAMATH_ID','MOIS_BASCULE_ANNEE_SCOLAIRE','DROIT_ELEVE_DEMANDES',
       'CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE',
       'CAS_SERVEUR_PORT',
       'ENVELOPPE_HORIZONTAL_GAUCHE','ENVELOPPE_HORIZONTAL_MILIEU','ENVELOPPE_HORIZONTAL_DROITE',

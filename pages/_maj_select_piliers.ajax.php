@@ -35,7 +35,7 @@ $option_first = (isset($_POST['f_first']))  ? Clean::texte($_POST['f_first'])   
 
 if( (!$palier) || (!in_array($option_first,array('oui','val','non'))) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 $selection = ($option_first=='non') ? TRUE : FALSE ;

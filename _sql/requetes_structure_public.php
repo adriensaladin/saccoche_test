@@ -42,21 +42,22 @@ class DB_STRUCTURE_PUBLIC extends DB
  */
 public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
 {
-	switch($mode_connection)
-	{
-		case 'normal' : $champ = 'user_login';   break;
-		case 'cas'    : $champ = 'user_id_ent';  break;
-		case 'gepi'   : $champ = 'user_id_gepi'; break;
-	}
-	$DB_SQL = 'SELECT sacoche_user.*, sacoche_groupe.groupe_nom, ';
-	$DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
-	$DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
-	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-	$DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
-	// LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
-	$DB_VAR = array(':identifiant'=>$login);
-	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  switch($mode_connection)
+  {
+    case 'normal' : $champ = 'user_login';   break;
+    case 'cas'    : $champ = 'user_id_ent';  break;
+    case 'gepi'   : $champ = 'user_id_gepi'; break;
+  }
+  $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, ';
+  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
+  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+  $DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
+  // LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
+  $DB_VAR = array(':identifiant'=>$login);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -67,11 +68,11 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
  */
 public static function DB_version_base()
 {
-	$DB_SQL = 'SELECT parametre_valeur ';
-	$DB_SQL.= 'FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
-	$DB_VAR = array(':parametre_nom'=>'version_base');
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT parametre_valeur ';
+  $DB_SQL.= 'FROM sacoche_parametre ';
+  $DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
+  $DB_VAR = array(':parametre_nom'=>'version_base');
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -82,11 +83,11 @@ public static function DB_version_base()
  */
 public static function DB_lister_parametres($listing_param='')
 {
-	$DB_SQL = 'SELECT parametre_nom, parametre_valeur ';
-	$DB_SQL.= 'FROM sacoche_parametre ';
-	$DB_SQL.= ($listing_param) ? 'WHERE parametre_nom IN('.$listing_param.') ' : '' ;
-	// Pas de queryRow prévu car toujours au moins 2 paramètres demandés jusqu'à maintenant.
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT parametre_nom, parametre_valeur ';
+  $DB_SQL.= 'FROM sacoche_parametre ';
+  $DB_SQL.= ($listing_param) ? 'WHERE parametre_nom IN('.$listing_param.') ' : '' ;
+  // Pas de queryRow prévu car toujours au moins 2 paramètres demandés jusqu'à maintenant.
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -98,11 +99,11 @@ public static function DB_lister_parametres($listing_param='')
  */
 public static function DB_enregistrer_date($champ,$user_id)
 {
-	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'UPDATE sacoche_user ';
+  $DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';
+  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_VAR = array(':user_id'=>$user_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

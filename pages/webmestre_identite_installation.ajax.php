@@ -48,19 +48,19 @@ $tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 
 if($action=='select_logo')
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
-	$options_logo = '';
-	foreach($tab_files as $file)
-	{
-		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
-		if(in_array($extension,$tab_ext_images))
-		{
-			$selected = ($file==HEBERGEUR_LOGO) ? ' selected' : '' ;
-			$options_logo .= '<option value="'.html($file).'"'.$selected.'>'.html($file).'</option>';
-		}
-	}
-	$options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
-	exit($options_logo);
+  $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
+  $options_logo = '';
+  foreach($tab_files as $file)
+  {
+    $extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+    if(in_array($extension,$tab_ext_images))
+    {
+      $selected = ($file==HEBERGEUR_LOGO) ? ' selected' : '' ;
+      $options_logo .= '<option value="'.html($file).'"'.$selected.'>'.html($file).'</option>';
+    }
+  }
+  $options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
+  exit($options_logo);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,18 +69,18 @@ if($action=='select_logo')
 
 if($action=='listing_logos')
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
-	$li_logos = '';
-	foreach($tab_files as $file)
-	{
-		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
-		if(in_array($extension,$tab_ext_images))
-		{
-			$li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.URL_DIR_LOGO.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
-		}
-	}
-	$li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';
-	exit($li_logos);
+  $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
+  $li_logos = '';
+  foreach($tab_files as $file)
+  {
+    $extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+    if(in_array($extension,$tab_ext_images))
+    {
+      $li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.URL_DIR_LOGO.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
+    }
+  }
+  $li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';
+  exit($li_logos);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,27 +89,27 @@ if($action=='listing_logos')
 
 if($action=='upload_logo')
 {
-	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_LOGO /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-	if($result!==TRUE)
-	{
-		exit('Erreur : '.$result);
-	}
-	// vérifier la conformité du fichier image, récupérer les infos le concernant
-	$tab_infos = @getimagesize(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
-	if($tab_infos==FALSE)
-	{
-		unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
-		exit('Erreur : le fichier image ne semble pas valide !');
-	}
-	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
-	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
-	// vérifier le type 
-	if(!isset($tab_extension_types[$image_type]))
-	{
-		unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
-		exit('Erreur : le fichier transmis n\'est pas un fichier image !');
-	}
-	exit('ok');
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_LOGO /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  if($result!==TRUE)
+  {
+    exit('Erreur : '.$result);
+  }
+  // vérifier la conformité du fichier image, récupérer les infos le concernant
+  $tab_infos = @getimagesize(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+  if($tab_infos==FALSE)
+  {
+    unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+    exit('Erreur : le fichier image ne semble pas valide !');
+  }
+  list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
+  $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
+  // vérifier le type 
+  if(!isset($tab_extension_types[$image_type]))
+  {
+    unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+    exit('Erreur : le fichier transmis n\'est pas un fichier image !');
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,13 +118,13 @@ if($action=='upload_logo')
 
 if( ($action=='delete_logo') && $logo )
 {
-	unlink(CHEMIN_DOSSIER_LOGO.$logo);
-	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
-	if($logo==HEBERGEUR_LOGO)
-	{
-		FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
-	}
-	exit('ok');
+  unlink(CHEMIN_DOSSIER_LOGO.$logo);
+  // Si on supprime l'image actuellement utilisée, alors la retirer du fichier
+  if($logo==HEBERGEUR_LOGO)
+  {
+    FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,27 +133,27 @@ if( ($action=='delete_logo') && $logo )
 
 if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
-	// On ne vérifie pas le domaine du serveur mail car ce peut être une installation sur un serveur local non ouvert sur l'extérieur, ou dont le proxy n'a pas encore été configuré.
-	/*
-	$mail_domaine = tester_domaine_courriel_valide($courriel);
-	if($mail_domaine!==TRUE)
-	{
-		exit('Erreur avec le domaine '.$mail_domaine.' !');
-	}
-	*/
-	FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
-	if(HEBERGEUR_INSTALLATION=='mono-structure')
-	{
-		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)
-		$tab_parametres = array();
-		$tab_parametres['webmestre_uai']          = $uai;
-		$tab_parametres['webmestre_denomination'] = $denomination;
-		DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	}
-	// On modifie aussi la session
-	$_SESSION['USER_NOM']     = $nom ;
-	$_SESSION['USER_PRENOM']  = $prenom ;
-	exit('ok');
+  // On ne vérifie pas le domaine du serveur mail car ce peut être une installation sur un serveur local non ouvert sur l'extérieur, ou dont le proxy n'a pas encore été configuré.
+  /*
+  $mail_domaine = tester_domaine_courriel_valide($courriel);
+  if($mail_domaine!==TRUE)
+  {
+    exit('Erreur avec le domaine '.$mail_domaine.' !');
+  }
+  */
+  FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
+  if(HEBERGEUR_INSTALLATION=='mono-structure')
+  {
+    // Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)
+    $tab_parametres = array();
+    $tab_parametres['webmestre_uai']          = $uai;
+    $tab_parametres['webmestre_denomination'] = $denomination;
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  }
+  // On modifie aussi la session
+  $_SESSION['USER_NOM']     = $nom ;
+  $_SESSION['USER_PRENOM']  = $prenom ;
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

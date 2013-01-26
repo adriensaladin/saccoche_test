@@ -45,10 +45,10 @@ $findme      = (isset($_POST['findme']))      ? Clean::texte($_POST['findme'])  
 
 if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
 {
-	// $matiere_ref trasmis maintenant car pas possible lors du AjaxUpload (moment où on en a besoin) ; du coup on le garde au chaud
-	$_SESSION['tmp']['matiere_ref'] = $matiere_ref;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
-	exit( Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
+  // $matiere_ref trasmis maintenant car pas possible lors du AjaxUpload (moment où on en a besoin) ; du coup on le garde au chaud
+  $_SESSION['tmp']['matiere_ref'] = $matiere_ref;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
+  exit( Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,8 +57,8 @@ if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
 
 if( ($action=='Enregistrer_lien') && $item_id )
 {
-	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($item_id,$item_lien);
-	exit('ok');
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($item_id,$item_lien);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ if( ($action=='Enregistrer_lien') && $item_id )
 
 if( ($action=='Charger_ressources') && $item_id )
 {
-	exit( ServeurCommunautaire::afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_lien) );
+  exit( ServeurCommunautaire::afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_lien) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,21 +76,21 @@ if( ($action=='Charger_ressources') && $item_id )
 
 if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($objet,array('page_create','page_update')) && $ressources )
 {
-	$tab_elements = array();
-	$tab_ressources = explode('}¤{',$ressources);
-	foreach($tab_ressources as $ressource)
-	{
-		if(strpos($ressource,']¤['))
-		{
-			list($lien_nom,$lien_url) = explode(']¤[',$ressource);
-			$tab_elements[] = array( $lien_nom => $lien_url );
-		}
-		else
-		{
-			$tab_elements[] = $ressource;
-		}
-	}
-	exit( ServeurCommunautaire::fabriquer_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_nom,$objet,serialize($tab_elements)) );
+  $tab_elements = array();
+  $tab_ressources = explode('}¤{',$ressources);
+  foreach($tab_ressources as $ressource)
+  {
+    if(strpos($ressource,']¤['))
+    {
+      list($lien_nom,$lien_url) = explode(']¤[',$ressource);
+      $tab_elements[] = array( $lien_nom => $lien_url );
+    }
+    else
+    {
+      $tab_elements[] = $ressource;
+    }
+  }
+  exit( ServeurCommunautaire::fabriquer_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_nom,$objet,serialize($tab_elements)) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
 
 if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 {
-	exit( ServeurCommunautaire::rechercher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
+  exit( ServeurCommunautaire::rechercher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 
 if($action=='Rechercher_documents')
 {
-	exit( ServeurCommunautaire::rechercher_documents($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
+  exit( ServeurCommunautaire::rechercher_documents($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,15 +125,15 @@ Ca va qu'une limite de 500Ko est imposée...
 
 if($action=='Uploader_document')
 {
-	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-	if($result!==TRUE)
-	{
-		exit($result);
-	}
-	$fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
-	$reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
-	unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-	exit($reponse);
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  if($result!==TRUE)
+  {
+    exit($result);
+  }
+  $fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
+  $reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
+  unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  exit($reponse);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

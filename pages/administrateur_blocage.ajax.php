@@ -37,16 +37,16 @@ $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
 if($action=='debloquer')
 {
-	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE']);
-	exit('<label class="valide">Application accessible.</label>');
+  LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$_SESSION['BASE']);
+  exit('<label class="valide">Application accessible.</label>');
 }
 elseif($action=='bloquer')
 {
-	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
+  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$_SESSION['BASE'],$motif);
+  exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
 else
 {
-	echo'Erreur avec les données transmises !';
+  echo'Erreur avec les données transmises !';
 }
 ?>

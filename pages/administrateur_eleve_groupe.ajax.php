@@ -38,25 +38,25 @@ $tab_select_groupes = array_filter( Clean::map_entier($tab_select_groupes) , 'po
 // Ajouter des élèves à des groupes
 if($action=='ajouter')
 {
-	foreach($tab_select_eleves as $user_id)
-	{
-		foreach($tab_select_groupes as $groupe_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
-		}
-	}
+  foreach($tab_select_eleves as $user_id)
+  {
+    foreach($tab_select_groupes as $groupe_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
+    }
+  }
 }
 
 // Retirer des élèves à des groupes
 elseif($action=='retirer')
 {
-	foreach($tab_select_eleves as $user_id)
-	{
-		foreach($tab_select_groupes as $groupe_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
-		}
-	}
+  foreach($tab_select_eleves as $user_id)
+  {
+    foreach($tab_select_groupes as $groupe_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
+    }
+  }
 }
 
 // Affichage du bilan des affectations des élèves dans les groupes ; en deux requêtes pour récupérer les élèves sans groupes et les groupes sans élèves
@@ -66,14 +66,14 @@ $tab_user          = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
-	$tab_user[$DB_ROW['groupe_id']] = '';
+  $tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
+  $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / groupes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe( TRUE /*profil_eleve*/ , TRUE /*only_actuels*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe( 'eleve' /*profil_type*/ , TRUE /*only_actuels*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_user[$DB_ROW['groupe_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  $tab_user[$DB_ROW['groupe_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();
@@ -81,25 +81,25 @@ $TB = array();
 $TF = array();
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
-	$TH[$niveau_id] = '';
-	$TB[$niveau_id] = '';
-	$TF[$niveau_id] = '';
-	foreach($tab_groupe as $groupe_id => $groupe_nom)
-	{
-		$nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
-		$s = ($nb>1) ? 's' : '' ;
-		$TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
-		$TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';
-		$TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
-	}
+  $TH[$niveau_id] = '';
+  $TB[$niveau_id] = '';
+  $TF[$niveau_id] = '';
+  foreach($tab_groupe as $groupe_id => $groupe_nom)
+  {
+    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
+    $s = ($nb>1) ? 's' : '' ;
+    $TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
+    $TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';
+    $TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
+  }
 }
 echo'<hr />';
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
-	echo'<table class="affectation">';
-	echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-	echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-	echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-	echo'</table>';
+  echo'<table class="affectation">';
+  echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
+  echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
+  echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
+  echo'</table>';
 }
 ?>

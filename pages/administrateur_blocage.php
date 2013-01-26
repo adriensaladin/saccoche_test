@@ -32,11 +32,11 @@ $TITRE = "Blocage des connexions";
 $blocage_msg = LockAcces::tester_blocage('administrateur',$_SESSION['BASE']);
 if($blocage_msg!==NULL)
 {
-	$label = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
+  $label = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
 }
 else
 {
-	$label = '<label class="valide">Application accessible.</label>';
+  $label = '<label class="valide">Application accessible.</label>';
 }
 ?>
 
@@ -53,16 +53,16 @@ else
 <h2>Demande de modification</h2>
 
 <form action="#" method="post" id="form"><fieldset>
-	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
-	<span id="span_motif" class="hide">
-		<label class="tab" for="f_motif">Motif :</label>
-			<select id="f_proposition" name="f_proposition">
-				<option value="rien" selected>autre motif</option>
-				<option value="demenagement">déménagement</option>
-			</select>
-			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />
-	</span>
-	<p><label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label></p>
-	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label></p>
+  <label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
+  <span id="span_motif" class="hide">
+    <label class="tab" for="f_motif">Motif :</label>
+      <select id="f_proposition" name="f_proposition">
+        <option value="rien" selected>autre motif</option>
+        <option value="demenagement">déménagement</option>
+      </select>
+      <input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />
+  </span>
+  <p><label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label></p>
+  <p><span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 

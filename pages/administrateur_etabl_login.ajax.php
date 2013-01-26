@@ -28,70 +28,51 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['action'])) ? Clean::texte($_POST['action']) : '';
+$profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
+$login  = (isset($_POST['f_login']))  ? Clean::texte($_POST['f_login'])  : '' ;
+$mdp    = (isset($_POST['f_mdp']))    ? Clean::entier($_POST['f_mdp'])   : 0  ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Format des noms d'utilisateurs
+// Choix d'un format de noms d'utilisateurs et/ou de la longueur minimale d'un mot de passe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='login')
+if($profil && $login && $mdp)
 {
-	$tab_profils    = array('directeur','professeur','eleve','parent');
-	$tab_parametres = array();
-	foreach($tab_profils as $profil)
-	{
-		// Récupération du champ
-		$champ = 'f_login_'.$profil;
-		${$champ} = (isset($_POST[$champ])) ? Clean::texte($_POST[$champ]) : '' ;
-		if(!${$champ})
-		{
-			exit('Profil '.$profil.' non transmis !');
-		}
-		// Test du format du champ
-		$test_profil_1 = (preg_match("#^p+[._-]?n+$#", ${$champ})) ? TRUE : FALSE ; // prénom puis nom
-		$test_profil_2 = (preg_match("#^n+[._-]?p+$#", ${$champ})) ? TRUE : FALSE ; // nom puis prénom
-		$test_profil_3 = (preg_match("#^p+$#", ${$champ})) ? TRUE : FALSE ; // prénom seul
-		$test_profil_4 = (preg_match("#^n+$#", ${$champ})) ? TRUE : FALSE ; // nom seul
-		if( !$test_profil_1 && !$test_profil_2 && !$test_profil_3 && !$test_profil_4 )
-		{
-			exit('Profil '.$profil.' mal formaté !');
-		}
-		$tab_parametres['modele_'.$profil] = ${$champ};
-	}
-	// Mettre à jour les paramètres dans la base
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	// Mettre aussi à jour la session
-	foreach($tab_parametres as $modele => $format)
-	{
-		$_SESSION[strtoupper($modele)] = $format;
-	}
-	exit('ok');
+  if( ($profil!='ALL') && !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
+  {
+    exit('Profil incorrect !');
+  }
+  if( ($mdp<4) || ($mdp>8) )
+  {
+    exit('Longueur du mot de passe incorrecte !');
+  }
+  $test_profil_1 = (preg_match("#^p+[._-]?n+$#", $login)) ? TRUE : FALSE ; // prénom puis nom
+  $test_profil_2 = (preg_match("#^n+[._-]?p+$#", $login)) ? TRUE : FALSE ; // nom puis prénom
+  $test_profil_3 = (preg_match("#^p+$#", $login)) ? TRUE : FALSE ; // prénom seul
+  $test_profil_4 = (preg_match("#^n+$#", $login)) ? TRUE : FALSE ; // nom seul
+  if( !$test_profil_1 && !$test_profil_2 && !$test_profil_3 && !$test_profil_4 )
+  {
+    exit('Modèle de nom d\'utilisateur incorrect !');
+  }
+  // Mettre à jour les paramètres dans la base
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_login_modele'    , $login );
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_mdp_longueur_mini' , $mdp );
+  // Mettre aussi à jour la session
+  if($profil=='ALL')
+  {
+    $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      = array_fill_keys ( $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      , $login );
+    $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] = array_fill_keys ( $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] , $mdp );
+  }
+  else
+  {
+    $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'][$profil]      = $login;
+    $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$profil] = $mdp;
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Longueur minimale d'un mot de passe
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='mdp_mini')
-{
-	$mdp_longueur_mini = (isset($_POST['f_mdp_mini'])) ? Clean::entier($_POST['f_mdp_mini']) : 0 ;
-	if(!$mdp_longueur_mini)
-	{
-		exit('Valeur non transmise !');
-	}
-	if( ($mdp_longueur_mini<4) || ($mdp_longueur_mini>8) )
-	{
-		exit('Valeur transmise incorrecte !');
-	}
-	// Mettre à jour le paramètre dans la base
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('mdp_longueur_mini'=>$mdp_longueur_mini) );
-	// Mettre aussi à jour la session
-	$_SESSION['MDP_LONGUEUR_MINI'] = $mdp_longueur_mini;
-	exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

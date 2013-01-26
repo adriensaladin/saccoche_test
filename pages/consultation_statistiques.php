@@ -30,33 +30,33 @@ $TITRE = "Nombre de saisies";
 ?>
 
 <table id="bilan" class="hsort">
-	<thead>
-		<tr>
-			<th>Professeur</th>
-			<th>Classe</th>
-			<th>Saisies</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php
-		$DB_TAB = DB_STRUCTURE_DIRECTEUR::DB_compter_saisies_prof_classe();
-		if(!empty($DB_TAB))
-		{
-			foreach($DB_TAB as $DB_ROW)
-			{
-				// Afficher une ligne du tableau
-				echo'<tr>';
-				echo	'<td>'.html($DB_ROW['professeur']).'</td>';
-				echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
-				echo	'<td class="hc">'.$DB_ROW['nombre'].'</td>';
-				echo'</tr>';
-			}
-		}
-		else
-		{
-			echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>';
-		}
-		?>
-	</tbody>
+  <thead>
+    <tr>
+      <th>Professeur</th>
+      <th>Classe</th>
+      <th>Saisies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    $DB_TAB = DB_STRUCTURE_DIRECTEUR::DB_compter_saisies_prof_classe();
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        // Afficher une ligne du tableau
+        echo'<tr>';
+        echo  '<td>'.html($DB_ROW['professeur']).'</td>';
+        echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
+        echo  '<td class="hc">'.$DB_ROW['nombre'].'</td>';
+        echo'</tr>';
+      }
+    }
+    else
+    {
+      echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>';
+    }
+    ?>
+  </tbody>
 </table>
 

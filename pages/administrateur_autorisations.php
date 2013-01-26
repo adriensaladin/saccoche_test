@@ -28,117 +28,176 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglage des autorisations";
 
-$tab_titres  = array();
-$tab_profils = array();
-$tab_objets  = array();
-// 0
-$tab_titres[]  = 'Validations du socle';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_validation_entree'=>'valider des items du socle' , 'droit_validation_pilier'=>'valider des compétences du socle' , 'droit_annulation_pilier'=>'annuler des validations de compétences' );
-// 1
-$tab_titres[]  = 'Gestion des référentiels de l\'établissement';
-$tab_profils[] = array( 'professeur'=>'tous les<br />professeurs' , 'profcoordonnateur'=>'professeurs<br />coordonnateurs' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_gerer_referentiel'=>'créer / modifier / paramétrer les référentiels' , 'droit_gerer_ressource'=>'associer des ressources aux items' );
-// 2
-$tab_titres[]  = 'Consultation des référentiels de l\'établissement';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_voir_referentiels'=>'visualiser les référentiels' , 'droit_voir_grilles_items'=>'accéder aux grilles d\'items' );
-// 3
-$tab_titres[]  = 'Score d\'un item &amp; état d\'acquisition';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_voir_score_bilan'=>'voir les scores des items (bilans)' , 'droit_voir_algorithme'=>' voir et simuler l\'algorithme de calcul' );
-// 4
-$tab_titres[]  = 'Mot de passe';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_modifier_mdp'=>'modifier son mot de passe' );
-// 5
-$tab_titres[]  = 'Relevé d\'items (matière ou pluridisciplinaire)';
-$tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_releve_etat_acquisition'=>'afficher la colonne avec les états d\'acquisitions' , 'droit_releve_moyenne_score'=>'afficher la ligne avec la moyenne des scores d\'acquisitions' , 'droit_releve_pourcentage_acquis'=>'afficher la ligne avec le pourcentage d\'items acquis' , 'droit_releve_conversion_sur_20'=>'ajouter la conversion en note sur 20' );
-// 6
-$tab_titres[]  = 'Relevé de maîtrise du socle';
-$tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_socle_acces'=>'accéder au relevé avec les items évalués par item du socle' , 'droit_socle_pourcentage_acquis'=>'afficher les pourcentages d\'items acquis' , 'droit_socle_etat_validation'=>'afficher les états de validation saisis' );
-// 7
-$tab_titres[]  = 'Bilans officiels &rarr; Relevé d\'évaluations';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_releve_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_releve_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_releve_impression_pdf'=>'générer la version PDF imprimable' );
-// 8
-$tab_titres[]  = 'Bilans officiels &rarr; Bulletin scolaire';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_bulletin_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_bulletin_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_bulletin_impression_pdf'=>'générer la version PDF imprimable' );
-// 9
-$tab_titres[]  = 'Bilans officiels &rarr; État de maîtrise du socle';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_socle_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_socle_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_socle_impression_pdf'=>'générer la version PDF imprimable' );
-// 10
-$tab_titres[]  = 'Consultation des bilans officiels finalisés';
-$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_officiel_releve_voir_archive'=>'accéder aux copies des relevés d\'évaluations' , 'droit_officiel_bulletin_voir_archive'=>'accéder aux copies des bulletins scolaires' , 'droit_officiel_socle_voir_archive'=>'accéder aux copies des états de maîtrise du socle' );
+// Tableau avec les noms des profils activés dans l'établissement
+$tab_profils_libelles = array();
+$tab_profil_join_groupes  = array();
+$tab_profil_join_matieres = array();
+$tab_profil_join_groupes_js  = 'var tab_profil_join_groupes = new Array();';
+$tab_profil_join_matieres_js = 'var tab_profil_join_matieres = new Array();';
 
-// Indiquer les boutons devant être décochés lors d'une initialisation aux valeurs par défaut
-$tab_false = array(
-	'droit_validation_entree__profprincipal','droit_validation_entree__aucunprof',
-	'droit_validation_pilier__professeur','droit_validation_pilier__aucunprof',
-	'droit_annulation_pilier__professeur','droit_annulation_pilier__profprincipal',
-	'droit_gerer_referentiel__professeur','droit_gerer_referentiel__aucunprof',
-	'droit_gerer_ressource__profcoordonnateur','droit_gerer_ressource__aucunprof',
-	'droit_releve_conversion_sur_20__parent','droit_releve_conversion_sur_20__eleve',
-	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve',
-	'droit_officiel_releve_modifier_statut__professeur','droit_officiel_releve_modifier_statut__profprincipal',
-	'droit_officiel_releve_appreciation_generale__professeur','droit_officiel_releve_appreciation_generale__aucunprof',
-	'droit_officiel_releve_impression_pdf__professeur','droit_officiel_releve_impression_pdf__profprincipal',
-	'droit_officiel_bulletin_modifier_statut__professeur','droit_officiel_bulletin_modifier_statut__profprincipal',
-	'droit_officiel_bulletin_appreciation_generale__professeur','droit_officiel_bulletin_appreciation_generale__aucunprof',
-	'droit_officiel_bulletin_impression_pdf__professeur','droit_officiel_bulletin_impression_pdf__profprincipal',
-	'droit_officiel_socle_modifier_statut__professeur','droit_officiel_socle_modifier_statut__profprincipal',
-	'droit_officiel_socle_appreciation_generale__professeur','droit_officiel_socle_appreciation_generale__aucunprof',
-	'droit_officiel_socle_impression_pdf__professeur','droit_officiel_socle_impression_pdf__profprincipal',
-	'droit_officiel_releve_voir_archive__parent','droit_officiel_releve_voir_archive__eleve',
-	'droit_officiel_bulletin_voir_archive__parent','droit_officiel_bulletin_voir_archive__eleve',
-	'droit_officiel_socle_voir_archive__parent','droit_officiel_socle_voir_archive__eleve'
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_court_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
+$DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_COORD' , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />coordonnateurs<br />matières' );
+$DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_PP'    , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />professeurs<br />principaux' );
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_profils_libelles[$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_court_pluriel'];
+  $is_profil_join_groupe = ( ($DB_ROW['user_profil_type']=='professeur') && ($DB_ROW['user_profil_join_groupes']=='config') ) ? TRUE : FALSE ;
+  $tab_profil_join_groupes[$DB_ROW['user_profil_sigle']] = $is_profil_join_groupe;
+  $is_profil_join_groupe = ($is_profil_join_groupe) ? 'true' : 'false' ;
+  $tab_profil_join_groupes_js .= 'tab_profil_join_groupes["'.$DB_ROW['user_profil_sigle'].'"] = '.$is_profil_join_groupe.';';
+  $is_profil_join_matiere = ( ($DB_ROW['user_profil_type']=='professeur') && ($DB_ROW['user_profil_join_matieres']=='config') ) ? TRUE : FALSE ;
+  $tab_profil_join_matieres[$DB_ROW['user_profil_sigle']] = $is_profil_join_matiere;
+  $is_profil_join_matiere = ($is_profil_join_matiere) ? 'true' : 'false' ;
+  $tab_profil_join_matieres_js .= 'tab_profil_join_matieres["'.$DB_ROW['user_profil_sigle'].'"] = '.$is_profil_join_matiere.';';
+}
+
+// Tableau avec les sigles des profils pouvant être proposés, ou à cocher par défaut
+$tab_profils_possibles = array();
+$tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_prof_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP');
+$tab_profils_possibles['dir_pers']     = array(                  'DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_cpe']      = array(                  'DIR',                            'EDU');
+$tab_profils_possibles['dir']          = array(                  'DIR');
+$tab_profils_possibles['pers_coord']   = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF','ONLY_COORD');
+$tab_profils_possibles['pers']         = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['tous']         = array('ELV','TUT','AVS','DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
+$tab_profils_possibles['personne']     = array();
+
+// Tableau avec les infos (titres, profils, options par défaut)
+$tab_droits  = array
+(
+  "Validations du socle" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_validation_entree' , "valider des items du socle"             , 'dir_pers' ),
+    array( 'droit_validation_pilier' , "valider des compétences du socle"       , 'dir_prof_pp' ),
+    array( 'droit_annulation_pilier' , "annuler des validations de compétences" , 'dir' )
+  ),
+  "Gestion des référentiels de l'établissement" => array
+  (
+    'pers_coord',
+    array( 'droit_gerer_referentiel' , "créer / modifier / paramétrer les référentiels" , 'pers_coord' ),
+    array( 'droit_gerer_ressource'   , "associer des ressources aux items"              , 'pers' )
+  ),
+  "Consultation des référentiels de l'établissement" => array
+  (
+    'tous',
+    array( 'droit_voir_referentiels'  , "visualiser les référentiels" , 'tous' ),
+    array( 'droit_voir_grilles_items' , "accéder aux grilles d'items" , 'tous' )
+  ),
+  "Score d'un item &amp; état d'acquisition" => array
+  (
+    'tous',
+    array( 'droit_voir_score_bilan' , "voir les scores des items (bilans)"     , 'tous' ),
+    array( 'droit_voir_algorithme'  , "voir et simuler l'algorithme de calcul" , 'tous' )
+  ),
+  "Mot de passe" => array
+  (
+    'tous',
+    array( 'droit_modifier_mdp' , "modifier son mot de passe" , 'tous' )
+  ),
+  "Relevé d'items (matière ou pluridisciplinaire)" => array
+  (
+    'parent_eleve',
+    array( 'droit_releve_etat_acquisition'   , "afficher la colonne avec les états d'acquisitions"           , 'parent_eleve' ),
+    array( 'droit_releve_moyenne_score'      , "afficher la ligne avec la moyenne des scores d'acquisitions" , 'parent_eleve' ),
+    array( 'droit_releve_pourcentage_acquis' , "afficher la ligne avec le pourcentage d'items acquis"        , 'parent_eleve' ),
+    array( 'droit_releve_conversion_sur_20'  , "ajouter la conversion en note sur 20"                        , 'personne' )
+  ),
+  "Relevé de maîtrise du socle" => array
+  (
+    'parent_eleve',
+    array( 'droit_socle_acces'              , "accéder au relevé avec les items évalués par item du socle" , 'parent_eleve' ),
+    array( 'droit_socle_pourcentage_acquis' , "afficher les pourcentages d'items acquis"                   , 'parent_eleve' ),
+    array( 'droit_socle_etat_validation'    , "afficher les états de validation saisis"                    , 'personne' )
+  ),
+  "Bilans officiels &rarr; Absences" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_officiel_saisir_assiduite'       , "importer / saisir les absences &amp; retards" , 'dir_cpe' )
+  ),
+  "Bilans officiels &rarr; Relevé d'évaluations" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_officiel_releve_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
+    array( 'droit_officiel_releve_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
+    array( 'droit_officiel_releve_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
+  ),
+  "Bilans officiels &rarr; Bulletin scolaire" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_officiel_bulletin_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
+    array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
+    array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
+  ),
+  "Bilans officiels &rarr; État de maîtrise du socle" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_officiel_socle_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
+    array( 'droit_officiel_socle_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
+    array( 'droit_officiel_socle_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
+  ),
+  "Consultation des bilans officiels finalisés" => array
+  (
+    'tous',
+    array( 'droit_officiel_releve_voir_archive'   , "accéder aux copies des relevés d'évaluations"      , 'dir_pers' ),
+    array( 'droit_officiel_bulletin_voir_archive' , "accéder aux copies des bulletins scolaires"        , 'dir_pers' ),
+    array( 'droit_officiel_socle_voir_archive'    , "accéder aux copies des états de maîtrise du socle" , 'dir_pers' ),
+  )
 );
 
-$tab_onlycheckbox = array(2,3,4,5,6,10);
 $tab_init_js  = 'var tab_init = new Array();';
 $affichage = '';
 
-foreach($tab_titres as $i => $titre)
+foreach($tab_droits as $titre => $tab_infos_paragraphe)
 {
-	$affichage .= '<h4>'.$titre.'</h4>';
-	$affichage .= '<table class="vm_nug">';
-	// ligne en tête
-	$affichage .= '<thead><tr><th class="nu"></th>';
-	foreach($tab_profils[$i] as $profil_key => $profil_txt)
-	{
-		$affichage .= '<th class="hc">'.$profil_txt.'</th>';
-	}
-	$affichage .= '<th class="nu"></th></tr></thead>';
-	// lignes avec boutons
-	$affichage .= '<tbody>';
-	foreach($tab_objets[$i] as $objet_key => $objet_txt)
-	{
-		$tab_init_js .= 'tab_init["'.$objet_key.'"] = new Array();';
-		$affichage .= '<tr id="tr_'.$objet_key.'"><th>'.$objet_txt.'</th>';
-		$tab_check = explode(',',$_SESSION[strtoupper($objet_key)]);
-		foreach($tab_profils[$i] as $profil_key => $profil_txt)
-		{
-			$init = in_array($objet_key.'__'.$profil_key,$tab_false) ? 'false' : 'true' ;
-			$tab_init_js .= 'tab_init["'.$objet_key.'"]["'.$profil_key.'"] = '.$init.';';
-			$checked = (in_array($profil_key,$tab_check)) ? ' checked' : '' ;
-			$type = ( (in_array($i,$tab_onlycheckbox)) || ($profil_key=='directeur') ) ? 'checkbox' : 'radio' ;
-			$affichage .= '<td class="hc"><input type="'.$type.'" name="'.$objet_key.'" value="'.$profil_key.'"'.$checked.' /></td>';
-		}
-		$affichage .= '<td class="nu">&nbsp;<button name="initialiser" type="button" class="retourner">Par défaut</button> <button name="valider" type="button" class="parametre">Enregistrer</button> <label id="ajax_msg_'.$objet_key.'">&nbsp;</label></td></tr>';
-	}
-	$affichage .= '</tbody>';
-	$affichage .= '</table>';
-	$affichage .= '<hr />';
+  $affichage .= '<h4>'.$titre.'</h4>';
+  $affichage .= '<table class="vm_nug">';
+  // ligne en tête
+  $i_profils_possibles = array_shift($tab_infos_paragraphe);
+  $affichage .= '<thead><tr><th class="nu"></th>';
+  foreach($tab_profils_possibles[$i_profils_possibles] as $profil_sigle)
+  {
+    if(isset($tab_profils_libelles[$profil_sigle]))
+    {
+      $affichage .= '<th class="hc">'.$tab_profils_libelles[$profil_sigle].'</th>';
+    }
+  }
+  $affichage .= '<th class="nu"></th></tr></thead>';
+  // lignes avec boutons
+  $affichage .= '<tbody>';
+  foreach($tab_infos_paragraphe as $tab_infos_ligne)
+  {
+    list( $droit_key , $droit_txt , $i_profils_defaut ) = $tab_infos_ligne;
+    $tab_init_js .= 'tab_init["'.$droit_key.'"] = new Array();';
+    $affichage .= '<tr id="tr_'.$droit_key.'"><th>'.$droit_txt.'</th>';
+    $tab_check = explode(',',$_SESSION[strtoupper($droit_key)]);
+    $check_pp    = (in_array('ONLY_PP'   ,$tab_check)) ? TRUE : FALSE ;
+    $check_coord = (in_array('ONLY_COORD',$tab_check)) ? TRUE : FALSE ;
+    foreach($tab_profils_possibles[$i_profils_possibles] as $profil_sigle)
+    {
+      if(isset($tab_profils_libelles[$profil_sigle]))
+      {
+        $init = in_array($profil_sigle,$tab_profils_possibles[$i_profils_defaut]) ? 'true' : 'false' ;
+        $tab_init_js .= 'tab_init["'.$droit_key.'"]["'.$profil_sigle.'"] = '.$init.';';
+        $checked = (in_array($profil_sigle,$tab_check)) ? ' checked' : '' ;
+        $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
+        $affichage .= '<td class="hc '.$color.'"><input type="checkbox" name="'.$droit_key.'" value="'.$profil_sigle.'"'.$checked.' /></td>';
+      }
+    }
+    $affichage .= '<td class="nu">&nbsp;<button name="initialiser" type="button" class="retourner">Par défaut</button> <button name="valider" type="button" class="parametre">Enregistrer</button> <label id="ajax_msg_'.$droit_key.'">&nbsp;</label></td></tr>';
+  }
+  $affichage .= '</tbody>';
+  $affichage .= '</table>';
+  $affichage .= '<hr />';
 }
 ?>
 
 <script type="text/javascript">
-	<?php echo $tab_init_js ?> 
+  <?php echo $tab_init_js ?>
+  <?php echo $tab_profil_join_groupes_js ?>
+  <?php echo $tab_profil_join_matieres_js ?>
 </script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_autorisations">DOC : Réglage des autorisations</a></span></div>

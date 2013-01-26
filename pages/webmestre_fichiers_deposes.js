@@ -27,107 +27,107 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Réagir si formulaire modifié
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir si formulaire modifié
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('select').change
-		(
-			function()
-			{
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html('Pensez à enregistrer vos modifications !');
-			}
-		);
+    $('select').change
+    (
+      function()
+      {
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html('Pensez à enregistrer vos modifications !');
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Soumettre le formulaire principal => Enregistrer des nouveaux réglages
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Soumettre le formulaire principal => Enregistrer des nouveaux réglages
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $("#form_fichiers");
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $("#form_fichiers");
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_taille_max         : { required:true},
-					f_duree_conservation : { required:true}
-				},
-				messages :
-				{
-					f_taille_max         : { required:"taille manquante" },
-					f_duree_conservation : { required:"durée manquante" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element){element.after(error);}
-				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_taille_max         : { required:true},
+          f_duree_conservation : { required:true}
+        },
+        messages :
+        {
+          f_taille_max         : { required:"taille manquante" },
+          f_duree_conservation : { required:"durée manquante" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element){element.after(error);}
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg_enregistrer",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_enregistrer",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg_enregistrer').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				$('button').prop('disabled',true);
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg_enregistrer').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$('button').prop('disabled',false);
-			$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $('button').prop('disabled',false);
+      $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			$('button').prop('disabled',false);
-			if(responseHTML!='ok')
-			{
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Demande réalisée !");
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      $('button').prop('disabled',false);
+      if(responseHTML!='ok')
+      {
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Demande réalisée !");
+      }
+    }
 
-	}
+  }
 );

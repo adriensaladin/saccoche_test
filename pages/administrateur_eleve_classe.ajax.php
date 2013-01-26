@@ -38,24 +38,24 @@ $tab_select_classes = array_filter( Clean::map_entier($tab_select_classes) , 'po
 // Ajouter des élèves à des classes
 if($action=='ajouter')
 {
-	$classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
-	foreach($tab_select_eleves as $user_id)
-	{
-		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , TRUE );
-	}
+  $classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
+  foreach($tab_select_eleves as $user_id)
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , TRUE );
+  }
 }
 
 // Retirer des élèves à des classes
 elseif($action=='retirer')
 {
-	// on doit tout passer en revue car on ne sait pas si la classe de l'élève est dans la liste transmise
-	foreach($tab_select_eleves as $user_id)
-	{
-		foreach($tab_select_classes as $classe_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , FALSE );
-		}
-	}
+  // on doit tout passer en revue car on ne sait pas si la classe de l'élève est dans la liste transmise
+  foreach($tab_select_eleves as $user_id)
+  {
+    foreach($tab_select_classes as $classe_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , FALSE );
+    }
+  }
 }
 
 // Affichage du bilan des affectations des élèves dans les classes ; en deux requêtes pour récupérer les élèves sans classes et les classes sans élèves
@@ -68,14 +68,14 @@ $tab_user[0]             = '';
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
-	$tab_user[$DB_ROW['groupe_id']] = '';
+  $tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
+  $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_user[$DB_ROW['eleve_classe_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  $tab_user[$DB_ROW['eleve_classe_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();
@@ -83,25 +83,25 @@ $TB = array();
 $TF = array();
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
-	$TH[$niveau_id] = '';
-	$TB[$niveau_id] = '';
-	$TF[$niveau_id] = '';
-	foreach($tab_groupe as $groupe_id => $groupe_nom)
-	{
-		$nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
-		$s = ($nb>1) ? 's' : '' ;
-		$TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
-		$TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';
-		$TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
-	}
+  $TH[$niveau_id] = '';
+  $TB[$niveau_id] = '';
+  $TF[$niveau_id] = '';
+  foreach($tab_groupe as $groupe_id => $groupe_nom)
+  {
+    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
+    $s = ($nb>1) ? 's' : '' ;
+    $TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
+    $TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';
+    $TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
+  }
 }
 echo'<hr />';
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
-	echo'<table class="affectation">';
-	echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-	echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-	echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-	echo'</table>';
+  echo'<table class="affectation">';
+  echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
+  echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
+  echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
+  echo'</table>';
 }
 ?>

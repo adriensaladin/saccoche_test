@@ -43,9 +43,9 @@ class DB_WEBMESTRE_PUBLIC extends DB
  */
 public static function DB_recuperer_tables_informations()
 {
-	$DB_SQL = 'SHOW TABLE STATUS ';
-	$DB_SQL.= 'LIKE "sacoche_%" ';
-	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SHOW TABLE STATUS ';
+  $DB_SQL.= 'LIKE "sacoche_%" ';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 /**
  * Récupérer la valeur d'une variable système de MySQL
@@ -57,8 +57,8 @@ public static function DB_recuperer_tables_informations()
  */
 public static function DB_recuperer_variable_MySQL($variable_nom)
 {
-	$DB_SQL = 'SHOW VARIABLES LIKE "'.$variable_nom.'"';
-	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SHOW VARIABLES LIKE "'.$variable_nom.'"';
+  return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -71,8 +71,8 @@ public static function DB_recuperer_variable_MySQL($variable_nom)
  */
 public static function DB_recuperer_version_MySQL()
 {
-	$DB_SQL = 'SELECT VERSION()';
-	return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'SELECT VERSION()';
+  return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -83,11 +83,11 @@ public static function DB_recuperer_version_MySQL()
  */
 public static function DB_recuperer_structure_id_base_for_UAI($uai)
 {
-	$DB_SQL = 'SELECT sacoche_base ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE structure_uai=:uai ';
-	$DB_VAR = array(':uai'=>$uai);
-	return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT sacoche_base ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE structure_uai=:uai ';
+  $DB_VAR = array(':uai'=>$uai);
+  return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -98,11 +98,11 @@ public static function DB_recuperer_structure_id_base_for_UAI($uai)
  */
 public static function DB_recuperer_structure_nom_for_Id($base_id)
 {
-	$DB_SQL = 'SELECT structure_denomination ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_VAR = array(':base_id'=>$base_id);
-	return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT structure_denomination ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'WHERE sacoche_base=:base_id ';
+  $DB_VAR = array(':base_id'=>$base_id);
+  return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -113,11 +113,11 @@ public static function DB_recuperer_structure_nom_for_Id($base_id)
  */
 public static function DB_compter_structure()
 {
-	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
-	$s = ($DB_ROW['nombre']>1) ? 's' : '' ;
-	return $DB_ROW['nombre'].' structure'.$s;
+  $DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $s = ($DB_ROW['nombre']>1) ? 's' : '' ;
+  return $DB_ROW['nombre'].' structure'.$s;
 }
 
 /**
@@ -128,21 +128,21 @@ public static function DB_compter_structure()
  */
 public static function DB_creer_remplir_tables_webmestre()
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_SQL_WEBMESTRE);
-	foreach($tab_files as $file)
-	{
-		$extension = pathinfo($file,PATHINFO_EXTENSION);
-		if($extension=='sql')
-		{
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.$file);
-			DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
-			/*
-			La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
-			La seule issue est de fermer la connexion après chaque requête multiple en utilisant exceptionnellement la méthode ajouté par SebR suite à mon signalement : DB::close(nom_de_la_connexion);
-			*/
-			DB::close(SACOCHE_WEBMESTRE_BD_NAME);
-		}
-	}
+  $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_SQL_WEBMESTRE);
+  foreach($tab_files as $file)
+  {
+    $extension = pathinfo($file,PATHINFO_EXTENSION);
+    if($extension=='sql')
+    {
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.$file);
+      DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
+      /*
+      La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
+      La seule issue est de fermer la connexion après chaque requête multiple en utilisant exceptionnellement la méthode ajouté par SebR suite à mon signalement : DB::close(nom_de_la_connexion);
+      */
+      DB::close(SACOCHE_WEBMESTRE_BD_NAME);
+    }
+  }
 }
 
 

@@ -27,275 +27,275 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Variables devant être accessible
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var memo_td_html = '';
-		var eleve_id = 0;
+    var memo_td_html = '';
+    var eleve_id = 0;
 
-		// Initialisation
+    // Initialisation
 
-		$("#select_eleve").hide();
+    $("#select_eleve").hide();
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Charger le select f_eleve en ajax
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger le select f_eleve en ajax
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function maj_eleve(groupe_id,groupe_type)
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page=_maj_select_eleves',
-					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=0',
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("");
-							$('#select_eleve').html(responseHTML).show();
-						}
-						else
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-					}
-				}
-			);
-		}
-		function changer_groupe()
-		{
-			$("#select_eleve").html('<option value=""></option>').hide();
-			var groupe_val = $("#f_groupe").val();
-			if(groupe_val)
-			{
-				// type = $("#f_groupe option:selected").parent().attr('label');
-				groupe_type = groupe_val.substring(0,1);
-				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				maj_eleve(groupe_id,groupe_type);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			}
-		}
-		$("#f_groupe").change
-		(
-			function()
-			{
-				changer_groupe();
-			}
-		);
+    function maj_eleve(groupe_id,groupe_type)
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_eleves',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=0',
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("");
+              $('#select_eleve').html(responseHTML).show();
+            }
+            else
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+          }
+        }
+      );
+    }
+    function changer_groupe()
+    {
+      $("#select_eleve").html('<option value=""></option>').hide();
+      var groupe_val = $("#f_groupe").val();
+      if(groupe_val)
+      {
+        // type = $("#f_groupe option:selected").parent().attr('label');
+        groupe_type = groupe_val.substring(0,1);
+        groupe_id   = groupe_val.substring(1);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        maj_eleve(groupe_id,groupe_type);
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      }
+    }
+    $("#f_groupe").change
+    (
+      function()
+      {
+        changer_groupe();
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Charger la liste des responsables d'un élève
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger la liste des responsables d'un élève
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("#select_eleve").change
-		(
-			function()
-			{
-				$("#fieldset_parents").html('');
-				$("#p_valider").hide();
-				$('#ajax_msg2').removeAttr("class").html("&nbsp;").parent().hide();
-				eleve_id = $("#select_eleve").val();
-				if(!eleve_id)
-				{
-					$('#ajax_msg').removeAttr("class").html("&nbsp;");
-					return false;
-				}
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=afficher_parents'+'&f_eleve_id='+eleve_id,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,6)=='<table')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#ajax_msg').removeAttr("class").html("");
-								$('#fieldset_parents').html(responseHTML).show();
-								infobulle();
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
+    $("#select_eleve").change
+    (
+      function()
+      {
+        $("#fieldset_parents").html('');
+        $("#p_valider").hide();
+        $('#ajax_msg2').removeAttr("class").html("&nbsp;").parent().hide();
+        eleve_id = $("#select_eleve").val();
+        if(!eleve_id)
+        {
+          $('#ajax_msg').removeAttr("class").html("&nbsp;");
+          return false;
+        }
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=afficher_parents'+'&f_eleve_id='+eleve_id,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,6)=='<table')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                $('#ajax_msg').removeAttr("class").html("");
+                $('#fieldset_parents').html(responseHTML).show();
+                infobulle();
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+            }
+          }
+        );
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ORDONNER => Clic sur une image pour échanger deux responsables
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#fieldset_parents input[type=image]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				para_clic = $(this).parent();
-				table_prev = para_clic.prev('table');
-				table_next = para_clic.next('table');
-				titre_prev = table_prev.find('th.vu').html();
-				titre_next = table_next.find('th.vu').html();
-				table_prev.find('th.vu').html(titre_next);
-				table_next.find('th.vu').html(titre_prev);
-				para_clic.before(table_next);
-				para_clic.after(table_prev);
-				$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
-				return false;
-			}
-		);
+    $('#fieldset_parents input[type=image]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        para_clic = $(this).parent();
+        table_prev = para_clic.prev('table');
+        table_next = para_clic.next('table');
+        titre_prev = table_prev.find('th.vu').html();
+        titre_next = table_next.find('th.vu').html();
+        table_prev.find('th.vu').html(titre_next);
+        table_next.find('th.vu').html(titre_prev);
+        para_clic.before(table_next);
+        para_clic.after(table_prev);
+        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+        return false;
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // SUPPRIMER => Clic sur une image pour retirer un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
-				infobulle();
-				$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
-			}
-		);
+    $('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
+        infobulle();
+        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // AJOUTER => Clic sur une image pour ajouter un responsable
 // MODIFIER => Clic sur une image pour modifier un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.ajouter , q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				memo_td_html = $(this).parent().prev('td').html();
-				afficher_masquer_images_action('hide');
-				$(this).parent().prev('td').html('<select id="f_parent" name="f_parent">'+select_parent+'</select><q class="valider" title="Choisir ce responsable."></q><q class="annuler" title="Annuler."></q><br /><label id="ajax_msg_select">&nbsp;</label>');
-				infobulle();
-				$('#f_parent').focus();
-			}
-		);
+    $('q.ajouter , q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        memo_td_html = $(this).parent().prev('td').html();
+        afficher_masquer_images_action('hide');
+        $(this).parent().prev('td').html('<select id="f_parent" name="f_parent">'+select_parent+'</select><q class="valider" title="Choisir ce responsable."></q><q class="annuler" title="Annuler."></q><br /><label id="ajax_msg_select">&nbsp;</label>');
+        infobulle();
+        $('#f_parent').focus();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // VALIDER => Clic sur une image pour valider l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				var parent_id  = $('#f_parent option:selected').val();
-				var parent_nom = $('#f_parent option:selected').text();
-				if(!parent_id)
-				{
-					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Aucun responsable choisi !");
-					return false;
-				}
-				if($('#parent_'+parent_id).length)
-				{
-					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable est déjà associé à l'élève !");
-					return false;
-				}
-				$(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
-				infobulle();
-				afficher_masquer_images_action('show');
-				$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
-			}
-		);
+    $('q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        var parent_id  = $('#f_parent option:selected').val();
+        var parent_nom = $('#f_parent option:selected').text();
+        if(!parent_id)
+        {
+          $('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Aucun responsable choisi !");
+          return false;
+        }
+        if($('#parent_'+parent_id).length)
+        {
+          $('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable est déjà associé à l'élève !");
+          return false;
+        }
+        $(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
+        infobulle();
+        afficher_masquer_images_action('show');
+        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$(this).parent().html(memo_td_html);
-				afficher_masquer_images_action('show');
-			}
-		);
+    $('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        $(this).parent().html(memo_td_html);
+        afficher_masquer_images_action('show');
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENVOYER les modifications apportées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("#Enregistrer").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				var tab_parents_id = new Array();
-				// Récupérer les identifiants des parents
-				$('#fieldset_parents table').each
-				(
-					function()
-					{
-						var id = (typeof($(this).attr('id'))=='undefined') ? 0 : $(this).attr('id').substring(7) ;
-						tab_parents_id.push(id);
-					}
-				);
-				// Zy va : envoi ajax
-				$('button').prop('disabled',true);
-				afficher_masquer_images_action('hide');
-				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=enregistrer_parents'+'&f_eleve_id='+eleve_id+'&f_parents_id='+tab_parents_id,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							afficher_masquer_images_action('show');
-							$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,6)=='<table')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('button').prop('disabled',false);
-								$('#ajax_msg2').removeAttr("class").html("").parent().hide();
-								$('#fieldset_parents').html(responseHTML).show();
-								infobulle();
-							}
-							else
-							{
-								$('button').prop('disabled',false);
-								afficher_masquer_images_action('show');
-								$('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
+    $("#Enregistrer").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        var tab_parents_id = new Array();
+        // Récupérer les identifiants des parents
+        $('#fieldset_parents table').each
+        (
+          function()
+          {
+            var id = (typeof($(this).attr('id'))=='undefined') ? 0 : $(this).attr('id').substring(7) ;
+            tab_parents_id.push(id);
+          }
+        );
+        // Zy va : envoi ajax
+        $('button').prop('disabled',true);
+        afficher_masquer_images_action('hide');
+        $('#ajax_msg2').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=enregistrer_parents'+'&f_eleve_id='+eleve_id+'&f_parents_id='+tab_parents_id,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              afficher_masquer_images_action('show');
+              $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,6)=='<table')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                $('button').prop('disabled',false);
+                $('#ajax_msg2').removeAttr("class").html("").parent().hide();
+                $('#fieldset_parents').html(responseHTML).show();
+                infobulle();
+              }
+              else
+              {
+                $('button').prop('disabled',false);
+                afficher_masquer_images_action('show');
+                $('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

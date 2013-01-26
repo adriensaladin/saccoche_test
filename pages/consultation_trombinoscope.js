@@ -27,86 +27,86 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Actualiser l'affichage des vignettes élèves au changement du select
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Actualiser l'affichage des vignettes élèves au changement du select
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function maj_affichage()
-		{
-			$('#bilan').html('');
-			// On récupère le regroupement
-			var groupe_val = $("#f_groupe option:selected").val();
-			if(!groupe_val)
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				return false
-			}
-			// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
-			if(isNaN(parseInt(groupe_val,10)))
-			{
-				groupe_type = groupe_val.substring(0,1);
-				groupe_id   = groupe_val.substring(1);
-			}
-			// Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
-			else
-			{
-				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
-				groupe_id   = groupe_val;
-			}
-			groupe_nom = $("#f_groupe option:selected").text();
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_groupe_nom='+groupe_nom,
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,4)!='<h2>')
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-						else
-						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-							$('#bilan').html(responseHTML);
-							format_liens('#bilan');
-							infobulle();
-						}
-					}
-				}
-			);
-		}
+    function maj_affichage()
+    {
+      $('#bilan').html('');
+      // On récupère le regroupement
+      var groupe_val = $("#f_groupe option:selected").val();
+      if(!groupe_val)
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        return false
+      }
+      // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
+      if(isNaN(parseInt(groupe_val,10)))
+      {
+        groupe_type = groupe_val.substring(0,1);
+        groupe_id   = groupe_val.substring(1);
+      }
+      // Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
+      else
+      {
+        groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
+        groupe_id   = groupe_val;
+      }
+      groupe_nom = $("#f_groupe option:selected").text();
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_groupe_nom='+groupe_nom,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,4)!='<h2>')
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+            else
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+              $('#bilan').html(responseHTML);
+              format_liens('#bilan');
+              infobulle();
+            }
+          }
+        }
+      );
+    }
 
-		$("#f_groupe").change
-		(
-			function()
-			{
-				maj_affichage();
-			}
-		);
+    $("#f_groupe").change
+    (
+      function()
+      {
+        maj_affichage();
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Imprimer un trombinoscope
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Imprimer un trombinoscope
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bilan q.imprimer').live
-		('click',
-			function()
-			{
-				imprimer(document.getElementById('bilan').innerHTML);
-			}
-		);
+    $('#bilan q.imprimer').live
+    ('click',
+      function()
+      {
+        imprimer(document.getElementById('bilan').innerHTML);
+      }
+    );
 
-	}
+  }
 );

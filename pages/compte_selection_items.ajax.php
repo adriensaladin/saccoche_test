@@ -45,33 +45,33 @@ $nb_items = count($tab_items);
 
 if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 {
-	// Vérifier que le nom de la sélection d'items est disponible
-	if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom) )
-	{
-		exit('Erreur : nom de la sélection d\'items déjà pris !');
-	}
-	// Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
-	$selection_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items($_SESSION['USER_ID'],$selection_nom,$tab_items);
-	// Afficher le retour
-	if($origine==$PAGE)
-	{
-		$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-		echo'<tr id="id_'.$selection_id.'" class="new">';
-		echo	'<td>'.html($selection_nom).'</td>';
-		echo	'<td>'.$items_texte.'</td>';
-		echo	'<td class="nu">';
-		echo		'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
-		echo		'<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
-		echo	'</td>';
-		echo'</tr>';
-		echo'<SCRIPT>';
-		echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
-	}
-	else
-	{
-		echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
-	}
-	exit();
+  // Vérifier que le nom de la sélection d'items est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom) )
+  {
+    exit('Erreur : nom de la sélection d\'items déjà pris !');
+  }
+  // Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
+  $selection_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items($_SESSION['USER_ID'],$selection_nom,$tab_items);
+  // Afficher le retour
+  if($origine==$PAGE)
+  {
+    $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
+    echo'<tr id="id_'.$selection_id.'" class="new">';
+    echo  '<td>'.html($selection_nom).'</td>';
+    echo  '<td>'.$items_texte.'</td>';
+    echo  '<td class="nu">';
+    echo    '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
+    echo    '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
+    echo  '</td>';
+    echo'</tr>';
+    echo'<SCRIPT>';
+    echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
+  }
+  else
+  {
+    echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
+  }
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,24 +80,24 @@ if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 
 if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 {
-	// Vérifier que le nom de la sélection d'items est disponible
-	if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom,$selection_id) )
-	{
-		exit('Erreur : nom de sélection d\'items déjà existant !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items($selection_id,$selection_nom,$tab_items);
-	// Afficher le retour
-	$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-	echo'<td>'.html($selection_nom).'</td>';
-	echo'<td>'.$items_texte.'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
-	echo	'<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
-	echo'</td>';
-	echo'<SCRIPT>';
-	echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
-	exit();
+  // Vérifier que le nom de la sélection d'items est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom,$selection_id) )
+  {
+    exit('Erreur : nom de sélection d\'items déjà existant !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items($selection_id,$selection_nom,$tab_items);
+  // Afficher le retour
+  $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
+  echo'<td>'.html($selection_nom).'</td>';
+  echo'<td>'.$items_texte.'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
+  echo  '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
+  echo'</td>';
+  echo'<SCRIPT>';
+  echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,10 +106,10 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 
 if( ($action=='supprimer') && $selection_id )
 {
-	// Effacer l'enregistrement
-	DB_STRUCTURE_PROFESSEUR::DB_supprimer_selection_items($selection_id);
-	// Afficher le retour
-	exit('<td>ok</td>');
+  // Effacer l'enregistrement
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_selection_items($selection_id);
+  // Afficher le retour
+  exit('<td>ok</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

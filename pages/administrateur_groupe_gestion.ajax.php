@@ -39,23 +39,23 @@ $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 if( ($action=='ajouter') && $niveau && $ref && $nom )
 {
-	// Vérifier que la référence du groupe est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref) )
-	{
-		exit('Erreur : référence de groupe déjà existant !');
-	}
-	// Insérer l'enregistrement
-	$groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('groupe',$ref,$nom,$niveau);
-	// Afficher le retour
-	echo'<tr id="id_'.$groupe_id.'" class="new">';
-	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.html($ref).'</td>';
-	echo	'<td>'.html($nom).'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier ce groupe."></q>';
-	echo		'<q class="supprimer" title="Supprimer ce groupe."></q>';
-	echo	'</td>';
-	echo'</tr>';
+  // Vérifier que la référence du groupe est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref) )
+  {
+    exit('Erreur : référence de groupe déjà existant !');
+  }
+  // Insérer l'enregistrement
+  $groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('groupe',$ref,$nom,$niveau);
+  // Afficher le retour
+  echo'<tr id="id_'.$groupe_id.'" class="new">';
+  echo  '<td>{{NIVEAU_NOM}}</td>';
+  echo  '<td>'.html($ref).'</td>';
+  echo  '<td>'.html($nom).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier ce groupe."></q>';
+  echo    '<q class="supprimer" title="Supprimer ce groupe."></q>';
+  echo  '</td>';
+  echo'</tr>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,21 +63,21 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 {
-	// Vérifier que la référence du groupe est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref,$id) )
-	{
-		exit('Erreur : référence de groupe déjà existant !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
-	// Afficher le retour
-	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.html($ref).'</td>';
-	echo'<td>'.html($nom).'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier ce groupe."></q>';
-	echo	'<q class="supprimer" title="Supprimer ce groupe."></q>';
-	echo'</td>';
+  // Vérifier que la référence du groupe est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref,$id) )
+  {
+    exit('Erreur : référence de groupe déjà existant !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
+  // Afficher le retour
+  echo'<td>{{NIVEAU_NOM}}</td>';
+  echo'<td>'.html($ref).'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce groupe."></q>';
+  echo  '<q class="supprimer" title="Supprimer ce groupe."></q>';
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,16 +85,16 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='supprimer') && $id )
 {
-	// Effacer l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
-	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'un regroupement (groupe '.$id.'), avec les devoirs associés.');
-	// Afficher le retour
-	echo'<td>ok</td>';
+  // Effacer l'enregistrement
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
+  // Log de l'action
+  SACocheLog::ajouter('Suppression d\'un regroupement (groupe '.$id.'), avec les devoirs associés.');
+  // Afficher le retour
+  echo'<td>ok</td>';
 }
 
 else
 {
-	echo'Erreur avec les données transmises !';
+  echo'Erreur avec les données transmises !';
 }
 ?>

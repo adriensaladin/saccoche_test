@@ -27,125 +27,125 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Ajouter / Retirer une affectation à une matière
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ajouter / Retirer une affectation à une matière
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#autocheckbox input[type=checkbox]').click
-		(
-			function()
-			{
-				var obj_bouton = $(this);
-				var action     = (obj_bouton.is(':checked')) ? 'ajouter' : 'retirer' ;
-				var user_id    = obj_bouton.val();
-				var matiere_id  = obj_bouton.parent().parent().attr('id').substring(3);
-				var check_old  = (action=='ajouter') ? false : true ;
-				var class_old  = (action=='ajouter') ? 'off' : 'on' ;
-				var class_new  = (action=='ajouter') ? 'on' : 'off' ;
-				obj_bouton.hide(0).parent().removeAttr('class').addClass('load');
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url  : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&matiere_id='+matiere_id,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML!='ok')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-								obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
-							}
-							else
-							{
-								obj_bouton.show(0).parent().removeAttr('class').addClass(class_new);
-								// MAJ tableaux bilans : lignes
-								if(action=='ajouter')
-								{
-									var prof_nom   = $('#th_'+user_id).children('img').attr('alt');
-									var matiere_nom = $('#tr_'+matiere_id+' th').html();
-									$('#mpb_'+matiere_id).append('<div id="mp_'+matiere_id+'_'+user_id+'" class="off"><input type="checkbox" id="'+matiere_id+'mp'+user_id+'" value="" /> <label for="'+matiere_id+'mp'+user_id+'">'+prof_nom+'</label></div>');
-									$('#pmb_'+user_id).append('<div id="pm_'+user_id+'_'+matiere_id+'" class="off"><input type="checkbox" id="'+user_id+'pm'+matiere_id+'" value="" /> <label for="'+user_id+'pm'+matiere_id+'">'+matiere_nom+'</label></div>');
-								}
-								else if(action=='retirer')
-								{
-									$('#mp_'+matiere_id+'_'+user_id).remove();
-									$('#pm_'+user_id+'_'+matiere_id).remove();
-								}
-								// MAJ tableaux bilans : totaux
-								var nb_profs = $('#mpb_'+matiere_id+' div').length;
-								var nb_matieres = $('#pmb_'+user_id+' div').length;
-								var s_profs = (nb_profs>1) ? 's' : '' ;
-								var s_matieres = (nb_matieres>1) ? 's' : '' ;
-								$('#mpf_'+matiere_id).html(nb_profs+' professeur'+s_profs);
-								$('#pmf_'+user_id).html(nb_matieres+' matière'+s_matieres);
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#autocheckbox input[type=checkbox]').click
+    (
+      function()
+      {
+        var obj_bouton = $(this);
+        var action     = (obj_bouton.is(':checked')) ? 'ajouter' : 'retirer' ;
+        var user_id    = obj_bouton.val();
+        var matiere_id  = obj_bouton.parent().parent().attr('id').substring(3);
+        var check_old  = (action=='ajouter') ? false : true ;
+        var class_old  = (action=='ajouter') ? 'off' : 'on' ;
+        var class_new  = (action=='ajouter') ? 'on' : 'off' ;
+        obj_bouton.hide(0).parent().removeAttr('class').addClass('load');
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url  : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&matiere_id='+matiere_id,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML!='ok')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
+              }
+              else
+              {
+                obj_bouton.show(0).parent().removeAttr('class').addClass(class_new);
+                // MAJ tableaux bilans : lignes
+                if(action=='ajouter')
+                {
+                  var prof_nom   = $('#th_'+user_id).children('img').attr('alt');
+                  var matiere_nom = $('#tr_'+matiere_id+' th').html();
+                  $('#mpb_'+matiere_id).append('<div id="mp_'+matiere_id+'_'+user_id+'" class="off"><input type="checkbox" id="'+matiere_id+'mp'+user_id+'" value="" /> <label for="'+matiere_id+'mp'+user_id+'">'+prof_nom+'</label></div>');
+                  $('#pmb_'+user_id).append('<div id="pm_'+user_id+'_'+matiere_id+'" class="off"><input type="checkbox" id="'+user_id+'pm'+matiere_id+'" value="" /> <label for="'+user_id+'pm'+matiere_id+'">'+matiere_nom+'</label></div>');
+                }
+                else if(action=='retirer')
+                {
+                  $('#mp_'+matiere_id+'_'+user_id).remove();
+                  $('#pm_'+user_id+'_'+matiere_id).remove();
+                }
+                // MAJ tableaux bilans : totaux
+                var nb_profs = $('#mpb_'+matiere_id+' div').length;
+                var nb_matieres = $('#pmb_'+user_id+' div').length;
+                var s_profs = (nb_profs>1) ? 's' : '' ;
+                var s_matieres = (nb_matieres>1) ? 's' : '' ;
+                $('#mpf_'+matiere_id).html(nb_profs+' professeur'+s_profs);
+                $('#pmf_'+user_id).html(nb_matieres+' matière'+s_matieres);
+              }
+            }
+          }
+        );
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Ajouter / Retirer une affectation en tant que professeur coordonnateur
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ajouter / Retirer une affectation en tant que professeur coordonnateur
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('table.affectation input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				var obj_bouton = $(this);
-				var action     = (obj_bouton.is(':checked')) ? 'ajouter_coord' : 'retirer_coord' ;
-				var tab_id     = obj_bouton.parent().attr('id').split('_');
-				var user_id    = (tab_id[0]=='pm') ? tab_id[1] : tab_id[2] ;
-				var matiere_id  = (tab_id[0]=='mp') ? tab_id[1] : tab_id[2] ;
-				var check_old  = (action=='ajouter_coord') ? false : true ;
-				var check_new  = (action=='ajouter_coord') ? true : false ;
-				var class_old  = (action=='ajouter_coord') ? 'off' : 'on' ;
-				var class_new  = (action=='ajouter_coord') ? 'on' : 'off' ;
-				obj_bouton.prop('disabled',true).parent().removeAttr('class').addClass('load');
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url  : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&matiere_id='+matiere_id,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML!='ok')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-								obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
-							}
-							else
-							{
-								obj_bouton.prop('disabled',false).parent().removeAttr('class').addClass(class_new);
-								// MAJ tableaux bilans
-								var id_autre = (tab_id[0]=='mp') ? user_id+'pm'+matiere_id : matiere_id+'mp'+user_id ;
-								$('#'+id_autre).prop('checked',check_new).parent().removeAttr('class').addClass(class_new);
-							}
-						}
-					}
-				);
-			}
-		);
+    $('table.affectation input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
+      function()
+      {
+        var obj_bouton = $(this);
+        var action     = (obj_bouton.is(':checked')) ? 'ajouter_coord' : 'retirer_coord' ;
+        var tab_id     = obj_bouton.parent().attr('id').split('_');
+        var user_id    = (tab_id[0]=='pm') ? tab_id[1] : tab_id[2] ;
+        var matiere_id  = (tab_id[0]=='mp') ? tab_id[1] : tab_id[2] ;
+        var check_old  = (action=='ajouter_coord') ? false : true ;
+        var check_new  = (action=='ajouter_coord') ? true : false ;
+        var class_old  = (action=='ajouter_coord') ? 'off' : 'on' ;
+        var class_new  = (action=='ajouter_coord') ? 'on' : 'off' ;
+        obj_bouton.prop('disabled',true).parent().removeAttr('class').addClass('load');
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url  : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&matiere_id='+matiere_id,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML!='ok')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
+              }
+              else
+              {
+                obj_bouton.prop('disabled',false).parent().removeAttr('class').addClass(class_new);
+                // MAJ tableaux bilans
+                var id_autre = (tab_id[0]=='mp') ? user_id+'pm'+matiere_id : matiere_id+'mp'+user_id ;
+                $('#'+id_autre).prop('checked',check_new).parent().removeAttr('class').addClass(class_new);
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

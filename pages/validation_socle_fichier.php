@@ -58,63 +58,63 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
 
 <form action="#" method="post">
 
-	<fieldset>
-		<label class="tab" for="f_choix_principal">Procédure :</label>
-		<select id="f_choix_principal" name="f_choix_principal">
-			<option value=""></option>
-			<optgroup label="Exporter un fichier">
-				<option value="export_lpc">à destination de Sconet-LPC</option>
-				<option value="export_sacoche">à destination de SACoche</option>
-			</optgroup>
-			<optgroup label="Importer un fichier">
-				<option value="import_lpc">en provenance de Sconet-LPC</option>
-				<option value="import_sacoche">en provenance de SACoche</option>
-				<option value="import_compatible">en provenance de Gibii, Pronote, etc.</option>
-			</optgroup>
-		</select><br />
-	</fieldset>
+  <fieldset>
+    <label class="tab" for="f_choix_principal">Procédure :</label>
+    <select id="f_choix_principal" name="f_choix_principal">
+      <option value=""></option>
+      <optgroup label="Exporter un fichier">
+        <option value="export_lpc">à destination de Sconet-LPC</option>
+        <option value="export_sacoche">à destination de SACoche</option>
+      </optgroup>
+      <optgroup label="Importer un fichier">
+        <option value="import_lpc">en provenance de Sconet-LPC</option>
+        <option value="import_sacoche">en provenance de SACoche</option>
+        <option value="import_compatible">en provenance de Gibii, Pronote, etc.</option>
+      </optgroup>
+    </select><br />
+  </fieldset>
 
-	<fieldset id="fieldset_export" class="hide">
-		<hr />
-		<p>
-			<label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
-			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élèves :</label><select id="select_eleves" name="select_eleves[]" multiple size="8"><option value=""></option></select>
-		</p>
-	</fieldset>
+  <fieldset id="fieldset_export" class="hide">
+    <hr />
+    <p>
+      <label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
+      <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élèves :</label><select id="select_eleves" name="select_eleves[]" multiple size="8"><option value=""></option></select>
+    </p>
+  </fieldset>
 
-	<fieldset id="fieldset_export_lpc" class="hide">
-		<label class="tab">UAI :</label><?php echo $msg_uai ?><br />
-		<label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-		<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?>
-		<p><span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?>>Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label></p>
-		<!-- <button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button> -->
-	</fieldset>
+  <fieldset id="fieldset_export_lpc" class="hide">
+    <label class="tab">UAI :</label><?php echo $msg_uai ?><br />
+    <label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
+    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
+    <label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?>
+    <p><span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?>>Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label></p>
+    <!-- <button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button> -->
+  </fieldset>
 
-	<fieldset id="fieldset_export_sacoche" class="hide">
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-		<span class="tab"></span><button type="button" id="export_sacoche" class="fichier_export enabled">Générer le fichier.</button>
-	</fieldset>
+  <fieldset id="fieldset_export_sacoche" class="hide">
+    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
+    <span class="tab"></span><button type="button" id="export_sacoche" class="fichier_export enabled">Générer le fichier.</button>
+  </fieldset>
 
-	<fieldset id="fieldset_import" class="hide">
-		<hr />
-	</fieldset>
+  <fieldset id="fieldset_import" class="hide">
+    <hr />
+  </fieldset>
 
-	<fieldset id="fieldset_import_lpc" class="hide">
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
-		<p><span class="tab"></span><button type="button" id="import_lpc_disabled" disabled class="fichier_import">A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button></p>
-	</fieldset>
+  <fieldset id="fieldset_import_lpc" class="hide">
+    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+    <p><span class="tab"></span><button type="button" id="import_lpc_disabled" disabled class="fichier_import">A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button></p>
+  </fieldset>
 
-	<fieldset id="fieldset_import_sacoche" class="hide">
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
-		<p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p>
-	</fieldset>
+  <fieldset id="fieldset_import_sacoche" class="hide">
+    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+    <p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p>
+  </fieldset>
 
-	<fieldset id="fieldset_import_compatible" class="hide">
-		<p class="astuce">On peut importer dans <em>SACoche</em> un fichier obtenu depuis un logiciel compatible avec <em>LPC</em> : <em>Gibii</em>, <em>Pronote</em>, <em>Educ-Horus</em>, <em>Campus</em>, etc.</p>
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
-		<p><span class="tab"></span><button type="button" id="import_compatible" class="fichier_import enabled">Transmettre le fichier.</button></p>
-	</fieldset>
+  <fieldset id="fieldset_import_compatible" class="hide">
+    <p class="astuce">On peut importer dans <em>SACoche</em> un fichier obtenu depuis un logiciel compatible avec <em>LPC</em> : <em>Gibii</em>, <em>Pronote</em>, <em>Educ-Horus</em>, <em>Campus</em>, etc.</p>
+    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+    <p><span class="tab"></span><button type="button" id="import_compatible" class="fichier_import enabled">Transmettre le fichier.</button></p>
+  </fieldset>
 
 </form>
 

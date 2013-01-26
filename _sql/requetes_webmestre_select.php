@@ -42,25 +42,25 @@ class DB_WEBMESTRE_SELECT extends DB
  */
 public static function DB_OPT_structures_sacoche()
 {
-	$DB_SQL = 'SELECT sacoche_base, structure_localisation, structure_denomination, geo_id, geo_nom ';
-	$DB_SQL.= 'FROM sacoche_structure ';
-	$DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
-	$DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
-	if(!empty($DB_TAB))
-	{
-		$tab_retour_champs = array();
-		foreach($DB_TAB as $DB_ROW)
-		{
-			Form::$tab_select_optgroup[$DB_ROW['geo_id']] = $DB_ROW['geo_nom'];
-			$tab_retour_champs[] = array('valeur'=>$DB_ROW['sacoche_base'],'texte'=>$DB_ROW['structure_localisation'].' | '.$DB_ROW['structure_denomination'],'optgroup'=>$DB_ROW['geo_id']);
-		}
-		return $tab_retour_champs;
-	}
-	else
-	{
-		return 'Aucun établissement n\'est enregistré !';
-	}
+  $DB_SQL = 'SELECT sacoche_base, structure_localisation, structure_denomination, geo_id, geo_nom ';
+  $DB_SQL.= 'FROM sacoche_structure ';
+  $DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
+  $DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC';
+  $DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  if(!empty($DB_TAB))
+  {
+    $tab_retour_champs = array();
+    foreach($DB_TAB as $DB_ROW)
+    {
+      Form::$tab_select_optgroup[$DB_ROW['geo_id']] = $DB_ROW['geo_nom'];
+      $tab_retour_champs[] = array('valeur'=>$DB_ROW['sacoche_base'],'texte'=>$DB_ROW['structure_localisation'].' | '.$DB_ROW['structure_denomination'],'optgroup'=>$DB_ROW['geo_id']);
+    }
+    return $tab_retour_champs;
+  }
+  else
+  {
+    return 'Aucun établissement n\'est enregistré !';
+  }
 }
 
 }

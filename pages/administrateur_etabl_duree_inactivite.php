@@ -27,22 +27,41 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Délai avant déconnexion";
+
+// Options du formulaire select
+$options = '';
+for($delai=10 ; $delai<130 ; $delai+=10)
+{
+  $options .= '<option value="'.$delai.'">'.$delai.' minutes</option>';
+}
+
+// Lister les profils de l'établissement
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_court_pluriel,user_profil_nom_long_pluriel,user_profil_duree_inactivite' /*listing_champs*/ , TRUE /*only_actif*/ );
+
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_delai_deconnexion">DOC : Délai avant déconnexion</a></span></div>
 
 <hr />
 
-<?php
-$options = '';
-for($delai=10 ; $delai<130 ; $delai+=10)
-{
-	$selected = ($delai==$_SESSION['DUREE_INACTIVITE']) ? ' selected' : '' ;
-	$options .= '<option value="'.$delai.'"'.$selected.'>'.$delai.' minutes</option>';
-}
-?>
+<h2>Appliquer à tous les profils</h2>
 
-<form action="#" method="post" id="delai"><fieldset>
-	<label class="tab" for="f_delai">Délai :</label><select id="f_delai" name="f_delai"><?php echo $options ?></select><br />
-	<span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce délai.</button><label id="ajax_msg">&nbsp;</label>
-</fieldset></form>
+<form action="#" method="post">
+  <p><label class="tab" for="f_delai_ALL">Délai :</label><select id="f_delai_ALL" name="f_delai_ALL"><?php echo str_replace('value="30"','value="30" selected',$options) ?></select> <button id="bouton_valider_ALL" type="button" class="parametre">Valider.</button><label id="ajax_msg_ALL">&nbsp;</label></p>
+</form>
+
+<hr />
+
+<h2>Affiner selon les profils</h2>
+
+<form action="#" method="post">
+
+  <?php
+  foreach($DB_TAB as $DB_ROW)
+  {
+    echo'<p><label class="tab" for="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label><select id="f_delai_'.$DB_ROW['user_profil_sigle'].'" name="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_duree_inactivite'].'"','value="'.$DB_ROW['user_profil_duree_inactivite'].'" selected',$options).'</select> <button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label></p>';
+  }
+  ?>
+</form>
+
+<hr />

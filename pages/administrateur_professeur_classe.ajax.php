@@ -38,8 +38,8 @@ $user_id   = (isset($_POST['user_id']))   ? Clean::entier($_POST['user_id'])   :
 
 if( ($action=='ajouter') && ($classe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',TRUE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',TRUE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,8 @@ if( ($action=='ajouter') && ($classe_id) && ($user_id) )
 
 if( ($action=='retirer') && ($classe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',FALSE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',FALSE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ if( ($action=='retirer') && ($classe_id) && ($user_id) )
 
 if( ($action=='ajouter_pp') && ($classe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,TRUE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,TRUE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,8 +68,8 @@ if( ($action=='ajouter_pp') && ($classe_id) && ($user_id) )
 
 if( ($action=='retirer_pp') && ($classe_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,FALSE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,FALSE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

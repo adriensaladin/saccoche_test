@@ -29,12 +29,15 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Résilier l'inscription de l'établissement";
 
 // Page réservée aux installations mono-structure ; le menu webmestre d'une installation multi-structures ne permet normalement pas d'arriver ici
-if(HEBERGEUR_INSTALLATION=='mono-structure')
+if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_mono.php');
-}
-else
-{
-	echo'<p class="astuce">L\'installation étant de type multi-structures, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type multi-structures, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
+
+<p><span class="danger"> Si vous confirmez votre choix, alors toutes les données des élèves, professeurs, compétences, classes, etc. seront complètement effacées !</span></p>
+
+<form action="#" method="post"><fieldset>
+  <span class="tab"></span><button id="bouton_valider" type="submit" class="supprimer">Résilier l'inscription.</button><label id="ajax_msg">&nbsp;</label>
+</fieldset></form>

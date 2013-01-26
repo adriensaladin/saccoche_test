@@ -27,280 +27,280 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporter dans les input equiv_txt les valeurs préféfinies lors du clic sur un bouton radio (jeu de symboles colorés).
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('table.simulation input[type=radio]').click
-		(
-			function()
-			{
-				var note_nom = $(this).val();
-				$('#note_texte_RR').val( tab_notes_txt[note_nom]['RR'] );
-				$('#note_texte_R').val( tab_notes_txt[note_nom]['R'] );
-				$('#note_texte_V').val( tab_notes_txt[note_nom]['V'] );
-				$('#note_texte_VV').val( tab_notes_txt[note_nom]['VV'] );
-			}
-		);
+    $('table.simulation input[type=radio]').click
+    (
+      function()
+      {
+        var note_nom = $(this).val();
+        $('#note_texte_RR').val( tab_notes_txt[note_nom]['RR'] );
+        $('#note_texte_R').val( tab_notes_txt[note_nom]['R'] );
+        $('#note_texte_V').val( tab_notes_txt[note_nom]['V'] );
+        $('#note_texte_VV').val( tab_notes_txt[note_nom]['VV'] );
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Activation du colorpicker pour les 3 champs input.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var f = $.farbtastic('#colorpicker');
-		$('div.colorpicker input.stretch').focus
-		(
-			function()
-			{
-				$('#colorpicker').removeAttr("class");
-				f.linkTo(this);
-			}
-		);
+    var f = $.farbtastic('#colorpicker');
+    $('div.colorpicker input.stretch').focus
+    (
+      function()
+      {
+        $('#colorpicker').removeAttr("class");
+        f.linkTo(this);
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporter dans un input colorpicker une valeur préféfinie lors du clic sur un bouton (couleur de fond).
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('div.colorpicker button').click
-		(
-			function()
-			{
-				$( '#acquis_'+$(this).attr('name') ).val( $(this).val() ).focus();
-			}
-		);
+    $('div.colorpicker button').click
+    (
+      function()
+      {
+        $( '#acquis_'+$(this).attr('name') ).val( $(this).val() ).focus();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affecter aux div la même couleur de fond que celle du input.
 // Utilisation d'un test en boucle car un simple test change() ne fonctionne pas.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function reporter_couleur()
-		{
-			$("body").everyTime
-			('1ds', 'report', function()
-				{
-					$('div.colorpicker input.stretch').each
-					(
-						function()
-						{
-							$(this).parent().parent().css('backgroundColor',$(this).val());
-						}
-					);
-				}
-			);
-		}
-		reporter_couleur();
+    function reporter_couleur()
+    {
+      $("body").everyTime
+      ('1ds', 'report', function()
+        {
+          $('div.colorpicker input.stretch').each
+          (
+            function()
+            {
+              $(this).parent().parent().css('backgroundColor',$(this).val());
+            }
+          );
+        }
+      );
+    }
+    reporter_couleur();
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Traitement du premier formulaire
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du premier formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire1 = $('#form_notes');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire1 = $('#form_notes');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation1 = formulaire1.validate
-		(
-			{
-				rules :
-				{
-					note_image_style  : { required:true },
-					note_texte_RR     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					note_texte_R      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					note_texte_V      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					note_texte_VV     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					note_legende_RR   : { required:true , maxlength:40 },
-					note_legende_R    : { required:true , maxlength:40 },
-					note_legende_V    : { required:true , maxlength:40 },
-					note_legende_VV   : { required:true , maxlength:40 }
-				},
-				messages :
-				{
-					note_image_style  : { required:"codes de couleur manquant" },
-					note_texte_RR     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					note_texte_R      : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					note_texte_V      : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					note_texte_VV     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					note_legende_RR   : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					note_legende_R    : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					note_legende_V    : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					note_legende_VV   : { required:"texte manquant" , maxlength:"40 caractères maximum" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element)
-				{
-					if(element.attr("type")=="radio") { $('#ajax_msg_note_symbole').html(error); }
-					else {element.parent().append(error);}
-				}
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation1 = formulaire1.validate
+    (
+      {
+        rules :
+        {
+          note_image_style  : { required:true },
+          note_texte_RR     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          note_texte_R      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          note_texte_V      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          note_texte_VV     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          note_legende_RR   : { required:true , maxlength:40 },
+          note_legende_R    : { required:true , maxlength:40 },
+          note_legende_V    : { required:true , maxlength:40 },
+          note_legende_VV   : { required:true , maxlength:40 }
+        },
+        messages :
+        {
+          note_image_style  : { required:"codes de couleur manquant" },
+          note_texte_RR     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          note_texte_R      : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          note_texte_V      : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          note_texte_VV     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          note_legende_RR   : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          note_legende_R    : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          note_legende_V    : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          note_legende_VV   : { required:"texte manquant" , maxlength:"40 caractères maximum" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element)
+        {
+          if(element.attr("type")=="radio") { $('#ajax_msg_note_symbole').html(error); }
+          else {element.parent().append(error);}
+        }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions1 =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg_notes",
-			beforeSubmit : test_form_avant_envoi1,
-			error : retour_form_erreur1,
-			success : retour_form_valide1
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions1 =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_notes",
+      beforeSubmit : test_form_avant_envoi1,
+      error : retour_form_erreur1,
+      success : retour_form_valide1
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire1.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions1);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions1);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi1(formData, jqForm, options)
-		{
-			$('#ajax_msg_notes').removeAttr("class").html("&nbsp;");
-			var readytogo = validation1.form();
-			if(readytogo)
-			{
-				$("#bouton_valider_notes").prop('disabled',true);
-				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi1(formData, jqForm, options)
+    {
+      $('#ajax_msg_notes').removeAttr("class").html("&nbsp;");
+      var readytogo = validation1.form();
+      if(readytogo)
+      {
+        $("#bouton_valider_notes").prop('disabled',true);
+        $('#ajax_msg_notes').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur1(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider_notes").prop('disabled',false);
-			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur1(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider_notes").prop('disabled',false);
+      $('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide1(responseHTML)
-		{
-			initialiser_compteur();
-			$("#bouton_valider_notes").prop('disabled',false);
-			if(responseHTML=='ok')
-			{
-				$('#ajax_msg_notes').removeAttr("class").addClass("valide").html("Choix mémorisés !");
-			}
-			else
-			{
-				$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide1(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider_notes").prop('disabled',false);
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg_notes').removeAttr("class").addClass("valide").html("Choix mémorisés !");
+      }
+      else
+      {
+        $('#ajax_msg_notes').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Traitement du second formulaire
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du second formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire2 = $('#form_acquis');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire2 = $('#form_acquis');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation2 = formulaire2.validate
-		(
-			{
-				rules :
-				{
-					acquis_texte_NA   : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					acquis_texte_VA   : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					acquis_texte_A    : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
-					acquis_legende_NA : { required:true , maxlength:40 },
-					acquis_legende_VA : { required:true , maxlength:40 },
-					acquis_legende_A  : { required:true , maxlength:40 },
-					acquis_color_NA   : { required:true , hexa_format:true },
-					acquis_color_VA   : { required:true , hexa_format:true },
-					acquis_color_A    : { required:true , hexa_format:true }
-				},
-				messages :
-				{
-					acquis_texte_NA   : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					acquis_texte_VA   : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					acquis_texte_A    : { required:"texte manquant" , maxlength:"3 caractères maximum" },
-					acquis_legende_NA : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					acquis_legende_VA : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					acquis_legende_A  : { required:"texte manquant" , maxlength:"40 caractères maximum" },
-					acquis_color_NA   : { required:"couleur manquante" , hexa_format:"format incorrect" },
-					acquis_color_VA   : { required:"couleur manquante" , hexa_format:"format incorrect" },
-					acquis_color_A    : { required:"couleur manquante" , hexa_format:"format incorrect" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element)
-				{
-					element.parent().append(error);
-				}
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation2 = formulaire2.validate
+    (
+      {
+        rules :
+        {
+          acquis_texte_NA   : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          acquis_texte_VA   : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          acquis_texte_A    : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+          acquis_legende_NA : { required:true , maxlength:40 },
+          acquis_legende_VA : { required:true , maxlength:40 },
+          acquis_legende_A  : { required:true , maxlength:40 },
+          acquis_color_NA   : { required:true , hexa_format:true },
+          acquis_color_VA   : { required:true , hexa_format:true },
+          acquis_color_A    : { required:true , hexa_format:true }
+        },
+        messages :
+        {
+          acquis_texte_NA   : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          acquis_texte_VA   : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          acquis_texte_A    : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+          acquis_legende_NA : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          acquis_legende_VA : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          acquis_legende_A  : { required:"texte manquant" , maxlength:"40 caractères maximum" },
+          acquis_color_NA   : { required:"couleur manquante" , hexa_format:"format incorrect" },
+          acquis_color_VA   : { required:"couleur manquante" , hexa_format:"format incorrect" },
+          acquis_color_A    : { required:"couleur manquante" , hexa_format:"format incorrect" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element)
+        {
+          element.parent().append(error);
+        }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions2 =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg_acquis",
-			beforeSubmit : test_form_avant_envoi2,
-			error : retour_form_erreur2,
-			success : retour_form_valide2
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions2 =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_acquis",
+      beforeSubmit : test_form_avant_envoi2,
+      error : retour_form_erreur2,
+      success : retour_form_valide2
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire2.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions2);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions2);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi2(formData, jqForm, options)
-		{
-			$('#ajax_msg_acquis').removeAttr("class").html("&nbsp;");
-			var readytogo = validation2.form();
-			if(readytogo)
-			{
-				$("#bouton_valider_acquis").prop('disabled',true);
-				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi2(formData, jqForm, options)
+    {
+      $('#ajax_msg_acquis').removeAttr("class").html("&nbsp;");
+      var readytogo = validation2.form();
+      if(readytogo)
+      {
+        $("#bouton_valider_acquis").prop('disabled',true);
+        $('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur2(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider_acquis").prop('disabled',false);
-			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur2(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider_acquis").prop('disabled',false);
+      $('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide2(responseHTML)
-		{
-			initialiser_compteur();
-			$("#bouton_valider_acquis").prop('disabled',false);
-			if(responseHTML=='ok')
-			{
-				$('#ajax_msg_acquis').removeAttr("class").addClass("valide").html("Choix mémorisés !");
-			}
-			else
-			{
-				$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide2(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider_acquis").prop('disabled',false);
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg_acquis').removeAttr("class").addClass("valide").html("Choix mémorisés !");
+      }
+      else
+      {
+        $('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-	}
+  }
 );

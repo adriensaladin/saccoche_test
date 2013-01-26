@@ -27,185 +27,185 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Alerter sur la nécessité de valider
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Alerter sur la nécessité de valider
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("#form_debug input").change
-		(
-			function()
-			{
-				$('#ajax_debug').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-			}
-		);
+    $("#form_debug input").change
+    (
+      function()
+      {
+        $('#ajax_debug').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Retirer un message de confirmation ou d'erreur
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Retirer un message de confirmation ou d'erreur
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("#form_phpCAS input").change
-		(
-			function()
-			{
-				$('#ajax_save_chemin').removeAttr("class").html("");
-			}
-		);
+    $("#form_phpCAS input").change
+    (
+      function()
+      {
+        $('#ajax_save_chemin').removeAttr("class").html("");
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Modifier les paramètres de debug
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Modifier les paramètres de debug
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_debug').click
-		(
-			function()
-			{
-				$('#bouton_debug').prop('disabled',true);
-				$('#ajax_debug').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=modifier_debug'+'&'+$("form").serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#bouton_debug').prop('disabled',false);
-							$('#ajax_debug').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('#bouton_debug').prop('disabled',false);
-							if(responseHTML=='ok')
-							{
-								$('#ajax_debug').removeAttr("class").addClass("valide").html('Choix enregistrés.');
-								initialiser_compteur();
-							}
-							else
-							{
-								$('#ajax_debug').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							return false;
-						}
-					}
-				);
-			}
-		);
+    $('#bouton_debug').click
+    (
+      function()
+      {
+        $('#bouton_debug').prop('disabled',true);
+        $('#ajax_debug').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=modifier_debug'+'&'+$("form").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#bouton_debug').prop('disabled',false);
+              $('#ajax_debug').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('#bouton_debug').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                $('#ajax_debug').removeAttr("class").addClass("valide").html('Choix enregistrés.');
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_debug').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Modifier le chemin des logs phpCAS
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Modifier le chemin des logs phpCAS
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_save_chemin').click
-		(
-			function()
-			{
-				$('#bouton_save_chemin').prop('disabled',true);
-				$('#ajax_save_chemin').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=modifier_chemin_phpCAS'+'&'+$('#form_phpCAS').serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#bouton_save_chemin').prop('disabled',false);
-							$('#ajax_save_chemin').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('#bouton_save_chemin').prop('disabled',false);
-							if(responseHTML=='ok')
-							{
-								$('#ajax_save_chemin').removeAttr("class").addClass("valide").html('Chemin enregistré.');
-								initialiser_compteur();
-							}
-							else
-							{
-								$('#ajax_save_chemin').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							return false;
-						}
-					}
-				);
-			}
-		);
+    $('#bouton_save_chemin').click
+    (
+      function()
+      {
+        $('#bouton_save_chemin').prop('disabled',true);
+        $('#ajax_save_chemin').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=modifier_chemin_phpCAS'+'&'+$('#form_phpCAS').serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#bouton_save_chemin').prop('disabled',false);
+              $('#ajax_save_chemin').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('#bouton_save_chemin').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                $('#ajax_save_chemin').removeAttr("class").addClass("valide").html('Chemin enregistré.');
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_save_chemin').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#form_phpCAS').submit
-		(
-			function()
-			{
-				$("#bouton_save_chemin").click();
-				return false;
-			}
-		);
+    $('#form_phpCAS').submit
+    (
+      function()
+      {
+        $("#bouton_save_chemin").click();
+        return false;
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Voir | Effacer un fichier de logs de phpCAS
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Voir | Effacer un fichier de logs de phpCAS
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#fichiers_logs q').click
-		(
-			function()
-			{
-				var f_action  = $(this).attr('class');
-				var f_fichier = $(this).parent().attr('id');
-				afficher_masquer_images_action('hide');
-				new_label  = '<label class="loader">Envoi en cours&hellip;</label>';
-				$(this).after(new_label);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action='+f_action+'&f_fichier='+f_fichier,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-							$('#fichiers_logs label').remove();
-							afficher_masquer_images_action('show');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							if( (f_action=='supprimer') && (responseHTML=='ok') )
-							{
-								initialiser_compteur();
-								$('#'+f_fichier).remove();
-							}
-							else if( (f_action=='voir') && (responseHTML.substring(0,4)=='<ul ') )
-							{
-								initialiser_compteur();
-								// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
-								// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-								$('#bilan').html(responseHTML);
-								format_liens('#bilan');
-								$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':300 } );
-							}
-							else
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							$('#fichiers_logs label').remove();
-							afficher_masquer_images_action('show');
-							return false;
-						}
-					}
-				);
-			}
-		);
+    $('#fichiers_logs q').click
+    (
+      function()
+      {
+        var f_action  = $(this).attr('class');
+        var f_fichier = $(this).parent().attr('id');
+        afficher_masquer_images_action('hide');
+        new_label  = '<label class="loader">En cours&hellip;</label>';
+        $(this).after(new_label);
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_fichier='+f_fichier,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $('#fichiers_logs label').remove();
+              afficher_masquer_images_action('show');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              if( (f_action=='supprimer') && (responseHTML=='ok') )
+              {
+                initialiser_compteur();
+                $('#'+f_fichier).remove();
+              }
+              else if( (f_action=='voir') && (responseHTML.substring(0,4)=='<ul ') )
+              {
+                initialiser_compteur();
+                // Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
+                // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
+                $('#bilan').html(responseHTML);
+                format_liens('#bilan');
+                $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':300 } );
+              }
+              else
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+              $('#fichiers_logs label').remove();
+              afficher_masquer_images_action('show');
+              return false;
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

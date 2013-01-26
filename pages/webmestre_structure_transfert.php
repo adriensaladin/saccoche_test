@@ -29,12 +29,85 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Transfert d'établissements";
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
-if(HEBERGEUR_INSTALLATION=='multi-structures')
+if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_multi.php');
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-else
-{
-	echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
-}
+
+// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
+$selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande d'exports depuis structure_multi.php
+$select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=FALSE , $option_first='non' , $selection , $optgroup='oui') ;
 ?>
+
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_transfert">DOC : Transfert d'établissements (multi-structures)</a></span></p>
+
+<hr />
+
+<h2>Exporter des établissements (données &amp; bases)</h2>
+
+<form action="#" method="post" id="form_exporter"><fieldset>
+  <label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
+  <span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
+  <div id="div_info_export" class="hide">
+    <ul id="puce_info_export" class="puce"><li></li></ul>
+    <span id="ajax_export_num" class="hide"></span>
+    <span id="ajax_export_max" class="hide"></span>
+  </div>
+  <div id="zone_actions_export" class="hide">
+    <label class="alerte">Ces deux fichiers sont nécessaires pour toute importation ; vérifiez leur validité une fois récupérés.</label><br />
+    <label class="alerte">Pour des raisons de sécurité et de confidentialité, ces fichiers seront effacés du serveur dans 1h.</label><br />
+    Pour les structures sélectionnées : <!-- input listing_ids plus bas -->
+    <button id="bouton_newsletter_export" type="button" class="mail_ecrire">Écrire un courriel.</button>
+    <button id="bouton_stats_export" type="button" class="stats">Calculer les statistiques.</button>
+    <button id="bouton_supprimer_export" type="button" class="supprimer">Supprimer.</button>
+    <label id="ajax_supprimer_export">&nbsp;</label>
+  </div>
+</fieldset></form>
+
+
+<hr />
+
+<h2>Importer des établissements (données &amp; bases)</h2>
+
+<form action="#" method="post" id="form_importer"><fieldset>
+    <label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label>
+  <div id="div_zip" class="hide">
+    <label class="tab" for="bouton_form_zip">Uploader fichier ZIP :</label><button id="bouton_form_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
+  </div>
+  <div id="div_import" class="hide">
+    <span class="tab"></span><button id="bouton_importer" type="button" class="valider">Restaurer les établissements.</button><label id="ajax_msg_import">&nbsp;</label>
+  </div>
+</fieldset></form>
+<div id="div_info_import" class="hide">
+  <ul id="puce_info_import" class="puce"><li></li></ul>
+  <span id="ajax_import_num" class="hide"></span>
+  <span id="ajax_import_max" class="hide"></span>
+</div>
+
+<p>&nbsp;</p>
+
+<form action="#" method="post" id="structures" class="hide">
+  <table class="form" id="transfert">
+    <thead>
+      <tr>
+        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+        <th>Id</th>
+        <th>Structure</th>
+        <th>Contact</th>
+        <th>Bilan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      </tr>
+    </tbody>
+  </table>
+  <p id="zone_actions_import">
+    Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
+    <button id="bouton_newsletter_import" type="button" class="mail_ecrire">Écrire un courriel.</button>
+    <button id="bouton_stats_import" type="button" class="stats">Calculer les statistiques.</button>
+    <button id="bouton_supprimer_import" type="button" class="supprimer">Supprimer.</button>
+    <label id="ajax_supprimer_import">&nbsp;</label>
+  </p>
+</form>

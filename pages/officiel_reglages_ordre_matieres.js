@@ -27,88 +27,88 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gestion de l'ordre des matières avec jQuery UI Sortable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var modification = false;
+    var modification = false;
 
-		function modif_ordre()
-		{
-			if(modification==false)
-			{
-				$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Ordre non enregistré !");
-				modification = true;
-				return false;
-			}
-		}
+    function modif_ordre()
+    {
+      if(modification==false)
+      {
+        $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Ordre non enregistré !");
+        modification = true;
+        return false;
+      }
+    }
 
-		$('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
+    $('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le lien pour mettre à jour l'ordre des matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#Enregistrer_ordre').click
-		(
-			function()
-			{
-				if(!modification)
-				{
-					$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
-				}
-				else
-				{
-					// On récupère la liste des matières dans l'ordre de la page
-					var tab_id = new Array();
-					$('#sortable').children('li').each
-					(
-						function()
-						{
-							var test_id = $(this).attr('id').substring(2);
-							if(test_id)
-							{
-								tab_id.push(test_id);
-							}
-						}
-					);
-					$('#form_ordonner button').prop('disabled',true);
-					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?page='+PAGE,
-							data : 'csrf='+CSRF+'&tab_id='+tab_id,
-							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
-							{
-								$('#form_ordonner button').prop('disabled',false);
-								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								initialiser_compteur();
-								$('#form_ordonner button').prop('disabled',false);
-								if(responseHTML!='ok')
-								{
-									$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html(responseHTML);
-								}
-								else
-								{
-									modification = false;
-									$('#ajax_msg_ordre').removeAttr("class").addClass("valide").html("Ordre enregistré !");
-								}
-							}
-						}
-					);
-				}
-			}
-		);
+    $('#Enregistrer_ordre').click
+    (
+      function()
+      {
+        if(!modification)
+        {
+          $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+        }
+        else
+        {
+          // On récupère la liste des matières dans l'ordre de la page
+          var tab_id = new Array();
+          $('#sortable').children('li').each
+          (
+            function()
+            {
+              var test_id = $(this).attr('id').substring(2);
+              if(test_id)
+              {
+                tab_id.push(test_id);
+              }
+            }
+          );
+          $('#form_ordonner button').prop('disabled',true);
+          $('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $.ajax
+          (
+            {
+              type : 'POST',
+              url : 'ajax.php?page='+PAGE,
+              data : 'csrf='+CSRF+'&tab_id='+tab_id,
+              dataType : "html",
+              error : function(jqXHR, textStatus, errorThrown)
+              {
+                $('#form_ordonner button').prop('disabled',false);
+                $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                return false;
+              },
+              success : function(responseHTML)
+              {
+                initialiser_compteur();
+                $('#form_ordonner button').prop('disabled',false);
+                if(responseHTML!='ok')
+                {
+                  $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html(responseHTML);
+                }
+                else
+                {
+                  modification = false;
+                  $('#ajax_msg_ordre').removeAttr("class").addClass("valide").html("Ordre enregistré !");
+                }
+              }
+            }
+          );
+        }
+      }
+    );
 
-	}
+  }
 );

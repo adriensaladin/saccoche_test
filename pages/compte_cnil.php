@@ -30,37 +30,37 @@ $TITRE = "Données personnelles";
 
 if(isset($_SESSION['STOP_CNIL']))
 {
-	$form_activation = '<h2>Activation de votre compte</h2>';
-	$form_activation.= '<p>';
-	$form_activation.= '	<span class="tab"></span><input type="checkbox" id="confirmation_cnil" name="confirmation_cnil" /><label for="confirmation_cnil"> J\'ai pris connaissance des informations relatives à mes données personnelles.</label><br />';
-	$form_activation.= '	<span class="tab"></span><button id="f_enregistrer" type="button" class="valider" disabled>Valider.</button><label id="ajax_msg_enregistrer">&nbsp;</label>';
-	$form_activation.= '</p>';
+  $form_activation = '<h2>Activation de votre compte</h2>';
+  $form_activation.= '<p>';
+  $form_activation.= '  <span class="tab"></span><input type="checkbox" id="confirmation_cnil" name="confirmation_cnil" /><label for="confirmation_cnil"> J\'ai pris connaissance des informations relatives à mes données personnelles.</label><br />';
+  $form_activation.= '  <span class="tab"></span><button id="f_enregistrer" type="button" class="valider" disabled>Valider.</button><label id="ajax_msg_enregistrer">&nbsp;</label>';
+  $form_activation.= '</p>';
 }
 else
 {
-	$form_activation = '<h2>Votre compte est activé</h2>';
-	$form_activation.= '<p><label class="valide">J\'ai pris connaissance des informations relatives à mes données personnelles.</label></p>';
+  $form_activation = '<h2>Votre compte est activé</h2>';
+  $form_activation.= '<p><label class="valide">J\'ai pris connaissance des informations relatives à mes données personnelles.</label></p>';
 }
 ?>
 
 <hr />
 <p class="astuce">
-	Veuillez prendre connaissance des <a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">informations CNIL relatives à l'application <em>SACoche</em></a>.
+  Veuillez prendre connaissance des <a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">informations CNIL relatives à l'application <em>SACoche</em></a>.
 </p>
 <p>
-	Sont précisés en particulier :
+  Sont précisés en particulier :
 </p>
 <ul class="puce">
-	<li>la nature des données enregistrées</li>
-	<li>la confidentialité de ces données</li>
-	<li>la durée de conservation de ces données</li>
-	<li>votre droit d'accès et de rectification aux données qui vous concernent</li>
+  <li>la nature des données enregistrées</li>
+  <li>la confidentialité de ces données</li>
+  <li>la durée de conservation de ces données</li>
+  <li>votre droit d'accès et de rectification aux données qui vous concernent</li>
 </ul>
 <p class="astuce">
-	Des informations peuvent évoluer ; vous pouvez à tout moment les consulter depuis votre menu <em>[Informations] [Données personnelles]</em>.
+  Des informations peuvent évoluer ; vous pouvez à tout moment les consulter depuis votre menu <em>[Informations] [Données personnelles]</em>.
 </p>
 <hr />
 <form action="#" method="post" id="form_cnil">
-	<?php echo $form_activation ?>
+  <?php echo $form_activation ?>
 </form>
 <hr />

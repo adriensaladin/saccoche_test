@@ -38,31 +38,31 @@ $fichier_logs = (isset($_POST['f_fichier']))     ? Clean::fichier($_POST['f_fich
 
 if($action=='modifier_debug')
 {
-	$debug = 0;
-	$tab_debug = array(
-		'PHP'     =>   1,
-		'PHPCAS'  =>   2,
-		'SQL'     =>   4,
-		'SESSION' =>   8,
-		'POST'    =>  16,
-		'GET'     =>  32,
-		'FILES'   =>  64,
-		'COOKIE'  => 128,
-		'CONST'   => 256
-	);
-	foreach($tab_debug as $debug_mode => $debug_val)
-	{
-		$debug += (isset($_POST['f_debug_'.$debug_mode])) ? $debug_val : 0 ;
-	}
-	if($debug)
-	{
-		FileSystem::ecrire_fichier( CHEMIN_FICHIER_DEBUG_CONFIG , $debug );
-	}
-	else
-	{
-		unlink(CHEMIN_FICHIER_DEBUG_CONFIG);
-	}
-	exit('ok');
+  $debug = 0;
+  $tab_debug = array(
+    'PHP'     =>   1,
+    'PHPCAS'  =>   2,
+    'SQL'     =>   4,
+    'SESSION' =>   8,
+    'POST'    =>  16,
+    'GET'     =>  32,
+    'FILES'   =>  64,
+    'COOKIE'  => 128,
+    'CONST'   => 256
+  );
+  foreach($tab_debug as $debug_mode => $debug_val)
+  {
+    $debug += (isset($_POST['f_debug_'.$debug_mode])) ? $debug_val : 0 ;
+  }
+  if($debug)
+  {
+    FileSystem::ecrire_fichier( CHEMIN_FICHIER_DEBUG_CONFIG , $debug );
+  }
+  else
+  {
+    unlink(CHEMIN_FICHIER_DEBUG_CONFIG);
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,21 +71,21 @@ if($action=='modifier_debug')
 
 if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 {
-	$chemin_logs = (substr($chemin_logs,-1)==DS) ? $chemin_logs : $chemin_logs.DS ;
-	// Vérifier chemin valide
-	if(!is_dir($chemin_logs))
-	{
-		exit('Chemin invalide (ce dossier n\'existe pas) !');
-	}
-	// Tester droits en écriture
-	if( !FileSystem::ecrire_fichier_si_possible( $chemin_logs.'debugcas_test_ecriture.txt' , 'ok' ) )
-	{
-		exit('Droits en écriture dans ce dossier insuffisants !');
-	}
-	// ok
-	unlink($chemin_logs.'debugcas_test_ecriture.txt');
-	FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
-	exit('ok');
+  $chemin_logs = (substr($chemin_logs,-1)==DS) ? $chemin_logs : $chemin_logs.DS ;
+  // Vérifier chemin valide
+  if(!is_dir($chemin_logs))
+  {
+    exit('Chemin invalide (ce dossier n\'existe pas) !');
+  }
+  // Tester droits en écriture
+  if( !FileSystem::ecrire_fichier_si_possible( $chemin_logs.'debugcas_test_ecriture.txt' , 'ok' ) )
+  {
+    exit('Droits en écriture dans ce dossier insuffisants !');
+  }
+  // ok
+  unlink($chemin_logs.'debugcas_test_ecriture.txt');
+  FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +94,8 @@ if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 
 if( ($action=='supprimer') && $fichier_logs )
 {
-	unlink(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt');
-	exit('ok');
+  unlink(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt');
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,8 +104,8 @@ if( ($action=='supprimer') && $fichier_logs )
 
 if( ($action=='voir') && $fichier_logs )
 {
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt') );
-	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt') );
+  exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

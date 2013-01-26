@@ -38,23 +38,23 @@ $ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 {
-	// Vérifier que le nom de la période est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom) )
-	{
-		exit('Erreur : nom de période déjà existant !');
-	}
-	// Insérer l'enregistrement
-	$periode_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_periode($ordre,$nom);
-	// Afficher le retour
-	echo'<tr id="id_'.$periode_id.'" class="new">';
-	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.html($nom).'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier cette période."></q>';
-	echo		'<q class="dupliquer" title="Dupliquer cette période."></q>';
-	echo		'<q class="supprimer" title="Supprimer cette période."></q>';
-	echo	'</td>';
-	echo'</tr>';
+  // Vérifier que le nom de la période est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom) )
+  {
+    exit('Erreur : nom de période déjà existant !');
+  }
+  // Insérer l'enregistrement
+  $periode_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_periode($ordre,$nom);
+  // Afficher le retour
+  echo'<tr id="id_'.$periode_id.'" class="new">';
+  echo  '<td>'.$ordre.'</td>';
+  echo  '<td>'.html($nom).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier cette période."></q>';
+  echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
+  echo    '<q class="supprimer" title="Supprimer cette période."></q>';
+  echo  '</td>';
+  echo'</tr>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,21 +62,21 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='modifier') && $id && $ordre && $nom )
 {
-	// Vérifier que le nom de la période est disponible
-	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom,$id) )
-	{
-		exit('Erreur : nom de période déjà existant !');
-	}
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
-	// Afficher le retour
-	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.html($nom).'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier cette période."></q>';
-	echo	'<q class="dupliquer" title="Dupliquer cette période."></q>';
-	echo	'<q class="supprimer" title="Supprimer cette période."></q>';
-	echo'</td>';
+  // Vérifier que le nom de la période est disponible
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom,$id) )
+  {
+    exit('Erreur : nom de période déjà existant !');
+  }
+  // Mettre à jour l'enregistrement
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
+  // Afficher le retour
+  echo'<td>'.$ordre.'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier cette période."></q>';
+  echo  '<q class="dupliquer" title="Dupliquer cette période."></q>';
+  echo  '<q class="supprimer" title="Supprimer cette période."></q>';
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,16 +84,16 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if( ($action=='supprimer') && $id )
 {
-	// Effacer l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
-	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'une période (n°'.$id.'), avec les bulletins associés.');
-	// Afficher le retour
-	echo'<td>ok</td>';
+  // Effacer l'enregistrement
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
+  // Log de l'action
+  SACocheLog::ajouter('Suppression d\'une période (n°'.$id.'), avec les bulletins associés.');
+  // Afficher le retour
+  echo'<td>ok</td>';
 }
 
 else
 {
-	echo'Erreur avec les données transmises !';
+  echo'Erreur avec les données transmises !';
 }
 ?>

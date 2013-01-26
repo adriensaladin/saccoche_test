@@ -30,8 +30,8 @@ $TITRE = "Périodes";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Périodes (gestion).</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe_groupe">Périodes &amp; classes / groupes.</a>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Périodes (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe_groupe">Périodes &amp; classes / groupes.</a>
 </div>
 
 <hr />
@@ -41,12 +41,12 @@ $TITRE = "Périodes";
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
 }
 else
 {
-	echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
-	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>';
+  echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>';
 }
 ?>

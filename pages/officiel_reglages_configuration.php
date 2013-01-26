@@ -98,23 +98,23 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
 <h2>Relevé d'évaluations</h2>
 
 <form action="#" method="post" id="form_releve">
-	<p>
-		<label class="tab">Appr. matière :</label><?php echo $select_releve_appreciation_rubrique ?><br />
-		<label class="tab">Appr. générale :</label><?php echo $select_releve_appreciation_generale ?><br />
-		<label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_releve_check_supplementaire" name="f_releve_check_supplementaire" value="1"<?php echo $check_releve_ligne_supplementaire ?> /> <input id="f_releve_ligne_factice" name="f_releve_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_releve_ligne_factice ?>" disabled /><input id="f_releve_ligne_supplementaire" name="f_releve_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_releve_ligne_supplementaire ?>" /><br />
-		<label class="tab">Assiduité :</label><label for="f_releve_assiduite"><input type="checkbox" id="f_releve_assiduite" name="f_releve_assiduite" value="1"<?php echo $check_releve_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
-		<span class="radio">Prise en compte des évaluations antérieures :</span>
-			<label for="f_releve_retroactif_auto"><input type="radio" id="f_releve_retroactif_auto" name="f_releve_retroactif" value="auto"<?php echo $check_releve_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-			<label for="f_releve_retroactif_non"><input type="radio" id="f_releve_retroactif_non" name="f_releve_retroactif" value="non"<?php echo $check_releve_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-			<label for="f_releve_retroactif_oui"><input type="radio" id="f_releve_retroactif_oui" name="f_releve_retroactif" value="oui"<?php echo $check_releve_retroactif_oui ?> /> oui</label><br />
-		<label class="tab">Restriction :</label><label for="f_releve_only_socle"><input type="checkbox" id="f_releve_only_socle" name="f_releve_only_socle" value="1"<?php echo $check_releve_only_socle ?> /> Uniquement les items liés du socle</label><br />
-		<label class="tab">Indications :</label><label for="f_releve_etat_acquisition"><input type="checkbox" id="f_releve_etat_acquisition" name="f_releve_etat_acquisition" value="1"<?php echo $check_releve_etat_acquisition ?> /> Colonne état d'acquisition</label><span id="span_releve_etat_acquisition" class="<?php echo $class_span_releve_etat_acquisition ?>">&nbsp;&nbsp;&nbsp;<label for="f_releve_moyenne_scores"><input type="checkbox" id="f_releve_moyenne_scores" name="f_releve_moyenne_scores" value="1"<?php echo $check_releve_moyenne_scores ?> /> Ligne moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_pourcentage_acquis"><input type="checkbox" id="f_releve_pourcentage_acquis" name="f_releve_pourcentage_acquis" value="1"<?php echo $check_releve_pourcentage_acquis ?> /> Ligne pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_conversion_sur_20" class="<?php echo $class_label_releve_conversion_sur_20 ?>"><input type="checkbox" id="f_releve_conversion_sur_20" name="f_releve_conversion_sur_20" value="1"<?php echo $check_releve_conversion_sur_20 ?> /> Conversion en note sur 20</label></span><br />
-		<label class="tab">Infos items :</label><?php echo $select_releve_cases_nb ?>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_coef"><input type="checkbox" id="f_releve_aff_coef" name="f_releve_aff_coef" value="1"<?php echo $check_releve_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_socle"><input type="checkbox" id="f_releve_aff_socle" name="f_releve_aff_socle" value="1"<?php echo $check_releve_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_domaine"><input type="checkbox" id="f_releve_aff_domaine" name="f_releve_aff_domaine" value="1"<?php echo $check_releve_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_theme"><input type="checkbox" id="f_releve_aff_theme" name="f_releve_aff_theme" value="1"<?php echo $check_releve_aff_theme ?> /> Thèmes</label><br />
-		<label class="tab">Impression :</label><?php echo $select_releve_couleur ?> <?php echo $select_releve_legende ?>
-	</p>
-	<p>
-		<span class="tab"></span><button id="bouton_valider_releve" type="button" class="parametre">Enregister.</button><label id="ajax_msg_releve">&nbsp;</label>
-	</p>
+  <p>
+    <label class="tab">Appr. matière :</label><?php echo $select_releve_appreciation_rubrique ?><br />
+    <label class="tab">Appr. générale :</label><?php echo $select_releve_appreciation_generale ?><br />
+    <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_releve_check_supplementaire" name="f_releve_check_supplementaire" value="1"<?php echo $check_releve_ligne_supplementaire ?> /> <input id="f_releve_ligne_factice" name="f_releve_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_releve_ligne_factice ?>" disabled /><input id="f_releve_ligne_supplementaire" name="f_releve_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_releve_ligne_supplementaire ?>" /><br />
+    <label class="tab">Assiduité :</label><label for="f_releve_assiduite"><input type="checkbox" id="f_releve_assiduite" name="f_releve_assiduite" value="1"<?php echo $check_releve_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <span class="radio">Prise en compte des évaluations antérieures :</span>
+      <label for="f_releve_retroactif_auto"><input type="radio" id="f_releve_retroactif_auto" name="f_releve_retroactif" value="auto"<?php echo $check_releve_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_releve_retroactif_non"><input type="radio" id="f_releve_retroactif_non" name="f_releve_retroactif" value="non"<?php echo $check_releve_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_releve_retroactif_oui"><input type="radio" id="f_releve_retroactif_oui" name="f_releve_retroactif" value="oui"<?php echo $check_releve_retroactif_oui ?> /> oui</label><br />
+    <label class="tab">Restriction :</label><label for="f_releve_only_socle"><input type="checkbox" id="f_releve_only_socle" name="f_releve_only_socle" value="1"<?php echo $check_releve_only_socle ?> /> Uniquement les items liés du socle</label><br />
+    <label class="tab">Indications :</label><label for="f_releve_etat_acquisition"><input type="checkbox" id="f_releve_etat_acquisition" name="f_releve_etat_acquisition" value="1"<?php echo $check_releve_etat_acquisition ?> /> Colonne état d'acquisition</label><span id="span_releve_etat_acquisition" class="<?php echo $class_span_releve_etat_acquisition ?>">&nbsp;&nbsp;&nbsp;<label for="f_releve_moyenne_scores"><input type="checkbox" id="f_releve_moyenne_scores" name="f_releve_moyenne_scores" value="1"<?php echo $check_releve_moyenne_scores ?> /> Ligne moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_pourcentage_acquis"><input type="checkbox" id="f_releve_pourcentage_acquis" name="f_releve_pourcentage_acquis" value="1"<?php echo $check_releve_pourcentage_acquis ?> /> Ligne pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_conversion_sur_20" class="<?php echo $class_label_releve_conversion_sur_20 ?>"><input type="checkbox" id="f_releve_conversion_sur_20" name="f_releve_conversion_sur_20" value="1"<?php echo $check_releve_conversion_sur_20 ?> /> Conversion en note sur 20</label></span><br />
+    <label class="tab">Infos items :</label><?php echo $select_releve_cases_nb ?>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_coef"><input type="checkbox" id="f_releve_aff_coef" name="f_releve_aff_coef" value="1"<?php echo $check_releve_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_socle"><input type="checkbox" id="f_releve_aff_socle" name="f_releve_aff_socle" value="1"<?php echo $check_releve_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_domaine"><input type="checkbox" id="f_releve_aff_domaine" name="f_releve_aff_domaine" value="1"<?php echo $check_releve_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_theme"><input type="checkbox" id="f_releve_aff_theme" name="f_releve_aff_theme" value="1"<?php echo $check_releve_aff_theme ?> /> Thèmes</label><br />
+    <label class="tab">Impression :</label><?php echo $select_releve_couleur ?> <?php echo $select_releve_legende ?>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_releve" type="button" class="parametre">Enregister.</button><label id="ajax_msg_releve">&nbsp;</label>
+  </p>
 </form>
 
 <hr />
@@ -122,32 +122,32 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
 <h2>Bulletin scolaire</h2>
 
 <form action="#" method="post" id="form_bulletin">
-	<p>
-		<label class="tab">Appr. matière :</label><?php echo $select_bulletin_appreciation_rubrique ?><br />
-		<label class="tab">Appr. générale :</label><?php echo $select_bulletin_appreciation_generale ?><br />
-		<label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_bulletin_check_supplementaire" name="f_bulletin_check_supplementaire" value="1"<?php echo $check_bulletin_ligne_supplementaire ?> /> <input id="f_bulletin_ligne_factice" name="f_bulletin_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_bulletin_ligne_factice ?>" disabled /><input id="f_bulletin_ligne_supplementaire" name="f_bulletin_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_bulletin_ligne_supplementaire ?>" /><br />
-		<label class="tab">Assiduité :</label><label for="f_bulletin_assiduite"><input type="checkbox" id="f_bulletin_assiduite" name="f_bulletin_assiduite" value="1"<?php echo $check_bulletin_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
-		<span class="radio">Prise en compte des évaluations antérieures :</span>
-			<label for="f_bulletin_retroactif_auto"><input type="radio" id="f_bulletin_retroactif_auto" name="f_bulletin_retroactif" value="auto"<?php echo $check_bulletin_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-			<label for="f_bulletin_retroactif_non"><input type="radio" id="f_bulletin_retroactif_non" name="f_bulletin_retroactif" value="non"<?php echo $check_bulletin_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-			<label for="f_bulletin_retroactif_oui"><input type="radio" id="f_bulletin_retroactif_oui" name="f_bulletin_retroactif" value="oui"<?php echo $check_bulletin_retroactif_oui ?> /> oui</label><br />
-		<label class="tab">Restriction :</label><label for="f_bulletin_only_socle"><input type="checkbox" id="f_bulletin_only_socle" name="f_bulletin_only_socle" value="1"<?php echo $check_bulletin_only_socle ?> /> Uniquement les items liés du socle</label><br />
-		<label class="tab">Acquisitions :</label>
-		<label for="f_bulletin_barre_acquisitions"><input type="checkbox" id="f_bulletin_barre_acquisitions" name="f_bulletin_barre_acquisitions" value="1"<?php echo $check_bulletin_barre_acquisitions ?> /> Barre avec le total des états acquisitions par matière</label><br />
-		<label class="tab">Moyennes :</label>
-		<label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
-		<span id="span_moyennes" class="<?php echo $class_span_bulletin_moyennes ?>">
-			[ <label for="f_bulletin_conversion_sur_20"><input type="radio" id="f_bulletin_conversion_sur_20" name="f_bulletin_conversion_sur_20" value="1"<?php echo $check_bulletin_conversion_sur_20 ?> /> en note sur 20</label> | <label for="f_bulletin_pourcentage"><input type="radio" id="f_bulletin_pourcentage" name="f_bulletin_conversion_sur_20" value="0"<?php echo $check_bulletin_pourcentage ?> /> en pourcentage</label> ]&nbsp;&nbsp;&nbsp;
-			<label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>&nbsp;&nbsp;&nbsp;
-			<span id="span_moyenne_generale" class="<?php echo $class_span_bulletin_moyenne_generale ?>">
-				<label for="f_bulletin_moyenne_generale"><input type="checkbox" id="f_bulletin_moyenne_generale" name="f_bulletin_moyenne_generale" value="1"<?php echo $check_bulletin_moyenne_generale ?> /> Moyenne générale</label>
-			</span>
-		</span><br />
-		<label class="tab">Impression :</label><?php echo $select_bulletin_couleur ?> <?php echo $select_bulletin_legende ?>
-	</p>
-	<p>
-		<span class="tab"></span><button id="bouton_valider_bulletin" type="button" class="parametre">Enregister.</button><label id="ajax_msg_bulletin">&nbsp;</label>
-	</p>
+  <p>
+    <label class="tab">Appr. matière :</label><?php echo $select_bulletin_appreciation_rubrique ?><br />
+    <label class="tab">Appr. générale :</label><?php echo $select_bulletin_appreciation_generale ?><br />
+    <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_bulletin_check_supplementaire" name="f_bulletin_check_supplementaire" value="1"<?php echo $check_bulletin_ligne_supplementaire ?> /> <input id="f_bulletin_ligne_factice" name="f_bulletin_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_bulletin_ligne_factice ?>" disabled /><input id="f_bulletin_ligne_supplementaire" name="f_bulletin_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_bulletin_ligne_supplementaire ?>" /><br />
+    <label class="tab">Assiduité :</label><label for="f_bulletin_assiduite"><input type="checkbox" id="f_bulletin_assiduite" name="f_bulletin_assiduite" value="1"<?php echo $check_bulletin_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <span class="radio">Prise en compte des évaluations antérieures :</span>
+      <label for="f_bulletin_retroactif_auto"><input type="radio" id="f_bulletin_retroactif_auto" name="f_bulletin_retroactif" value="auto"<?php echo $check_bulletin_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_bulletin_retroactif_non"><input type="radio" id="f_bulletin_retroactif_non" name="f_bulletin_retroactif" value="non"<?php echo $check_bulletin_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_bulletin_retroactif_oui"><input type="radio" id="f_bulletin_retroactif_oui" name="f_bulletin_retroactif" value="oui"<?php echo $check_bulletin_retroactif_oui ?> /> oui</label><br />
+    <label class="tab">Restriction :</label><label for="f_bulletin_only_socle"><input type="checkbox" id="f_bulletin_only_socle" name="f_bulletin_only_socle" value="1"<?php echo $check_bulletin_only_socle ?> /> Uniquement les items liés du socle</label><br />
+    <label class="tab">Acquisitions :</label>
+    <label for="f_bulletin_barre_acquisitions"><input type="checkbox" id="f_bulletin_barre_acquisitions" name="f_bulletin_barre_acquisitions" value="1"<?php echo $check_bulletin_barre_acquisitions ?> /> Barre avec le total des états acquisitions par matière</label><br />
+    <label class="tab">Moyennes :</label>
+    <label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
+    <span id="span_moyennes" class="<?php echo $class_span_bulletin_moyennes ?>">
+      [ <label for="f_bulletin_conversion_sur_20"><input type="radio" id="f_bulletin_conversion_sur_20" name="f_bulletin_conversion_sur_20" value="1"<?php echo $check_bulletin_conversion_sur_20 ?> /> en note sur 20</label> | <label for="f_bulletin_pourcentage"><input type="radio" id="f_bulletin_pourcentage" name="f_bulletin_conversion_sur_20" value="0"<?php echo $check_bulletin_pourcentage ?> /> en pourcentage</label> ]&nbsp;&nbsp;&nbsp;
+      <label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>&nbsp;&nbsp;&nbsp;
+      <span id="span_moyenne_generale" class="<?php echo $class_span_bulletin_moyenne_generale ?>">
+        <label for="f_bulletin_moyenne_generale"><input type="checkbox" id="f_bulletin_moyenne_generale" name="f_bulletin_moyenne_generale" value="1"<?php echo $check_bulletin_moyenne_generale ?> /> Moyenne générale</label>
+      </span>
+    </span><br />
+    <label class="tab">Impression :</label><?php echo $select_bulletin_couleur ?> <?php echo $select_bulletin_legende ?>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_bulletin" type="button" class="parametre">Enregister.</button><label id="ajax_msg_bulletin">&nbsp;</label>
+  </p>
 </form>
 
 <hr />
@@ -155,18 +155,18 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
 <h2>État de maîtrise du socle</h2>
 
 <form action="#" method="post" id="form_socle">
-	<p>
-		<label class="tab">Appr. compétence :</label><?php echo $select_socle_appreciation_rubrique ?><br />
-		<label class="tab">Appr. générale :</label><?php echo $select_socle_appreciation_generale ?><br />
-		<label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_socle_check_supplementaire" name="f_socle_check_supplementaire" value="1"<?php echo $check_socle_ligne_supplementaire ?> /> <input id="f_socle_ligne_factice" name="f_socle_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_socle_ligne_factice ?>" disabled /><input id="f_socle_ligne_supplementaire" name="f_socle_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_socle_ligne_supplementaire ?>" /><br />
-		<label class="tab">Assiduité :</label><label for="f_socle_assiduite"><input type="checkbox" id="f_socle_assiduite" name="f_socle_assiduite" value="1"<?php echo $check_socle_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
-		<label class="tab">Restriction :</label><label for="f_socle_only_presence"><input type="checkbox" id="f_socle_only_presence" name="f_socle_only_presence" value="1"<?php echo $check_socle_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
-		<label class="tab">Indications :</label><label for="f_socle_pourcentage_acquis"><input type="checkbox" id="f_socle_pourcentage_acquis" name="f_socle_pourcentage_acquis" value="1"<?php echo $check_socle_pourcentage_acquis ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_etat_validation"><input type="checkbox" id="f_socle_etat_validation" name="f_socle_etat_validation" value="1"<?php echo $check_socle_etat_validation ?> /> État de validation</label><br />
-		<label class="tab">Impression :</label><?php echo $select_socle_couleur ?> <?php echo $select_socle_legende ?>
-	</p>
-	<p>
-		<span class="tab"></span><button id="bouton_valider_socle" type="button" class="parametre">Enregister.</button><label id="ajax_msg_socle">&nbsp;</label>
-	</p>
+  <p>
+    <label class="tab">Appr. compétence :</label><?php echo $select_socle_appreciation_rubrique ?><br />
+    <label class="tab">Appr. générale :</label><?php echo $select_socle_appreciation_generale ?><br />
+    <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_socle_check_supplementaire" name="f_socle_check_supplementaire" value="1"<?php echo $check_socle_ligne_supplementaire ?> /> <input id="f_socle_ligne_factice" name="f_socle_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_socle_ligne_factice ?>" disabled /><input id="f_socle_ligne_supplementaire" name="f_socle_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_socle_ligne_supplementaire ?>" /><br />
+    <label class="tab">Assiduité :</label><label for="f_socle_assiduite"><input type="checkbox" id="f_socle_assiduite" name="f_socle_assiduite" value="1"<?php echo $check_socle_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <label class="tab">Restriction :</label><label for="f_socle_only_presence"><input type="checkbox" id="f_socle_only_presence" name="f_socle_only_presence" value="1"<?php echo $check_socle_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
+    <label class="tab">Indications :</label><label for="f_socle_pourcentage_acquis"><input type="checkbox" id="f_socle_pourcentage_acquis" name="f_socle_pourcentage_acquis" value="1"<?php echo $check_socle_pourcentage_acquis ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_etat_validation"><input type="checkbox" id="f_socle_etat_validation" name="f_socle_etat_validation" value="1"<?php echo $check_socle_etat_validation ?> /> État de validation</label><br />
+    <label class="tab">Impression :</label><?php echo $select_socle_couleur ?> <?php echo $select_socle_legende ?>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_socle" type="button" class="parametre">Enregister.</button><label id="ajax_msg_socle">&nbsp;</label>
+  </p>
 </form>
 
 <hr />

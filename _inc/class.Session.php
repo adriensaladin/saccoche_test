@@ -161,19 +161,23 @@ class Session
   private static function init()
   {
     $_SESSION = array();
-    // Clef pour éviter les vols de session
-    $_SESSION['SESSION_KEY']      = Session::session_key();
+    // Clef pour éviter les vols de session.
+    $_SESSION['SESSION_KEY']           = Session::session_key();
     // Numéro de la base
-    $_SESSION['BASE']             = 0;
-    // Données associées à l'utilisateur.
-    $_SESSION['USER_PROFIL']      = 'public';  // public / webmestre / administrateur / directeur / professeur / eleve
-    $_SESSION['USER_ID']          = 0;
-    $_SESSION['USER_NOM']         = '-';
-    $_SESSION['USER_PRENOM']      = '-';
+    $_SESSION['BASE']                  = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']     = 'OUT';
+    $_SESSION['USER_PROFIL_TYPE']      = 'public';
+    $_SESSION['USER_PROFIL_NOM_COURT'] = 'non connecté';
+    $_SESSION['USER_PROFIL_NOM_LONG']  = 'utilisateur non connecté';
+    $_SESSION['USER_DUREE_INACTIVITE'] = 0;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']               = 0;
+    $_SESSION['USER_NOM']              = '-';
+    $_SESSION['USER_PRENOM']           = '-';
     // Données associées à l'établissement.
-    $_SESSION['SESAMATH_ID']      = 0;
-    $_SESSION['CONNEXION_MODE']   = 'normal';
-    $_SESSION['DUREE_INACTIVITE'] = 30;
+    $_SESSION['SESAMATH_ID']           = 0;
+    $_SESSION['CONNEXION_MODE']        = 'normal';
   }
 
   /*
@@ -262,6 +266,7 @@ class Session
   /*
    * Fermer une session existante
    * Appelé une fois depuis /webservices/argos_parent.php et une fois depuis ajax.php
+   * Remarque: pour obliger à une reconnexion sans détruire la session (donc les infos des fournisseurs de SSO), il suffit de faire $_SESSION['USER_PROFIL_SIGLE'] = 'OUT';
    * 
    * @param void
    * @return void
@@ -312,7 +317,7 @@ class Session
     {
       // 2. id de session transmis
       Session::open_old();
-      if(!isset($_SESSION['USER_PROFIL']))
+      if(!isset($_SESSION['USER_PROFIL_SIGLE']))
       {
         // 2.1. Pas de session retrouvée (sinon cette variable serait renseignée)
         if(!Session::$tab_droits_page['public'])
@@ -333,7 +338,7 @@ class Session
         Session::close();
         exit_error( 'Session incompatible avec votre connexion' /*titre*/ , 'Modification d\'adresse IP ou de navigateur détectée !<br />Par sécurité, vous devez vous reconnecter.' /*contenu*/ );
       }
-      elseif($_SESSION['USER_PROFIL'] == 'public')
+      elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
       {
         // 2.3. Session retrouvée, utilisateur non identifié
         if(!Session::$tab_droits_page['public'])
@@ -349,7 +354,7 @@ class Session
       else
       {
         // 2.4. Session retrouvée, utilisateur identifié
-        if(Session::$tab_droits_page[$_SESSION['USER_PROFIL']])
+        if(Session::$tab_droits_page[$_SESSION['USER_PROFIL_TYPE']])
         {
           // 2.4.1. Espace identifié => Espace identifié identique : RAS
         }

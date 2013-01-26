@@ -1,13 +1,13 @@
 DROP TABLE IF EXISTS sacoche_socle_pilier;
 
 CREATE TABLE sacoche_socle_pilier (
-	pilier_id    TINYINT(3)   UNSIGNED                NOT NULL AUTO_INCREMENT,
-	palier_id    TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
-	pilier_ordre TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 1 COMMENT "Commence à 1.",
-	pilier_ref   VARCHAR(2)   COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	pilier_nom   VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	PRIMARY KEY (pilier_id),
-	KEY palier_id (palier_id)
+  pilier_id    TINYINT(3)   UNSIGNED                NOT NULL AUTO_INCREMENT,
+  palier_id    TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
+  pilier_ordre TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 1 COMMENT "Commence à 1.",
+  pilier_ref   VARCHAR(2)   COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  pilier_nom   VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  PRIMARY KEY (pilier_id),
+  KEY palier_id (palier_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_socle_pilier DISABLE KEYS;

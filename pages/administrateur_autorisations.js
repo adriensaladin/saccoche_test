@@ -27,135 +27,229 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher ou masquer des éléments de formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function view_bilans()
-		{
-			// "droit_releve_etat_acquisition" => "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis"
-			var opacite_parent = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="parent"]').is(':checked') ) ? 1 : 0 ;
-			var opacite_eleve  = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="eleve"]' ).is(':checked') ) ? 1 : 0 ;
-			var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
-			$('#tr_droit_releve_moyenne_score , #tr_droit_releve_pourcentage_acquis').fadeTo(0,opacite_ligne);
-			$('#form_autorisations input[name="droit_releve_moyenne_score"][value="parent"] , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_releve_moyenne_score"][value="eleve"]  , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			// "droit_releve_etat_acquisition" + "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis" => droit_releve_conversion_sur_20
-			var opacite_parent = ( opacite_parent && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="parent"]').is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="parent"]').is(':checked') ) ) ? 1 : 0 ;
-			var opacite_eleve  = ( opacite_eleve  && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="eleve"]' ).is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="eleve"]' ).is(':checked') ) ) ? 1 : 0 ;
-			var opacite_ligne  = ( opacite_ligne  && ( opacite_parent || opacite_eleve ) ) ? 1 : 0 ;
-			$('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			$('#tr_droit_releve_conversion_sur_20').fadeTo(0,opacite_ligne);
-		}
-		view_bilans();
+    function view_bilans()
+    {
+      // "droit_releve_etat_acquisition" => "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis"
+      var opacite_parent = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="TUT"]').is(':checked') ) ? 1 : 0 ;
+      var opacite_eleve  = ( $('#form_autorisations input[name="droit_releve_etat_acquisition"][value="ELV"]').is(':checked') ) ? 1 : 0 ;
+      var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
+      $('#tr_droit_releve_moyenne_score , #tr_droit_releve_pourcentage_acquis').fadeTo(0,opacite_ligne);
+      $('#form_autorisations input[name="droit_releve_moyenne_score"][value="TUT"] , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_releve_moyenne_score"][value="ELV"] , #form_autorisations input[name="droit_releve_pourcentage_acquis"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      // "droit_releve_etat_acquisition" + "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis" => droit_releve_conversion_sur_20
+      var opacite_parent = ( opacite_parent && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="TUT"]').is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="TUT"]').is(':checked') ) ) ? 1 : 0 ;
+      var opacite_eleve  = ( opacite_eleve  && ( $('#form_autorisations input[name="droit_releve_moyenne_score"][value="ELV"]').is(':checked') || $('#form_autorisations input[name="droit_releve_pourcentage_acquis"][value="ELV"]').is(':checked') ) ) ? 1 : 0 ;
+      var opacite_ligne  = ( opacite_ligne  && ( opacite_parent || opacite_eleve ) ) ? 1 : 0 ;
+      $('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_releve_conversion_sur_20"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      $('#tr_droit_releve_conversion_sur_20').fadeTo(0,opacite_ligne);
+    }
+    view_bilans();
 
-		function view_socle()
-		{
-			var opacite_parent = $('#form_autorisations input[name="droit_socle_acces"][value="parent"]').is(':checked') ? 1 : 0 ;
-			var opacite_eleve  = $('#form_autorisations input[name="droit_socle_acces"][value="eleve"]' ).is(':checked') ? 1 : 0 ;
-			var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
-			$('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			$('#form_autorisations input[name="droit_socle_etat_validation"][value="parent"]').parent().fadeTo(0,opacite_parent);
-			$('#form_autorisations input[name="droit_socle_etat_validation"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
-			$('#tr_droit_socle_pourcentage_acquis').fadeTo(0,opacite_ligne);
-			$('#tr_droit_socle_etat_validation').fadeTo(0,opacite_ligne);
-		}
-		view_socle();
+    function view_socle()
+    {
+      var opacite_parent = $('#form_autorisations input[name="droit_socle_acces"][value="TUT"]').is(':checked') ? 1 : 0 ;
+      var opacite_eleve  = $('#form_autorisations input[name="droit_socle_acces"][value="ELV"]').is(':checked') ? 1 : 0 ;
+      var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
+      $('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      $('#form_autorisations input[name="droit_socle_etat_validation"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_socle_etat_validation"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      $('#tr_droit_socle_pourcentage_acquis').fadeTo(0,opacite_ligne);
+      $('#tr_droit_socle_etat_validation').fadeTo(0,opacite_ligne);
+    }
+    view_socle();
+
+    function view_all_pp()
+    {
+      $('#form_autorisations input[value="ONLY_PP"]').each
+      (
+        function()
+        {
+          var objet = $(this).attr('name');
+          var count_check = 0;
+          for(var value in tab_profil_join_groupes) // Parcourir un tableau associatif...
+          {
+            if(tab_profil_join_groupes[value])
+            {
+              count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
+            }
+          }
+          var opacite = count_check ? 1 : 0 ;
+          $(this).parent().fadeTo(0,opacite);
+        }
+      );
+    }
+    view_all_pp();
+
+    function view_pp(objet)
+    {
+      if($('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]').length)
+      {
+        var count_check = 0;
+        for(var value in tab_profil_join_groupes) // Parcourir un tableau associatif...
+        {
+          if(tab_profil_join_groupes[value])
+          {
+            count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
+          }
+        }
+        var opacite = count_check ? 1 : 0 ;
+        $('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]').parent().fadeTo(0,opacite);
+      }
+    }
+
+    function view_all_coord()
+    {
+      $('#form_autorisations input[value="ONLY_COORD"]').each
+      (
+        function()
+        {
+          var objet = $(this).attr('name');
+          var count_check = 0;
+          for(var value in tab_profil_join_matieres) // Parcourir un tableau associatif...
+          {
+            if(tab_profil_join_matieres[value])
+            {
+              count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
+            }
+          }
+          var opacite = count_check ? 1 : 0 ;
+          $(this).parent().fadeTo(0,opacite);
+        }
+      );
+    }
+    view_all_coord();
+
+    function view_coord(objet)
+    {
+      if($('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').length)
+      {
+        var count_check = 0;
+        for(var value in tab_profil_join_matieres) // Parcourir un tableau associatif...
+        {
+          if(tab_profil_join_matieres[value])
+          {
+            count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
+          }
+        }
+        var opacite = count_check ? 1 : 0 ;
+        $('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').parent().fadeTo(0,opacite);
+      }
+    }
+
+    function coloriser_cellules_ligne(objet)
+    {
+      var check_pp    = $('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]'   ).is(':checked') ? true : false ;
+      var check_coord = $('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').is(':checked') ? true : false ;
+      $('#form_autorisations input[name="'+objet+'"]').each
+      (
+        function()
+        {
+          var valeur = $(this).val();
+          var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
+          $(this).parent().removeAttr("class").addClass('hc '+color);
+        }
+      );
+    }
+
+    function actualiser_si_besoin(objet)
+    {
+      if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
+      {
+        view_bilans();
+      }
+      if(objet=='droit_socle_acces')
+      {
+        view_socle();
+      }
+      coloriser_cellules_ligne(objet);
+      view_pp(objet);
+      view_coord(objet);
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alerter sur la nécessité de valider
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$("#form_autorisations input").change
-		(
-			function()
-			{
-				var objet = $(this).attr('name');
-				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-				if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
-				{
-					view_bilans();
-				}
-				if(objet=='droit_socle_acces')
-				{
-					view_socle();
-				}
-			}
-		);
+    $("#form_autorisations input").change
+    (
+      function()
+      {
+        var objet  = $(this).attr('name');
+        actualiser_si_besoin(objet);
+        $('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialiser un formulaire avec les valeurs par défaut
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#form_autorisations button[name=initialiser]').click
-		(
-			function()
-			{
-				var objet = $(this).parent().parent().attr('id').substring(3);
-				for(var value in tab_init[objet]) // Parcourir un tableau associatif...
-				{
-					$('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').prop('checked',tab_init[objet][value]);
-				}
-				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-				if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
-				{
-					view_bilans();
-				}
-				if(objet=='droit_socle_acces')
-				{
-					view_socle();
-				}
-			}
-		);
+    $('#form_autorisations button[name=initialiser]').click
+    (
+      function()
+      {
+        var objet = $(this).parent().parent().attr('id').substring(3);
+        for(var value in tab_init[objet]) // Parcourir un tableau associatif...
+        {
+          $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').prop('checked',tab_init[objet][value]);
+        }
+        actualiser_si_besoin(objet);
+        $('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Soumission du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#form_autorisations button[name=valider]').click
-		(
-			function()
-			{
-				var obj_bouton = $(this);
-				var objet = obj_bouton.parent().parent().attr('id').substring(3);
-				var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
-				obj_bouton.prop('disabled',true);
-				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_objet='+objet+'&f_profils='+tab_check,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							obj_bouton.prop('disabled',false);
-							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							obj_bouton.prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_'+objet).removeAttr("class").addClass("valide").html("Droits enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
+    $('#form_autorisations button[name=valider]').click
+    (
+      function()
+      {
+        var obj_bouton = $(this);
+        var objet = obj_bouton.parent().parent().attr('id').substring(3);
+        var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
+        obj_bouton.prop('disabled',true);
+        $('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_objet='+objet+'&f_profils='+tab_check,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              obj_bouton.prop('disabled',false);
+              $('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              obj_bouton.prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg_'+objet).removeAttr("class").addClass("valide").html("Droits enregistrés !");
+              }
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

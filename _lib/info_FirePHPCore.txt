@@ -20,10 +20,10 @@ Utilisation dans le code :
 
 if(DEBUG)
 {
-	$firephp->log('Début du programme');  
-	$firephp->info('La condition est fausse...');  
-	$firephp->warn('Possiblement une erreur');  
-	$firephp->error('Exception : ça a planté!');
-	$firephp->trace('You are here!');
-	$firephp->dump('Variable', $variable);
+  $firephp->log('Début du programme');  
+  $firephp->info('La condition est fausse...');  
+  $firephp->warn('Possiblement une erreur');  
+  $firephp->error('Exception : ça a planté!');
+  $firephp->trace('You are here!');
+  $firephp->dump('Variable', $variable);
 }

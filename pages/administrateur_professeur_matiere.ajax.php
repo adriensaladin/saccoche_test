@@ -38,8 +38,8 @@ $user_id    = (isset($_POST['user_id']))    ? Clean::entier($_POST['user_id'])  
 
 if( ($action=='ajouter') && ($matiere_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,TRUE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,TRUE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,8 @@ if( ($action=='ajouter') && ($matiere_id) && ($user_id) )
 
 if( ($action=='retirer') && ($matiere_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,FALSE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,FALSE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ if( ($action=='retirer') && ($matiere_id) && ($user_id) )
 
 if( ($action=='ajouter_coord') && ($matiere_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,TRUE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,TRUE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,8 +68,8 @@ if( ($action=='ajouter_coord') && ($matiere_id) && ($user_id) )
 
 if( ($action=='retirer_coord') && ($matiere_id) && ($user_id) )
 {
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,FALSE);
-	exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,FALSE);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

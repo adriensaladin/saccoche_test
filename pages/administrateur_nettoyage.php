@@ -37,7 +37,7 @@ $TITRE = "Nettoyer / Initialiser la base";
 
 <div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_anomalies_numerotation">DOC</a></span>).</div>
 <form action="#" method="post" id="form_numeroter"><fieldset>
-	<span class="tab"></span><button id="bouton_numeroter" type="button" class="nettoyer">Lancer le nettoyage d'éventuelles anomalies de numérotation.</button><label id="ajax_msg_numeroter">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_numeroter" type="button" class="nettoyer">Lancer le nettoyage d'éventuelles anomalies de numérotation.</button><label id="ajax_msg_numeroter">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -46,7 +46,7 @@ $TITRE = "Nettoyer / Initialiser la base";
 
 <div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_correspondances_anormales">DOC</a></span>).</div>
 <form action="#" method="post" id="form_nettoyer"><fieldset>
-	<span class="tab"></span><button id="bouton_nettoyer" type="button" class="nettoyer">Lancer le nettoyage d'éventuelles correspondances anormales.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_nettoyer" type="button" class="nettoyer">Lancer le nettoyage d'éventuelles correspondances anormales.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -56,7 +56,7 @@ $TITRE = "Nettoyer / Initialiser la base";
 <div class="astuce">Entre deux années scolaires, il faut purger la base avant d'importer les nouveaux utilisateurs (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_initialisation_annuelle">DOC</a></span>).</div>
 <div class="danger">N'effectuez jamais une initialisation en cours d'année scolaire !</div>
 <form action="#" method="post" id="form_purger"><fieldset>
-	<span class="tab"></span><button id="bouton_purger" type="button" class="nettoyer">Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_purger" type="button" class="nettoyer">Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -65,21 +65,16 @@ $TITRE = "Nettoyer / Initialiser la base";
 
 <div class="danger">Cette fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_suppression_notes_validations">DOC</a></span>) !</div>
 <form action="#" method="post" id="form_supprimer"><fieldset>
-	<span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyer">Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyer">Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
 
 <h2>Effacement des étiquettes nom &amp; prénom</h2>
 
-<div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_effacement_etiquettes">DOC</a></span>).</div>
+<div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constatée (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_effacement_etiquettes">DOC</a></span>).</div>
 <form action="#" method="post" id="form_effacer"><fieldset>
-	<span class="tab"></span><button id="bouton_effacer" type="button" class="nettoyer">Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_effacer" type="button" class="nettoyer">Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
-
-<ul class="puce hide" id="ajax_info">
-	<li></li>
-</ul>
-<p>&nbsp;</p>

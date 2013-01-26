@@ -40,40 +40,40 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 // On récupère les élèves
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id ) ;
 if(empty($DB_TAB))
 {
-	exit('Aucun élève trouvé dans ce regroupement.');
+  exit('Aucun élève trouvé dans ce regroupement.');
 }
 $tab_vignettes = array();
 $img_height = PHOTO_DIMENSION_MAXI;
 $img_width  = PHOTO_DIMENSION_MAXI*2/3;
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_vignettes[$DB_ROW['user_id']] = array(
-		'user_nom'    => $DB_ROW['user_nom'],
-		'user_prenom' => $DB_ROW['user_prenom'],
-		'img_width'   => $img_width,
-		'img_height'  => $img_height,
-		'img_src'     => '',
-		'img_title'   => TRUE
-	);
+  $tab_vignettes[$DB_ROW['user_id']] = array(
+    'user_nom'    => $DB_ROW['user_nom'],
+    'user_prenom' => $DB_ROW['user_prenom'],
+    'img_width'   => $img_width,
+    'img_height'  => $img_height,
+    'img_src'     => '',
+    'img_title'   => TRUE
+  );
 }
 // On récupère les photos
 $listing_user_id = implode(',',array_keys($tab_vignettes));
 $DB_TAB = DB_STRUCTURE_IMAGE::DB_lister_images( $listing_user_id , 'photo' );
 if(!empty($DB_TAB))
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_vignettes[$DB_ROW['user_id']]['img_width']  = $DB_ROW['image_largeur'];
-		$tab_vignettes[$DB_ROW['user_id']]['img_height'] = $DB_ROW['image_hauteur'];
-		$tab_vignettes[$DB_ROW['user_id']]['img_src']    = $DB_ROW['image_contenu'];
-		$tab_vignettes[$DB_ROW['user_id']]['img_title']  = FALSE;
-	}
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_vignettes[$DB_ROW['user_id']]['img_width']  = $DB_ROW['image_largeur'];
+    $tab_vignettes[$DB_ROW['user_id']]['img_height'] = $DB_ROW['image_hauteur'];
+    $tab_vignettes[$DB_ROW['user_id']]['img_src']    = $DB_ROW['image_contenu'];
+    $tab_vignettes[$DB_ROW['user_id']]['img_title']  = FALSE;
+  }
 }
 // Génération de la sortie HTML (affichée directement) et de la sortie PDF (enregistrée dans un fichier)
 $fnom_pdf = 'trombinoscope_'.$_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
@@ -83,10 +83,10 @@ $sacoche_pdf->trombinoscope_initialiser($groupe_nom);
 // On passe les élèves en revue (on a toutes les infos déjà disponibles)
 foreach($tab_vignettes as $user_id => $tab)
 {
-	$sacoche_pdf->trombinoscope_vignette($tab);
-	$img_src   = ($tab['img_src'])   ? ' src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$tab['img_src'].'"' : ' src="./_img/trombinoscope_vide.png"' ;
-	$img_title = ($tab['img_title']) ? ' title="absence de photo"' : '' ;
-	echo'<div id="div_'.$user_id.'" class="photo"><img width="'.$tab['img_width'].'" height="'.$tab['img_height'].'" alt=""'.$img_src.$img_title.' /><br />'.html($tab['user_nom']).'<br />'.html($tab['user_prenom']).'</div>';
+  $sacoche_pdf->trombinoscope_vignette($tab);
+  $img_src   = ($tab['img_src'])   ? ' src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$tab['img_src'].'"' : ' src="./_img/trombinoscope_vide.png"' ;
+  $img_title = ($tab['img_title']) ? ' title="absence de photo"' : '' ;
+  echo'<div id="div_'.$user_id.'" class="photo"><img width="'.$tab['img_width'].'" height="'.$tab['img_height'].'" alt=""'.$img_src.$img_title.' /><br />'.html($tab['user_nom']).'<br />'.html($tab['user_prenom']).'</div>';
 }
 $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fnom_pdf,'F');
 exit();

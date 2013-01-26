@@ -27,245 +27,237 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var mode = false;
-		var id = 0;
-		var nom_prenom = '';
-		var td_resp = false;
+    var mode = false;
+    var id = 0;
+    var nom_prenom = '';
+    var td_resp = false;
 
-		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,0]];
-		$('table.form').tablesorter({ headers:{6:{sorter:false}} });
-		function trier_tableau()
-		{
-			if($('table.form tbody tr').length>1)
-			{
-				$('table.form').trigger('update');
-				$('table.form').trigger('sorton',[sorting]);
-			}
-		}
-		// trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et poru la recherche levenshtein il faut conserver un tri élève
+    // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[1,0]];
+    $('table.form').tablesorter({ headers:{6:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
+    // trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et pour la recherche levenshtein il faut conserver un tri élève
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		/**
-		 * Modifier une adresse : mise en place du formulaire
-		 * @return void
-		 */
-		var modifier = function()
-		{
-			reference = $(this).parent().parent().attr('id').substring(3);
-			mode = (reference.substring(0,1)=='M') ? 'modifier' : 'ajouter' ;
-			afficher_masquer_images_action('hide');
-			// Récupérer les informations de la ligne concernée
-			id          = reference.substring(1,reference.length);
-			td_resp     = $(this).parent().prev().prev().prev().prev().prev().prev();
-			nom_prenom  = $(this).parent().prev().prev().prev().prev().prev().html();
-			obj_lignes  = $(this).parent().prev().prev().prev().prev();
-			code_postal = $(this).parent().prev().prev().prev().html();
-			commune     = $(this).parent().prev().prev().html();
-			pays        = $(this).parent().prev().html();
-			// Fabriquer la ligne avec les éléments de formulaires
-			new_tr  = '<tr>';
-			new_tr += '<td></td>';
-			new_tr += '<td>'+nom_prenom+'</td>';
-			new_tr += '<td>';
-			i=1;
-			obj_lignes.children('span').each
-			(
-				function()
-				{
-					ligne = $(this).html();
-					new_tr += '<input id="f_ligne'+i+'" name="f_ligne'+i+'" size="'+Math.max(ligne.length,10)+'" type="text" value="'+ligne+'" />';
-					i++;
-				}
-			);
-			new_tr += '</td>';
-			new_tr += '<td><input id="f_code_postal" name="f_code_postal" size="5" type="text" value="'+code_postal+'" /></td>';
-			new_tr += '<td><input id="f_commune" name="f_commune" size="'+Math.max(commune.length,10)+'" type="text" value="'+commune+'" /></td>';
-			new_tr += '<td><input id="f_pays" name="f_pays" size="'+Math.max(pays.length,5)+'" type="text" value="'+pays+'" /></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de cette adresse."></q><q class="annuler" title="Annuler les modifications de cette adresse."></q> <label id="ajax_msg">&nbsp;</label></td>';
-			new_tr += '</tr>';
-			// Cacher la ligne en cours et ajouter la nouvelle
-			$(this).parent().parent().hide();
-			$(this).parent().parent().after(new_tr);
-			infobulle();
-			$('#f_ligne1').focus();
-		};
+    function afficher_form_gestion( mode , id , nom_prenom , ligne1 , ligne2 , ligne3 , ligne4 , code_postal , commune , pays )
+    {
+      $('#f_action').val(mode);
+      $('#f_id').val(id);
+      $('#gestion_identite').html(nom_prenom);
+      $('#f_ligne1').val(ligne1);
+      $('#f_ligne2').val(ligne2);
+      $('#f_ligne3').val(ligne3);
+      $('#f_ligne4').val(ligne4);
+      $('#f_code_postal').val(code_postal);
+      $('#f_commune').val(commune);
+      $('#f_pays').val(pays);
+      // pour finir
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#form_gestion label[generated=true]').removeAttr('class').html("");
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      $('#f_ligne1').focus();
+    }
 
-		/**
-		 * Annuler une action
-		 * @return void
-		 */
-		var annuler = function()
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			switch (mode)
-			{
-				case 'modifier':
-				case 'ajouter':
-					$(this).parent().parent().remove();
-					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
-					break;
-			}
-			afficher_masquer_images_action('show');
-			mode = false;
-		};
+    /**
+     * Modifier | Ajouter une adresse : mise en place du formulaire
+     * @return void
+     */
+    var modifier = function()
+    {
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var reference  = objet_tr.attr('id').substring(3);
+          mode       = (reference.substring(0,1)=='M') ? 'modifier' : 'ajouter' ;
+          id         = reference.substring(1);
+          td_resp    = objet_tds.eq(0);
+          nom_prenom = objet_tds.eq(1).html();
+      var obj_lignes = objet_tds.eq(2).find('span');
+      var code_postal= objet_tds.eq(3).html();
+      var commune    = objet_tds.eq(4).html();
+      var pays       = objet_tds.eq(5).html();
+      // Extirper les 4 lignes d'adresses
+      var ligne1     = obj_lignes.eq(0).html();
+      var ligne2     = obj_lignes.eq(1).html();
+      var ligne3     = obj_lignes.eq(2).html();
+      var ligne4     = obj_lignes.eq(3).html();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , unescapeHtml(nom_prenom) , unescapeHtml(ligne1) , unescapeHtml(ligne2) , unescapeHtml(ligne3) , unescapeHtml(ligne4) , code_postal , unescapeHtml(commune) , unescapeHtml(pays) );
+    };
 
-		/**
-		 * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
-		 * @return void
-		 */
-		function intercepter(e)
-		{
-			if(e.which==13)	// touche entrée
-			{
-				$('q.valider').click();
-			}
-			else if(e.which==27)	// touche escape
-			{
-				$('q.annuler').click();
-			}
-		}
+    /**
+     * Annuler une action
+     * @return void
+     */
+    var annuler = function()
+    {
+      $.fancybox.close();
+      mode = false;
+    };
+
+    /**
+     * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
+     * @return void
+     */
+    function intercepter(e)
+    {
+      if(mode)
+      {
+        if(e.which==13)  // touche entrée
+        {
+          $('#bouton_valider').click();
+        }
+        else if(e.which==27)  // touche escape
+        {
+          $('#bouton_annuler').click();
+        }
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('q.modifier').live(   'click' , modifier );
-		$('q.annuler').live(    'click' , annuler );
-		$('q.valider').live(    'click' , function(){formulaire.submit();} );
-		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
+    $('q.modifier').live( 'click' , modifier );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form_individuel');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form_gestion');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_ligne1      : { required:false , maxlength:50 },
-					f_ligne2      : { required:false , maxlength:50 },
-					f_ligne3      : { required:false , maxlength:50 },
-					f_ligne4      : { required:false , maxlength:50 },
-					f_code_postal : { required:false , digits:true , max:999999 },
-					f_commune     : { required:false , maxlength:45 },
-					f_pays        : { required:false , maxlength:35 }
-				},
-				messages :
-				{
-					f_ligne1      : { maxlength:"50 caractères maxi par élément d'adresse" },
-					f_ligne2      : { maxlength:"50 caractères maxi par élément d'adresse" },
-					f_ligne3      : { maxlength:"50 caractères maxi par élément d'adresse" },
-					f_ligne4      : { maxlength:"50 caractères maxi par élément d'adresse" },
-					f_code_postal : { digits:"CP : nombre entier" },
-					f_commune     : { maxlength:"Commune : 45 caractères maximum" },
-					f_pays        : { maxlength:"Pays : 35 caractères maximum" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_ligne1      : { required:false , maxlength:50 },
+          f_ligne2      : { required:false , maxlength:50 },
+          f_ligne3      : { required:false , maxlength:50 },
+          f_ligne4      : { required:false , maxlength:50 },
+          f_code_postal : { required:false , digits:true , max:999999 },
+          f_commune     : { required:false , maxlength:45 },
+          f_pays        : { required:false , maxlength:35 }
+        },
+        messages :
+        {
+          f_ligne1      : { maxlength:"50 caractères maxi par élément d'adresse" },
+          f_ligne2      : { maxlength:"50 caractères maxi par élément d'adresse" },
+          f_ligne3      : { maxlength:"50 caractères maxi par élément d'adresse" },
+          f_ligne4      : { maxlength:"50 caractères maxi par élément d'adresse" },
+          f_code_postal : { digits:"CP : nombre entier" },
+          f_commune     : { maxlength:"Commune : 45 caractères maximum" },
+          f_pays        : { maxlength:"Pays : 35 caractères maximum" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { element.after(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_gestion",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire.submit
-		(
-			function()
-			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		); 
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire.submit
+    (
+      function()
+      {
+        if (!please_wait)
+        {
+          $(this).ajaxSubmit(ajaxOptions);
+          return false;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				please_wait = true;
-				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        please_wait = true;
+        $('#form_gestion button').prop('disabled',true);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
-			if(responseHTML.substring(0,2)!='<t')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				action = $('#f_action').val();
-				switch (action)
-				{
-					case 'modifier':
-						$('#temp_td').html(td_resp); // Pour ne pas perdre l'objet avec l'infobulle, on est obligé de le copier ailleurs avant le html qui suit.
-						$('q.valider').parent().parent().prev().addClass("new").html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp ).show();
-						$('q.valider').parent().parent().remove();
-						break;
-					case 'ajouter':
-						$('q.valider').parent().parent().prev().addClass("new").attr('id','id_M'+id).html('<td>'+nom_prenom+'</td>'+responseHTML).show();
-						$('q.valider').parent().parent().remove();
-						break;
-				}
-				// trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et poru la recherche levenshtein il faut conserver un tri élève
-				afficher_masquer_images_action('show');
-				infobulle();
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      please_wait = false;
+      $('#form_gestion button').prop('disabled',false);
+      if(responseHTML.substring(0,2)!='<t')
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#temp_td').html(td_resp); // Pour ne pas perdre l'objet avec l'infobulle, on est obligé de le copier ailleurs avant le html qui suit.
+        switch (mode)
+        {
+          case 'ajouter':
+            $('#id_A'+id).addClass("new").attr('id','id_M'+id).html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
+            break;
+          case 'modifier':
+            $('#id_M'+id).addClass("new").html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
+            break;
+        }
+        $.fancybox.close();
+        mode = false;
+        infobulle();
+      }
+    }
 
-	}
+  }
 );

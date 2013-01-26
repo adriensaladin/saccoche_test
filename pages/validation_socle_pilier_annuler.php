@@ -27,40 +27,36 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Annuler une compétence validée du socle";
-// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès parmi les profs, ils ne peuvent trier les élèves que par classes
-?>
 
-<?php
-// Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
-$tab_profils = array('directeur','professeur','profprincipal');
-$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_ANNULATION_PILIER'] );
-foreach($tab_profils as $profil)
+if(!test_user_droit_specifique($_SESSION['DROIT_ANNULATION_PILIER']))
 {
-	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>';
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_ANNULATION_PILIER'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+
+// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès parmi les profs, ils ne peuvent trier les élèves que par classes
 
 Form::load_choix_memo();
-if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'directeur')!==FALSE) )
+
+if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-	$of_g = 'oui'; $og_g = 'oui'; 
+  $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
+  $of_g = 'oui'; $og_g = 'oui';
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'professeur')!==FALSE) )
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $og_g = 'oui'; 
-}
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'profprincipal')!==FALSE) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
-{
-	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
-	$of_g = 'non'; $og_g = 'non'; 
-}
-else
-{
-	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
-	$of_g = 'non'; $og_g = 'non'; 
+  if(test_droit_specifique_restreint($_SESSION['DROIT_ANNULATION_PILIER'],'ONLY_PP'))
+  {
+    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
+    $of_g = 'non'; $og_g = 'non';
+  }
+  else
+  {
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+    $of_g = 'oui'; $og_g = 'oui'; 
+  }
 }
 $tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
@@ -70,24 +66,23 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 ?>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_annuler_pilier">DOC : Annuler une compétence validée du socle.</a></span></li>
-	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_annuler_pilier">DOC : Annuler une compétence validée du socle.</a></span></li>
 </ul>
 
 <hr />
 
 <form action="#" method="post" id="zone_choix"><fieldset>
-	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
-	<label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier[]" multiple size="7" class="hide"><option></option></select>
-	<p>
-		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select>
-	</p>
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations positives.</button><label id="ajax_msg_choix">&nbsp;</label>
+  <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
+  <label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier[]" multiple size="7" class="hide"><option></option></select>
+  <p>
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
+    <label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select>
+  </p>
+  <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations positives.</button><label id="ajax_msg_choix">&nbsp;</label>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_validation" class="hide">
-	<table id="tableau_validation">
-		<tbody><tr><td></td></tr></tbody>
-	</table>
+  <table id="tableau_validation">
+    <tbody><tr><td></td></tr></tbody>
+  </table>
 </form>

@@ -34,7 +34,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes') )
 {
-	require(CHEMIN_DOSSIER_INCLUDE.'code_report_notes_releve_to_bulletin.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_report_notes_releve_to_bulletin.php');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,18 +77,18 @@ $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
-if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-	$aff_moyenne_scores     = (mb_substr_count($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$aff_pourcentage_acquis = (mb_substr_count($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$conversion_sur_20      = (mb_substr_count($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'] ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
-	$tab_type               = array('individuel');
+  $aff_moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? 1 : 0 ;
+  $aff_pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? 1 : 0 ;
+  $conversion_sur_20      = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? 1 : 0 ;
+  $tab_type               = array('individuel');
 }
-if($_SESSION['USER_PROFIL']=='eleve')
+if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-	$groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
-	$groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
-	$tab_eleve  = array($_SESSION['USER_ID']);
+  $groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
+  $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
+  $tab_eleve  = array($_SESSION['USER_ID']);
 }
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
@@ -99,7 +99,7 @@ $liste_eleve = implode(',',$tab_eleve);
 
 if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('items_selection');
@@ -124,45 +124,45 @@ require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 
 if($affichage_direct)
 {
-	echo'<hr />';
-	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'</ul>';
-	echo $releve_HTML_individuel;
+  echo'<hr />';
+  echo'<ul class="puce">';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+  echo'</ul>';
+  echo $releve_HTML_individuel;
 }
 else
 {
-	if($type_individuel)
-	{
-		echo'<h2>Relevé individuel</h2>';
-		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-		echo'</ul>';
-	}
-	if($type_synthese)
-	{
-		echo'<h2>Synthèse collective</h2>';
-		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-		echo'</ul>';
-	}
-	if($type_bulletin)
-	{
-		echo'<h2>Bulletin SACoche</h2>';
-		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-		echo $bulletin_form;
-		echo'</ul>';
-		echo $bulletin_alerte;
-		echo'<h2>Bulletin Gepi</h2>';
-		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'</ul>';
-	}
+  if($type_individuel)
+  {
+    echo'<h2>Relevé individuel</h2>';
+    echo'<ul class="puce">';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo'</ul>';
+  }
+  if($type_synthese)
+  {
+    echo'<h2>Synthèse collective</h2>';
+    echo'<ul class="puce">';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo'</ul>';
+  }
+  if($type_bulletin)
+  {
+    echo'<h2>Bulletin SACoche</h2>';
+    echo'<ul class="puce">';
+    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo $bulletin_form;
+    echo'</ul>';
+    echo $bulletin_alerte;
+    echo'<h2>Bulletin Gepi</h2>';
+    echo'<ul class="puce">';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+    echo'</ul>';
+  }
 }
 
 ?>

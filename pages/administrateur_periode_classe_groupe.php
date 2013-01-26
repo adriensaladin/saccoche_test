@@ -40,27 +40,27 @@ $select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_clas
 <hr />
 
 <form action="#" method="post">
-	<table><tr>
-		<td class="nu" style="width:25em">
-			<b>Liste des périodes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-			<select id="select_periodes" name="select_periodes[]" multiple size="11" class="t8"><?php echo $select_periodes; ?></select>
-		</td>
-		<td class="nu" style="width:20em">
-			<b>Liste des classes &amp; groupes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-			<select id="select_classes_groupes" name="select_classes_groupes[]" multiple size="11" class="t8"><?php echo $select_classes_groupes; ?></select>
-		</td>
-		<td class="nu" style="width:25em">
-			<p>
-				<button id="ajouter" type="button" class="periode_ajouter">Ajouter ces associations.</button><br />
-				du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-				au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-			</p>
-			<p>
-				<button id="retirer" type="button" class="periode_retirer">Retirer ces associations.</button>
-			</p>
-			<p><label id="ajax_msg">&nbsp;</label></p>
-		</td>
-	</tr></table>
+  <table><tr>
+    <td class="nu" style="width:25em">
+      <b>Liste des périodes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+      <select id="select_periodes" name="select_periodes[]" multiple size="11" class="t8"><?php echo $select_periodes; ?></select>
+    </td>
+    <td class="nu" style="width:20em">
+      <b>Liste des classes &amp; groupes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+      <select id="select_classes_groupes" name="select_classes_groupes[]" multiple size="11" class="t8"><?php echo $select_classes_groupes; ?></select>
+    </td>
+    <td class="nu" style="width:25em">
+      <p>
+        <button id="ajouter" type="button" class="periode_ajouter">Ajouter ces associations.</button><br />
+        du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+        au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+      </p>
+      <p>
+        <button id="retirer" type="button" class="periode_retirer">Retirer ces associations.</button>
+      </p>
+      <p><label id="ajax_msg">&nbsp;</label></p>
+    </td>
+  </tr></table>
 </form>
 
 <div id="bilan">

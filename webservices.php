@@ -49,12 +49,12 @@ $WS_data = (isset($_POST['data'])) ? $_POST['data']             : ''; // tableau
 $tab_ws = array('argos_parent','argos_ajout');
 if(!in_array($WS_qui,$tab_ws))
 {
-	exit('Erreur : nom du service web manquant ou incorrect !');
+  exit('Erreur : nom du service web manquant ou incorrect !');
 }
 $fichier = CHEMIN_DOSSIER_WEBSERVICES.$WS_qui.'.php';
 if(!is_file($fichier))
 {
-	exit('Erreur : le service web "'.$WS_qui.'" n\'est pas disponible sur cette installation !');
+  exit('Erreur : le service web "'.$WS_qui.'" n\'est pas disponible sur cette installation !');
 }
 // Place au service web à présent.
 require($fichier);

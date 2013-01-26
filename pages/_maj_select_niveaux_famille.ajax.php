@@ -34,7 +34,7 @@ $niveau_famille_id = (isset($_POST['f_famille_niveau'])) ? Clean::entier($_POST[
 
 if(!$niveau_famille_id)
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');

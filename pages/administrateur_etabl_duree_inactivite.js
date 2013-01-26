@@ -27,59 +27,76 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		$('select').change
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			}
-		);
+    var profil = '';
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Alerter sur la nécessité de valider
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('select').change
+    (
+      function()
+      {
+        profil = $(this).attr('id').substr(8); // f_delai_XXX
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Validation du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('#bouton_valider').click
-		(
-			function()
-			{
-				delai = $("#f_delai option:selected").val();
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_delai='+delai,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$("#bouton_valider").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
-								DUREE_AUTORISEE = delai;
-								initialiser_compteur();
-							}
-						}
-					}
-				);
-			}
-		);
 
-	}
+    $('button[class=parametre]').click
+    (
+      function()
+      {
+        profil = $(this).attr('id').substr(15); // bouton_valider_XXX
+        var delai = $('#f_delai_'+profil+' option:selected').val();
+        $('#bouton_valider_'+profil).prop('disabled',true);
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_profil='+profil+'&f_delai='+delai,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#bouton_valider_'+profil).prop('disabled',false);
+              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('#bouton_valider_'+profil).prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseHTML);
+              }
+              else
+              {
+                if(profil=='ALL')
+                {
+                  $('select option[value='+delai+']').prop('selected',true);
+                  $('label[id^=ajax_msg_]').removeAttr('class').html("&nbsp;");
+                }
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeur enregistrée !");
+                if( (profil=='ALL') || (profil=='ADM') )
+                {
+                  DUREE_AUTORISEE = delai;
+                }
+                initialiser_compteur();
+              }
+            }
+          }
+        );
+      }
+    );
+
+  }
 );

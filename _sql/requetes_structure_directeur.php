@@ -41,15 +41,16 @@ class DB_STRUCTURE_DIRECTEUR extends DB
  */
 public static function DB_compter_saisies_prof_classe()
 {
-	$DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'LEFT JOIN sacoche_devoir ON sacoche_user.user_id=sacoche_devoir.prof_id ';
-	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'WHERE user_profil=:user_profil AND groupe_type=:groupe_type ';
-	$DB_SQL.= 'GROUP BY user_id,groupe_id';
-	$DB_VAR = array(':user_profil'=>'professeur',':groupe_type'=>'classe');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_devoir ON sacoche_user.user_id=sacoche_devoir.prof_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND groupe_type=:groupe_type ';
+  $DB_SQL.= 'GROUP BY user_id,groupe_id';
+  $DB_VAR = array(':profil_type'=>'professeur',':groupe_type'=>'classe');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

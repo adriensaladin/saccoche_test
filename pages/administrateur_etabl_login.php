@@ -28,29 +28,47 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Format des identifiants de connexion";
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
-$tab_profils = array('directeur','professeur','eleve','parent');
-$affichage_login = '';
-foreach($tab_profils as $profil)
+// Options du formulaire select
+$options = '';
+for($mdp_length=4 ; $mdp_length<9 ; $mdp_length++)
 {
-	$affichage_login .= '<p><label class="tab" for="f_login_'.$profil.'">'.$tab_profil_libelle[$profil]['court'][2].' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
+  $options .= '<option value="'.$mdp_length.'">'.$mdp_length.' caractères</option>';
 }
 
-$affichage_mdp_mini = '<option value="4">4 caractères</option><option value="5">5 caractères</option><option value="6">6 caractères</option><option value="7">7 caractères</option><option value="8">8 caractères</option>';
-$affichage_mdp_mini = str_replace( '"'.$_SESSION['MDP_LONGUEUR_MINI'].'"' , '"'.$_SESSION['MDP_LONGUEUR_MINI'].'" selected' , $affichage_mdp_mini);
+// Lister les profils de l'établissement
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_court_pluriel,user_profil_nom_long_pluriel,user_profil_login_modele,user_profil_mdp_longueur_mini' /*listing_champs*/ , TRUE /*only_actif*/ );
 
 ?>
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_format_logins">DOC : Format des identifiants</a></span></div>
 
-<h4>Format des noms d'utilisateurs</h4>
+<hr />
+
+<h2>Appliquer à tous les profils</h2>
+
 <form action="#" method="post">
-	<?php echo $affichage_login; ?>
-	<p><span class="tab"></span><button id="bouton_valider_login" type="button" class="parametre">Valider ces formats.</button><label id="ajax_msg_login">&nbsp;</label></p>
+  <p>
+    <label class="tab">Identifiants :</label>Modèle du nom d'utilisateur <input type="text" id="f_login_ALL" name="f_login_ALL" value="ppp.nnnnnnnn" size="20" maxlength="20" /><br />
+    <label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_ALL" name="f_mdp_ALL"><?php echo str_replace('value="6"','value="6" selected',$options) ?></select><br />
+    <label class="tab"></label><button id="bouton_valider_ALL" type="button" class="parametre">Valider.</button><label id="ajax_msg_ALL">&nbsp;</label>
+  </p>
 </form>
 
 <hr />
-<h4>Mots de passe</h4>
+
+<h2>Affiner selon les profils</h2>
+
 <form action="#" method="post">
-	<p><label class="tab" for="f_mdp_mini">Longueur minimale</label><select id="f_mdp_mini" name="f_mdp_mini"><?php echo $affichage_mdp_mini; ?></select></p>
-	<p><span class="tab"></span><button id="bouton_valider_mdp_mini" type="button" class="parametre">Valider ce paramètre.</button><label id="ajax_msg_mdp_mini">&nbsp;</label></p>
+
+  <?php
+  foreach($DB_TAB as $DB_ROW)
+  {
+    echo'<p>';
+    echo'  <label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />';
+    echo'  <label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />';
+    echo'  <label class="tab"></label><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>';
+    echo'</p>';
+  }
+  ?>
 </form>
+
+<hr />

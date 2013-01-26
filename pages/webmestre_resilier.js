@@ -27,92 +27,92 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('form');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-				},
-				messages :
-				{
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+        },
+        messages :
+        {
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				readytogo = true;
-			}
-			else
-			{
-				readytogo = false;
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        readytogo = true;
+      }
+      else
+      {
+        readytogo = false;
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider").prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			if(responseHTML=='ok')
-			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
-				alert("Toutes les données ont été effacées !\nDéconnexion du compte webmestre...");
-				document.location.href = './index.php';
-			}
-			else
-			{
-				$("#bouton_valider").prop('disabled',false);
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
+        alert("Toutes les données ont été effacées !\nDéconnexion du compte webmestre...");
+        document.location.href = './index.php';
+      }
+      else
+      {
+        $("#bouton_valider").prop('disabled',false);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-	}
+  }
 );

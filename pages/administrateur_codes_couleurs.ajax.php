@@ -68,22 +68,22 @@ $test_color_A   = (preg_match("/^\#[0-9a-f]{3,6}$/i", $acquis_color_A))  && ($lo
 
 if( ($objet=='notes') && $test_jeu && $note_texte_RR && $note_texte_R && $note_texte_V && $note_texte_VV && $note_legende_RR && $note_legende_R && $note_legende_V && $note_legende_VV )
 {
-	// Mettre à jour la session + la base + le css perso
-	$tab_parametres = array();
-	$_SESSION['NOTE_IMAGE_STYLE']           = $note_image_style;  $tab_parametres['note_image_style']               = $note_image_style;
-	$_SESSION['NOTE_TEXTE']['RR']           = $note_texte_RR;     $tab_parametres['note_texte_RR']                  = $note_texte_RR;
-	$_SESSION['NOTE_TEXTE']['R']            = $note_texte_R;      $tab_parametres['note_texte_R']                   = $note_texte_R;
-	$_SESSION['NOTE_TEXTE']['V']            = $note_texte_V;      $tab_parametres['note_texte_V']                   = $note_texte_V;
-	$_SESSION['NOTE_TEXTE']['VV']           = $note_texte_VV;     $tab_parametres['note_texte_VV']                  = $note_texte_VV;
-	$_SESSION['NOTE_LEGENDE']['RR']         = $note_legende_RR;   $tab_parametres['note_legende_RR']                = $note_legende_RR;
-	$_SESSION['NOTE_LEGENDE']['R']          = $note_legende_R;    $tab_parametres['note_legende_R']                 = $note_legende_R;
-	$_SESSION['NOTE_LEGENDE']['V']          = $note_legende_V;    $tab_parametres['note_legende_V']                 = $note_legende_V;
-	$_SESSION['NOTE_LEGENDE']['VV']         = $note_legende_VV;   $tab_parametres['note_legende_VV']                = $note_legende_VV;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
-	// Enregistrer en session le CSS personnalisé
-	SessionUser::adapter_daltonisme();
-	SessionUser::actualiser_style();
-	exit('ok');
+  // Mettre à jour la session + la base + le css perso
+  $tab_parametres = array();
+  $_SESSION['NOTE_IMAGE_STYLE']           = $note_image_style;  $tab_parametres['note_image_style']               = $note_image_style;
+  $_SESSION['NOTE_TEXTE']['RR']           = $note_texte_RR;     $tab_parametres['note_texte_RR']                  = $note_texte_RR;
+  $_SESSION['NOTE_TEXTE']['R']            = $note_texte_R;      $tab_parametres['note_texte_R']                   = $note_texte_R;
+  $_SESSION['NOTE_TEXTE']['V']            = $note_texte_V;      $tab_parametres['note_texte_V']                   = $note_texte_V;
+  $_SESSION['NOTE_TEXTE']['VV']           = $note_texte_VV;     $tab_parametres['note_texte_VV']                  = $note_texte_VV;
+  $_SESSION['NOTE_LEGENDE']['RR']         = $note_legende_RR;   $tab_parametres['note_legende_RR']                = $note_legende_RR;
+  $_SESSION['NOTE_LEGENDE']['R']          = $note_legende_R;    $tab_parametres['note_legende_R']                 = $note_legende_R;
+  $_SESSION['NOTE_LEGENDE']['V']          = $note_legende_V;    $tab_parametres['note_legende_V']                 = $note_legende_V;
+  $_SESSION['NOTE_LEGENDE']['VV']         = $note_legende_VV;   $tab_parametres['note_legende_VV']                = $note_legende_VV;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
+  // Enregistrer en session le CSS personnalisé
+  SessionUser::adapter_daltonisme();
+  SessionUser::actualiser_style();
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,26 +92,26 @@ if( ($objet=='notes') && $test_jeu && $note_texte_RR && $note_texte_R && $note_t
 
 if( ($objet=='acquis') && $test_color_NA && $test_color_VA && $test_color_A && $acquis_texte_NA && $acquis_texte_VA && $acquis_texte_A && $acquis_legende_NA && $acquis_legende_VA && $acquis_legende_A )
 {
-	// Passer si besoin d'un code hexadécimal à 3 caractères vers un code hexadécimal à 6 caractères.
-	if($longueur_NA==4) {$acquis_color_NA = '#'.$acquis_color_NA{1}.$acquis_color_NA{1}.$acquis_color_NA{2}.$acquis_color_NA{2}.$acquis_color_NA{3}.$acquis_color_NA{3};}
-	if($longueur_VA==4) {$acquis_color_VA = '#'.$acquis_color_VA{1}.$acquis_color_VA{1}.$acquis_color_VA{2}.$acquis_color_VA{2}.$acquis_color_VA{3}.$acquis_color_VA{3};}
-	if($longueur_A ==4) {$acquis_color_A  = '#'.$acquis_color_A{1} .$acquis_color_A{1} .$acquis_color_A{2} .$acquis_color_A{2} .$acquis_color_A{3} .$acquis_color_A{3} ;}
-	// Mettre à jour la session + la base + le css perso
-	$tab_parametres = array();
-	$_SESSION['ACQUIS_TEXTE']['NA']         = $acquis_texte_NA;   $tab_parametres['acquis_texte_NA']         = $acquis_texte_NA;
-	$_SESSION['ACQUIS_TEXTE']['VA']         = $acquis_texte_VA;   $tab_parametres['acquis_texte_VA']         = $acquis_texte_VA;
-	$_SESSION['ACQUIS_TEXTE']['A']          = $acquis_texte_A;    $tab_parametres['acquis_texte_A']          = $acquis_texte_A;
-	$_SESSION['ACQUIS_LEGENDE']['NA']       = $acquis_legende_NA; $tab_parametres['acquis_legende_NA']       = $acquis_legende_NA;
-	$_SESSION['ACQUIS_LEGENDE']['VA']       = $acquis_legende_VA; $tab_parametres['acquis_legende_VA']       = $acquis_legende_VA;
-	$_SESSION['ACQUIS_LEGENDE']['A']        = $acquis_legende_A;  $tab_parametres['acquis_legende_A']        = $acquis_legende_A;
-	$_SESSION['CSS_BACKGROUND-COLOR']['NA'] = $acquis_color_NA;   $tab_parametres['css_background-color_A']  = $acquis_color_A;
-	$_SESSION['CSS_BACKGROUND-COLOR']['VA'] = $acquis_color_VA;   $tab_parametres['css_background-color_VA'] = $acquis_color_VA;
-	$_SESSION['CSS_BACKGROUND-COLOR']['A']  = $acquis_color_A;    $tab_parametres['css_background-color_NA'] = $acquis_color_NA;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
-	// Enregistrer en session le CSS personnalisé
-	SessionUser::adapter_daltonisme();
-	SessionUser::actualiser_style();
-	exit('ok');
+  // Passer si besoin d'un code hexadécimal à 3 caractères vers un code hexadécimal à 6 caractères.
+  if($longueur_NA==4) {$acquis_color_NA = '#'.$acquis_color_NA{1}.$acquis_color_NA{1}.$acquis_color_NA{2}.$acquis_color_NA{2}.$acquis_color_NA{3}.$acquis_color_NA{3};}
+  if($longueur_VA==4) {$acquis_color_VA = '#'.$acquis_color_VA{1}.$acquis_color_VA{1}.$acquis_color_VA{2}.$acquis_color_VA{2}.$acquis_color_VA{3}.$acquis_color_VA{3};}
+  if($longueur_A ==4) {$acquis_color_A  = '#'.$acquis_color_A{1} .$acquis_color_A{1} .$acquis_color_A{2} .$acquis_color_A{2} .$acquis_color_A{3} .$acquis_color_A{3} ;}
+  // Mettre à jour la session + la base + le css perso
+  $tab_parametres = array();
+  $_SESSION['ACQUIS_TEXTE']['NA']         = $acquis_texte_NA;   $tab_parametres['acquis_texte_NA']         = $acquis_texte_NA;
+  $_SESSION['ACQUIS_TEXTE']['VA']         = $acquis_texte_VA;   $tab_parametres['acquis_texte_VA']         = $acquis_texte_VA;
+  $_SESSION['ACQUIS_TEXTE']['A']          = $acquis_texte_A;    $tab_parametres['acquis_texte_A']          = $acquis_texte_A;
+  $_SESSION['ACQUIS_LEGENDE']['NA']       = $acquis_legende_NA; $tab_parametres['acquis_legende_NA']       = $acquis_legende_NA;
+  $_SESSION['ACQUIS_LEGENDE']['VA']       = $acquis_legende_VA; $tab_parametres['acquis_legende_VA']       = $acquis_legende_VA;
+  $_SESSION['ACQUIS_LEGENDE']['A']        = $acquis_legende_A;  $tab_parametres['acquis_legende_A']        = $acquis_legende_A;
+  $_SESSION['CSS_BACKGROUND-COLOR']['NA'] = $acquis_color_NA;   $tab_parametres['css_background-color_A']  = $acquis_color_A;
+  $_SESSION['CSS_BACKGROUND-COLOR']['VA'] = $acquis_color_VA;   $tab_parametres['css_background-color_VA'] = $acquis_color_VA;
+  $_SESSION['CSS_BACKGROUND-COLOR']['A']  = $acquis_color_A;    $tab_parametres['css_background-color_NA'] = $acquis_color_NA;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
+  // Enregistrer en session le CSS personnalisé
+  SessionUser::adapter_daltonisme();
+  SessionUser::actualiser_style();
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

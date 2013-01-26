@@ -39,45 +39,45 @@ $tab_niveau_groupe  = array();
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_besoins($_SESSION['USER_ID']);
 foreach($DB_TAB as $DB_ROW)
 {
-	if($DB_ROW['jointure_pp'])
-	{
-		$tab_groupe_proprio[$DB_ROW['groupe_id']] = array
-		(
-			'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
-			'nom'        => html($DB_ROW['groupe_nom']) ,
-			'eleve'      => array() ,
-			'professeur' => array()
-		);
-	}
-	else
-	{
-		$tab_niveau_groupe[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
-		$tab_groupe_associe[$DB_ROW['groupe_id']] = array
-		(
-			'nom'        => html($DB_ROW['groupe_nom']) ,
-			'eleve'      => '' ,
-			'professeur' => ''
-		);
-	}
+  if($DB_ROW['jointure_pp'])
+  {
+    $tab_groupe_proprio[$DB_ROW['groupe_id']] = array
+    (
+      'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
+      'nom'        => html($DB_ROW['groupe_nom']) ,
+      'eleve'      => array() ,
+      'professeur' => array()
+    );
+  }
+  else
+  {
+    $tab_niveau_groupe[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
+    $tab_groupe_associe[$DB_ROW['groupe_id']] = array
+    (
+      'nom'        => html($DB_ROW['groupe_nom']) ,
+      'eleve'      => '' ,
+      'professeur' => ''
+    );
+  }
 }
 
 // Récupérer la liste des élèves et professeurs / groupes de besoin
 
 if( !empty($DB_TAB) )
 {
-	$listing_groupes_id = implode( ',' , array_merge(array_keys($tab_groupe_proprio),array_keys($tab_groupe_associe)) );
-	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_users_avec_groupes_besoins($listing_groupes_id);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		if(isset($tab_groupe_proprio[$DB_ROW['groupe_id']]))
-		{
-			$tab_groupe_proprio[$DB_ROW['groupe_id']][$DB_ROW['user_profil']][] = $DB_ROW['user_id'];
-		}
-		else
-		{
-			$tab_groupe_associe[$DB_ROW['groupe_id']][$DB_ROW['user_profil']] .= ($DB_ROW['jointure_pp']) ? '<span class="proprio">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</span><br />' : html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />' ;
-		}
-	}
+  $listing_groupes_id = implode( ',' , array_merge(array_keys($tab_groupe_proprio),array_keys($tab_groupe_associe)) );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_users_avec_groupes_besoins($listing_groupes_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    if(isset($tab_groupe_proprio[$DB_ROW['groupe_id']]))
+    {
+      $tab_groupe_proprio[$DB_ROW['groupe_id']][$DB_ROW['user_profil_type']][] = $DB_ROW['user_id'];
+    }
+    else
+    {
+      $tab_groupe_associe[$DB_ROW['groupe_id']][$DB_ROW['user_profil_type']] .= ($DB_ROW['jointure_pp']) ? '<span class="proprio">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</span><br />' : html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />' ;
+    }
+  }
 }
 
 // Eléments javascript concernant les niveaux : select_niveau & tab_niveau_ordre_js
@@ -88,15 +88,15 @@ $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 if(!empty($DB_TAB))
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
-	}
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
+    $tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+  }
 }
 else
 {
-	$select_niveau .= '<option value="" disabled>Aucun niveau de classe n\'est choisi pour l\'établissement !</option>';
+  $select_niveau .= '<option value="" disabled>Aucun niveau de classe n\'est choisi pour l\'établissement !</option>';
 }
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
@@ -114,58 +114,56 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 ?>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span></li>
-	<li><span class="danger">Un groupe de besoin déjà utilisé lors d'une évaluation ne devrait pas être supprimé (sinon vous n'aurez plus accès aux saisies) !</span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span></li>
+  <li><span class="danger">Un groupe de besoin déjà utilisé lors d'une évaluation ne devrait pas être supprimé (sinon vous n'aurez plus accès aux saisies) !</span></li>
 </ul>
 
 <hr />
 
-<form action="#" method="post">
-	<table class="form hsort">
-		<thead>
-			<tr>
-				<th>Niveau</th>
-				<th>Nom</th>
-				<th>Élèves</th>
-				<th>Profs</th>
-				<th class="nu"><q class="ajouter" title="Ajouter un groupe de besoin."></q></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-			$tab_listing_js = '';
-			if(count($tab_groupe_proprio))
-			{
-				foreach($tab_groupe_proprio as $groupe_id => $tab_td)
-				{
-					$eleves_nombre = count($tab_td['eleve']);
-					$profs_nombre  = count($tab_td['professeur']);
-					$eleves_texte  = ($eleves_nombre>1) ? $eleves_nombre.' élèves' : '1 élève' ;
-					$profs_texte   = ($profs_nombre>1)  ? $profs_nombre.' profs' : 'moi seul' ;
-					// Afficher une ligne du tableau
-					echo'<tr id="id_'.$groupe_id.'">';
-					echo	'<td>'.$tab_td['niveau'].'</td>';
-					echo	'<td>'.$tab_td['nom'].'</td>';
-					echo	'<td>'.$eleves_texte.'</td>';
-					echo	'<td>'.$profs_texte.'</td>';
-					echo	'<td class="nu">';
-					echo		'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-					echo		'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-					echo	'</td>';
-					echo'</tr>';
-					// Pour js
-					$tab_listing_js .= 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";';
-					$tab_listing_js .= 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";';
-				}
-			}
-			else
-			{
-				echo'<tr><td class="nu" colspan="5"></td></tr>';
-			}
-			?>
-		</tbody>
-	</table>
-</form>
+<table class="form hsort">
+  <thead>
+    <tr>
+      <th>Niveau</th>
+      <th>Nom</th>
+      <th>Élèves</th>
+      <th>Collègues</th>
+      <th class="nu"><q class="ajouter" title="Ajouter un groupe de besoin."></q></th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    $tab_listing_js = '';
+    if(count($tab_groupe_proprio))
+    {
+      foreach($tab_groupe_proprio as $groupe_id => $tab_td)
+      {
+        $eleves_nombre = count($tab_td['eleve']);
+        $profs_nombre  = count($tab_td['professeur']);
+        $eleves_texte  = ($eleves_nombre>1) ? $eleves_nombre.' élèves' : '1 élève' ;
+        $profs_texte   = ($profs_nombre>1)  ? $profs_nombre.' collègues' : 'moi seul' ;
+        // Afficher une ligne du tableau
+        echo'<tr id="id_'.$groupe_id.'">';
+        echo  '<td>'.$tab_td['niveau'].'</td>';
+        echo  '<td>'.$tab_td['nom'].'</td>';
+        echo  '<td>'.$eleves_texte.'</td>';
+        echo  '<td>'.$profs_texte.'</td>';
+        echo  '<td class="nu">';
+        echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
+        echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
+        echo  '</td>';
+        echo'</tr>';
+        // Pour js
+        $tab_listing_js .= 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";';
+        $tab_listing_js .= 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";';
+      }
+    }
+    else
+    {
+      echo'<tr><td class="nu" colspan="5"></td></tr>';
+    }
+    ?>
+  </tbody>
+</table>
 
 <hr />
 
@@ -175,58 +173,81 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 <?php
 if( count($tab_groupe_associe) )
 {
-	// Assemblage du tableau
-	$TH = array();
-	$TB = array();
-	$TF = array();
-	foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
-	{
-		$TH[$niveau_id] = '';
-		$TB[$niveau_id] = '';
-		$TF[$niveau_id] = '';
-		foreach($tab_groupe as $groupe_id)
-		{
-			$TH[$niveau_id] .= '<th>'.$tab_groupe_associe[$groupe_id]['nom'].'</th>';
-			$TB[$niveau_id] .= '<td>'.mb_substr($tab_groupe_associe[$groupe_id]['eleve'],0,-6,'UTF-8').'</td>';
-			$TF[$niveau_id] .= '<td>'.mb_substr($tab_groupe_associe[$groupe_id]['professeur'],0,-6,'UTF-8').'</td>';
-		}
-	}
-	// Affichage du tableau
-	foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
-	{
-		echo'<table class="affectation">';
-		echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-		echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-		echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-		echo'</table>';
-	}
+  // Assemblage du tableau
+  $TH = array();
+  $TB = array();
+  $TF = array();
+  foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
+  {
+    $TH[$niveau_id] = '';
+    $TB[$niveau_id] = '';
+    $TF[$niveau_id] = '';
+    foreach($tab_groupe as $groupe_id)
+    {
+      $TH[$niveau_id] .= '<th>'.$tab_groupe_associe[$groupe_id]['nom'].'</th>';
+      $TB[$niveau_id] .= '<td>'.mb_substr($tab_groupe_associe[$groupe_id]['eleve'],0,-6,'UTF-8').'</td>';
+      $TF[$niveau_id] .= '<td>'.mb_substr($tab_groupe_associe[$groupe_id]['professeur'],0,-6,'UTF-8').'</td>';
+    }
+  }
+  // Affichage du tableau
+  foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
+  {
+    echo'<table class="affectation">';
+    echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
+    echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
+    echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
+    echo'</table>';
+  }
 }
 else
 {
-	echo'<ul class="puce"><li>Aucun groupe trouvé.</li></ul>';
+  echo'<ul class="puce"><li>Aucun groupe trouvé.</li></ul>';
 }
 ?>
 
 <script type="text/javascript">
-	<?php echo $script_reception ?>
-	var tab_eleves = new Array();
-	var tab_profs  = new Array();
-	<?php echo $tab_listing_js ?>
-	// <![CDATA[
-	var select_niveau="<?php echo str_replace('"','\"',$select_niveau); ?>";
-	// ]]>
-	<?php echo $tab_niveau_ordre_js ?>
+  <?php echo $script_reception ?>
+  var tab_eleves = new Array();
+  var tab_profs  = new Array();
+  <?php echo $tab_listing_js ?>
+  // <![CDATA[
+  var select_niveau="<?php echo str_replace('"','\"',$select_niveau); ?>";
+  // ]]>
+  <?php echo $tab_niveau_ordre_js ?>
 </script>
 
+<form action="#" method="post" id="form_gestion" class="hide">
+  <h2>Ajouter | Modifier un groupe de besoin</h2>
+  <div id="gestion_edit">
+    <p>
+      <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option></option></select><br />
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="20" maxlength="20" />
+    </p>
+    <p>
+      <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q>
+    </p>
+    <p>
+      <label class="tab" for="f_prof_nombre">Collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q>
+    </p>
+  </div>
+  <div id="gestion_delete">
+    <p class="danger">Les associations des élèves, des professeurs, et les évaluations seront perdues !</p>
+    <p>Confirmez-vous la suppression du groupe de besoin &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
+  </div>
+  <p>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+  </p>
+</form>
+
 <form action="#" method="post" id="zone_profs" class="hide">
-	<div class="astuce">Vous pouvez associer des collègues à vos groupes de besoin, mais pas vous retirer de vos propres groupes de besoin !</div>
-	<?php echo afficher_form_element_checkbox_collegues() ?>
-	<div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
+  <div class="astuce">Vous pouvez associer des collègues à vos groupes de besoin, mais pas vous retirer de vos propres groupes de besoin !</div>
+  <?php echo afficher_form_element_checkbox_collegues() ?>
+  <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
-	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-	<?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
-	<p class="danger">Un groupe déjà utilisé lors d'une évaluation ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves du groupe empêche l'accès aux notes saisies correspondantes !</p>
-	<div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
+  <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
+  <?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
+  <p class="danger">Un groupe déjà utilisé lors d'une évaluation ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves du groupe empêche l'accès aux notes saisies correspondantes !</p>
+  <div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

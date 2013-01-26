@@ -36,7 +36,7 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe')
 
 if( ($groupe_id) && (!isset($tab_types[$groupe_type])) )
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 echo Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ );

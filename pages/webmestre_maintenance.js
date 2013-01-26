@@ -27,316 +27,316 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher / masquer le choix du motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Afficher / masquer le choix du motif du blocage
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#f_debloquer , #f_bloquer').click
-		(
-			function()
-			{
-				if($('#f_bloquer').is(':checked'))
-				{
-					$('#span_motif').show();
-					$('#f_motif').focus();
-				}
-				else
-				{
-					$('#span_motif').hide();
-				}
-			}
-		);
+    $('#f_debloquer , #f_bloquer').click
+    (
+      function()
+      {
+        if($('#f_bloquer').is(':checked'))
+        {
+          $('#span_motif').show();
+          $('#f_motif').focus();
+        }
+        else
+        {
+          $('#span_motif').hide();
+        }
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Autocompléter le motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Autocompléter le motif du blocage
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		tab_proposition = new Array();
-		tab_proposition["rien"]         = "";
-		tab_proposition["mise-a-jour"]  = "Mise à jour des fichiers en cours.";
-		tab_proposition["maintenance"]  = "Maintenance sur le serveur en cours.";
-		tab_proposition["demenagement"] = "Déménagement de l'application en cours.";
+    tab_proposition = new Array();
+    tab_proposition["rien"]         = "";
+    tab_proposition["mise-a-jour"]  = "Mise à jour des fichiers en cours.";
+    tab_proposition["maintenance"]  = "Maintenance sur le serveur en cours.";
+    tab_proposition["demenagement"] = "Déménagement de l'application en cours.";
 
-		$('#f_proposition').change
-		(
-			function()
-			{
-				$('#f_motif').val( tab_proposition[ $(this).val() ] ).focus();
-			}
-		);
+    $('#f_proposition').change
+    (
+      function()
+      {
+        $('#f_motif').val( tab_proposition[ $(this).val() ] ).focus();
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Mise à jour des label comparant la version installée et la version disponible
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mise à jour des label comparant la version installée et la version disponible
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function maj_label_versions()
-		{
-			var classe = ( $('#ajax_version_installee').text() == $('#ajax_version_disponible').text() ) ? 'valide' : 'alerte' ;
-			$('#ajax_version_installee').removeAttr("class").addClass(classe);
-		}
+    function maj_label_versions()
+    {
+      var classe = ( $('#ajax_version_installee').text() == $('#ajax_version_disponible').text() ) ? 'valide' : 'alerte' ;
+      $('#ajax_version_installee').removeAttr("class").addClass(classe);
+    }
 
-		maj_label_versions();
+    maj_label_versions();
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Traitement du formulaire principal
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire principal
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form');
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire = $('#form');
 
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_action : { required:true }
-				},
-				messages :
-				{
-					f_action : { required:"choix manquant" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { $('#ajax_msg').html(error); }
-			}
-		);
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation = formulaire.validate
+    (
+      {
+        rules :
+        {
+          f_action : { required:true }
+        },
+        messages :
+        {
+          f_action : { required:"choix manquant" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { $('#ajax_msg').html(error); }
+      }
+    );
 
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
+    };
 
-		// Envoi du formulaire (avec jquery.form.js)
+    // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
+      }
+    ); 
 
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			}
-			return readytogo;
-		}
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
+    {
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      var readytogo = validation.form();
+      if(readytogo)
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
-		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-		}
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider").prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
 
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			$("#bouton_valider").prop('disabled',false);
-			if(responseHTML.substring(0,13)=='<label class=')
-			{
-				
-				$('#ajax_msg').removeAttr("class").html("");
-				$('#ajax_acces_actuel').html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-		} 
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider").prop('disabled',false);
+      if(responseHTML.substring(0,13)=='<label class=')
+      {
+        
+        $('#ajax_msg').removeAttr("class").html("");
+        $('#ajax_acces_actuel').html(responseHTML);
+      }
+      else
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Mise à jour automatique des fichiers
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mise à jour automatique des fichiers
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var etape_numero = 0 ;
+    var etape_numero = 0 ;
 
-		function maj_etape(etape_info)
-		{
-			etape_numero++;
-			if(etape_numero==6)
-			{
-				$('#ajax_maj').removeAttr("class").addClass("valide").html('Mise à jour terminée !');
-				$('#ajax_version_installee').html(etape_info);
-				maj_label_versions();
-				$('button').prop('disabled',false);
-				$.fancybox( { 'href':url_export_rapport_maj , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-				initialiser_compteur();
-				return false;
-			}
-			$('#ajax_maj').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=maj_etape'+etape_numero,
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('button').prop('disabled',false);
-						$('#ajax_maj').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						var tab_infos = responseHTML.split(']¤[');
-						if( (tab_infos.length!=3) || (tab_infos[0]!='') )
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-							return false;
-						}
-						if(tab_infos[1]!='ok')
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[2]);
-							return false;
-						}
-						maj_etape(tab_infos[2]);
-					}
-				}
-			);
-		}
+    function maj_etape(etape_info)
+    {
+      etape_numero++;
+      if(etape_numero==6)
+      {
+        $('#ajax_maj').removeAttr("class").addClass("valide").html('Mise à jour terminée !');
+        $('#ajax_version_installee').html(etape_info);
+        maj_label_versions();
+        $('button').prop('disabled',false);
+        $.fancybox( { 'href':url_export_rapport_maj , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+        initialiser_compteur();
+        return false;
+      }
+      $('#ajax_maj').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=maj_etape'+etape_numero,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('button').prop('disabled',false);
+            $('#ajax_maj').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            var tab_infos = responseHTML.split(']¤[');
+            if( (tab_infos.length!=3) || (tab_infos[0]!='') )
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+              return false;
+            }
+            if(tab_infos[1]!='ok')
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[2]);
+              return false;
+            }
+            maj_etape(tab_infos[2]);
+          }
+        }
+      );
+    }
 
-		$('#bouton_maj').click
-		(
-			function()
-			{
-				etape_numero = 0 ;
-				if( $('#ajax_version_installee').text() > $('#ajax_version_disponible').text() )
-				{
-					$('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
-					return false;
-				}
-				$('button').prop('disabled',true);
-				maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
-			}
-		);
+    $('#bouton_maj').click
+    (
+      function()
+      {
+        etape_numero = 0 ;
+        if( $('#ajax_version_installee').text() > $('#ajax_version_disponible').text() )
+        {
+          $('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
+          return false;
+        }
+        $('button').prop('disabled',true);
+        maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Vérification des fichiers en place
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Vérification des fichiers en place
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function verif_etape(etape_info)
-		{
-			etape_numero++;
-			if(etape_numero==6)
-			{
-				$('#ajax_verif').removeAttr("class").addClass("valide").html('Vérification terminée !');
-				$('button').prop('disabled',false);
-				$.fancybox( { 'href':url_export_rapport_verif , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-				initialiser_compteur();
-				return false;
-			}
-			$('#ajax_verif').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=verif_etape'+etape_numero,
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('button').prop('disabled',false);
-						$('#ajax_verif').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						var tab_infos = responseHTML.split(']¤[');
-						if( (tab_infos.length!=3) || (tab_infos[0]!='') )
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-							return false;
-						}
-						if(tab_infos[1]!='ok')
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[2]);
-							return false;
-						}
-						verif_etape(tab_infos[2]);
-					}
-				}
-			);
-		}
+    function verif_etape(etape_info)
+    {
+      etape_numero++;
+      if(etape_numero==6)
+      {
+        $('#ajax_verif').removeAttr("class").addClass("valide").html('Vérification terminée !');
+        $('button').prop('disabled',false);
+        $.fancybox( { 'href':url_export_rapport_verif , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+        initialiser_compteur();
+        return false;
+      }
+      $('#ajax_verif').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=verif_etape'+etape_numero,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('button').prop('disabled',false);
+            $('#ajax_verif').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            var tab_infos = responseHTML.split(']¤[');
+            if( (tab_infos.length!=3) || (tab_infos[0]!='') )
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+              return false;
+            }
+            if(tab_infos[1]!='ok')
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[2]);
+              return false;
+            }
+            verif_etape(tab_infos[2]);
+          }
+        }
+      );
+    }
 
-		$('#bouton_verif').click
-		(
-			function()
-			{
-				etape_numero = 0 ;
-				$('button').prop('disabled',true);
-				verif_etape("Récupération de l'archive <em>zip</em>&hellip;");
-			}
-		);
+    $('#bouton_verif').click
+    (
+      function()
+      {
+        etape_numero = 0 ;
+        $('button').prop('disabled',true);
+        verif_etape("Récupération de l'archive <em>zip</em>&hellip;");
+      }
+    );
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Vérification des droits en écriture
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Vérification des droits en écriture
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_droit').click
-		(
-			function()
-			{
-				$('button').prop('disabled',true);
-				$('#ajax_droit').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=verif_droits',
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_droit').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('button').prop('disabled',false);
-							if(responseHTML=='ok')
-							{
-								$('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
-								$.fancybox( { 'href':url_export_rapport_droits , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-								initialiser_compteur();
-							}
-							else
-							{
-								$('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							return false;
-						}
-					}
-				);
-			}
-		);
+    $('#bouton_droit').click
+    (
+      function()
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_droit').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=verif_droits',
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_droit').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                $('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
+                $.fancybox( { 'href':url_export_rapport_droits , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
 
-	}
+  }
 );

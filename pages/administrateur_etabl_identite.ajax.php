@@ -55,7 +55,7 @@ $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) 
 
 if($action=='Afficher_form_geo1')
 {
-	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo1() );
+  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo1() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ if($action=='Afficher_form_geo1')
 
 if( ($action=='Afficher_form_geo2') && ($geo1>0) )
 {
-	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo2($geo1) );
+  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo2($geo1) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ if( ($action=='Afficher_form_geo2') && ($geo1>0) )
 
 if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 {
-	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
+  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,8 +82,8 @@ if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 
 if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 {
-	echo ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
-	exit();
+  echo ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,24 +92,24 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 
 if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
-	$retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
-	if($retour!='ok')
-	{
-		exit($retour);
-	}
-	// Si on arrive là, alors tout s'est bien passé.
-	$tab_parametres = array();
-	$tab_parametres['sesamath_id']       = $sesamath_id;
-	$tab_parametres['sesamath_uai']      = $sesamath_uai;
-	$tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
-	$tab_parametres['sesamath_key']      = $sesamath_key;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	// On modifie aussi la session
-	$_SESSION['SESAMATH_ID']       = $sesamath_id ;
-	$_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
-	$_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
-	$_SESSION['SESAMATH_KEY']      = $sesamath_key ;
-	exit('ok');
+  $retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
+  if($retour!='ok')
+  {
+    exit($retour);
+  }
+  // Si on arrive là, alors tout s'est bien passé.
+  $tab_parametres = array();
+  $tab_parametres['sesamath_id']       = $sesamath_id;
+  $tab_parametres['sesamath_uai']      = $sesamath_uai;
+  $tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
+  $tab_parametres['sesamath_key']      = $sesamath_key;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['SESAMATH_ID']       = $sesamath_id ;
+  $_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
+  $_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
+  $_SESSION['SESAMATH_KEY']      = $sesamath_key ;
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,24 +118,24 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 
 if( $etablissement_denomination )
 {
-	$tab_parametres = array();
-	$tab_parametres['etablissement_denomination'] = $etablissement_denomination;
-	$tab_parametres['etablissement_adresse1']     = $etablissement_adresse1;
-	$tab_parametres['etablissement_adresse2']     = $etablissement_adresse2;
-	$tab_parametres['etablissement_adresse3']     = $etablissement_adresse3;
-	$tab_parametres['etablissement_telephone']    = $etablissement_telephone;
-	$tab_parametres['etablissement_fax']          = $etablissement_fax;
-	$tab_parametres['etablissement_courriel']     = $etablissement_courriel;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	// On modifie aussi la session
-	$_SESSION['ETABLISSEMENT']['DENOMINATION'] = $etablissement_denomination;
-	$_SESSION['ETABLISSEMENT']['ADRESSE1']     = $etablissement_adresse1;
-	$_SESSION['ETABLISSEMENT']['ADRESSE2']     = $etablissement_adresse2;
-	$_SESSION['ETABLISSEMENT']['ADRESSE3']     = $etablissement_adresse3;
-	$_SESSION['ETABLISSEMENT']['TELEPHONE']    = $etablissement_telephone;
-	$_SESSION['ETABLISSEMENT']['FAX']          = $etablissement_fax;
-	$_SESSION['ETABLISSEMENT']['COURRIEL']     = $etablissement_courriel;
-	exit('ok');
+  $tab_parametres = array();
+  $tab_parametres['etablissement_denomination'] = $etablissement_denomination;
+  $tab_parametres['etablissement_adresse1']     = $etablissement_adresse1;
+  $tab_parametres['etablissement_adresse2']     = $etablissement_adresse2;
+  $tab_parametres['etablissement_adresse3']     = $etablissement_adresse3;
+  $tab_parametres['etablissement_telephone']    = $etablissement_telephone;
+  $tab_parametres['etablissement_fax']          = $etablissement_fax;
+  $tab_parametres['etablissement_courriel']     = $etablissement_courriel;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['ETABLISSEMENT']['DENOMINATION'] = $etablissement_denomination;
+  $_SESSION['ETABLISSEMENT']['ADRESSE1']     = $etablissement_adresse1;
+  $_SESSION['ETABLISSEMENT']['ADRESSE2']     = $etablissement_adresse2;
+  $_SESSION['ETABLISSEMENT']['ADRESSE3']     = $etablissement_adresse3;
+  $_SESSION['ETABLISSEMENT']['TELEPHONE']    = $etablissement_telephone;
+  $_SESSION['ETABLISSEMENT']['FAX']          = $etablissement_fax;
+  $_SESSION['ETABLISSEMENT']['COURRIEL']     = $etablissement_courriel;
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,33 +144,33 @@ if( $etablissement_denomination )
 
 if($action=='upload_logo')
 {
-	$fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
-	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-	if($result!==TRUE)
-	{
-		exit('Erreur : '.$result);
-	}
-	// vérifier la conformité du fichier image, récupérer les infos le concernant
-	$tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-	if($tab_infos==FALSE)
-	{
-		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-		exit('Erreur : le fichier image ne semble pas valide !');
-	}
-	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
-	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
-	// vérifier le type 
-	if(!isset($tab_extension_types[$image_type]))
-	{
-		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-		exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
-	}
-	$image_format = $tab_extension_types[$image_type];
-	// stocker l'image dans la base
-	DB_STRUCTURE_IMAGE::DB_modifier_image( 0 /*user_id*/ , 'logo' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
-	// Générer la balise html et afficher le retour
-	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
-	exit('<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  if($result!==TRUE)
+  {
+    exit('Erreur : '.$result);
+  }
+  // vérifier la conformité du fichier image, récupérer les infos le concernant
+  $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  if($tab_infos==FALSE)
+  {
+    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    exit('Erreur : le fichier image ne semble pas valide !');
+  }
+  list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
+  $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
+  // vérifier le type 
+  if(!isset($tab_extension_types[$image_type]))
+  {
+    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
+  }
+  $image_format = $tab_extension_types[$image_type];
+  // stocker l'image dans la base
+  DB_STRUCTURE_IMAGE::DB_modifier_image( 0 /*user_id*/ , 'logo' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
+  // Générer la balise html et afficher le retour
+  list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+  exit('<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,8 +179,8 @@ if($action=='upload_logo')
 
 if($action=='delete_logo')
 {
-	DB_STRUCTURE_IMAGE::DB_supprimer_image( 0 /*user_id*/ , 'logo' );
-	exit('ok');
+  DB_STRUCTURE_IMAGE::DB_supprimer_image( 0 /*user_id*/ , 'logo' );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,20 +189,18 @@ if($action=='delete_logo')
 
 if( $mois_bascule_annee_scolaire )
 {
-	$tab_parametres = array();
-	$tab_parametres['mois_bascule_annee_scolaire'] = $mois_bascule_annee_scolaire;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-	// On modifie aussi la session
-	$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] = $mois_bascule_annee_scolaire;
-	exit('ok');
+  $tab_parametres = array();
+  $tab_parametres['mois_bascule_annee_scolaire'] = $mois_bascule_annee_scolaire;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] = $mois_bascule_annee_scolaire;
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+exit('Erreur avec les données transmises !');
+
 ?>

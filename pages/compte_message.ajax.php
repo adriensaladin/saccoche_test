@@ -33,7 +33,7 @@ if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $action          = (isset($_POST['f_action']))          ? Clean::texte($_POST['f_action'])          : '';
-$profil          = (isset($_POST['f_profil']))          ? Clean::texte($_POST['f_profil'])          : ''; // administrateur professeur directeur eleve parent
+$profil          = (isset($_POST['f_profil']))          ? Clean::texte($_POST['f_profil'])          : ''; // administrateur professeur personnel directeur eleve parent
 $groupe_type     = (isset($_POST['f_groupe_type']))     ? Clean::texte($_POST['f_groupe_type'])     : ''; // d n c g b
 $groupe_id       = (isset($_POST['f_groupe_id']))       ? Clean::entier($_POST['f_groupe_id'])      : 0;
 $message_id      = (isset($_POST['f_id']))              ? Clean::entier($_POST['f_id'])             : 0;
@@ -61,16 +61,16 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( ($action=='afficher_users') && $profil && $groupe_id && isset($tab_types[$groupe_type]) )
 {
-	$champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
-	exit( Form::afficher_select( $DB_TAB , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ ) );
+  $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
+  exit( Form::afficher_select( $DB_TAB , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ ) );
 }
 
 if( ($action=='afficher_destinataires') && $nb_ids )
 {
-	$champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_ids) , 'user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte' , '' /*avec_info*/ );
-	exit( Form::afficher_select( $DB_TAB , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ ) );
+  $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_ids) , 'user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte' , '' /*avec_info*/ );
+  exit( Form::afficher_select( $DB_TAB , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,29 +79,29 @@ if( ($action=='afficher_destinataires') && $nb_ids )
 
 if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires )
 {
-	$date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
-	$date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
-	if($date_fin_mysql<$date_debut_mysql)
-	{
-		exit('Date de fin antérieure à la date de début !');
-	}
-	$message_id = DB_STRUCTURE_COMMUN::DB_ajouter_message($_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
-	// Afficher le retour
-	$destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
-	echo'<tr id="id_'.$message_id.'" class="new">';
-	echo	'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
-	echo	'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
-	echo	'<td>'.$destinataires_nombre.'</td>';
-	echo	'<td>'.html(mb_substr($message_contenu,0,30)).'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier ce message."></q>';
-	echo		'<q class="supprimer" title="Supprimer ce message."></q>';
-	echo	'</td>';
-	echo'</tr>';
-	echo'<SCRIPT>';
-	echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
-	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
-	exit();
+  $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
+  $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
+  if($date_fin_mysql<$date_debut_mysql)
+  {
+    exit('Date de fin antérieure à la date de début !');
+  }
+  $message_id = DB_STRUCTURE_COMMUN::DB_ajouter_message($_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  // Afficher le retour
+  $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
+  echo'<tr id="id_'.$message_id.'" class="new">';
+  echo  '<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
+  echo  '<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
+  echo  '<td>'.$destinataires_nombre.'</td>';
+  echo  '<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier ce message."></q>';
+  echo    '<q class="supprimer" title="Supprimer ce message."></q>';
+  echo  '</td>';
+  echo'</tr>';
+  echo'<SCRIPT>';
+  echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
+  echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,27 +110,27 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
 
 if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires )
 {
-	$date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
-	$date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
-	if($date_fin_mysql<$date_debut_mysql)
-	{
-		exit('Date de fin antérieure à la date de début !');
-	}
-	DB_STRUCTURE_COMMUN::DB_modifier_message($message_id,$_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
-	// Afficher le retour
-	$destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
-	echo'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
-	echo'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
-	echo'<td>'.$destinataires_nombre.'</td>';
-	echo'<td>'.html(mb_substr($message_contenu,0,30)).'</td>';
-	echo'<td class="nu">';
-	echo	'<q class="modifier" title="Modifier ce message."></q>';
-	echo	'<q class="supprimer" title="Supprimer ce message."></q>';
-	echo'</td>';
-	echo'<SCRIPT>';
-	echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
-	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
-	exit();
+  $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
+  $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
+  if($date_fin_mysql<$date_debut_mysql)
+  {
+    exit('Date de fin antérieure à la date de début !');
+  }
+  DB_STRUCTURE_COMMUN::DB_modifier_message($message_id,$_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  // Afficher le retour
+  $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
+  echo'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
+  echo'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
+  echo'<td>'.$destinataires_nombre.'</td>';
+  echo'<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce message."></q>';
+  echo  '<q class="supprimer" title="Supprimer ce message."></q>';
+  echo'</td>';
+  echo'<SCRIPT>';
+  echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
+  echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,9 +139,9 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
 
 if( ($action=='supprimer') && $message_id )
 {
-	DB_STRUCTURE_COMMUN::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
-	// Afficher le retour
-	exit('<td>ok</td>');
+  DB_STRUCTURE_COMMUN::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
+  // Afficher le retour
+  exit('<td>ok</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

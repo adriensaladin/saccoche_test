@@ -33,7 +33,7 @@
  */
 function html_decode($text)
 {
-	return htmlspecialchars_decode($text,ENT_COMPAT) ;
+  return htmlspecialchars_decode($text,ENT_COMPAT) ;
 }
 
 /**
@@ -42,7 +42,7 @@ function html_decode($text)
  */
 function non_nul($n)
 {
-	return $n!==FALSE ;
+  return $n!==FALSE ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de zéro.
@@ -50,7 +50,7 @@ function non_nul($n)
  */
 function non_zero($n)
 {
-	return $n!=0 ;
+  return $n!=0 ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si strictement positif.
@@ -58,7 +58,7 @@ function non_zero($n)
  */
 function positif($n)
 {
-	return $n>0 ;
+  return $n>0 ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent "X" et "REQ".
@@ -66,7 +66,7 @@ function positif($n)
  */
 function non_note($note)
 {
-	return ($note!='X')&&($note!='REQ') ;
+  return ($note!='X')&&($note!='REQ') ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de 2.
@@ -74,7 +74,7 @@ function non_note($note)
  */
 function is_renseigne($etat)
 {
-	return $etat!=2 ;
+  return $etat!=2 ;
 }
 
 /**
@@ -88,8 +88,8 @@ function is_renseigne($etat)
  */
 function test_A($score,$seuil=NULL)
 {
-	$seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
-	return $score>$seuil ;
+  $seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
+  return $score>$seuil ;
 }
 
 /**
@@ -103,8 +103,8 @@ function test_A($score,$seuil=NULL)
  */
 function test_NA($score,$seuil=NULL)
 {
-	$seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
-	return $score<$seuil ;
+  $seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
+  return $score<$seuil ;
 }
 
 /**
@@ -117,62 +117,62 @@ function test_NA($score,$seuil=NULL)
  */
 function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
 {
-	// on passe en revue les évaluations disponibles, et on retient les notes exploitables
-	$tab_modele_bon = array('RR','R','V','VV');	// les notes prises en compte dans le calcul du score
-	$tab_note = array(); // pour retenir les notes en question
-	$nb_devoir = count($tab_devoirs);
-	for($i=0;$i<$nb_devoir;$i++)
-	{
-		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
-		{
-			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
-		}
-	}
-	// si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
-	$nb_note = count($tab_note);
-	if($nb_note==0)
-	{
-		return FALSE;
-	}
-	// si le paramétrage du référentiel l'indique, on tronque pour ne garder que les derniers résultats
-	if( ($calcul_limite) && ($nb_note>$calcul_limite) )
-	{
-		$tab_note = array_slice($tab_note,-$calcul_limite);
-		$nb_note = $calcul_limite;
-	}
-	// 1. Calcul de la note en fonction de la méthode du référentiel : 'geometrique','arithmetique','classique'
-	if(in_array($calcul_methode,array('geometrique','arithmetique','classique')))
-	{
-		// 1a. Initialisation
-		$somme_point = 0;
-		$somme_coef = 0;
-		$coef = 1;
-		// 1b. Pour chaque devoir (note)...
-		for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
-		{
-			$somme_point += $tab_note[$num_devoir-1]*$coef;
-			$somme_coef += $coef;
-			$coef = ($calcul_methode=='geometrique') ? $coef*2 : ( ($calcul_methode=='arithmetique') ? $coef+1 : 1 ) ; // Calcul du coef de l'éventuel devoir suivant
-		}
-		// 1c. Calcul final du score
-		return round( $somme_point/$somme_coef , 0 );
-	}
-	// 2. Calcul de la note en fonction de la méthode du référentiel : 'bestof1','bestof2','bestof3'
-	if(in_array($calcul_methode,array('bestof1','bestof2','bestof3')))
-	{
-		// 2a. Initialisation
-		$tab_notes = array();
-		$nb_best = (int)substr($calcul_methode,-1);
-		// 2b. Pour chaque devoir (note)...
-		for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
-		{
-			$tab_notes[] = $tab_note[$num_devoir-1];
-		}
-		// 2c. Calcul final du score
-		rsort($tab_notes);
-		$tab_notes = array_slice( $tab_notes , 0 , $nb_best );
-		return round( array_sum($tab_notes)/count($tab_notes) , 0 );
-	}
+  // on passe en revue les évaluations disponibles, et on retient les notes exploitables
+  $tab_modele_bon = array('RR','R','V','VV');  // les notes prises en compte dans le calcul du score
+  $tab_note = array(); // pour retenir les notes en question
+  $nb_devoir = count($tab_devoirs);
+  for($i=0;$i<$nb_devoir;$i++)
+  {
+    if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
+    {
+      $tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
+    }
+  }
+  // si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
+  $nb_note = count($tab_note);
+  if($nb_note==0)
+  {
+    return FALSE;
+  }
+  // si le paramétrage du référentiel l'indique, on tronque pour ne garder que les derniers résultats
+  if( ($calcul_limite) && ($nb_note>$calcul_limite) )
+  {
+    $tab_note = array_slice($tab_note,-$calcul_limite);
+    $nb_note = $calcul_limite;
+  }
+  // 1. Calcul de la note en fonction de la méthode du référentiel : 'geometrique','arithmetique','classique'
+  if(in_array($calcul_methode,array('geometrique','arithmetique','classique')))
+  {
+    // 1a. Initialisation
+    $somme_point = 0;
+    $somme_coef = 0;
+    $coef = 1;
+    // 1b. Pour chaque devoir (note)...
+    for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
+    {
+      $somme_point += $tab_note[$num_devoir-1]*$coef;
+      $somme_coef += $coef;
+      $coef = ($calcul_methode=='geometrique') ? $coef*2 : ( ($calcul_methode=='arithmetique') ? $coef+1 : 1 ) ; // Calcul du coef de l'éventuel devoir suivant
+    }
+    // 1c. Calcul final du score
+    return round( $somme_point/$somme_coef , 0 );
+  }
+  // 2. Calcul de la note en fonction de la méthode du référentiel : 'bestof1','bestof2','bestof3'
+  if(in_array($calcul_methode,array('bestof1','bestof2','bestof3')))
+  {
+    // 2a. Initialisation
+    $tab_notes = array();
+    $nb_best = (int)substr($calcul_methode,-1);
+    // 2b. Pour chaque devoir (note)...
+    for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
+    {
+      $tab_notes[] = $tab_note[$num_devoir-1];
+    }
+    // 2c. Calcul final du score
+    rsort($tab_notes);
+    $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
+    return round( array_sum($tab_notes)/count($tab_notes) , 0 );
+  }
 }
 
 /**
@@ -187,11 +187,11 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
  */
 function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_sesamath=TRUE)
 {
-	if( (!$only_sesamath) || (strpos(URL_INSTALL_SACOCHE,SERVEUR_PROJET)===0) )
-	{
-		$SEP = ' ║ ';
-		error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
-	}
+  if( (!$only_sesamath) || (strpos(URL_INSTALL_SACOCHE,SERVEUR_PROJET)===0) )
+  {
+    $SEP = ' ║ ';
+    error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
+  }
 }
 
 /**
@@ -207,45 +207,45 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
  */
 function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichiers , $titre_page , $css_additionnel=FALSE )
 {
-	header('Content-Type: text/html; charset='.CHARSET);
-	echo'<!DOCTYPE html>';
-	echo'<html>';
-	echo'<head>';
-	echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
-	if($is_meta_robots)
-	{
-		echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />';
-		echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />';
-		echo'<meta name="author" content="Thomas Crespin pour Sésamath" />';
-		echo'<meta name="robots" content="index,follow" />';
-	}
-	if($is_favicon)
-	{
-		echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />';
-		echo'<link rel="icon" type="image/png" href="./favicon.png" />';
-		echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />';
-		echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />';
-	}
-	if($is_rss)
-	{
-		echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />';
-	}
-	foreach($tab_fichiers as $tab_infos)
-	{
-		list( $type , $url ) = $tab_infos;
-		switch($type)
-		{
-			case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'; break;
-	//  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
-			case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'; break;
-		}
-	}
-	if($css_additionnel)
-	{
-		echo $css_additionnel; // style complémentaire déjà dans <style type="text/css">...</style>
-	}
-	echo'<title>'.$titre_page.'</title>';
-	echo'</head>';
+  header('Content-Type: text/html; charset='.CHARSET);
+  echo'<!DOCTYPE html>';
+  echo'<html>';
+  echo'<head>';
+  echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
+  if($is_meta_robots)
+  {
+    echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />';
+    echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />';
+    echo'<meta name="author" content="Thomas Crespin pour Sésamath" />';
+    echo'<meta name="robots" content="index,follow" />';
+  }
+  if($is_favicon)
+  {
+    echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />';
+    echo'<link rel="icon" type="image/png" href="./favicon.png" />';
+    echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />';
+    echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />';
+  }
+  if($is_rss)
+  {
+    echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />';
+  }
+  foreach($tab_fichiers as $tab_infos)
+  {
+    list( $type , $url ) = $tab_infos;
+    switch($type)
+    {
+      case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'; break;
+  //  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
+      case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'; break;
+    }
+  }
+  if($css_additionnel)
+  {
+    echo $css_additionnel; // style complémentaire déjà dans <style type="text/css">...</style>
+  }
+  echo'<title>'.$titre_page.'</title>';
+  echo'</head>';
 }
 
 /**
@@ -259,56 +259,56 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
  */
 function compacter($chemin,$methode)
 {
-	$fichier_original_chemin = $chemin;
-	$fichier_original_date   = filemtime($fichier_original_chemin);
-	$fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
-	if(SERVEUR_TYPE == 'PROD')
-	{
-		// On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux.
-		// En cas d'appel depuis le site du projet il faut éventuellement respecter le chemin vers le site du projet.
-		$tmp_appli = ( (!defined('APPEL_SITE_PROJET')) || (strpos($chemin,'/sacoche/')!==FALSE) ) ? TRUE : FALSE ;
-		// Conserver les extensions des js et css (le serveur pouvant se baser sur les extensions pour sa gestion du cache et des charsets).
-		$fichier_original_extension = pathinfo($fichier_original_chemin,PATHINFO_EXTENSION);
-		$fichier_chemin_sans_slash  = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $fichier_original_chemin ) , 0 , -(strlen($fichier_original_extension)+1) );
-		$fichier_compact_nom        = $fichier_chemin_sans_slash.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_original_extension;
-		$fichier_compact_chemin     = ($tmp_appli) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : CHEMIN_DOSSIER_TMP_PROJET.$fichier_compact_nom ;
-		$fichier_compact_url        = ($tmp_appli) ?        URL_DIR_TMP.$fichier_compact_nom :        URL_DIR_TMP_PROJET.$fichier_compact_nom ;
-		$fichier_compact_date       = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
-		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas.
-		if($fichier_compact_date<$fichier_original_date)
-		{
-			$fichier_original_contenu = file_get_contents($fichier_original_chemin);
-			$fichier_original_contenu = utf8_decode($fichier_original_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
-			if( ($fichier_original_extension=='js') && ($methode=='pack') )
-			{
-				$myPacker = new JavaScriptPacker($fichier_original_contenu, 62, TRUE, FALSE);
-				$fichier_compact_contenu = $myPacker->pack();
-			}
-			elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
-			{
-				$fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
-			}
-			elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
-			{
-				$fichier_compact_contenu = cssmin::minify($fichier_original_contenu);
-			}
-			else
-			{
-				// Normalement on ne doit pas en arriver là... sauf à passer de mauvais paramètres à la fonction.
-				$fichier_compact_contenu = $fichier_original_contenu;
-			}
-			$fichier_compact_contenu = utf8_encode($fichier_compact_contenu);	// On réencode donc en UTF-8...
-			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
-			$test_ecriture = FileSystem::ecrire_fichier_si_possible($fichier_compact_chemin,$fichier_compact_contenu);
-			return $test_ecriture ? $fichier_compact_url : $fichier_original_url ;
-		}
-		return $fichier_compact_url;
-	}
-	else
-	{
-		// Sur un serveur local on n'encombre pas le SVN, en DEV on garde le fichier normal pour debugguer si besoin.
-		return $fichier_original_url;
-	}
+  $fichier_original_chemin = $chemin;
+  $fichier_original_date   = filemtime($fichier_original_chemin);
+  $fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
+  if(SERVEUR_TYPE == 'PROD')
+  {
+    // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux.
+    // En cas d'appel depuis le site du projet il faut éventuellement respecter le chemin vers le site du projet.
+    $tmp_appli = ( (!defined('APPEL_SITE_PROJET')) || (strpos($chemin,'/sacoche/')!==FALSE) ) ? TRUE : FALSE ;
+    // Conserver les extensions des js et css (le serveur pouvant se baser sur les extensions pour sa gestion du cache et des charsets).
+    $fichier_original_extension = pathinfo($fichier_original_chemin,PATHINFO_EXTENSION);
+    $fichier_chemin_sans_slash  = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $fichier_original_chemin ) , 0 , -(strlen($fichier_original_extension)+1) );
+    $fichier_compact_nom        = $fichier_chemin_sans_slash.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_original_extension;
+    $fichier_compact_chemin     = ($tmp_appli) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : CHEMIN_DOSSIER_TMP_PROJET.$fichier_compact_nom ;
+    $fichier_compact_url        = ($tmp_appli) ?        URL_DIR_TMP.$fichier_compact_nom :        URL_DIR_TMP_PROJET.$fichier_compact_nom ;
+    $fichier_compact_date       = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
+    // Sur le serveur en production, on compresse le fichier s'il ne l'est pas.
+    if($fichier_compact_date<$fichier_original_date)
+    {
+      $fichier_original_contenu = file_get_contents($fichier_original_chemin);
+      $fichier_original_contenu = utf8_decode($fichier_original_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
+      if( ($fichier_original_extension=='js') && ($methode=='pack') )
+      {
+        $myPacker = new JavaScriptPacker($fichier_original_contenu, 62, TRUE, FALSE);
+        $fichier_compact_contenu = $myPacker->pack();
+      }
+      elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
+      {
+        $fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
+      }
+      elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
+      {
+        $fichier_compact_contenu = cssmin::minify($fichier_original_contenu);
+      }
+      else
+      {
+        // Normalement on ne doit pas en arriver là... sauf à passer de mauvais paramètres à la fonction.
+        $fichier_compact_contenu = $fichier_original_contenu;
+      }
+      $fichier_compact_contenu = utf8_encode($fichier_compact_contenu);  // On réencode donc en UTF-8...
+      // Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
+      $test_ecriture = FileSystem::ecrire_fichier_si_possible($fichier_compact_chemin,$fichier_compact_contenu);
+      return $test_ecriture ? $fichier_compact_url : $fichier_original_url ;
+    }
+    return $fichier_compact_url;
+  }
+  else
+  {
+    // Sur un serveur local on n'encombre pas le SVN, en DEV on garde le fichier normal pour debugguer si besoin.
+    return $fichier_original_url;
+  }
 }
 
 /**
@@ -324,39 +324,41 @@ function compacter($chemin,$methode)
  */
 function charger_parametres_mysql_supplementaires($BASE)
 {
-	$file_config_base_structure_multi = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
-	if(is_file($file_config_base_structure_multi))
-	{
-		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
-		require($file_config_base_structure_multi);
-		require(CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php');
-	}
-	else
-	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($file_config_base_structure_multi).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
-	}
+  $file_config_base_structure_multi = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
+  if(is_file($file_config_base_structure_multi))
+  {
+    global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
+    require($file_config_base_structure_multi);
+    require(CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php');
+  }
+  else
+  {
+    exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($file_config_base_structure_multi).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
+  }
 }
 
 /**
  * Fabriquer un login à partir de nom/prénom selon le format paramétré par l'administrateur (reste à tester sa disponibilité).
+ * Cette fonction n'est appelée que depuis un espace administrateur ; $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] est donc défini.
  * 
  * @param string $prenom
  * @param string $nom
- * @param string $profil   eleve | parent | professeur | directeur
+ * @param string $profil_sigle
  * @return string
  */
-function fabriquer_login($prenom,$nom,$profil)
+function fabriquer_login($prenom,$nom,$profil_sigle)
 {
-	$modele = $_SESSION['MODELE_'.strtoupper($profil)];
-	$login_prenom = mb_substr( str_replace(array('.','-','_'),'',Clean::login($prenom)) , 0 , mb_substr_count($modele,'p') );
-	$login_nom    = mb_substr( str_replace(array('.','-','_'),'',Clean::login($nom))    , 0 , mb_substr_count($modele,'n') );
-	$login_separe = str_replace(array('p','n'),'',$modele);
-	$login = ($modele{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
-	return $login;
+  $modele = $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'][$profil_sigle];
+  $login_prenom = mb_substr( str_replace(array('.','-','_'),'',Clean::login($prenom)) , 0 , mb_substr_count($modele,'p') );
+  $login_nom    = mb_substr( str_replace(array('.','-','_'),'',Clean::login($nom))    , 0 , mb_substr_count($modele,'n') );
+  $login_separe = str_replace(array('p','n'),'',$modele);
+  $login = ($modele{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
+  return $login;
 }
 
 /**
  * Fabriquer un mot de passe ; 8 caractères imposés.
+ * Cette fonction peut être appelée par le webmestre ou à l'installation ; $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] n'est alors pas défini -> dans ce cas, on ne transmet pas de paramètre.
  * 
  * Certains caractères sont évités :
  * "e" sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant
@@ -364,12 +366,13 @@ function fabriquer_login($prenom,$nom,$profil)
  * "m"w" pour éviter la confusion avec "nn"vv"
  * "o"0" pour éviter une confusion entre eux
  * 
- * @param void
+ * @param string $profil_sigle
  * @return string
  */
-function fabriquer_mdp()
+function fabriquer_mdp($profil_sigle=NULL)
 {
-	return mb_substr(str_shuffle('2345678923456789aaaaauuuuubcdfghknpqrstvxyz'),0,8);
+  $nb_chars = ($profil_sigle) ? $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$profil_sigle] : 8 ;
+  return mb_substr(str_shuffle('2345678923456789aaaaauuuuubcdfghknpqrstvxyz'),0,$nb_chars);
 }
 
 /**
@@ -382,7 +385,7 @@ function fabriquer_mdp()
  */
 function crypter_mdp($password)
 {
-	return md5('grain_de_sel'.$password);
+  return md5('grain_de_sel'.$password);
 }
 
 /**
@@ -393,19 +396,19 @@ function crypter_mdp($password)
  */
 function fabriquer_fin_nom_fichier__date_et_alea()
 {
-	// date
-	$chaine_date = date('Y-m-d_H\hi\m\i\ns\s'); // lisible par un humain et compatible avec le système de fichiers
-	// valeur aléatoire
-	$longueur_chaine = 15; // permet > 2x10^23 possibilités : même en en testant 1 milliard /s il faudrait plus de 7 millions d'années pour toutes les essayer
-	$caracteres = '0123456789abcdefghijklmnopqrstuvwxyz';
-	$alea_max = strlen($caracteres)-1;
-	$chaine_alea = '';
-	for( $i=0 ; $i<$longueur_chaine ; $i++ )
-	{
-		$chaine_alea .= $caracteres{mt_rand(0,$alea_max)};
-	}
-	// retour
-	return $chaine_date.'_'.$chaine_alea;
+  // date
+  $chaine_date = date('Y-m-d_H\hi\m\i\ns\s'); // lisible par un humain et compatible avec le système de fichiers
+  // valeur aléatoire
+  $longueur_chaine = 15; // permet > 2x10^23 possibilités : même en en testant 1 milliard /s il faudrait plus de 7 millions d'années pour toutes les essayer
+  $caracteres = '0123456789abcdefghijklmnopqrstuvwxyz';
+  $alea_max = strlen($caracteres)-1;
+  $chaine_alea = '';
+  for( $i=0 ; $i<$longueur_chaine ; $i++ )
+  {
+    $chaine_alea .= $caracteres{mt_rand(0,$alea_max)};
+  }
+  // retour
+  return $chaine_date.'_'.$chaine_alea;
 }
 
 /**
@@ -419,7 +422,7 @@ function fabriquer_fin_nom_fichier__date_et_alea()
  */
 function fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut)
 {
-	return md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+  return md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
 }
 
 /**
@@ -435,9 +438,9 @@ function fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut)
  */
 function fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id )
 {
-	$fichier_bilan_officiel_nom_debut = 'user'.$eleve_id.'_officiel_'.$bilan_type.'_periode'.$periode_id;
-	$fichier_bilan_officiel_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_bilan_officiel_nom_debut);
-	return $fichier_bilan_officiel_nom_debut.'_'.$fichier_bilan_officiel_nom_fin.'.pdf';
+  $fichier_bilan_officiel_nom_debut = 'user'.$eleve_id.'_officiel_'.$bilan_type.'_periode'.$periode_id;
+  $fichier_bilan_officiel_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_bilan_officiel_nom_debut);
+  return $fichier_bilan_officiel_nom_debut.'_'.$fichier_bilan_officiel_nom_fin.'.pdf';
 }
 
 /**
@@ -448,22 +451,22 @@ function fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $period
  */
 function maj_base_si_besoin($BASE)
 {
-	$version_base = DB_STRUCTURE_PUBLIC::DB_version_base();
-	if($version_base != VERSION_BASE)
-	{
-		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
-		if(LockAcces::tester_blocage('webmestre',0)===NULL)
-		{
-			// Bloquer l'application
-			LockAcces::bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
-			// Lancer une mise à jour de la base
-			DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
-			// Log de l'action
-			SACocheLog::ajouter('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
-			// Débloquer l'application
-			LockAcces::debloquer_application('automate',$BASE);
-		}
-	}
+  $version_base = DB_STRUCTURE_PUBLIC::DB_version_base();
+  if($version_base != VERSION_BASE)
+  {
+    // On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
+    if(LockAcces::tester_blocage('webmestre',0)===NULL)
+    {
+      // Bloquer l'application
+      LockAcces::bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
+      // Lancer une mise à jour de la base
+      DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
+      // Log de l'action
+      SACocheLog::ajouter('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
+      // Débloquer l'application
+      LockAcces::debloquer_application('automate',$BASE);
+    }
+  }
 }
 
 /**
@@ -486,95 +489,95 @@ function maj_base_si_besoin($BASE)
  */
 function url_get_contents($url,$tab_post=FALSE,$timeout=10)
 {
-	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
-	// On utilise donc la bibliothèque cURL en remplacement
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que cURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);   // FALSE pour que cURL ne vérifie pas le certificat (sinon, en l'absence de certificat, on récolte l'erreur "SSL certificate problem, verify that the CA cert is OK. Details: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed").
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);   // CURLOPT_SSL_VERIFYHOST doit aussi être positionnée à 1 ou 0 si CURLOPT_SSL_VERIFYPEER est désactivée (par défaut à 2) ; sinon, on peut récolter l'erreur "SSL: certificate subject name 'secure.sesamath.fr' does not match target host name 'sacoche.sesamath.net'", mê si ça a été résolu depuis. (http://fr.php.net/manual/fr/function.curl-setopt.php#75711)
-	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);       // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
-	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
-	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);       // Le temps maximum d'exécution de la fonction cURL (en s) ; éviter de monter cette valeur pour libérer des ressources plus rapidement : 'classiquement', le serveur doit répondre en qq ms, donc si au bout de 5s il a pas répondu c'est qu'il ne répondra plus, alors pas la peine de bloquer une connexion et de la RAM pendant plus longtemps.
-	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
-	if( (!ini_get('safe_mode')) && (!ini_get('open_basedir')) )
-	{                                                 // Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE); // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);         // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
-	}
-	else
-	{                                                 // Solution de remplacement inspirée de http://fr.php.net/manual/fr/function.curl-setopt.php#102121
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
-		$maxredirs = 3 ;
-		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		$rch = curl_copy_handle($ch);
-		curl_setopt($rch, CURLOPT_HEADER, TRUE);
-		curl_setopt($rch, CURLOPT_NOBODY, TRUE);
-		curl_setopt($rch, CURLOPT_FORBID_REUSE, FALSE);
-		curl_setopt($rch, CURLOPT_RETURNTRANSFER, TRUE);
-		do
-		{
-			curl_setopt($rch, CURLOPT_URL, $url);
-			$header = curl_exec($rch);
-			if (curl_errno($rch))
-			{
-				$code = 0;
-			}
-			else
-			{
-				$code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
-				if ($code == 301 || $code == 302)
-				{
-					preg_match('/Location:(.*?)\n/', $header, $matches);
-					$newurl = trim(array_pop($matches));
-					// Pb : l'URL peut être relative, et si on perd le domaine alors après ça plante
-					if( (substr($newurl,0,4)!='http') && (substr($newurl,0,3)!='ftp') )
-					{
-						$pos_last_slash = strrpos($url,'/');
-						$newurl_debut = ($pos_last_slash>7) ? substr($url,0,$pos_last_slash+1) : $url.'/' ;
-						$newurl_fin   = ($newurl{0}=='/')   ? substr($newurl,1)                : $newurl ;
-						$newurl = $newurl_debut.$newurl_fin;
-					}
-					$url = $newurl;
-				}
-				else
-				{
-					$code = 0;
-				}
-			}
-		}
-		while ($code && --$maxredirs);
-		curl_close($rch);
-		curl_setopt($ch, CURLOPT_URL, $url);
-	}
-	if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
-	{                                                                    // Serveur qui nécessite d'utiliser un tunnel à travers un proxy HTTP.
-		curl_setopt($ch, CURLOPT_PROXY,     SERVEUR_PROXY_NAME);           // Le nom du proxy HTTP au tunnel qui le demande.
-		curl_setopt($ch, CURLOPT_PROXYPORT, (int)SERVEUR_PROXY_PORT);      // Le numéro du port du proxy à utiliser pour la connexion. Ce numéro de port peut également être défini dans l'option CURLOPT_PROXY.
-		curl_setopt($ch, CURLOPT_PROXYTYPE, constant(SERVEUR_PROXY_TYPE)); // Soit CURLPROXY_HTTP (par défaut), soit CURLPROXY_SOCKS5.
-		if(SERVEUR_PROXY_AUTH_USED)
-		{                                                                                              // Serveur qui nécessite de s'authentifier pour utiliser le proxy.
-			curl_setopt($ch, CURLOPT_PROXYAUTH,    constant(SERVEUR_PROXY_AUTH_METHOD));                 // La méthode d'identification HTTP à utiliser pour la connexion à un proxy. Utilisez la même méthode que celle décrite dans CURLOPT_HTTPAUTH. Pour une identification avec un proxy, seuls CURLAUTH_BASIC et CURLAUTH_NTLM sont actuellement supportés.
-			curl_setopt($ch, CURLOPT_PROXYUSERPWD, SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS); // Un nom d'utilisateur et un mot de passe formatés sous la forme "[username]:[password]" à utiliser pour la connexion avec le proxy.
-		}
-	}
-	if(is_array($tab_post))
-	{
-		curl_setopt($ch, CURLOPT_POST,       TRUE);             // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post);        // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); // Eviter certaines erreurs cURL 417 ; voir explication http://fr.php.net/manual/fr/function.curl-setopt.php#82418 ou http://www.gnegg.ch/2007/02/the-return-of-except-100-continue/
-	}
-	else
-	{
-		curl_setopt($ch, CURLOPT_POST, FALSE);                   // Si pas de données à poster, mieux vaut forcer un appel en GET, sinon ça peut poser pb. http://fr.php.net/manual/fr/function.curl-setopt.php#104387
-	}
-	$requete_reponse = curl_exec($ch);
-	if($requete_reponse === FALSE)
-	{
-		$requete_reponse = 'Erreur : '.curl_error($ch);
-	}
-	curl_close($ch);
-	return $requete_reponse;
+  // Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
+  // On utilise donc la bibliothèque cURL en remplacement
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que cURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);   // FALSE pour que cURL ne vérifie pas le certificat (sinon, en l'absence de certificat, on récolte l'erreur "SSL certificate problem, verify that the CA cert is OK. Details: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed").
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);   // CURLOPT_SSL_VERIFYHOST doit aussi être positionnée à 1 ou 0 si CURLOPT_SSL_VERIFYPEER est désactivée (par défaut à 2) ; sinon, on peut récolter l'erreur "SSL: certificate subject name 'secure.sesamath.fr' does not match target host name 'sacoche.sesamath.net'", mê si ça a été résolu depuis. (http://fr.php.net/manual/fr/function.curl-setopt.php#75711)
+  curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);       // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
+  curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
+  curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);       // Le temps maximum d'exécution de la fonction cURL (en s) ; éviter de monter cette valeur pour libérer des ressources plus rapidement : 'classiquement', le serveur doit répondre en qq ms, donc si au bout de 5s il a pas répondu c'est qu'il ne répondra plus, alors pas la peine de bloquer une connexion et de la RAM pendant plus longtemps.
+  curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
+  if( (!ini_get('safe_mode')) && (!ini_get('open_basedir')) )
+  {                                                 // Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE); // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 3);         // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
+  }
+  else
+  {                                                 // Solution de remplacement inspirée de http://fr.php.net/manual/fr/function.curl-setopt.php#102121
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
+    $maxredirs = 3 ;
+    $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    $rch = curl_copy_handle($ch);
+    curl_setopt($rch, CURLOPT_HEADER, TRUE);
+    curl_setopt($rch, CURLOPT_NOBODY, TRUE);
+    curl_setopt($rch, CURLOPT_FORBID_REUSE, FALSE);
+    curl_setopt($rch, CURLOPT_RETURNTRANSFER, TRUE);
+    do
+    {
+      curl_setopt($rch, CURLOPT_URL, $url);
+      $header = curl_exec($rch);
+      if (curl_errno($rch))
+      {
+        $code = 0;
+      }
+      else
+      {
+        $code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
+        if ($code == 301 || $code == 302)
+        {
+          preg_match('/Location:(.*?)\n/', $header, $matches);
+          $newurl = trim(array_pop($matches));
+          // Pb : l'URL peut être relative, et si on perd le domaine alors après ça plante
+          if( (substr($newurl,0,4)!='http') && (substr($newurl,0,3)!='ftp') )
+          {
+            $pos_last_slash = strrpos($url,'/');
+            $newurl_debut = ($pos_last_slash>7) ? substr($url,0,$pos_last_slash+1) : $url.'/' ;
+            $newurl_fin   = ($newurl{0}=='/')   ? substr($newurl,1)                : $newurl ;
+            $newurl = $newurl_debut.$newurl_fin;
+          }
+          $url = $newurl;
+        }
+        else
+        {
+          $code = 0;
+        }
+      }
+    }
+    while ($code && --$maxredirs);
+    curl_close($rch);
+    curl_setopt($ch, CURLOPT_URL, $url);
+  }
+  if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
+  {                                                                    // Serveur qui nécessite d'utiliser un tunnel à travers un proxy HTTP.
+    curl_setopt($ch, CURLOPT_PROXY,     SERVEUR_PROXY_NAME);           // Le nom du proxy HTTP au tunnel qui le demande.
+    curl_setopt($ch, CURLOPT_PROXYPORT, (int)SERVEUR_PROXY_PORT);      // Le numéro du port du proxy à utiliser pour la connexion. Ce numéro de port peut également être défini dans l'option CURLOPT_PROXY.
+    curl_setopt($ch, CURLOPT_PROXYTYPE, constant(SERVEUR_PROXY_TYPE)); // Soit CURLPROXY_HTTP (par défaut), soit CURLPROXY_SOCKS5.
+    if(SERVEUR_PROXY_AUTH_USED)
+    {                                                                                              // Serveur qui nécessite de s'authentifier pour utiliser le proxy.
+      curl_setopt($ch, CURLOPT_PROXYAUTH,    constant(SERVEUR_PROXY_AUTH_METHOD));                 // La méthode d'identification HTTP à utiliser pour la connexion à un proxy. Utilisez la même méthode que celle décrite dans CURLOPT_HTTPAUTH. Pour une identification avec un proxy, seuls CURLAUTH_BASIC et CURLAUTH_NTLM sont actuellement supportés.
+      curl_setopt($ch, CURLOPT_PROXYUSERPWD, SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS); // Un nom d'utilisateur et un mot de passe formatés sous la forme "[username]:[password]" à utiliser pour la connexion avec le proxy.
+    }
+  }
+  if(is_array($tab_post))
+  {
+    curl_setopt($ch, CURLOPT_POST,       TRUE);             // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post);        // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); // Eviter certaines erreurs cURL 417 ; voir explication http://fr.php.net/manual/fr/function.curl-setopt.php#82418 ou http://www.gnegg.ch/2007/02/the-return-of-except-100-continue/
+  }
+  else
+  {
+    curl_setopt($ch, CURLOPT_POST, FALSE);                   // Si pas de données à poster, mieux vaut forcer un appel en GET, sinon ça peut poser pb. http://fr.php.net/manual/fr/function.curl-setopt.php#104387
+  }
+  $requete_reponse = curl_exec($ch);
+  if($requete_reponse === FALSE)
+  {
+    $requete_reponse = 'Erreur : '.curl_error($ch);
+  }
+  curl_close($ch);
+  return $requete_reponse;
 }
 
 /**
@@ -585,8 +588,8 @@ function url_get_contents($url,$tab_post=FALSE,$timeout=10)
  */
 function recuperer_numero_derniere_version()
 {
-	$requete_reponse = url_get_contents(SERVEUR_VERSION);
-	return (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? $requete_reponse : 'Dernière version non détectée&hellip;' ;
+  $requete_reponse = url_get_contents(SERVEUR_VERSION);
+  return (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? $requete_reponse : 'Dernière version non détectée&hellip;' ;
 }
 
 /**
@@ -598,10 +601,10 @@ function recuperer_numero_derniere_version()
  */
 function extraire_lignes($texte)
 {
-	$texte = trim($texte);
-	$texte = str_replace('"','',$texte);
-	$texte = str_replace(array("\r\n","\n\n","\r\r","\r","\n"),'®',$texte);
-	return explode('®',$texte);
+  $texte = trim($texte);
+  $texte = str_replace('"','',$texte);
+  $texte = str_replace(array("\r\n","\n\n","\r\r","\r","\n"),'®',$texte);
+  return explode('®',$texte);
 }
 
 /**
@@ -612,14 +615,14 @@ function extraire_lignes($texte)
  */
 function extraire_separateur_csv($ligne)
 {
-	$tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
-	foreach($tab_separateur as $separateur => $occurrence)
-	{
-		$tab_separateur[$separateur] = mb_substr_count($ligne,$separateur);
-	}
-	arsort($tab_separateur);
-	reset($tab_separateur);
-	return key($tab_separateur);
+  $tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
+  foreach($tab_separateur as $separateur => $occurrence)
+  {
+    $tab_separateur[$separateur] = mb_substr_count($ligne,$separateur);
+  }
+  arsort($tab_separateur);
+  reset($tab_separateur);
+  return key($tab_separateur);
 }
 
 /**
@@ -633,7 +636,7 @@ function extraire_separateur_csv($ligne)
  */
 function tester_courriel($courriel)
 {
-	return preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/',$courriel) ? TRUE : FALSE;
+  return preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/',$courriel) ? TRUE : FALSE;
 }
 
 /**
@@ -645,8 +648,8 @@ function tester_courriel($courriel)
  */
 function tester_domaine_courriel_valide($mail_adresse)
 {
-	$mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
-	return (getmxrr($mail_domaine,$tab_mxhosts)==TRUE) ? TRUE : $mail_domaine ;
+  $mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
+  return (getmxrr($mail_domaine,$tab_mxhosts)==TRUE) ? TRUE : $mail_domaine ;
 }
 
 /**
@@ -659,18 +662,18 @@ function tester_domaine_courriel_valide($mail_adresse)
  */
 function tester_UAI($uai)
 {
-	// Il faut 7 chiffres suivis d'une lettre.
-	if(!preg_match('#^[0-9]{7}[A-Z]{1}$#',$uai))
-	{
-		return FALSE;
-	}
-	// Il faut vérifier la clef de contrôle.
-	$uai_nombre = substr($uai,0,7);
-	$uai_lettre = substr($uai,-1);
-	$reste = $uai_nombre - (23*floor($uai_nombre/23));
-	$alphabet = 'ABCDEFGHJKLMNPRSTUVWXYZ';
-	$clef = substr($alphabet,$reste,1);
-	return ($clef==$uai_lettre) ? TRUE : FALSE;
+  // Il faut 7 chiffres suivis d'une lettre.
+  if(!preg_match('#^[0-9]{7}[A-Z]{1}$#',$uai))
+  {
+    return FALSE;
+  }
+  // Il faut vérifier la clef de contrôle.
+  $uai_nombre = substr($uai,0,7);
+  $uai_lettre = substr($uai,-1);
+  $reste = $uai_nombre - (23*floor($uai_nombre/23));
+  $alphabet = 'ABCDEFGHJKLMNPRSTUVWXYZ';
+  $clef = substr($alphabet,$reste,1);
+  return ($clef==$uai_lettre) ? TRUE : FALSE;
 }
 
 /**
@@ -683,8 +686,8 @@ function tester_UAI($uai)
  */
 function tester_date($date)
 {
-	$date_unix = strtotime($date);
-	return ( ($date_unix!==FALSE) && ($date_unix!==-1) ) ? TRUE : FALSE ;
+  $date_unix = strtotime($date);
+  return ( ($date_unix!==FALSE) && ($date_unix!==-1) ) ? TRUE : FALSE ;
 }
 
 /**
@@ -698,16 +701,16 @@ function tester_date($date)
  */
 function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_maxi,$hauteur_maxi)
 {
-	if( ($largeur_reelle>$largeur_maxi) || ($hauteur_reelle>$hauteur_maxi) )
-	{
-		$coef_reduction_largeur = $largeur_maxi/$largeur_reelle;
-		$coef_reduction_hauteur = $hauteur_maxi/$hauteur_reelle;
-		$coef_reduction = min($coef_reduction_largeur,$coef_reduction_hauteur);
-		$largeur_imposee = round($largeur_reelle*$coef_reduction);
-		$hauteur_imposee = round($hauteur_reelle*$coef_reduction);
-		return array($largeur_imposee,$hauteur_imposee);
-	}
-	return array($largeur_reelle,$hauteur_reelle);
+  if( ($largeur_reelle>$largeur_maxi) || ($hauteur_reelle>$hauteur_maxi) )
+  {
+    $coef_reduction_largeur = $largeur_maxi/$largeur_reelle;
+    $coef_reduction_hauteur = $hauteur_maxi/$hauteur_reelle;
+    $coef_reduction = min($coef_reduction_largeur,$coef_reduction_hauteur);
+    $largeur_imposee = round($largeur_reelle*$coef_reduction);
+    $hauteur_imposee = round($hauteur_reelle*$coef_reduction);
+    return array($largeur_imposee,$hauteur_imposee);
+  }
+  return array($largeur_reelle,$hauteur_reelle);
 }
 
 /**
@@ -718,8 +721,8 @@ function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_max
  */
 function convert_date_mysql_to_french($date)
 {
-	list($annee,$mois,$jour) = explode('-',$date);
-	return $jour.'/'.$mois.'/'.$annee;
+  list($annee,$mois,$jour) = explode('-',$date);
+  return $jour.'/'.$mois.'/'.$annee;
 }
 
 /**
@@ -730,9 +733,9 @@ function convert_date_mysql_to_french($date)
  */
 function convert_date_french_to_mysql($date)
 {
-	if($date=='00/00/0000') return NULL;
-	list($jour,$mois,$annee) = explode('/',$date);
-	return $annee.'-'.$mois.'-'.$jour;
+  if($date=='00/00/0000') return NULL;
+  list($jour,$mois,$annee) = explode('/',$date);
+  return $annee.'-'.$mois.'-'.$jour;
 }
 
 /**
@@ -743,10 +746,10 @@ function convert_date_french_to_mysql($date)
  */
 function jour_debut_annee_scolaire($format)
 {
-	$jour  = '01';
-	$mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
-	return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
+  $jour  = '01';
+  $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
+  return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
 /**
@@ -758,10 +761,10 @@ function jour_debut_annee_scolaire($format)
  */
 function jour_fin_annee_scolaire($format)
 {
-	$jour  = '01';
-	$mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y") : date("Y")+1 ;
-	return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
+  $jour  = '01';
+  $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y") : date("Y")+1 ;
+  return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
 /**
@@ -774,8 +777,76 @@ function jour_fin_annee_scolaire($format)
  */
 function afficher_fichier_taille($bytes, $decimals = 1)
 {
-	$size_unit = ' KMGTP';
-	$factor = floor((strlen($bytes) - 1) / 3);
-	return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
+  $size_unit = ' KMGTP';
+  $factor = floor((strlen($bytes) - 1) / 3);
+  return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
 }
+
+/**
+ * Tester si un droit d'accès spécifique comporte une restriction aux PP ou aux coordonnateurs
+ *
+ * @param string $listing_droits_sigles
+ * @param string $restriction   'ONLY_PP'|'ONLY_COORD'
+ * @return bool
+ */
+function test_droit_specifique_restreint($listing_droits_sigles,$restriction)
+{
+  return (strpos($listing_droits_sigles,$restriction)!==FALSE);
+}
+
+/**
+ * Tester si on a un droit d'accès spécifique
+ *
+ * @param string $listing_droits_sigles
+ * @param int    $matiere_coord   0|1, uniquement si le droit comporte une restriction aux coordonnateurs matières (facultatif et propre à une matière donnée)
+ * @param bool   $forcer_parent   TRUE pour forcer à tester un profil parent au lieu du profil de l'utilisateur
+ * @return bool
+ */
+function test_user_droit_specifique($listing_droits_sigles,$matiere_coord=0,$forcer_parent=FALSE)
+{
+  $user_profil_sigle = (!$forcer_parent) ? $_SESSION['USER_PROFIL_SIGLE'] : 'TUT'    ;
+  $user_profil_type  = (!$forcer_parent) ? $_SESSION['USER_PROFIL_TYPE']  : 'parent' ;
+  $tableau_droits_sigles = explode(',',$listing_droits_sigles);
+  $test_droit = in_array($user_profil_sigle,$tableau_droits_sigles);
+  if( $test_droit && ($user_profil_type=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') && test_droit_specifique_restreint($listing_droits_sigles,'ONLY_PP') )
+  {
+    return DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID']);
+  }
+  if( $test_droit && ($user_profil_type=='professeur') && ($_SESSION['USER_JOIN_MATIERES']=='config') && test_droit_specifique_restreint($listing_droits_sigles,'ONLY_COORD') )
+  {
+    return (bool)$matiere_coord;
+  }
+  return $test_droit;
+}
+
+/**
+ * Tester si on a un droit d'accès spécifique
+ *
+ * @param string $listing_droits_sigles
+ * @param string $format   "li" | "br"
+ * @return bool
+ */
+function afficher_profils_droit_specifique($listing_droits_sigles,$format)
+{
+  $tab_profils = array();
+  $texte_testriction_pp    = test_droit_specifique_restreint($listing_droits_sigles,'ONLY_PP')    ? ' restreint aux professeurs principaux'  : '' ;
+  $texte_testriction_coord = test_droit_specifique_restreint($listing_droits_sigles,'ONLY_COORD') ? ' restreint aux coordonnateurs matières' : '' ;
+  $tableau_droits_sigles = explode(',',$listing_droits_sigles);
+  foreach($tableau_droits_sigles as $droit_sigle)
+  {
+    if(isset($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]))
+    {
+      $profil_nom  = $_SESSION['TAB_PROFILS_DROIT']['NOM_LONG_PLURIEL'][$droit_sigle];
+      $profil_nom .= ( ($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]=='professeur') && ($_SESSION['TAB_PROFILS_DROIT']['JOIN_GROUPES'][$droit_sigle]=='config')  ) ? $texte_testriction_pp    : '' ;
+      $profil_nom .= ( ($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]=='professeur') && ($_SESSION['TAB_PROFILS_DROIT']['JOIN_MATIERES'][$droit_sigle]=='config') ) ? $texte_testriction_coord : '' ;
+      $tab_profils[] = $profil_nom;
+    }
+  }
+  if(!count($tab_profils))
+  {
+    $tab_profils[] = 'aucun !';
+  }
+  return ($format=='li') ? '<ul class="puce"><li>'.implode('</li><li>',$tab_profils).'</li></ul>' : implode('<br />',$tab_profils) ;
+}
+
 ?>

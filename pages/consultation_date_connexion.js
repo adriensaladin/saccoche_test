@@ -27,95 +27,95 @@
 // jQuery !
 $(document).ready
 (
-	function()
-	{
+  function()
+  {
 
-		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,1]];
-		$('table#bilan').tablesorter({ headers:{} });
-		function trier_tableau()
-		{
-			if($('table#bilan tbody tr td').length>1)
-			{
-				$('table#bilan').trigger('update');
-				$('table#bilan').trigger('sorton',[sorting]);
-			}
-		}
+    // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[1,1]];
+    $('table#bilan').tablesorter({ headers:{} });
+    function trier_tableau()
+    {
+      if($('table#bilan tbody tr td').length>1)
+      {
+        $('table#bilan').trigger('update');
+        $('table#bilan').trigger('sorton',[sorting]);
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Réagir au clic sur un bouton radio ou un changement de select
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		function maj_affichage()
-		{
-			// On récupère le profil
-			var profil = $("input[type=radio]:checked").val();
-			if(typeof(profil)=='undefined')
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#div_bilan').addClass("hide");
-				return false
-			}
-			// On récupère le regroupement
-			var groupe_val = $("#f_groupe").val();
-			if(!groupe_val)
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#div_bilan').addClass("hide");
-				return false
-			}
-			// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
-			if(isNaN(parseInt(groupe_val,10)))
-			{
-				groupe_type = groupe_val.substring(0,1);
-				groupe_id   = groupe_val.substring(1);
-			}
-			// Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
-			else
-			{
-				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
-				groupe_id   = groupe_val;
-			}
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
-			$('#bilan tbody').html('');
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							$('#div_bilan').addClass("hide");
-						}
-						else
-						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-							$('#bilan tbody').html(responseHTML);
-							trier_tableau();
-							$('#div_bilan').removeAttr("class");
-						}
-					}
-				}
-			);
-		}
+    function maj_affichage()
+    {
+      // On récupère le profil
+      var profil = $("input[type=radio]:checked").val();
+      if(typeof(profil)=='undefined')
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#div_bilan').addClass("hide");
+        return false
+      }
+      // On récupère le regroupement
+      var groupe_val = $("#f_groupe").val();
+      if(!groupe_val)
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#div_bilan').addClass("hide");
+        return false
+      }
+      // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
+      if(isNaN(parseInt(groupe_val,10)))
+      {
+        groupe_type = groupe_val.substring(0,1);
+        groupe_id   = groupe_val.substring(1);
+      }
+      // Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
+      else
+      {
+        groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
+        groupe_id   = groupe_val;
+      }
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#bilan tbody').html('');
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#div_bilan').addClass("hide");
+            }
+            else
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+              $('#bilan tbody').html(responseHTML);
+              trier_tableau();
+              $('#div_bilan').removeAttr("class");
+            }
+          }
+        }
+      );
+    }
 
-		$("#f_groupe , input[type=radio]").change
-		(
-			function()
-			{
-				maj_affichage();
-			}
-		);
+    $("#f_groupe , input[type=radio]").change
+    (
+      function()
+      {
+        maj_affichage();
+      }
+    );
 
-	}
+  }
 );

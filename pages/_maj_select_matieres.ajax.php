@@ -35,7 +35,7 @@ $matiere = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0
 
 if(!$groupe)
 {
-	exit('Erreur avec les données transmises !');
+  exit('Erreur avec les données transmises !');
 }
 
 echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=FALSE , $option_first='oui' , $selection=$matiere , $optgroup='non');

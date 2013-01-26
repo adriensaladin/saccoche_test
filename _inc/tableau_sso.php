@@ -117,12 +117,12 @@ $tab_connexion_info['cas'][ '|place-test']       = array( 'txt'=>'' , 'etat'=>1 
 $tab_connexion_info['cas'][ '|scolastance-test'] = array( 'txt'=>'' , 'etat'=>1 , 'societe'=>'ItsLearning'        , 'serveur_host'=>'preprod-cas.scolastance.com'                , 'serveur_port'=>443  , 'serveur_root'=>'cas-recette1_616' , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Test Scolastance." );
 $tab_connexion_info['cas'][ '|logica-test']      = array( 'txt'=>'' , 'etat'=>1 , 'societe'=>'Logica'             , 'serveur_host'=>'projets2-eta.fr.logica.com'                 , 'serveur_port'=>443  , 'serveur_root'=>'connexion'        , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    , 'txt'=>"ENT Test Logica (Celia, Lilie)." );
 https://cas.scolastance.com/cas-asp
-https://cas.scolastance.com/cas-ent74			http://ent74.scolastance.com/etablissements.aspx
-https://cas.scolastance.com/cas-entrouen	http://entrouen.scolastance.com/etablissements.aspx
-https://cas.scolastance.com/cas-ifsp			http://ifsp.scolastance.com/etablissements.aspx
-https://cas.scolastance.com/cas-client		http://client.scolastance.com/etablissements.aspx
-https://cas.scolastance.com/cas-sierra		http://sierra.scolastance.com/etablissements.aspx
-https://cas.scolastance.com/cas-demo			http://demo.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-ent74      http://ent74.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-entrouen  http://entrouen.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-ifsp      http://ifsp.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-client    http://client.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-sierra    http://sierra.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-demo      http://demo.scolastance.com/etablissements.aspx
 */
 
 // Vérifier la définition de ces variables car appel de ce fichier depuis la doc

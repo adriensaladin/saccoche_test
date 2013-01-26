@@ -89,10 +89,9 @@ class cssmin
     $r = array();
     $css = cssmin::minify($css, $options);
     preg_match_all("/(.+){(.+:.+);}/U", $css, $items);
-    $c = count($items[0])
-    if ($c > 0)
+    if (count($items[0]) > 0)
       {
-      for ($i = 0; $i < $c; $i++)
+      for ($i = 0; $i < $c = count($items[0]); $i++)
         {
         $keys    = explode(",", $items[1][$i]);
         $styles_tmp  = explode(";", $items[2][$i]);
@@ -146,6 +145,7 @@ class cssmin
 function cssmin_array_clean(array $array)
   {
   $r = array();
+  $c = count($v);
   if (cssmin_array_is_assoc($array))
     {
     foreach ($array as $key => $value)

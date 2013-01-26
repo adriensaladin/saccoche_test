@@ -278,7 +278,7 @@ class FileSystem
   public static function ecrire_fichier_si_possible($fichier_chemin,$fichier_contenu)
   {
     @umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
-    $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu);
+    $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
     return ($test_ecriture===FALSE) ? FALSE : TRUE ;
   }
 

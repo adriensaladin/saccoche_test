@@ -135,7 +135,7 @@ if($connexion_mode=='cas')
       preg_match($pattern, $content, $matches);
       if (!empty($matches[1]))
       {
-        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ , FALSE /*setup*/ );
+        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ , $setup=FALSE );
       }
     }
     // si on arrive là, on a pas trouvé le contenu, on laisse l'existant (à priori la page moche de phpCAS)

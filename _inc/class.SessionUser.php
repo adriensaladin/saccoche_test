@@ -158,7 +158,7 @@ class SessionUser
     $_SESSION['USER_ID']                       = 0;
     $_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
     $_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
-    $_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+    $_SESSION['USER_DESCR']                    = '['.$_SESSION['USER_PROFIL_NOM_COURT'].'] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;
     $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
@@ -192,7 +192,7 @@ class SessionUser
     $_SESSION['USER_NOM']               = $DB_ROW['user_nom'];
     $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];
     $_SESSION['USER_LOGIN']             = $DB_ROW['user_login'];
-    $_SESSION['USER_DESCR']             = '['.$DB_ROW['user_profil_nom_court_singulier'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
+    $_SESSION['USER_DESCR']             = '['.$_SESSION['USER_PROFIL_NOM_COURT'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
     $_SESSION['USER_DALTONISME']        = $DB_ROW['user_daltonisme'];
     $_SESSION['USER_ID_ENT']            = $DB_ROW['user_id_ent'];
     $_SESSION['USER_ID_GEPI']           = $DB_ROW['user_id_gepi'];
@@ -202,12 +202,12 @@ class SessionUser
     $_SESSION['ELEVE_LANGUE']           = (int) $DB_ROW['eleve_langue'];
     $_SESSION['DELAI_CONNEXION']        = (int) $DB_ROW['delai_connexion_secondes']; // Vaut (int)NULL = 0 à la 1e connexion, mais dans ce cas $_SESSION['FIRST_CONNEXION'] est testé avant.
     $_SESSION['FIRST_CONNEXION']        = ($DB_ROW['user_connexion_date']===NULL) ? TRUE : FALSE ;
-    if( ($DB_ROW['user_connexion_date']===NULL) && ($DB_ROW['user_profil_type']!='administrateur') )
+    if( ($DB_ROW['user_connexion_date']===NULL) && !in_array($DB_ROW['user_profil_sigle'],array('webmestre','administrateur')) )
     {
       $_SESSION['STOP_CNIL'] = TRUE;
     }
     // Récupérer et Enregistrer en session les données des élèves associées à un responsable légal.
-    if($_SESSION['USER_PROFIL_TYPE']=='parent')
+    if($_SESSION['USER_PROFIL_SIGLE']=='TUT')
     {
       $_SESSION['OPT_PARENT_ENFANTS']   = DB_STRUCTURE_COMMUN::DB_OPT_enfants_parent($_SESSION['USER_ID']);
       $_SESSION['OPT_PARENT_CLASSES']   = DB_STRUCTURE_COMMUN::DB_OPT_classes_parent($_SESSION['USER_ID']);
@@ -219,7 +219,7 @@ class SessionUser
       }
     }
     // Récupérer et Enregistrer en session les données associées aux profils utilisateurs d'un établissement, activés ou non.
-    if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
+    if($_SESSION['USER_PROFIL_SIGLE']=='ADM')
     {
       $_SESSION['TAB_PROFILS_ADMIN'] = array( 'TYPE'=>array() , 'LOGIN_MODELE'=>array() , 'MDP_LONGUEUR_MINI'=>array() , 'DUREE_INACTIVITE'=>array() );
       $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_login_modele,user_profil_mdp_longueur_mini,user_profil_duree_inactivite' /*listing_champs*/ , FALSE /*only_actif*/ );

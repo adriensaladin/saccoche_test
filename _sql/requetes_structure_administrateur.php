@@ -1806,7 +1806,7 @@ public static function DB_corriger_numerotations()
   $tab_recherche[] = array( 'contenant_nom'=>'thème'       , 'contenant_tab_champs'=>array('theme_id')               , 'element_nom'=>'item'    , 'element_champ'=>'item'    , 'debut'=>0 , 'decalage'=>1 );
   foreach($tab_recherche as $tab_donnees)
   {
-    extract($tab_donnees,EXTR_OVERWRITE); // $contenant_nom $contenant_tab_champs $element_nom $element_champ $debut $decalage
+    extract($tab_donnees,EXTR_OVERWRITE);
     // numéros en double
     $DB_SQL = 'SELECT DISTINCT CONCAT('.implode(',",",',$contenant_tab_champs).') AS contenant_id , COUNT('.$element_champ.'_id) AS nombre ';
     $DB_SQL.= 'FROM sacoche_referentiel_'.$element_champ.' ';

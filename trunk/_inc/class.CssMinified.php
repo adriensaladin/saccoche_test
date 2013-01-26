@@ -89,7 +89,7 @@ class cssmin
     $r = array();
     $css = cssmin::minify($css, $options);
     preg_match_all("/(.+){(.+:.+);}/U", $css, $items);
-    $c = count($items[0])
+    $c = count($items[0]);
     if ($c > 0)
       {
       for ($i = 0; $i < $c; $i++)

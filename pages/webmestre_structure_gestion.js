@@ -89,7 +89,6 @@ $(document).ready
       {
         $('#p_ajout , #span_envoi').hide(0);
       }
-      span_envoi
       if(mode!='supprimer')
       {
         $('#gestion_edit').show(0);

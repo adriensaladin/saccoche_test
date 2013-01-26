@@ -217,7 +217,7 @@ $(document).ready
           }
         }
       );
-    }
+    };
 
     /**
      * Annuler une action

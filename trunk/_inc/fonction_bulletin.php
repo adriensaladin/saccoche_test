@@ -210,7 +210,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
   $liste_item_id = implode(',',$tab_liste_item);
   // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
   $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE']);
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE']);
   if(empty($DB_TAB)) return FALSE;
   foreach($DB_TAB as $DB_ROW)
   {

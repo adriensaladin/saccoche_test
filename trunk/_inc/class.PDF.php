@@ -447,7 +447,6 @@ class PDF extends FPDF
   private $cases_largeur         = 0;
   private $cases_hauteur         = 0;
   private $lignes_hauteur        = 0;
-  private $lignes_nb             = 0;
   private $reference_largeur     = 0;
   private $intitule_largeur      = 0;
   private $synthese_largeur      = 0;
@@ -873,13 +872,13 @@ class PDF extends FPDF
       $this->taille_police = $size; // On est obligé de le changer provisoirement car, si impression N&B, afficher_note_lomer() l'utilise
       $this->calculer_dimensions_images($case_largeur,$case_hauteur);
       $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('RR',$border=1,$br=0); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['RR']) , '');
+      $this->afficher_note_lomer('RR', 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['RR']) , '');
       $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('R' ,$border=1,$br=0); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['R'])  , '');
+      $this->afficher_note_lomer('R' , 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['R'])  , '');
       $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('V' ,$border=1,$br=0); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['V'])  , '');
+      $this->afficher_note_lomer('V' , 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['V'])  , '');
       $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('VV',$border=1,$br=0); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['VV']) , '');
+      $this->afficher_note_lomer('VV', 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['VV']) , '');
       $this->calculer_dimensions_images($memo_lomer_espace_largeur,$memo_lomer_espace_hauteur);
       $this->taille_police = $memo_taille_police;
     }
@@ -1282,7 +1281,6 @@ class PDF extends FPDF
       // Interligne
       $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
     }
-    $memo_y = $this->GetY();
     $this->officiel_bloc_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $this->page_largeur_moins_marges , $this->lignes_hauteur , $moyenne_generale_eleve , $moyenne_generale_classe );
   }
 
@@ -1479,7 +1477,6 @@ class PDF extends FPDF
 
   public function bilan_item_individuel_transdisciplinaire_ligne_matiere($matiere_nom,$lignes_nb)
   {
-    $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
     $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
     $lignes_nb = 1.5 + $lignes_nb ; // matière(marge+intitulé) + lignes dont résumés (on ne compte pas la légende)
@@ -2338,7 +2335,7 @@ class PDF extends FPDF
     $this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
   }
 
-  public function releve_synthese_socle_legende($legende,$type)
+  public function releve_synthese_socle_legende($type)
   {
     if($this->legende)
     {
@@ -2583,7 +2580,7 @@ class PDF extends FPDF
       $this->SetXY($this->marge_gauche+$this->reference_largeur , $this->marge_haut);
       foreach($tab_init_quantitatif as $note=>$vide)
       {
-        $this->afficher_note_lomer($note,$border=1,$br=0);
+        $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
       }
       $this->SetXY($this->marge_gauche , $this->marge_haut+$this->etiquette_hauteur);
     }
@@ -2637,7 +2634,7 @@ class PDF extends FPDF
     $this->SetFont('Arial' , '' , 8);
     $this->SetXY($memo_x , $memo_y);
     $this->Cell( $this->cases_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->afficher_note_lomer($note,$border=1,$br=0);
+    $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
     $this->SetXY($memo_x+$this->cases_largeur , $memo_y);
   }
 
@@ -2653,7 +2650,7 @@ class PDF extends FPDF
     $this->SetXY($memo_x , $memo_y);
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                         , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_intitule) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->afficher_note_lomer($note,$border=1,$br=1);
+    $this->afficher_note_lomer( $note , 1 /*border*/ , 1 /*br*/ );
   }
 
   public function cartouche_interligne($nb_lignes)
@@ -2764,7 +2761,6 @@ class PDF extends FPDF
     {
       // On prend une nouvelle page PDF si besoin
       $this->tableau_appreciation_page_break();
-      $largeur = $this->page_largeur_moins_marges ;
       $this->choisir_couleur_fond('gris_moyen');
       // nom-prénom
       if($eleve_nom_prenom)

@@ -613,7 +613,6 @@ class InfoServeur
 
   public static function tableau_modules_PHP($nb_lignes)
   {
-    global $tab_commentaires;
     $tab_modules_requis = array('curl','dom','gd','mbstring','mysql','pdo','pdo_mysql','session','zip','zlib');
     $lignes = '';
     $tab_modules = InfoServeur::modules_php();

@@ -60,7 +60,7 @@ $liste_eleve   = implode(',',$tab_eleve);
 
 if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende || !$marge_min )
 {
-  exit('Erreur avec les données transmises !');
+	exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('synthese_matiere');
@@ -85,18 +85,18 @@ require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
 
 if($affichage_direct)
 {
-  echo'<hr />';
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-  echo'</ul>';
-  echo $releve_HTML;
+	echo'<hr />';
+	echo'<ul class="puce">';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'</ul>';
+	echo $releve_HTML;
 }
 else
 {
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-  echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
-  echo'</ul>';
+	echo'<ul class="puce">';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
+	echo'</ul>';
 }
 
 ?>

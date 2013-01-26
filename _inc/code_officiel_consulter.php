@@ -50,18 +50,18 @@ $tab_action = array('initialiser','charger');
 
 $tab_types = array
 (
-  'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
-  'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
-  'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
-  'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
+	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
 );
 
 // On vérifie les paramètres principaux
 
 if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
-  exit('Erreur avec les données transmises !');
+	exit('Erreur avec les données transmises !');
 }
 
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
@@ -69,7 +69,7 @@ if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$p
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  exit('Association classe / période introuvable !');
+	exit('Association classe / période introuvable !');
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -78,11 +78,11 @@ $periode_nom = $DB_ROW['periode_nom'];
 $classe_nom  = $DB_ROW['groupe_nom'];
 if(!$BILAN_ETAT)
 {
-  exit('Bilan introuvable !');
+	exit('Bilan introuvable !');
 }
 if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) )
 {
-  exit('Bilan interdit d\'accès pour cette action !');
+	exit('Bilan interdit d\'accès pour cette action !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,51 +93,51 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4compl
 
 if($ACTION=='initialiser')
 {
-  $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
-  if(empty($DB_TAB))
-  {
-    exit('Aucun élève trouvé dans ce regroupement !');
-  }
-  $tab_eleve_id = array();
-  $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
-    $tab_eleve_id[] = $DB_ROW['user_id'];
-  }
-  $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
-  $form_choix_eleve .= ($BILAN_TYPE=='bulletin') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
-  $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = $tab_eleve_id[0];
-  // (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
-  if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
-  {
-    // Attention ! On doit calculer des moyennes de classe, pas de groupe !
-    if(!$is_sous_groupe)
-    {
-      $liste_eleve_id = implode(',',$tab_eleve_id);
-    }
-    else
-    {
-      $tab_eleve_id_tmp = array();
-      $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $tab_eleve_id_tmp[] = $DB_ROW['user_id'];
-      }
-      $liste_eleve_id = implode(',',$tab_eleve_id_tmp);
-    }
-    calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
-  }
+	$DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
+	if(empty($DB_TAB))
+	{
+		exit('Aucun élève trouvé dans ce regroupement !');
+	}
+	$tab_eleve_id = array();
+	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+		$tab_eleve_id[] = $DB_ROW['user_id'];
+	}
+	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
+	$form_choix_eleve .= ($BILAN_TYPE=='bulletin') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
+	$form_choix_eleve .= '</div></form><hr />';
+	$eleve_id = $tab_eleve_id[0];
+	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
+	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
+	{
+		// Attention ! On doit calculer des moyennes de classe, pas de groupe !
+		if(!$is_sous_groupe)
+		{
+			$liste_eleve_id = implode(',',$tab_eleve_id);
+		}
+		else
+		{
+			$tab_eleve_id_tmp = array();
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$tab_eleve_id_tmp[] = $DB_ROW['user_id'];
+			}
+			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
+		}
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
+	}
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
-$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
+$tab_saisie = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
+	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 
 // Récupérer les absences / retards
@@ -146,8 +146,8 @@ $affichage_assiduite = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'
 
 if($affichage_assiduite)
 {
-  $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_assiduite( $periode_id , $eleve_id );
-  $tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] ) ;
+	$DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_assiduite( $periode_id , $eleve_id );
+	$tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] ) ;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,97 +164,97 @@ $js_graph = '';
 
 if($BILAN_TYPE=='releve')
 {
-  $format                 = 'multimatiere';
-  $aff_etat_acquisition   = $_SESSION['OFFICIEL']['RELEVE_ETAT_ACQUISITION'];
-  $aff_moyenne_scores     = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
-  $aff_pourcentage_acquis = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
-  $conversion_sur_20      = $_SESSION['OFFICIEL']['RELEVE_CONVERSION_SUR_20'];
-  $with_coef              = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-  $matiere_id             = TRUE;
-  $matiere_nom            = '';
-  $groupe_id              = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom             = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-  $date_debut             = '';
-  $date_fin               = '';
-  $retroactif             = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-  $only_socle             = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
-  $aff_coef               = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
-  $aff_socle              = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
-  $aff_lien               = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_domaine            = $_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'];
-  $aff_theme              = $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'];
-  $orientation            = 'portrait'; // pas jugé utile de le mettre en option...
-  $couleur                = $_SESSION['OFFICIEL']['RELEVE_COULEUR'];
-  $legende                = $_SESSION['OFFICIEL']['RELEVE_LEGENDE'];
-  $marge_gauche           = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-  $marge_droite           = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-  $marge_haut             = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-  $marge_bas              = $_SESSION['OFFICIEL']['MARGE_BAS'];
-  $pages_nb               = 'optimise'; // pas jugé utile de le mettre en option... à revoir ?
-  $cases_nb               = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
-  $cases_largeur          = 5; // pas jugé utile de le mettre en option...
-  $tab_eleve              = array($eleve_id); // tableau de l'unique élève à considérer
-  $liste_eleve            = (string)$eleve_id;
-  $tab_type[]             = 'individuel';
-  $type_individuel        = 1;
-  $type_synthese          = 0;
-  $type_bulletin          = 0;
-  $tab_matiere_id         = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
-  $nom_bilan_html         = 'releve_HTML_individuel';
+	$format                 = 'multimatiere';
+	$aff_etat_acquisition   = $_SESSION['OFFICIEL']['RELEVE_ETAT_ACQUISITION'];
+	$aff_moyenne_scores     = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
+	$aff_pourcentage_acquis = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
+	$conversion_sur_20      = $_SESSION['OFFICIEL']['RELEVE_CONVERSION_SUR_20'];
+	$with_coef              = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
+	$matiere_id             = TRUE;
+	$matiere_nom            = '';
+	$groupe_id              = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+	$groupe_nom             = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+	$date_debut             = '';
+	$date_fin               = '';
+	$retroactif             = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
+	$only_socle             = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
+	$aff_coef               = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
+	$aff_socle              = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
+	$aff_lien               = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_domaine            = $_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'];
+	$aff_theme              = $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'];
+	$orientation            = 'portrait'; // pas jugé utile de le mettre en option...
+	$couleur                = $_SESSION['OFFICIEL']['RELEVE_COULEUR'];
+	$legende                = $_SESSION['OFFICIEL']['RELEVE_LEGENDE'];
+	$marge_gauche           = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite           = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut             = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas              = $_SESSION['OFFICIEL']['MARGE_BAS'];
+	$pages_nb               = 'optimise'; // pas jugé utile de le mettre en option... à revoir ?
+	$cases_nb               = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
+	$cases_largeur          = 5; // pas jugé utile de le mettre en option...
+	$tab_eleve              = array($eleve_id); // tableau de l'unique élève à considérer
+	$liste_eleve            = (string)$eleve_id;
+	$tab_type[]             = 'individuel';
+	$type_individuel        = 1;
+	$type_synthese          = 0;
+	$type_bulletin          = 0;
+	$tab_matiere_id         = array();
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	$nom_bilan_html         = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
 {
-  $format         = 'multimatiere' ;
-  $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-  $date_debut     = '';
-  $date_fin       = '';
-  $retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
-  $niveau_id      = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
-  $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $only_socle     = $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'];
-  $only_niveau    = 0; // pas jugé utile de le mettre en option...
-  $couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
-  $legende        = $_SESSION['OFFICIEL']['BULLETIN_LEGENDE'];
-  $marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-  $marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-  $marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-  $marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
-  $tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
-  $liste_eleve    = (string)$eleve_id;
-  $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
-  $nom_bilan_html = 'releve_HTML';
+	$format         = 'multimatiere' ;
+	$groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+	$groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+	$date_debut     = '';
+	$date_fin       = '';
+	$retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
+	$niveau_id      = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
+	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$only_socle     = $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'];
+	$only_niveau    = 0; // pas jugé utile de le mettre en option...
+	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
+	$legende        = $_SESSION['OFFICIEL']['BULLETIN_LEGENDE'];
+	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
+	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
+	$liste_eleve    = (string)$eleve_id;
+	$tab_matiere_id = array();
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 {
-  $palier_id      = (int)substr($BILAN_TYPE,-1);
-  $palier_nom     = 'Palier '.$palier_id;
-  $only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
-  $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
-  $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
-  $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-  $mode           = 'auto';
-  $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
-  $legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
-  $marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-  $marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-  $marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-  $marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
-  $tab_pilier_id  = $tab_pilier_id;
-  $tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
-  $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
-  $nom_bilan_html = 'releve_HTML';
+	$palier_id      = (int)substr($BILAN_TYPE,-1);
+	$palier_nom     = 'Palier '.$palier_id;
+	$only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
+	$aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
+	$aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
+	$groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+	$groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+	$mode           = 'auto';
+	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
+	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
+	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
+	$tab_pilier_id  = $tab_pilier_id;
+	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
+	$tab_matiere_id = array();
+	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	$nom_bilan_html = 'releve_HTML';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,16 +263,16 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 
 if(!count($tab_eval))
 {
-  ${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période selon les paramètres choisis !</div>' ;
+	${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période selon les paramètres choisis !</div>' ;
 }
 
 if($ACTION=='initialiser')
 {
-  exit('<h2>Consulter le contenu</h2>'.$form_choix_eleve.'<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>'.$js_graph);
+	exit('<h2>Consulter le contenu</h2>'.$form_choix_eleve.'<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>'.$js_graph);
 }
 else
 {
-  exit(${$nom_bilan_html}.$js_graph);
+	exit(${$nom_bilan_html}.$js_graph);
 }
 
 ?>

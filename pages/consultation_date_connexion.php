@@ -31,44 +31,42 @@ $TITRE = "Date de dernière connexion";
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
+$tab_groupes = ($_SESSION['USER_PROFIL']=='professeur') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
-  <label class="tab">Profil :</label>
-    <?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
-    <input id="f_profil_administrateurs" name="f_profil" type="radio" value="administrateur" /><label for="f_profil_administrateurs"> Administrateurs</label>
-    &nbsp;&nbsp;&nbsp;
-    <input id="f_profil_directeurs" name="f_profil" type="radio" value="directeur" /><label for="f_profil_directeurs"> Directeurs</label>
-    &nbsp;&nbsp;&nbsp;
-    <?php endif ?>
-    <?php if(in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))): ?>
-    <input id="f_profil_professeurs" name="f_profil" type="radio" value="professeur" /><label for="f_profil_professeurs"> Professeurs</label>
-    &nbsp;&nbsp;&nbsp;
-    <input id="f_profil_personnels" name="f_profil" type="radio" value="personnel" /><label for="f_profil_personnels"> Personnels autres</label>
-    &nbsp;&nbsp;&nbsp;
-    <?php endif ?>
-    <input id="f_profil_eleves" name="f_profil" type="radio" value="eleve" /><label for="f_profil_eleves"> Élèves</label>
-    &nbsp;&nbsp;&nbsp;
-    <input id="f_profil_parents" name="f_profil" type="radio" value="parent" /><label for="f_profil_parents"> Responsables légaux</label><br />
-  <label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?> <label id="ajax_msg">&nbsp;</label>
+	<label class="tab">Profil :</label>
+		<?php if($_SESSION['USER_PROFIL']=='administrateur'): ?>
+		<input id="f_profil_administrateurs" name="f_profil" type="radio" value="administrateur" /><label for="f_profil_administrateurs"> Administrateurs</label>
+		&nbsp;&nbsp;&nbsp;
+		<input id="f_profil_directeurs" name="f_profil" type="radio" value="directeur" /><label for="f_profil_directeurs"> Directeurs</label>
+		&nbsp;&nbsp;&nbsp;
+		<?php endif ?>
+		<?php if(in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur'))): ?>
+		<input id="f_profil_professeurs" name="f_profil" type="radio" value="professeur" /><label for="f_profil_professeurs"> Professeurs</label>
+		&nbsp;&nbsp;&nbsp;
+		<?php endif ?>
+		<input id="f_profil_eleves" name="f_profil" type="radio" value="eleve" /><label for="f_profil_eleves"> Élèves</label>
+		&nbsp;&nbsp;&nbsp;
+		<input id="f_profil_parents" name="f_profil" type="radio" value="parent" /><label for="f_profil_parents"> Responsables légaux</label><br />
+	<label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?> <label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <hr />
 
 <div id="div_bilan" class="hide">
-  <table id="bilan" class="hsort">
-    <thead>
-      <tr>
-        <th>Utilisateur</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="nu" colspan="2"></td></tr>
-    </tbody>
-  </table>
+	<table id="bilan" class="hsort">
+		<thead>
+			<tr>
+				<th>Utilisateur</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td class="nu" colspan="2"></td></tr>
+		</tbody>
+	</table>
 </div>

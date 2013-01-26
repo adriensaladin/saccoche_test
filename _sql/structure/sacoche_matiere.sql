@@ -1,18 +1,18 @@
 DROP TABLE IF EXISTS sacoche_matiere;
 
 CREATE TABLE sacoche_matiere (
-  matiere_id          SMALLINT(5) UNSIGNED                NOT NULL AUTO_INCREMENT,
-  matiere_active      TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_usuelle     TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_famille_id  TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_nb_demandes TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_ordre       TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 255,
-  matiere_ref         VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  matiere_nom         VARCHAR(63) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  PRIMARY KEY (matiere_id),
-  KEY matiere_active (matiere_active),
-  KEY matiere_famille_id (matiere_famille_id),
-  FULLTEXT KEY matiere_nom (matiere_nom)
+	matiere_id          SMALLINT(5) UNSIGNED                NOT NULL AUTO_INCREMENT,
+	matiere_active      TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
+	matiere_usuelle     TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
+	matiere_famille_id  TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	matiere_nb_demandes TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	matiere_ordre       TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 255,
+	matiere_ref         VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	matiere_nom         VARCHAR(63) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	PRIMARY KEY (matiere_id),
+	KEY matiere_active (matiere_active),
+	KEY matiere_famille_id (matiere_famille_id),
+	FULLTEXT KEY matiere_nom (matiere_nom)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_matiere DISABLE KEYS;

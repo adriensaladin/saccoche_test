@@ -27,89 +27,11 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Statistiques d'utilisation";
-
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation</a></span></p>
 
-<?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
-
 <?php
-list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
+$fin = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'multi' : 'mono' ;
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>
-
-<ul class="puce">
-  <li>Il y a <b id="prof_nb"><?php echo number_format($prof_nb,0,'',' ') ?></b> professeurs enregistrés, dont <b id="prof_use"><?php echo number_format($prof_use,0,'',' ') ?></b> professeurs connectés.</li>
-  <li>Il y a <b id="eleve_nb"><?php echo number_format($eleve_nb,0,'',' ') ?></b> élèves enregistrés, dont <b id="eleve_use"><?php echo number_format($eleve_use,0,'',' ') ?></b> élèves connectés.</li>
-  <li>Il y a <b id="score_nb"><?php echo number_format($score_nb,0,'',' ') ?></b> saisies enregistrées.</li>
-</ul>
-<hr />
-<p id="expli">
-  <span class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</span><br />
-  <span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span>
-</p>
-
-<?php endif /* * * * * * MONO-STRUCTURE FIN * * * * * */ ?>
-
-<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
-
-<?php
-// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
-$selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande de stats depuis structure_multi.php
-$select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=FALSE , $option_first='non' , $selection , $optgroup='oui') ;
-?>
-
-<form action="#" method="post" id="form_stats"><fieldset>
-  <label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
-  <span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="calculer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="button" class="stats">Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
-</fieldset></form>
-
-<div id="ajax_info" class="hide">
-  <h2>Calcul des statistiques en cours</h2>
-  <label id="ajax_msg1"></label>
-  <ul class="puce"><li id="ajax_msg2"></li></ul>
-  <span id="ajax_num" class="hide"></span>
-  <span id="ajax_max" class="hide"></span>
-</div>
-
-<p>&nbsp;</p>
-
-<form action="#" method="post" id="structures" class="hide">
-  <hr />
-  <table class="form hsort" id="statistiques">
-    <thead>
-      <tr>
-        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
-        <th>Id</th>
-        <th>Structure</th>
-        <th>Contact</th>
-        <th>Ancienneté</th>
-        <th>professeurs<br />enregistrés</th>
-        <th>professeurs<br />connectés</th>
-        <th>élèves<br />enregistrés</th>
-        <th>élèves<br />connectés</th>
-        <th>saisies<br />enregistrées</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-      </tr>
-    </tfoot>
-    <tbody>
-      <tr>
-      </tr>
-    </tbody>
-  </table>
-  <p id="zone_actions">
-    Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
-    <button id="bouton_newsletter" type="button" class="mail_ecrire">Écrire un courriel.</button>
-    <button id="bouton_transfert" type="button" class="fichier_export">Exporter données &amp; bases.</button>
-    <button id="bouton_supprimer" type="button" class="supprimer">Supprimer.</button>
-    <label id="ajax_supprimer">&nbsp;</label>
-  </p>
-  <div class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</div>
-  <div class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</div>
-  </p>
-</form>
-
-<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>

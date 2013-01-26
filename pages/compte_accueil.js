@@ -27,44 +27,44 @@
 // jQuery !
 $(document).ready
 (
-  function()
-  {
+	function()
+	{
 
-    // Ajout alerte si usage frame / iframe
-    if(top.frames.length!=0)
-    {
-      $('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
-      format_liens('#cadre_bas');
-    }
+		// Ajout alerte si usage frame / iframe
+		if(top.frames.length!=0)
+		{
+			$('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
+			format_liens('#cadre_bas');
+		}
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('a[href=#toggle_accueil]').click
-    (
-      function()
-      {
-        var type = $(this).attr('class').substring(3); // 'to_' + type
-        var src  = $(this).children('img').attr('src');
-        var symb1 = ( src.indexOf("plus") > 0 ) ? 'plus' : 'moins' ;
-        var symb2 = ( symb1=='moins' ) ? 'plus' : 'moins' ;
-        $('#'+type+'_'+symb1).hide(0);
-        $('#'+type+'_'+symb2).show(0);
-        // Au passage, une requête ajax discrète pour mémoriser cette préférence
-        var etat = ( symb1=='moins' ) ? 0 : 1 ;
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_type='+type+'&f_etat='+etat,
-            dataType : "html"
-          }
-        );
-        return false;
-      }
-    );
+		$('a[href=#toggle_accueil]').click
+		(
+			function()
+			{
+				var type = $(this).attr('class').substring(3); // 'to_' + type
+				var src  = $(this).children('img').attr('src');
+				var symb1 = ( src.indexOf("plus") > 0 ) ? 'plus' : 'moins' ;
+				var symb2 = ( symb1=='moins' ) ? 'plus' : 'moins' ;
+				$('#'+type+'_'+symb1).hide(0);
+				$('#'+type+'_'+symb2).show(0);
+				// Au passage, une requête ajax discrète pour mémoriser cette préférence
+				var etat = ( symb1=='moins' ) ? 0 : 1 ;
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'csrf='+CSRF+'&f_type='+type+'&f_etat='+etat,
+						dataType : "html"
+					}
+				);
+				return false;
+			}
+		);
 
-  }
+	}
 );

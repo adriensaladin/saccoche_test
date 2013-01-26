@@ -27,181 +27,165 @@
 // jQuery !
 $(document).ready
 (
-  function()
-  {
+	function()
+	{
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour lancer une sauvegarde
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Appel en ajax pour lancer une sauvegarde
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function sauvegarder(etape)
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=sauvegarder'+'&etape='+etape,
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $("button").prop('disabled',false);
-            $('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            if(responseHTML.substring(0,4)!='<li>')
-            {
-              $("button").prop('disabled',false);
-              $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-            else
-            {
-              $('#ajax_info').append(responseHTML);
-              initialiser_compteur();
-              if(responseHTML.indexOf('en cours')!=-1)
-              {
-                etape++;
-                sauvegarder(etape);
-              }
-              else
-              {
-                $("button").prop('disabled',false);
-                $('#ajax_msg1').removeAttr("class").html('');
-                $('#ajax_info').append('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>');
-                format_liens('#ajax_info');
-              }
-            }
-          }
-        }
-      );
-    }
+		$('#bouton_form1').click
+		(
+			function()
+			{
+				$("button").prop('disabled',true);
+				$("#ajax_info").html('');
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				$('#ajax_msg2').removeAttr("class").html('');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'csrf='+CSRF+'&f_action=sauvegarder',
+						dataType : "html",
+						error : function(jqXHR, textStatus, errorThrown)
+						{
+							$("button").prop('disabled',false);
+							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							$("button").prop('disabled',false);
+							if(responseHTML.substring(0,4)!='<li>')
+							{
+								$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg1').removeAttr("class").html('');
+								$('#ajax_info').html(responseHTML);
+								format_liens('#ajax_info');
+								initialiser_compteur();
+							}
+						}
+					}
+				);
+			}
+		);
 
-    $('#bouton_form1').click
-    (
-      function()
-      {
-        $("button").prop('disabled',true);
-        $('#ajax_msg1').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('#ajax_msg2').removeAttr("class").html('');
-        $('#ajax_info').html();
-        initialiser_compteur();
-        sauvegarder(1);
-      }
-    );
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Upload d'un fichier image avec jquery.ajaxupload.js
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Upload d'un fichier image avec jquery.ajaxupload.js
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+		new AjaxUpload
+		('#bouton_form2',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'csrf':CSRF,'f_action':'uploader'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier,
+				onSubmit: verifier_fichier,
+				onComplete: retourner_fichier
+			}
+		);
 
-    new AjaxUpload
-    ('#bouton_form2',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_action':'uploader'},
-        autoSubmit: true,
-        responseType: "html",
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
+		function changer_fichier(fichier_nom,fichier_extension)
+		{
+			$("button").prop('disabled',true);
+			$("#ajax_info").html('');
+			$('#ajax_msg1').removeAttr("class").html('');
+			$('#ajax_msg2').removeAttr("class").html('');
+			return true;
+		}
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $("button").prop('disabled',true);
-      $("#ajax_info").html('');
-      $('#ajax_msg1').removeAttr("class").html('');
-      $('#ajax_msg2').removeAttr("class").html('');
-      return true;
-    }
+		function verifier_fichier(fichier_nom,fichier_extension)
+		{
+			if (fichier_nom==null || fichier_nom.length<5)
+			{
+				$("button").prop('disabled',false);
+				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+				return false;
+			}
+			else if(fichier_extension.toLowerCase()!='zip')
+			{
+				$("button").prop('disabled',false);
+				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+				return false;
+			}
+			else
+			{
+				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Envoi en cours&hellip;");
+				return true;
+			}
+		}
 
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
-      {
-        $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-        return false;
-      }
-      else if(fichier_extension.toLowerCase()!='zip')
-      {
-        $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
-        return false;
-      }
-      else
-      {
-        $('#ajax_msg2').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        return true;
-      }
-    }
+		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+		{
+			if( (responseHTML.substring(0,26)!='<li><label class="valide">') && (responseHTML.substring(0,24)!='<LI><LABEL class=valide>') )
+			{
+				$("button").prop('disabled',false);
+				$('#ajax_msg2').removeAttr("class").html('');
+				$('#ajax_info').html(responseHTML);
+			}
+			else
+			{
+				$('#ajax_msg2').html('Demande traitée...');
+				$('#ajax_info').html(responseHTML);
+				initialiser_compteur();
+				restaurer(1);
+			}
+		}
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
-    {
-      if( (responseHTML.substring(0,26)!='<li><label class="valide">') && (responseHTML.substring(0,24)!='<LI><LABEL class=valide>') )
-      {
-        $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").html('');
-        $('#ajax_info').html(responseHTML);
-      }
-      else
-      {
-        $('#ajax_msg2').html('Demande traitée...');
-        $('#ajax_info').html(responseHTML);
-        initialiser_compteur();
-        restaurer(1);
-      }
-    }
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Appel en ajax pour lancer une restauration
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour lancer une restauration
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+		function restaurer(etape)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'csrf='+CSRF+'&f_action=restaurer'+'&etape='+etape,
+					dataType : "html",
+					error : function(jqXHR, textStatus, errorThrown)
+					{
+						$("button").prop('disabled',false);
+						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						if(responseHTML.substring(0,4)!='<li>')
+						{
+							$("button").prop('disabled',false);
+							$('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+						else
+						{
+							$('#ajax_info').append(responseHTML);
+							initialiser_compteur();
+							if(responseHTML.indexOf('en cours')!=-1)
+							{
+								etape++;
+								restaurer(etape);
+							}
+							else
+							{
+								$("button").prop('disabled',false);
+								$('#ajax_msg2').removeAttr("class").html('');
+								$('#ajax_info').append('<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>');
+							}
+						}
+					}
+				}
+			);
+		}
 
-    function restaurer(etape)
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=restaurer'+'&etape='+etape,
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $("button").prop('disabled',false);
-            $('#ajax_msg2').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            if(responseHTML.substring(0,4)!='<li>')
-            {
-              $("button").prop('disabled',false);
-              $('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-            else
-            {
-              $('#ajax_info').append(responseHTML);
-              initialiser_compteur();
-              if(responseHTML.indexOf('en cours')!=-1)
-              {
-                etape++;
-                restaurer(etape);
-              }
-              else
-              {
-                $("button").prop('disabled',false);
-                $('#ajax_msg2').removeAttr("class").html('');
-                $('#ajax_info').append('<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>');
-              }
-            }
-          }
-        }
-      );
-    }
-
-  }
+	}
 );

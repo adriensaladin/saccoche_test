@@ -34,10 +34,10 @@ class InfoServeur
 
   private static $SACoche_version_dispo = NULL;
 
-  private static $tab_style = array(
-    'vert' =>'bv' ,
-    'jaune'=>'bj' ,
-    'rouge'=>'br'
+  private static $tab_couleur = array(
+    'vert' =>'#9F9' ,
+    'jaune'=>'#EE5' ,
+    'rouge'=>'#F99'
   );
 
   // //////////////////////////////////////////////////
@@ -52,7 +52,7 @@ class InfoServeur
    */
   private static function info_base_complement()
   {
-    return ($_SESSION['USER_PROFIL_TYPE']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
+    return ($_SESSION['USER_PROFIL']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
   }
 
   /**
@@ -107,7 +107,7 @@ class InfoServeur
 
   /**
    * cellule_coloree_centree
-   * Retourne une chaine de la forme '<td class="hc ...">...</td>'
+   * Retourne une chaine de la forme '<td class="hc" style="background:#...">...</td>'
    *
    * @param string $contenu
    * @param string $couleur   vert|jaune|rouge
@@ -115,7 +115,7 @@ class InfoServeur
    */
   private static function cellule_coloree_centree($contenu,$couleur)
   {
-    return '<td class="hc '.InfoServeur::$tab_style[$couleur].'">'.$contenu.'</td>';
+    return '<td class="hc" style="background:'.InfoServeur::$tab_couleur[$couleur].'">'.$contenu.'</td>';
   }
 
   /**
@@ -142,7 +142,7 @@ class InfoServeur
     $tab_tr = array();
     foreach($tab_objets as $nom_objet => $nom_affichage)
     {
-      $tab_tr[] = '<tr><td><img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire($nom_objet).'" /> '.$nom_affichage.'</td>'.call_user_func('InfoServeur::'.$nom_objet).'</tr>';
+      $tab_tr[] = '<tr><td><img alt="" title="'.InfoServeur::commentaire($nom_objet).'" src="./_img/bulle_aide.png" /> '.$nom_affichage.'</td>'.call_user_func('InfoServeur::'.$nom_objet).'</tr>';
     }
     return'<table class="p"><thead><tr><th colspan="2">'.$titre.'</th></tr></thead><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }
@@ -218,7 +218,7 @@ class InfoServeur
    */
   private static function version_sacoche_base()
   {
-    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                  return InfoServeur::cellule_coloree_centree('indisponible','jaune');
+    if($_SESSION['USER_PROFIL']=='webmestre')                       return InfoServeur::cellule_coloree_centree('indisponible','jaune');
     if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
                                                                     return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
@@ -625,12 +625,12 @@ class InfoServeur
       for($numero_colonne=0 ; $numero_colonne<$nb_colonnes ; $numero_colonne++)
       {
         $indice = $numero_colonne*$nb_lignes + $numero_ligne ;
-        $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_modules[$indice]),$tab_modules_requis)) ) ? ' class="'.InfoServeur::$tab_style['vert'].'"' : '' ;
+        $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_modules[$indice]),$tab_modules_requis)) ) ? ' style="background:'.InfoServeur::$tab_couleur['vert'].'"' : '' ;
         $lignes .= ($indice<$nb_modules) ? '<td'.$style.'>'.$tab_modules[$indice].'</td>' : '<td class="hc">-</td>' ;
       }
       $lignes .= '</tr>';
     }
-    $tr_head = '<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire('modules_PHP').'" /></th></tr>';
+    $tr_head = '<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" title="'.InfoServeur::commentaire('modules_PHP').'" src="./_img/bulle_aide.png" /></th></tr>';
     return'<table class="p"><thead>'.$tr_head.'</thead><tbody>'.$lignes.'</tbody></table>';
   }
 
@@ -675,7 +675,7 @@ class InfoServeur
       {
         $search_version = preg_match( '/[0-9.]+/' , $tab_gd_options[$nom_objet] , $tab_match);
         $gd_version = ($search_version) ? $tab_match[0] : '' ;
-        $img = ($nom_objet=='GD Version') ? '<img alt="" src="./_img/bulle_aide.png" title="La fonction imagecreatetruecolor() requiert la bibliothèque GD version 2.0.1 ou supérieure, 2.0.28 ou supérieure étant recommandée." /> ' : '' ;
+        $img = ($nom_objet=='GD Version') ? '<img alt="" title="La fonction imagecreatetruecolor() requiert la bibliothèque GD version 2.0.1 ou supérieure, 2.0.28 ou supérieure étant recommandée." src="./_img/bulle_aide.png" /> ' : '' ;
              if(version_compare($gd_version,'2.0.28','>=')) $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'vert');
         else if(version_compare($gd_version,'2.0.1' ,'>=')) $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'jaune');
         else                                                $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'rouge');

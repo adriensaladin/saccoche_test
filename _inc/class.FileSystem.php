@@ -404,33 +404,25 @@ class FileSystem
   /**
    * Effacer d'anciens fichiers temporaires sur le serveur.
    * 
-   * @param string   $dossier              le dossier à vider
-   * @param int      $nb_minutes           le délai d'expiration en minutes
-   * @param bool     $with_sous_dossiers   TRUE pour forcer aussi la suppression de sous-dossiers résiduels (facultatif)
+   * @param string   $dossier      le dossier à vider
+   * @param int      $nb_minutes   le délai d'expiration en minutes
    * @return void
    */
-  public static function effacer_fichiers_temporaires($dossier,$nb_minutes,$with_sous_dossiers=FALSE)
+  public static function effacer_fichiers_temporaires($dossier,$nb_minutes)
   {
     if(is_dir($dossier))
     {
       $date_limite = time() - $nb_minutes*60;
-      $tab_contenu = FileSystem::lister_contenu_dossier($dossier);
+      $tab_fichier = FileSystem::lister_contenu_dossier($dossier);
       $ds = (substr($dossier,-1)==DS) ? '' : DS ;
-      foreach($tab_contenu as $contenu)
+      foreach($tab_fichier as $fichier_nom)
       {
-        $chemin_contenu = $dossier.$ds.$contenu;
-        $extension = pathinfo($chemin_contenu,PATHINFO_EXTENSION);
-        $date_unix = @filemtime($chemin_contenu); // @ car dans de rares cas le fichier est simultanément supprimé par un autre processus
-        if( ($date_unix<$date_limite) && ($extension!='htm') )
+        $fichier = $dossier.$ds.$fichier_nom;
+        $extension = pathinfo($fichier,PATHINFO_EXTENSION);
+        $date_unix = @filemtime($fichier); // @ car dans de rares cas le fichier est simultanément supprimé par un autre processus
+        if( (is_file($fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
         {
-          if(is_file($chemin_contenu))
-          {
-            unlink($chemin_contenu);
-          }
-          else if( is_dir($chemin_contenu) && $with_sous_dossiers )
-          {
-            FileSystem::supprimer_dossier($chemin_contenu);
-          }
+          unlink($fichier);
         }
       }
     }
@@ -450,7 +442,7 @@ class FileSystem
     if(!file_exists($fichier_lock))
     {
       FileSystem::ecrire_fichier($fichier_lock,'');
-      // On verifie que certains sous-dossiers existent : "devoir" n'a été ajouté qu'en mars 2012, "officiel" n'a été ajouté qu'en mai 2012, "cookie" et "rss" étaient oubliés depuis le formulaire Sésamath ("badge" a priori c'est bon)
+      // On verifie que certains sous-dossiers existent : 'devoir' n'a été ajouté qu'en mars 2012, 'officiel' n'a été ajouté qu'en mai 2012, 'cookie' et 'rss' étaient oublié depuis le formulaire Sésamath ('badge' a priori c'est bon)
       $tab_sous_dossier = array( 'devoir' , 'officiel' , 'cookie'.DS.$BASE , 'devoir'.DS.$BASE , 'officiel'.DS.$BASE , 'rss'.DS.$BASE );
       foreach($tab_sous_dossier as $sous_dossier)
       {
@@ -461,15 +453,15 @@ class FileSystem
           FileSystem::ecrire_fichier($dossier.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
         }
       }
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,  10080     ); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,  10080); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
       if(defined('FICHIER_DUREE_CONSERVATION')) // Une fois tout a été supprimé sans raison claire : nettoyage simultané avec une mise à jour ?
       {
         FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)

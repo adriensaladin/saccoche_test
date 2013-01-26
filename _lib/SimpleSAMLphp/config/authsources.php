@@ -20,7 +20,7 @@ $config = array(
 			50 => array(
 				'class'      => 'core:AttributeMap',
 				'login_gepi' => 'USER_ID_GEPI',
-				'statut'     => 'USER_PROFIL_TYPE',
+				'statut'     => 'USER_PROFIL',
 				'nom'        => 'USER_NOM',
 				'prenom'     => 'USER_PRENOM'
 			)

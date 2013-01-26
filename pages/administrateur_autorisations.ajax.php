@@ -37,60 +37,64 @@ $f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 
 // Vérification des informations transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Tableau avec les sigles des profils pouvant être proposés
-$tab_profils_possibles = array();
-$tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
-$tab_profils_possibles['pers_coord']   = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF','ONLY_COORD');
-$tab_profils_possibles['tous']         = array('ELV','TUT','AVS','DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
-$tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
-
 $tab_objet_profils = array();
-$tab_objet_profils['droit_validation_entree']  = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_validation_pilier']  = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_annulation_pilier']  = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_gerer_referentiel']  = $tab_profils_possibles['pers_coord'];
-$tab_objet_profils['droit_gerer_ressource']    = $tab_profils_possibles['pers_coord'];
-$tab_objet_profils['droit_voir_referentiels']  = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_voir_grilles_items'] = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_voir_score_bilan']   = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_voir_algorithme']    = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_modifier_mdp']       = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_releve_etat_acquisition']   = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_releve_moyenne_score']      = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_releve_pourcentage_acquis'] = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_releve_conversion_sur_20']  = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_socle_acces']               = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_socle_pourcentage_acquis']  = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_socle_etat_validation']     = $tab_profils_possibles['parent_eleve'];
-$tab_objet_profils['droit_officiel_saisir_assiduite']               = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_releve_modifier_statut']         = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_releve_appreciation_generale']   = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_releve_impression_pdf']          = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_bulletin_modifier_statut']       = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_bulletin_appreciation_generale'] = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_bulletin_impression_pdf']        = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_socle_modifier_statut']          = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_socle_appreciation_generale']    = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_socle_impression_pdf']           = $tab_profils_possibles['dir_pers_pp'];
-$tab_objet_profils['droit_officiel_releve_voir_archive']   = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_officiel_bulletin_voir_archive'] = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_officiel_socle_voir_archive']    = $tab_profils_possibles['tous'];
+$tab_objet_profils['droit_validation_entree']  = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_validation_pilier']  = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_annulation_pilier']  = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_gerer_referentiel']  = array('professeur','profcoordonnateur','aucunprof');
+$tab_objet_profils['droit_gerer_ressource']    = array('professeur','profcoordonnateur','aucunprof');
+$tab_objet_profils['droit_voir_referentiels']  = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_grilles_items'] = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_score_bilan']   = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_algorithme']    = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_modifier_mdp']       = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_releve_etat_acquisition']   = array('parent','eleve');
+$tab_objet_profils['droit_releve_moyenne_score']      = array('parent','eleve');
+$tab_objet_profils['droit_releve_pourcentage_acquis'] = array('parent','eleve');
+$tab_objet_profils['droit_releve_conversion_sur_20']  = array('parent','eleve');
+$tab_objet_profils['droit_socle_acces']               = array('parent','eleve');
+$tab_objet_profils['droit_socle_pourcentage_acquis']  = array('parent','eleve');
+$tab_objet_profils['droit_socle_etat_validation']     = array('parent','eleve');
+$tab_objet_profils['droit_officiel_releve_modifier_statut']         = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_releve_appreciation_generale']   = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_releve_impression_pdf']          = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_bulletin_modifier_statut']       = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_bulletin_appreciation_generale'] = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_bulletin_impression_pdf']        = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_socle_modifier_statut']          = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_socle_appreciation_generale']    = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_socle_impression_pdf']           = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_officiel_releve_voir_archive']   = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_officiel_bulletin_voir_archive'] = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_officiel_socle_voir_archive']    = array('directeur','professeur','parent','eleve');
+
+$test_objet_prof = in_array($f_objet,array('droit_validation_entree','droit_validation_pilier','droit_annulation_pilier','droit_bulletin_appreciation_generale','droit_bulletin_impression_pdf')) ? TRUE : FALSE ;
 
 if(!isset($tab_objet_profils[$f_objet]))
 {
-  exit('Droit inconnu !');
+	exit('Droit inconnu !');
 }
 
-$tab_profils_transmis  = explode(',',$f_profils);
-$tab_profils_possibles = $tab_objet_profils[$f_objet];
-$tab_profils_inconnus  = array_diff($tab_profils_transmis,$tab_profils_possibles);
-if(count($tab_profils_inconnus))
+if($f_profils=='')
 {
-  exit('Profils incohérents !');
+	// Les profils peuvent être vides sauf certains paramètres devant contenir la chaine 'prof'
+	$test_options = ($test_objet_prof) ? FALSE : TRUE ;
+}
+else
+{
+	$nettoyage = str_replace( $tab_objet_profils[$f_objet] , '*' , $f_profils );
+	$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+	// Test supplémentaire : certains paramètres doivent contenir la chaine 'prof'
+	$test_socle   = ( (!$test_objet_prof) || (strpos($f_profils,'prof')!==FALSE) ) ? TRUE : FALSE ;
+	$test_options = ( ($nettoyage=='') && $test_socle ) ? TRUE : FALSE;
+}
+if(!$test_options)
+{
+	exit('Profils incohérents !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Appliquer la modification demandée
+// Tout est ok : on applique la modification demandée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DB_STRUCTURE_COMMUN::DB_modifier_parametres( array($f_objet=>$f_profils) );

@@ -33,50 +33,35 @@ $TITRE = "Gérer les périodes";
 
 <hr />
 
-<table class="form hsort">
-  <thead>
-    <tr>
-      <th>Ordre</th>
-      <th>Nom</th>
-      <th class="nu"><q class="ajouter" title="Ajouter une période."></q></th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-    // Lister les périodes
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-    foreach($DB_TAB as $DB_ROW)
-    {
-      // Afficher une ligne du tableau
-      echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
-      echo  '<td>'.$DB_ROW['periode_ordre'].'</td>';
-      echo  '<td>'.html($DB_ROW['periode_nom']).'</td>';
-      echo  '<td class="nu">';
-      echo    '<q class="modifier" title="Modifier cette période."></q>';
-      echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
-      echo    '<q class="supprimer" title="Supprimer cette période."></q>';
-      echo  '</td>';
-      echo'</tr>';
-    }
-    ?>
-  </tbody>
-</table>
-
-<form action="#" method="post" id="form_gestion" class="hide">
-  <h2>Ajouter | Modifier | Dupliquer | Supprimer une période</h2>
-  <div id="gestion_edit">
-    <p>
-      <label class="tab" for="f_ordre">Ordre :</label><input id="f_ordre" name="f_ordre" type="text" value="" size="5" maxlength="2" /><br />
-      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="40" maxlength="40" />
-    </p>
-  </div>
-  <div id="gestion_delete">
-    <p class="danger">Les bilans officiels associés seront perdus !</p>
-    <p>Confirmez-vous la suppression de la période &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
-  </div>
-  <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
-  </p>
+<form action="#" method="post">
+	<table class="form hsort">
+		<thead>
+			<tr>
+				<th>Ordre</th>
+				<th>Nom</th>
+				<th class="nu"><q class="ajouter" title="Ajouter une période."></q></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			// Lister les périodes
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+			foreach($DB_TAB as $DB_ROW)
+			{
+				// Afficher une ligne du tableau
+				echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
+				echo	'<td>'.$DB_ROW['periode_ordre'].'</td>';
+				echo	'<td>'.html($DB_ROW['periode_nom']).'</td>';
+				echo	'<td class="nu">';
+				echo		'<q class="modifier" title="Modifier cette période."></q>';
+				echo		'<q class="dupliquer" title="Dupliquer cette période."></q>';
+				echo		'<q class="supprimer" title="Supprimer cette période."></q>';
+				echo	'</td>';
+				echo'</tr>';
+			}
+			?>
+		</tbody>
+	</table>
 </form>
 
 <p>&nbsp;</p>

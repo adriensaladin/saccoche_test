@@ -35,45 +35,45 @@ $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_famil
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux</a></span></div>
 
 <form action="#" method="post" id="niveaux">
-  <hr />
-  <table class="form">
-    <thead>
-      <tr>
-        <th>Référence</th>
-        <th>Nom complet</th>
-        <th class="nu"><q class="ajouter" title="Ajouter un niveau."></q></th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      // Lister les niveaux
-      $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_specifiques*/);
-      foreach($DB_TAB as $DB_ROW)
-      {
-        echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
-        echo'  <td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
-        echo'  <td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
-        echo  '<td class="nu">';
-        echo    '<q class="supprimer" title="Supprimer ce niveau."></q>';
-        echo  '</td>';
-        echo'</tr>';
-      }
-      ?>
-    </tbody>
-  </table>
+	<hr />
+	<table class="form">
+		<thead>
+			<tr>
+				<th>Référence</th>
+				<th>Nom complet</th>
+				<th class="nu"><q class="ajouter" title="Ajouter un niveau."></q></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			// Lister les niveaux
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_specifiques*/);
+			foreach($DB_TAB as $DB_ROW)
+			{
+				echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
+				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
+				echo	'<td class="nu">';
+				echo		'<q class="supprimer" title="Supprimer ce niveau."></q>';
+				echo	'</td>';
+				echo'</tr>';
+			}
+			?>
+		</tbody>
+	</table>
 </form>
 
 <form action="#" method="post" id="zone_ajout_form" onsubmit="return false" class="hide">
-  <hr />
-  <h2>Rechercher un niveau</h2>
-  <p><span class="tab"></span><button id="ajout_annuler" type="button" class="annuler">Annuler / Retour.</button></p>
-  <fieldset id="f_recherche_famille">
-    <label class="tab" for="f_famille">Famille :</label><?php echo $select_niveau_famille ?><br />
-  </fieldset>
-  <span class="tab"></span><label id="ajax_msg_recherche">&nbsp;</label>
-  <ul id="f_recherche_resultat" class="puce hide">
-    <li></li>
-  </ul>
+	<hr />
+	<h2>Rechercher un niveau</h2>
+	<p><span class="tab"></span><button id="ajout_annuler" type="button" class="annuler">Annuler / Retour.</button></p>
+	<fieldset id="f_recherche_famille">
+		<label class="tab" for="f_famille">Famille :</label><?php echo $select_niveau_famille ?><br />
+	</fieldset>
+	<span class="tab"></span><label id="ajax_msg_recherche">&nbsp;</label>
+	<ul id="f_recherche_resultat" class="puce hide">
+		<li></li>
+	</ul>
 </form>
 
 <p>&nbsp;</p>

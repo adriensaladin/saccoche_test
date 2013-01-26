@@ -41,19 +41,19 @@ class DB_STRUCTURE_SOCLE extends DB
  */
 public static function DB_recuperer_associations_entrees_socle()
 {
-  $DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
-  $DB_SQL.= 'FROM sacoche_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= 'WHERE entree_id>0 AND matiere_active=1 AND niveau_actif=1 ' ;
-  $DB_SQL.= 'GROUP BY item_id ';
-  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
+	$DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+	$DB_SQL.= 'WHERE entree_id>0 AND matiere_active=1 AND niveau_actif=1 ' ;
+	$DB_SQL.= 'GROUP BY item_id ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -64,12 +64,12 @@ public static function DB_recuperer_associations_entrees_socle()
  */
 public static function DB_recuperer_piliers($palier_id)
 {
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_pilier ';
-  $DB_SQL.= 'WHERE palier_id=:palier_id ';
-  $DB_SQL.= 'ORDER BY pilier_ordre ASC';
-  $DB_VAR = array(':palier_id'=>$palier_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'WHERE palier_id=:palier_id ';
+	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
+	$DB_VAR = array(':palier_id'=>$palier_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -81,15 +81,15 @@ public static function DB_recuperer_piliers($palier_id)
  */
 public static function DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
 {
-  $where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_pilier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-  $DB_SQL.= 'WHERE pilier_id=:pilier_id '.$where_domaine;
-  $DB_SQL.= 'ORDER BY section_ordre ASC, entree_ordre ASC';
-  $DB_VAR = array(':pilier_id'=>$pilier_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+	$DB_SQL.= 'WHERE pilier_id=:pilier_id '.$where_domaine;
+	$DB_SQL.= 'ORDER BY section_ordre ASC, entree_ordre ASC';
+	$DB_VAR = array(':pilier_id'=>$pilier_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -100,13 +100,13 @@ public static function DB_recuperer_arborescence_pilier($pilier_id,$listing_doma
  */
 public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
 {
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_pilier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-  $DB_SQL.= 'WHERE pilier_id IN('.$liste_pilier_id.') ' ;
-  $DB_SQL.= 'ORDER BY pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+	$DB_SQL.= 'WHERE pilier_id IN('.$liste_pilier_id.') ' ;
+	$DB_SQL.= 'ORDER BY pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -119,21 +119,21 @@ public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
  */
 public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
 {
-  $DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
-  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-  $DB_SQL.= 'matiere_id , '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
-  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
-  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'matiere_id , '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -145,13 +145,13 @@ public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
  */
 public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id)
 {
-  $DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_sortie_date>NOW() ';
-  $DB_SQL.= $only_sconet_id ? 'AND user_sconet_id>0 ' : '' ;
-  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-  $DB_VAR = array(':profil'=>'eleve');
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_sortie_date>NOW() ';
+	$DB_SQL.= $only_sconet_id ? 'AND user_sconet_id>0 ' : '' ;
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	$DB_VAR = array(':profil'=>'eleve');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -165,23 +165,23 @@ public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_e
  */
 public static function DB_lister_infos_items($liste_item_id,$detail)
 {
-  $DB_SQL = 'SELECT item_id , ';
-  if($detail)
-  {
-    $DB_SQL.= 'item_nom , entree_id AS socle_id , ';
-    $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-    $DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
-    $DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
-  }
-  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
-  $DB_SQL.= 'FROM sacoche_referentiel_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL = 'SELECT item_id , ';
+	if($detail)
+	{
+		$DB_SQL.= 'item_nom , entree_id AS socle_id , ';
+		$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+		$DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
+		$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
+	}
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -196,44 +196,44 @@ public static function DB_lister_infos_items($liste_item_id,$detail)
  */
 public static function DB_lister_jointure_user_entree($listing_eleves,$listing_entrees,$domaine_id,$pilier_id,$palier_id)
 {
-  if($listing_entrees)
-  {
-    $DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
-    $DB_SQL.= 'FROM sacoche_jointure_user_entree ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND entree_id IN('.$listing_entrees.') ';
-    $DB_VAR = array();
-  }
-  elseif($domaine_id)
-  {
-    $DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
-    $DB_SQL.= 'FROM sacoche_socle_section ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND section_id=:section_id ';
-    $DB_VAR = array(':section_id'=>$domaine_id);
-  }
-  elseif($pilier_id)
-  {
-    $DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
-    $DB_SQL.= 'FROM sacoche_socle_pilier ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id=:pilier_id ';
-    $DB_VAR = array(':pilier_id'=>$pilier_id);
-  }
-  elseif($palier_id)
-  {
-    $DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
-    $DB_SQL.= 'FROM sacoche_socle_palier ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
-    $DB_VAR = array(':palier_id'=>$palier_id);
-  }
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	if($listing_entrees)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND entree_id IN('.$listing_entrees.') ';
+		$DB_VAR = array();
+	}
+	elseif($domaine_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_socle_section ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND section_id=:section_id ';
+		$DB_VAR = array(':section_id'=>$domaine_id);
+	}
+	elseif($pilier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_socle_pilier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id=:pilier_id ';
+		$DB_VAR = array(':pilier_id'=>$pilier_id);
+	}
+	elseif($palier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_socle_palier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
+		$DB_VAR = array(':palier_id'=>$palier_id);
+	}
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -246,23 +246,23 @@ public static function DB_lister_jointure_user_entree($listing_eleves,$listing_e
  */
 public static function DB_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
 {
-  if($palier_id)
-  {
-    $DB_SQL = 'SELECT sacoche_jointure_user_pilier.* ';
-    $DB_SQL.= 'FROM sacoche_socle_palier ';
-    $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_pilier USING (pilier_id) ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
-    $DB_VAR = array(':palier_id'=>$palier_id);
-  }
-  elseif($listing_piliers)
-  {
-    $DB_SQL = 'SELECT * ';
-    $DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
-    $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id IN('.$listing_piliers.') ';
-    $DB_VAR = array();
-  }
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	if($palier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_pilier.* ';
+		$DB_SQL.= 'FROM sacoche_socle_palier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_pilier USING (pilier_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
+		$DB_VAR = array(':palier_id'=>$palier_id);
+	}
+	elseif($listing_piliers)
+	{
+		$DB_SQL = 'SELECT * ';
+		$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id IN('.$listing_piliers.') ';
+		$DB_VAR = array();
+	}
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -274,16 +274,16 @@ public static function DB_lister_jointure_user_pilier($listing_eleves,$listing_p
  */
 public static function DB_lister_validations_items($listing_eleves,$only_positives)
 {
-  $DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_entree ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (section_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
-  $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
-  $DB_SQL.= ($only_positives) ? 'AND validation_entree_etat=1 ' : '' ;
-  $DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre, section_ordre, entree_ordre ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (section_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
+	$DB_SQL.= ($only_positives) ? 'AND validation_entree_etat=1 ' : '' ;
+	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre, section_ordre, entree_ordre ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -295,14 +295,14 @@ public static function DB_lister_validations_items($listing_eleves,$only_positiv
  */
 public static function DB_lister_validations_competences($listing_eleves,$only_positives)
 {
-  $DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
-  $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
-  $DB_SQL.= ($only_positives) ? 'AND validation_pilier_etat=1 ' : '' ;
-  $DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
+	$DB_SQL.= ($only_positives) ? 'AND validation_pilier_etat=1 ' : '' ;
+	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -313,12 +313,12 @@ public static function DB_lister_validations_competences($listing_eleves,$only_p
  */
 public static function DB_lister_eleves_identite_et_sconet()
 {
-  $DB_SQL = 'SELECT user_id, user_sconet_id, user_nom, user_prenom ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() ';
-  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(':profil'=>'eleve');
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'SELECT user_id, user_sconet_id, user_nom, user_prenom ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() ';
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+	$DB_VAR = array(':profil'=>'eleve');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -329,11 +329,11 @@ public static function DB_lister_eleves_identite_et_sconet()
  */
 public static function DB_compter_eleves_actuels_sans_id_sconet()
 {
-  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
-  $DB_VAR = array(':profil'=>'eleve',':sconet_id'=>0);
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
+	$DB_VAR = array(':profil'=>'eleve',':sconet_id'=>0);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -349,10 +349,10 @@ public static function DB_compter_eleves_actuels_sans_id_sconet()
  */
 public static function DB_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
-  $DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
-  $DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
+	$DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -368,11 +368,11 @@ public static function DB_ajouter_validation($type,$user_id,$element_id,$validat
  */
 public static function DB_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
-  $DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' ';
-  $DB_SQL.= 'SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' ';
+	$DB_SQL.= 'SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -385,10 +385,10 @@ public static function DB_modifier_validation($type,$user_id,$element_id,$valida
  */
 public static function DB_supprimer_validation($type,$user_id,$element_id)
 {
-  $DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

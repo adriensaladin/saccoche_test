@@ -59,8 +59,8 @@ $(document).ready
     ('click',
       function()
       {
-        $('#form1').show();
-        $('#form2').html('<hr /><label id="ajax_msg">&nbsp;</label>');
+        $('#form_choix').show();
+        $('#form_bilan').html('<hr /><label id="ajax_msg">&nbsp;</label>');
         return(false);
       }
     );
@@ -231,8 +231,8 @@ $(document).ready
         initialiser_compteur();
         var texte1 = $('#f_choix_principal option:selected').parent('optgroup').attr('label');
         var texte2 = $('#f_choix_principal option:selected').text();
-        $('#form1').hide();
-        $('#form2').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler" class="retourner">Annuler / Retour</button></p>'+responseHTML);
+        $('#form_choix').hide();
+        $('#form_bilan').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler" class="retourner">Annuler / Retour</button></p>'+responseHTML);
         $("#step1").addClass("on");
       }
     }
@@ -255,7 +255,7 @@ $(document).ready
         var li_step = $(this).attr('href').substring(5,6);
         var f_step  = $(this).attr('href').substring(5);
         $("#step li").removeAttr("class");
-        $('#form2 fieldset table').remove();
+        $('#form_bilan fieldset table').remove();
         $("#step"+li_step).addClass("on");
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -280,7 +280,7 @@ $(document).ready
               else
               {
                 $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form2 fieldset').html(responseHTML);
+                $('#form_bilan fieldset').html(responseHTML);
                 infobulle();
               }
             }
@@ -299,7 +299,7 @@ $(document).ready
       function()
       {
         nb_pb = 0;
-        $("#form2 input:checked").each
+        $("#form_bilan input:checked").each
         (
           function()
           {
@@ -322,14 +322,14 @@ $(document).ready
         else
         {
           var f_step = $(this).attr('href').substring(5);
-          $('#form2 fieldset table').hide(0);
+          $('#form_bilan fieldset table').hide(0);
           $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
+              data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&'+$("#form_bilan").serialize(),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -346,7 +346,7 @@ $(document).ready
                 else
                 {
                   $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                  $('#form2 fieldset').html(responseHTML);
+                  $('#form_bilan fieldset').html(responseHTML);
                 }
               }
             }
@@ -369,14 +369,14 @@ $(document).ready
         var f_step = $(this).attr('href').substring(5);
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
         var f_check = new Array();
-        $("#form2 input:checked").each
+        $("#form_bilan input:checked").each
         (
           function()
           {
             f_check.push($(this).attr('id'));
           }
         );
-        $('#form2 fieldset table').hide(0);
+        $('#form_bilan fieldset table').hide(0);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
@@ -400,7 +400,7 @@ $(document).ready
               else
               {
                 $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form2 fieldset').html(responseHTML);
+                $('#form_bilan fieldset').html(responseHTML);
               }
             }
           }
@@ -416,14 +416,14 @@ $(document).ready
     ('click',
       function()
       {
-        $('#form2 fieldset table').remove();
+        $('#form_bilan fieldset table').remove();
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_step=53'+'&f_action='+f_action+'&'+$("#form2").serialize(),
+            data : 'csrf='+CSRF+'&f_step=53'+'&f_action='+f_action+'&'+$("#form_bilan").serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -440,8 +440,8 @@ $(document).ready
               else
               {
                 $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form2 fieldset').html(responseHTML);
-                format_liens('#form2 fieldset');
+                $('#form_bilan fieldset').html(responseHTML);
+                format_liens('#form_bilan fieldset');
               }
             }
           }

@@ -782,8 +782,8 @@ class PDF extends FPDF
       $is_trop_haut = ( $hauteur_requise > $hauteur_autorisee ) ? TRUE : FALSE ;
       if($is_trop_haut)
       {
-        $taille_police *= 0.9;
-        $taille_interligne *= 0.9;
+        $taille_police *= 0.95;
+        $taille_interligne *= 0.95;
         $this->SetFontSize($taille_police);
       }
     }
@@ -798,7 +798,6 @@ class PDF extends FPDF
     for( $num_ligne=0 ; $num_ligne<$nb_lignes ; $num_ligne++ )
     {
       $this->CellFit( $largeur_autorisee , $taille_interligne , To::pdf($tab_lignes[$num_ligne]) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $this->SetXY( $memo_abscisse , $this->GetY() + 1 ); // un petit millimètre entre 2 appréciations d'un prof dans une même rubrique
     }
     $this->SetXY( $memo_abscisse , $memo_ordonnee+$hauteur_autorisee );
   }

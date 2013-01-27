@@ -56,13 +56,13 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
   {
     $tab_login = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
+    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
     // Mettre à jour les noms d'utilisateurs des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
     {
       // Construire le login
-      $login = fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil']); // $profil_sigle !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      $login = fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil_sigle']);
       // Puis tester le login
       if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$DB_ROW[$prefixe.'id']) )
       {
@@ -79,16 +79,16 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
   if($action=='generer_mdp')
   {
     $tab_password = array();
-    // Mettre à jour les mots de passe des utilisateurs concernés
-    foreach($tab_select_users as $user_id)
-    {
-      $password = fabriquer_mdp(); // $profil_sigle !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':password'=>crypter_mdp($password)) );
-      $tab_password[$user_id] = $password;
-    }
-    // Récupérer les données des utilisateurs concernés (besoin ensuite pour les csv / pdf)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
+    // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
+    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
+    // Mettre à jour les mots de passe des utilisateurs concernés
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $password = fabriquer_mdp($DB_ROW[$prefixe.'profil_sigle']);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>crypter_mdp($password)) );
+      $tab_password[$DB_ROW[$prefixe.'id']] = $password;
+    }
   }
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Générer une sortie csv zippé (login ou mdp) (élève ou prof)
@@ -101,7 +101,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
     $login = ($action=='generer_login') ? $tab_login[$DB_ROW[$prefixe.'id']]    : $DB_ROW[$prefixe.'login'] ;
     $mdp   = ($action=='generer_mdp')   ? $tab_password[$DB_ROW[$prefixe.'id']] : 'inchangé' ;
     $info  = (isset($DB_ROW['info']))   ? $DB_ROW['info'] : '' ;
-    $fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
+    $fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil_sigle'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
   }
   FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu) );
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
   $pdf -> SetDrawColor(145,145,145);
   foreach($DB_TAB as $DB_ROW)
   {
-    $ligne1 = Clean::perso_ucwords($DB_ROW[$prefixe.'profil']) ;
+    $ligne1 = $DB_ROW[$prefixe.'profil_sigle'] ;
     $ligne1.= (isset($DB_ROW['info']))   ? ' : '.Clean::perso_ucwords($DB_ROW['info']) : '' ;
     $ligne2 = $DB_ROW[$prefixe.'nom'].' '.$DB_ROW[$prefixe.'prenom'];
     $ligne3 = ($action=='generer_login') ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;

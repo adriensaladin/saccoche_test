@@ -274,7 +274,6 @@ $(document).ready
       function()
       {
         $('#zone_resultat_classe').html("&nbsp;");
-        $('#imprimer_liens').html('');
         var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
         $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
         $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
@@ -857,8 +856,8 @@ $(document).ready
                 $('#id_'+tab_listing_id[key]).children('td:first').children('input').prop('checked',false);
                 $('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
               }
-              $('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Documents ci-dessous.");
-              $('#imprimer_liens').html(responseHTML);
+              $('#ajax_msg_imprimer').removeAttr("class").html("");
+              $.fancybox( '<h4>Bilans PDF imprimés</h4>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseHTML+'</div>' , {'centerOnScroll':true} );
               format_liens('#imprimer_liens');
             }
           }
@@ -870,7 +869,6 @@ $(document).ready
     (
       function()
       {
-        $('#imprimer_liens').html('');
         var listing_id = new Array(); $("#form_choix_eleves input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
@@ -889,7 +887,6 @@ $(document).ready
 
     function charger_formulaire_imprimer()
     {
-      $('#imprimer_liens').html('');
       var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
       $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
       $('#zone_voir_archive table tbody').html('<tr><td class="nu" colspan="2"></td></tr>');

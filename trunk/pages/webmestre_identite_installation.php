@@ -44,7 +44,7 @@ $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
 
 <hr />
 
-<form action="#" method="post" id="form1"><fieldset>
+<form action="#" method="post" id="form_gestion"><fieldset>
   <h2>Caractéristiques de l'hébergement</h2>
   <label class="tab" for="f_denomination">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Exemple : <?php echo $exemple_denomination ?>" /> :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html(HEBERGEUR_DENOMINATION); ?>" /><br />
   <?php echo $uai_div_hide_avant ?>
@@ -68,7 +68,7 @@ $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
 <hr />
 
 <h2>Logos disponibles</h2>
-<form action="#" method="post" id="form2"><fieldset>
+<form action="#" method="post" id="form_logo"><fieldset>
   <label class="tab" for="f_upload">Uploader un logo :</label><button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label>
   <p><label id="ajax_listing"></label></p>
   <ul class="puce" id="listing_logos">

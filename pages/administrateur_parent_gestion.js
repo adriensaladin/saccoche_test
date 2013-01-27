@@ -87,7 +87,7 @@ $(document).ready
     (
       function()
       {
-        $('#form1 td.nu input[type=checkbox]').prop('checked',true);
+        $('table.form td.nu input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -95,7 +95,7 @@ $(document).ready
     (
       function()
       {
-        $('#form1 td.nu input[type=checkbox]').prop('checked',false);
+        $('table.form td.nu input[type=checkbox]').prop('checked',false);
         return false;
       }
     );

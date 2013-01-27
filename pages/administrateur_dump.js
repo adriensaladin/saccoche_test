@@ -46,7 +46,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_sauvegarde').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
             return false;
           },
           success : function(responseHTML)
@@ -54,7 +54,7 @@ $(document).ready
             if(responseHTML.substring(0,4)!='<li>')
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_sauvegarde').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else
             {
@@ -68,7 +68,7 @@ $(document).ready
               else
               {
                 $("button").prop('disabled',false);
-                $('#ajax_msg1').removeAttr("class").html('');
+                $('#ajax_msg_sauvegarde').removeAttr("class").html('');
                 $('#ajax_info').append('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>');
                 format_liens('#ajax_info');
               }
@@ -78,13 +78,13 @@ $(document).ready
       );
     }
 
-    $('#bouton_form1').click
+    $('#bouton_sauvegarde').click
     (
       function()
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg1').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('#ajax_msg2').removeAttr("class").html('');
+        $('#ajax_msg_sauvegarde').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_restauration').removeAttr("class").html('');
         $('#ajax_info').html();
         initialiser_compteur();
         sauvegarder(1);
@@ -96,7 +96,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     new AjaxUpload
-    ('#bouton_form2',
+    ('#bouton_restauration',
       {
         action: 'ajax.php?page='+PAGE,
         name: 'userfile',
@@ -113,8 +113,8 @@ $(document).ready
     {
       $("button").prop('disabled',true);
       $("#ajax_info").html('');
-      $('#ajax_msg1').removeAttr("class").html('');
-      $('#ajax_msg2').removeAttr("class").html('');
+      $('#ajax_msg_sauvegarde').removeAttr("class").html('');
+      $('#ajax_msg_restauration').removeAttr("class").html('');
       return true;
     }
 
@@ -123,18 +123,18 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg_restauration').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if(fichier_extension.toLowerCase()!='zip')
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+        $('#ajax_msg_restauration').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
         return false;
       }
       else
       {
-        $('#ajax_msg2').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_restauration').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
@@ -144,12 +144,12 @@ $(document).ready
       if( (responseHTML.substring(0,26)!='<li><label class="valide">') && (responseHTML.substring(0,24)!='<LI><LABEL class=valide>') )
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg2').removeAttr("class").html('');
+        $('#ajax_msg_restauration').removeAttr("class").html('');
         $('#ajax_info').html(responseHTML);
       }
       else
       {
-        $('#ajax_msg2').html('Demande traitée...');
+        $('#ajax_msg_restauration').html('Demande traitée...');
         $('#ajax_info').html(responseHTML);
         initialiser_compteur();
         restaurer(1);
@@ -172,7 +172,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg2').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_restauration').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
             return false;
           },
           success : function(responseHTML)
@@ -180,7 +180,7 @@ $(document).ready
             if(responseHTML.substring(0,4)!='<li>')
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_restauration').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else
             {
@@ -194,7 +194,7 @@ $(document).ready
               else
               {
                 $("button").prop('disabled',false);
-                $('#ajax_msg2').removeAttr("class").html('');
+                $('#ajax_msg_restauration').removeAttr("class").html('');
                 $('#ajax_info').append('<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>');
               }
             }

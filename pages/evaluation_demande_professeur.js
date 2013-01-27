@@ -78,8 +78,17 @@ $(document).ready
 
     function maj_dates()
     {
-      tab_infos = $('#f_devoir option:selected').text().split(' || ');
-      if(tab_infos.length>2)
+      if( $("#f_quoi option:selected").val() == 'completer')
+      {
+        var tab_infos = $('#f_devoir option:selected').text().split(' || ');
+      }
+      else
+      {
+        var tab_infos = new Array();
+        tab_infos[0] = input_date;
+        tab_infos[1] = input_date;
+      }
+      if(tab_infos.length>1)
       {
         $('#f_date').val(tab_infos[0]);
         $('#f_date_visible').val(tab_infos[1]);
@@ -142,7 +151,7 @@ $(document).ready
     );
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire0 = $('#form0');
+    var formulaire0 = $('#form_prechoix');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
     var validation0 = formulaire0.validate
@@ -176,7 +185,7 @@ $(document).ready
       dataType : "html",
       clearForm : false,
       resetForm : false,
-      target : "#ajax_msg0",
+      target : "#ajax_msg_prechoix",
       beforeSubmit : test_form_avant_envoi0,
       error : retour_form_erreur0,
       success : retour_form_valide0
@@ -190,7 +199,7 @@ $(document).ready
         $('table.form tbody').html('');
         $('#tr_sans').html('<td class="nu"></td>');
         $("#zone_actions").hide(0);
-        $('#ajax_msg1').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
         // Mémoriser le nom de la matière + le type de groupe + le nom du groupe
         $('#f_matiere_nom').val(  $("#f_matiere option:selected").text() );
         $("#f_groupe_id").val(    $("#f_groupe option:selected").val() );
@@ -206,12 +215,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi0(formData, jqForm, options)
     {
-      $('#ajax_msg0').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_prechoix').removeAttr("class").html("&nbsp;");
       var readytogo = validation0.form();
       if(readytogo)
       {
-        $('#ajax_msg0').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('#form1').hide();
+        $('#ajax_msg_prechoix').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#form_gestion').hide();
       }
       return readytogo;
     }
@@ -219,7 +228,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
-      $('#ajax_msg0').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_prechoix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -229,14 +238,14 @@ $(document).ready
       tab_response = responseHTML.split('<¤>');
       if( tab_response[0]!='ok' )
       {
-        $('#ajax_msg0').removeAttr("class").addClass("alerte").html(tab_response[0]);
+        $('#ajax_msg_prechoix').removeAttr("class").addClass("alerte").html(tab_response[0]);
       }
       else
       {
         response_msg = tab_response[1];
         response_td  = tab_response[2];
         response_tr  = tab_response[3];
-        $('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_prechoix').removeAttr("class").addClass("valide").html("Demande réalisée !");
         
         $('#zone_messages').html(response_msg);
         $('table.form tbody').html(response_tr);
@@ -245,7 +254,7 @@ $(document).ready
         trier_tableau();
         infobulle();
         var etat_disabled = ($("#f_groupe_id").val()>0) ? false : true ;
-        $('#form1').show();
+        $('#form_gestion').show();
         $("#f_qui option[value=groupe]").text($("#f_groupe_nom").val()).prop('disabled',etat_disabled);
         if(etat_disabled) { $("#f_qui option[value=select]").prop('selected',true); }
         maj_evaluation();
@@ -403,7 +412,7 @@ $(document).ready
       }
     );
 
-    $('#f_devoir').change
+    $('#f_quoi , #f_devoir').change
     (
       function()
       {
@@ -425,7 +434,7 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('#form1');
+    var formulaire = $('#form_gestion');
 
     // Ajout d'une méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
     // méthode dateITA déjà ajoutée
@@ -467,7 +476,7 @@ $(document).ready
           if(element.is("select")) {element.after(error);}
           else if(element.attr("id")=='f_info') {element.after(error);}
           else if(element.attr("type")=="text") {element.next().after(error);}
-          else if(element.attr("type")=="checkbox") {$('#ajax_msg1').after(error);}
+          else if(element.attr("type")=="checkbox") {$('#ajax_msg_gestion').after(error);}
         }
       }
     );
@@ -480,7 +489,7 @@ $(document).ready
       dataType : "html",
       clearForm : false,
       resetForm : false,
-      target : "#ajax_msg1",
+      target : "#ajax_msg_gestion",
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -503,12 +512,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg1').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg1').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -517,7 +526,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg1').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -527,7 +536,7 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseHTML!='ok')
       {
-        $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
@@ -556,7 +565,7 @@ $(document).ready
             }
           );
         }
-        $('#ajax_msg1').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
       }
     }
 

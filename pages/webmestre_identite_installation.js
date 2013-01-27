@@ -248,7 +248,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('#form_gestion');
+    var formulaire = $('#form1');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
     var validation = formulaire.validate

@@ -48,7 +48,6 @@ $date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); //
 ?>
 
 <script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
   var input_autoeval="<?php echo $date_autoeval ?>";
 </script>
 
@@ -70,13 +69,13 @@ $tab_groupes    = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMM
 $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first='val' , $selection=FALSE , $optgroup='oui');
 ?>
 
-<form action="#" method="post" id="form_prechoix"><fieldset>
+<form action="#" method="post" id="form0"><fieldset>
   <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
   <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><br />
-  <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg_prechoix">&nbsp;</label>
+  <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="#" method="post" id="form_gestion" class="hide">
+<form action="#" method="post" id="form1" class="hide">
   <hr />
   <table class="bilan_synthese" style="float:right;margin-left:1em;margin-right:1ex">
     <thead><tr><th>élève(s) sans demande</th></tr></thead>
@@ -130,7 +129,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  
     </fieldset>
     <p id="step_valider" class="hide">
       <input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />
-      <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Valider.</button><label id="ajax_msg_gestion">&nbsp;</label>
+      <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Valider.</button><label id="ajax_msg1">&nbsp;</label>
     </p>
   </div>
 </form>

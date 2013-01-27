@@ -523,6 +523,7 @@ if(count($tab_classe))
             <p class="ti">
               <button id="valider_imprimer" type="button" class="valider">Lancer l\'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
             </p>
+            <div id="imprimer_liens"></div>
             <table class="form t9">
               <thead>
                 <tr>

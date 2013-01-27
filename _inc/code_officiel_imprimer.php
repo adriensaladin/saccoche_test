@@ -226,6 +226,7 @@ if( ($ACTION=='imprimer') && ($etape==4) )
   echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
   echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>';
   echo'</ul>';
+  echo'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>';
   unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
   exit();
 }

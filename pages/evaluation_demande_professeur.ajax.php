@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_demandes')){exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';      // pour le form_prechoix
-$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action; // pour le form_gestion
+$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';      // pour le form0
+$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action; // pour le form1
 $matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])      : 0;
 $matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])   : '';
 $groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])    : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir

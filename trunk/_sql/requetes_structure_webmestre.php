@@ -46,25 +46,26 @@ public static function DB_recuperer_statistiques()
   $test_sortie = (!empty($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
   // La révision du 5 janvier 2013 a modifié le champ "user_profil" en "user_profil_sigle".
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
-  $champ_profil = (!empty($DB_TAB)) ? 'user_profil_sigle' : 'user_profil' ;
-  $valeur_prof  = (!empty($DB_TAB)) ? 'ENS'               : 'professeur' ;
-  $valeur_eleve = (!empty($DB_TAB)) ? 'ELV'               : 'eleve' ;
+  $champ_profil = (!empty($DB_TAB)) ? 'user_profil_type' : 'user_profil' ;
+  $left_join    = (!empty($DB_TAB)) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
   // nb professeurs enregistrés ; nb élèves enregistrés
   $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= $left_join;
   $DB_SQL.= 'WHERE '.$test_sortie.' ';
   $DB_SQL.= 'GROUP BY '.$champ_profil;
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-  $prof_nb  = (isset($DB_TAB[$valeur_prof]))  ? $DB_TAB[$valeur_prof]['nombre']  : 0 ;
-  $eleve_nb = (isset($DB_TAB[$valeur_eleve])) ? $DB_TAB[$valeur_eleve]['nombre'] : 0 ;
+  $prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+  $eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
   // nb professeurs connectés ; nb élèves connectés
   $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= $left_join;
   $DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
   $DB_SQL.= 'GROUP BY '.$champ_profil;
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-  $prof_use  = (isset($DB_TAB[$valeur_prof]))  ? $DB_TAB[$valeur_prof]['nombre']  : 0 ;
-  $eleve_use = (isset($DB_TAB[$valeur_eleve])) ? $DB_TAB[$valeur_eleve]['nombre'] : 0 ;
+  $prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+  $eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
   // nb notes saisies
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_saisie';
@@ -120,6 +121,28 @@ public static function DB_supprimer_tables_structure()
     $tab_tables[] = $DB_ROW['Name'];
   }
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
+}
+
+/**
+ * Retourner un tableau [valeur texte] des administrateurs (forcément actuels) de l'établissement
+ *
+ * @param void
+ * @return array|string
+ */
+public static function DB_OPT_administrateurs_etabl()
+{
+  // La révision du 5 janvier 2013 a modifié le champ "user_profil" en "user_profil_sigle".
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
+  $champ_profil = (!empty($DB_TAB)) ? 'user_profil_type' : 'user_profil' ;
+  $left_join    = (!empty($DB_TAB)) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
+  $DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= $left_join;
+  $DB_SQL.= 'WHERE '.$champ_profil.'=:profil '; // AND user_sortie_date>NOW() est inutile pour les admins, et évite une erreur qd cette fonction est appelée via un webmestre multi-structures alors que la base de l'établ n'est pas à jour
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+  $DB_VAR = array(':profil'=>'administrateur');
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return !empty($DB_TAB) ? $DB_TAB : 'Aucun administrateur enregistré !' ;
 }
 
 }

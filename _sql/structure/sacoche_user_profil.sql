@@ -19,9 +19,7 @@ CREATE TABLE sacoche_user_profil (
   PRIMARY KEY (user_profil_sigle),
   KEY user_profil_structure (user_profil_structure),
   KEY user_profil_disponible (user_profil_disponible),
-  KEY user_profil_actif (user_profil_actif),
-  KEY user_profil_obligatoire (user_profil_obligatoire),
-  KEY user_profil_type (user_profil_type)
+  KEY user_profil_actif (user_profil_actif)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_user_profil DISABLE KEYS;

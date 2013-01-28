@@ -1181,6 +1181,24 @@ public static function DB_OPT_periodes_etabl($alerte=FALSE)
 }
 
 /**
+ * Retourner un tableau [valeur texte] des administrateurs (forcément actuels) de l'établissement
+ *
+ * @param void
+ * @return array|string
+ */
+public static function DB_OPT_administrateurs_etabl()
+{
+  $DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_profil_type=:profil_type '; // AND user_sortie_date>NOW() est inutile pour les admins, et évite une erreur qd cette fonction est appelée via un webmestre multi-structures alors que la base de l'établ n'est pas à jour
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+  $DB_VAR = array(':profil_type'=>'administrateur');
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return !empty($DB_TAB) ? $DB_TAB : 'Aucun administrateur enregistré !' ;
+}
+
+/**
  * Retourner un tableau [valeur texte] des directeurs actuels de l'établissement
  *
  * @param void

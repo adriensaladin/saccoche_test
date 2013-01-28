@@ -2501,18 +2501,6 @@ public static function DB_maj_base($version_actuelle)
     }
   }
 
-  if($version_actuelle=='2013-01-18')
-  {
-    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_actuelle = '2013-01-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de clefs
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_obligatoire ( user_profil_obligatoire ) ');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_type ( user_profil_type ) ');
-    }
-  }
-
 }
 
 }

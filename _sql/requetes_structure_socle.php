@@ -114,6 +114,7 @@ public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
  *
  * @param string $eleve_id
  * @param string $entree_id
+ * @param string $user_profil
  * @return array
  */
 public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
@@ -146,11 +147,10 @@ public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_e
 {
   $DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
   $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_sortie_date>NOW() ';
   $DB_SQL.= $only_sconet_id ? 'AND user_sconet_id>0 ' : '' ;
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-  $DB_VAR = array(':profil_type'=>'eleve');
+  $DB_VAR = array(':profil'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -315,10 +315,9 @@ public static function DB_lister_eleves_identite_et_sconet()
 {
   $DB_SQL = 'SELECT user_id, user_sconet_id, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(':profil_type'=>'eleve');
+  $DB_VAR = array(':profil'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -332,9 +331,8 @@ public static function DB_compter_eleves_actuels_sans_id_sconet()
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
-  $DB_VAR = array(':profil_type'=>'eleve',':sconet_id'=>0);
+  $DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
+  $DB_VAR = array(':profil'=>'eleve',':sconet_id'=>0);
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

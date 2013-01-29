@@ -41,8 +41,7 @@ $droit_voir_archives_pdf = FALSE;
 
 foreach($tab_types as $BILAN_TYPE => $tab)
 {
-  $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
-  if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
+  $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']) ;
 }
 
 if(!$droit_voir_archives_pdf)

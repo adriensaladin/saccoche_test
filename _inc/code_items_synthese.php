@@ -441,35 +441,6 @@ foreach($tab_eleve as $tab)
           }
           if($make_html)
           {
-            // Bulletin - Info saisies périodes antérieures
-            if( ($make_html) && ($make_officiel) && (isset($tab_saisie_avant[$eleve_id][$matiere_id])) )
-            {
-              $tab_periode_liens  = array();
-              $tab_periode_textes = array();
-              foreach($tab_saisie_avant[$eleve_id][$matiere_id] as $periode_ordre => $tab_prof)
-              {
-                $tab_ligne = array(0=>''); // Pour forcer la note à être le 1er indice ; sert aussi à indiquer la période.
-                foreach($tab_prof as $prof_id => $tab)
-                {
-                  extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
-                  if(!$prof_id) // C'est la note.
-                  {
-                    if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
-                    {
-                      $tab_ligne[0] = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ) : '-' ;
-                    }
-                  }
-                  else
-                  {
-                    $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
-                  }
-                }
-                $tab_ligne[0] = html($periode_nom_avant.' : '.$tab_ligne[0]);
-                $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
-                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
-              }
-              $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'."\r\n";
-            }
             // Bulletin - Note (HTML)
             if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
             {
@@ -538,37 +509,6 @@ foreach($tab_eleve as $tab)
         {
           $releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'."\r\n";
           $releve_HTML .= '<tr><th colspan="2">Synthèse générale</th></tr>'."\r\n";
-
-          // Bulletin - Info saisie période antérieure
-          if(isset($tab_saisie_avant[$eleve_id][0]))
-          {
-            $tab_periode_liens  = array();
-            $tab_periode_textes = array();
-            foreach($tab_saisie_avant[$eleve_id][0] as $periode_ordre => $tab_prof)
-            {
-              $tab_ligne = array(0=>''); // Pour forcer la note à être le 1er indice ; sert aussi à indiquer la période.
-              foreach($tab_prof as $prof_id => $tab)
-              {
-                extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
-                if(!$prof_id) // C'est la note.
-                {
-                  if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
-                  {
-                    $tab_ligne[0] = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ) : '-' ;
-                  }
-                }
-                else
-                {
-                  $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
-                }
-              }
-              $tab_ligne[0] = html($periode_nom_avant.' : '.$tab_ligne[0]);
-              $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
-              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
-            }
-            $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'."\r\n";
-          }
-
           if( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']) )
           {
             $note = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id] : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]*5).'&nbsp;%' ) : '-' ;

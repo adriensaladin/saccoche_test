@@ -1139,7 +1139,7 @@ public static function DB_OPT_classes_parent($parent_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() AND groupe_id IS NOT NULL '; // Not NULL sinon pb qd un parent est rattaché à un enfant affecté dans aucune classe.
+  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'GROUP BY groupe_id ';
   $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(':parent_id'=>$parent_id,':profil_type'=>'eleve');

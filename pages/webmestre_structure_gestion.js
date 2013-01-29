@@ -39,7 +39,7 @@ $(document).ready
 
     // tri du tableau (avec jquery.tablesorter.js).
     var sorting = [[3,0],[4,0]];
-    $('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},7:{sorter:false}} });
+    $('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},8:{sorter:false}} });
     function trier_tableau()
     {
       if($('table.bilan_synthese tbody tr').length>1)
@@ -66,7 +66,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , base_id , geo , localisation , denomination , uai , contact_nom , contact_prenom , contact_courriel , date , acces , check )
+    function afficher_form_gestion( mode , base_id , geo , localisation , denomination , uai , contact_nom , contact_prenom , contact_courriel , acces , check )
     {
       $('#f_action').val(mode);
       $('#f_acces').val(acces);
@@ -79,11 +79,6 @@ $(document).ready
       $('#f_contact_nom').val(contact_nom);
       $('#f_contact_prenom').val(contact_prenom);
       $('#f_contact_courriel').val(contact_courriel);
-      // date d'inscription
-      var date_mysql = date.substring(3,13); // garder la date mysql
-      var date_fr    = date.substring(17,date.length); // garder la date française
-      $('#f_date_mysql').val(date_mysql);
-      $('#f_date_fr').val(date_fr);
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un établissement");
       if(mode=='ajouter')
@@ -118,7 +113,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*base_id*/ , '' /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '<i>'+date_mysql+'</i>'+input_date , 'bloquer' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*base_id*/ , '' /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , 'bloquer' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -133,26 +128,24 @@ $(document).ready
       var acces            = objet_tds.eq(0).children('a').children('img').attr('class');
       var check            = Number(objet_tds.eq(1).children('input').is(':checked'));
       var base_id          = objet_tds.eq(2).html();
-      var lieu             = objet_tds.eq(3).html();
+      var geo              = objet_tds.eq(3).html();
       var structure        = objet_tds.eq(4).html();
-      var contact_nom      = objet_tds.eq(5).children('span').eq(0).html();
-      var contact_prenom   = objet_tds.eq(5).children('span').eq(1).html();
-      var contact_courriel = objet_tds.eq(5).children('div').html();
-      var date             = objet_tds.eq(6).html();
-      // séparer zone géographique et localisation
-      var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
-      var tab_infos        = lieu.split(reg);
-      var geo              = tab_infos[0];
-      var localisation     = tab_infos[1];
-      // séparer denomination et UAI
+      var uai              = objet_tds.eq(5).html();
+      var contact          = objet_tds.eq(6).html();
+      var contact_courriel = objet_tds.eq(7).html();
+      // séparer localisation et denomination
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
       var tab_infos        = structure.split(reg);
-      var denomination     = tab_infos[0];
-      var uai              = tab_infos[1];
+      var localisation     = tab_infos[0];
+      var denomination     = tab_infos[1];
+      // séparer contact_nom et contact_prenom
+      var tab_infos        = contact.split(reg);
+      var contact_nom      = tab_infos[0];
+      var contact_prenom   = tab_infos[1];
       // enlever l'indice de tri caché
       geo = geo.substring(9,geo.length); 
       // Afficher le formulaire
-      afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date , acces , check );
+      afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , acces , check );
     };
 
     /**
@@ -166,13 +159,13 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var base_id          = objet_tds.eq(2).html();
       var structure        = objet_tds.eq(4).html();
-      // séparer denomination et UAI
+      var uai              = objet_tds.eq(5).html();
+      // séparer localisation et denomination
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
       var tab_infos        = structure.split(reg);
-      var denomination     = tab_infos[0];
-      var uai              = tab_infos[1];
+      var denomination     = tab_infos[1];
       // Afficher le formulaire
-      afficher_form_gestion( mode , base_id , '' /*geo*/ , '' /*localisation*/ , unescapeHtml(denomination) , unescapeHtml(uai) , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '' /*date*/ , '' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , base_id , '' /*geo*/ , '' /*localisation*/ , unescapeHtml(denomination) , unescapeHtml(uai) , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -186,11 +179,11 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var base_id          = objet_tds.eq(2).html();
       var structure        = objet_tds.eq(4).html();
-      // séparer denomination et UAI
+      var uai              = objet_tds.eq(5).html();
+      // séparer localisation et denomination
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
       var tab_infos        = structure.split(reg);
-      var denomination     = tab_infos[0];
-      var uai              = tab_infos[1];
+      var denomination     = tab_infos[1];
       // Mettre les infos de côté
       $('#generer_base_id').val(base_id);
       // Afficher la zone associée après avoir chargé son contenu

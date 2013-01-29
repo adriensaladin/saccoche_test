@@ -131,7 +131,7 @@ if( ($action=='imprimer_appreciations_perso') || ($action=='imprimer_appreciatio
 
   $tab_saisie = array();  // [eleve_id][rubrique_id] => array(rubrique_nom,note,appreciation);
   $prof_id = ($type_contenu=='perso') ? $_SESSION['USER_ID'] : 0 ;
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , $prof_id , TRUE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ );
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , $prof_id , TRUE /*with_rubrique_nom*/ );
   if( (empty($DB_TAB)) || ( $prof_id && (!isset($DB_TAB[$prof_id])) ) )
   {
     $who = ($prof_id) ? 'de votre part' : 'pour ce groupe' ;

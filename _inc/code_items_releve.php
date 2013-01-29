@@ -650,28 +650,9 @@ if($type_individuel)
                   $releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan hsort">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>';
                   $releve_HTML_individuel .= '<script type="text/javascript">$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();</script>';
                 }
+                // Relevé de notes - Appréciations intermédiaires (HTML)
                 if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) )
                 {
-                  // Relevé de notes - Info saisies périodes antérieures
-                  $appreciations_avant = '';
-                  if(isset($tab_saisie_avant[$eleve_id][$matiere_id]))
-                  {
-                    $tab_periode_liens  = array();
-                    $tab_periode_textes = array();
-                    foreach($tab_saisie_avant[$eleve_id][$matiere_id] as $periode_ordre => $tab_prof)
-                    {
-                      $tab_ligne = array();
-                      foreach($tab_prof as $prof_id => $tab)
-                      {
-                        extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
-                        $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
-                      }
-                      $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
-                      $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
-                    }
-                    $appreciations_avant = '<tr><td class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'."\r\n";
-                  }
-                  // Relevé de notes - Appréciations intermédiaires (HTML)
                   $appreciations = '';
                   if(isset($tab_saisie[$eleve_id][$matiere_id]))
                   {
@@ -679,17 +660,17 @@ if($type_individuel)
                     {
                       extract($tab);  // $prof_info $appreciation $note
                       $action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
-                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
                     }
                   }
                   if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
                   {
                     if(!isset($tab_saisie[$eleve_id][$matiere_id][$_SESSION['USER_ID']]))
                     {
-                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$_SESSION['USER_ID'].'"><td class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'."\r\n";
+                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$_SESSION['USER_ID'].'"><td colspan="4" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'."\r\n";
                     }
                   }
-                  $releve_HTML_individuel .= ($appreciations_avant || $appreciations) ? '<table style="width:900px" class="bilan"><tbody>'.$appreciations_avant.$appreciations.'</tbody></table>'."\r\n" : '' ;
+                  $releve_HTML_individuel .= ($appreciations) ? '<table style="width:736px" class="bilan"><tbody>'.$appreciations.'</tbody></table>'."\r\n" : '' ;
                 }
               }
               // Examen de présence des appréciations intermédiaires
@@ -705,31 +686,12 @@ if($type_individuel)
             }
           }
         }
-        // Synthèse générale
+        // Relevé de notes - Appréciation générale
         if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
         {
           if($make_html)
           {
-            $releve_HTML_individuel .= '<h3>Synthèse générale</h3><table style="width:900px" class="bilan"><tbody>'."\r\n";
-            // Relevé de notes - Info saisies périodes antérieures
-            if(isset($tab_saisie_avant[$eleve_id][0]))
-            {
-              $tab_periode_liens  = array();
-              $tab_periode_textes = array();
-              foreach($tab_saisie_avant[$eleve_id][0] as $periode_ordre => $tab_prof)
-              {
-                $tab_ligne = array();
-                foreach($tab_prof as $prof_id => $tab)
-                {
-                  extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
-                  $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
-                }
-                $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
-                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
-              }
-              $releve_HTML_individuel .= '<tr><td class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'."\r\n";
-            }
-            // Relevé de notes - Appréciation générale
+            $releve_HTML_individuel .= '<h3>Synthèse générale</h3><table style="width:736px" class="bilan"><tbody>'."\r\n";
             if(isset($tab_saisie[$eleve_id][0]))
             {
               list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);

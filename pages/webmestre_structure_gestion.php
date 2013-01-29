@@ -47,8 +47,6 @@ foreach($DB_TAB as $DB_ROW)
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></span></p>
 
 <script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var date_mysql = "<?php echo TODAY_MYSQL ?>";
   // <![CDATA[
   var options_geo="<?php echo str_replace('"','\"',$options_geo); ?>";
   // ]]>
@@ -60,10 +58,11 @@ foreach($DB_TAB as $DB_ROW)
       <th class="nu"></th>
       <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
       <th>Id</th>
-      <th>Localisation</th>
-      <th>Établissement</th>
-      <th>Contact</th>
-      <th>Date</th>
+      <th>Zone géo</th>
+      <th>Localisation<br />Dénomination</th>
+      <th>UAI</th>
+      <th>Nom<br />Prénom</th>
+      <th>Courriel</th>
       <th class="nu"><q class="ajouter" title="Ajouter un établissement."></q></th>
     </tr>
   </thead>
@@ -73,19 +72,17 @@ foreach($DB_TAB as $DB_ROW)
     $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
     foreach($DB_TAB as $DB_ROW)
     {
-      // Formater la date
-      $date_mysql  = $DB_ROW['structure_inscription_date'];
-      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
       $img = (LockAcces::tester_blocage('webmestre',$DB_ROW['sacoche_base'])===NULL) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
       echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
       echo  '<td class="nu"><a href="#id_0">'.$img.'</a></td>';
       echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
       echo  '<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
-      echo  '<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
-      echo  '<td class="label">'.html($DB_ROW['structure_denomination']).'<br />'.html($DB_ROW['structure_uai']).'</td>';
-      echo  '<td class="label"><span>'.html($DB_ROW['structure_contact_nom']).'</span> <span>'.html($DB_ROW['structure_contact_prenom']).'</span><div>'.html($DB_ROW['structure_contact_courriel']).'</div></td>';
-      echo  '<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
+      echo  '<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
+      echo  '<td class="label">'.html($DB_ROW['structure_localisation']).'<br />'.html($DB_ROW['structure_denomination']).'</td>';
+      echo  '<td class="label">'.html($DB_ROW['structure_uai']).'</td>';
+      echo  '<td class="label">'.html($DB_ROW['structure_contact_nom']).'<br />'.html($DB_ROW['structure_contact_prenom']).'</td>';
+      echo  '<td class="label">'.html($DB_ROW['structure_contact_courriel']).'</td>';
       echo  '<td class="nu">';
       echo    '<q class="modifier" title="Modifier cet établissement."></q>';
       echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -123,7 +120,7 @@ foreach($DB_TAB as $DB_ROW)
     <p>Confirmez-vous la suppression de l'établissement &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="" /><input id="f_date_mysql" name="f_date_mysql" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 

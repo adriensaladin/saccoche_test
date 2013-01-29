@@ -246,7 +246,7 @@ $tab_saisie    = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_inf
 $tab_signature = array(0=>NULL);  // [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_assiduite = array_fill_keys( $tab_eleve_id , array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) );  // [eleve_id] => array(absence,non_justifie,retard);
 $tab_prof_id = array();
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );

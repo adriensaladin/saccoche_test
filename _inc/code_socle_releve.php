@@ -582,23 +582,43 @@ foreach($tab_eleve as $tab)
                 }
               }
             }
-            // Appréciations intermédiaires (HTML)
             if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) )
             {
+              $case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+              $case_valid = $test_affichage_Validation  ? '<th class="nu"></th>' : '' ;
+              // État de maîtrise du socle - Info saisies périodes antérieures
+              if(isset($tab_saisie_avant[$eleve_id][$pilier_id]))
+              {
+                $tab_periode_liens  = array();
+                $tab_periode_textes = array();
+                foreach($tab_saisie_avant[$eleve_id][$pilier_id] as $periode_ordre => $tab_prof)
+                {
+                  $tab_ligne = array();
+                  foreach($tab_prof as $prof_id => $tab)
+                  {
+                    extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
+                    $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
+                  }
+                  $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
+                  $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
+                }
+                $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'."\r\n";
+              }
+              // État de maîtrise du socle - Appréciations intermédiaires (HTML)
               if(isset($tab_saisie[$eleve_id][$pilier_id]))
               {
                 foreach($tab_saisie[$eleve_id][$pilier_id] as $prof_id => $tab)
                 {
                   extract($tab);  // $prof_info $appreciation $note
                   $action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
-                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'"><td colspan="4" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
                 }
               }
               if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
               {
                 if(!isset($tab_saisie[$eleve_id][$pilier_id][$_SESSION['USER_ID']]))
                 {
-                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'"><td colspan="4" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'."\r\n";
+                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td>'.$case_valid.'</tr>'."\r\n";
                 }
               }
             }
@@ -619,7 +639,7 @@ foreach($tab_eleve as $tab)
           }
         }
       }
-        // État de maîtrise du socle - Appréciation générale
+      // Synthèse générale
       if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
       {
         if($make_html)
@@ -627,6 +647,25 @@ foreach($tab_eleve as $tab)
           $case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
           $case_valid = $test_affichage_Validation  ? '<th class="nu"></th>' : '' ;
           $releve_HTML .= '<tr>'.$case_score.'<th colspan="2">Synthèse générale</th>'.$case_valid.'</tr>'."\r\n";
+          // État de maîtrise du socle - Info saisies périodes antérieures
+          if(isset($tab_saisie_avant[$eleve_id][0]))
+          {
+            $tab_periode_liens  = array();
+            $tab_periode_textes = array();
+            foreach($tab_saisie_avant[$eleve_id][0] as $periode_ordre => $tab_prof)
+            {
+              $tab_ligne = array();
+              foreach($tab_prof as $prof_id => $tab)
+              {
+                extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
+                $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
+              }
+              $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
+              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
+            }
+            $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'."\r\n";
+          }
+          // État de maîtrise du socle - Appréciation générale
           if(isset($tab_saisie[$eleve_id][0]))
           {
             reset($tab_saisie[$eleve_id][0]);

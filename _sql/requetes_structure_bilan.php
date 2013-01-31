@@ -218,11 +218,12 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
  * @param int    $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
  * @param int    $only_niveau      0 pour tous les niveaux, autre pour un niveau donné
  * @param string $mode_synthese    'predefini' ou 'domaine' ou 'theme'
+ * @param int    $fusion_niveaux   1 pour ne pas indiquer le niveau dans l'intitulé et fusionner les synthèses de même intitulé, 0 sinon
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
  * @return array
  */
-public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$fusion_niveaux,$date_mysql_debut,$date_mysql_fin)
 {
   $select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
   $select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
@@ -263,20 +264,35 @@ public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matie
     {
       if(!$matiere_id)
       {
+        $prefixe_matiere = $DB_ROW['matiere_id'];
         $tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
         unset($DB_TAB[$item_id][$key]['matiere_nom']);
       }
+      else
+      {
+        $prefixe_matiere = $matiere_id;
+      }
       if($mode_synthese=='predefini')
       {
-        $tab_synthese[$DB_ROW['mode_synthese'].'_'.$DB_ROW[$DB_ROW['mode_synthese'].'_id']] = $DB_ROW['niveau_nom'].' - '.$DB_ROW[$DB_ROW['mode_synthese'].'_nom'] ;
-        $DB_TAB[$item_id][$key]['synthese_ref'] = $DB_ROW['mode_synthese'].'_'.$DB_ROW[$DB_ROW['mode_synthese'].'_id'];
+        $prefixe_synthese = $DB_ROW['mode_synthese'];
         unset($DB_TAB[$item_id][$key]['mode_synthese']);
       }
       else
       {
-        $tab_synthese[$mode_synthese.'_'.$DB_ROW[$mode_synthese.'_id']] = $DB_ROW['niveau_nom'].' - '.$DB_ROW[$mode_synthese.'_nom'] ;
-        $DB_TAB[$item_id][$key]['synthese_ref'] = $mode_synthese.'_'.$DB_ROW[$mode_synthese.'_id'];
+        $prefixe_synthese = $mode_synthese;
       }
+      if($fusion_niveaux)
+      {
+        $synthese_ref = $prefixe_matiere.'_'.Clean::id($DB_ROW[$prefixe_synthese.'_nom']);
+        $synthese_nom = $DB_ROW[$prefixe_synthese.'_nom'];
+      }
+      else
+      {
+        $synthese_ref = $prefixe_synthese.'_'.$DB_ROW[$prefixe_synthese.'_id'];
+        $synthese_nom = $DB_ROW['niveau_nom'].' - '.$DB_ROW[$prefixe_synthese.'_nom'];
+      }
+      $tab_synthese[$synthese_ref] = $synthese_nom;
+      $DB_TAB[$item_id][$key]['synthese_ref'] = $synthese_ref;
       unset($DB_TAB[$item_id][$key]['niveau_nom'],$DB_TAB[$item_id][$key]['domaine_id'],$DB_TAB[$item_id][$key]['domaine_nom'],$DB_TAB[$item_id][$key]['theme_id'],$DB_TAB[$item_id][$key]['theme_nom']);
     }
   }

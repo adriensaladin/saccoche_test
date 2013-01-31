@@ -190,13 +190,11 @@ class CAS_Client
      */
     public function setLang($lang)
     {
-        phpCAS::traceBegin();
         $obj = new $lang();
         if (!($obj instanceof CAS_Languages_LanguageInterface)) {
             throw new CAS_InvalidArgumentException('$className must implement the CAS_Languages_LanguageInterface');
         }
         $this->_lang = $lang;
-        phpCAS::traceEnd();
     }
     /**
      * Create the language
@@ -1313,7 +1311,7 @@ class CAS_Client
 
         if ( $this->_isCallbackMode() ) {
             // Rebroadcast the pgtIou and pgtId to all nodes
-            if ($this->_rebroadcast&&!isset($_POST['rebroadcast'])) {
+            if ($this->rebroadcast&&!isset($_POST['rebroadcast'])) {
                 $this->_rebroadcast(self::PGTIOU);
             }
             $this->_callback();
@@ -1620,15 +1618,7 @@ class CAS_Client
      *
      * @hideinitializer
      */
-    private $_cas_server_ca_cert = null;
-
-
-    /**
-     * validate CN of the CAS server certificate
-     *
-     * @hideinitializer
-     */
-    private $_cas_server_cn_validate = true;
+    private $_cas_server_ca_cert = '';
 
     /**
      * Set to true not to validate the CAS server.
@@ -1641,16 +1631,14 @@ class CAS_Client
     /**
      * Set the CA certificate of the CAS server.
      *
-     * @param string $cert        the PEM certificate file name of the CA that emited
+     * @param string $cert the PEM certificate file name of the CA that emited
      * the cert of the server
-     * @param bool   $validate_cn valiate CN of the CAS server certificate
      *
      * @return void
      */
-    public function setCasServerCACert($cert, $validate_cn)
+    public function setCasServerCACert($cert)
     {
         $this->_cas_server_ca_cert = $cert;
-        $this->_cas_server_cn_validate = $validate_cn;
     }
 
     /**
@@ -1713,6 +1701,7 @@ class CAS_Client
         $arr = preg_split('/\n/', $text_response);
         $this->_setUser(trim($arr[1]));
         $result = true;
+        break;
 
         if ($result) {
             $this->_renameSession($this->getTicket());
@@ -2428,7 +2417,7 @@ class CAS_Client
             phpCAS::error('one of the methods phpCAS::setCasServerCACert() or phpCAS::setNoCasServerValidation() must be called.');
         }
         if ($this->_cas_server_ca_cert != '') {
-            $request->setSslCaCert($this->_cas_server_ca_cert, $this->_cas_server_cn_validate);
+            $request->setSslCaCert($this->_cas_server_ca_cert);
         }
 
         // add extra stuff if SAML
@@ -3098,17 +3087,11 @@ class CAS_Client
             }
         }
         if (!strpos($server_url, ':')) {
-            if (empty($_SERVER['HTTP_X_FORWARDED_PORT'])) {
-                $server_port = $_SERVER['SERVER_PORT'];
-            } else {
-                $server_port = $_SERVER['HTTP_X_FORWARDED_PORT'];
-            }
-
-            if ( ($this->_isHttps() && $server_port!=443)
-                || (!$this->_isHttps() && $server_port!=80)
+            if ( ($this->_isHttps() && $_SERVER['SERVER_PORT']!=443)
+                || (!$this->_isHttps() && $_SERVER['SERVER_PORT']!=80)
             ) {
                 $server_url .= ':';
-                $server_url .= $server_port;
+                $server_url .= $_SERVER['SERVER_PORT'];
             }
         }
         return $server_url;

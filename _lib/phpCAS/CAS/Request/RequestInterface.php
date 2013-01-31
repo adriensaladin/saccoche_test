@@ -119,13 +119,12 @@ interface CAS_Request_RequestInterface
     /**
      * Specify the path to an SSL CA certificate to validate the server with.
      *
-     * @param string  $caCertPath  path to cert file
-     * @param boolean $validate_cn validate CN of SSL certificate
+     * @param string $caCertPath path to cert file
      *
      * @return void
      * @throws CAS_OutOfSequenceException If called after the Request has been sent.
      */
-    public function setSslCaCert ($caCertPath, $validate_cn = true);
+    public function setSslCaCert ($caCertPath);
 
 
 

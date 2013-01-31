@@ -121,7 +121,6 @@ $tab_droits  = array
   (
     'dir_pers_pp',
     array( 'droit_officiel_releve_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
-    array( 'droit_officiel_releve_corriger_appreciation' , "corriger les appréciations des collègues"   , 'dir' ),
     array( 'droit_officiel_releve_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_releve_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
   ),
@@ -129,7 +128,6 @@ $tab_droits  = array
   (
     'dir_pers_pp',
     array( 'droit_officiel_bulletin_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
-    array( 'droit_officiel_bulletin_corriger_appreciation' , "corriger les appréciations des collègues"   , 'dir' ),
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
   ),
@@ -137,7 +135,6 @@ $tab_droits  = array
   (
     'dir_pers_pp',
     array( 'droit_officiel_socle_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
-    array( 'droit_officiel_socle_corriger_appreciation' , "corriger les appréciations des collègues"   , 'dir' ),
     array( 'droit_officiel_socle_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_socle_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' )
   ),

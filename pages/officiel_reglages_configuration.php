@@ -61,11 +61,10 @@ $check_releve_aff_theme              =  $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'
 
 $check_bulletin_ligne_supplementaire =  $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']  ? ' checked' : '' ;
 $check_bulletin_assiduite            =  $_SESSION['OFFICIEL']['BULLETIN_ASSIDUITE']             ? ' checked' : '' ;
+$check_bulletin_only_socle           =  $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE']            ? ' checked' : '' ;
 $check_bulletin_retroactif_auto      = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='auto')   ? ' checked' : '' ;
 $check_bulletin_retroactif_non       = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='non')    ? ' checked' : '' ;
 $check_bulletin_retroactif_oui       = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='oui')    ? ' checked' : '' ;
-$check_bulletin_only_socle           =  $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE']            ? ' checked' : '' ;
-$check_bulletin_fusion_niveaux       =  $_SESSION['OFFICIEL']['BULLETIN_FUSION_NIVEAUX']        ? ' checked' : '' ;
 $check_bulletin_barre_acquisitions   =  $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS']    ? ' checked' : '' ;
 $check_bulletin_moyenne_scores       =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']        ? ' checked' : '' ;
 $check_bulletin_conversion_sur_20    =  $_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']     ? ' checked' : '' ;
@@ -133,9 +132,10 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
       <label for="f_bulletin_retroactif_non"><input type="radio" id="f_bulletin_retroactif_non" name="f_bulletin_retroactif" value="non"<?php echo $check_bulletin_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
       <label for="f_bulletin_retroactif_oui"><input type="radio" id="f_bulletin_retroactif_oui" name="f_bulletin_retroactif" value="oui"<?php echo $check_bulletin_retroactif_oui ?> /> oui</label><br />
     <label class="tab">Restriction :</label><label for="f_bulletin_only_socle"><input type="checkbox" id="f_bulletin_only_socle" name="f_bulletin_only_socle" value="1"<?php echo $check_bulletin_only_socle ?> /> Uniquement les items liés du socle</label><br />
-    <label class="tab">Mode de synthèse :</label><label for="f_bulletin_fusion_niveaux"><input type="checkbox" id="f_bulletin_fusion_niveaux" name="f_bulletin_fusion_niveaux" value="1"<?php echo $check_bulletin_fusion_niveaux ?> /> Ne pas indiquer le niveau et fusionner les synthèses de même intitulé</label><br />
-    <label class="tab">Acquisitions :</label><label for="f_bulletin_barre_acquisitions"><input type="checkbox" id="f_bulletin_barre_acquisitions" name="f_bulletin_barre_acquisitions" value="1"<?php echo $check_bulletin_barre_acquisitions ?> /> Barre avec le total des états acquisitions par matière</label><br />
-    <label class="tab">Moyennes :</label><label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
+    <label class="tab">Acquisitions :</label>
+    <label for="f_bulletin_barre_acquisitions"><input type="checkbox" id="f_bulletin_barre_acquisitions" name="f_bulletin_barre_acquisitions" value="1"<?php echo $check_bulletin_barre_acquisitions ?> /> Barre avec le total des états acquisitions par matière</label><br />
+    <label class="tab">Moyennes :</label>
+    <label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
     <span id="span_moyennes" class="<?php echo $class_span_bulletin_moyennes ?>">
       [ <label for="f_bulletin_conversion_sur_20"><input type="radio" id="f_bulletin_conversion_sur_20" name="f_bulletin_conversion_sur_20" value="1"<?php echo $check_bulletin_conversion_sur_20 ?> /> en note sur 20</label> | <label for="f_bulletin_pourcentage"><input type="radio" id="f_bulletin_pourcentage" name="f_bulletin_conversion_sur_20" value="0"<?php echo $check_bulletin_pourcentage ?> /> en pourcentage</label> ]&nbsp;&nbsp;&nbsp;
       <label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>&nbsp;&nbsp;&nbsp;

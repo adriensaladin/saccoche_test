@@ -47,7 +47,6 @@ implements CAS_Request_RequestInterface
     protected $isPost = false;
     protected $postBody = null;
     protected $caCertPath = null;
-    protected $validateCN = true;
     private $_sent = false;
     private $_responseHeaders = array();
     private $_responseBody = null;
@@ -183,19 +182,18 @@ implements CAS_Request_RequestInterface
     /**
      * Specify the path to an SSL CA certificate to validate the server with.
      *
-     * @param string $caCertPath  path to cert
-     * @param bool   $validate_cn valdiate CN of certificate
+     * @param string $caCertPath path to cert
      *
      * @return void
      * @throws CAS_OutOfSequenceException If called after the Request has been sent.
      */
-    public function setSslCaCert ($caCertPath,$validate_cn=true)
+    public function setSslCaCert ($caCertPath)
     {
         if ($this->_sent) {
             throw new CAS_OutOfSequenceException('Request has already been sent cannot '.__METHOD__);
         }
+
         $this->caCertPath = $caCertPath;
-        $this->validateCN = $validate_cn;
     }
 
     /*********************************************************

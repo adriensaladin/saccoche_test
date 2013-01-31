@@ -30,7 +30,7 @@ $TITRE = "Relevé d'items pluridisciplinaire";
 ?>
 
 <?php
-// L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
+// L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 // Les options du relevé de l'élève sont aussi prédéfinies.
 Form::load_choix_memo();
 $check_etat_acquisition   = (Form::$tab_choix['aff_etat_acquisition'])   ? ' checked' : '' ;

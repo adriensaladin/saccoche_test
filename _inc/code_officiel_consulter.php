@@ -211,7 +211,6 @@ elseif($BILAN_TYPE=='bulletin')
   $date_debut     = '';
   $date_fin       = '';
   $retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
-  $fusion_niveaux = $_SESSION['OFFICIEL']['BULLETIN_FUSION_NIVEAUX'];
   $niveau_id      = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
   $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
   $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf

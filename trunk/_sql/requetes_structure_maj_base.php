@@ -2451,6 +2451,7 @@ public static function DB_maj_base($version_actuelle)
       // re-suppression ligne dans sacoche_parametre car figurait toujours dans le sql de création.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes"' );
       // nouvelle table sacoche_user_profil
+      $for_maj_20130128 = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_user_profil.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -2507,9 +2508,26 @@ public static function DB_maj_base($version_actuelle)
     {
       $version_actuelle = '2013-01-28';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de clefs
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_obligatoire ( user_profil_obligatoire ) ');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_type ( user_profil_type ) ');
+      // ajout de clefs, sauf si bonnes requêtes de création de la table déjà passées
+      if(empty($for_maj_20130128))
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_obligatoire ( user_profil_obligatoire ) ');
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_type ( user_profil_type ) ');
+      }
+    }
+  }
+
+  if($version_actuelle=='2013-01-28')
+  {
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_actuelle = '2013-01-31';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+      // ajout de paramètres
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_fusion_niveaux"              , "1"   )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_corriger_appreciation"   , "DIR" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_bulletin_corriger_appreciation" , "DIR" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_corriger_appreciation"    , "DIR" )' );
     }
   }
 

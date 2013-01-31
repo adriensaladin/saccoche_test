@@ -244,6 +244,7 @@ class Form
       'with_coef'              => 1 ,
       'retroactif'             => 'auto' ,
       'mode_synthese'          => 'predefini' ,
+      'fusion_niveaux'         => 1 ,
       'aff_socle_PA'           => 1 ,
       'aff_socle_EV'           => 1 ,
       'type'                   => '' ,
@@ -308,12 +309,12 @@ class Form
         $tab_choix_new = compact('aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'synthese_matiere' :
-        global $matiere_id,$mode_synthese,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('matiere_id','mode_synthese','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
+        global $matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
         break;
       case 'synthese_multimatiere' :
-        global $retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
+        global $fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
         break;
       case 'releve_socle' :
         global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende,$marge_min;

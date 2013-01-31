@@ -39,6 +39,7 @@
 /*
  * Attention ! strtr() renvoie n'importe quoi en UTF-8 car il fonctionne octet par octet et non caractère par caractère, or l'UTF-8 est multi-octets...
 */
+define( 'LETTER_CHARS'   , utf8_decode(  '0123456789_abcdefghijklmnopqrstuvwxyz') );
 define( 'FILENAME_CHARS' , utf8_decode('-.0123456789_abcdefghijklmnopqrstuvwxyz') );
 define( 'LATIN1_LC_CHARS' , utf8_decode('abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïñòóôõöœøŕšùúûüýÿžðþ') );
 define( 'LATIN1_UC_CHARS' , utf8_decode('ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŒØŔŠÙÚÛÜÝŸŽÐÞ') );
@@ -101,12 +102,33 @@ class Clean
   }
 
   /**
-   * Ne conserver que les lettres minuscules et mettre des tirets pour le reste
+   * Ne conserver que les lettres minuscules | chiffres et supprimer le reste
    *
    * @param string
    * @return string
    */
   private static function only_letters($text)
+  {
+    $lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+    if(strlen($lettres))
+    {
+      $tab_lettres = str_split($lettres);
+      foreach($tab_lettres as $key => $lettre)
+      {
+        $tab_lettres[$key] = (strpos(LETTER_CHARS,$lettre)!==FALSE) ? $lettre : '' ;
+      }
+      $lettres = implode('',$tab_lettres);
+    }
+    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
+  }
+
+  /**
+   * Ne conserver que les lettres minuscules | chiffres points et tirets, et mettre des tirets pour le reste
+   *
+   * @param string
+   * @return string
+   */
+  private static function only_filechars($text)
   {
     $lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
     if(strlen($lettres))
@@ -237,7 +259,8 @@ class Clean
     Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
   */
   public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( trim($text) ) ) ) ) ); }
-  public static function fichier($text)      { return Clean::only_letters( Clean::perso_strtolower( Clean::accents( Clean::ligatures( trim($text) ) ) ) ); }
+  public static function fichier($text)      { return Clean::only_filechars( Clean::perso_strtolower( Clean::accents( Clean::ligatures( trim($text) ) ) ) ); }
+  public static function id($text)           { return Clean::only_letters(   Clean::perso_strtolower( Clean::accents( Clean::ligatures( trim($text) ) ) ) ); }
   public static function zip_filename($text) { return Clean::fichier(iconv('CP850','UTF-8',$text)); } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
   public static function password($text)     { return trim($text); }
   public static function ref($text)          { return Clean::perso_strtoupper( trim($text) ); }

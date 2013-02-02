@@ -161,6 +161,7 @@ $make_html     = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? FALSE :
 $make_pdf      = FALSE;
 $make_graph    = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? TRUE : FALSE ;
 $js_graph = '';
+$droit_corriger_appreciation = test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION']);
 
 if($BILAN_TYPE=='releve')
 {

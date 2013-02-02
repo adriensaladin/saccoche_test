@@ -632,29 +632,32 @@ class PDF extends FPDF
       case 'R' :
       case 'V' :
       case 'VV' :
+      case 'REQ' :
         if($this->couleur == 'oui')
         {
           $memo_x = $this->GetX();
           $memo_y = $this->GetY();
           $img_pos_x = $memo_x + ( ($this->lomer_espace_largeur - $this->lomer_image_largeur) / 2 ) ;
           $img_pos_y = $memo_y + ( ($this->lomer_espace_hauteur - $this->lomer_image_hauteur) / 2 ) ;
+          $dossier = ($note!='REQ') ? $_SESSION['NOTE_DOSSIER'] : 'commun' ;
           $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-          $this->Image('./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
+          $this->Image('./_img/note/'.$dossier.'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
           // $this->SetXY($memo_x , $memo_y);
           // $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
         }
         else
         {
-          $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $this->tab_lettre[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+          $txt = ($note!='REQ') ? $this->tab_lettre[$note] : 'Panier' ;
+          $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $txt , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         }
         break;
       case 'ABS' :
-      case 'NN' :
       case 'DISP' :
-        $tab_texte = array('ABS'=>'Abs.','NN'=>'N.N.','DISP'=>'Disp.');
-          $this->cMargin /= 2;
+      case 'NN' :
+        $tab_texte = array('ABS'=>'Abs.','DISP'=>'Disp.','NN'=>'N.N.');
+        $this->cMargin /= 2;
         $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-          $this->cMargin *= 2;
+        $this->cMargin *= 2;
         break;
       default :
         $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );

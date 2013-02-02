@@ -477,7 +477,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note de s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL ou se recalculer)
+    // [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
     // [officiel_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1065,19 +1065,48 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler une erreur
+    // [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_eleve button.signaler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    $('#zone_resultat_eleve button.signaler , #zone_resultat_eleve button.corriger').live // live est utilisé pour prendre en compte les nouveaux éléments créés
     ('click',
       function()
       {
-        var tab_ids = $(this).closest('tr').attr('id').split('_');
-        var prof_id = parseInt( tab_ids[2] , 10 );
-        var message_contenu = $('h1').text().substring(2)+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+' il y a un souci dans son appréciation : "'+$(this).parent().next().html()+'" &hellip;';
+        var objet        = $(this).attr('class');
+        var tab_ids      = $(this).closest('tr').attr('id').split('_');
+        var prof_id      = parseInt( tab_ids[2] , 10 );
+        memo_rubrique_id = parseInt( tab_ids[1] , 10 );
+        $('#f_action').val(objet+'_faute');
+        $('#zone_signaler_corriger h2').html(objet[0].toUpperCase() + objet.substring(1) + " une faute");
+        var appreciation_contenu = $(this).parent().next().html();
+        var message_contenu = $('h1').text().substring(2)+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataires_liste').val(prof_id);
+        // Affichage supplémentaire si correction de l'appréciation
+        if(objet=='corriger')
+        {
+          if( prof_id != USER_ID )
+          {
+            $('#section_signaler').show(0);
+          }
+          else
+          {
+            $('#section_signaler').hide(0);
+          }
+          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE : APP_GENERALE ;
+          var nb_lignes = parseInt(memo_long_max/100,10);
+          message_contenu += 'je me suis permis de corriger son appréciation en remplaçant " .......... " par " .......... ".';
+          $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label></div>').show(0);
+          $('#f_appreciation').focus().html(unescapeHtml(appreciation_contenu));
+          afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
+        }
+        else if(objet=='signaler')
+        {
+          message_contenu += 'je pense qu\'il y a un souci dans son appréciation "'+appreciation_contenu+'" : ..........';
+          $('#section_corriger').html("").hide(0);
+          $('#section_signaler').show(0);
+        }
         // Afficher la zone
-        $.fancybox( { 'href':'#zone_signaler' , onStart:function(){$('#zone_signaler').css("display","block");} , onClosed:function(){$('#zone_signaler').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#zone_signaler_corriger' , onStart:function(){$('#zone_signaler_corriger').css("display","block");} , onClosed:function(){$('#zone_signaler_corriger').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
         $('#f_message_contenu').focus().val(unescapeHtml(message_contenu));
         afficher_textarea_reste( $('#f_message_contenu') , 999 );
       }
@@ -1096,64 +1125,113 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'erreur (annuler / retour)
+    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'une faute (annuler / retour)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#annuler_signaler').click
+    $('#annuler_signaler_corriger').click
     (
       function()
       {
+        $('#section_corriger').html("");
+        $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
         $.fancybox.close();
         return(false);
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Valider le formulaire pour signaler une erreur
+    // [officiel_saisir|officiel_consulter] Valider le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#valider_signaler').click
+    $('#valider_signaler_corriger').click
     (
       function()
       {
-        $('#zone_signaler button').prop('disabled',true);
-        $('#ajax_msg_signaler').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&'+$('#zone_signaler').serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
+        $('#zone_signaler_corriger button').prop('disabled',true);
+        $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        var action  = $('#f_action').val();
+        var prof_id = $('#f_destinataires_liste').val();
+        // Signaler la faute (signalement simple, ou signalement d'une correction)
+        if( prof_id != USER_ID )
+        {
+          $.ajax
+          (
             {
-              $('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-              $('#zone_signaler button').prop('disabled',false);
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('#zone_signaler button').prop('disabled',false);
-              if(responseHTML.substring(0,4)!='<tr ')
+              type : 'POST',
+              url : 'ajax.php?page='+PAGE,
+              data : 'csrf='+CSRF+'&'+$('#zone_signaler_corriger').serialize(),
+              dataType : "html",
+              error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
+                $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+                $('#zone_signaler_corriger button').prop('disabled',false);
+                return false;
+              },
+              success : function(responseHTML)
               {
-                $('#ajax_msg_signaler').removeAttr("class").addClass("valide").html('Message enregistré.');
-                $('#annuler_signaler').click();
+                initialiser_compteur();
+                if(responseHTML.substring(0,4)!='<tr ')
+                {
+                  $('#zone_signaler_corriger button').prop('disabled',false);
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html(responseHTML);
+                  return false;
+                }
+                else
+                {
+                  if(action=='signaler_faute')
+                  {
+                    $('#zone_signaler_corriger button').prop('disabled',false);
+                    $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
+                    $('#annuler_signaler_corriger').click();
+                    return false;
+                 }
+                }
               }
             }
-          }
-        );
+          );
+        }
+        // Corriger la faute
+        if(action=='corriger_faute')
+        {
+          $.ajax
+          (
+            {
+              type : 'POST',
+              url : 'ajax.php?page='+PAGE,
+              data : 'csrf='+CSRF+'&f_section='+'officiel_saisir'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
+              dataType : "html",
+              error : function(jqXHR, textStatus, errorThrown)
+              {
+                $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+                $('#zone_signaler_corriger button').prop('disabled',false);
+                return false;
+              },
+              success : function(responseHTML)
+              {
+                initialiser_compteur();
+                $('#zone_signaler_corriger button').prop('disabled',false);
+                if(responseHTML.substring(0,4)!='<ok>')
+                {
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html(responseHTML);
+                  return false;
+                }
+                else
+                {
+                  $('#appr_'+memo_rubrique_id+'_'+prof_id).find('div.appreciation').html(responseHTML.substring(4));
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
+                  $('#annuler_signaler_corriger').click();
+                }
+              }
+            }
+          );
+        }
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-    // http://www.highcharts.com/documentation/how-to-use
-    // http://www.highcharts.com/ref
+    // @see   http://www.highcharts.com/documentation/how-to-use
+    // @see   http://www.highcharts.com/ref
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChartOptions = {
@@ -1180,7 +1258,8 @@ $(document).ready
           min: 0,
           max: 100,
           title: { style: { color: '#333' } , text: 'Items acquis' }
-        }, {} // MAJ ensuite
+        },
+        {} // MAJ ensuite
       ],
       tooltip: {
         formatter: function() {

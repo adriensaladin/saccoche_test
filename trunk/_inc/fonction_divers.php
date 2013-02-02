@@ -61,12 +61,12 @@ function positif($n)
   return $n>0 ;
 }
 /**
- * Fonctions utilisées avec array_filter() ; teste si différent "X" et "REQ".
+ * Fonctions utilisées avec array_filter() ; teste si différent "X" (pas "REQ" car désormais cela peut être saisi).
  * @return bool
  */
-function non_note($note)
+function sans_rien($note)
 {
-  return ($note!='X')&&($note!='REQ') ;
+  return $note!='X' ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de 2.

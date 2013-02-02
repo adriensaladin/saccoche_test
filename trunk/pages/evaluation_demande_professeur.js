@@ -550,7 +550,8 @@ $(document).ready
             function()
             {
               this.checked = false;
-              $(this).parent().parent().children("td:last").prev().html('évaluation en préparation');
+              $(this).parent().parent().removeAttr("class").children("td:last").prev().html('évaluation en préparation');
+              trier_tableau(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
             }
           );
         }

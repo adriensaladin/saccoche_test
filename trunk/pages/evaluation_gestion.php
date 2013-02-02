@@ -321,9 +321,10 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
   </table>
   <div id="td_souris_container"><div class="td_souris">
     <img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /><br />
-    <img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /><img alt="NN" src="./_img/note/commun/h/NN.gif" /><br />
-    <img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
-    <img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X" src="./_img/note/commun/h/X.gif" />
+    <img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
+    <img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /><img alt="NN" src="./_img/note/commun/h/NN.gif" /><br />
+    <img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X" src="./_img/note/commun/h/X.gif" /><br />
+    <img alt="REQ" src="./_img/note/commun/h/REQ.gif" />
   </div></div>
   <p class="ti">Note à reporter dans &hellip;
     <label for="f_report_cellule">[ <input type="radio" id="f_report_cellule" name="f_endroit_report_note" value="cellule" checked /> la cellule ]</label>

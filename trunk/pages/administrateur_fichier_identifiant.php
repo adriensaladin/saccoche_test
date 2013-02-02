@@ -37,7 +37,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 ?>
 
 <ul class="puce">
-  <li><span class="astuce">Pour un traitement individuel on peut utiliser les pages [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Gérer les élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Gérer les parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Gérer les professeurs / personnels</a>] [<a href="./index.php?page=administrateur_directeur">Gérer les directeurs</a>].</span></li>
+  <li><span class="astuce">Pour un traitement individuel on peut utiliser les pages de gestion [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Professeurs / Directeurs / Personnels</a>].</span></li>
   <li><span class="astuce">Les administrateurs ne se gèrent qu'individuellement depuis la page [<a href="./index.php?page=administrateur_administrateur">Gérer les administrateurs</a>].</span></li>
 </ul>
 

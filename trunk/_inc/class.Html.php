@@ -301,7 +301,7 @@ class Html
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
     $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
     $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
+    return (in_array($note,array('-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
   }
 
   /**

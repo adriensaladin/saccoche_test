@@ -43,7 +43,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
 
   <ul class="puce">
     <li><span class="astuce">Si la procédure est utilisée en début d'année (initialisation), elle peut ensuite être renouvelée en cours d'année (mise à jour).</span></li>
-    <li><span class="astuce">Pour un traitement individuel on peut utiliser les pages de gestion [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Professeurs / Directeurs / Personnels</a>].</span></li>
+    <li><span class="astuce">Pour un traitement individuel on peut utiliser les pages de gestion [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Professeurs / Personnels</a>] [<a href="./index.php?page=administrateur_directeur">Directeurs</a>].</span></li>
     <li><span class="astuce">Les administrateurs ne se gèrent qu'individuellement depuis la page [<a href="./index.php?page=administrateur_administrateur">Administrateurs</a>].</span></li>
   </ul>
   <?php echo $alerte ?>

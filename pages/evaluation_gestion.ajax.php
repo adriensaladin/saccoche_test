@@ -464,7 +464,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $tab_affich[0][0] = '<td>';
   $tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
   $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; P ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
   $tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <img alt="" src="./_img/arrow_continue_down.png" /> par élève</label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <img alt="" src="./_img/arrow_continue_rigth.png" /> par item</label></span><br />';
   $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
   $tab_affich[0][0].= '</p><p>';
@@ -524,7 +524,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   }
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
-  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
+  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
   FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   //
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -646,7 +646,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     }
   }
   // ajouter le contenu
-  $tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'commun/h/' );
+  $tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'' );
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -658,7 +658,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     }
   }
   // assemblage du csv
-  $tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'DISP'=>'D' , 'NN'=>'N' , 'REQ'=>'P' );
+  $tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
   foreach($tab_comp_id as $comp_id=>$val_comp)
   {
     $export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
@@ -671,7 +671,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
   $export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
-  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
+  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
   FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -1014,7 +1014,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
     }
   }
   // Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
-  $tab_nouveau_ajouter = array_filter($tab_post,'sans_rien');
+  $tab_nouveau_ajouter = array_filter($tab_post,'non_note');
   // Il n'y a plus qu'à mettre à jour la base
   if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
   {
@@ -1221,7 +1221,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   // Parcourir les lignes suivantes et mémoriser les scores
   $retour = '|';
   unset($tab_lignes[0]);
-  $scores_autorises = '1234AaDdNnPp';
+  $scores_autorises = '1234AaNnDd';
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = explode($separateur,$ligne_contenu);

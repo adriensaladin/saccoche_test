@@ -40,7 +40,6 @@ $classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_clas
 $groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
 $eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
 $rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])    : 0;
-$prof_id      = (isset($_POST['f_prof']))         ? Clean::entier($_POST['f_prof'])        : 0; // id du prof dont on corrige l'appréciation
 $appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
 $moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])    : -1;
 // Autres chaines spécifiques...
@@ -53,8 +52,8 @@ $liste_pilier_id  = implode(',',$tab_pilier_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
-$tab_objet  = array('modifier','tamponner','voir'); // "voir" car on peut corriger une appréciation dans ce mode
-$tab_action = array('initialiser','charger','enregistrer_appr','corriger_faute','enregistrer_note','supprimer_appr','supprimer_note','recalculer_note');
+$tab_objet  = array('modifier','tamponner');
+$tab_action = array('initialiser','charger','enregistrer_appr','enregistrer_note','supprimer_appr','supprimer_note','recalculer_note');
 $tab_mode  = array('texte','graphique');
 
 $tab_types = array
@@ -89,7 +88,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese','voir2rubrique','voir3synthese')))
+if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese')))
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }
@@ -113,16 +112,6 @@ if($ACTION=='enregistrer_appr')
   $prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>');
-}
-
-if($ACTION=='corriger_faute')
-{
-  if( (!$appreciation) || ($prof_id==0) )
-  {
-    exit('Erreur avec les données transmises !');
-  }
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $prof_id , NULL , $appreciation );
-  exit('<ok>'.html($appreciation));
 }
 
 if($ACTION=='enregistrer_note')
@@ -286,7 +275,6 @@ $make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=
 $make_pdf      = FALSE;
 $make_graph    = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
 $js_graph = '';
-$droit_corriger_appreciation = test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION']);
 
 if($BILAN_TYPE=='releve')
 {

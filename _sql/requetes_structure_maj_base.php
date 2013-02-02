@@ -779,7 +779,6 @@ public static function DB_maj_base($version_actuelle)
       }
       else
       {
-        $reload_sacoche_niveau = TRUE;
         $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
         DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -954,11 +953,8 @@ public static function DB_maj_base($version_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_statut_date DATE NOT NULL DEFAULT "0000-00-00" AFTER user_connexion_date' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_statut_date=NOW()' );
       // ajout de 2 niveaux "Première générale" et "Terminale générale"
-      if(empty($reload_sacoche_niveau))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  68, 0,  84,     "1", "2011....11.", "Première générale")' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  69, 0,  94,     "T", "2021....11.", "Terminale générale")' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  68, 0,  84,     "1", "2011....11.", "Première générale")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  69, 0,  94,     "T", "2021....11.", "Terminale générale")' );
       // Je renonce aux fonctions car la liste n'est pas claire + ça ne sert à rien sans le libellé court de la matière (qui ne correspond pas à ce qu'on trouve dans STS, il est dans Nomenclature.xml mais pas dans SACoche) + ça fait assez de modifs comme ça + ça pose problème pour le 1er degré + un prof peut avoir quitté l'établissement + on peut faire un export LPC sans spécifier qui a validé.
       // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_fonction ENUM( "", "ENS", "DIR", "EDU", "DOC", "COP", "ORI", "FIJ", "AED", "SUR" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "INDIVIDU.FONCTION dans le fichier Sconet-STS des personnels" AFTER user_reference' );
       // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_fonction="ENS" WHERE user_profil="professeur"' );
@@ -1128,20 +1124,17 @@ public static function DB_maj_base($version_actuelle)
       $version_actuelle = '2011-07-03';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de niveaux BTS et modification du champ correspondant
-      if(empty($reload_sacoche_niveau))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre = 199 WHERE niveau_id = 4 ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE niveau_ref niveau_ref VARCHAR(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 121, 0, 161,  "1BTS1", "310.....11.", "BTS 1 an") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 122, 0, 162,  "1BTS2", "311.....21.", "BTS 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 123, 0, 163,  "2BTS2", "311.....22.", "BTS 2 ans, 2e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 124, 0, 164,  "1BTS3", "312.....31.", "BTS 3 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 125, 0, 165,  "2BTS3", "312.....32.", "BTS 3 ans, 2e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 126, 0, 166,  "3BTS3", "312.....33.", "BTS 3 ans, 3e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 131, 0, 171, "1BTS1A", "370.....11.", "BTS Agricole 1 an") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 132, 0, 172, "1BTS2A", "371.....21.", "BTS Agricole 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 133, 0, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année") ' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre = 199 WHERE niveau_id = 4 ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE niveau_ref niveau_ref VARCHAR(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 121, 0, 161,  "1BTS1", "310.....11.", "BTS 1 an") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 122, 0, 162,  "1BTS2", "311.....21.", "BTS 2 ans, 1e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 123, 0, 163,  "2BTS2", "311.....22.", "BTS 2 ans, 2e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 124, 0, 164,  "1BTS3", "312.....31.", "BTS 3 ans, 1e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 125, 0, 165,  "2BTS3", "312.....32.", "BTS 3 ans, 2e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 126, 0, 166,  "3BTS3", "312.....33.", "BTS 3 ans, 3e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 131, 0, 171, "1BTS1A", "370.....11.", "BTS Agricole 1 an") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 132, 0, 172, "1BTS2A", "371.....21.", "BTS Agricole 2 ans, 1e année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 133, 0, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année") ' );
     }
   }
 
@@ -1332,11 +1325,8 @@ public static function DB_maj_base($version_actuelle)
       // ajout d'un paramètre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_grilles_items" , "directeur,professeur,parent,eleve")' );
       // ajout d'un niveau cycle
-      if(empty($reload_sacoche_niveau))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre=niveau_ordre+3 WHERE niveau_id IN(14,15)' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (5,1,5,"P0","","Cycle 1 (PS-GS)")' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre=niveau_ordre+3 WHERE niveau_id IN(14,15)' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (5,1,5,"P0","","Cycle 1 (PS-GS)")' );
     }
   }
 
@@ -1592,11 +1582,9 @@ public static function DB_maj_base($version_actuelle)
       $DB_TAB_communes     = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_id IN('.$listing_matieres_id.')');
       $DB_TAB_specifiques  = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom FROM sacoche_matiere WHERE matiere_partage=0');
       // nouvelles tables sacoche_matiere (intégration native de 1900 matières) et sacoche_matiere_famille
-      $reload_sacoche_matiere = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      $reload_sacoche_matiere_famille = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -1693,11 +1681,9 @@ public static function DB_maj_base($version_actuelle)
       $listing_cycles_id  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="cycles"' );
       $listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers"' );
       // nouvelles tables sacoche_niveau et sacoche_niveau_famille
-      $reload_sacoche_niveau = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      $reload_sacoche_niveau_famille = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -1747,7 +1733,6 @@ public static function DB_maj_base($version_actuelle)
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_socle_palier"');
       if(empty($DB_TAB))
       {
-        $reload_sacoche_socle_palier = TRUE;
         $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_socle_palier.sql');
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
         DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -1769,7 +1754,6 @@ public static function DB_maj_base($version_actuelle)
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_jointure_user_pilier"');
       if(empty($DB_TAB))
       {
-        $reload_sacoche_jointure_user_pilier = TRUE;
         $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
         DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -2038,20 +2022,14 @@ public static function DB_maj_base($version_actuelle)
       $version_actuelle = '2012-06-25';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // valeur renommée dans sacoche_niveau_famille
-      if(empty($reload_sacoche_niveau_famille))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau_famille SET niveau_famille_nom="Cycles (primaire, collège, lycée)" WHERE niveau_famille_id=1' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau_famille SET niveau_famille_nom="Cycles (primaire, collège, lycée)" WHERE niveau_famille_id=1' );
       // ajout de matières
-      if(empty($reload_sacoche_matiere))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2") ' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2") ' );
     }
   }
 
@@ -2096,70 +2074,64 @@ public static function DB_maj_base($version_actuelle)
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'=300 WHERE '.$table_champ.'=397' );
       }
       // ajout d'une famille de matières
-      if(empty($reload_sacoche_matiere_famille))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 45, 3, "Métiers des arts appliqués (suite)") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere_famille SET matiere_famille_nom="Métiers des arts appliqués" WHERE matiere_famille_id=27 ' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 45, 3, "Métiers des arts appliqués (suite)") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere_famille SET matiere_famille_nom="Métiers des arts appliqués" WHERE matiere_famille_id=27 ' );
       // ajout de matières
-      if(empty($reload_sacoche_matiere))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  74, 0, 0, 100, 0, 255, "DECPR", "Découverte professionnelle") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  91, 0, 0, 100, 0, 255, "EPE"  , "Etude personnalisée encadrée") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  92, 0, 0, 100, 0, 255, "ATELP", "Atelier de professionnalisation") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  93, 0, 0, 100, 0, 255, "FILOC", "Formation d\'initiative locale") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  94, 0, 0, 100, 0, 255, "AT-PX", "Ateliers principaux") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  95, 0, 0, 100, 0, 255, "AT-CO", "Ateliers complémentaires") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 387, 0, 0,   3, 0, 255, "ALL8" , "Littérature étrangère en allemand") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 388, 0, 0,   3, 0, 255, "AGL8" , "Littérature étrangère en anglais") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 389, 0, 0,   3, 0, 255, "ARA8" , "Littérature étrangère en arabe") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 390, 0, 0,   3, 0, 255, "CHI8" , "Littérature étrangère en chinois") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 391, 0, 0,   3, 0, 255, "DAN8" , "Littérature étrangère en danois") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 392, 0, 0,   3, 0, 255, "ESP8" , "Littérature étrangère en espagnol") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 393, 0, 0,   3, 0, 255, "ITA8" , "Littérature étrangère en italien") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 394, 0, 0,   3, 0, 255, "JAP8" , "Littérature étrangère en japonais") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 395, 0, 0,   3, 0, 255, "POR8" , "Littérature étrangère en portugais") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 396, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 397, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 398, 0, 0,   3, 0, 255, "RUS8" , "Littérature étrangère en russe") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 521, 0, 0,   5, 0, 255, "SSPOL", "Sciences sociales et politiques") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 522, 0, 0,   5, 0, 255, "ECOAP", "Economie approfondie") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 601, 0, 0,   6, 0, 255, "EIST" , "Enseignement intégré de science et technologie") ' ); // Créée en attendant que la matière apparaisse officiellement...
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 720, 0, 0,   7, 0, 255, "TREAL", "Technologie de réalisation") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 738, 0, 0,   7, 0, 255, "STECH", "Sciences et technologie") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 739, 0, 0,   7, 0, 255, "TFABR", "Technologie de fabrication") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 918, 0, 0,   9, 0, 255, "CDESG", "Culture du design graphique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 919, 0, 0,   9, 0, 255, "CTYPO", "Culture typographique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 920, 0, 0,   9, 0, 255, "PPGRA", "Pratique plastique & graphique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 921, 0, 0,   9, 0, 255, "DANAL", "Dessin analytique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1234, 0, 0,  12, 0, 255, "CDIRP", "Conception dévelop. industrialisation realisation produits") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1753, 0, 0,  17, 0, 255, "AHUDD", "Architecture, habitat & urbanisme, développement durable") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3088, 0, 0,  30, 0, 255, "ECAGT", "Ecologie agronomie et territoires") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3089, 0, 0,  30, 0, 255, "MAPHY", "Microbiologie appliquée & physiopathologie") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3244, 0, 0,  32, 0, 255, "AOCCL", "Anatomie-occlusodontie") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3657, 0, 0,  36, 0, 255, "DGEMC", "Droit et grands enjeux du monde contemporain") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3659, 0, 0,  36, 0, 255, "ENVEJ", "Environnement économique et juridique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3660, 0, 0,  36, 0, 255, "COJAT", "Cadre organisationnel juridique activité touristique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3661, 0, 0,  36, 0, 255, "DR-VD", "Droit et veille juridique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3731, 0, 0,  37, 0, 255, "ISCNU", "Informatique et sciences du numérique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3831, 0, 0,  38, 0, 255, "ECOOR", "Economie et organisation") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4059, 0, 0,  40, 0, 255, "MERTC", "Tourisme et territoire") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4060, 0, 0,  40, 0, 255, "MCPT" , "Mercatique conception prestation touristique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4154, 0, 0,  41, 0, 255, "GRCLI", "Gestion de la relation client") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4155, 0, 0,  41, 0, 255, "GINFT", "Gestion de l\'information touristique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4156, 0, 0,  41, 0, 255, "IMMED", "Information et multimedias") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4157, 0, 0,  41, 0, 255, "ITOUR", "Information et tourismatique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4158, 0, 0,  41, 0, 255, "CCOMM", "Culture de la communication") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4501, 0, 0,  45, 0, 255, "HUMOD", "Humanités modernes") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4502, 0, 0,  45, 0, 255, "SMAJU", "Stratégie marketing juridique") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4503, 0, 0,  45, 0, 255, "CPRTE", "Cultures et pratiques techniques") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4504, 0, 0,  45, 0, 255, "PPLME", "Pratiques plastiques et médiations") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4505, 0, 0,  45, 0, 255, "IPRRE", "Innovation, prospective et recherche") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4506, 0, 0,  45, 0, 255, "LEXRE", "Laboratoire expérimentation et recherche") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4507, 0, 0,  45, 0, 255, "MACPR", "Macro-projet") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4508, 0, 0,  45, 0, 255, "MREPR", "Mémoire de recherche professionnel") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4509, 0, 0,  45, 0, 255, "MELVE", "Mémoire en langue vivante etrangère") ' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  74, 0, 0, 100, 0, 255, "DECPR", "Découverte professionnelle") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  91, 0, 0, 100, 0, 255, "EPE"  , "Etude personnalisée encadrée") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  92, 0, 0, 100, 0, 255, "ATELP", "Atelier de professionnalisation") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  93, 0, 0, 100, 0, 255, "FILOC", "Formation d\'initiative locale") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  94, 0, 0, 100, 0, 255, "AT-PX", "Ateliers principaux") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  95, 0, 0, 100, 0, 255, "AT-CO", "Ateliers complémentaires") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 387, 0, 0,   3, 0, 255, "ALL8" , "Littérature étrangère en allemand") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 388, 0, 0,   3, 0, 255, "AGL8" , "Littérature étrangère en anglais") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 389, 0, 0,   3, 0, 255, "ARA8" , "Littérature étrangère en arabe") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 390, 0, 0,   3, 0, 255, "CHI8" , "Littérature étrangère en chinois") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 391, 0, 0,   3, 0, 255, "DAN8" , "Littérature étrangère en danois") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 392, 0, 0,   3, 0, 255, "ESP8" , "Littérature étrangère en espagnol") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 393, 0, 0,   3, 0, 255, "ITA8" , "Littérature étrangère en italien") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 394, 0, 0,   3, 0, 255, "JAP8" , "Littérature étrangère en japonais") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 395, 0, 0,   3, 0, 255, "POR8" , "Littérature étrangère en portugais") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 396, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 397, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 398, 0, 0,   3, 0, 255, "RUS8" , "Littérature étrangère en russe") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 521, 0, 0,   5, 0, 255, "SSPOL", "Sciences sociales et politiques") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 522, 0, 0,   5, 0, 255, "ECOAP", "Economie approfondie") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 601, 0, 0,   6, 0, 255, "EIST" , "Enseignement intégré de science et technologie") ' ); // Créée en attendant que la matière apparaisse officiellement...
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 720, 0, 0,   7, 0, 255, "TREAL", "Technologie de réalisation") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 738, 0, 0,   7, 0, 255, "STECH", "Sciences et technologie") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 739, 0, 0,   7, 0, 255, "TFABR", "Technologie de fabrication") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 918, 0, 0,   9, 0, 255, "CDESG", "Culture du design graphique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 919, 0, 0,   9, 0, 255, "CTYPO", "Culture typographique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 920, 0, 0,   9, 0, 255, "PPGRA", "Pratique plastique & graphique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 921, 0, 0,   9, 0, 255, "DANAL", "Dessin analytique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1234, 0, 0,  12, 0, 255, "CDIRP", "Conception dévelop. industrialisation realisation produits") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1753, 0, 0,  17, 0, 255, "AHUDD", "Architecture, habitat & urbanisme, développement durable") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3088, 0, 0,  30, 0, 255, "ECAGT", "Ecologie agronomie et territoires") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3089, 0, 0,  30, 0, 255, "MAPHY", "Microbiologie appliquée & physiopathologie") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3244, 0, 0,  32, 0, 255, "AOCCL", "Anatomie-occlusodontie") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3657, 0, 0,  36, 0, 255, "DGEMC", "Droit et grands enjeux du monde contemporain") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3659, 0, 0,  36, 0, 255, "ENVEJ", "Environnement économique et juridique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3660, 0, 0,  36, 0, 255, "COJAT", "Cadre organisationnel juridique activité touristique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3661, 0, 0,  36, 0, 255, "DR-VD", "Droit et veille juridique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3731, 0, 0,  37, 0, 255, "ISCNU", "Informatique et sciences du numérique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3831, 0, 0,  38, 0, 255, "ECOOR", "Economie et organisation") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4059, 0, 0,  40, 0, 255, "MERTC", "Tourisme et territoire") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4060, 0, 0,  40, 0, 255, "MCPT" , "Mercatique conception prestation touristique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4154, 0, 0,  41, 0, 255, "GRCLI", "Gestion de la relation client") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4155, 0, 0,  41, 0, 255, "GINFT", "Gestion de l\'information touristique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4156, 0, 0,  41, 0, 255, "IMMED", "Information et multimedias") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4157, 0, 0,  41, 0, 255, "ITOUR", "Information et tourismatique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4158, 0, 0,  41, 0, 255, "CCOMM", "Culture de la communication") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4501, 0, 0,  45, 0, 255, "HUMOD", "Humanités modernes") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4502, 0, 0,  45, 0, 255, "SMAJU", "Stratégie marketing juridique") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4503, 0, 0,  45, 0, 255, "CPRTE", "Cultures et pratiques techniques") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4504, 0, 0,  45, 0, 255, "PPLME", "Pratiques plastiques et médiations") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4505, 0, 0,  45, 0, 255, "IPRRE", "Innovation, prospective et recherche") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4506, 0, 0,  45, 0, 255, "LEXRE", "Laboratoire expérimentation et recherche") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4507, 0, 0,  45, 0, 255, "MACPR", "Macro-projet") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4508, 0, 0,  45, 0, 255, "MREPR", "Mémoire de recherche professionnel") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4509, 0, 0,  45, 0, 255, "MELVE", "Mémoire en langue vivante etrangère") ' );
     }
   }
 
@@ -2266,18 +2238,12 @@ public static function DB_maj_base($version_actuelle)
       $version_actuelle = '2012-10-10';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Intégration des champs professionnels de SEGPA comme nouvelles matières.
-      if(empty($reload_sacoche_matiere_famille))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 98, 3, "Champs professionnels en SEGPA")' );
-      }
-      if(empty($reload_sacoche_matiere))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9801, 0, 0,  98, 0, 255, "CPHAB", "Habitat")' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9802, 0, 0,  98, 0, 255, "CPHAS", "Hygiène - Alimentation - Services")' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9803, 0, 0,  98, 0, 255, "CPERE", "Espace rural et environnement")' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9804, 0, 0,  98, 0, 255, "CPVDM", "Vente - Distribution - Magasinage")' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9805, 0, 0,  98, 0, 255, "CPPI" , "Production industrielle")' );
-      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 98, 3, "Champs professionnels en SEGPA")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9801, 0, 0,  98, 0, 255, "CPHAB", "Habitat")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9802, 0, 0,  98, 0, 255, "CPHAS", "Hygiène - Alimentation - Services")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9803, 0, 0,  98, 0, 255, "CPERE", "Espace rural et environnement")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9804, 0, 0,  98, 0, 255, "CPVDM", "Vente - Distribution - Magasinage")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9805, 0, 0,  98, 0, 255, "CPPI" , "Production industrielle")' );
     }
   }
 
@@ -2358,7 +2324,6 @@ public static function DB_maj_base($version_actuelle)
       // modif champ table sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_valeur parametre_valeur VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
       // nouvelle table sacoche_officiel_assiduite
-      $reload_sacoche_officiel_assiduite = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_officiel_assiduite.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -2486,7 +2451,7 @@ public static function DB_maj_base($version_actuelle)
       // re-suppression ligne dans sacoche_parametre car figurait toujours dans le sql de création.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes"' );
       // nouvelle table sacoche_user_profil
-      $reload_sacoche_user_profil = TRUE;
+      $for_maj_20130128 = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_user_profil.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
@@ -2544,7 +2509,7 @@ public static function DB_maj_base($version_actuelle)
       $version_actuelle = '2013-01-28';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de clefs, sauf si bonnes requêtes de création de la table déjà passées
-      if(empty($reload_sacoche_user_profil))
+      if(empty($for_maj_20130128))
       {
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_obligatoire ( user_profil_obligatoire ) ');
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD INDEX user_profil_type ( user_profil_type ) ');

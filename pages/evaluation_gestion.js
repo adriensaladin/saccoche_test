@@ -1173,7 +1173,7 @@ $(document).ready
           var endroit_report_note = 'cellule';
           colonne = parseInt(id.substring(1,id.indexOf('L')),10);
           ligne   = parseInt(id.substring(id.indexOf('L')+1),10);
-          if('.8.46.49.50.51.52.65.68.78.80.97.98.99.100.'.indexOf(findme)!=-1)
+          if('.8.46.49.50.51.52.65.68.78.97.98.99.100.'.indexOf(findme)!=-1)
           {
             // Une touche d'item a été pressée
             switch (e.which)
@@ -1189,10 +1189,8 @@ $(document).ready
               case 100: note = 'VV';   break; // 4
               case  52: note = 'VV';   break; // 4 (')
               case  65: note = 'ABS';  break; // A
-              case  68: note = 'DISP'; break; // D
               case  78: note = 'NN';   break; // N
-              case  80: note = 'REQ';  break; // P
-              // case  69: note = 'NE';   break; // E
+              case  68: note = 'DISP'; break; // D
             }
             endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
             if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
@@ -1796,14 +1794,13 @@ $(document).ready
               {
                 switch (score)
                 {
-                  case '1': champ.val('RR'  ).removeAttr("class").addClass('RR'  ); break;
-                  case '2': champ.val('R'   ).removeAttr("class").addClass('R'   ); break;
-                  case '3': champ.val('V'   ).removeAttr("class").addClass('V'   ); break;
-                  case '4': champ.val('VV'  ).removeAttr("class").addClass('VV'  ); break;
-                  case 'A': champ.val('ABS' ).removeAttr("class").addClass('ABS' ); break;
+                  case '1': champ.val('RR').removeAttr("class").addClass('RR'); break;
+                  case '2': champ.val('R').removeAttr("class").addClass('R'); break;
+                  case '3': champ.val('V').removeAttr("class").addClass('V'); break;
+                  case '4': champ.val('VV').removeAttr("class").addClass('VV'); break;
+                  case 'A': champ.val('ABS').removeAttr("class").addClass('ABS'); break;
+                  case 'N': champ.val('NN').removeAttr("class").addClass('NN'); break;
                   case 'D': champ.val('DISP').removeAttr("class").addClass('DISP'); break;
-                  case 'N': champ.val('NN'  ).removeAttr("class").addClass('NN'  ); break;
-                  case 'P': champ.val('REQ' ).removeAttr("class").addClass('REQ' ); break;
                 }
                 champ.parent().css("background-color","#F6D");
               }

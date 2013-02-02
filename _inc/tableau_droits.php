@@ -86,6 +86,7 @@ $tab_droits_par_page = array
   'administrateur_classe'                   => $tab_droits_profil_administrateur,
   'administrateur_classe_gestion'           => $tab_droits_profil_administrateur,
   'administrateur_codes_couleurs'           => $tab_droits_profil_administrateur,
+  'administrateur_directeur'                => $tab_droits_profil_administrateur,
   'administrateur_dump'                     => $tab_droits_profil_administrateur,
   'administrateur_eleve'                    => $tab_droits_profil_administrateur,
   'administrateur_eleve_classe'             => $tab_droits_profil_administrateur,

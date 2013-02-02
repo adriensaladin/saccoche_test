@@ -50,10 +50,10 @@ if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_c
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Signaler une faute
+// Signaler une erreur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='signaler_faute') || ($action=='corriger_faute') )
+if($action=='signaler_erreur')
 {
   $_POST['f_action']='ajouter';
   require(CHEMIN_DOSSIER_PAGES.'compte_message.ajax.php');

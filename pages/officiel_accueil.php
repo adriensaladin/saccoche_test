@@ -136,7 +136,6 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
   var BACKGROUND_NA = "<?php echo $_SESSION['BACKGROUND_NA'] ?>";
   var BACKGROUND_VA = "<?php echo $_SESSION['BACKGROUND_VA'] ?>";
   var BACKGROUND_A  = "<?php echo $_SESSION['BACKGROUND_A'] ?>";
-  var USER_ID = "<?php echo $_SESSION['USER_ID'] ?>";
 </script>
 
 <hr />
@@ -559,29 +558,23 @@ if(count($tab_classe))
     ';
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Formulaire pour signaler ou corriger une faute dans une appréciation.
+    // Formulaire pour signaler une erreur dans une appréciation.
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")));
+    $date_plus3jours = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+3,date("Y")));
     echo'
-      <form action="#" method="post" id="zone_signaler_corriger" class="hide" onsubmit="return false">
-        <h2>Signaler | Corriger une faute</h2>
-        <div id="section_corriger">
+      <form action="#" method="post" id="zone_signaler" class="hide" onsubmit="return false">
+        <h2>Signaler une erreur</h2>
+        <p class="astuce">Le message sera affiché sur la page d\'accueil du professeur pendant 3 jours (jusqu\'au '.$date_plus3jours.').</p>
+        <div>
+          <input type="hidden" value="'.TODAY_FR.'" name="f_debut_date" id="f_debut_date" />
+          <input type="hidden" value="'.$date_plus3jours.'" name="f_fin_date" id="f_fin_date" />
+          <input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
+          <input type="hidden" value="signaler_erreur" name="f_action" id="f_action" />
+          <label for="f_message_contenu" class="tab">Contenu du message :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="75"></textarea><br />
+          <span class="tab"></span><label id="f_message_contenu_reste"></label><br />
+          <span class="tab"></span><button id="valider_signaler" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler">&nbsp;</label>
         </div>
-        <div id="section_signaler">
-          <div>
-            <input type="hidden" value="'.TODAY_FR.'" name="f_debut_date" id="f_debut_date" />
-            <input type="hidden" value="'.$date_plus1semaine.'" name="f_fin_date" id="f_fin_date" />
-            <input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
-            <input type="hidden" value="signaler_faute|corriger_faute" name="f_action" id="f_action" />
-            <label for="f_message_contenu" class="tab">Message informatif :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="100"></textarea><br />
-            <span class="tab"></span><label id="f_message_contenu_reste"></label>
-          </div>
-          <p class="astuce">Le message est affiché en page d\'accueil du collègue concerné pendant une semaine (jusqu\'au '.$date_plus1semaine.').</p>
-        </div>
-        <p>
-          <span class="tab"></span><button id="valider_signaler_corriger" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler_corriger" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler_corriger">&nbsp;</label>
-        </p>
       </form>
     ';
 

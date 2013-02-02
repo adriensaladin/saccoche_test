@@ -678,17 +678,8 @@ if($type_individuel)
                     foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
                     {
                       extract($tab);  // $prof_info $appreciation $note
-                      $actions = '';
-                      if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) )
-                      {
-                        $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
-                      }
-                      elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
-                      {
-                        if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
-                        if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
-                      }
-                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+                      $action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
+                      $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
                     }
                   }
                   if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
@@ -743,17 +734,8 @@ if($type_individuel)
             {
               list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
               extract($tab);  // $prof_info $appreciation $note
-              $actions = '';
-              if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) )
-              {
-                $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
-              }
-              elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
-              {
-                if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
-                if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
-              }
-              $releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+              $action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
+              $releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
             }
             elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
             {

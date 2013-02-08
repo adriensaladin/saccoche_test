@@ -59,9 +59,14 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser')&&($BILAN_TYPE!='bulletin') ) )
 {
   exit('Erreur avec les données transmises !');
+}
+
+if( (!$eleve_id) && ($BILAN_TYPE=='bulletin') )
+{
+  $is_appreciation_groupe = TRUE;
 }
 
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
@@ -86,10 +91,11 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4compl
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage des données d'un élève (le premier si initialisation, l'élève indiqué sinon)
+// Affichage des données d'un élève (si initialisation, le groupe classe si bulletin ou le premier si relevé ou socle ; l'élève indiqué sinon)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Si besoin, fabriquer le formulaire avec la liste des élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
+$groupe_nom = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 
 if($ACTION=='initialiser')
 {
@@ -100,6 +106,7 @@ if($ACTION=='initialiser')
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+  $form_choix_eleve.= ($BILAN_TYPE=='bulletin') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
   foreach($DB_TAB as $DB_ROW)
   {
     $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
@@ -108,8 +115,8 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ($BILAN_TYPE=='bulletin') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = $tab_eleve_id[0];
-  // (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
+  $eleve_id = ($BILAN_TYPE=='bulletin') ? 0 : $tab_eleve_id[0];
+  // (re)calculer les moyennes des élèves (matières et générales), ainsi que les moyennes de classe (matières et générales).
   if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
   {
     // Attention ! On doit calculer des moyennes de classe, pas de groupe !
@@ -134,17 +141,22 @@ if($ACTION=='initialiser')
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
 $tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
+}
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 
 // Récupérer les absences / retards
 
 $affichage_assiduite = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_ASSIDUITE']) ? TRUE : FALSE ;
 
-if($affichage_assiduite)
+if( $affichage_assiduite && $eleve_id )
 {
   $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_assiduite( $periode_id , $eleve_id );
   $tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] ) ;
@@ -174,7 +186,7 @@ if($BILAN_TYPE=='releve')
   $matiere_id             = TRUE;
   $matiere_nom            = '';
   $groupe_id              = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom             = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_nom             = $groupe_nom; // Déjà défini avant car on en avait besoin
   $date_debut             = '';
   $date_fin               = '';
   $retroactif             = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
@@ -208,7 +220,7 @@ elseif($BILAN_TYPE=='bulletin')
 {
   $format         = 'multimatiere' ;
   $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin
   $date_debut     = '';
   $date_fin       = '';
   $retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
@@ -240,7 +252,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
   $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
   $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin
   $mode           = 'auto';
   $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
   $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
@@ -263,7 +275,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(!count($tab_eval))
+if( !count($tab_eval) && empty($is_appreciation_groupe) )
 {
   ${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période selon les paramètres choisis !</div>' ;
 }

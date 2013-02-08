@@ -93,10 +93,12 @@ $select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures
     </thead>
     <tfoot>
       <tr>
+        <td class="nu" colspan="10"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
+        <td class="nu" colspan="10"></td>
       </tr>
     </tbody>
   </table>

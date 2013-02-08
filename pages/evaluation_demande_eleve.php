@@ -67,23 +67,30 @@ else
     <?php
     // Lister les demandes d'évaluation
     $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_demandes_eleve($_SESSION['USER_ID']);
-    foreach($DB_TAB as $DB_ROW)
+    if(!empty($DB_TAB))
     {
-      $score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
-      $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
-      $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
-      $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-      $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-      // Afficher une ligne du tableau 
-      echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'">';
-      echo  '<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
-      echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
-      echo  '<td>'.$texte_lien_avant.html($DB_ROW['item_ref']).$texte_lien_apres.' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-      echo  Html::td_score($score,'score',$pourcent='');
-      echo  '<td>'.$statut.'</td>';
-      echo  '<td>'.$commentaire.'</td>';
-      echo  '<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';
-      echo'</tr>';
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
+        $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
+        $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
+        $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
+        $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        // Afficher une ligne du tableau 
+        echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'">';
+        echo  '<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
+        echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
+        echo  '<td>'.$texte_lien_avant.html($DB_ROW['item_ref']).$texte_lien_apres.' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        echo  Html::td_score($score,'score',$pourcent='');
+        echo  '<td>'.$statut.'</td>';
+        echo  '<td>'.$commentaire.'</td>';
+        echo  '<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';
+        echo'</tr>';
+      }
+    }
+    else
+    {
+      echo'<tr><td class="nu" colspan="7"></td></tr>';
     }
     ?>
   </tbody>

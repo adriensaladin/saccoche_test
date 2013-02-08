@@ -66,6 +66,10 @@ $TITRE = "Gérer les administrateurs";
         echo'</tr>';
       }
     }
+    else
+    {
+      echo'<tr><td class="nu" colspan="7"></td></tr>'; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
+    }
     ?>
   </tbody>
 </table>

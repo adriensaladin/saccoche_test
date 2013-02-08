@@ -38,19 +38,19 @@ $(document).ready
 
     // tri du tableau (avec jquery.tablesorter.js).
     var sorting = [[1,0],[0,0]];
-    $('#form_partage table.form').tablesorter({ headers:{2:{sorter:false}} });
-    $('#form_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
+    $('#zone_partage table.form').tablesorter({ headers:{2:{sorter:false}} });
+    $('#zone_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
     function trier_tableau()
     {
-      if($('#form_partage table.form tbody tr').length>1)
+      if($('#zone_partage table.form tbody tr').length>1)
       {
-        $('#form_partage table.form').trigger('update');
-        $('#form_partage table.form').trigger('sorton',[sorting]);
+        $('#zone_partage table.form').trigger('update');
+        $('#zone_partage table.form').trigger('sorton',[sorting]);
       }
-      if($('#form_perso table.form tbody tr').length>1)
+      if($('#zone_perso table.form tbody tr').length>1)
       {
-        $('#form_perso table.form').trigger('update');
-        $('#form_perso table.form').trigger('sorton',[sorting]);
+        $('#zone_perso table.form').trigger('update');
+        $('#zone_perso table.form').trigger('sorton',[sorting]);
       }
     }
     trier_tableau();
@@ -58,6 +58,38 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function afficher_form_gestion( mode , id , ref , nom )
+    {
+      $('#f_action').val(mode);
+      $('#f_id').val(id);
+      $('#f_ref').val(ref);
+      $('#f_nom').val(nom);
+      // pour finir
+      var matiere_type = (id>id_matiere_partagee_max) ? 'spécifique' : 'partagée' ;
+      $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une matière "+matiere_type);
+      if(mode!='supprimer')
+      {
+        $('#gestion_edit').show(0);
+        $('#gestion_delete_partage , #gestion_delete_perso').hide(0);
+      }
+      else if(matiere_type=='spécifique')
+      {
+        $('#gestion_edit , #gestion_delete_partage').hide(0);
+        $('#gestion_delete_identite_perso').html(ref+" "+nom);
+        $('#gestion_delete_perso').show(0);
+      }
+      else if(matiere_type=='partagée')
+      {
+        $('#gestion_edit , #gestion_delete_perso').hide(0);
+        $('#gestion_delete_identite_partage').html(ref+" "+nom);
+        $('#gestion_delete_partage').show(0);
+      }
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#form_gestion label[generated=true]').removeAttr('class').html("");
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      if(mode=='ajouter') { $('#f_ref').focus(); }
+    }
 
     /**
      * Ajouter une matière partagée : affichage du formulaire
@@ -67,7 +99,7 @@ $(document).ready
     {
       mode = 'ajouter_partage';
       $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
-      $('#form_partage, #form_perso, #form_move').hide();
+      $('#zone_partage, #zone_perso, #form_move').hide();
       $('#zone_ajout_form').show();
       return false;
     };
@@ -79,57 +111,42 @@ $(document).ready
     var ajouter_perso = function()
     {
       mode = 'ajouter_perso';
-      // Fabriquer la ligne avec les éléments de formulaires
-      afficher_masquer_images_action('hide');
-      new_tr  = '<tr>';
-      new_tr += '<td><input id="f_ref" name="f_ref" size="5" type="text" value="" /></td>';
-      new_tr += '<td><input id="f_nom" name="f_nom" size="30" type="text" value="" /></td>';
-      new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette matière."></q><q class="annuler" title="Annuler l\'ajout de cette matière."></q> <label id="ajax_msg">&nbsp;</label></td>';
-      new_tr += '</tr>';
-      // Ajouter cette nouvelle ligne
-      $(this).parent().parent().after(new_tr);
-      infobulle();
-      $('#f_ref').focus();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , '' /*id*/ , '' /*ref*/ , '' /*nom*/ );
     };
 
     /**
-     * Modifier une matière : mise en place du formulaire
+     * Modifier une matière spécifique : mise en place du formulaire
      * @return void
      */
     var modifier = function()
     {
       mode = $(this).attr('class');
-      afficher_masquer_images_action('hide');
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      id  = $(this).parent().parent().attr('id').substring(3);
-      ref = $(this).parent().prev().prev().html();
-      nom = $(this).parent().prev().html();
-      // Fabriquer la ligne avec les éléments de formulaires
-      new_tr  = '<tr>';
-      new_tr += '<td><input id="f_ref" name="f_ref" size="5" type="text" value="'+ref+'" /></td>';
-      new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,10)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
-      new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de cette matière."></q><q class="annuler" title="Annuler les modifications de cette matière."></q> <label id="ajax_msg">&nbsp;</label></td>';
-      new_tr += '</tr>';
-      // Cacher la ligne en cours et ajouter la nouvelle
-      $(this).parent().parent().hide();
-      $(this).parent().parent().after(new_tr);
-      infobulle();
-      $('#f_ref').focus();
+      var id         = objet_tr.attr('id').substring(3);
+      var ref        = objet_tds.eq(0).html();
+      var nom        = objet_tds.eq(1).html();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , unescapeHtml(ref) , unescapeHtml(nom) );
     };
 
     /**
-     * Supprimer une matière : mise en place du formulaire
+     * Supprimer une matière partagée ou spécifique : mise en place du formulaire
      * @return void
      */
     var supprimer = function()
     {
       mode = $(this).attr('class');
-      afficher_masquer_images_action('hide');
-      id = $(this).parent().parent().attr('id').substring(3);
-      texte = (id>id_matiere_partagee_max) ? "Les référentiels et les résultats associés seront perdus !" : "Les référentiels et les résultats associés ne seront plus accessibles !" ;
-      new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />'+texte+'<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
-      $(this).after(new_span);
-      infobulle();
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var id         = objet_tr.attr('id').substring(3);
+      var ref        = objet_tds.eq(0).html();
+      var nom        = objet_tds.eq(1).html();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , unescapeHtml(ref) , unescapeHtml(nom) );
     };
 
     /**
@@ -138,66 +155,8 @@ $(document).ready
      */
     var annuler = function()
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
-      switch (mode)
-      {
-        case 'ajouter_perso':
-          $(this).parent().parent().remove();
-          break;
-        case 'modifier':
-          $(this).parent().parent().remove();
-          $("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
-          break;
-        case 'supprimer':
-          $(this).parent().remove();
-          break;
-      }
-      afficher_masquer_images_action('show');
+      $.fancybox.close();
       mode = false;
-    };
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour confirmer le retrait d'une matière partagée
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var retirer_partage = function()
-    {
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $('#ajax_msg').parent().children('q').hide();
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_id='+$('#f_id').val(),
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_msg').parent().children('q').show();
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            initialiser_compteur();
-            $('#ajax_msg').parent().children('q').show();
-            var tab_infos = responseHTML.split(']¤[');
-            if(tab_infos[0]!='')
-            {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-            }
-            else
-            {
-              var matiere_id = tab_infos[1];
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              $('q.valider').closest('tr').remove();
-              afficher_masquer_images_action('show');
-              $('#f_matiere_avant option[value='+matiere_id+']').remove();
-              $('#f_matiere_apres option[value='+matiere_id+']').remove();
-            }
-          }
-        }
-      );
     };
 
     /**
@@ -206,13 +165,16 @@ $(document).ready
      */
     function intercepter(e)
     {
-      if(e.which==13)  // touche entrée
+      if(mode)
       {
-        $('q.valider').click();
-      }
-      else if(e.which==27)  // touche escape
-      {
-        $('q.annuler').click();
+        if(e.which==13)  // touche entrée
+        {
+          $('#bouton_valider').click();
+        }
+        else if(e.which==27)  // touche escape
+        {
+          $('#bouton_annuler').click();
+        }
       }
     }
 
@@ -233,15 +195,14 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_partage q.ajouter').click( ajouter_partage );
-    $('#form_perso   q.ajouter').click( ajouter_perso );
+    $('#zone_partage q.ajouter').click( ajouter_partage );
+    $('#zone_perso   q.ajouter').click( ajouter_perso );
     $('q.modifier').live(  'click' , modifier );
     $('q.supprimer').live( 'click' , supprimer );
-    $('q.annuler').live(   'click' , annuler );
-    $('#form_partage q.valider').live( 'click' , retirer_partage );
-    $('#form_perso   q.valider').live( 'click' , function(){formulaire.submit();} );
-    $('#form_perso input').live( 'keyup' , function(e){intercepter(e);} );
-    $('#f_motclef').live(        'keyup' , function(e){intercepter_motclef(e);} );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input').live( 'keyup' , function(e){intercepter(e);} );
+    $('#f_motclef').live(          'keyup' , function(e){intercepter_motclef(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour fermer le cadre de recherche d'une matière partagée à ajouter
@@ -252,7 +213,7 @@ $(document).ready
       function()
       {
         $('#zone_ajout_form').hide();
-        $('#form_partage, #form_perso, #form_move').show();
+        $('#zone_partage, #zone_perso, #form_move').show();
         return(false);
       }
     );
@@ -398,7 +359,8 @@ $(document).ready
                 var pos_par_fer = texte.lastIndexOf(')');
                 var matiere_nom = texte.substring(pos_separe,pos_par_ouv-1);
                 var matiere_ref = texte.substring(pos_par_ouv+1,pos_par_fer);
-                $('#form_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
+                $('#zone_partage table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#zone_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
                 $('#add_'+matiere_id).removeAttr("class").addClass("ajouter_non").attr('title',"Matière déjà choisie.");
                 infobulle();
                 trier_tableau();
@@ -483,7 +445,7 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('#form_perso');
+    var formulaire = $('#form_gestion');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
     var validation = formulaire.validate
@@ -539,13 +501,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
-        $('#ajax_msg').parent().children('q').hide();
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#form_gestion button').prop('disabled',true);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -554,8 +516,8 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       please_wait = false;
-      $('#ajax_msg').parent().children('q').show();
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#form_gestion button').prop('disabled',false);
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -563,25 +525,24 @@ $(document).ready
     {
       initialiser_compteur();
       please_wait = false;
-      $('#ajax_msg').parent().children('q').show();
+      $('#form_gestion button').prop('disabled',false);
       var tab_infos = responseHTML.split(']¤[');
       if(tab_infos[0]!='')
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        action = $('#f_action').val();
-        switch (action)
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        switch (mode)
         {
           case 'ajouter_perso':
             var matiere_id  = tab_infos[1];
             var matiere_ref = tab_infos[2];
             var matiere_nom = tab_infos[3];
             new_tr = '<tr id="id_'+matiere_id+'" class="new"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td></tr>';
-            $('#form_perso table.form tbody').append(new_tr);
-            $('q.valider').parent().parent().remove();
+            $('#zone_perso table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#zone_perso table.form tbody').prepend(new_tr);
             $('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             break;
@@ -590,20 +551,20 @@ $(document).ready
             var matiere_ref = tab_infos[2];
             var matiere_nom = tab_infos[3];
             new_td = '<td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td>';
-            $('q.valider').parent().parent().prev().addClass("new").html(new_td).show();
-            $('q.valider').parent().parent().remove();
+            $('#id_'+matiere_id).addClass("new").html(new_td);
             $('#f_matiere_avant option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             $('#f_matiere_apres option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             break;
           case 'supprimer':
             var matiere_id = tab_infos[1];
-            $('q.valider').closest('tr').remove();
+            $('#id_'+matiere_id).remove();
             $('#f_matiere_avant option[value='+matiere_id+']').remove();
             $('#f_matiere_apres option[value='+matiere_id+']').remove();
             break;
         }
         trier_tableau();
-        afficher_masquer_images_action('show');
+        $.fancybox.close();
+        mode = false;
         infobulle();
       }
     }

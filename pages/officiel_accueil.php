@@ -241,362 +241,396 @@ else // professeur
   }
 }
 
-if(count($tab_classe))
+if(!count($tab_classe))
 {
+  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
 
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
-  // Initialiser au passages les cellules du tableau à afficher
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
+// Initialiser au passages les cellules du tableau à afficher
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-  if(!empty($DB_TAB))
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+if(empty($DB_TAB))
+{
+  echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>';
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
+
+$tab_ligne_id = array_keys($tab_affich);
+unset($tab_ligne_id[0],$tab_ligne_id[1]);
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_affich['check'][$DB_ROW['periode_id']] = ($affichage_formulaire_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_fin1_p'.$DB_ROW['periode_id'].'" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" id="id_fin2_p'.$DB_ROW['periode_id'].'" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '' ;
+  $tab_affich['title'][$DB_ROW['periode_id']] = '<th class="hc" id="periode_'.$DB_ROW['periode_id'].'">'.html($DB_ROW['periode_nom']).'</th>' ;
+  foreach($tab_ligne_id as $ligne_id)
   {
-    $tab_ligne_id = array_keys($tab_affich);
-    unset($tab_ligne_id[0],$tab_ligne_id[1]);
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_affich['check'][$DB_ROW['periode_id']] = ($affichage_formulaire_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_fin1_p'.$DB_ROW['periode_id'].'" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" id="id_fin2_p'.$DB_ROW['periode_id'].'" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '' ;
-      $tab_affich['title'][$DB_ROW['periode_id']] = '<th class="hc" id="periode_'.$DB_ROW['periode_id'].'">'.html($DB_ROW['periode_nom']).'</th>' ;
-      foreach($tab_ligne_id as $ligne_id)
-      {
-        $tab_affich[$ligne_id][$DB_ROW['periode_id']] = '<td class="hc">-</td>' ;
-        
-      }
-    }
+    $tab_affich[$ligne_id][$DB_ROW['periode_id']] = '<td class="hc">-</td>' ;
+    
+  }
+}
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Récupérer la liste des jointures classes / périodes.
-    // Pour les groupes, on prend les dates de classes dont les élèves sont issus.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer la liste des jointures classes / périodes.
+// Pour les groupes, on prend les dates de classes dont les élèves sont issus.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $tab_js_disabled = '';
-    $listing_classes_id = implode(',',array_keys($tab_classe));
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $classe_id = $DB_ROW['groupe_id'];
-      $etat = ($DB_ROW['officiel_'.$BILAN_TYPE]) ? $DB_ROW['officiel_'.$BILAN_TYPE] : '0absence' ;
-      // dates
-      $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
-      $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-      $affich_dates = (($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin')) ? $date_affich_debut.' ~ '.$date_affich_fin : 'au '.$date_affich_fin.' (indicatif)' ;
-      // État
-      $affich_etat = '<span class="off_etat '.substr($etat,1).'">'.$tab_etats[$etat].'</span>';
-      // images action : vérification
-      if($etat=='2rubrique')
-      {
-        $icone_verification = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire."></q>' ;
-      }
-      elseif($etat=='3synthese')
-      {
-        $icone_verification = ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) || ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire ni de synthèse."></q>' ;
-      }
-      else
-      {
-        $icone_verification = '<q class="detailler_non" title="La recherche de saisies manquantes est sans objet lorsque l\'accès en saisie est fermé."></q>';
-      }
-      // images action : consultation contenu en cours d'élaboration (bilans HTML)
-      if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-      {
-        if($etat=='1vide')
-        {
-          $icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
-        }
-        elseif( ($etat=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
-        {
-          $icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
-        }
-        else
-        {
-          $icone_voir_html = '<q class="voir" title="Consulter le contenu (format HTML)."></q>';
-        }
-      }
-      else
-      {
-        $icone_voir_html = '';
-      }
-      // images action : consultation contenu finalisé (bilans PDF)
-      if(!$droit_voir_archives_pdf)
-      {
-        $icone_voir_pdf = '<q class="voir_archive_non" title="Accès restreint aux copies des impressions PDF :<br />'.$profils_archives_pdf.'."></q>';
-      }
-      elseif($etat!='4complet')
-      {
-        $icone_voir_pdf = '<q class="voir_archive_non" title="Consultation du bilan imprimé sans objet (bilan déclaré non finalisé)."></q>';
-      }
-      else
-      {
-        $icone_voir_pdf = '<q class="voir_archive" title="Consulter une copie du bilan imprimé finalisé (format PDF)."></q>';
-      }
-      // Il n'y a pas que la ligne de la classe, il y a les lignes des groupes dont des élèves font partie de la classe
-      // Les images action de saisie et d'impression dépendent du groupe
-      foreach($tab_classe[$classe_id] as $groupe_id=> $tab_droits)
-      {
-        // checkbox de gestion
-        if( ($affichage_formulaire_statut) && ($tab_droits['droit_modifier_statut']) )
-        {
-          $id = 'g'.$classe_id.'p'.$DB_ROW['periode_id'];
-          $label_avant = '<label for="'.$id.'">' ;
-          $checkbox    = ' <input id="'.$id.'" name="'.$id.'" type="checkbox" />';
-          $label_apres = '</label>' ;
-        }
-        else
-        {
-          $label_avant = $checkbox = $label_apres = '' ;
-        }
-        // images action : saisie
-        if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-        {
-          if($etat=='2rubrique')
-          {
-            $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="modifier" title="Saisir '.$tab_types[$BILAN_TYPE]['modif_rubrique'].'."></q>' : '<q class="modifier_non" title="Bilan configuré sans saisie intermédiaire."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
-          }
-          else
-          {
-            $icone_saisie = '<q class="modifier_non" title="Accès fermé aux saisies intermédiaires."></q>';
-          }
-        }
-        else
-        {
-          $icone_saisie = '';
-        }
-        // images action : tamponner
-        if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-        {
-          if($etat=='3synthese')
-          {
-            $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
-          }
-          else
-          {
-            $icone_tampon = '<q class="tamponner_non" title="Accès fermé à la saisie de synthèse."></q>';
-          }
-        }
-        else
-        {
-          $icone_tampon = '';
-        }
-        // images action : impression
-        if($tab_droits['droit_impression_pdf'])
-        {
-          $icone_impression = ($etat=='4complet') ? '<q class="imprimer" title="Imprimer le bilan (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois le bilan déclaré complet."></q>' ;
-        }
-        else
-        {
-          $icone_impression = '<q class="imprimer_non" title="Accès restreint à l\'impression PDF :<br />'.$profils_impression_pdf.'."></q>';
-        }
-        if($etat!='0absence')
-        {
-          $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td id="cgp_'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'" class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'<br />'.$icone_saisie.$icone_tampon.$icone_verification.$icone_voir_html.$icone_impression.$icone_voir_pdf.'</td>';
-        }
-        elseif($checkbox!='')
-        {
-          $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'</td>';
-        }
-        else
-        {
-          $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td class="hc notnow">'.$affich_dates.'<br />'.$affich_etat.'</td>';
-        }
-        // tableau javascript pour desactiver ce qui est inaccessible
-        $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
-        $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
-        $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
-        $tab_js_disabled .= 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';';
-        $tab_js_disabled .= 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';';
-        $tab_js_disabled .= 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';'."\r\n";
-      }
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Affichage d'un tableau js utilisé pour désactiver des options d'un select.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled["examiner"] = new Array();tab_disabled["imprimer"] = new Array();tab_disabled["voir_pdf"] = new Array();'."\r\n".$tab_js_disabled.'</script>';
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Affichage du tableau.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    echo'<table id="table_bilans"><thead>';
-    foreach($tab_affich as $ligne_id => $tab_colonne)
-    {
-      echo ( ($ligne_id!='check') ||($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
-      echo ($ligne_id=='title') ? '</thead><tbody>'."\r\n" : '' ;
-    }
-    echo'</tbody></table>';
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Affichage du formulaire pour modifier les états d'accès.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    if($affichage_formulaire_statut)
-    {
-      $tab_radio = array();
-      foreach($tab_etats as $etat_id => $etat_text)
-      {
-        $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
-      }
-      echo'
-        <form action="#" method="post" id="cadre_statut">
-          <h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>
-          <div>'.implode('<br />',$tab_radio).'</div>
-          <p><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
-        </form>
-      ';
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Formulaire de choix des matières ou des piliers pour une recherche de saisies manquantes. -> zone_chx_rubriques
-    // Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $form_hidden = '';
-    $tab_checkbox_rubriques = array();
-    $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '' : ' disabled' ;
-    if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
-    {
-      // Lister les piliers du palier concerné
-      $palier_id = (int)substr($BILAN_TYPE,-1);
-      $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier_id);
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $tab_checkbox_rubriques[$DB_ROW['valeur']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" checked'.$disabled.' /><label for="rubrique_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
-      }
-      $listing_piliers_id = implode(',',array_keys($tab_checkbox_rubriques));
-      $form_hidden .= '<input type="hidden" id="f_listing_piliers" name="f_listing_piliers" value="'.$listing_piliers_id.'" />';
-      $commentaire_selection = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']) ? ' <div class="astuce">La recherche sera dans tous les cas aussi restreinte aux seules compétences matières ayant fait l\'objet d\'une évaluation ou d\'une validation.</div>' : '' ;
-    }
-    elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
-    {
-      // Lister les matières rattachées au prof
-      $listing_matieres_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? DB_STRUCTURE_COMMUN::DB_recuperer_matieres_professeur($_SESSION['USER_ID']) : '' ;
-      $form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
-      $tab_matieres_id = explode(',',$listing_matieres_id);
-      // Lister les matières de l'établissement
-      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-        $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /><label for="rubrique_'.$DB_ROW['matiere_id'].'"> '.html($DB_ROW['matiere_nom']).'</label><br />';
-      }
-      $commentaire_selection = ' <div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
-    }
-    // Choix de vérifier ou pas l'appréciation générale ; le test ($etat=='3synthese') dépend de chaque classe...
-    $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '' : ' disabled' ;
-    $tab_checkbox_rubriques[0] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /><label for="rubrique_0"> <i>Appréciation de synthèse générale</i></label><br />';
-    // Présenter les rubriques en colonnes de hauteur raisonnables
-    $tab_checkbox_rubriques = array_values($tab_checkbox_rubriques);
-    $nb_rubriques              = count($tab_checkbox_rubriques);
-    $nb_rubriques_maxi_par_col = ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ? $nb_rubriques : 10 ;
-    $nb_cols               = floor(($nb_rubriques-1)/$nb_rubriques_maxi_par_col)+1;
-    $nb_rubriques_par_col      = ceil($nb_rubriques/$nb_cols);
-    $tab_div = array_fill(0,$nb_cols,'');
-    foreach($tab_checkbox_rubriques as $i => $contenu)
-    {
-      $tab_div[floor($i/$nb_rubriques_par_col)] .= $contenu;
-    }
-    echo'
-      <form action="#" method="post" id="zone_chx_rubriques" class="hide">
-        <h2>Rechercher des saisies manquantes</h2>
-        '.$commentaire_selection.'
-        <p><a href="#zone_chx_rubriques" id="rubrique_check_all"><img src="./_img/all_check.gif" alt="Tout cocher." /> Toutes</a>&nbsp;&nbsp;&nbsp;<a href="#zone_chx_rubriques" id="rubrique_uncheck_all"><img src="./_img/all_uncheck.gif" alt="Tout décocher." /> Aucune</a></p>
-        <div class="prof_liste">'.implode('</div><div class="prof_liste">',$tab_div).'</div>
-        <p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
-      </form>
-    ';
-    echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Formulaires utilisés pour les opérations ultérieures sur les bilans.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    echo'<div id="zone_action_eleve"></div>';
-    echo'<div id="bilan"></div>';
-    echo'
-      <div id="zone_action_classe" class="hide">
-        <h2>Recherche de saisies manquantes | Imprimer le bilan (PDF)</h2>
-        <form action="#" method="post" id="form_choix_classe"><div><b id="report_periode">Période :</b> <button id="go_precedent_classe" type="button" class="go_precedent">Précédent</button> <select id="go_selection_classe" name="go_selection_classe" class="b">'.implode('',$tab_options_classes).'</select> <button id="go_suivant_classe" type="button" class="go_suivant">Suivant</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_classe" type="button" class="retourner">Retour</button></div></form>
-        <hr />
-        <div id="zone_resultat_classe"></div>
-        <div id="zone_imprimer" class="hide">
-          <form action="#" method="post" id="form_choix_eleves">
-            <p class="ti">
-              <button id="valider_imprimer" type="button" class="valider">Lancer l\'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
-            </p>
-            <table class="form t9">
-              <thead>
-                <tr>
-                  <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="eleve_check_all" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><input id="eleve_uncheck_all" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
-                  <th>Élèves</th>
-                  <th>Généré</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td class="nu" colspan="3"></td></tr>
-              </tbody>
-            </table>
-          </form>
-        </div>
-        <div id="zone_voir_archive" class="hide">
-          <p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>
-          <table class="t9">
-            <thead>
-              <tr>
-                <th>Élèves</th>
-                <th>Généré</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="nu" colspan="2"></td></tr>
-            </tbody>
-          </table>
-          <p class="ti">
-            <label id="ajax_msg_voir_archive">&nbsp;</label>
-          </p>
-        </div>
-      </div>
-    ';
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Formulaire pour signaler ou corriger une faute dans une appréciation.
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")));
-    echo'
-      <form action="#" method="post" id="zone_signaler_corriger" class="hide" onsubmit="return false">
-        <h2>Signaler | Corriger une faute</h2>
-        <div id="section_corriger">
-        </div>
-        <div id="section_signaler">
-          <div>
-            <input type="hidden" value="'.TODAY_FR.'" name="f_debut_date" id="f_debut_date" />
-            <input type="hidden" value="'.$date_plus1semaine.'" name="f_fin_date" id="f_fin_date" />
-            <input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
-            <input type="hidden" value="signaler_faute|corriger_faute" name="f_action" id="f_action" />
-            <label for="f_message_contenu" class="tab">Message informatif :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="100"></textarea><br />
-            <span class="tab"></span><label id="f_message_contenu_reste"></label>
-          </div>
-          <p class="astuce">Le message est affiché en page d\'accueil du collègue concerné pendant une semaine (jusqu\'au '.$date_plus1semaine.').</p>
-        </div>
-        <p>
-          <span class="tab"></span><button id="valider_signaler_corriger" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler_corriger" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler_corriger">&nbsp;</label>
-        </p>
-      </form>
-    ';
-
+$tab_js_disabled = '';
+$listing_classes_id = implode(',',array_keys($tab_classe));
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
+foreach($DB_TAB as $DB_ROW)
+{
+  $classe_id = $DB_ROW['groupe_id'];
+  $etat = ($DB_ROW['officiel_'.$BILAN_TYPE]) ? $DB_ROW['officiel_'.$BILAN_TYPE] : '0absence' ;
+  // dates
+  $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
+  $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
+  $affich_dates = (($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin')) ? $date_affich_debut.' ~ '.$date_affich_fin : 'au '.$date_affich_fin.' (indicatif)' ;
+  // État
+  $affich_etat = '<span class="off_etat '.substr($etat,1).'">'.$tab_etats[$etat].'</span>';
+  // images action : vérification
+  if($etat=='2rubrique')
+  {
+    $icone_verification = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire."></q>' ;
+  }
+  elseif($etat=='3synthese')
+  {
+    $icone_verification = ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) || ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire ni de synthèse."></q>' ;
   }
   else
   {
-    echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>';
+    $icone_verification = '<q class="detailler_non" title="La recherche de saisies manquantes est sans objet lorsque l\'accès en saisie est fermé."></q>';
+  }
+  // images action : consultation contenu en cours d'élaboration (bilans HTML)
+  if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
+  {
+    if($etat=='1vide')
+    {
+      $icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
+    }
+    elseif( ($etat=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
+    {
+      $icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
+    }
+    else
+    {
+      $icone_voir_html = '<q class="voir" title="Consulter le contenu (format HTML)."></q>';
+    }
+  }
+  else
+  {
+    $icone_voir_html = '';
+  }
+  // images action : consultation contenu finalisé (bilans PDF)
+  if(!$droit_voir_archives_pdf)
+  {
+    $icone_voir_pdf = '<q class="voir_archive_non" title="Accès restreint aux copies des impressions PDF :<br />'.$profils_archives_pdf.'."></q>';
+  }
+  elseif($etat!='4complet')
+  {
+    $icone_voir_pdf = '<q class="voir_archive_non" title="Consultation du bilan imprimé sans objet (bilan déclaré non finalisé)."></q>';
+  }
+  else
+  {
+    $icone_voir_pdf = '<q class="voir_archive" title="Consulter une copie du bilan imprimé finalisé (format PDF)."></q>';
+  }
+  // Il n'y a pas que la ligne de la classe, il y a les lignes des groupes dont des élèves font partie de la classe
+  // Les images action de saisie et d'impression dépendent du groupe
+  foreach($tab_classe[$classe_id] as $groupe_id=> $tab_droits)
+  {
+    // checkbox de gestion
+    if( ($affichage_formulaire_statut) && ($tab_droits['droit_modifier_statut']) )
+    {
+      $id = 'g'.$classe_id.'p'.$DB_ROW['periode_id'];
+      $label_avant = '<label for="'.$id.'">' ;
+      $checkbox    = ' <input id="'.$id.'" name="'.$id.'" type="checkbox" />';
+      $label_apres = '</label>' ;
+    }
+    else
+    {
+      $label_avant = $checkbox = $label_apres = '' ;
+    }
+    // images action : saisie
+    if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
+    {
+      if($etat=='2rubrique')
+      {
+        $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="modifier" title="Saisir '.$tab_types[$BILAN_TYPE]['modif_rubrique'].'."></q>' : '<q class="modifier_non" title="Bilan configuré sans saisie intermédiaire."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
+      }
+      else
+      {
+        $icone_saisie = '<q class="modifier_non" title="Accès fermé aux saisies intermédiaires."></q>';
+      }
+    }
+    else
+    {
+      $icone_saisie = '';
+    }
+    // images action : tamponner
+    if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
+    {
+      if($etat=='3synthese')
+      {
+        $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
+      }
+      else
+      {
+        $icone_tampon = '<q class="tamponner_non" title="Accès fermé à la saisie de synthèse."></q>';
+      }
+    }
+    else
+    {
+      $icone_tampon = '';
+    }
+    // images action : impression
+    if($tab_droits['droit_impression_pdf'])
+    {
+      $icone_impression = ($etat=='4complet') ? '<q class="imprimer" title="Imprimer le bilan (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois le bilan déclaré complet."></q>' ;
+    }
+    else
+    {
+      $icone_impression = '<q class="imprimer_non" title="Accès restreint à l\'impression PDF :<br />'.$profils_impression_pdf.'."></q>';
+    }
+    if($etat!='0absence')
+    {
+      $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td id="cgp_'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'" class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'<br />'.$icone_saisie.$icone_tampon.$icone_verification.$icone_voir_html.$icone_impression.$icone_voir_pdf.'</td>';
+    }
+    elseif($checkbox!='')
+    {
+      $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'</td>';
+    }
+    else
+    {
+      $tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td class="hc notnow">'.$affich_dates.'<br />'.$affich_etat.'</td>';
+    }
+    // tableau javascript pour desactiver ce qui est inaccessible
+    $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
+    $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
+    $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
+    $tab_js_disabled .= 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';';
+    $tab_js_disabled .= 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';';
+    $tab_js_disabled .= 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';'."\r\n";
   }
 }
-else
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Affichage d'un tableau js utilisé pour désactiver des options d'un select.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled["examiner"] = new Array();tab_disabled["imprimer"] = new Array();tab_disabled["voir_pdf"] = new Array();'."\r\n".$tab_js_disabled.'</script>';
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Affichage du tableau.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+echo'<table id="table_bilans"><thead>';
+foreach($tab_affich as $ligne_id => $tab_colonne)
 {
-  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>';
+  echo ( ($ligne_id!='check') ||($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
+  echo ($ligne_id=='title') ? '</thead><tbody>'."\r\n" : '' ;
+}
+echo'</tbody></table>';
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Affichage du formulaire pour modifier les états d'accès.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($affichage_formulaire_statut)
+{
+  $tab_radio = array();
+  foreach($tab_etats as $etat_id => $etat_text)
+  {
+    $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
+  }
+  echo'
+    <form action="#" method="post" id="cadre_statut">
+      <h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>
+      <div>'.implode('<br />',$tab_radio).'</div>
+      <p><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
+    </form>
+  ';
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Formulaire de choix des matières ou des piliers pour une recherche de saisies manquantes. -> zone_chx_rubriques
+// Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$form_hidden = '';
+$tab_checkbox_rubriques = array();
+$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '' : ' disabled' ;
+if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
+{
+  // Lister les piliers du palier concerné
+  $palier_id = (int)substr($BILAN_TYPE,-1);
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_checkbox_rubriques[$DB_ROW['valeur']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" checked'.$disabled.' /><label for="rubrique_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
+  }
+  $listing_piliers_id = implode(',',array_keys($tab_checkbox_rubriques));
+  $form_hidden .= '<input type="hidden" id="f_listing_piliers" name="f_listing_piliers" value="'.$listing_piliers_id.'" />';
+  $commentaire_selection = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']) ? '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux seules compétences matières ayant fait l\'objet d\'une évaluation ou d\'une validation.</div>' : '' ;
+}
+elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
+{
+  // Lister les matières rattachées au prof
+  $listing_matieres_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? DB_STRUCTURE_COMMUN::DB_recuperer_matieres_professeur($_SESSION['USER_ID']) : '' ;
+  $form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
+  $tab_matieres_id = explode(',',$listing_matieres_id);
+  // Lister les matières de l'établissement
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
+    $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /><label for="rubrique_'.$DB_ROW['matiere_id'].'"> '.html($DB_ROW['matiere_nom']).'</label><br />';
+  }
+  $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
+}
+// Choix de vérifier ou pas l'appréciation générale ; le test ($etat=='3synthese') dépend de chaque classe...
+$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '' : ' disabled' ;
+$tab_checkbox_rubriques[0] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /><label for="rubrique_0"> <i>Appréciation de synthèse générale</i></label><br />';
+// Présenter les rubriques en colonnes de hauteur raisonnables
+$tab_checkbox_rubriques    = array_values($tab_checkbox_rubriques);
+$nb_rubriques              = count($tab_checkbox_rubriques);
+$nb_rubriques_maxi_par_col = ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ? $nb_rubriques : 10 ;
+$nb_cols                   = floor(($nb_rubriques-1)/$nb_rubriques_maxi_par_col)+1;
+$nb_rubriques_par_col      = ceil($nb_rubriques/$nb_cols);
+$tab_div = array_fill(0,$nb_cols,'');
+foreach($tab_checkbox_rubriques as $i => $contenu)
+{
+  $tab_div[floor($i/$nb_rubriques_par_col)] .= $contenu;
+}
 ?>
 
+<form action="#" method="post" id="zone_chx_rubriques" class="hide">
+  <h2>Rechercher des saisies manquantes</h2>
+  <?php echo $commentaire_selection ?>
+  <p><a href="#zone_chx_rubriques" id="rubrique_check_all"><img src="./_img/all_check.gif" alt="Tout cocher." /> Toutes</a>&nbsp;&nbsp;&nbsp;<a href="#zone_chx_rubriques" id="rubrique_uncheck_all"><img src="./_img/all_uncheck.gif" alt="Tout décocher." /> Aucune</a></p>
+  <div class="prof_liste"><?php echo implode('</div><div class="prof_liste">',$tab_div) ?></div>
+  <p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
+</form>
+<form action="#" method="post" id="form_hidden" class="hide">
+  <div>
+    <?php echo $form_hidden ?>
+    <input type="hidden" id="f_objet" name="f_objet" value="" />
+    <input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" />
+    <input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" />
+    <input type="hidden" id="f_mode" name="f_mode" value="texte" />
+  </div>
+</form>
+
+<?php
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Formulaires utilisés pour les opérations ultérieures sur les bilans.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+?>
+
+<div id="zone_action_eleve"></div>
+
+<div id="zone_action_classe" class="hide">
+  <h2>Recherche de saisies manquantes | Imprimer le bilan (PDF)</h2>
+  <form action="#" method="post" id="form_choix_classe"><div><b id="report_periode">Période :</b> <button id="go_precedent_classe" type="button" class="go_precedent">Précédent</button> <select id="go_selection_classe" name="go_selection_classe" class="b"><?php echo implode('',$tab_options_classes) ?></select> <button id="go_suivant_classe" type="button" class="go_suivant">Suivant</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_classe" type="button" class="retourner">Retour</button></div></form>
+  <hr />
+  <div id="zone_resultat_classe"></div>
+  <div id="zone_imprimer" class="hide">
+    <form action="#" method="post" id="form_choix_eleves">
+      <p class="ti">
+        <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
+      </p>
+      <table class="form t9">
+        <thead>
+          <tr>
+            <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="eleve_check_all" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><input id="eleve_uncheck_all" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+            <th>Élèves</th>
+            <th>Généré</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="nu" colspan="3"></td></tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+  <div id="zone_voir_archive" class="hide">
+    <p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu'à la fin de l'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>
+    <table class="t9">
+      <thead>
+        <tr>
+          <th>Élèves</th>
+          <th>Généré</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="nu" colspan="2"></td></tr>
+      </tbody>
+    </table>
+    <p class="ti">
+      <label id="ajax_msg_voir_archive">&nbsp;</label>
+    </p>
+  </div>
+</div>
+
+<?php
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Formulaire pour signaler ou corriger une faute dans une appréciation.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+$date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")));
+?>
+
+<form action="#" method="post" id="zone_signaler_corriger" class="hide" onsubmit="return false">
+  <h2>Signaler | Corriger une faute</h2>
+  <div id="section_corriger">
+  </div>
+  <div id="section_signaler">
+    <div>
+      <input type="hidden" value="<?php echo TODAY_FR ?>" name="f_debut_date" id="f_debut_date" />
+      <input type="hidden" value="<?php echo $date_plus1semaine ?>" name="f_fin_date" id="f_fin_date" />
+      <input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
+      <input type="hidden" value="signaler_faute|corriger_faute" name="f_action" id="f_action" />
+      <label for="f_message_contenu" class="tab">Message informatif :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="100"></textarea><br />
+      <span class="tab"></span><label id="f_message_contenu_reste"></label>
+    </div>
+    <p class="astuce">Le message est affiché en page d'accueil du collègue concerné pendant une semaine (jusqu'au <?php echo $date_plus1semaine ?>).</p>
+  </div>
+  <p>
+    <span class="tab"></span><button id="valider_signaler_corriger" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler_corriger" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler_corriger">&nbsp;</label>
+  </p>
+</form>
+
+<?php
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Liens pour archiver / imprimer des saisies.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+?>
+
+<div id="zone_archiver_imprimer" class="hide">
+  <h2>Archiver / Imprimer des saisies</h2>
+  <p class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</p>
+  <ul class="puce">
+    <?php if($BILAN_TYPE=='bulletin'): ?>
+      <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>
+      <li><button id="imprimer_donnees_eleves_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
+      <li><button id="imprimer_donnees_classe_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues sur le groupe classe.</li>
+      <?php if($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']): ?>
+        <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
+      <?php endif; ?>
+      <?php if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']): ?>
+        <li><button id="imprimer_donnees_eleves_moyennes" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des moyennes pour chaque élève.</li>
+      <?php endif; ?>
+    <?php else: ?>
+      <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève.</li>
+      <li><button id="imprimer_donnees_eleves_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
+      <?php if($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']): ?>
+        <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
+      <?php endif; ?>
+    <?php endif; ?>
+  </ul>
+  <hr />
+  <p><label id="ajax_msg_archiver_imprimer">&nbsp;</label></p>
+</div>
 
 

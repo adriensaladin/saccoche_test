@@ -375,6 +375,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
+            $('table.form tbody tr td[colspan=12]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('table.form tbody').prepend(responseHTML);
             break;
           case 'modifier':

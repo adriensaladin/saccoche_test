@@ -322,10 +322,11 @@ $is_hebergement_sesamath = (mb_strpos(URL_BASE,'https://sacoche.sesamath.net')!=
 define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
 
 // Identifiants particuliers (à ne pas modifier)
-define('ID_DEMO'                   ,9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_MATIERE_PARTAGEE_MAX'   ,9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
-define('ID_NIVEAU_MAX'             ,1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
-define('ID_FAMILLE_MATIERE_USUELLE',  99);
+define('ID_DEMO'                   , 9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
+define('ID_MATIERE_PARTAGEE_MAX'   , 9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
+define('ID_NIVEAU_MAX'             , 1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
+define('ID_FAMILLE_MATIERE_USUELLE',   99);
+
 
 // cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.

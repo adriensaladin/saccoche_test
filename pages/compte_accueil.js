@@ -59,7 +59,18 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_type='+type+'&f_etat='+etat,
-            dataType : "html"
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nChoix non mémorisé.'+'</label>' , {'centerOnScroll':true} );
+            },
+            success : function(responseHTML)
+            {
+              if(responseHTML!='ok')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+            }
           }
         );
         return false;

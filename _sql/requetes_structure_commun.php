@@ -455,7 +455,7 @@ public static function DB_lister_messages_user_auteur($user_id)
  */
 public static function DB_lister_messages_user_destinataire($user_id)
 {
-  $DB_SQL = 'SELECT message_id,user_nom, user_prenom, message_contenu,message_dests_cache ';
+  $DB_SQL = 'SELECT user_nom, user_prenom, message_contenu ';
   $DB_SQL.= 'FROM sacoche_message ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
@@ -518,9 +518,9 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
 public static function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
 {
   $listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_message(user_id,message_debut_date,message_fin_date,message_destinataires,message_contenu,message_dests_cache) ';
-  $DB_SQL.= 'VALUES(:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu,:message_dests_cache)';
-  $DB_VAR = array(':user_id'=>$user_id,':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_dests_cache'=>',');
+  $DB_SQL = 'INSERT INTO sacoche_message(user_id,message_debut_date,message_fin_date,message_destinataires,message_contenu) ';
+  $DB_SQL.= 'VALUES(:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu)';
+  $DB_VAR = array(':user_id'=>$user_id,':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -615,7 +615,6 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
 
 /**
  * modifier_DB_modifier_message
- * Rmq : à chaque modification de message, le champ "message_dests_cache" est réinitialisé ; ce n'est pas une limitation mais bien un comportement souhaité (c'est potentiellement un message différent, donc on le rend visible).
  *
  * @param int    $message_id
  * @param int    $user_id
@@ -629,27 +628,9 @@ public static function DB_modifier_message($message_id,$user_id,$date_debut_mysq
   {
   $listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
   $DB_SQL = 'UPDATE sacoche_message ';
-  $DB_SQL.= 'SET message_debut_date=:message_debut_date, message_fin_date=:message_fin_date, message_destinataires=:message_destinataires, message_contenu=:message_contenu, message_dests_cache=:message_dests_cache ';
+  $DB_SQL.= 'SET message_debut_date=:message_debut_date, message_fin_date=:message_fin_date, message_destinataires=:message_destinataires, message_contenu=:message_contenu ';
   $DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
-  $DB_VAR = array(':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_dests_cache'=>',',':message_id'=>$message_id,':user_id'=>$user_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_message_dests_cache
- *
- * @param int    $message_id
- * @param int    $user_id
- * @param bool   $etat   FALSE pour masquer | TRUE ou voir
- * @return void
- */
-public static function DB_modifier_message_dests_cache($message_id,$user_id,$etat)
-{
-  $commande = ($etat) ? 'REPLACE(message_dests_cache,CONCAT(",",:user_id,","),",")' : 'CONCAT(message_dests_cache,:user_id,",")' ; // Attention : ne pas mettre d'espaces !
-  $DB_SQL = 'UPDATE sacoche_message ';
-  $DB_SQL.= 'SET message_dests_cache = '.$commande.' ';
-  $DB_SQL.= 'WHERE message_id=:message_id ';
-  $DB_VAR = array(':message_id'=>$message_id,':user_id'=>$user_id);
+  $DB_VAR = array(':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_id'=>$message_id,':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

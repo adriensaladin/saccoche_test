@@ -2663,23 +2663,11 @@ class PDF extends FPDF
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthodes pour la mise en page de la récupération des appréciations d'un bilan officiel
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // tableau_appreciation_initialiser()
   // tableau_appreciation_intitule()
   // tableau_appreciation_interligne()
-  // tableau_appreciation_page_break()
-  // tableau_appreciation_initialiser_*()
-  // tableau_appreciation_rubrique_*()
+  // tableau_appreciation_rubrique()
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public function tableau_appreciation_intitule($intitule)
-  {
-    $this->taille_police = $this->lignes_hauteur * 2;
-    $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
-    $this->AddPage($this->orientation , 'A4');
-    $this->SetAutoPageBreak(FALSE);
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
-    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($intitule)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
-  }
 
   private function tableau_appreciation_page_break()
   {
@@ -2691,197 +2679,116 @@ class PDF extends FPDF
     }
   }
 
-  public function tableau_appreciation_initialiser_eleves_prof($nb_eleves,$nb_lignes_supplémentaires,$with_moyenne)
+  public function tableau_appreciation_initialiser($type_contenu,$nb_eleves,$nb_appreciations,$with_moyenne)
   {
-    $this->reference_largeur = 40; // valeur fixe
-    $note_largeur          = ($with_moyenne) ? 10 : 0 ; // valeur fixe
-    $nb_lignes_necessaires = 1.5 + (2*$nb_eleves)+$nb_lignes_supplémentaires ; // titre + appreciations (2 lignes mini / app)
-    $this->cases_largeur   = $this->page_largeur_moins_marges - $this->reference_largeur - $note_largeur ;
-    $this->lignes_hauteur  = ($this->page_hauteur_moins_marges) / $nb_lignes_necessaires;
-    $this->lignes_hauteur  = min($this->lignes_hauteur,5);
-    $this->choisir_couleur_fond('gris_clair');
-  }
-
-  public function tableau_appreciation_initialiser_eleves_collegues($nb_eleves,$nb_lignes_rubriques)
-  {
-    $this->reference_largeur = 40; // valeur fixe
-    $nb_lignes_necessaires  = 2 + 1.5*$nb_eleves + $nb_lignes_rubriques ; // titre + élèves et marges (0.5 ligne / eleve) + rubriques avec appréciations
-    $this->cases_largeur    = $this->page_largeur_moins_marges - $this->reference_largeur ;
-    $hauteur_dispo_par_page = $this->page_hauteur_moins_marges;
-    $hauteur_ligne_minimale = 3.5;
-    $hauteur_ligne_maximale = 5;
-    $nb_pages = 0;
-    do
+    if($type_contenu=='perso')
     {
-      $nb_pages++;
-      $hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / $nb_lignes_necessaires ;
+      $this->reference_largeur = 40; // valeur fixe
+      $note_largeur          = ($with_moyenne) ? 10 : 0 ; // valeur fixe
+      $nb_lignes_necessaires = 2 + 0.5*$nb_eleves + 2*$nb_appreciations ; // titre + marges entre élèves (0.5 ligne / eleve) + appreciations (2 lignes / app)
+      $this->cases_largeur   = $this->page_largeur_moins_marges - $this->reference_largeur - $note_largeur ;
+      $this->lignes_hauteur  = ($this->page_hauteur_moins_marges) / $nb_lignes_necessaires;
+      $this->lignes_hauteur  = min($this->lignes_hauteur,5);
     }
-    while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
-    $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
-    $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
-  }
-
-  public function tableau_appreciation_initialiser_classe_collegues($nb_eleves,$nb_rubriques,$nb_lignes_supplémentaires)
-  {
-    $this->reference_largeur = 40; // valeur fixe
-    $nb_lignes_necessaires = 1.5 + (2.5*$nb_rubriques)+$nb_lignes_supplémentaires ; // titre + appreciations (2 lignes mini / rubrique + 0.5 de marge)
-    $this->cases_largeur   = $this->page_largeur_moins_marges - $this->reference_largeur ;
-    $this->lignes_hauteur  = ($this->page_hauteur_moins_marges) / $nb_lignes_necessaires;
-    $this->lignes_hauteur  = min($this->lignes_hauteur,5);
-  }
-
-  public function tableau_appreciation_initialiser_eleves_syntheses($nb_eleves,$nb_lignes_supplémentaires,$with_moyenne)
-  {
-    $this->reference_largeur = 40; // valeur fixe
-    $note_largeur          = ($with_moyenne) ? 10 : 0 ; // valeur fixe
-    $nb_lignes_necessaires = 1.5 + (2*$nb_eleves)+$nb_lignes_supplémentaires ; // titre + appreciations (2 lignes mini / app)
-    $this->cases_largeur   = $this->page_largeur_moins_marges - $this->reference_largeur - $note_largeur ;
-    $this->lignes_hauteur  = ($this->page_hauteur_moins_marges) / $nb_lignes_necessaires;
-    $this->lignes_hauteur  = min($this->lignes_hauteur,5);
-    $this->choisir_couleur_fond('gris_clair');
-  }
-
-  public function tableau_appreciation_rubrique_eleves_prof($eleve_id,$eleve_nom,$eleve_prenom,$note,$appreciation,$with_moyenne)
-  {
-    $nb_lignes = max( 2 , ceil(mb_strlen($appreciation)/125) );
-    $note_largeur = 10; // valeur fixe
-    // cadre
-    $memo_x = $this->GetX();
-    $memo_y = $this->GetY();
-    $remplissage = ($eleve_id) ? FALSE : TRUE ;
-    $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $remplissage );
-    // nom-prénom
-    $this->SetXY($memo_x , $memo_y+($nb_lignes-2+(int)$remplissage)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_nom)    , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // moyenne
-    $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
-    if($with_moyenne)
+    else if($type_contenu=='all') // (forcément)
     {
-      $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-      $this->CellFit( $note_largeur , $nb_lignes*$this->lignes_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->reference_largeur = 40; // valeur fixe
+      $nb_lignes_necessaires  = 2 + 1.5*$nb_eleves + $nb_appreciations ; // titre + élèves et marges (0.5 ligne / eleve) + rubriques + appréciations
+      $this->cases_largeur    = $this->page_largeur_moins_marges - $this->reference_largeur ;
+      $hauteur_dispo_par_page = $this->page_hauteur_moins_marges;
+      $hauteur_ligne_minimale = 3.5;
+      $hauteur_ligne_maximale = 5;
+      $nb_pages = 0;
+      do
+      {
+        $nb_pages++;
+        $hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / $nb_lignes_necessaires ;
+      }
+      while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
+      $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
+      $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
     }
-    else
-    {
-      $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+2*$this->lignes_hauteur );
-    }
-    // appréciation
-    $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
-    $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
-  }
-
-  public function tableau_appreciation_rubrique_eleves_collegues($eleve_id,$eleve_nom,$eleve_prenom,$rubrique_nom,$note,$appreciations,$with_moyenne)
-  {
-    $nb_lignes = max( 2 , ceil(mb_strlen($appreciations)/125) );
-    // On prend une nouvelle page PDF si besoin
-    $this->tableau_appreciation_page_break();
-    $this->choisir_couleur_fond('gris_moyen');
-    // nom-prénom
-    if($eleve_nom && $eleve_prenom)
-    {
-      $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
-      $this->SetFont('Arial' , '' , $this->taille_police);
-      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
-    }
-    // cadre
-    $memo_x = $this->GetX();
-    $memo_y = $this->GetY();
-    $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // rubrique + moyenne
-    $this->SetXY($memo_x , $memo_y+($nb_lignes-2)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    if($with_moyenne)
-    {
-      $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    }
-    $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
-    // appréciations
-    $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
-    $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciations );
-    $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
-  }
-
-  public function tableau_appreciation_rubrique_classe_collegues($rubrique_nom,$note,$appreciations,$with_moyenne)
-  {
-    $nb_lignes = max( 2 , ceil(mb_strlen($appreciations)/125) );
-    // marge
-    $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
-    // cadre
-    $memo_x = $this->GetX();
-    $memo_y = $this->GetY();
-    $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // rubrique + moyenne
-    $this->SetXY($memo_x , $memo_y+($nb_lignes-2)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom)    , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    if($with_moyenne)
-    {
-      $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    }
-    $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
-    // appréciation
-    $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
-    $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciations );
-    $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
-  }
-
-  public function tableau_moyennes_initialiser($eleve_nb,$rubrique_nb)
-  {
-    $reference_largeur_minimum = 50;
-    $cases_hauteur_maximum     = 25;
-    $this->cases_largeur     = 10; // valeur par défaut ; diminué si pas assez de place pour la référence de l'item
-    $this->etiquette_hauteur = 50; // valeur fixe
-    $this->reference_largeur = $this->page_largeur_moins_marges - ($rubrique_nb * $this->cases_largeur);
-    if($this->reference_largeur < $reference_largeur_minimum)
-    {
-      $this->reference_largeur = $reference_largeur_minimum;
-      $this->cases_largeur     = ($this->page_largeur_moins_marges - $this->reference_largeur) / $rubrique_nb;
-    }
-    $this->cases_hauteur     = ($this->page_hauteur_moins_marges - $this->etiquette_hauteur) / $eleve_nb;
-    $this->cases_hauteur     = min($this->cases_hauteur,$cases_hauteur_maximum);
+    $this->taille_police = $this->lignes_hauteur * 2;
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
-    $this->SetAutoPageBreak(TRUE);
+    $this->SetAutoPageBreak(FALSE);
   }
 
-  public function tableau_moyennes_intitule( $classe_nom , $periode_nom )
+  public function tableau_appreciation_intitule($intitule)
   {
-    $hauteur_quart = $this->etiquette_hauteur / 4 ;
-    $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf('Bulletin scolaire')    , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf('Tableau des moyennes') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($classe_nom)            , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($periode_nom)           , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    $this->Cell( $this->reference_largeur , $this->etiquette_hauteur , '' , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($intitule)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
-  public function tableau_moyennes_reference_rubrique($rubrique_id,$rubrique_nom)
+  public function tableau_appreciation_interligne($type_contenu)
   {
-    $couleur = ($rubrique_id) ? 'gris_clair' : 'gris_fonce' ;
-    $this->choisir_couleur_fond($couleur);
-    $this->VertCellFit( $this->cases_largeur, $this->etiquette_hauteur, To::pdf($rubrique_nom), 1 /*border*/ , 0 /*ln*/ , TRUE /*fill*/ );
+    if($type_contenu=='all')
+    {
+      // On prend une nouvelle page PDF si besoin
+      $this->tableau_appreciation_page_break();
+    }
+    $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
   }
 
-  public function tableau_moyennes_reference_eleve($eleve_id,$eleve_nom_prenom)
+  public function tableau_appreciation_rubrique($type_contenu,$eleve_nom_prenom,$rubrique_nom,$note,$appreciation,$with_moyenne)
   {
-    $couleur = ($eleve_id) ? 'gris_clair' : 'gris_fonce' ;
-    $this->choisir_couleur_fond($couleur);
-    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($eleve_nom_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
-  }
-
-  public function tableau_moyennes_note($eleve_id,$rubrique_id,$note)
-  {
-    $couleur = ($eleve_id && $rubrique_id) ? 'blanc' : 'gris_fonce' ;
-    $this->choisir_couleur_fond($couleur);
-    $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-    $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+    if($type_contenu=='perso')
+    {
+      $note_largeur = 10; // valeur fixe
+      // cadre
+      $memo_x = $this->GetX();
+      $memo_y = $this->GetY();
+      $this->Cell( $this->page_largeur_moins_marges , 2*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      // nom-prénom + rubrique
+      $this->SetXY($memo_x , $memo_y);
+      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_nom_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom)     , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      // moyenne
+      $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
+      if($with_moyenne)
+      {
+        $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+        $this->CellFit( $note_largeur , 2*$this->lignes_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+      }
+      else
+      {
+        $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+2*$this->lignes_hauteur );
+      }
+      // appréciation
+      $this->afficher_appreciation( $this->cases_largeur , 2*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
+      $this->SetXY($memo_x , $memo_y+2*$this->lignes_hauteur);
+    }
+    else if($type_contenu=='all') // (forcément)
+    {
+      // On prend une nouvelle page PDF si besoin
+      $this->tableau_appreciation_page_break();
+      $this->choisir_couleur_fond('gris_moyen');
+      // nom-prénom
+      if($eleve_nom_prenom)
+      {
+        $this->SetFont('Arial' , '' , $this->taille_police);
+        $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_nom_prenom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+      }
+      // cadre
+      $memo_x = $this->GetX();
+      $memo_y = $this->GetY();
+      $this->Cell( $this->page_largeur_moins_marges , 2*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      // rubrique + moyenne
+      $this->SetXY($memo_x , $memo_y);
+      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      if($with_moyenne)
+      {
+        $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+        $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      }
+      $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+2*$this->lignes_hauteur );
+      // appréciations
+      $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
+      $this->afficher_appreciation( $this->cases_largeur , 2*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , implode("\r\n",$appreciation) );
+      $this->SetXY($memo_x , $memo_y+2*$this->lignes_hauteur);
+    }
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

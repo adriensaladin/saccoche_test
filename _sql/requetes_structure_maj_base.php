@@ -1023,7 +1023,7 @@ public static function DB_maj_base($version_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_jointure_parent_eleve' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_jointure_parent_eleve ( parent_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, resp_legal_num ENUM("1","2") COLLATE utf8_unicode_ci NOT NULL DEFAULT "1", UNIQUE KEY parent_eleve_key (parent_id,eleve_id), KEY parent_id (parent_id), KEY eleve_id (eleve_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_parent_adresse' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_parent_adresse ( parent_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, adresse_ligne1 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne2 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne3 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne4 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_postal_code MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, adresse_postal_libelle VARCHAR(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_pays_nom VARCHAR(35) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (parent_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_parent_adresse ( parent_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, adresse_ligne1 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne2 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne3 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_ligne4 VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_postal_code MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, adresse_postal_libelle VARCHAR(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", adresse_pays_nom VARCHAR(35) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (parent_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
       // ajout du profil parent
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_profil user_profil ENUM("eleve","parent","professeur","directeur","administrateur") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" ' );
       // ajout des droits parents
@@ -1857,7 +1857,7 @@ public static function DB_maj_base($version_actuelle)
       // ajout d'une table sacoche_message
       // La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_message' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_message ( message_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, message_debut_date DATE NOT NULL DEFAULT "0000-00-00", message_fin_date DATE NOT NULL DEFAULT "0000-00-00", message_destinataires TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", message_contenu TINYTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (message_id), KEY user_id (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_message ( message_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, message_debut_date DATE NOT NULL DEFAULT "0000-00-00", message_fin_date DATE NOT NULL DEFAULT "0000-00-00", message_destinataires TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", message_contenu TINYTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (message_id), KEY user_id (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
     }
   }
 
@@ -1923,7 +1923,7 @@ public static function DB_maj_base($version_actuelle)
       // ajout d'une table sacoche_officiel_saisie
       // La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_saisie' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_officiel_saisie ( officiel_type ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, rubrique_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT "matiere_id ou pilier_id ; 0 pour l\'appréciation générale", prof_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour la note, avec commentaire dans saisie_appreciation si report non automatique", saisie_note DECIMAL(3,1) UNSIGNED DEFAULT NULL COMMENT "sur 20, à multiplier par 5 pour avoir le pourcentage", saisie_appreciation TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY ( eleve_id , officiel_type , periode_id , rubrique_id , prof_id ), KEY officiel_type (officiel_type), KEY periode_id (periode_id), KEY rubrique_id (rubrique_id), KEY prof_id (prof_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_officiel_saisie ( officiel_type ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, rubrique_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT "matiere_id ou pilier_id ; 0 pour l\'appréciation générale", prof_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour la note, avec commentaire dans saisie_appreciation si report non automatique", saisie_note DECIMAL(3,1) UNSIGNED DEFAULT NULL COMMENT "sur 20, à multiplier par 5 pour avoir le pourcentage", saisie_appreciation TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY ( eleve_id , officiel_type , periode_id , rubrique_id , prof_id ), KEY officiel_type (officiel_type), KEY periode_id (periode_id), KEY rubrique_id (rubrique_id), KEY prof_id (prof_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
       // ajout d'une table sacoche_officiel_archive
       // La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_archive' );
@@ -1931,7 +1931,7 @@ public static function DB_maj_base($version_actuelle)
       // ajout d'une table sacoche_signature
       // La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_signature' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_signature ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour le tampon de l\'établissement", signature_contenu  MEDIUMBLOB NOT NULL, signature_format CHAR(4) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", signature_largeur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, signature_hauteur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_signature ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour le tampon de l\'établissement", signature_contenu  MEDIUMBLOB NOT NULL, signature_format CHAR(4) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", signature_largeur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, signature_hauteur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
       // modification des deux champs pour les identifiants externes ; déjà fait le 29/03/2012 mais oublié pour les nouveaux établissements
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_ent  user_id_ent  VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l\'ENT...)." ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_gepi user_id_gepi VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l\'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin." ' );
@@ -2563,26 +2563,6 @@ public static function DB_maj_base($version_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_corriger_appreciation"   , "DIR" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_bulletin_corriger_appreciation" , "DIR" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_corriger_appreciation"    , "DIR" )' );
-    }
-  }
-
-  if($version_actuelle=='2013-01-31')
-  {
-    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_actuelle = '2013-02-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout champ table sacoche_message
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message ADD message_dests_cache TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_message SET message_dests_cache="," ' );
-      // modifications table sacoche_officiel_saisie
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie CHANGE eleve_id eleve_ou_classe_id  MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "id élève ou classe suivant le champ saisie_type" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie ADD saisie_type ENUM("eleve","classe") COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" COMMENT "indique si la saisie concerne un élève ou une classe" AFTER prof_id , ADD INDEX ( saisie_type ) ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie DROP PRIMARY KEY , ADD PRIMARY KEY ( eleve_ou_classe_id , officiel_type , periode_id , rubrique_id , prof_id , saisie_type )  ' );
-      // ajout index table sacoche_user
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD INDEX eleve_classe_id ( eleve_classe_id ) ' );
-      // correctif nouvelles entrées table sacoche_matiere
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_usuelle=0 WHERE matiere_id>'.ID_MATIERE_PARTAGEE_MAX );
     }
   }
 

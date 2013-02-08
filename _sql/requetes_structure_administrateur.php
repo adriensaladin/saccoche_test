@@ -931,7 +931,7 @@ public static function DB_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
 {
   $DB_SQL = 'INSERT INTO sacoche_matiere(matiere_active,matiere_usuelle,matiere_famille_id,matiere_nb_demandes,matiere_ordre,matiere_ref,matiere_nom) ';
   $DB_SQL.= 'VALUES(:matiere_active,:matiere_usuelle,:matiere_famille_id,:matiere_nb_demandes,:matiere_ordre,:matiere_ref,:matiere_nom)';
-  $DB_VAR = array(':matiere_active'=>1,':matiere_usuelle'=>0,':matiere_famille_id'=>0,':matiere_nb_demandes'=>0,':matiere_ordre'=>255,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
+  $DB_VAR = array(':matiere_active'=>1,':matiere_usuelle'=>1,':matiere_famille_id'=>0,':matiere_nb_demandes'=>0,':matiere_ordre'=>255,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }

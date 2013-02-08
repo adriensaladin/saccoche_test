@@ -187,6 +187,27 @@ $(document).ready
       mode = $(this).attr('class');
       // Afficher le formulaire
       afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '<i>9999-12-31</i>-' /*date*/ , '' /*check*/ );
+
+      // Fabriquer la ligne avec les éléments de formulaires
+      afficher_masquer_images_action('hide');
+      new_tr  = '<tr>';
+      new_tr += '<td class="nu"></td>';
+      new_tr += '<td>---</td>';
+      new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
+      new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
+      new_tr += '<td><input id="f_sconet_id" name="f_sconet_id" size="5" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Champ de Sconet PERSONNE.PERSONNE_ID (laisser vide si inconnu)." /></td>';
+      new_tr += '<td><input id="f_reference" name="f_reference" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Tableur : référence dans l\'établissement." /></td>';
+      new_tr += '<td><input id="f_nom" name="f_nom" size="15" type="text" value="" /></td>';
+      new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
+      new_tr += '<td class="i">forme "'+select_login+'"</td>';
+      new_tr += '<td><input id="f_password" name="f_password" size="8" type="text" value="" /></td>';
+      new_tr += '<td><input id="box_date" name="box_date" value="1" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">sans objet</span><span class="hide"><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+      new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de ce parent."></q><q class="annuler" title="Annuler l\'ajout de ce parent."></q> <label id="ajax_msg">&nbsp;</label></td>';
+      new_tr += '</tr>';
+      // Ajouter cette nouvelle ligne
+      $(this).parent().parent().after(new_tr);
+      infobulle();
+      $('#f_nom').focus();
     };
 
     /**
@@ -391,7 +412,6 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody tr td[colspan=13]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('table.form tbody').prepend(responseHTML);
             break;
           case 'modifier':

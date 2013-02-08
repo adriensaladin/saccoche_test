@@ -45,25 +45,18 @@ $TITRE = "Gérer les périodes";
     <?php
     // Lister les périodes
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-    if(!empty($DB_TAB))
+    foreach($DB_TAB as $DB_ROW)
     {
-      foreach($DB_TAB as $DB_ROW)
-      {
-        // Afficher une ligne du tableau
-        echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
-        echo  '<td>'.$DB_ROW['periode_ordre'].'</td>';
-        echo  '<td>'.html($DB_ROW['periode_nom']).'</td>';
-        echo  '<td class="nu">';
-        echo    '<q class="modifier" title="Modifier cette période."></q>';
-        echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
-        echo    '<q class="supprimer" title="Supprimer cette période."></q>';
-        echo  '</td>';
-        echo'</tr>';
-      }
-    }
-    else
-    {
-      echo'<tr><td class="nu" colspan="3"></td></tr>';
+      // Afficher une ligne du tableau
+      echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
+      echo  '<td>'.$DB_ROW['periode_ordre'].'</td>';
+      echo  '<td>'.html($DB_ROW['periode_nom']).'</td>';
+      echo  '<td class="nu">';
+      echo    '<q class="modifier" title="Modifier cette période."></q>';
+      echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
+      echo    '<q class="supprimer" title="Supprimer cette période."></q>';
+      echo  '</td>';
+      echo'</tr>';
     }
     ?>
   </tbody>

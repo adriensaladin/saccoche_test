@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bienvenue dans votre espace identifié";
 
-// user + messages + demandes + help + ecolo peuvent être masqués
-// alert est obligatoire
+// user + help + ecolo peuvent être masqués
+// alert + messages sont obligatoires
 $tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'messages'=>array() , 'demandes'=>'' , 'help'=>'' , 'ecolo'=>'' );
 
 // Le temps de la mise à jour [2012-06-08], pour éviter tout souci ; [TODO] peut être retiré dans un an environ.
@@ -153,12 +153,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='webmestre')
   {
     foreach($DB_TAB as $key => $DB_ROW)
     {
-      $findme = ','.$_SESSION['USER_ID'].',';
-      $tab_accueil['messages'][$DB_ROW['message_id']] = array(
-        'titre'   => 'Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')',
-        'message' => nl2br(html($DB_ROW['message_contenu'])),
-        'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE)
-      );
+      $tab_accueil['messages'][$key] = '<p><span class="b u fluo">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')</span></p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
     }
   }
   elseif($_SESSION['USER_PROFIL_TYPE']!='administrateur')
@@ -224,9 +219,6 @@ if($astuce_nombre)
 // Affichage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Alerte si navigateur trop ancien
-echo Browser::afficher_navigateurs_alertes();
-
 // Alerte si pas de javascript activé
 echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
 
@@ -249,16 +241,9 @@ foreach($tab_accueil as $type => $contenu)
     }
     echo'<hr />'.$toggle_plus.'<div id="'.$type.'_moins" class="p '.$type.'64'.$class_moins.'">'.str_replace('<TG>',$toggle_moins,$contenu).'</div>';
   }
-  elseif( is_array($contenu) && count($contenu) ) // Seul 'messages' actuellement
+  elseif( is_array($contenu) && count($contenu) )
   {
-    foreach($contenu as $message_id => $tab_donnees_rubrique)
-    {
-      $class_moins = ( $tab_donnees_rubrique['visible']) ? '' : ' hide' ;
-      $class_plus  = (!$tab_donnees_rubrique['visible']) ? '' : ' hide' ;
-      $toggle_moins = '<a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_moins.gif" alt="" title="Masquer" /></a>';
-      $toggle_plus  = '<div id="'.$type.$message_id.'_plus" class="rien64'.$class_plus.'"><span class="fluo"><a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir" /> '.$tab_donnees_rubrique['titre'].'</a></span></div>';
-      echo'<hr />'.$toggle_plus.'<div id="'.$type.$message_id.'_moins" class="p '.$type.'64'.$class_moins.'">'.'<p><span class="b fluo">'.$toggle_moins.' '.$tab_donnees_rubrique['titre'].'</span></p>'.'<p>'.$tab_donnees_rubrique['message'].'</p>'.'</div>';
-    }
+    echo'<hr /><div class="p '.$type.'64">'.implode('</div><hr /><div class="p '.$type.'64">',$contenu).'</div>';
   }
 }
 ?>

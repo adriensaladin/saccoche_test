@@ -98,7 +98,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="10"></td></tr>
+      <tr><td class="nu" colspan="9"></td></tr>
     </tbody>
   </table>
   <p><ul class="puce">

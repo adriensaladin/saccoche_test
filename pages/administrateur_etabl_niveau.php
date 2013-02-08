@@ -34,7 +34,7 @@ $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_famil
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux</a></span></div>
 
-<div id="zone_niveaux">
+<form action="#" method="post" id="niveaux">
   <hr />
   <table class="form">
     <thead>
@@ -48,35 +48,19 @@ $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_famil
       <?php
       // Lister les niveaux
       $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_specifiques*/);
-      if(!empty($DB_TAB))
+      foreach($DB_TAB as $DB_ROW)
       {
-        foreach($DB_TAB as $DB_ROW)
-        {
-          echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
-          echo'  <td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
-          echo'  <td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
-          echo  '<td class="nu">';
-          echo    '<q class="supprimer" title="Supprimer ce niveau."></q>';
-          echo  '</td>';
-          echo'</tr>';
-        }
-      }
-      else
-      {
-        echo'<tr><td class="nu" colspan="3"></td></tr>';
+        echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
+        echo'  <td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
+        echo'  <td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
+        echo  '<td class="nu">';
+        echo    '<q class="supprimer" title="Supprimer ce niveau."></q>';
+        echo  '</td>';
+        echo'</tr>';
       }
       ?>
     </tbody>
   </table>
-</div>
-
-<form action="#" method="post" id="form_gestion" class="hide">
-  <h2>Retirer un niveau</h2>
-  <p class="danger">Les référentiels et les résultats associés ne seront plus accessibles !</p>
-  <p>Confirmez-vous le retrait du niveau &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
-  <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_niveau" name="f_niveau" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
-  </p>
 </form>
 
 <form action="#" method="post" id="zone_ajout_form" onsubmit="return false" class="hide">

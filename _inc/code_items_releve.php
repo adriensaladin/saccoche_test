@@ -456,7 +456,7 @@ if($type_individuel)
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-    $releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer</button></div>';
+    $releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="imprimer_appreciations_perso" type="button" class="imprimer">Archiver mes appréciations</button> <button id="imprimer_appreciations_all" type="button" class="imprimer">Archiver toutes les appréciations</button></div>';
     $bilan_colspan = $cases_nb + 2 ;
     $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
     $legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
@@ -714,9 +714,7 @@ if($type_individuel)
             }
           }
         }
-        // Relevé de notes - Synthèse générale
-        $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
-        list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
+        // Synthèse générale
         if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
         {
           if($make_html)
@@ -741,20 +739,21 @@ if($type_individuel)
               $releve_HTML_individuel .= '<tr><td class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'."\r\n";
             }
             // Relevé de notes - Appréciation générale
-            if($is_appreciation_generale_enregistree)
+            if(isset($tab_saisie[$eleve_id][0]))
             {
-              extract($tab_appreciation_generale);  // $prof_info $appreciation $note
+              list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
+              extract($tab);  // $prof_info $appreciation $note
               $actions = '';
-              if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) // Pas de test ($prof_id_appreciation_generale==$_SESSION['USER_ID']) car l'appréciation générale est unique avec saisie partagée.
+              if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) )
               {
                 $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
               }
               elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
               {
-                if($prof_id_appreciation_generale!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
-                if($droit_corriger_appreciation)                         { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
+                if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
+                if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
               }
-              $releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id_appreciation_generale.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+              $releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
             }
             elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
             {
@@ -764,29 +763,33 @@ if($type_individuel)
           }
         }
         // Examen de présence de l'appréciation générale
-        if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!$is_appreciation_generale_enregistree) )
+        if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!isset($tab_saisie[$eleve_id][0])) )
         {
           $tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
         }
         // Impression de l'appréciation générale
         if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) )
         {
-          if($is_appreciation_generale_enregistree)
+          if(isset($tab_saisie[$eleve_id][0]))
           {
-            if( ($numero_tirage==0) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
+            reset($tab_saisie[$eleve_id][0]);
+            list($prof_id,$tab_infos) = each($tab_saisie[$eleve_id][0]);
+            if( ($numero_tirage==0) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id]) ) )
             {
               $tab_image_tampon_signature = NULL;
             }
             else
             {
-              $tab_image_tampon_signature = ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') || (!$tab_signature[0]) ) ? $tab_signature[$prof_id_appreciation_generale] : $tab_signature[0] ;
+              $tab_image_tampon_signature = ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') || (!$tab_signature[0]) ) ? $tab_signature[$prof_id] : $tab_signature[0] ;
             }
           }
           else
           {
+            $prof_id = 0;
+            $tab_infos = array('prof_info'=>'','appreciation'=>'');
             $tab_image_tampon_signature = ( ($numero_tirage>0) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
           }
-          $releve_PDF->bilan_item_individuel_appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_supplementaires+$nb_lignes_legendes );
+          $releve_PDF->bilan_item_individuel_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_supplementaires+$nb_lignes_legendes );
         }
         // Relevé de notes - Absences et retard
         if( ($make_officiel) && ($affichage_assiduite) )

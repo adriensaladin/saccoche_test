@@ -60,7 +60,7 @@ foreach($tab_eleves_moyennes as $eleve_moyenne)
   // $tab_eleves_moyennes contient les moyennes de tous les élèves du groupe ou de la classe
   if(in_array($eleve_id,$tab_eleve_id))
   {
-    DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' /*BILAN_TYPE*/ , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
+    DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' /*BILAN_TYPE*/ , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
     $nb_reports++;
   }
 }

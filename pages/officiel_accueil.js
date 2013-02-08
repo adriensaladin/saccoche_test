@@ -432,29 +432,15 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
+    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour imprimer ses appréciations
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#archiver_imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    $('#imprimer_appreciations_perso , #imprimer_appreciations_all').live // live est utilisé pour prendre en compte les nouveaux éléments créés
     ('click',
       function()
       {
-        $('#ajax_msg_archiver_imprimer').removeAttr("class").html("");
-        $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur un lien pour archiver / imprimer des saisies
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_archiver_imprimer button').click
-    (
-      function()
-      {
-        $('#zone_archiver_imprimer button').prop('disabled',true);
-        $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var f_action = $(this).attr('id');
+        $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
         (
           {
@@ -464,26 +450,29 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#zone_archiver_imprimer button').prop('disabled',false);
-              $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
+              return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $('#zone_archiver_imprimer button').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<a ')
+              $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
+              if(responseHTML.substring(0,4)!='<ul ')
               {
-                $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("valide").html(responseHTML);
-                format_liens('#ajax_msg_archiver_imprimer');
+                // Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
+                // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
+                $('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div><p />'+responseHTML);
+                format_liens('#bilan');
+                $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
               }
             }
           }
         );
-        return false;
       }
     );
 

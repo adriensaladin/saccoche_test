@@ -112,7 +112,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
       <label class="tab" for="f_fin_date">Date de fin :</label><input id="f_fin_date" name="f_fin_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
     </p>
     <p>
-      <label class="tab" for="f_destinataires_nombre">Destinataires :</label><input id="f_destinataires_nombre" name="f_destinataires_nombre" size="13" type="text" value="" readonly /><q class="choisir_eleve" title="Voir ou choisir les destinataires."></q><input id="f_destinataires_liste" name="f_destinataires_liste" type="hidden" value="" />
+      <label class="tab" for="f_destinataires_nombre">Destinataires :</label><input id="f_destinataires_nombre" name="f_destinataires_nombre" size="13" type="text" value="" readonly /><input id="f_destinataires_liste" name="f_destinataires_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les destinataires."></q>
     </p>
     <p>
       <label class="tab" for="f_message_info">Contenu :</label><input id="f_message_info" name="f_message_info" size="45" type="text" value="aucun" readonly /><q class="texte_editer" title="Voir ou modifier le contenu du message."></q><textarea id="f_message_contenu" name="f_message_contenu" class="hide" ></textarea>

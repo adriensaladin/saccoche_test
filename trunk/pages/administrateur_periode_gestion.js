@@ -276,6 +276,7 @@ $(document).ready
         switch (action)
         {
           case 'ajouter':
+            $('table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
           case 'dupliquer':
             $('table.form tbody').append(responseHTML);
             trier_tableau();

@@ -98,7 +98,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button i
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="4"></td></tr>
+      <tr><td class="nu" colspan="5"></td></tr>
     </tbody>
   </table>
 </form>

@@ -40,6 +40,17 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    function afficher_form_gestion( mode , id , ref , nom )
+    {
+      $('#f_action').val(mode);
+      $('#f_niveau').val(id);
+      // pour finir
+      $('#gestion_delete_identite').html(ref+" "+nom);
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#form_gestion label[generated=true]').removeAttr('class').html("");
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+    }
+
     /**
      * Ajouter un niveau : affichage du formulaire
      * @return void
@@ -48,7 +59,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
-      $('#niveaux').hide();
+      $('#zone_niveaux').hide();
       $('#zone_ajout_form').show();
       return false;
     };
@@ -60,11 +71,14 @@ $(document).ready
     var supprimer = function()
     {
       mode = $(this).attr('class');
-      afficher_masquer_images_action('hide');
-      id = $(this).parent().parent().attr('id').substring(3);
-      new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_niveau" name="f_niveau" type="hidden" value="'+id+'" />Les référentiels et les résultats associés ne seront plus accessibles !<q class="valider" title="Confirmer la suppression de ce niveau."></q><q class="annuler" title="Annuler la suppression de ce niveau."></q> <label id="ajax_msg">&nbsp;</label></span>';
-      $(this).after(new_span);
-      infobulle();
+      var objet_tr   = $(this).parent().parent();
+      var objet_tds  = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var id         = objet_tr.attr('id').substring(3);
+      var ref        = objet_tds.eq(0).html();
+      var nom        = objet_tds.eq(1).html();
+      // Afficher le formulaire
+      afficher_form_gestion( mode , id , unescapeHtml(ref) , unescapeHtml(nom) );
     };
 
     /**
@@ -73,17 +87,7 @@ $(document).ready
      */
     var annuler = function()
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
-      switch (mode)
-      {
-        case 'ajouter':
-          $(this).parent().parent().remove();
-          break;
-        case 'supprimer':
-          $(this).parent().remove();
-          break;
-      }
-      afficher_masquer_images_action('show');
+      $.fancybox.close();
       mode = false;
     };
 
@@ -93,8 +97,8 @@ $(document).ready
      */
     var retirer = function()
     {
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $('#ajax_msg').parent().children('q').hide();
+      $('#form_gestion button').prop('disabled',true);
+      $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
@@ -104,53 +108,38 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').parent().children('q').show();
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#form_gestion button').prop('disabled',false);
+            $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             return false;
           },
           success : function(responseHTML)
           {
             initialiser_compteur();
-            $('#ajax_msg').parent().children('q').show();
+            $('#form_gestion button').prop('disabled',false);
             if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              $('q.valider').closest('tr').remove();
-              afficher_masquer_images_action('show');
+              $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+              $('#id_'+$('#f_niveau').val()).remove();
+              $.fancybox.close();
+              mode = false;
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
       );
     };
 
-    /**
-     * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
-     * @return void
-     */
-    function intercepter(e)
-    {
-      if(e.which==13)  // touche entrée
-      {
-        $('q.valider').click();
-      }
-      else if(e.which==27)  // touche escape
-      {
-        $('q.annuler').click();
-      }
-    }
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#niveaux q.ajouter').click( ajouter );
+    $('#zone_niveaux q.ajouter').click( ajouter );
     $('q.supprimer').live( 'click' , supprimer );
-    $('q.annuler').live(   'click' , annuler );
-    $('q.valider').live(   'click' , retirer );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( retirer );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour fermer le cadre de recherche d'un niveau à ajouter
@@ -161,7 +150,7 @@ $(document).ready
       function()
       {
         $('#zone_ajout_form').hide();
-        $('#niveaux').show();
+        $('#zone_niveaux').show();
         return(false);
       }
     );
@@ -260,7 +249,7 @@ $(document).ready
                 var pos_par_fer = texte.lastIndexOf(')');
                 var niveau_nom  = texte.substring(pos_separe,pos_par_ouv-1);
                 var niveau_ref  = texte.substring(pos_par_ouv+1,pos_par_fer);
-                $('#niveaux table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
+                $('#zone_niveaux table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
                 $('#add_'+niveau_id).removeAttr("class").addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
                 infobulle();
               }

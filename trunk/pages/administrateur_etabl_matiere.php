@@ -47,7 +47,7 @@ foreach($DB_TAB as $DB_ROW)
   var id_matiere_partagee_max = "<?php echo ID_MATIERE_PARTAGEE_MAX ?>";
 </script>
 
-<form action="#" method="post" id="form_partage">
+<div id="zone_partage">
   <hr />
   <h2>Matières partagées (officielles)</h2>
   <table class="form hsort">
@@ -62,23 +62,30 @@ foreach($DB_TAB as $DB_ROW)
       <?php
       // Lister les matières partagées
       $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres(FALSE /*is_specifique*/);
-      foreach($DB_TAB as $DB_ROW)
+      if(!empty($DB_TAB))
       {
-        // Afficher une ligne du tableau
-        echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-        echo  '<td>'.html($DB_ROW['matiere_ref']).'</td>';
-        echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
-        echo  '<td class="nu">';
-        echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
-        echo  '</td>';
-        echo'</tr>';
+        foreach($DB_TAB as $DB_ROW)
+        {
+          // Afficher une ligne du tableau
+          echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
+          echo  '<td>'.html($DB_ROW['matiere_ref']).'</td>';
+          echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
+          echo  '<td class="nu">';
+          echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
+          echo  '</td>';
+          echo'</tr>';
+        }
+      }
+      else
+      {
+        echo'<tr><td class="nu" colspan="3"></td></tr>';
       }
       ?>
     </tbody>
   </table>
-</form>
+</div>
 
-<form action="#" method="post" id="form_perso">
+<div id="zone_perso">
   <hr />
   <h2>Matières spécifiques</h2>
   <table class="form hsort">
@@ -93,21 +100,49 @@ foreach($DB_TAB as $DB_ROW)
       <?php
       // Lister les matières spécifiques
       $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres(TRUE /*is_specifique*/);
-      foreach($DB_TAB as $DB_ROW)
+      if(!empty($DB_TAB))
       {
-        // Afficher une ligne du tableau
-        echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-        echo  '<td>'.html($DB_ROW['matiere_ref']).'</td>';
-        echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
-        echo  '<td class="nu">';
-        echo    '<q class="modifier" title="Modifier cette matière."></q>';
-        echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
-        echo  '</td>';
-        echo'</tr>';
+        foreach($DB_TAB as $DB_ROW)
+        {
+          // Afficher une ligne du tableau
+          echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
+          echo  '<td>'.html($DB_ROW['matiere_ref']).'</td>';
+          echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
+          echo  '<td class="nu">';
+          echo    '<q class="modifier" title="Modifier cette matière."></q>';
+          echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
+          echo  '</td>';
+          echo'</tr>';
+        }
+      }
+      else
+      {
+        echo'<tr><td class="nu" colspan="3"></td></tr>';
       }
       ?>
     </tbody>
   </table>
+</div>
+
+<form action="#" method="post" id="form_gestion" class="hide">
+  <h2>Ajouter | Modifier | Supprimer une matière spécifique (ou partagée si supprimer)</h2>
+  <div id="gestion_edit">
+    <p>
+      <label class="tab" for="f_ref">Référence :</label><input id="f_ref" name="f_ref" type="text" value="" size="5" maxlength="5" /><br />
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="45" maxlength="50" />
+    </p>
+  </div>
+  <div id="gestion_delete_partage">
+    <p class="danger">Les référentiels et les résultats associés ne seront plus accessibles !</p>
+    <p>Confirmez-vous le retrait de la matière &laquo;&nbsp;<b id="gestion_delete_identite_partage"></b>&nbsp;&raquo; ?</p>
+  </div>
+  <div id="gestion_delete_perso">
+    <p class="danger">Les référentiels et les résultats associés seront perdus !</p>
+    <p>Confirmez-vous la suppression de la matière &laquo;&nbsp;<b id="gestion_delete_identite_perso"></b>&nbsp;&raquo; ?</p>
+  </div>
+  <p>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+  </p>
 </form>
 
 <form action="#" method="post" id="form_move">

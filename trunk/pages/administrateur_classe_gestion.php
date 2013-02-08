@@ -64,18 +64,25 @@ else
     <?php
     // Lister les classes avec les niveaux
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
-    foreach($DB_TAB as $DB_ROW)
+    if(!empty($DB_TAB))
     {
-      // Afficher une ligne du tableau
-      echo'<tr id="id_'.$DB_ROW['groupe_id'].'">';
-      echo  '<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
-      echo  '<td>'.html($DB_ROW['groupe_ref']).'</td>';
-      echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
-      echo  '<td class="nu">';
-      echo    '<q class="modifier" title="Modifier cette classe."></q>';
-      echo    '<q class="supprimer" title="Supprimer cette classe."></q>';
-      echo  '</td>';
-      echo'</tr>';
+      foreach($DB_TAB as $DB_ROW)
+      {
+        // Afficher une ligne du tableau
+        echo'<tr id="id_'.$DB_ROW['groupe_id'].'">';
+        echo  '<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
+        echo  '<td>'.html($DB_ROW['groupe_ref']).'</td>';
+        echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
+        echo  '<td class="nu">';
+        echo    '<q class="modifier" title="Modifier cette classe."></q>';
+        echo    '<q class="supprimer" title="Supprimer cette classe."></q>';
+        echo  '</td>';
+        echo'</tr>';
+      }
+    }
+    else
+    {
+      echo'<tr><td class="nu" colspan="4"></td></tr>';
     }
     ?>
   </tbody>

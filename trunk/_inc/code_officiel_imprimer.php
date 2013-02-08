@@ -106,7 +106,7 @@ if($ACTION=='initialiser')
     $tab_eleve_id[] = $DB_ROW['user_id'];
     $tab_eleve_td[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
   }
-  // (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
+  // (re)calculer les moyennes des élèves (matières et générales), ainsi que les moyennes de classe (matières et générales).
   if( ($objet=='imprimer') && ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
   {
     // Attention ! On doit calculer des moyennes de classe, pas de groupe !
@@ -242,16 +242,21 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 // Initialiser les signatures numériques
 
-$tab_saisie    = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
+$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
 $tab_signature = array(0=>NULL);  // [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_assiduite = array_fill_keys( $tab_eleve_id , array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) );  // [eleve_id] => array(absence,non_justifie,retard);
 $tab_prof_id = array();
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
   $tab_signature[$DB_ROW['prof_id']] = NULL ; // Initialisé
   $tab_prof_id[$DB_ROW['prof_id']] = $DB_ROW['prof_id']; // Pour savoir ensuite la liste des profs à chercher
+}
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 
 // Récupérer les signatures numériques

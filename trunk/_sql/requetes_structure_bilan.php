@@ -170,7 +170,7 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
 /**
  * recuperer_items_travailles
  * Retourner la liste des items travaillés par des élèves donnés (ou un seul), pour des matières données, durant une période donnée
- * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour le calcul des moyennes.
+ * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour le calcul des moyennes
  *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules
  * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
@@ -206,6 +206,36 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
     }
   }
   return array($DB_TAB,$tab_matiere);
+}
+
+/**
+ * recuperer_matieres_travaillees
+ * Retourner la liste des matières travaillées par les élèves d'une classe donnée, pour des matières données, durant une période donnée
+ * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour les appréciations sur un groupe
+ *
+ * @param int    $classe_id   id de la classe (pas d'un sous-groupe)
+ * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+public static function DB_recuperer_matieres_travaillees($classe_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
+{
+  $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
+  $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+  $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+  $DB_SQL = 'SELECT matiere_id, matiere_nom ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id=sacoche_saisie.eleve_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+  $DB_SQL.= 'WHERE eleve_classe_id=:classe_id '.$where_matiere.$where_date_debut.$where_date_fin;
+  $DB_SQL.= 'GROUP BY matiere_id ';
+  $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC';
+  $DB_VAR = array(':classe_id'=>$classe_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

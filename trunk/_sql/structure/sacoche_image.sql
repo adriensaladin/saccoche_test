@@ -1,5 +1,8 @@
 DROP TABLE IF EXISTS sacoche_image;
 
+-- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
+-- Attention : pas de valeur par défaut possible pour les champs TEXT et BLOB
+
 CREATE TABLE sacoche_image (
   user_id       MEDIUMINT(8)                     UNSIGNED                NOT NULL DEFAULT 0 COMMENT "0 pour le tampon de l'établissement (objet signature) ou le logo de l'établissement",
   image_objet   ENUM("signature","photo","logo") COLLATE utf8_unicode_ci NOT NULL DEFAULT "photo",

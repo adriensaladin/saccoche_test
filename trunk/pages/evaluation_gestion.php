@@ -150,7 +150,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
     </tr>
   </thead>
   <tbody>
-    <tr><td class="nu" colspan="7"></td></tr>
+    <tr><td class="nu" colspan="9"></td></tr>
   </tbody>
 </table>
 

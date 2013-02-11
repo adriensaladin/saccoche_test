@@ -233,7 +233,6 @@ class PDF extends FPDF
  * Voir aussi http://www.fpdf.org/fr/script/script2.php
 **/
 
-/*
   public function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle=0)
   {
     $font_angle += 90+$txt_angle;
@@ -249,6 +248,7 @@ class PDF extends FPDF
     $this->_out($s);
   }
 
+/*
   public function TextWithDirection($x, $y, $txt, $direction='R')
   {
     if ($direction=='R')
@@ -428,6 +428,7 @@ class PDF extends FPDF
   private $orientation   = '';
   private $couleur       = 'oui';
   private $legende       = 1;
+  private $filigrane     = NULL;
   private $page_largeur  = 0;
   private $page_hauteur  = 0;
   private $marge_haut    = 5;
@@ -475,7 +476,7 @@ class PDF extends FPDF
   // Méthode Magique - Constructeur
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function __construct($officiel,$orientation,$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui')
+  public function __construct($officiel,$orientation,$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui',$filigrane=NULL)
   {
     // Register var stream protocol => Voir MemImage()
     if (in_array('var', stream_get_wrappers()))
@@ -490,6 +491,7 @@ class PDF extends FPDF
     $this->orientation = $orientation;
     $this->couleur     = $couleur;
     $this->legende     = ($legende=='oui') ? 1 : 0 ;
+    $this->filigrane   = $filigrane;
     // Déclaration de la police pour la rendre disponible même si non présente sur le serveur
     $this->AddFont('Arial','' ,'arial.php');
     $this->AddFont('Arial','B','arialbd.php');
@@ -984,6 +986,12 @@ class PDF extends FPDF
     }
     else
     {
+      if($this->filigrane)
+      {
+        $this->SetFont( 'Arial' , 'B' , 72 );
+        $this->choisir_couleur_texte('gris_fonce');
+        $this->TextWithRotation( $this->page_largeur/6 /*x*/ , $this->page_hauteur*5/6 /*y*/ , "TEST D'IMPRESSION" /*txt*/ , tanh($this->page_hauteur/$this->page_largeur)*180/M_PI /*txt_angle*/ , 0 /*font_angle*/ );
+      }
       $this->SetFont( 'Arial' , '' , 4 );
       $this->choisir_couleur_texte('noir');
       $this->SetXY( 0 , -$this->distance_pied - 3 );

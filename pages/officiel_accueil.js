@@ -488,47 +488,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#simuler_impression').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
-      function()
-      {
-        $('#f_listing_eleves').val(memo_eleve);
-        $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,3)!='ok;')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                $.fancybox( '<h4>Test impression PDF finale</h4><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a class="lien_ext" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
-                format_liens('#imprimer_liens');
-              }
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
     // [officiel_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////

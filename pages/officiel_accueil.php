@@ -513,7 +513,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <div class="prof_liste"><?php echo implode('</div><div class="prof_liste">',$tab_div) ?></div>
   <p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
 </form>
-
 <form action="#" method="post" id="form_hidden" class="hide">
   <div>
     <?php echo $form_hidden ?>
@@ -609,7 +608,7 @@ $date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")))
 ?>
 
 <div id="zone_archiver_imprimer" class="hide">
-  <h2>Archiver / Imprimer des données</h2>
+  <h2>Archiver / Imprimer des saisies</h2>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</p>
   <ul class="puce">
     <?php if($BILAN_TYPE=='bulletin'): ?>

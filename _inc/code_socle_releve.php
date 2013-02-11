@@ -468,19 +468,18 @@ $titre1 = ($mode=='manuel') ? 'Relevé de maîtrise du socle commun [matières r
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
 if($make_html)
 {
-  $bouton_print_appr = ($make_officiel)                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'       : '' ;
-  $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
+  $bouton_print_appr = ($make_officiel) ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer</button>' : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
   $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
-  $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>';
+  $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.'</div>';
   $separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel ) : '' ;
 }
 if($make_pdf)
 {
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-  $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+  $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
   $releve_PDF->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
   $break  = ($memo_demande=='palier') ? FALSE : TRUE ;
 }
@@ -489,9 +488,6 @@ if($make_pdf)
 foreach($tab_eleve as $tab)
 {
   extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
-  // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-  $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
-  list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
   foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
   {
     // On met le document au nom de l'élève, ou on établit un document générique
@@ -653,7 +649,9 @@ foreach($tab_eleve as $tab)
         }
       }
       // État de maîtrise du socle - Synthèse générale
-      if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+      $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
+      list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
+      if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
       {
         if($make_html)
         {

@@ -359,12 +359,11 @@ $tab_graph_data = array();
 // Préparatifs
 if( ($make_html) || ($make_graph) )
 {
-  $bouton_print_appr = ((!$make_graph)&&($make_officiel))   ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'       : '' ;
-  $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
+  $bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer</button>' : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
   $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-  $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>' : '<div id="div_graphique"></div>' ;
+  $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
   $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
   $width_barre = (!$make_officiel) ? 180 : 50 ;
@@ -372,18 +371,13 @@ if( ($make_html) || ($make_graph) )
 }
 if($make_pdf)
 {
-  $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+  $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
   $releve_PDF->bilan_synthese_initialiser($format,$nb_lignes_total,$eleve_nb);
 }
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
   extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-  // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-  $moyenne_generale_eleve_enregistree = isset($tab_saisie[$eleve_id][0][0]['note']) ? $tab_saisie[$eleve_id][0][0]['note'] : NULL ;
-  unset($tab_saisie[$eleve_id][0][0]);
-  $is_appreciation_generale_enregistree = (empty($tab_saisie[$eleve_id][0])) ? FALSE : TRUE ;
-  list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
   foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
   {
     // Si cet élève a été évalué...
@@ -581,7 +575,11 @@ foreach($tab_eleve as $tab)
         }
       }
       // Bulletin - Appréciation générale + Moyenne générale
-      if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+      $moyenne_generale_eleve_enregistree = isset($tab_saisie[$eleve_id][0][0]['note']) ? $tab_saisie[$eleve_id][0][0]['note'] : NULL ;
+      unset($tab_saisie[$eleve_id][0][0]);
+      $is_appreciation_generale_enregistree = (empty($tab_saisie[$eleve_id][0])) ? FALSE : TRUE ;
+      list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
+      if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
       {
         if( ($make_html) || ($make_graph) )
         {

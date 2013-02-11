@@ -90,11 +90,6 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4compl
   exit('Bilan interdit d\'accès pour cette action !');
 }
 
-if( ($eleve_id) && ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF']) ) )
-{
-  $is_bouton_test_impression = TRUE;
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage des données d'un élève (si initialisation, le groupe classe si bulletin ou le premier si relevé ou socle ; l'élève indiqué sinon)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

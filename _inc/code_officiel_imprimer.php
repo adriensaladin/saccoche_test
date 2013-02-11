@@ -83,13 +83,9 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if( ($BILAN_ETAT!='4complet') && empty($is_test_impression) )
+if($BILAN_ETAT!='4complet')
 {
   exit('Bilan interdit d\'accès pour cette action !');
-}
-if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF']) )
-{
-  exit('Droits insuffisants pour cette action !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -495,18 +491,11 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage du résultat (pas grand chose, car la découpe du PDF intervient lors d'appels ajax ultérieurs, sauf s'il s'agissait d'un test d'impression auquel cas on ajoute un filigrane et on s'arrête là)
+// Affichage du résultat (pas grand chose : la découpe du PDF intervient lors d'appels ajax ultérieurs)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(empty($is_test_impression))
-{
-  $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
-  $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
-  exit('ok');
-}
-else
-{
-  exit('ok;'.URL_DIR_EXPORT.$fichier_nom.'.pdf');
-}
+$_SESSION['tmp']['fichier_nom'] = $fichier_nom;
+$_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
+exit('ok');
 
 ?>

@@ -42,24 +42,8 @@ $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : ''
 // Imprimer  : affichage de la liste des élèves | étape d'impression PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  $tab_types = array
-  (
-    'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
-    'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
-    'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
-    'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-    'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
-  );
-
 if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer') ) )
 {
-  if( ($section=='officiel_consulter') && ($action=='imprimer') )
-  {
-    // Il s'agit d'un test d'impression d'un bilan non encore clos (on vérifiera quand même par la suite que les conditions sont respectées (état du bilan, droit de l'utilisateur)
-    $section = 'officiel_imprimer';
-    $_POST['f_objet'] = 'imprimer';
-    $is_test_impression = TRUE;
-  }
   require(CHEMIN_DOSSIER_INCLUDE.'fonction_bulletin.php');
   require(CHEMIN_DOSSIER_INCLUDE.'code_'.$section.'.php');
   exit(); // Normalement, on n'arrive pas jusque là.
@@ -96,6 +80,15 @@ if( isset($tab_actions[$action]) )
   $groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
 
   // On vérifie les paramètres principaux
+
+  $tab_types = array
+  (
+    'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+    'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+    'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+    'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+    'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
+  );
 
   if( (!isset($tab_types[$BILAN_TYPE])) || (!$periode_id) || (!$classe_id) )
   {

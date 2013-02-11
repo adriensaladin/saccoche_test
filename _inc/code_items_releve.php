@@ -453,12 +453,10 @@ if($type_individuel)
   $jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   if($make_html)
   {
-    $bouton_print_appr = (!$make_officiel)                    ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'       : '' ;
-    $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-    $releve_HTML_individuel .= ($bouton_print_appr || $bouton_print_test) ? '<div class="ti">'.$bouton_print_appr.$bouton_print_test.'</div>' : '' ;
+    $releve_HTML_individuel .= (!$make_officiel) ? '' : '<div class="ti"><button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer</button></div>';
     $bilan_colspan = $cases_nb + 2 ;
     $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
     $legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
@@ -468,16 +466,13 @@ if($type_individuel)
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
     $lignes_nb = ($format=='matiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
     $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
-    $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+    $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
     $releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
   }
   // Pour chaque élève...
   foreach($tab_eleve as $tab)
   {
     extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-   // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-   $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
-    list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
     foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
     {
       // Si cet élève a été évalué...
@@ -720,7 +715,9 @@ if($type_individuel)
           }
         }
         // Relevé de notes - Synthèse générale
-        if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+        $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
+        list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
+        if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
         {
           if($make_html)
           {

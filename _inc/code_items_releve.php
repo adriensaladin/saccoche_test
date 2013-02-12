@@ -475,12 +475,9 @@ if($type_individuel)
   foreach($tab_eleve as $tab)
   {
     extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-    if($make_officiel)
-    {
-      // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-      $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
-      list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
-    }
+   // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
+   $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
+    list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
     foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
     {
       // Si cet élève a été évalué...

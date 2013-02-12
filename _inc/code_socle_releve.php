@@ -489,12 +489,9 @@ if($make_pdf)
 foreach($tab_eleve as $tab)
 {
   extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
-  if($make_officiel)
-  {
-    // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-    $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
-    list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
-  }
+  // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
+  $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
+  list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
   foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
   {
     // On met le document au nom de l'élève, ou on établit un document générique

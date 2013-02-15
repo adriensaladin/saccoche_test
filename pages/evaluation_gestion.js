@@ -295,7 +295,12 @@ $(document).ready
       $('#saisir_date_mysql').val(date_mysql);
       $('#saisir_date_visible').val(date_visible);
       $('#saisir_description').val(unescapeHtml(description));
-      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+      // Masquer le tableau ; Afficher la zone associée et charger son contenu
+      $('#form_prechoix , #table_gestion').hide('fast');
+      $('#msg_import').removeAttr("class").html('&nbsp;');
+      $('#zone_saisir').css("display","block");
+      $('#titre_saisir').html(groupe+' | '+date_fr+' | '+description);
+      $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
@@ -305,7 +310,7 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
             return false;
           },
           success : function(responseHTML)
@@ -314,22 +319,17 @@ $(document).ready
             var tab_response = responseHTML.split('<SEP>');
             if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
             {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
             }
             else
             {
               modification = false;
-              $.fancybox.close();
-              // Masquer le tableau ; Afficher la zone associée et remplir son contenu
-              $('#form_prechoix , #table_gestion').hide('fast');
-              $('#msg_import').removeAttr("class").html('&nbsp;');
-              $('#titre_saisir').html(groupe+' | '+date_fr+' | '+description);
               $('#ajax_msg_saisir').removeAttr("class").html('&nbsp;');
               $('#table_saisir').html(tab_response[0]);
               $('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
               $('img[title]').tooltip({showURL:false});
-              $('#export_file_saisir_tableau_scores_csv'   ).attr("href", url_export+'saisie_deportee_'   +tab_response[1]+'.zip' );
-              $('#export_file_saisir_tableau_scores_vierge').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+              $('#export_file1').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+              $('#export_file4').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
               colorer_cellules();
               format_liens('#table_saisir');
               infobulle();
@@ -345,7 +345,6 @@ $(document).ready
               }
               nb_colonnes = $('#table_saisir thead th').length;
               nb_lignes   = $('#table_saisir tbody tr').length;
-              $('#zone_saisir').css("display","block");
             }
           }
         }
@@ -367,7 +366,11 @@ $(document).ready
       var description   = objet_tds.eq(5).html();
       // Date
       var date_fr       = date.substring(17,date.length); // garder la date française
-      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+      // Masquer le tableau ; Afficher la zone associée et charger son contenu
+      $('#form_prechoix , #table_gestion').hide('fast');
+      $('#zone_voir').css("display","block");
+      $('#titre_voir').html(groupe+' | '+date_fr+' | '+description);
+      $('#ajax_msg_voir').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
@@ -377,7 +380,7 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            $('#ajax_msg_voir').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
             return false;
           },
           success : function(responseHTML)
@@ -386,25 +389,20 @@ $(document).ready
             var tab_response = responseHTML.split('<SEP>');
             if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
             {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              $('#ajax_msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
             }
             else
             {
-              $.fancybox.close();
-              // Masquer le tableau ; Afficher la zone associée et remplir son contenu
-              $('#form_prechoix , #table_gestion').hide('fast');
-              $('#titre_voir').html(groupe+' | '+date_fr+' | '+description);
               $('#ajax_msg_voir').removeAttr("class").html('&nbsp;');
               $('#table_voir').html(tab_response[0]);
               $('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
               format_liens('#table_voir');
-              $('#export_file_voir_tableau_scores_csv'    ).attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
-              $('#export_file_voir_tableau_scores_vierge' ).attr("href", url_export+'tableau_sans_notes_'           +tab_response[1]+'.pdf' );
-              $('#export_file_voir_tableau_scores_couleur').attr("href", url_export+'tableau_avec_notes_couleur_'   +tab_response[1]+'.pdf' );
-              $('#export_file_voir_tableau_scores_gris'   ).attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
+              $('#export_file2').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+              $('#export_file3').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+              $('#export_file5').attr("href", url_export+'tableau_avec_notes_couleur_'+tab_response[1]+'.pdf' );
+              $('#export_file8').attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
               $('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
               infobulle();
-              $('#zone_voir').css("display","block");
             }
           }
         }
@@ -544,10 +542,8 @@ $(document).ready
               $('#table_voir_repart1').html(tab_response[0]);
               $('#table_voir_repart2').html(tab_response[1]);
               format_liens('#zone_voir_repart');
-              $('#export_voir_repart_quantitative_couleur').attr("href", url_export+'repartition_quantitative_couleur_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_quantitative_gris'   ).attr("href", url_export+'repartition_quantitative_monochrome_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_nominative_couleur'  ).attr("href", url_export+'repartition_nominative_couleur_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_nominative_gris'     ).attr("href", url_export+'repartition_nominative_monochrome_'+tab_response[2]+'.pdf' );
+              $('#export_file6').attr("href", url_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
+              $('#export_file7').attr("href", url_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
               $('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
               $('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
               $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
@@ -718,45 +714,15 @@ $(document).ready
     // Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function fermer_zone_saisir()
-    {
-      $('#titre_saisir').html("");
-      $('#table_saisir').html("<tbody><tr><td></td></tr></tbody>");
-      $('#zone_saisir').css("display","none");
-      $('#form_prechoix , #table_gestion').show('fast');
-      return(false);
-    }
-
-    $('#fermer_zone_saisir').click
-    (
+    $('#fermer_zone_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
-        if(!modification)
-        {
-          fermer_zone_saisir();
-        }
-        else
-        {
-          $.fancybox( { 'href':'#zone_confirmer_fermer_saisir' , onStart:function(){$('#zone_confirmer_fermer_saisir').css("display","block");} , onClosed:function(){$('#zone_confirmer_fermer_saisir').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-          return(false);
-        }
-      }
-    );
-
-    $('#confirmer_fermer_zone_saisir').click
-    (
-      function()
-      {
-        $.fancybox.close();
-        fermer_zone_saisir();
-      }
-    );
-
-    $('#annuler_fermer_zone_saisir').click
-    (
-      function()
-      {
-        $.fancybox.close();
+        $('#titre_saisir').html("");
+        $('#table_saisir').html("<tbody><tr><td></td></tr></tbody>");
+        $('#zone_saisir').css("display","none");
+        $('#form_prechoix , #table_gestion').show('fast');
+        return(false);
       }
     );
 
@@ -764,8 +730,8 @@ $(document).ready
     // Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone_voir').click
-    (
+    $('#fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#titre_voir').html("");
@@ -1530,8 +1496,8 @@ $(document).ready
     // Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#valider_saisir').click
-    (
+    $('#valider_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         if(modification==false)

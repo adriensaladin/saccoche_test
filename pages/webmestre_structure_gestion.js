@@ -51,22 +51,6 @@ $(document).ready
     trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Recharger la page en restreignant l'affichage en fonction des choix préalables
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#form_prechoix select').change
-    (
-      function()
-      {
-        if($('#f_geo_id option:selected').val())
-        {
-          $('table.form, #structures').hide(0);
-          $('#form_prechoix').submit();
-        }
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,7 +118,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '<i>'+date_mysql+'</i>'+input_date , 'bloquer' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*base_id*/ , '' /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '<i>'+date_mysql+'</i>'+input_date , 'bloquer' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -292,7 +276,7 @@ $(document).ready
     (
       function()
       {
-        $('table.form input[type=checkbox]').prop('checked',true);
+        $('#structures input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -300,7 +284,7 @@ $(document).ready
     (
       function()
       {
-        $('table.form input[type=checkbox]').prop('checked',false);
+        $('#structures input[type=checkbox]').prop('checked',false);
         return false;
       }
     );
@@ -497,7 +481,7 @@ $(document).ready
         {
           f_base_id          : { required:false , digits:true },
           f_geo              : { required:true },
-          f_localisation     : { required:true , maxlength:50 },
+          f_localisation     : { required:true , maxlength:100 },
           f_denomination     : { required:true , maxlength:50 },
           f_uai              : { required:false , uai_format:true , uai_clef:true },
           f_contact_nom      : { required:true , maxlength:20 },
@@ -509,7 +493,7 @@ $(document).ready
         {
           f_base_id          : { digits:"nombre entier requis" },
           f_geo              : { required:"zone manquante" },
-          f_localisation     : { required:"localisation manquante" , maxlength:"50 caractères maximum" },
+          f_localisation     : { required:"localisation manquante" , maxlength:"100 caractères maximum" },
           f_denomination     : { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
           f_uai              : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
           f_contact_nom      : { required:"nom manquant" , maxlength:"20 caractères maximum" },

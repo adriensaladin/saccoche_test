@@ -33,7 +33,7 @@ $check            = (isset($_POST['f_check']))            ? Clean::entier($_POST
 $base_id          = (isset($_POST['f_base_id']))          ? Clean::entier($_POST['f_base_id'])            : 0;
 $listing_base_id  = (isset($_POST['f_listing_id']))       ? $_POST['f_listing_id']                        : '';
 $geo_id           = (isset($_POST['f_geo']))              ? Clean::entier($_POST['f_geo'])                : 0;
-$localisation     = (isset($_POST['f_localisation']))     ? Clean::texte($_POST['f_localisation'])        : '';
+$localisation     = (isset($_POST['f_localisation']))     ? $_POST['f_localisation']                      : ''; // Ne pas appliquer trim()
 $denomination     = (isset($_POST['f_denomination']))     ? Clean::texte($_POST['f_denomination'])        : '';
 $uai              = (isset($_POST['f_uai']))              ? Clean::uai($_POST['f_uai'])                   : '';
 $contact_nom      = (isset($_POST['f_contact_nom']))      ? Clean::nom($_POST['f_contact_nom'])           : '';
@@ -108,7 +108,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   @sleep(1);
   // Personnaliser certains paramètres de la structure
   $tab_parametres = array();
-  $tab_parametres['version_base']               = VERSION_BASE_STRUCTURE;
+  $tab_parametres['version_base']               = VERSION_BASE;
   $tab_parametres['webmestre_uai']              = $uai;
   $tab_parametres['webmestre_denomination']     = $denomination;
   $tab_parametres['etablissement_denomination'] = $denomination;

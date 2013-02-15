@@ -81,7 +81,7 @@ class InfoServeur
       case 'version_php'                 : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.';
       case 'version_mysql'               : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.5 est stable depuis octobre 2010.';
       case 'version_sacoche_prog'        : return 'Dernière version disponible : '.InfoServeur::SACoche_version_dispo();
-      case 'version_sacoche_base'        : return InfoServeur::info_base_complement().'Version attendue : '.VERSION_BASE_STRUCTURE;
+      case 'version_sacoche_base'        : return InfoServeur::info_base_complement().'Version attendue : '.VERSION_BASE;
       case 'max_execution_time'          : return 'Par défaut 30 secondes.<br />Une valeur trop faible pourrait gêner les sauvegardes / restaurations de grosses bases.';
       case 'max_input_vars'              : return 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
       case 'memory_limit'                : return 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
@@ -218,9 +218,9 @@ class InfoServeur
    */
   private static function version_sacoche_base()
   {
-    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                                      return InfoServeur::cellule_coloree_centree('indisponible'                     ,'jaune');
-    if(version_compare($_SESSION['VERSION_BASE_STRUCTURE'],VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE_STRUCTURE'],'vert');
-                                                                                        return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE_STRUCTURE'],'rouge');
+    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                  return InfoServeur::cellule_coloree_centree('indisponible','jaune');
+    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
+                                                                    return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
 
   /**

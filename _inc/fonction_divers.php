@@ -449,10 +449,10 @@ function fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $period
  * @param int   $BASE
  * @return void
  */
-function maj_base_structure_si_besoin($BASE)
+function maj_base_si_besoin($BASE)
 {
-  $version_base_structure = DB_STRUCTURE_PUBLIC::DB_version_base();
-  if($version_base_structure != VERSION_BASE_STRUCTURE)
+  $version_base = DB_STRUCTURE_PUBLIC::DB_version_base();
+  if($version_base != VERSION_BASE)
   {
     // On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
     if(LockAcces::tester_blocage('webmestre',0)===NULL)
@@ -460,7 +460,7 @@ function maj_base_structure_si_besoin($BASE)
       // Bloquer l'application
       LockAcces::bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
       // Lancer une mise à jour de la base
-      DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base_structure);
+      DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
       // Log de l'action
       SACocheLog::ajouter('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
       // Débloquer l'application

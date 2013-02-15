@@ -291,8 +291,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
   </table>
   <p>
   <ul class="puce">
-    <li><a id="export_voir_repart_quantitative_couleur" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em> en couleurs).</span></a></li>
-    <li><a id="export_voir_repart_quantitative_gris" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em> monochrome).</span></a></li>
+    <li><a id="export_file6" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em>).</span></a></li>
   </ul>
   </p>
   <p>
@@ -302,8 +301,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
   </p>
   <p>
   <ul class="puce">
-    <li><a id="export_voir_repart_nominative_couleur" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em> en couleurs).</span></a></li>
-    <li><a id="export_voir_repart_nominative_gris" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em> monochrome).</span></a></li>
+    <li><a id="export_file7" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em>).</span></a></li>
   </ul>
   </p>
 </div>
@@ -312,7 +310,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
 <form action="#" method="post" id="zone_saisir" class="hide" onsubmit="return false">
   <h2>Saisir les acquisitions à une évaluation</h2>
   <p>
-    <b id="titre_saisir"></b> <button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button> <label id="ajax_msg_saisir"></label>
+    <b id="titre_saisir"></b><label id="ajax_msg_saisir"></label>
     <input id="saisir_ref" name="f_ref" type="hidden" value="" />
     <input id="saisir_date_mysql" name="f_date_mysql" type="hidden" value="" />
     <input id="saisir_date_visible" name="f_date_visible" type="hidden" value="" />
@@ -340,8 +338,8 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
     <div id="zone_saisir_deport" class="hide">
       <ul class="puce">
         <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
-        <li><a id="export_file_saisir_tableau_scores_csv" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</span></a></li>
-        <li><a id="export_file_saisir_tableau_scores_vierge" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
+        <li><a id="export_file1" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</span></a></li>
+        <li><a id="export_file4" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
         <li><button id="import_file" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button><label id="msg_import">&nbsp;</label></li>
       </ul>
     </div>
@@ -351,7 +349,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
 <div id="zone_voir" class="hide">
   <h2>Voir les acquisitions à une évaluation</h2>
   <p>
-    <b id="titre_voir"></b> <button id="fermer_zone_voir" type="button" class="retourner">Retour</button> <label id="ajax_msg_voir"></label>
+    <b id="titre_voir"></b><label id="ajax_msg_voir"></label>
   </p>
   <table id="table_voir" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
@@ -361,20 +359,11 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
     <div id="zone_voir_deport" class="hide">
       <ul class="puce">
         <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
-        <li><a id="export_file_voir_tableau_scores_csv" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier des scores pour une saisie déportée (format <em>csv</em>).</span></a></li>
-        <li><a id="export_file_voir_tableau_scores_vierge" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
-        <li><a id="export_file_voir_tableau_scores_couleur" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> en couleurs).</span></a></li>
-        <li><a id="export_file_voir_tableau_scores_gris" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
+        <li><a id="export_file2" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier des scores pour une saisie déportée (format <em>csv</em>).</span></a></li>
+        <li><a id="export_file3" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
+        <li><a id="export_file5" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> en couleurs).</span></a></li>
+        <li><a id="export_file8" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
       </ul>
     </div>
-  </p>
-</div>
-
-<div id="zone_confirmer_fermer_saisir" class="hide">
-  <p class="danger">Des saisies ont été effectuées, mais n'ont pas été enregistrées.</p>
-  <p>Confirmez-vous vouloir quitter l'interface de saisie ?</p>
-  <p>
-    <button id="confirmer_fermer_zone_saisir" type="button" class="valider">Oui, je ne veux pas enregistrer</button>
-    <button id="annuler_fermer_zone_saisir" type="button" class="annuler">Non, je retourne sur l'interface</button>
   </p>
 </div>

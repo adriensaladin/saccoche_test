@@ -34,8 +34,8 @@
 // - un administrateur vient de restaurer une base
 // - un utilisateur vient de se connecter
 
-// La méthode DB_version_base(), déjà définie dans la classe DB_STRUCTURE_PUBLIC, est redéfinie ici.
-// Elle est invoquée systématiquement à chaque étape, au cas où des mises à jour simultanées seraient lancées (c'est déjà arrivé) malgré les précautions prises (fichier de blocage).
+// La méthode DB_version_base(), déjà définie dans la classe DB_STRUCTURE_MAJ_BASE, est redéfinie ici.
+// Elle est invoqué à chaque étape systématiquement au cas où des mises à jour simultanées seraient lancées (c'est déjà arrivé) malgré les précautions prises (fichier de blocage).
 
 class DB_STRUCTURE_MAJ_BASE extends DB
 {
@@ -59,31 +59,22 @@ public static function DB_version_base()
 /**
  * Mettre à jour la base de l'établissement
  *
- * @param string   $version_base_structure_actuelle
+ * @param string   $version_actuelle
  * @return void
  */
-public static function DB_maj_base($version_base_structure_actuelle)
+public static function DB_maj_base($version_actuelle)
 {
-
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // On s'arrête si c'est un pb de fichier non récupéré ou de base inaccessible
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  if( !VERSION_BASE_STRUCTURE || !$version_base_structure_actuelle )
-  {
-    exit_error( 'Erreur MAJ BDD' /*titre*/ , 'Fichier avec version de la base manquant, ou base insaccessible.' /*contenu*/ );
-  }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // MAJ 2010-05-15 => 2010-06-03
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-05-15')
+  if($version_actuelle=='2010-05-15')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-06-03';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-06-03';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // date/heure de dernière connexion effective
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_connexion_date DATETIME NOT NULL AFTER user_statut' );
     }
@@ -93,12 +84,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-06-03 => 2010-06-12
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-06-03')
+  if($version_actuelle=='2010-06-03')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-06-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-06-12';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // date/heure de dernière tentative de connexion
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_tentative_date DATETIME NOT NULL AFTER user_statut' );
     }
@@ -108,12 +99,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-06-12 => 2010-07-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-06-12')
+  if($version_actuelle=='2010-06-12')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'index
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD INDEX groupe_type (groupe_type)' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD INDEX groupe_prof_id (groupe_prof_id)' );
@@ -129,12 +120,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-04 => 2010-07-13
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-04')
+  if($version_actuelle=='2010-07-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-13';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-13';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // mise à jour majeure du socle
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_section CHANGE section_nom section_nom VARCHAR(165) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_pilier SET pilier_nom=REPLACE(pilier_nom,"Pilier ","Compétence ")' );
@@ -340,12 +331,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-13 => 2010-07-15
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-13')
+  if($version_actuelle=='2010-07-13')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-15';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-15';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // paramétrage codes Lomer / background-color
       // La première instruction ayant été oubliée, quelques tentatives d'installations peuvent être corrompues => corrigé dans la v.2010-07-27.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
@@ -360,12 +351,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-15 => 2010-07-16
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-15')
+  if($version_actuelle=='2010-07-15')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-16';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-16';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // oubli d'une modification du socle
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Organisation et gestion de données : reconnaître des situations de proportionnalité, utiliser des pourcentages, des tableaux, des graphiques ; exploiter des données statistiques et aborder des situations simples de probabilité." , entree_ordre=0 WHERE entree_id=197' );
     }
@@ -375,12 +366,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-16 => 2010-07-27
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-16')
+  if($version_actuelle=='2010-07-16')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-27';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-27';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Correction du bug signalé dans le passage de la v.2010-07-13 à la v.2010-07-15.
       $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_background-color"' );
       if(!empty($DB_ROW))
@@ -407,12 +398,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-27 => 2010-07-29
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-27')
+  if($version_actuelle=='2010-07-27')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-29';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-29';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un champ qui va finalement servir pour valider les piliers
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier ADD validation_pilier_etat TINYINT(1) NOT NULL COMMENT "1 si validation positive ; 0 si validation négative." AFTER pilier_id' );
       // ajout de 2 entrées pour gérer les droits de validation
@@ -425,12 +416,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-29 => 2010-07-31
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-29')
+  if($version_actuelle=='2010-07-29')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-07-31';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-07-31';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification d'un champ afin de pouvoir repérer les demandes d'évaluations en attente de saisie
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note ENUM( "VV", "V", "R", "RR", "ABS", "NN", "DISP", "REQ" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
     }
@@ -440,12 +431,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-07-31 => 2010-08-01
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-07-31')
+  if($version_actuelle=='2010-07-31')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-08-01';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-08-01';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // renommage d'un champ pour davantage de clarté en vu de l'ajout d'options
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"ms","BilanMoyenneScore") WHERE parametre_nom="eleve_options"' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"pv","BilanPourcentageAcquis") WHERE parametre_nom="eleve_options"' );
@@ -461,12 +452,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-08-01 => 2010-08-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-08-01')
+  if($version_actuelle=='2010-08-01')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-08-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-08-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un champ pour pouvoir décider si un item est disponible ou non à la réévaluation
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item ADD item_cart TINYINT(1) NOT NULL DEFAULT "1" COMMENT "0 pour empêcher les élèves de demander une évaluation sur cet item." AFTER item_coef' );
     }
@@ -476,12 +467,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-08-04 => 2010-08-05
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-08-04')
+  if($version_actuelle=='2010-08-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-08-05';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-08-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // finalement la table RSS ne va pas servir
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE sacoche_rss' );
     }
@@ -491,12 +482,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-08-05 => 2010-08-06
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-08-05')
+  if($version_actuelle=='2010-08-05')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-08-06';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-08-06';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajouter deux matières communes
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (40 , 1 , 0 , "VSPRO" , "Vie sociale et professionnelle")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (41 , 1 , 0 , "G-TPR" , "Enseignement technologique-professionnel")' );
@@ -507,12 +498,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-08-06 => 2010-09-27
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-08-06')
+  if($version_actuelle=='2010-08-06')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-09-27';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-09-27';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // oubli d'une entrée à supprimer dans sacoche_niveau() pour l'ex-palier 4
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_niveau WHERE niveau_id=4' );
       // récupérer qq infos pour maj la suite
@@ -546,12 +537,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-09-27 => 2010-10-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-09-27')
+  if($version_actuelle=='2010-09-27')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-10-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-10-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajouter une gestion de droits
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_score_bilan" , "directeur,professeur,eleve")' );
     }
@@ -561,12 +552,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-10-04 => 2010-10-16
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-10-04')
+  if($version_actuelle=='2010-10-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-10-16';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-10-16';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modif de champs TINYTEXT en VARCHAR
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_entree CHANGE entree_nom entree_nom VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_info saisie_info VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du devoir et du professeur, conservé les années suivantes."' );
@@ -628,12 +619,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-10-16 => 2010-10-29
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-10-16')
+  if($version_actuelle=='2010-10-16')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-10-29';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-10-29';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajouter une entrée dans sacoche_referentiel pour paramétrer le bulletin de synthèse
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_mode_synthese ENUM( "inconnu", "sans", "domaine", "theme" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "inconnu" ' );
       // ajouter une entrée dans sacoche_matiere pour ordonner les matières dans le bulletin de synthèse
@@ -669,12 +660,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-10-29 => 2010-11-03
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-10-29')
+  if($version_actuelle=='2010-10-29')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-03';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-03';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_RR"   , "A complètement échoué.")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_R"    , "A plutôt échoué.")' );
@@ -693,12 +684,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-03 => 2010-11-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-03')
+  if($version_actuelle=='2010-11-03')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // mise à jour de paramètres (anciennement changés pour les nouveaux, mais modifs oubliées pour les anciens)
       $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_mode"' );
       if($DB_ROW['parametre_valeur']=='normal')
@@ -718,12 +709,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-04 => 2010-11-14
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-04')
+  if($version_actuelle=='2010-11-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-14';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-14';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // remise du niveau P4 pour que les lycées puissent disposer d'un "niveau transversal"
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (4,4,159,"P4","","Palier 4 (2nde - Tle)")' );
       // ajout d'une matière "Informatique" pour gérer le b2i
@@ -750,12 +741,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-14 => 2010-11-15
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-14')
+  if($version_actuelle=='2010-11-14')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-15';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-15';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Niveaux 'longitudinaux' renommés en 'cycles' pour éviter la confusion avec la notion de palier du socle
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle 2 (GS-CE1)"  WHERE niveau_id=1' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle 3 (CE2-CM2)" WHERE niveau_id=2' );
@@ -774,12 +765,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-15 => 2010-11-16
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-15')
+  if($version_actuelle=='2010-11-15')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-16';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-16';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Double erreur dans la maj précédente : "cycle_id" au lieu de "niveau_cycle" et erreur dans la requête pour créer sacoche_niveau sur les nouvelles installations
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLES FROM '.SACOCHE_STRUCTURE_BD_NAME.' LIKE "sacoche_niveau"');
       if(!empty($DB_TAB))
@@ -800,12 +791,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-16 => 2010-11-28
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-16')
+  if($version_actuelle=='2010-11-16')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2010-11-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2010-11-28';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajouter une gestion de droits
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_algorithme" , "directeur,professeur,eleve")' );
       // nouvel attribut user : daltonisme
@@ -817,12 +808,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2010-11-28 => 2011-01-06
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2010-11-28')
+  if($version_actuelle=='2010-11-28')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-01-06';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-01-06';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajouter la matière Sciences
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 43, 1, 0, 255, "SCIEN", "Sciences")' );
       // convertir la matière "Vie sociale et professionnelle" en "Prévention-Santé-Environnement" (http://media.education.gouv.fr/file/special_2/25/5/prevention_sante_environnement_44255.pdf)
@@ -834,12 +825,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-01-06 => 2011-03-08
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-01-06')
+  if($version_actuelle=='2011-01-06')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-03-08';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-03-08';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // changement des dénominations par défaut associées aux codes de couleur
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très insuffisant."  WHERE parametre_valeur="A complètement échoué."' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Insuffisant."       WHERE parametre_valeur="A plutôt échoué."' );
@@ -857,12 +848,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-03-08 => 2011-03-16
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-03-08')
+  if($version_actuelle=='2011-03-08')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-03-16';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-03-16';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // correction de bug : champ défini à tinyint(1) au lieu de tinyint(3) pour les nouvelles structures.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere CHANGE matiere_nb_demandes matiere_nb_demandes TINYINT(3) UNSIGNED NOT NULL DEFAULT "0" ' );
     }
@@ -872,12 +863,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-03-16 => 2011-04-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-03-16')
+  if($version_actuelle=='2011-03-16')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-04-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-04-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout des matières correspondant aux piliers, utiles pour organiser les référentiels à l'école primaire
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 90, 1, 0, 0, 255,  "P1", "1 Maîtrise de la langue française")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 91, 1, 0, 0, 255,  "P2", "2 Pratique d\'une langue vivante étrangère")' );
@@ -894,12 +885,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-04-04 => 2011-05-10
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-04-04')
+  if($version_actuelle=='2011-04-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-05-10';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-05-10';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de 2 champs pour paramétrer la date à partir de laquelle les élèves ont accès aux notes d'une évaluation
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_visible_date DATE NOT NULL DEFAULT "0000-00-00" AFTER devoir_info' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ADD saisie_visible_date DATE NOT NULL DEFAULT "0000-00-00" AFTER saisie_info' );
@@ -915,12 +906,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-05-10 => 2011-05-20
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-05-10')
+  if($version_actuelle=='2011-05-10')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-05-20';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-05-20';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // mise à jour d'un champ du socle
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Adopter des comportements favorables à sa santé et sa sécurité." WHERE entree_id=268' );
     }
@@ -930,12 +921,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-05-20 => 2011-05-22
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-05-20')
+  if($version_actuelle=='2011-05-20')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-05-22';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-05-22';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'une entrée pour gérer les droits de validation
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_annulation_pilier" , "directeur,aucunprof")' );
     }
@@ -945,12 +936,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-05-22 => 2011-05-31
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-05-22')
+  if($version_actuelle=='2011-05-22')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-05-31';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-05-31';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification/réorganisation de la table user pour gérer les champs de sconet eleve_id et individu_fonction
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_sconet_id MEDIUMINT UNSIGNED NOT NULL DEFAULT "0" COMMENT "ELEVE.ELEVE.ID pour un élève ; INDIVIDU_ID pour un prof" AFTER user_num_sconet' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_sconet_elenoet SMALLINT UNSIGNED NOT NULL DEFAULT "0" COMMENT "ELENOET pour un élève (entre 2000 et 5000 ; parfois appelé n° GEP avec un 0 devant)" AFTER user_sconet_id' );
@@ -1015,12 +1006,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-05-31 => 2011-06-05
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-05-31')
+  if($version_actuelle=='2011-05-31')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-06-05';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-06-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // champ oublié dans la création de table user depuis la maj précédente
       $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SHOW CREATE TABLE sacoche_user' );
       if(!strpos($DB_ROW['Create Table'],'eleve_langue'))
@@ -1062,12 +1053,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-06-05 => 2011-06-06
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-06-05')
+  if($version_actuelle=='2011-06-05')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-06-06';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-06-06';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification de la valeur par défaut pour eleve_langue
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE eleve_langue eleve_langue TINYINT(3) UNSIGNED NOT NULL DEFAULT "100" COMMENT "Langue choisie pour le socle." ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 5000');
@@ -1083,12 +1074,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-06-06 => 2011-06-08
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-06-06')
+  if($version_actuelle=='2011-06-06')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-06-08';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-06-08';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // correctif de la modification des identifiants d'item du 2011-05-31
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET entree_id=0 WHERE entree_id=1000' );
       // ajout de 2 paramètres
@@ -1108,12 +1099,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-06-08 => 2011-06-24
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-06-08')
+  if($version_actuelle=='2011-06-08')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-06-24';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-06-24';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification de sacoche_jointure_parent_eleve
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num TINYINT(3) UNSIGNED NOT NULL DEFAULT 1 ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve ADD resp_legal_envoi TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 ' );
@@ -1130,12 +1121,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-06-24 => 2011-07-03
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-06-24')
+  if($version_actuelle=='2011-06-24')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-07-03';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-07-03';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de niveaux BTS et modification du champ correspondant
       if(empty($reload_sacoche_niveau))
       {
@@ -1158,12 +1149,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-07-03 => 2011-07-18
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-07-03')
+  if($version_actuelle=='2011-07-03')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-07-18';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-07-18';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification des identifiants d'item pour qu'ils correspondent à ceux de LPC : infos enfin disponibles pour le palier 1 ! (RAS pour les identifiants des compétences)
       $tab_conv_items = array(1=>3111,2=>3112,3=>3113,4=>3121,5=>3122,6=>3123,7=>3124,8=>3125,9=>3131,10=>3132,11=>3133,12=>3141,13=>3142,14=>3143,15=>3144,16=>3145,17=>3151,18=>3152,19=>3153,20=>3154,21=>3161,22=>3162,23=>3163,24=>3311,25=>3312,26=>3313,27=>3314,28=>3315,29=>3316,30=>3317,31=>3318,32=>3321,33=>3322,34=>3323,35=>3324,36=>3325,37=>3326,38=>3331,39=>3332,40=>3333,41=>3341,42=>3342,43=>3611,44=>3621,45=>3622,46=>3623);
       foreach($tab_conv_items as $new => $old)
@@ -1179,12 +1170,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-07-18 => 2011-08-02
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-07-18')
+  if($version_actuelle=='2011-07-18')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-08-02';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-08-02';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de 3 paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("gepi_url" , "")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("gepi_rne" , "")' );
@@ -1196,12 +1187,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-08-02 => 2011-08-18
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-08-02')
+  if($version_actuelle=='2011-08-02')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-08-18';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-08-18';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // suppression de fichiers temporaires déplacés (sans rapport avec la base, mais à effectuer)
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE,0);
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS,0);
@@ -1212,12 +1203,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-08-18 => 2011-08-20
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-08-18')
+  if($version_actuelle=='2011-08-18')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-08-20';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-08-20';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification de sacoche_jointure_parent_eleve
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve DROP resp_legal_envoi ' );
       // retrait des contacts
@@ -1242,12 +1233,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-08-20 => 2011-10-01
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-08-20')
+  if($version_actuelle=='2011-08-20')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-10-01';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-10-01';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Le nom de l'évaluation n'était plus associé aux notes mémorisées...
       $DB_SQL = 'SELECT sacoche_saisie.prof_id,eleve_id,devoir_id,item_id,devoir_info,user_nom,user_prenom ';
       $DB_SQL.= 'FROM sacoche_saisie ';
@@ -1269,12 +1260,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-10-01 => 2011-10-09
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-10-01')
+  if($version_actuelle=='2011-10-01')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-10-09';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-10-09';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // suppression du champ groupe_prof_id pour un groupe de besoin ou un groupe d'évaluation (utilisation de la table de jointure existance à la place)
       $DB_SQL = 'SELECT groupe_id,groupe_prof_id FROM sacoche_groupe WHERE groupe_type IN ("besoin","eval")';
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
@@ -1297,12 +1288,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-10-09 => 2011-10-23
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-10-09')
+  if($version_actuelle=='2011-10-09')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-10-23';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-10-23';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de 2 index
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ADD UNIQUE saisie_key ( eleve_id , devoir_id , item_id )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD INDEX ( user_id_gepi )' );
@@ -1313,12 +1304,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-10-23 => 2011-11-12
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-10-23')
+  if($version_actuelle=='2011-10-23')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-11-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-11-12';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // depuis le 05/06/2010 les nouvelles bases voyaient le champ "sacoche_parametre" défini à VARCHAR(25) au lieu de VARCHAR(30)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_bilan_pourcentage_acquis" WHERE parametre_nom="droit_bilan_pourcentage_a"' );
@@ -1332,12 +1323,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-11-12 => 2011-11-20
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-11-12')
+  if($version_actuelle=='2011-11-12')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-11-20';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-11-20';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un paramètre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_grilles_items" , "directeur,professeur,parent,eleve")' );
       // ajout d'un niveau cycle
@@ -1353,12 +1344,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-11-20 => 2011-12-24
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-11-20')
+  if($version_actuelle=='2011-11-20')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-12-24';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-12-24';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de 2 paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_gerer_referentiel" , "profcoordonnateur")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_gerer_ressource" , "professeur")' );
@@ -1369,12 +1360,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-12-24 => 2011-12-30
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-12-24')
+  if($version_actuelle=='2011-12-24')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2011-12-30';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2011-12-30';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // maj liens
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D10","http://sacoche.sesamath.net/__ress_html/2354/117.html")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D11","http://sacoche.sesamath.net/__ress_html/2354/118.html")' );
@@ -1452,12 +1443,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2011-12-30 => 2012-01-04
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2011-12-30')
+  if($version_actuelle=='2011-12-30')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-01-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-01-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // la validation d'une association de PP aux classes supprimait les associations des propriétaires de groupes de besoin et sans doute aussi des évaluations sur une sélection d'élèves ; problème potentiel probablement depuis 2010-10-29
       $DB_SQL = 'SELECT groupe_id, user_id, SUM(jointure_pp) as nb_pp ';
       $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
@@ -1481,12 +1472,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-01-04 => 2012-01-13
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-01-04')
+  if($version_actuelle=='2012-01-04')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-01-13';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-01-13';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un paramètre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("mdp_longueur_mini" , "6")' );
     }
@@ -1496,12 +1487,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-01-13 => 2012-01-16
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-01-13')
+  if($version_actuelle=='2012-01-13')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-01-16';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-01-16';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification de la syntaxe de mémorisation des profs associés à un devoir (le caractère "," est préférable à "_" car dans une recherche LIKE ce dernier signifie "un caractère" (même si on peut l'échapper).
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_partage=REPLACE(devoir_partage,"_",",")' );
     }
@@ -1511,12 +1502,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-01-16 => 2012-01-28
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-01-16')
+  if($version_actuelle=='2012-01-16')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-01-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-01-28';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification d'un champ de "sacoche_parametre"
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
       // récupération de paramètre
@@ -1575,12 +1566,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-01-28 => 2012-02-08
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-01-28')
+  if($version_actuelle=='2012-01-28')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-08';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-08';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // maj liens suite passage https
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://sacoche.sesamath.net","https://sacoche.sesamath.net")' );
     }
@@ -1590,12 +1581,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-08 => 2012-02-13
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-08')
+  if($version_actuelle=='2012-02-08')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-13';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-13';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // récupération des informations sur les matières
       $listing_matieres_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="matieres"' );
       $DB_TAB_communes     = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_id IN('.$listing_matieres_id.')');
@@ -1675,12 +1666,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-13 => 2012-02-15
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-13')
+  if($version_actuelle=='2012-02-13')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-15';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-15';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Inversion des noms de deux matières
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="P3A", matiere_nom="3 Principaux éléments de mathématiques"  WHERE matiere_id=9903');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="P3B", matiere_nom="3 Culture scientifique et technologique" WHERE matiere_id=9904');
@@ -1691,12 +1682,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-15 => 2012-02-19
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-15')
+  if($version_actuelle=='2012-02-15')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-19';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-19';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // récupération des informations sur les niveaux, cycles, paliers
       $listing_niveaux_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="niveaux"' );
       $listing_cycles_id  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="cycles"' );
@@ -1746,12 +1737,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-19 => 2012-02-22
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-19')
+  if($version_actuelle=='2012-02-19')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-22';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-22';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // La dernière version n'installait pas la table sacoche_socle_palier (virgule mal placée)
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_socle_palier"');
       if(empty($DB_TAB))
@@ -1768,12 +1759,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-22 => 2012-02-23
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-22')
+  if($version_actuelle=='2012-02-22')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-23';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-23';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Les 2 dernières versions n'installaient pas la table sacoche_jointure_user_pilier (mot ADD en trop)
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_jointure_user_pilier"');
       if(empty($DB_TAB))
@@ -1790,12 +1781,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-23 => 2012-02-29
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-23')
+  if($version_actuelle=='2012-02-23')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-02-29';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-02-29';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'une table sacoche_selection_item
       // La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_selection_item' );
@@ -1807,12 +1798,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-02-29 => 2012-03-05
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-02-29')
+  if($version_actuelle=='2012-02-29')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-03-05';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-03-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification de 2 références d'ENT
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"scolastance02","ent_02") WHERE parametre_nom="connexion_nom"' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"entea","ent_alsace") WHERE parametre_nom="connexion_nom"' );
@@ -1823,12 +1814,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-03-05 => 2012-03-12
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-03-05')
+  if($version_actuelle=='2012-03-05')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-03-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-03-12';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un champ pour paramétrer une date limite d'autoévaluation, et de deux champs pour l'adresse d'un sujet ou d'un corrigé
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_autoeval_date DATE NOT NULL DEFAULT "0000-00-00" AFTER devoir_visible_date ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_doc_sujet   VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
@@ -1840,12 +1831,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-03-12 => 2012-03-29
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-03-12')
+  if($version_actuelle=='2012-03-12')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-03-29';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-03-29';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification des deux champs pour l'adresse d'un sujet ou d'un corrigé
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_sujet devoir_doc_sujet     VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_corrige devoir_doc_corrige VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
@@ -1874,12 +1865,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-03-29 => 2012-05-01
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-03-29')
+  if($version_actuelle=='2012-03-29')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-05-01';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-05-01';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modification sacoche_jointure_groupe_periode
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP bulletin_modele, DROP bulletin_etat' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode ADD officiel_releve ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_bulletin ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier1 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier2 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier3 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
@@ -1954,12 +1945,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-05-01 => 2012-05-14
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-05-01')
+  if($version_actuelle=='2012-05-01')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-05-14';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-05-14';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_generale"      , "0" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_modifier_statut"   , "directeur,aucunprof" )' );
@@ -1972,12 +1963,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-05-14 => 2012-05-21
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-05-14')
+  if($version_actuelle=='2012-05-14')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-05-21';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-05-21';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // renommage d'un champ de sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"restreindre","tampon") WHERE parametre_nom="officiel_tampon_signature"' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"remplacer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
@@ -2003,12 +1994,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-05-21 => 2012-06-03
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-05-21')
+  if($version_actuelle=='2012-05-21')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-06-03';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-06-03';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // enregistrement des signatures en base64 sinon souci lors de sauvegarde/restauration de bases
       $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT user_id, signature_contenu FROM sacoche_signature');
       if(!empty($DB_TAB))
@@ -2025,12 +2016,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-06-03 => 2012-06-07
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-06-03')
+  if($version_actuelle=='2012-06-03')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-06-07';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-06-07';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un champs pour enregistrer les préférences de l'utilisateur relatives aux messages d'accueil
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_param_accueil VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,info,help,ecolo"' );
     }
@@ -2040,12 +2031,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-06-07 => 2012-06-25
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-06-07')
+  if($version_actuelle=='2012-06-07')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-06-25';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-06-25';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // valeur renommée dans sacoche_niveau_famille
       if(empty($reload_sacoche_niveau_famille))
       {
@@ -2068,12 +2059,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-06-25 => 2012-06-28
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-06-25')
+  if($version_actuelle=='2012-06-25')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-06-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-06-28';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // correctifs de champs mal initialisés
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_releve_modifier_statut"   WHERE parametre_nom="droit_officiel_releve_changer_etat"' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_modifier_statut" WHERE parametre_nom="droit_officiel_bulletin_changer_etat"' );
@@ -2085,12 +2076,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-06-28 => 2012-07-07
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-06-28')
+  if($version_actuelle=='2012-06-28')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-07-07';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-07-07';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // déplacement matière FLE
       $tab_tables = array(
         'sacoche_matiere'               => 'matiere_id',
@@ -2176,12 +2167,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-07-07 => 2012-09-10
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-07-07')
+  if($version_actuelle=='2012-07-07')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-09-10';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-09-10';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // renommage et modification de la table sacoche_signature (pour sacoche_image)
       // supprimer la table sacoche_image si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette table éventuellement existante gène.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_image' );
@@ -2200,12 +2191,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-09-10 => 2012-10-06
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-09-10')
+  if($version_actuelle=='2012-09-10')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-10-06';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-10-06';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modifier un paramètre CAS pour l'ENT Mirabelle
       $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
       if($connexion_nom=='mirabelle')
@@ -2219,12 +2210,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-10-06 => 2012-10-09
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-10-06')
+  if($version_actuelle=='2012-10-06')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-10-09';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-10-09';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout d'un paramètre de département pour les connexions ENT (sert dans l'affichage du menu déroulant) ; à initialiser.
       $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
       $tab_correspondance = array
@@ -2268,12 +2259,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-10-09 => 2012-10-10
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-10-09')
+  if($version_actuelle=='2012-10-09')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-10-10';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-10-10';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Intégration des champs professionnels de SEGPA comme nouvelles matières.
       if(empty($reload_sacoche_matiere_famille))
       {
@@ -2294,12 +2285,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-10-10 => 2012-10-26
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-10-10')
+  if($version_actuelle=='2012-10-10')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-10-26';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-10-26';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // Passage de champs DATE à NULL possible et par défaut.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user   CHANGE user_connexion_date  user_connexion_date  DATETIME NULL DEFAULT NULL' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user   CHANGE user_tentative_date  user_tentative_date  DATETIME NULL DEFAULT NULL' );
@@ -2314,12 +2305,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-10-26 => 2012-11-05
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-10-26')
+  if($version_actuelle=='2012-10-26')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-11-05';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-11-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_only_socle"           , "0"   )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_retroactif"           , "non" )' );
@@ -2337,12 +2328,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-11-05 => 2012-11-12
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-11-05')
+  if($version_actuelle=='2012-11-05')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-11-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-11-12';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres et renommage d'autres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_releve_etat_acquisition"    , "parent,eleve" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_etat_acquisition" , "1" )' );
@@ -2358,12 +2349,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-11-12 => 2012-11-17
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-11-12')
+  if($version_actuelle=='2012-11-12')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-11-17';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-11-17';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modif champ table sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_valeur parametre_valeur VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
       // nouvelle table sacoche_officiel_assiduite
@@ -2385,12 +2376,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-11-17 => 2012-12-01
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-11-17')
+  if($version_actuelle=='2012-11-17')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-12-01';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-12-01';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modifier un paramètre CAS pour l'ENT de Haute-Marne sur ItsLearning
       $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
       if($connexion_nom=='ent_52_v2')
@@ -2404,12 +2395,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-12-01 => 2012-12-12
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-12-01')
+  if($version_actuelle=='2012-12-01')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-12-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-12-12';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modif index et champ table sacoche_image
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image DROP INDEX image_objet' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image DROP PRIMARY KEY , ADD UNIQUE (user_id , image_objet )' );
@@ -2421,12 +2412,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-12-12 => 2012-12-14
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-12-12')
+  if($version_actuelle=='2012-12-12')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-12-14';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-12-14';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modif champ table sacoche_message
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message CHANGE message_contenu message_contenu TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
       // modif champ table sacoche_user
@@ -2439,12 +2430,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-12-14 => 2012-12-27
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-12-14')
+  if($version_actuelle=='2012-12-14')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2012-12-27';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2012-12-27';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // modifier un paramètre CAS pour l'ENT Agora06
       $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
       if($connexion_nom=='ent_06')
@@ -2458,12 +2449,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2012-12-27 => 2013-01-05
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2012-12-27')
+  if($version_actuelle=='2012-12-27')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-01-05';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2013-01-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // distinction des ENT agora06 et ent_nice
       $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
       if($connexion_nom=='ent_06')
@@ -2486,12 +2477,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
   // MAJ 2013-01-05 => 2013-01-18
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if($version_base_structure_actuelle=='2013-01-05')
+  if($version_actuelle=='2013-01-05')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-01-18';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2013-01-18';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // re-suppression ligne dans sacoche_parametre car figurait toujours dans le sql de création.
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes"' );
       // nouvelle table sacoche_user_profil
@@ -2546,12 +2537,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-01-18')
+  if($version_actuelle=='2013-01-18')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-01-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2013-01-28';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de clefs, sauf si bonnes requêtes de création de la table déjà passées
       if(empty($reload_sacoche_user_profil))
       {
@@ -2561,12 +2552,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-01-28')
+  if($version_actuelle=='2013-01-28')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-01-31';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2013-01-31';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_fusion_niveaux"              , "1"   )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_corriger_appreciation"   , "DIR" )' );
@@ -2575,12 +2566,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-01-31')
+  if($version_actuelle=='2013-01-31')
   {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-02-04';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      $version_actuelle = '2013-02-04';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout champ table sacoche_message
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message ADD message_dests_cache TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_message SET message_dests_cache="," ' );

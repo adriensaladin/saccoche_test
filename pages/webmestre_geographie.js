@@ -175,13 +175,13 @@ $(document).ready
       {
         rules :
         {
-          f_ordre : { required:true , digits:true , range:[1,9999] },
-          f_nom   : { required:true , maxlength:55 }
+          f_ordre : { required:true , digits:true , range:[1,99] },
+          f_nom   : { required:true , maxlength:25 }
         },
         messages :
         {
-          f_ordre : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 9999" },
-          f_nom   : { required:"nom manquant" , maxlength:"55 caractères maximum" }
+          f_ordre : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 99" },
+          f_nom   : { required:"nom manquant" , maxlength:"40 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

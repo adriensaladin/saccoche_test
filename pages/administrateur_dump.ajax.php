@@ -109,7 +109,7 @@ if($action=='uploader')
     exit('<li><label class="alerte">Erreur : votre archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>');
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
-  if( version_base_fichier_svg($dossier_temp) > VERSION_BASE )
+  if( version_base_fichier_svg($dossier_temp) > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
     exit('<li><label class="alerte">Erreur : votre archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>');

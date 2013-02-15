@@ -338,11 +338,14 @@ define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleS
 // Version des fichiers installés.
 // À comparer avec la dernière version disponible sur le serveur communautaire.
 // Pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
-define('VERSION_PROG', file_get_contents(CHEMIN_DOSSIER_SACOCHE.'VERSION.txt') ); // Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
+// Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
+define('VERSION_PROG', file_get_contents(CHEMIN_DOSSIER_SACOCHE.'VERSION.txt') );
 
-// Version de la base associée.
+// Version de la base associée d'un établissement, et du webmestre si multi-structures.
 // À comparer avec la version de la base actuellement en place.
-define('VERSION_BASE', file_get_contents(CHEMIN_DOSSIER_SQL.'version_bdd.txt') ); // Dans un fichier texte pour faciliter la maintenance par les développeurs.
+// Dans des fichiers texte pour faciliter la maintenance par les développeurs.
+define('VERSION_BASE_STRUCTURE', file_get_contents(CHEMIN_DOSSIER_SQL.'VERSION_BASE_STRUCTURE.txt') ); 
+define('VERSION_BASE_WEBMESTRE', file_get_contents(CHEMIN_DOSSIER_SQL.'VERSION_BASE_WEBMESTRE.txt') );
 
 // dates
 define('TODAY_FR'    ,date("d/m/Y"));
@@ -438,6 +441,7 @@ function __autoload($class_name)
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
     'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
 
+    'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
     'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
     'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
     'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php'

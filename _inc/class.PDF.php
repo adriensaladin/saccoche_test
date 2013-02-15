@@ -554,10 +554,11 @@ class PDF extends FPDF
     $this->tab_couleur['validé']        = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
     $this->tab_couleur['non renseigné'] = array('r'=>$br,'v'=>$bv,'b'=>$bb);
     // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
-    $this->tab_lettre['RR'] = $_SESSION['NOTE_TEXTE']['RR'];
-    $this->tab_lettre['R']  = $_SESSION['NOTE_TEXTE']['R'];
-    $this->tab_lettre['V']  = $_SESSION['NOTE_TEXTE']['V'];
-    $this->tab_lettre['VV'] = $_SESSION['NOTE_TEXTE']['VV'];
+    $this->tab_lettre['RR']  = $_SESSION['NOTE_TEXTE']['RR'];
+    $this->tab_lettre['R']   = $_SESSION['NOTE_TEXTE']['R'];
+    $this->tab_lettre['V']   = $_SESSION['NOTE_TEXTE']['V'];
+    $this->tab_lettre['VV']  = $_SESSION['NOTE_TEXTE']['VV'];
+    $this->tab_lettre['REQ'] = '.....';
     // Les dimensions d'une image (photo, signature) sont données en pixels, et il faut les convertir en mm.
     // Problème : dpi inconnue ! On prend 96 par défaut... mais ça peut être 72 ou 300 ou ... ça dépend de chaque image...
     // mm = (pixels * 25.4) / dpi
@@ -649,7 +650,7 @@ class PDF extends FPDF
         }
         else
         {
-          $txt = ($note!='REQ') ? $this->tab_lettre[$note] : 'Panier' ;
+          $txt = $this->tab_lettre[$note];
           $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $txt , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         }
         break;
@@ -1304,8 +1305,8 @@ class PDF extends FPDF
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthodes pour la mise en page d'un bilan d'items d'une matiere ou pluridisciplinaire
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere"
-  // bilan_item_individuel_entete()        c'est là que les calculs se font pour une sortie "multimatiere" ou "selection"
+  // bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere" ou "selection"
+  // bilan_item_individuel_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
   // bilan_item_individuel_transdisciplinaire_ligne_matiere()
   // bilan_item_individuel_appreciation_rubrique()
   // bilan_item_individuel_appreciation_generale()
@@ -1330,7 +1331,7 @@ class PDF extends FPDF
     $this->aff_codes_notation      = TRUE;
     $this->aff_anciennete_notation = $aff_anciennete_notation;
     $this->aff_etat_acquisition    = $aff_etat_acquisition;
-    if($this->format=='matiere')
+    if( ($this->format=='matiere') || ($this->format=='selection') )
     {
       // Dans ce cas on met plusieurs élèves par page : on calcule maintenant combien et la hauteur de ligne à prendre
       $hauteur_dispo_par_page   = $this->page_hauteur_moins_marges ;
@@ -1364,7 +1365,7 @@ class PDF extends FPDF
   {
     $this->eleve_nom    = $eleve_nom;
     $this->eleve_prenom = $eleve_prenom;
-    if($this->format=='matiere')
+    if( ($this->format=='matiere') || ($this->format=='selection') )
     {
       // La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
       $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
@@ -1380,7 +1381,7 @@ class PDF extends FPDF
       }
       list( $texte_format , $texte_periode , $groupe_nom ) = $tab_infos_entete;
     }
-    elseif( ($this->format=='multimatiere') || ($this->format=='selection') )
+    elseif($this->format=='multimatiere')
     {
       // On prend une nouvelle page PDF
       $this->AddPage($this->orientation , 'A4');
@@ -1474,7 +1475,7 @@ class PDF extends FPDF
       $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
-      if($this->format=='matiere')
+      if( ($this->format=='matiere') || ($this->format=='selection') )
       {
         $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
       }
@@ -1582,8 +1583,8 @@ class PDF extends FPDF
   {
     if(!$this->legende_deja_affichee)
     {
-      // Légende : à la suite si 'matiere' , en bas de page si 'multimatiere' ou 'selection',
-      $ordonnee = ($this->format=='matiere') ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$this->legende_nb_lignes*0.9 ;
+      // Légende : à la suite si 'matiere' ou 'selection' , en bas de page si 'multimatiere',
+      $ordonnee = ( ($this->format=='matiere') || ($this->format=='selection') ) ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$this->legende_nb_lignes*0.9 ;
       if($this->aff_codes_notation)      { $this->afficher_legende( 'codes_notation'      /*type_legende*/ , $ordonnee     /*ordonnée*/ ); } /*toujours TRUE*/
       if($this->aff_anciennete_notation) { $this->afficher_legende( 'anciennete_notation' /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
       if($this->aff_etat_acquisition)    { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }

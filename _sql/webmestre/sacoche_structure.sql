@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS sacoche_structure;
 
 CREATE TABLE sacoche_structure (
   sacoche_base               MEDIUMINT(8) UNSIGNED                NOT NULL AUTO_INCREMENT,
-  geo_id                     TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
+  geo_id                     SMALLINT(5)  UNSIGNED                NOT NULL DEFAULT 0,
   structure_uai              CHAR(8)      COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  structure_localisation     VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  structure_localisation     VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   structure_denomination     VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   structure_contact_nom      VARCHAR(20)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   structure_contact_prenom   VARCHAR(20)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",

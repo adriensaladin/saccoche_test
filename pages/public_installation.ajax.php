@@ -431,7 +431,7 @@ if( $step==6 )
       @sleep(1);
       // Personnaliser certains paramètres de la structure
       $tab_parametres = array();
-      $tab_parametres['version_base']               = VERSION_BASE;
+      $tab_parametres['version_base']               = VERSION_BASE_STRUCTURE;
       $tab_parametres['webmestre_uai']              = HEBERGEUR_UAI;
       $tab_parametres['webmestre_denomination']     = HEBERGEUR_DENOMINATION;
       $tab_parametres['etablissement_denomination'] = HEBERGEUR_DENOMINATION;

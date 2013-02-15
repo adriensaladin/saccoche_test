@@ -157,7 +157,7 @@ if($action=='importer_csv')
       list($export_id,$import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel,$date,$fichier_nom) = $tab_elements;
       $import_id        = Clean::entier($import_id);
       $geo_id           = Clean::entier($geo_id);
-      $localisation     = $localisation; // Ne pas appliquer trim()
+      $localisation     = Clean::texte($localisation);
       $denomination     = Clean::texte($denomination);
       $uai              = Clean::uai($uai);
       $contact_nom      = Clean::nom($contact_nom);
@@ -318,7 +318,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
     exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>');
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
-  if( version_base_fichier_svg($dossier_temp_sql) > VERSION_BASE )
+  if( version_base_fichier_svg($dossier_temp_sql) > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
     exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>');

@@ -294,7 +294,7 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
   {
     // Toutes les étapes sont terminées ; tester si la base nécessite une mise à jour, et si oui alors la lancer
     $version_base_restauree = version_base_fichier_svg($dossier_temp);
-    if( $version_base_restauree < VERSION_BASE )
+    if( $version_base_restauree < VERSION_BASE_STRUCTURE )
     {
       DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base_restauree);
       // Log de l'action

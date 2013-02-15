@@ -63,5 +63,19 @@ public static function DB_OPT_structures_sacoche()
   }
 }
 
+/**
+ * Lister les zones géographiques
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_OPT_lister_zones()
+{
+  $DB_SQL = 'SELECT geo_id AS valeur , geo_nom AS texte ';
+  $DB_SQL.= 'FROM sacoche_geo ';
+  $DB_SQL.= 'ORDER BY geo_ordre ASC';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+}
+
 }
 ?>

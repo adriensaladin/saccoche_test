@@ -61,7 +61,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Mettre à jour la base si nécessaire
-maj_base_si_besoin($BASE);
+maj_base_structure_si_besoin($BASE);
 
 $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)

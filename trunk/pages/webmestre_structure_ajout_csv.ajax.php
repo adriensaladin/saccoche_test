@@ -83,7 +83,7 @@ if($action=='importer_csv')
       list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
       $import_id        = Clean::entier($import_id);
       $geo_id           = Clean::entier($geo_id);
-      $localisation     = $localisation; // Ne pas appliquer trim()
+      $localisation     = Clean::texte($localisation);
       $denomination     = Clean::texte($denomination);
       $uai              = Clean::uai($uai);
       $contact_nom      = Clean::nom($contact_nom);
@@ -185,7 +185,7 @@ if( ($action=='ajouter') && $num && $max )
   @sleep(1);
   // Personnaliser certains paramètres de la structure
   $tab_parametres = array();
-  $tab_parametres['version_base']               = VERSION_BASE;
+  $tab_parametres['version_base']               = VERSION_BASE_STRUCTURE;
   $tab_parametres['webmestre_uai']              = $uai;
   $tab_parametres['webmestre_denomination']     = $denomination;
   $tab_parametres['etablissement_denomination'] = $denomination;

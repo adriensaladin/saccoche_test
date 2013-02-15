@@ -35,24 +35,38 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-// Élément de formulaire "f_geo" pour le choix d'une zone géographique
-$options_geo = '';
-$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
-foreach($DB_TAB as $DB_ROW)
-{
-  $options_geo .= '<option value="'.$DB_ROW['geo_id'].'">'.html($DB_ROW['geo_nom']).'</option>';
-}
+// Récupérer d'éventuels paramètres pour restreindre l'affichage
+// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
+$geo_id = (isset($_POST['f_geo_id'])) ? Clean::entier($_POST['f_geo_id']) : -1 ;
+
+// Construire et personnaliser le formulaire "f_geo" pour le choix d'une zone géographique ainsi que le formulaire "f_geo_id" pour restreindre l'affichage
+$select_f_geo    = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE   , $optgroup='non');
+$select_f_geo_id = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , $select_nom='f_geo_id' , $option_first='oui' , $selection=$geo_id , $optgroup='non');
+$selected = ($geo_id===0) ? ' selected' : '' ;
+$select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""></option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></span></p>
 
+<form action="./index.php?page=webmestre_structure_gestion" method="post" id="form_prechoix">
+  <div><label class="tab" for="f_groupe">Zone géographique :</label><?php echo $select_f_geo_id ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>
+</form>
+
 <script type="text/javascript">
   var input_date = "<?php echo TODAY_FR ?>";
   var date_mysql = "<?php echo TODAY_MYSQL ?>";
+  var geo_defaut = "<?php echo $geo_id ?>";
   // <![CDATA[
-  var options_geo="<?php echo str_replace('"','\"',$options_geo); ?>";
+  var options_geo="<?php echo str_replace('"','\"',$select_f_geo); ?>";
   // ]]>
 </script>
+
+<?php
+if(empty($_POST['f_afficher']))
+{
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+?>
 
 <table class="form bilan_synthese vm_nug hsort">
   <thead>
@@ -70,7 +84,7 @@ foreach($DB_TAB as $DB_ROW)
   <tbody>
     <?php
     // Lister les structures
-    $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
+    $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures( FALSE /*listing_base_id*/ , $geo_id );
     foreach($DB_TAB as $DB_ROW)
     {
       // Formater la date
@@ -105,7 +119,7 @@ foreach($DB_TAB as $DB_ROW)
     </p>
     <p>
       <label class="tab" for="f_geo">Zone géographique :</label><select id="f_geo" name="f_geo"><option></option></select><br />
-      <label class="tab" for="f_localisation">Localisation :</label><input id="f_localisation" name="f_localisation" type="text" value="" size="50" maxlength="100" /><br />
+      <label class="tab" for="f_localisation">Localisation :</label><input id="f_localisation" name="f_localisation" type="text" value="" size="50" maxlength="50" /><br />
       <label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" type="text" value="" size="50" maxlength="50" /><br />
       <label class="tab" for="f_uai">UAI :</label><input id="f_uai" name="f_uai" type="text" value="" size="10" maxlength="8" />
     </p>

@@ -66,16 +66,19 @@ public static function DB_lister_zones()
  * Lister les structures (complémentaire à DB_recuperer_structure() car utilisation de queryTab à la place de queryRow)
  *
  * @param void|string $listing_base_id   id des bases séparés par des virgules (tout si rien de transmis)
+ * @param int         $geo_id            id d'une zone géographique si restriction à une zone (tout si rien ou 0 transmis)
  * @return array
  */
-public static function DB_lister_structures($listing_base_id=FALSE)
+public static function DB_lister_structures($listing_base_id=FALSE,$geo_id=0)
 {
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_structure ';
   $DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
   $DB_SQL.= ($listing_base_id==FALSE) ? '' : 'WHERE sacoche_base IN('.$listing_base_id.') ' ;
+  $DB_SQL.= ($geo_id==0)              ? '' : 'WHERE geo_id=:geo_id ' ;
   $DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
-  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  $DB_VAR = array(':geo_id'=>$geo_id);
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -211,6 +214,22 @@ public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"%" IDENTIFIED BY "'.$BD_pass.'"' );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"localhost"' );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"%"' );
+}
+
+/**
+ * Modifier la version de la base
+ *
+ * @param string $parametre_nom
+ * @param string $parametre_valeur
+ * @return void
+ */
+public static function DB_modifier_parametre($parametre_nom,$parametre_valeur)
+{
+  $DB_SQL = 'UPDATE sacoche_parametre ';
+  $DB_SQL.= 'SET parametre_valeur=:parametre_valeur ';
+  $DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
+  $DB_VAR = array( ':parametre_nom'=>$parametre_nom , ':parametre_valeur'=>$parametre_valeur );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

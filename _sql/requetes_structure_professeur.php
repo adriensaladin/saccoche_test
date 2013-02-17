@@ -298,7 +298,7 @@ public static function DB_OPT_lister_eleves_professeur($prof_id,$user_join_group
   // éléments des deux requêtes
   $sql_select = 'SELECT sacoche_user.user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, groupe_nom AS optgroup , groupe_type, niveau_ordre ';
   $sql_from   = 'FROM sacoche_groupe LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $sql_where  = 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $sql_where  = 'WHERE user_profil_type=:profil_type ';
   $sql_join_classe = 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_id = sacoche_user.eleve_classe_id ';
   $sql_join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) LEFT JOIN sacoche_user USING(user_id) ';
   $sql_join_profil = 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
@@ -337,7 +337,7 @@ public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_group
   // éléments des deux requêtes
   $sql_select = 'SELECT GROUP_CONCAT(DISTINCT sacoche_user.user_id SEPARATOR ",") AS listing_eleves_id ';
   $sql_from   = 'FROM sacoche_groupe LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $sql_where  = 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $sql_where  = 'WHERE user_profil_type=:profil_type ';
   $sql_join_classe = 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_id = sacoche_user.eleve_classe_id ';
   $sql_join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) LEFT JOIN sacoche_user USING(user_id) ';
   $sql_join_profil = 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
@@ -425,7 +425,7 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
   $DB_SQL = 'SELECT sacoche_devoir.*, CONCAT(user_nom," ",user_prenom) AS proprietaire, ';
-  $DB_SQL.= 'GROUP_CONCAT(DISTINCT sacoche_jointure_devoir_item.item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT sacoche_jointure_devoir_item.item_id) AS items_nombre, ';
+  $DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre, ';
   if(!$groupe_id)
   {
     $DB_SQL .= 'GROUP_CONCAT(DISTINCT sacoche_jointure_user_groupe.user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT sacoche_jointure_user_groupe.user_id) AS users_nombre, ';
@@ -439,12 +439,12 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
   }
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE ( sacoche_devoir.prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
-  $DB_SQL.= ($groupe_id!=0) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
-  $DB_SQL.= ($groupe_id>0)  ? 'AND groupe_id='.$groupe_id.' ' : '' ;
-  $DB_SQL.= ($groupe_id==0) ? 'AND sacoche_jointure_user_groupe.user_id!=:prof_id ' : '' ; // Sinon le prof (aussi rattaché au groupe du devoir) est compté parmi la liste des élèves.
+  $DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
+  $DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
+  $DB_SQL.= ($groupe_id>0) ? 'AND groupe_id='.$groupe_id.' ' : '' ;
+  $DB_SQL.= (!$groupe_id) ? 'AND sacoche_jointure_user_groupe.user_id!=:prof_id ' : '' ; // Sinon le prof (aussi rattaché au groupe du devoir) est compté parmi la liste des élèves.
   $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
-  $DB_SQL.= 'GROUP BY sacoche_devoir.devoir_id ';
+  $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';
   $DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%,'.$prof_id.',%',':type4'=>'eval');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -515,53 +515,6 @@ public static function DB_lister_saisies_devoir($devoir_id,$with_REQ)
   $DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Retourner les effectifs des classes / groupes
- *
- * @param int    $groupe_id   Pour restreindre à un groupe donné
- * @return array|int   tableau (groupe_id;eleves_nombre) si pas de restriction à un groupe donné, l'effectif du groupe concerné sinon
- */
-public static function DB_lister_effectifs_groupes($groupe_id=0)
-{
-  // éléments des deux requêtes
-  $sql_select = 'SELECT COUNT(DISTINCT sacoche_user.user_id) AS eleves_nombre ';
-  $sql_select.= ($groupe_id) ? '' : ', groupe_id ';
-  $sql_from   = 'FROM sacoche_groupe ';
-  $sql_where  = 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
-  $sql_where .= ($groupe_id) ? 'AND groupe_id=:groupe_id ' : '' ;
-  $sql_join_classe = 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_id = sacoche_user.eleve_classe_id ';
-  $sql_join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) LEFT JOIN sacoche_user USING(user_id) ';
-  $sql_join_profil = 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $sql_group_by = 'GROUP BY groupe_id ';
-  // les deux requêtes
-  $DB_SQL_CLASSE = $sql_select.$sql_from.$sql_join_classe.$sql_join_profil.$sql_where.'AND groupe_type=:type1 '           .$sql_group_by;
-  $DB_SQL_GROUPE = $sql_select.$sql_from.$sql_join_groupe.$sql_join_profil.$sql_where.'AND groupe_type IN(:type2,:type3) '.$sql_group_by;
-  // Union des deux requêtes [http://dev.mysql.com/doc/refman/5.0/fr/union.html]
-  $DB_SQL = '( '.$DB_SQL_CLASSE.' ) UNION ( '.$DB_SQL_GROUPE.' )';
-  $DB_VAR = array(':groupe_id'=>$groupe_id,':profil_type'=>'eleve',':type1'=>'classe',':type2'=>'groupe',':type3'=>'besoin');
-  return ($groupe_id) ? (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) : DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) ;
-}
-
-/**
- * lister_nb_saisies_par_evaluation
- *
- * @param int|string   $listing_devoir_id   soit une chaine de devoir (string), soit un devoir unique (int)
- * @return array|int   tableau (devoir_id;saisies_nombre) si pas de restriction à un unique devoir, le nb de saisies du devoir concerné sinon
- */
-public static function DB_lister_nb_saisies_par_evaluation($listing_devoir_id)
-{
-  $is_devoir_unique = is_int($listing_devoir_id) ? TRUE : FALSE ; 
-  $DB_SQL = 'SELECT COUNT(saisie_note) AS saisies_nombre ';
-  $DB_SQL.= ($is_devoir_unique) ? '' : ', devoir_id ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE devoir_id IN('.$listing_devoir_id.') ' ;
-  $DB_SQL.= 'AND saisie_note!="REQ" AND user_sortie_date>NOW() ' ;
-  $DB_SQL.= 'GROUP BY devoir_id ';
-  $DB_VAR = array(':devoir_id'=>$listing_devoir_id);
-  return ($is_devoir_unique) ? (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) : DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) ;
 }
 
 /**
@@ -1070,11 +1023,13 @@ public static function DB_modifier_liaison_devoir_user($devoir_id,$groupe_id,$ta
 /**
  * modifier_liaison_devoir_groupe
  * Uniquement pour les évaluations sur une classe ou un groupe (pas de type 'eval')
+ * RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
  *
  * @param int    $devoir_id
  * @param int    $groupe_id
  * @return void
  */
+/*
 public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
 {
   // -> on récupère l'id du groupe antérieurement associé au devoir
@@ -1097,6 +1052,7 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
 }
+*/
 
 /**
  * modifier_statut_demandes

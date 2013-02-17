@@ -146,12 +146,11 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
       <th>Description</th>
       <th>Items</th>
       <th>Fichiers</th>
-      <th>Saisies</th>
       <th class="nu"><q class="ajouter" title="Ajouter une évaluation."></q></th>
     </tr>
   </thead>
   <tbody>
-    <tr><td class="nu" colspan="10"></td></tr>
+    <tr><td class="nu" colspan="9"></td></tr>
   </tbody>
 </table>
 
@@ -168,10 +167,9 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
     <p>
       <?php if($TYPE=='groupe'): ?>
         <label class="tab" for="f_groupe">Classe / groupe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
-        <span id="alerte_groupe" class="hide danger b">Attention : si vous modifiez le groupe, alors les notes de l'évaluation seront effacées !<br />En cas de même évaluation sur plusieurs groupes, il faut la <span class="u">dupliquer</span> et non la <span class="u">modifier</span>.</span><br />
       <?php endif; ?>
       <?php if($TYPE=='selection'): ?>
-        <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><br />
+        <label class="tab" for="f_groupe">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><br />
       <?php endif; ?>
       <label class="tab" for="f_prof_nombre">Collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" />
     <p>
@@ -201,7 +199,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
   ?>
-  <p id="alerte_items" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</span></p>
+  <p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</p>
   <div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
   <hr />
   <p>
@@ -221,7 +219,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   <div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french'); ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
   <?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
-  <p id="alerte_eleves" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</span></p>
+  <p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</p>
   <div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 <?php endif; ?>

@@ -176,12 +176,12 @@ $(document).ready
         rules :
         {
           f_ordre : { required:true , digits:true , range:[1,9999] },
-          f_nom   : { required:true , maxlength:65 }
+          f_nom   : { required:true , maxlength:55 }
         },
         messages :
         {
           f_ordre : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 9999" },
-          f_nom   : { required:"nom manquant" , maxlength:"65 caractères maximum" }
+          f_nom   : { required:"nom manquant" , maxlength:"55 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

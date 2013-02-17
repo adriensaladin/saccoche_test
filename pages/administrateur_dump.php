@@ -41,7 +41,7 @@ $TITRE = "Sauvegarde / Restauration";
 <hr />
 
 <h2>Restaurer la base</h2>
-<div class="danger">Restaurer une sauvegarde antérieure écrasera irrémédiablement les données actuelles !</div>
+<div class="danger b">Restaurer une sauvegarde antérieure écrasera irrémédiablement les données actuelles !</div>
 <form action="#" method="post" id="form_restauration"><fieldset>
   <label class="tab" for="bouton_restauration">Uploader le fichier :</label><button id="bouton_restauration" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_restauration">&nbsp;</label>
 </fieldset></form>

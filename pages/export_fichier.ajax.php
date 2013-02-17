@@ -83,21 +83,21 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'."\r\n\r\n";
+  $export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'COEF'.$separateur.'DEMANDE_EVAL'.$separateur.'LIEN'.$separateur.'SOCLE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr></thead><tbody>'."\r\n";
 
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
       $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
-      $export_csv .= $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"'."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td></tr>'."\r\n";
+      $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
+      $export_csv .= $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.$DB_ROW['item_coef'].$separateur.$demande_eval.$separateur.'"'.$DB_ROW['item_lien'].'"'.$separateur.'"'.$DB_ROW['entree_nom'].'"'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td><td>'.html($DB_ROW['item_coef']).'</td><td>'.html($demande_eval).'</td><td>'.html($DB_ROW['item_lien']).'</td><td>'.html($DB_ROW['entree_nom']).'</td></tr>'."\r\n";
     }
   }
-
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );

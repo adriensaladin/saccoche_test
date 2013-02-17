@@ -42,7 +42,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html('&nbsp;');
         // Masquer tout
-        $('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_tableur_eleves , #fieldset_tableur_professeurs_directeurs').hide(0);
+        $('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_base-eleves_parents , #fieldset_tableur_eleves , #fieldset_tableur_professeurs_directeurs').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
         if(f_action!='')
@@ -138,6 +138,19 @@ $(document).ready
         action: 'ajax.php?page='+PAGE,
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'base-eleves_eleves'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier_tableur,
+        onComplete: retourner_fichier
+      }
+    );
+    new AjaxUpload
+    ('#base-eleves_parents',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_step':10,'f_action':'base-eleves_parents'},
         autoSubmit: true,
         responseType: "html",
         onChange: changer_fichier,

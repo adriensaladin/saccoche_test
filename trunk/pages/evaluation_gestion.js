@@ -48,12 +48,12 @@ $(document).ready
     if(TYPE=='groupe')
     {
       var sorting = [[0,1],[3,0]];
-      $('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false}} });
+      $('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false},9:{sorter:false}} });
     }
     else
     {
       var sorting = [[0,1],[5,0]];
-      $('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},3:{sorter:false},4:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false}} });
+      $('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},3:{sorter:false},4:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false},9:{sorter:false}} });
     }
     function trier_tableau()
     {
@@ -136,6 +136,7 @@ $(document).ready
         $('#gestion_edit').hide(0);
         $('#gestion_delete').show(0);
       }
+      $('#alerte_groupe').hide(0);
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
       $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
@@ -175,7 +176,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var date_visible  = objet_tds.eq(1).html();
       var date_autoeval = objet_tds.eq(2).html();
@@ -210,7 +211,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var groupe_nom    = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
       // Afficher le formulaire
@@ -226,7 +227,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
@@ -282,7 +283,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var date_visible  = objet_tds.eq(1).html();
       var groupe        = objet_tds.eq(3).html();
@@ -361,7 +362,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
@@ -420,6 +421,8 @@ $(document).ready
       // Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
       $('#f_selection_items option:first').prop('selected',true);
       cocher_matieres_items( $('#f_compet_liste').val() );
+      if(mode=='modifier') {$('#alerte_items').show();}
+      else                 {$('#alerte_items').hide();}
       // Afficher la zone
       $.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
     };
@@ -435,6 +438,8 @@ $(document).ready
       $('#zone_eleve li.li_m1 span.gradient_pourcent').html('');
       $('#msg_indiquer_eleves_deja').removeAttr("class").html('');
       cocher_eleves( $('#f_eleve_liste').val() );
+      if(mode=='modifier') {$('#alerte_eleves').show();}
+      else                 {$('#alerte_eleves').hide();}
       // Afficher la zone
       $.fancybox( { 'href':'#zone_eleve' , onStart:function(){$('#zone_eleve').css("display","block");} , onClosed:function(){$('#zone_eleve').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
     };
@@ -448,7 +453,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
@@ -509,7 +514,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
@@ -577,7 +582,7 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(8).attr('id').substring(7); // "devoir_" + ref
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date          = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
@@ -695,6 +700,21 @@ $(document).ready
         if($('#box_visible').is(':checked'))
         {
           $('#f_date_visible').val($('#f_date').val());
+        }
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Alerte si modification de groupe d'une évaluation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#f_groupe').change
+    (
+      function()
+      {
+        if(mode=='modifier')
+        {
+          $('#alerte_groupe').show();
         }
       }
     );
@@ -1573,7 +1593,7 @@ $(document).ready
               {
                 initialiser_compteur();
                 $('button').prop('disabled',false);
-                if(responseHTML.substring(0,1)!='<')
+                if(responseHTML.substring(0,4)!='<td ')
                 {
                   $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
                 }
@@ -1583,6 +1603,7 @@ $(document).ready
                   $('#ajax_msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
                   $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
                   colorer_cellules();
+                  $("#devoir_"+$("#saisir_ref").val()).prev().replaceWith(responseHTML);
                 }
               }
             }
@@ -1723,7 +1744,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody tr td[colspan=9]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('table.form tbody tr td[colspan=10]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
           case 'dupliquer':
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tds = responseHTML.substring(0,position_script);

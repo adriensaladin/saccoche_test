@@ -142,55 +142,85 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   $script = '';
   $classe_id = ($aff_classe_txt!='d2') ? $aff_classe_id : -1 ; // 'd2' est transmis si on veut toutes les classes / tous les groupes ; classe_id vaut 0 si selection d'élèves
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof($_SESSION['USER_ID'],$classe_id,$date_debut_mysql,$date_fin_mysql);
-  foreach($DB_TAB as $DB_ROW)
+  if(!empty($DB_TAB))
   {
-    $date_affich   = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-    $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
-    $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
-    $ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
-    $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
-    $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
-    if(!$DB_ROW['devoir_partage'])
+    // Récupérer le nb de saisies déjà effectuées par évaluation (ça posait trop de problème dans la requête précédente : saisies comptées plusieurs fois, évaluations sans saisies non retournées...)
+    $tab_devoir_id = array();
+    foreach($DB_TAB as $DB_ROW)
     {
-      $profs_liste = '';
-      $profs_nombre = 'moi seul';
+      $tab_devoir_id[$DB_ROW['devoir_id']] = $DB_ROW['devoir_id'];
     }
-    else
+    $tab_nb_saisies_effectuees = array_fill_keys($tab_devoir_id,0);
+    $DB_TAB2 = DB_STRUCTURE_PROFESSEUR::DB_lister_nb_saisies_par_evaluation( implode(',',$tab_devoir_id) );
+    foreach($DB_TAB2 as $DB_ROW)
     {
-      $profs_liste  = str_replace(',','_',mb_substr($DB_ROW['devoir_partage'],1,-1));
-      $profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' collègues';
+      $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']] = $DB_ROW['saisies_nombre'];
     }
-    $proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
-    $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-    $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
-    // Afficher une ligne du tableau
-    echo'<tr>';
-    echo  '<td><i>'.$DB_ROW['devoir_date'].'</i>'.$date_affich.'</td>';
-    echo  '<td>'.$date_visible.'</td>';
-    echo  '<td>'.$date_autoeval.'</td>';
-    echo  ($type=='groupe') ? '<td>'.html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
-    echo  '<td>'.$profs_nombre.'</td>';
-    echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
-    echo  '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
-    echo  '<td>'.$image_sujet.$image_corrige;
-    echo  ($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
-    echo  '</td>';
-    echo  '<td class="nu" id="devoir_'.$ref.'">';
-    echo    ($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
-    echo    ($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
-    echo    '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-    echo    ($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
-    echo    '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
-    echo    '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
-    echo    '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
-    echo    '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
-    echo  '</td>';
-    echo'</tr>';
-    $script .= 'tab_items["'.$ref.'"]="'.$DB_ROW['items_listing'].'";';
-    $script .= 'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
-    $script .= ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.$DB_ROW['users_listing'].'";' : '' ;
-    $script .= 'tab_sujets["'.$ref.'"]="'.$DB_ROW['devoir_doc_sujet'].'";';
-    $script .= 'tab_corriges["'.$ref.'"]="'.$DB_ROW['devoir_doc_corrige'].'";';
+    // Récupérer les effectifs des classes et groupes
+    $tab_effectifs = array();
+    if($type=='groupe')
+    {
+      $DB_TAB2 = DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes();
+      foreach($DB_TAB2 as $DB_ROW)
+      {
+        $tab_effectifs[$DB_ROW['groupe_id']] = $DB_ROW['eleves_nombre'];
+      }
+    }
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $date_affich   = convert_date_mysql_to_french($DB_ROW['devoir_date']);
+      $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
+      $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
+      $ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
+      $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
+      $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
+      if(!$DB_ROW['devoir_partage'])
+      {
+        $profs_liste = '';
+        $profs_nombre = 'moi seul';
+      }
+      else
+      {
+        $profs_liste  = str_replace(',','_',mb_substr($DB_ROW['devoir_partage'],1,-1));
+        $profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' collègues';
+      }
+      $proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
+      $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+      $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+      $effectif_eleve = ($type=='groupe') ? $tab_effectifs[$DB_ROW['groupe_id']] : $DB_ROW['users_nombre'] ;
+      $nb_saisies_possibles = $DB_ROW['items_nombre']*$effectif_eleve;
+      $info_remplissage  = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].' / '.$nb_saisies_possibles;
+      $class_remplissage = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+      // Afficher une ligne du tableau
+      echo'<tr>';
+      echo  '<td><i>'.$DB_ROW['devoir_date'].'</i>'.$date_affich.'</td>';
+      echo  '<td>'.$date_visible.'</td>';
+      echo  '<td>'.$date_autoeval.'</td>';
+      echo  ($type=='groupe') ? '<td>'.html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
+      echo  '<td>'.$profs_nombre.'</td>';
+      echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
+      echo  '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
+      echo  '<td>'.$image_sujet.$image_corrige;
+      echo  ($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo  '</td>';
+      echo  '<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
+      echo  '<td class="nu" id="devoir_'.$ref.'">';
+      echo    ($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    ($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
+      echo    ($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
+      echo    '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
+      echo    '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+      echo    '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
+      echo  '</td>';
+      echo'</tr>';
+      $script .= 'tab_items["'.$ref.'"]="'.$DB_ROW['items_listing'].'";';
+      $script .= 'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+      $script .= ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.$DB_ROW['users_listing'].'";' : '' ;
+      $script .= 'tab_sujets["'.$ref.'"]="'.$DB_ROW['devoir_doc_sujet'].'";';
+      $script .= 'tab_corriges["'.$ref.'"]="'.$DB_ROW['devoir_doc_corrige'].'";';
+    }
   }
   echo'<SCRIPT>'.$script;
   exit();
@@ -250,6 +280,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
+  // Récupérer l'effectif de la classe ou du groupe
+  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
@@ -259,6 +291,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $nb_saisies_possibles = $nb_items*$effectif_eleve;
+  $info_remplissage  = '0 / '.$nb_saisies_possibles;
+  $class_remplissage = 'br';
   echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
@@ -267,6 +302,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
+  echo'<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
   echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
   echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -334,12 +370,15 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   }
   elseif($type=='groupe')
   {
-    // sacoche_devoir (maj groupe_id) + sacoche_saisie pour les users supprimés
-    // DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id); // RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
+    // sacoche_devoir (maj groupe_id) + sacoche_saisie pour TOUS les users !
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id);
   }
   // sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
-  // ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
+  // Récupérer le nb de saisies déjà effectuées pour l'évaluation
+  $nb_saisies_effectuees = DB_STRUCTURE_PROFESSEUR::DB_lister_nb_saisies_par_evaluation($devoir_id);
+  // Récupérer l'effectif de la classe ou du groupe
+  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Afficher le retour
   $date_visible  = ($date==$date_visible)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
@@ -349,6 +388,9 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $nb_saisies_possibles = $nb_items*$effectif_eleve;
+  $info_remplissage  = $nb_saisies_effectuees.' / '.$nb_saisies_possibles;
+  $class_remplissage = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
   echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
@@ -357,6 +399,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
+  echo'<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
   echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
   echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -955,6 +998,8 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 
 if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visible && count($tab_notes) )
 {
+  $nb_saisies_possibles  = 0;
+  $nb_saisies_effectuees = 0;
   // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
   // On récupère les notes transmises dans $tab_post
   $tab_post = array();
@@ -965,6 +1010,8 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
     if( (int)$item_id && (int)$eleve_id )
     {
       $tab_post[$item_id.'x'.$eleve_id] = $note;
+      $nb_saisies_possibles++;
+      $nb_saisies_effectuees += ( ($note!='X') && ($note!='REQ') ) ? 1 : 0 ;
     }
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
@@ -1029,7 +1076,9 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
     list($item_id,$eleve_id) = explode('x',$key);
     DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($eleve_id,$item_id);
   }
-  exit('<ok>');
+  $info_remplissage  = $nb_saisies_effectuees.' / '.$nb_saisies_possibles;
+  $class_remplissage = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+  exit('<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

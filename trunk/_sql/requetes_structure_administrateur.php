@@ -405,7 +405,7 @@ public static function DB_lister_parents_par_eleve()
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil AS eleve_profil ON eleve.user_profil_sigle=eleve_profil.user_profil_sigle ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
-  $DB_SQL.= 'WHERE eleve_profil.user_profil_type="eleve" AND eleve.user_sconet_id!=0 ';
+  $DB_SQL.= 'WHERE eleve_profil.user_profil_type="eleve" ';
   $DB_SQL.= 'ORDER BY eleve_nom ASC, eleve_prenom ASC, resp_legal_num ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -416,7 +416,6 @@ public static function DB_lister_parents_par_eleve()
  * @param int   $eleve_id
  * @return array
  */
- 
 public static function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
 {
   $DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, resp_legal_num ';

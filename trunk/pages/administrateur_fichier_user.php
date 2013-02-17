@@ -61,6 +61,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
       </optgroup>
       <optgroup label="Fichier extrait de Base Élèves (recommandé pour le premier degré)">
         <option value="base-eleves_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option value="base-eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
         <option value="tableur_eleves">Importer les élèves (avec leurs affectations).</option>
@@ -116,6 +117,14 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
       <li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+    </ul>
+  </fieldset>
+
+  <fieldset id="fieldset_base-eleves_parents" class="hide">
+    <hr />
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
+      <li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

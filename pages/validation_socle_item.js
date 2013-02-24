@@ -327,7 +327,6 @@ $(document).ready
         responseHTML = responseHTML.replace( '@PALIER@' , $("#f_palier option:selected").text() );
         responseHTML = responseHTML.replace( '@PILIER@' , $("#f_pilier option:selected").text() );
         $('#tableau_validation').html(responseHTML);
-        infobulle();
         $('#zone_validation').show('fast');
         $('#ajax_msg_choix').removeAttr("class").html('');
         $('#zone_choix').hide('fast');
@@ -342,8 +341,10 @@ $(document).ready
 // Afficher / Masquer les pourcentages d'items acquis
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#Afficher_pourcentage').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('change',
+    $('#tableau_validation').on
+    (
+      'change',
+      '#Afficher_pourcentage',
       function()
       {
         cell_font_size = ($(this).is(':checked')) ? 50 : 0 ;
@@ -361,8 +362,10 @@ $(document).ready
     tab_class_next['0'] = ['2'];
     tab_class_next['2'] = ['1'];
 
-    $('#tableau_validation tbody td').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      'tbody td',
       function()
       {
         // Appliquer un état pour un item pour un élève
@@ -375,8 +378,10 @@ $(document).ready
       }
     );
 
-    $('#tableau_validation tbody th').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      'tbody th',
       function()
       {
         var classe = $(this).attr('class');
@@ -422,16 +427,20 @@ $(document).ready
     var last_id_memorise = '';
     var last_id_affiche = '';
 
-    $("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('mouseout',
+    $('#tableau_validation').on
+    (
+      'mouseout',
+      'tbody td',
       function()
       {
         last_id_survole = '';
       }
     );
 
-    $("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('mouseover',
+    $('#tableau_validation').on
+    (
+      'mouseover',
+      'tbody td',
       function()
       {
         last_id_survole = $(this).attr('id');
@@ -506,8 +515,10 @@ $(document).ready
 // Clic sur le bouton pour fermer la zone de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      '#fermer_zone_validation',
       function()
       {
         $('#zone_choix').show('fast');
@@ -528,8 +539,10 @@ $(document).ready
 // Clic sur le bouton pour envoyer les validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#Enregistrer_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      '#Enregistrer_validation',
       function()
       {
         $("button").prop('disabled',true);

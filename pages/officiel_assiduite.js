@@ -150,16 +150,21 @@ $(document).ready
     function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
       $('button').prop('disabled',false);
-      if( (responseHTML.substring(0,18)!='<p class="astuce">') && (responseHTML.substring(0,16)!='<P class=astuce>') )
+      var tab_infos = responseHTML.split(']¤[');
+      if(tab_infos[0]!='ok')
       {
         $('#ajax_msg_import').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
+        $('#date_export'       ).html(tab_infos[1]);
+        $('#periode_libelle'   ).html(tab_infos[2]);
+        $('#periode_date_debut').html(tab_infos[3]);
+        $('#periode_date_fin'  ).html(tab_infos[4]);
+        $('#periode_import'    ).html($('#f_periode_import option:selected').text());
         $('#ajax_msg_import').removeAttr("class").html('');
-        var confirmation_question = '<p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b>'+$('#f_periode_import option:selected').text()+'</b> ?</p>';
-        var confirmation_boutons  = '<form action="#" method="post"><p><span class="tab"></span><button id="confirmer_manuel" type="button" class="valider">Confirmer.</button> <button id="fermer_zone" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirm">&nbsp;</label></p></form>';
-        $.fancybox( responseHTML+confirmation_question+confirmation_boutons , { 'modal':true , 'centerOnScroll':true } );
+        $('#ajax_msg_confirm').removeAttr("class").html('');
+        $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         initialiser_compteur();
       }
     }
@@ -168,10 +173,11 @@ $(document).ready
     // Confirmation du traitement du fichier
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#confirmer_manuel').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#confirmer_import').click
+    (
       function()
       {
+        $('#zone_confirmer button').prop('disabled',true);
         $('#ajax_msg_confirm').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
@@ -182,21 +188,24 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
+              $('#zone_confirmer button').prop('disabled',false);
               $('#ajax_msg_confirm').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
-              if(responseHTML.substring(0,7)!='<tbody>')
+              $('#zone_confirmer button').prop('disabled',false);
+              if(responseHTML.substring(0,4)!='<tr>')
               {
                 $('#ajax_msg_confirm').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                var resultat = '<b>Résultat du traitement :</b>'
-                  +'<table class="bilan"><thead><tr><th>Élève</th><th>Absences<br />nb &frac12; journées</th><th>dont &frac12; journées<br />non justifiées</th><th>Nb retards</th></tr></thead>'+responseHTML+'</table>'
-                  +'<form><p><span class="tab"></span><button id="fermer_zone" type="button" class="retourner">Retour.</button></p></form>';
-                $.fancybox( resultat , { 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+                $('#zone_saisir h2').html('Résultat du traitement');
+                $('#titre_saisir').html('');
+                $('#table_saisir tbody').html(responseHTML);
+                $('#zone_saisir form').hide(0);
+                $.fancybox( { 'href':'#zone_saisir' , onStart:function(){$('#zone_saisir').css("display","block");} , onClosed:function(){$('#zone_saisir').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
                 initialiser_compteur();
               }
             }
@@ -281,17 +290,19 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,7)!='<tbody>')
+      if(responseHTML.substring(0,4)!='<tr ')
       {
         $('#ajax_msg_manuel').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
         $('#ajax_msg_manuel').removeAttr("class").html('');
-        var resultat = '<b>Saisie des absences et retards | '+$('#f_periode option:selected').text()+' | '+$('#f_groupe option:selected').text()+'</b>'
-          +'<table id="tableau_saisie" class="bilan"><thead><tr><th>Élève</th><th>Absences<br />nb &frac12; journées</th><th>dont &frac12; journées<br />non justifiées</th><th>Nb retards</th></tr></thead>'+responseHTML+'</table>'
-          +'<form><p><button id="Enregistrer_saisies" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone" type="button" class="retourner">Retour</button><label id="ajax_msg_enregistrer"></label></p></form>';
-        $.fancybox( resultat , { 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+        $('#zone_saisir h2').html('Saisie des absences et retards');
+        $('#titre_saisir').html($('#f_periode option:selected').text()+' | '+$('#f_groupe option:selected').text());
+        $('#table_saisir tbody').html(responseHTML);
+        $('#ajax_msg_saisir').removeAttr("class").html('&nbsp;');
+        $('#zone_saisir form').show(0);
+        $.fancybox( { 'href':'#zone_saisir' , onStart:function(){$('#zone_saisir').css("display","block");} , onClosed:function(){$('#zone_saisir').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         initialiser_compteur();
       }
     }
@@ -300,12 +311,14 @@ $(document).ready
     // Modification d'une saisie : alerter besoin d'enregistrer
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('input[type=text]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('change',
+    $('#table_saisir').on
+    (
+      'change',
+      'input[type=text]',
       function()
       {
-        $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html('Penser à enregistrer les modifications !');
-        $('#fermer_zone').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+        $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Penser à enregistrer les modifications !');
+        $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
         return false;
       }
     );
@@ -314,8 +327,10 @@ $(document).ready
     // Intercepter la touche entrée
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('input[type=text]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('keyup',
+    $('#zone_saisir').on
+    (
+      'keyup',
+      'input[type=text]',
       function(e)
       {
         if(e.which==13)  // touche entrée
@@ -330,14 +345,14 @@ $(document).ready
     // Clic sur le bouton pour envoyer les saisies
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#Enregistrer_saisies').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#Enregistrer_saisies').click
+    (
       function()
       {
-        $("button").prop('disabled',true);
+        $('#zone_saisir button').prop('disabled',true);
         // Récupérer les infos
         var tab_infos = new Array();
-        $("#tableau_saisie tbody tr").each
+        $("#table_saisir tbody tr").each
         (
           function()
           {
@@ -345,7 +360,7 @@ $(document).ready
             tab_infos.push( user_id + '.' + $('#td1_'+user_id).val() + '.' + $('#td2_'+user_id).val() + '.' + $('#td3_'+user_id).val() );
           }
         );
-        $('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
         // Les envoyer en ajax
         $.ajax
         (
@@ -356,22 +371,22 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $("button").prop('disabled',false);
-              $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#zone_saisir button').prop('disabled',false);
+              $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $("button").prop('disabled',false);
+              $('#zone_saisir button').prop('disabled',false);
               if(responseHTML!='ok')
               {
-                $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
-                $('#fermer_zone').removeAttr("class").addClass("retourner").html('Retour');
+                $('#ajax_msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
+                $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
               }
             }
           }
@@ -380,17 +395,11 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le cadre
+    // Clic sur un bouton pour fermer un cadre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
-      function()
-      {
-        $.fancybox.close();
-        return(false);
-      }
-    );
+    $('#zone_confirmer').on( 'click' , '#fermer_zone_confirmer' , function(){ $.fancybox.close(); return(false); } );
+    $('#zone_saisir'   ).on( 'click' , '#fermer_zone_saisir'    , function(){ $.fancybox.close(); return(false); } );
 
   }
 );

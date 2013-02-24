@@ -37,7 +37,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 <hr />
 
-<table class="form hsort">
+<table id="table_action" class="form hsort">
   <thead>
     <tr>
       <th>Nom</th>
@@ -86,7 +86,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
   <h2>Ajouter | Modifier un regroupements d'items</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="20" maxlength="20" />
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="50" maxlength="60" />
     </p>
     <p>
       <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q>

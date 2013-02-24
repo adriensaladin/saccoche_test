@@ -56,6 +56,8 @@ $bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))      
 $bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_fusion_niveaux        = (isset($_POST['f_bulletin_fusion_niveaux']))        ? 1                                                         : 0;
 $bulletin_barre_acquisitions    = (isset($_POST['f_bulletin_barre_acquisitions']))    ? 1                                                         : 0;
+$bulletin_acquis_texte_nombre   = (isset($_POST['f_bulletin_acquis_texte_nombre']))   ? 1                                                         : 0;
+$bulletin_acquis_texte_code     = (isset($_POST['f_bulletin_acquis_texte_code']))     ? 1                                                         : 0;
 $bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                         : 0;
 $bulletin_conversion_sur_20     = (isset($_POST['f_bulletin_conversion_sur_20']))     ? Clean::entier($_POST['f_bulletin_conversion_sur_20'])     : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
 $bulletin_moyenne_classe        = (isset($_POST['f_bulletin_moyenne_classe']))        ? 1                                                         : 0;
@@ -79,7 +81,7 @@ $socle_legende                  = (isset($_POST['f_socle_legende']))            
 
 $tab_variables = array(
   'releve'   => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'etat_acquisition', 'moyenne_scores', 'pourcentage_acquis', 'conversion_sur_20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
-  'bulletin' => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'fusion_niveaux' , 'barre_acquisitions', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
+  'bulletin' => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'retroactif', 'only_socle', 'fusion_niveaux', 'barre_acquisitions', 'acquis_texte_code', 'acquis_texte_nombre', 'moyenne_scores', 'conversion_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
   'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'ligne_supplementaire', 'assiduite', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
 );
 

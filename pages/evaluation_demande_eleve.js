@@ -37,17 +37,10 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[1,0],[2,0]];
-    $('table.form').tablesorter({ headers:{5:{sorter:false},6:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},5:{sorter:false},6:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0],[2,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -73,7 +66,6 @@ $(document).ready
       $('#f_matiere_id').val(tab_ids[3]);
       $('#gestion_delete_identite').html(matiere+' | '+item);
       // pour finir
-      infobulle();
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
       $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );

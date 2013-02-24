@@ -38,17 +38,10 @@ $(document).ready
     var please_wait = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[3,0],[4,0]];
-    $('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},7:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.bilan_synthese tbody tr').length>1)
-      {
-        $('table.bilan_synthese').trigger('update');
-        $('table.bilan_synthese').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},6:{sorter:'date_fr'},7:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[3,0],[4,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Recharger la page en restreignant l'affichage en fonction des choix préalables
@@ -60,21 +53,9 @@ $(document).ready
       {
         if($('#f_geo_id option:selected').val())
         {
-          $('table.form, #structures').hide(0);
+          $('#table_action, #structures').hide(0);
           $('#form_prechoix').submit();
         }
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('td.label').live
-    ('click',
-      function()
-      {
-        $(this).parent().find("input[type=checkbox]").click();
       }
     );
 
@@ -82,7 +63,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , base_id , geo , localisation , denomination , uai , contact_nom , contact_prenom , contact_courriel , date , acces , check )
+    function afficher_form_gestion( mode , base_id , geo , localisation , denomination , uai , contact_nom , contact_prenom , contact_courriel , date_fr , acces , check )
     {
       $('#f_action').val(mode);
       $('#f_acces').val(acces);
@@ -95,10 +76,6 @@ $(document).ready
       $('#f_contact_nom').val(contact_nom);
       $('#f_contact_prenom').val(contact_prenom);
       $('#f_contact_courriel').val(contact_courriel);
-      // date d'inscription
-      var date_mysql = date.substring(3,13); // garder la date mysql
-      var date_fr    = date.substring(17,date.length); // garder la date française
-      $('#f_date_mysql').val(date_mysql);
       $('#f_date_fr').val(date_fr);
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un établissement");
@@ -134,7 +111,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '<i>'+date_mysql+'</i>'+input_date , 'bloquer' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , input_date /*date_fr*/ , 'bloquer' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -154,7 +131,7 @@ $(document).ready
       var contact_nom      = objet_tds.eq(5).children('span').eq(0).html();
       var contact_prenom   = objet_tds.eq(5).children('span').eq(1).html();
       var contact_courriel = objet_tds.eq(5).children('div').html();
-      var date             = objet_tds.eq(6).html();
+      var date_fr          = objet_tds.eq(6).html();
       // séparer zone géographique et localisation
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
       var tab_infos        = lieu.split(reg);
@@ -168,7 +145,7 @@ $(document).ready
       // enlever l'indice de tri caché
       geo = geo.substring(9,geo.length); 
       // Afficher le formulaire
-      afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date , acces , check );
+      afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date_fr , acces , check );
     };
 
     /**
@@ -188,7 +165,7 @@ $(document).ready
       var denomination     = tab_infos[0];
       var uai              = tab_infos[1];
       // Afficher le formulaire
-      afficher_form_gestion( mode , base_id , '' /*geo*/ , '' /*localisation*/ , unescapeHtml(denomination) , unescapeHtml(uai) , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '' /*date*/ , '' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , base_id , '' /*geo*/ , '' /*localisation*/ , unescapeHtml(denomination) , unescapeHtml(uai) , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , '' /*date_fr*/ , '' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -275,42 +252,33 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.ajouter').click( ajouter );
-    $('q.modifier').live(        'click' , modifier );
-    $('q.supprimer').live(       'click' , supprimer );
-    $('q.initialiser_mdp').live( 'click' , initialiser_mdp );
-    $('#bouton_annuler , #fermer_zone_generer_mdp').click( annuler );
-    $('#bouton_valider').click( function(){formulaire.submit();} );
-    $('#form_gestion input , #form_gestion input select').live( 'keyup' , function(e){intercepter(e);} );
+    $('#table_action').on( 'click' , 'q.ajouter'         , ajouter );
+    $('#table_action').on( 'click' , 'q.modifier'        , modifier );
+    $('#table_action').on( 'click' , 'q.supprimer'       , supprimer );
+    $('#table_action').on( 'click' , 'q.initialiser_mdp' , initialiser_mdp );
+
+    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
+    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
+    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
+
+    $('#zone_generer_mdp').on( 'click' , '#fermer_zone_generer_mdp' , annuler );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Tout cocher ou tout décocher
-    $('#all_check').click
-    (
-      function()
-      {
-        $('table.form input[type=checkbox]').prop('checked',true);
-        return false;
-      }
-    );
-    $('#all_uncheck').click
-    (
-      function()
-      {
-        $('table.form input[type=checkbox]').prop('checked',false);
-        return false;
-      }
-    );
+    $('#table_action').on( 'click', '#all_check',   function(){ $('#table_action input[type=checkbox]').prop('checked',true);  return false; } );
+    $('#table_action').on( 'click', '#all_uncheck', function(){ $('#table_action input[type=checkbox]').prop('checked',false); return false; } );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur un bouton pour bloquer ou débloquer une structure
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('img[class=bloquer] , img[class=debloquer]').live
-    ('click',
+    $('#table_action').on
+    (
+      'click',
+      'img[class=bloquer] , img[class=debloquer]',
       function()
       {
         var objet   = $(this);
@@ -340,7 +308,6 @@ $(document).ready
               else
               {
                 objet.parent().html(responseHTML);
-                infobulle();
               }
               return false;
             }
@@ -613,7 +580,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody').prepend(responseHTML);
+            $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':
             $('#id_'+$('#f_base_id').val()).addClass("new").html(responseHTML);
@@ -622,9 +589,9 @@ $(document).ready
             $('#id_'+$('#f_base_id').val()).remove();
             break;
         }
+        tableau_maj;
         $.fancybox.close();
         mode = false;
-        infobulle();
       }
     }
 

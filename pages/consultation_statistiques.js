@@ -31,17 +31,10 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[1,1],[0,0]];
     $('table#bilan').tablesorter({ headers:{} });
-    function trier_tableau()
-    {
-      if($('table#bilan tbody tr td').length>1)
-      {
-        $('table#bilan').trigger('update');
-        $('table#bilan').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    var tableau_tri = function(){ $('table#bilan').trigger( 'sorton' , [ [[1,1],[0,0]] ] ); };
+    var tableau_maj = function(){ $('table#bilan').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
   }
 );

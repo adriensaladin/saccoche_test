@@ -503,7 +503,6 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
         format_liens('#bilan');
-        infobulle();
       }
       else if(responseHTML.substring(0,4)=='<h2>')
       {
@@ -512,7 +511,6 @@ $(document).ready
         // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
         $('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
         format_liens('#bilan');
-        infobulle(); // exceptionnellement il y a aussi des infobulles ici
         $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
       }
       else

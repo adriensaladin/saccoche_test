@@ -233,7 +233,6 @@ $(document).ready
       {
         responseHTML = responseHTML.replace( '@PALIER@' , $("#f_palier option:selected").text() );
         $('#tableau_validation').html(responseHTML);
-        infobulle();
         $('#zone_validation').show('fast');
         $('#ajax_msg_choix').removeAttr("class").html('');
         $('#zone_choix').hide('fast');
@@ -247,8 +246,10 @@ $(document).ready
 
     var td_id = '';
 
-    $('td.v1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      'td.v1',
       function()
       {
         td_id = $(this).attr('id');
@@ -265,8 +266,10 @@ $(document).ready
 // Clic sur le bouton pour fermer la zone de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      '#fermer_zone_validation',
       function()
       {
         $('#zone_choix').show('fast');
@@ -280,8 +283,10 @@ $(document).ready
 // Clic sur le bouton pour envoyer les validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#Enregistrer_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#tableau_validation').on
+    (
+      'click',
+      '#Enregistrer_validation',
       function()
       {
         $("button").prop('disabled',true);

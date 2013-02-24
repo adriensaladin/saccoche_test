@@ -363,7 +363,7 @@ $(document).ready
           f_conversion_sur_20  : { required:false },
           f_tri_objet          : { required:true },
           f_tri_mode           : { required:true },
-          f_compet_nombre      : { accept:'item|items' },
+          f_compet_nombre      : { isWord:'item' },
           f_groupe             : { required:true },
           'f_eleve[]'          : { required:true },
           f_periode            : { required:true },
@@ -392,7 +392,7 @@ $(document).ready
           f_conversion_sur_20  : { },
           f_tri_objet          : { required:"choix manquant" },
           f_tri_mode           : { required:"choix manquant" },
-          f_compet_nombre      : { accept:"item(s) manquant(s)" },
+          f_compet_nombre      : { isWord:"item(s) manquant(s)" },
           f_groupe             : { required:"groupe manquant" },
           'f_eleve[]'          : { required:"élève(s) manquant(s)" },
           f_periode            : { required:"période manquante" },
@@ -485,7 +485,6 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
         format_liens('#bilan');
-        infobulle();
       }
       else if(responseHTML.substring(0,4)=='<h2>')
       {
@@ -506,8 +505,10 @@ $(document).ready
     // Forcer le report de notes vers un bulletin SACoche
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#bouton_report').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#bilan').on
+    (
+      'click',
+      '#bouton_report',
       function()
       {
         $('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);

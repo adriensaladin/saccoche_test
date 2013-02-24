@@ -69,7 +69,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 ?>
 
-<table class="form t9 hsort">
+<table id="table_action" class="form t9 hsort">
   <thead>
     <tr>
       <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
@@ -95,7 +95,7 @@ foreach($DB_TAB as $DB_ROW)
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        // Formater la date (dont on ne garde que le jour)
+        // Formater la date
         $date_mysql  = $DB_ROW['user_sortie_date'];
         $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
         // Afficher une ligne du tableau
@@ -111,7 +111,7 @@ foreach($DB_TAB as $DB_ROW)
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
-        echo  '<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
+        echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce parent."></q>';
         echo  '</td>';

@@ -34,7 +34,7 @@ $TITRE = "Choix des profils utilisateurs";
 <hr />
 
 <form action="#" method="post" id="form_principal">
-  <table class="form">
+  <table id="table_action" class="form">
     <thead>
       <tr><th class="nu"></th><th>Sigle</th><th>Profil</th><th>Obligatoire</th><th>Rattachement aux groupes</th><th>Rattachement aux matières</th></tr>
     </thead>

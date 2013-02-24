@@ -36,17 +36,10 @@ $(document).ready
 
     var mode = false;
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[1,0]];
-    $('table.form').tablesorter({ headers:{3:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{3:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -154,13 +147,14 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.ajouter').click( ajouter );
-    $('q.modifier').live(  'click' , modifier_dupliquer );
-    $('q.dupliquer').live( 'click' , modifier_dupliquer );
-    $('q.supprimer').live( 'click' , supprimer );
-    $('#bouton_annuler').click( annuler );
-    $('#bouton_valider').click( function(){formulaire.submit();} );
-    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
+    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
+    $('#table_action').on( 'click' , 'q.modifier'      , modifier_dupliquer );
+    $('#table_action').on( 'click' , 'q.dupliquer'     , modifier_dupliquer );
+    $('#table_action').on( 'click' , 'q.supprimer'     , supprimer );
+
+    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
+    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
+    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
@@ -258,9 +252,9 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody tr td[colspan=4]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=4]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
           case 'dupliquer':
-            $('table.form tbody').append(responseHTML);
+            $('#table_action tbody').append(responseHTML);
             break;
           case 'modifier':
             $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
@@ -269,10 +263,9 @@ $(document).ready
             $('#id_'+$('#f_id').val()).remove();
             break;
         }
-        trier_tableau();
+        tableau_maj();
         $.fancybox.close();
         mode = false;
-        infobulle();
       }
     }
 

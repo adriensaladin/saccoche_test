@@ -42,8 +42,10 @@ $(document).ready
 
     // Réagir au clic sur une image pour reporter des dates
 
-    $('#bilan input[type=image]').live
-    ('click',
+    $('#bilan').on
+    (
+      'click',
+      'input[type=image]',
       function()
       {
         texte = $(this).parent().html();
@@ -105,7 +107,6 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
                 $('#bilan').html(responseHTML);
-                infobulle();
               }
             }
           }
@@ -139,7 +140,6 @@ $(document).ready
           {
             $('#ajax_msg').removeAttr("class").html("&nbsp;");
             $('#bilan').html(responseHTML);
-            infobulle();
           }
         }
       }

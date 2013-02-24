@@ -39,17 +39,10 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[2,0],[3,0]];
-    $('table.form').tablesorter({ headers:{6:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{6:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[2,0],[3,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le checkbox pour choisir ou non un login
@@ -107,7 +100,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      var fb = $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
       if(mode=='ajouter') { $('#f_nom').focus(); }
     }
 
@@ -198,12 +191,13 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.ajouter').click( ajouter );
-    $('q.modifier').live(  'click' , modifier );
-    $('q.supprimer').live( 'click' , supprimer );
-    $('#bouton_annuler').click( annuler );
-    $('#bouton_valider').click( function(){formulaire.submit();} );
-    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
+    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
+    $('#table_action').on( 'click' , 'q.modifier'      , modifier );
+    $('#table_action').on( 'click' , 'q.supprimer'     , supprimer );
+
+    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
+    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
+    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
@@ -319,8 +313,8 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody tr td[colspan=7]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
-            $('table.form tbody').prepend(responseHTML);
+            $('#table_action tbody tr td[colspan=7]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':
             $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
@@ -329,9 +323,9 @@ $(document).ready
             $('#id_'+$('#f_id').val()).remove();
             break;
         }
+        tableau_maj();
         $.fancybox.close();
         mode = false;
-        infobulle();
       }
     }
 

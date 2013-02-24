@@ -33,14 +33,15 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Voir un référentiel de compétences
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    $('q.voir').click
+
+    $('#table_action').on
     (
+      'click',
+      'q.voir',
       function()
       {
         ids = $(this).parent().attr('id');
-        afficher_masquer_images_action('hide');
-        new_label = '<label for="'+ids+'" class="loader">En cours&hellip;</label>';
-        $(this).after(new_label);
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
@@ -51,8 +52,6 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
             },
             success : function(responseHTML)
             {
@@ -63,11 +62,8 @@ $(document).ready
               else
               {
                 initialiser_compteur();
-                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
-                infobulle();
+                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer_arbre" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
               }
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
             }
           }
         );

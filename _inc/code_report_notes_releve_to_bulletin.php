@@ -35,11 +35,11 @@ $tab_periode_eleves  = (isset($_POST['f_periode_eleves']))  ? explode('_',$_POST
 $tab_eleves_moyennes = (isset($_POST['f_eleves_moyennes'])) ? explode('x',$_POST['f_eleves_moyennes']) : '' ;
 
 $rubrique_id = (isset($_POST['f_rubrique'])) ? Clean::entier($_POST['f_rubrique']) : 0;
-$periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]             : 0;
+$periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]              : 0;
 
 // On vérifie les paramètres principaux
 
-if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL_TYPE']=='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
+if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL_TYPE']!='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
 {
   exit('Erreur avec les données transmises !');
 }

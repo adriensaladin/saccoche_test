@@ -37,17 +37,10 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[0,0]]; 
-    $('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr td').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{1:{sorter:false},2:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -164,20 +157,21 @@ $(document).ready
       cocher_matieres_items( $('#f_compet_liste').val() );
       // Afficher la zone
       $.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+      $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
     };
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.ajouter').click( ajouter );
-    $('q.modifier').live(  'click' , modifier );
-    $('q.supprimer').live( 'click' , supprimer );
-    $('#bouton_annuler').click( annuler );
-    $('#bouton_valider').click( function(){formulaire.submit();} );
-    $('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
+    $('#table_action').on( 'click' , 'q.ajouter'        , ajouter );
+    $('#table_action').on( 'click' , 'q.modifier'       , modifier );
+    $('#table_action').on( 'click' , 'q.supprimer'      , supprimer );
 
-    $('q.choisir_compet').live( 'click' , choisir_compet );
+    $('#form_gestion').on( 'click' , '#bouton_annuler'  , annuler );
+    $('#form_gestion').on( 'click' , '#bouton_valider'  , function(){formulaire.submit();} );
+    $('#form_gestion').on( 'keyup' , 'input,select'     , function(e){intercepter(e);} );
+    $('#form_gestion').on( 'click' , 'q.choisir_compet' , choisir_compet );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour fermer le cadre des items associés à une sélection (annuler / retour)
@@ -230,12 +224,12 @@ $(document).ready
         rules :
         {
           f_nom           : { required:true , maxlength:60 },
-          f_compet_nombre : { accept:'item|items' }
+          f_compet_nombre : { isWord:'item' }
         },
         messages :
         {
           f_nom           : { required:"nom manquant" , maxlength:"60 caractères maximum" },
-          f_compet_nombre : { accept:"item(s) manquant(s)" }
+          f_compet_nombre : { isWord:"item(s) manquant(s)" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -317,10 +311,10 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tr = responseHTML.substring(0,position_script);
-            $('table.form tbody').prepend(new_tr);
+            $('#table_action tbody').prepend(new_tr);
             eval( responseHTML.substring(position_script+8) );
             break;
           case 'modifier':
@@ -333,9 +327,9 @@ $(document).ready
             $('#id_'+$('#f_id').val()).remove();
             break;
         }
+        tableau_maj();
         $.fancybox.close();
         mode = false;
-        infobulle();
       }
     }
 

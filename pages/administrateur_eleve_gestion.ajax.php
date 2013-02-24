@@ -157,7 +157,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le login généré !" /></td>';
   echo  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
-  echo  '<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
+  echo  '<td class="label">'.$sortie_date.'</td>';
   echo  '<td class="nu">';
   echo    '<q class="modifier" title="Modifier cet élève."></q>';
   echo  '</td>';
@@ -251,7 +251,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';
   echo ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
-  echo'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
+  echo'<td class="label">'.$sortie_date.'</td>';
   echo'<td class="nu">';
   echo  '<q class="modifier" title="Modifier cet élève."></q>';
   echo'</td>';

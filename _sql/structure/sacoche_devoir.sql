@@ -14,6 +14,7 @@ CREATE TABLE sacoche_devoir (
   devoir_partage       TEXT         COLLATE utf8_unicode_ci NOT NULL,
   devoir_doc_sujet     VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   devoir_doc_corrige   VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  devoir_fini          TINYINT(1)   UNSIGNED                NOT NULL DEFAULT 0,
   PRIMARY KEY (devoir_id),
   KEY prof_id (prof_id),
   KEY groupe_id (groupe_id)

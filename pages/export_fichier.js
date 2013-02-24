@@ -178,7 +178,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html('');
         $.fancybox( responseHTML , {'centerOnScroll':true} );
-        format_liens('#fancybox_contenu');
+        format_liens('.fancybox-inner');
       }
     }
 

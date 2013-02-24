@@ -30,28 +30,15 @@ $(document).ready
   function()
   {
 
-    // tri du 1er tableau (avec jquery.tablesorter.js).
-    var sorting = [[0,1]];
-    $('table.form').tablesorter({ headers:{3:{sorter:false},4:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr td').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
-
-    // tri du 2nd tableau (avec jquery.tablesorter.js).
-    $('#table_voir').tablesorter();
-    function trier_tableau2()
-    {
-      if($('table.form tbody tr td').length>1)
-      {
-        $('#table_voir').trigger('update');
-      }
-    }
+    // tri des tableaux (avec jquery.tablesorter.js).
+    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},3:{sorter:false},4:{sorter:false}} });
+    $('#table_voir'  ).tablesorter({ headers:{} });
+    var tableau_tri_action = function(){ $('#table_action').trigger( 'sorton' , [ [[0,1]] ] ); };
+    var tableau_tri_voir   = function(){ $('#table_voir'  ).trigger( 'sorton' ); };
+    var tableau_maj_action = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    var tableau_maj_voir   = function(){ $('#table_voir'  ).trigger( 'update' , [ true ] ); };
+    tableau_tri_action();
+    tableau_tri_voir();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
@@ -193,9 +180,8 @@ $(document).ready
       {
         var position_script = responseHTML.lastIndexOf('<SCRIPT>');
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        $('table.form tbody').html( responseHTML.substring(0,position_script) );
-        trier_tableau();
-        infobulle();
+        $('#table_action tbody').html( responseHTML.substring(0,position_script) );
+        tableau_maj_action();
         if(aff_nom_eleve)
         {
           $('#zone_eval_choix h2').html($('#f_eleve option:selected').text());
@@ -240,8 +226,10 @@ $(document).ready
 // Clic sur l'image pour Voir les notes saisies à un devoir
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_eval_choix q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_eval_choix').on
+    (
+      'click',
+      'q.voir',
       function()
       {
         var objet_tds  = $(this).parent().parent().find('td');
@@ -277,8 +265,7 @@ $(document).ready
                 $('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
                 $('#table_voir tbody').html(responseHTML);
                 format_liens('#table_voir');
-                trier_tableau2();
-                infobulle();
+                tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );
               }
             }
@@ -291,8 +278,10 @@ $(document).ready
 // Clic sur l'image pour Saisir les notes d'un devoir (auto-évaluation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_eval_choix q.saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_eval_choix').on
+    (
+      'click',
+      'q.saisir',
       function()
       {
         var objet_tds  = $(this).parent().parent().find('td');
@@ -332,8 +321,7 @@ $(document).ready
                 $('#f_devoir').val(devoir_id);
                 $('#table_saisir tbody').html(responseHTML);
                 format_liens('#table_saisir');
-                trier_tableau2();
-                infobulle();
+                tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_saisir' , onStart:function(){$('#zone_eval_saisir').css("display","block");} , onClosed:function(){$('#zone_eval_saisir').css("display","none");} , 'margin':0 , 'modal':true , 'centerOnScroll':true } );
               }
             }
@@ -348,8 +336,10 @@ $(document).ready
 
     var modification = false;
 
-    $("#table_saisir input[type=radio]").live
-    ('change',
+    $('#table_saisir').on
+    (
+      'click',
+      'input[type=radio]',
       function()
       {
         modification = true;

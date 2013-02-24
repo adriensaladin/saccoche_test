@@ -120,7 +120,7 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 
 <hr />
 
-<table class="form hsort">
+<table id="table_action" class="form hsort">
   <thead>
     <tr>
       <th>Niveau</th>

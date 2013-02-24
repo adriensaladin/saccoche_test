@@ -205,8 +205,11 @@ $(document).ready
     // Appel en ajax pour supprimer le tampon de l'établissement | une signature
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.supprimer').live
-    ( 'click' , function()
+    $('#listing_signatures').on
+    (
+      'click',
+      'q.supprimer',
+      function()
       {
         var sgn_id = $(this).parent().attr('id').substr(4);
         $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");

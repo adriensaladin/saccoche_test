@@ -40,7 +40,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 
 <hr />
 
-<table class="form hsort">
+<table id="table_action" class="form hsort">
   <thead>
     <tr>
       <th>Identifiant</th>

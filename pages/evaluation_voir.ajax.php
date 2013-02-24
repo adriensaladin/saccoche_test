@@ -83,7 +83,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
     // Afficher une ligne du tableau
     echo'<tr>';
-    echo  '<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
+    echo  '<td>'.html($date_affich).'</td>';
     echo  '<td>'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']{0}.'.').'</td>';
     echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
     echo  '<td>'.$image_sujet.$image_corrige.'</td>';

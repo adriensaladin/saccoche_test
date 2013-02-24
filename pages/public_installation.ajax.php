@@ -260,47 +260,62 @@ elseif( $step==51 )
   {
     exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !');
   }
-  // récupérer et tester les paramètres
+  // Récupérer les paramètres de connexion
   $BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';
   $BD_port = (isset($_POST['f_port'])) ? Clean::entier($_POST['f_port']) : 0;
   $BD_name = (isset($_POST['f_name'])) ? Clean::texte($_POST['f_name']) : '';
   $BD_user = (isset($_POST['f_user'])) ? Clean::texte($_POST['f_user']) : '';
   $BD_pass = (isset($_POST['f_pass'])) ? Clean::texte($_POST['f_pass']) : '';
-  // tester la connexion
-  $BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
-  if(!$BDlink)
+  // Tester les paramètres de connexion (sans spécifier de base de données)
+  try
   {
-    exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
+    $BD_handler_root = @new PDO( 'mysql:host='.$BD_host.';port='.$BD_port , $BD_user , $BD_pass );
   }
-  // vérifier la version de MySQL
-  $res = @mysql_query('SELECT VERSION()');
-  $row = mysql_fetch_row($res);
-  $mysql_version = (float)substr($row[0],0,3);
+  catch (PDOException $e)
+  {
+    exit('Erreur : impossible de se connecter à MySQL [ '.html($e->getMessage()).' ] !');
+  }
+  // Récupérer la version de MySQL
+  $BD_result = $BD_handler_root->query('SELECT VERSION()');
+  if($BD_result===FALSE)
+  {
+    exit('Erreur : version de MySQL non détectable [ SELECT VERSION()  &rarr; échec ] !');
+  }
+  $mysql_version = (float)substr( current( $BD_result->fetch(PDO::FETCH_NUM) ) ,0,3);
+  // Vérifier la version de MySQL
   if(version_compare($mysql_version,MYSQL_VERSION_MINI_REQUISE,'<'))
   {
     exit('Erreur : MySQL trop ancien (version utilisée '.$mysql_version.' ; version minimum requise '.MYSQL_VERSION_MINI_REQUISE.') !');
   }
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
+    // Récupérer les droits du compte
+    $BD_result = $BD_handler_root->query('SHOW GRANTS FOR CURRENT_USER()');
+    if($BD_result===FALSE)
+    {
+      exit('Erreur : droits non détectable [ SHOW GRANTS FOR CURRENT_USER() &rarr; échec ] !');
+    }
+    $mysql_droits = current( $BD_result->fetch(PDO::FETCH_NUM) );
     // Vérifier que ce compte a les droits suffisants
     // Réponses typiques :
     // GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION
     // GRANT USAGE ON *.* TO 'sac_user_...'@'%' IDENTIFIED BY PASSWORD '...'
-    $res = @mysql_query('SHOW GRANTS FOR CURRENT_USER()');
-    $row = mysql_fetch_row($res);
-    if( (strpos($row[0],'ALL PRIVILEGES')==FALSE) && (strpos($row[0],'WITH GRANT OPTION')==FALSE) )
+    if( (strpos($mysql_droits,'ALL PRIVILEGES')==FALSE) && (strpos($mysql_droits,'WITH GRANT OPTION')==FALSE) )
     {
-      exit('Erreur : ce compte MySQL n\'a pas les droits suffisants !');
+      exit('Erreur : ce compte MySQL n\'a pas les droits suffisants [ SHOW GRANTS FOR CURRENT_USER() &rarr; '.html($mysql_droits).' ] !');
     }
     // Créer la base de données du webmestre, si elle n'existe pas déjà
     $BD_name = 'sacoche_webmestre';
-    $bool = @mysql_select_db($BD_name,$BDlink);
-    if(!$bool)
+    try
     {
-      $res = @mysql_query('CREATE DATABASE '.$BD_name.' DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-      if(!$bool && !$res)
+      $BD_handler_dbname = @new PDO( 'mysql:host='.$BD_host.';port='.$BD_port.';dbname='.$BD_name , $BD_user , $BD_pass );
+    }
+    catch (PDOException $e)
+    {
+      $BD_result = $BD_handler_root->query('CREATE DATABASE '.$BD_name.' DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
+      if($BD_result===FALSE)
       {
-        exit('Erreur : impossible d\'accéder et de créer la base "sacoche_webmestre" ["'.html(trim(mysql_error())).'"] !');
+        exit('Erreur : impossible de créer la base "sacoche_webmestre" [ CREATE DATABASE '.$BD_name.' DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci  &rarr; échec ] !');
       }
     }
     // Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
@@ -312,20 +327,11 @@ elseif( $step==51 )
   {
     $tab_tables = array();
     // Récupérer, si l'hébergeur l'accepte, la liste des bases sur lequelles l'utilisateur a les droits
-    $res = @mysql_query('SHOW DATABASES');
-    if($res)
+    // On retire tout de même de la liste les bases d'administration de MySQL.
+    $BD_result = $BD_handler_root->query('SHOW DATABASES');
+    if( ($BD_result!==FALSE) && ($BD_result->rowCount()) )
     {
-      $num = mysql_num_rows($res);
-      if($num)
-      {
-        while($row = mysql_fetch_row($res))
-        {
-          if( ($row[0]!='mysql') && ($row[0]!='information_schema') )
-          {
-            $tab_tables[] = $row[0];
-          }
-        }
-      }
+      $tab_tables = array_diff( $BD_result->fetchAll(PDO::FETCH_COLUMN,0) , array('mysql','information_schema','performance_schema') );
     }
     // afficher le formulaire pour choisir le nom de la base
     $affichage .= '<fieldset>'."\r\n";
@@ -360,27 +366,33 @@ elseif( $step==52 )
   {
     exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !');
   }
-  // récupérer et tester les paramètres
+  if(HEBERGEUR_INSTALLATION!='mono-structure')
+  {
+    exit('Erreur : cette étape est réservée au choix d\'un unique établissement !');
+  }
+  // Récupérer les paramètres de connexion
   $BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';
   $BD_port = (isset($_POST['f_port'])) ? Clean::entier($_POST['f_port']) : 0;
   $BD_name = (isset($_POST['f_name'])) ? Clean::texte($_POST['f_name']) : '';
   $BD_user = (isset($_POST['f_user'])) ? Clean::texte($_POST['f_user']) : '';
   $BD_pass = (isset($_POST['f_pass'])) ? Clean::texte($_POST['f_pass']) : '';
-  // tester la connexion
-  $BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
-  if(!$BDlink)
+  // Tester les paramètres de connexion (sans spécifier de base de données)
+  try
   {
-    exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
+    $BD_handler_root = @new PDO( 'mysql:host='.$BD_host.';port='.$BD_port , $BD_user , $BD_pass );
   }
-  if(HEBERGEUR_INSTALLATION!='mono-structure')
+  catch (PDOException $e)
   {
-    exit('Erreur : cette étape est réservée au choix d\'un unique établissement !');
+    exit('Erreur : impossible de se connecter à MySQL [ '.html($e->getMessage()).' ] !');
   }
   // Sélectionner la base de données de la structure
-  $bool = @mysql_select_db($BD_name,$BDlink);
-  if(!$bool)
+  try
   {
-    exit('Erreur : impossible d\'accéder à la base "'.html($BD_name).'" ["'.html(trim(mysql_error())).'"] !');
+    $BD_handler_dbname = @new PDO( 'mysql:host='.$BD_host.';port='.$BD_port.';dbname='.$BD_name , $BD_user , $BD_pass );
+  }
+  catch (PDOException $e)
+  {
+    exit('Erreur : impossible d\'accéder à la base "'.html($BD_name).'" [ '.html($e->getMessage()).' ] !');
   }
   // Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
   FileSystem::fabriquer_fichier_connexion_base(0,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass);

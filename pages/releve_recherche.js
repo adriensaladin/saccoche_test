@@ -201,16 +201,21 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Tout cocher ou tout décocher
-    $('#all_check').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#bilan').on
+    (
+      'click',
+      '#all_check',
       function()
       {
         $('#form_synthese input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
-    $('#all_uncheck').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    // Tout cocher ou tout décocher
+    $('#bilan').on
+    (
+      'click',
+      '#all_uncheck',
       function()
       {
         $('#form_synthese input[type=checkbox]').prop('checked',false);
@@ -338,16 +343,6 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
         format_liens('#bilan');
-        infobulle();
-      }
-      else if(responseHTML.substring(0,4)=='<h2>')
-      {
-        $('#ajax_msg').removeAttr("class").html('');
-        // Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
-        // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-        $('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
-        format_liens('#bilan');
-        $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':400 } );
       }
       else
       {

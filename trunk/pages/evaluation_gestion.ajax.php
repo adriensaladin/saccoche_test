@@ -38,12 +38,11 @@ $date_fin       = (isset($_POST['f_date_fin']))        ? Clean::texte($_POST['f_
 $ref            = (isset($_POST['f_ref']))             ? Clean::texte($_POST['f_ref'])                   : '';
 $date           = (isset($_POST['f_date']))            ? Clean::texte($_POST['f_date'])                  : '';
 $date_fr        = (isset($_POST['f_date_fr']))         ? Clean::texte($_POST['f_date_fr'])               : '';
-$date_mysql     = (isset($_POST['f_date_mysql']))      ? Clean::texte($_POST['f_date_mysql'])            : '';
 $date_visible   = (isset($_POST['f_date_visible']))    ? Clean::texte($_POST['f_date_visible'])          : ''; // JJ/MM/AAAA
 $date_autoeval  = (isset($_POST['f_date_autoeval']))   ? Clean::texte($_POST['f_date_autoeval'])         : ''; // JJ/MM/AAAA mais peut valoir 00/00/0000
 $description    = (isset($_POST['f_description']))     ? Clean::texte($_POST['f_description'])           : '';
-$doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
-$doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
+$doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
+$doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $groupe         = (isset($_POST['f_groupe']))          ? Clean::texte($_POST['f_groupe'])                : '';
 $groupe_nom     = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])            : '';
 $cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
@@ -51,9 +50,10 @@ $cart_detail    = (isset($_POST['f_detail']))          ? Clean::texte($_POST['f_
 $orientation    = (isset($_POST['f_orientation']))     ? Clean::texte($_POST['f_orientation'])           : '';
 $marge_min      = (isset($_POST['f_marge_min']))       ? Clean::texte($_POST['f_marge_min'])             : '';
 $couleur        = (isset($_POST['f_couleur']))         ? Clean::texte($_POST['f_couleur'])               : '';
-$only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                                           : FALSE;
+$only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                                            : FALSE;
 $doc_objet      = (isset($_POST['f_doc_objet']))       ? Clean::texte($_POST['f_doc_objet'])             : '';
 $doc_url        = (isset($_POST['f_doc_url']))         ? Clean::texte($_POST['f_doc_url'])               : '';
+$fini           = (isset($_POST['f_fini']))            ? Clean::texte($_POST['f_fini'])                  : '';
 
 $chemin_devoir      =  CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
 $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
@@ -189,11 +189,16 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       $effectif_eleve = ($type=='groupe') ? $tab_effectifs[$DB_ROW['groupe_id']] : $DB_ROW['users_nombre'] ;
       $nb_saisies_possibles = $DB_ROW['items_nombre']*$effectif_eleve;
-      $info_remplissage  = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].' / '.$nb_saisies_possibles;
-      $class_remplissage = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+      $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
+      $remplissage_class    = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+      $remplissage_class2   = ($DB_ROW['devoir_fini']) ? ' bf' : '' ;
+      $remplissage_contenu  = ($DB_ROW['devoir_fini']) ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
+      $remplissage_lien1    = (!$proprio) ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
+      $remplissage_lien2    = (!$proprio) ? '' : '</a>' ;
+      $remplissage_td_title = ( $proprio) ? '' : ' title="Non cliquable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."' ;
       // Afficher une ligne du tableau
       echo'<tr>';
-      echo  '<td><i>'.$DB_ROW['devoir_date'].'</i>'.$date_affich.'</td>';
+      echo  '<td>'.$date_affich.'</td>';
       echo  '<td>'.$date_visible.'</td>';
       echo  '<td>'.$date_autoeval.'</td>';
       echo  ($type=='groupe') ? '<td>'.html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
@@ -203,7 +208,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       echo  '<td>'.$image_sujet.$image_corrige;
       echo  ($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
       echo  '</td>';
-      echo  '<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
+      echo  '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
       echo  '<td class="nu" id="devoir_'.$ref.'">';
       echo    ($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
       echo    ($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
@@ -292,9 +297,13 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
-  $info_remplissage  = '0 / '.$nb_saisies_possibles;
-  $class_remplissage = 'br';
-  echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
+  $remplissage_nombre   = '0/'.$nb_saisies_possibles ;
+  $remplissage_class    = 'br';
+  $remplissage_class2   = '' ;
+  $remplissage_contenu  = '<span>'.$remplissage_nombre.'</span><i>terminé</i>';
+  $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
+  $remplissage_lien2    = '</a>';
+  echo'<td>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
   echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
@@ -302,7 +311,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
-  echo'<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
+  echo'<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
   echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
   echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -326,7 +335,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 // Modifier une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible && $date_autoeval && ( ($type=='groupe') || $nb_eleves ) && $nb_items )
+if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible && $date_autoeval && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) )
 {
   $date_mysql          = convert_date_french_to_mysql($date);
   $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
@@ -362,7 +371,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
     }
   }
   // sacoche_devoir (maj des paramètres date & info)
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$description,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_profs);
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$description,$date_visible_mysql,$date_autoeval_mysql,$tab_profs);
   if($type=='selection')
   {
     // sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
@@ -389,9 +398,13 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
-  $info_remplissage  = $nb_saisies_effectuees.' / '.$nb_saisies_possibles;
-  $class_remplissage = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
-  echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
+  $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
+  $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+  $remplissage_class2   = ($fini) ? ' bf' : '' ;
+  $remplissage_contenu  = ($fini) ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
+  $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
+  $remplissage_lien2    = '</a>';
+  echo'<td>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
   echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
@@ -399,7 +412,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
-  echo'<td class="'.$class_remplissage.'">'.$info_remplissage.'</td>';
+  echo  '<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
   echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
   echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -996,7 +1009,7 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 // Mettre à jour les items acquis par les élèves à une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visible && count($tab_notes) )
+if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible && count($tab_notes) )
 {
   $nb_saisies_possibles  = 0;
   $nb_saisies_effectuees = 0;
@@ -1054,6 +1067,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
     exit('Aucune modification détectée !');
   }
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+  $date_mysql         = convert_date_french_to_mysql($date_fr);
   $date_visible_mysql = ($date_visible=='identique') ? $date_mysql : convert_date_french_to_mysql($date_visible);
   $info = $description.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
   foreach($tab_nouveau_ajouter as $key => $note)
@@ -1329,6 +1343,17 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');
+  // Retour
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Déclarer (ou pas) une évaluation complète en saisie
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
+{
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini($devoir_id,$_SESSION['USER_ID'],$fini);
   // Retour
   exit('ok');
 }

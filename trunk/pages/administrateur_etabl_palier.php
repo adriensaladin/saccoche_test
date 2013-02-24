@@ -33,7 +33,7 @@ $TITRE = "Paliers du socle";
 
 <hr />
 
-<form action="#" method="post" id="socle">
+<form id="table_action" action="#" method="post" id="socle">
   <table class="form">
     <thead>
       <tr><th class="nu"></th><th>Palier</th><th class="nu">&nbsp;</th></tr>

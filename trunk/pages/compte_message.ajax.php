@@ -89,8 +89,8 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
   echo'<tr id="id_'.$message_id.'" class="new">';
-  echo  '<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
-  echo  '<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
+  echo  '<td>'.$date_debut_fr.'</td>';
+  echo  '<td>'.$date_fin_fr.'</td>';
   echo  '<td>'.$destinataires_nombre.'</td>';
   echo  '<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
   echo  '<td class="nu">';
@@ -119,8 +119,8 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   DB_STRUCTURE_COMMUN::DB_modifier_message($message_id,$_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
-  echo'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
-  echo'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
+  echo'<td>'.$date_debut_fr.'</td>';
+  echo'<td>'.$date_fin_fr.'</td>';
   echo'<td>'.$destinataires_nombre.'</td>';
   echo'<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
   echo'<td class="nu">';

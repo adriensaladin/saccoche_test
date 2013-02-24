@@ -478,7 +478,6 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
         format_liens('#bilan');
-        infobulle();
       }
       else if(responseHTML.substring(0,4)=='<h2>')
       {
@@ -487,7 +486,6 @@ $(document).ready
         // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
         $('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
         format_liens('#bilan');
-        infobulle(); // exceptionnellement il y a aussi des infobulles ici
         $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
       }
       else
@@ -500,8 +498,10 @@ $(document).ready
     // Forcer le report de notes vers un bulletin SACoche
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#bouton_report').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#bilan').on
+    (
+      'click',
+      '#bouton_report',
       function()
       {
         $('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);

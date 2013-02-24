@@ -95,7 +95,7 @@ elseif($levenshtein) // (forcément)
 
 ?>
 
-<table class="form t9 hsort">
+<table id="table_action" class="form t9 hsort">
   <thead>
     <tr>
       <th>Resp</th>

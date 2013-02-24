@@ -134,6 +134,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_bulletin_ligne_supplementaire"        , "" ),
 ( "officiel_bulletin_assiduite"                   , "0" ),
 ( "officiel_bulletin_barre_acquisitions"          , "1" ),
+( "officiel_bulletin_acquis_texte_nombre"         , "1" ),
+( "officiel_bulletin_acquis_texte_code"           , "1" ),
 ( "officiel_bulletin_moyenne_scores"              , "1" ),
 ( "officiel_bulletin_conversion_sur_20"           , "1" ),
 ( "officiel_bulletin_moyenne_classe"              , "1" ),

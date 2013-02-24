@@ -200,10 +200,18 @@ class InfoServeur
     {
       $tab_version_installee  = explode('-',VERSION_PROG);
       $tab_version_disponible = explode('-',InfoServeur::SACoche_version_dispo());
-      $date_unix_version_installee  = mktime( 0 , 0 , 0 , (int)$tab_version_installee[1]  , (int)$tab_version_installee[2]  , (int)$tab_version_installee[0]  );
-      $date_unix_version_disponible = mktime( 0 , 0 , 0 , (int)$tab_version_disponible[1] , (int)$tab_version_disponible[2] , (int)$tab_version_disponible[0] );
-      $nb_jours_ecart = ( $date_unix_version_disponible - $date_unix_version_installee ) / ( 60 * 60 * 24 ) ;
-      $couleur = ($nb_jours_ecart<90) ? 'jaune' : 'rouge' ;
+      if(count($tab_version_disponible)==3)
+      {
+        $date_unix_version_installee  = mktime( 0 , 0 , 0 , (int)$tab_version_installee[1]  , (int)$tab_version_installee[2]  , (int)$tab_version_installee[0]  );
+        $date_unix_version_disponible = mktime( 0 , 0 , 0 , (int)$tab_version_disponible[1] , (int)$tab_version_disponible[2] , (int)$tab_version_disponible[0] );
+        $nb_jours_ecart = ( $date_unix_version_disponible - $date_unix_version_installee ) / ( 60 * 60 * 24 ) ;
+        $couleur = ($nb_jours_ecart<90) ? 'jaune' : 'rouge' ;
+      }
+      else
+      {
+        // Dernière version non détectée…
+        $couleur = 'rouge' ;
+      }
     }
     return InfoServeur::cellule_coloree_centree(VERSION_PROG,$couleur);
   }
@@ -218,9 +226,9 @@ class InfoServeur
    */
   private static function version_sacoche_base()
   {
-    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                                      return InfoServeur::cellule_coloree_centree('indisponible'                     ,'jaune');
-    if(version_compare($_SESSION['VERSION_BASE_STRUCTURE'],VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE_STRUCTURE'],'vert');
-                                                                                        return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE_STRUCTURE'],'rouge');
+    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                            return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
+    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
+                                                                              return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
 
   /**

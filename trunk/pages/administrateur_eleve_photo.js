@@ -79,7 +79,6 @@ $(document).ready
             {
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
               $('#liste_eleves').html(responseHTML);
-              infobulle();
               // Mise en place des AjaxUpload
               $("#liste_eleves q.ajouter").each
               (
@@ -243,7 +242,6 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").html('&nbsp;');
         $('#q_'+user_id).parent().html('<img width="'+img_width+'" height="'+img_height+'" src="'+img_src+'" alt="" /><q class="supprimer" title="Supprimer cette photo (aucune confirmation ne sera demandée)."></q>');
         afficher_masquer_images_action('show');
-        infobulle();
       }
     }
 
@@ -251,8 +249,11 @@ $(document).ready
     // Appel en ajax pour supprimer un logo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('q.supprimer').live
-    ( 'click' , function()
+    $('#liste_eleves').on
+    (
+      'click',
+      'q.supprimer',
+      function()
       {
         var memo_div = $(this).parent();
         var user_id = memo_div.parent().attr('id').substring(4); // "div_" + id

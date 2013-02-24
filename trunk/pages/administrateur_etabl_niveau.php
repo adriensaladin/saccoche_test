@@ -36,7 +36,7 @@ $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_famil
 
 <div id="zone_niveaux">
   <hr />
-  <table class="form">
+  <table id="table_action" class="form">
     <thead>
       <tr>
         <th>Référence</th>

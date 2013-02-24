@@ -128,7 +128,6 @@ $(document).ready
               }
               $('label[for='+id+']').remove();
               afficher_masquer_images_action('show');
-              infobulle();
             }
           }
         );
@@ -139,8 +138,10 @@ $(document).ready
 // Clic sur le bouton pour fermer la zone compet
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone_elaboration_referentiel').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      '#fermer_zone_elaboration_referentiel',
       function()
       {
         $('#zone_elaboration_referentiel').html("&nbsp;");
@@ -154,8 +155,10 @@ $(document).ready
 // Clic sur l'image pour Ajouter un domaine, ou un thème, ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=add]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=add]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -206,7 +209,6 @@ $(document).ready
         {
           $('#f_nom').focus();
         }
-        infobulle();
       }
     );
 
@@ -214,8 +216,10 @@ $(document).ready
 // Clic sur l'image pour Éditer un domaine, ou un thème, ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=edit]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=edit]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -284,7 +288,6 @@ $(document).ready
         {
           $('#f_nom').focus();
         }
-        infobulle();
       }
     );
 
@@ -292,8 +295,10 @@ $(document).ready
 // Clic sur l'image pour Supprimer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=del]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=del]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -330,7 +335,6 @@ $(document).ready
         {
           $(this).before(new_div).parent().children('span').hide();
         }
-        infobulle();
       }
     );
 
@@ -338,8 +342,10 @@ $(document).ready
 // Clic sur l'image pour Fusionner deux items
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=fus]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=fus]',
       function()
       {
         afficher_masquer_images_action('hide');
@@ -349,7 +355,6 @@ $(document).ready
         new_img = '<q class="annuler" lang="fusionner" title="Annuler la fusion de cet item."></q><label id="ajax_msg">&nbsp;</label>';
         // On insère le formulaire dans la page
         $(this).after(new_img);
-        infobulle();
       }
     );
 
@@ -357,8 +362,10 @@ $(document).ready
 // Clic sur l'image pour Déplacer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=move]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=move]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -399,7 +406,6 @@ $(document).ready
         new_img = '<q class="annuler" lang="deplacer" title="Annuler le déplacement de '+texte+'."></q><label id="ajax_msg">&nbsp;</label>';
         // On insère le formulaire dans la page
         $(this).after(new_img);
-        infobulle();
       }
     );
 
@@ -407,8 +413,10 @@ $(document).ready
 // Clic sur l'image pour afficher les items du socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.choisir_compet').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.choisir_compet',
       function()
       {
         // récupérer le nom de l'item et le reporter
@@ -467,8 +475,10 @@ $(document).ready
 // Clic sur l'image pour confirmer l'ajout d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.valider[lang=ajouter]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.valider[lang=ajouter]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -591,7 +601,6 @@ $(document).ready
                 }
                 $('#ajax_msg').parent().attr('id',responseHTML).html(texte);
                 afficher_masquer_images_action('show');
-                infobulle();
               }
               else
               {
@@ -607,8 +616,10 @@ $(document).ready
 // Clic sur l'image pour confirmer l'édition d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.valider[lang=editer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.valider[lang=editer]',
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
@@ -701,7 +712,6 @@ $(document).ready
                   lien_title  = (tab_ressources[element_id]) ? tab_ressources[element_id] : 'Absence de ressource.' ;
                   lien_texte  = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
                   $('#ajax_msg').parent().parent().children('b').html(coef_texte+cart_texte+socle_texte+lien_texte+texte).show();
-                  infobulle();
                 }
                 else
                 {
@@ -724,8 +734,10 @@ $(document).ready
 // Clic sur l'image pour confirmer la suppression d'un domaine (avec son contenu), ou d'un thème (avec son contenu), ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.valider[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.valider[lang=supprimer]',
       function()
       {
         if(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer cet élément de référentiel ?"))
@@ -782,8 +794,10 @@ $(document).ready
 // Clic sur l'image pour confirmer la fusion d'un item avec un second qui l'absorbe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=fus2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=fus2]',
       function()
       {
         //
@@ -840,8 +854,10 @@ $(document).ready
 // Clic sur l'image pour confirmer le déplacement d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q[lang=move2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q[lang=move2]',
       function()
       {
         //
@@ -959,8 +975,10 @@ $(document).ready
 // Clic sur l'image pour Annuler un ajout
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.annuler[lang=ajouter]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.annuler[lang=ajouter]',
       function()
       {
         $(this).parent().remove();
@@ -972,8 +990,10 @@ $(document).ready
 // Clic sur l'image pour Annuler un renommage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.annuler[lang=editer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.annuler[lang=editer]',
       function()
       {
         $(this).parent().parent().children().show();
@@ -986,8 +1006,10 @@ $(document).ready
 // Clic sur l'image pour Annuler une suppression
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.annuler[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.annuler[lang=supprimer]',
       function()
       {
         $(this).parent().parent().children().show();
@@ -1000,8 +1022,10 @@ $(document).ready
 // Clic sur l'image pour Annuler une fusion
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.annuler[lang=fusionner]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.annuler[lang=fusionner]',
       function()
       {
         $(this).remove();
@@ -1015,8 +1039,10 @@ $(document).ready
 // Clic sur l'image pour Annuler un déplacement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel q.annuler[lang=deplacer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.annuler[lang=deplacer]',
       function()
       {
         $(this).remove();
@@ -1030,8 +1056,10 @@ $(document).ready
 // Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('keyup',
+    $(document).on
+    (
+      'keyup',
+      'input',
       function(e)
       {
         if(e.which==13)  // touche entrée

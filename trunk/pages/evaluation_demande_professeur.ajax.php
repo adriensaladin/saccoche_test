@@ -133,7 +133,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['user_id']]).'</td>';
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
     $retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score($score,'score',$pourcent='') );
-    $retour .= '<td class="label"><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
+    $retour .= '<td class="label">'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
     $retour .= '<td class="label">'.$commentaire.'</td>';
     $retour .= '</tr>';

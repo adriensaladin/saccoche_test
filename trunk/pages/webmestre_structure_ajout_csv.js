@@ -116,7 +116,7 @@ $(document).ready
           $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
           $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
           $('#div_info_import').show('fast');
-          $('#structures').hide('fast').children('#transfert').children('tbody').html('');
+          $('#structures').hide('fast').children('#table_action').children('tbody').html('');
           importer();
         }
       }
@@ -178,10 +178,10 @@ $(document).ready
       );
     }
 
-    // live est utilisé pour prendre en compte les nouveaux éléments html créés
-
-    $('#a_reprise_import').live
-    ('click',
+    $('#puce_info_import').on
+    (
+      'click',
+      '#a_reprise_import',
       function()
       {
         num = $('#ajax_import_num').html();
@@ -211,18 +211,6 @@ $(document).ready
       {
         $('#structures input[type=checkbox]').prop('checked',false);
         return false;
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('td.label').live
-    ('click',
-      function()
-      {
-        $(this).parent().find("input[type=checkbox]").click();
       }
     );
 

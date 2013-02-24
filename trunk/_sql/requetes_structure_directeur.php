@@ -35,21 +35,23 @@ class DB_STRUCTURE_DIRECTEUR extends DB
 
 /**
  * compter_saisies_prof_classe
+ * Attention, renvoie aussi des lignes avec juste les noms des profs : il est plus rapide de les écarter a posteriori en PHP que d'ajouter un test groupe_nom IS NOT NULL ou de remplacer la jointure par un INNER JOIN car ces deux procédés allongent le temps de réponse MySQL
  *
  * @param void
  * @return array
  */
 public static function DB_compter_saisies_prof_classe()
 {
-  $DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_devoir ON sacoche_user.user_id=sacoche_devoir.prof_id ';
+  $DB_SQL = 'SELECT CONCAT(prof.user_nom," ",prof.user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user AS prof ';
+  $DB_SQL.= 'LEFT JOIN sacoche_devoir ON prof.user_id=sacoche_devoir.prof_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil ON prof.user_profil_sigle=sacoche_user_profil.user_profil_sigle ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND groupe_type=:groupe_type ';
-  $DB_SQL.= 'GROUP BY user_id,groupe_id';
-  $DB_VAR = array(':profil_type'=>'professeur',':groupe_type'=>'classe');
+  $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_saisie.eleve_id=eleve.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe ON eleve.eleve_classe_id=sacoche_groupe.groupe_id ';
+  $DB_SQL.= 'WHERE user_profil_type=:profil_type ';
+  $DB_SQL.= 'GROUP BY prof.user_id,groupe_nom';
+  $DB_VAR = array(':profil_type'=>'professeur');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

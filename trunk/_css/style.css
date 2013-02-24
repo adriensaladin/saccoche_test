@@ -306,6 +306,7 @@ body q.demander_non       {background-position: 0  -200px}
 body q.detailler          {background-position: 0  -220px}
 body q.detailler_non      {background-position: 0  -240px}
 body q.dupliquer          {background-position: 0  -260px}
+body q.imprimer_arbre     {background-position: 0  -280px}
 body q.imprimer           {background-position: 0  -280px}
 body q.imprimer_non       {background-position: 0  -300px}
 body q.initialiser_mdp    {background-position: 0  -320px}
@@ -429,7 +430,7 @@ button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* b
 button img{width:16px;height:16px}
 
 /* input / select / textarea */
-input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-1px}
+input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
 select[multiple],textarea {vertical-align:middle}
@@ -447,14 +448,30 @@ select.t8 {font-size:90%}
 table {margin-left:1ex}
 th,td {padding:0 2px;text-align:left;white-space:nowrap}
 table tr {background:#EEF}
-table th {border:1px solid #66F;background:#DDF}
+table th {border:1px solid #66F;background:#DDF;font-weight:bold}
 table td {border:1px solid #66F;vertical-align:top}
-th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 tr.new{background:#CFC}
 td.new{font-weight:bold}
+th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 /* colorer une ligne au survol */
-table.form tbody tr:hover td {background:#FCC}
+table.form tbody tr:hover td {background:#BBF}
 table.form tbody tr:hover td.nu {background:#FFF}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des en-têtes de tableaux dont on peut trier les lignes                                       */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.hsort thead th.tablesorter-header     {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat center right;padding-right:13px;cursor:pointer;vertical-align:middle;text-align:left} 
+table.hsort thead th.tablesorter-headerAsc  {background:#99F url(../_img/tablesorter/desc.gif) no-repeat center right}
+table.hsort thead th.tablesorter-headerDesc {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat center right}
+table.vsort thead th.tablesorter-header     {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat bottom center;padding-bottom:13px;cursor:pointer;vertical-align:bottom;text-align:center} 
+table.vsort thead th.tablesorter-headerAsc  {background:#99F url(../_img/tablesorter/desc.gif) no-repeat bottom center}
+table.vsort thead th.tablesorter-headerDesc {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat bottom center}
+table.hsort thead th.sorter-false           {background:#DDF;padding-right:2px;cursor:default}
+table.vsort thead th.sorter-false           {background:#DDF;padding-bottom:0px;cursor:default}
+table.hsort thead th.nu                     {background:#FFF;text-align:center}
+table.vsort thead th.nu                     {background:#FFF;text-align:center}
+th.tablesorter-header div {font-weight:bold} /* C'est le plugin tablesorter qui ajoute le div */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
@@ -520,17 +537,6 @@ table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
 
 span.prev_date, td.prev_date {background-color:#CCC}
 span.prev_year, td.prev_year {background-color:#AAA}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Format des en-têtes de tableaux dont on peut trier les colonnes                                     */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-table.hsort th.header         {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat center right;padding-right:13px;cursor:pointer;vertical-align:middle;text-align:left} 
-table.hsort th.headerSortUp   {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat center right}
-table.hsort th.headerSortDown {background:#99F url(../_img/tablesorter/desc.gif) no-repeat center right}
-table.vsort th.header         {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat bottom center;padding-bottom:13px;cursor:pointer;vertical-align:bottom;text-align:center} 
-table.vsort th.headerSortUp   {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat bottom center}
-table.vsort th.headerSortDown {background:#99F url(../_img/tablesorter/desc.gif) no-repeat bottom center}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux de bilans de compétences : .bilan et .bilan_synthese                            */
@@ -604,6 +610,7 @@ table.vm_nug td.nu {text-align:left}
 td.br{background-color:#F99}
 td.bj{background-color:#FD3}
 td.bv{background-color:#9F9}
+td.bf{background-color:#9F9} /* A mettre en dernier pour surcharger les précédents */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau webmestre présentant les statistiques                                             */
@@ -622,10 +629,7 @@ table.xdebug-error i {display:inline-block} /* pour éviter une répercussion su
 /* Infobulles                                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#tooltip {position:absolute;z-index:3000;border:1px dotted #66F;background:#FFF;color:#222;font-size:12px;font-weight:bold;padding:0.25em;opacity:0.95} /* Contenu de l'infobulle */
-#tooltip h3 {font-size:100%;} /* Titre de l'infobulle */
-#tooltip div.body {} /* Corps de l'infobulle, si utilisation de showBody */
-#tooltip div.url {} /* URL de l'infobulle, si utilisation de showURL */
+.ui-tooltip {position:absolute;z-index:9999;border:1px dotted #66F;background:#FFF;color:#222;font-size:12px;padding:0.25em;opacity:0.95} /* Contenu de l'infobulle ; pas réussi à faire fonctionner font-weight:bold => ajouter en js */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Calque de recherche (uniquement le calendrier en fait)                                              */
@@ -827,232 +831,263 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
   background: url(../_img/colorpicker/marker.png) no-repeat;
 }
 
-/**
+/*!
  * fancyBox - jQuery Plugin
- * version: 2.0.3 (29/11/2011)
+ * version: 2.1.4 (Thu, 10 Jan 2013)
  * @requires jQuery v1.6 or later
  *
  * Examples at http://fancyapps.com/fancybox/
  * License: www.fancyapps.com/fancybox/#license
  *
- * Copyright 2011 Janis Skarnelis - janis@fancyapps.com
+ * Copyright 2012 Janis Skarnelis - janis@fancyapps.com
  *
  */
 
-.fancybox-tmp iframe, .fancybox-tmp object {
-  vertical-align: top;
-  padding: 0;
-  margin: 0;
+.fancybox-wrap,
+.fancybox-skin,
+.fancybox-outer,
+.fancybox-inner,
+.fancybox-image,
+.fancybox-wrap iframe,
+.fancybox-wrap object,
+.fancybox-nav,
+.fancybox-nav span,
+.fancybox-tmp
+{
+	padding: 0;
+	margin: 0;
+	border: 0;
+	outline: none;
+	vertical-align: top;
 }
 
 .fancybox-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1002;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 8020;
 }
 
-.fancybox-outer {
-  padding: 0;
-  margin: 0;
-  background: #fff;
-  color: #444;
-  text-shadow: none;
-  border-radius: 4px;
+.fancybox-skin {
+	position: relative;
+	background: #f9f9f9;
+	color: #444;
+	text-shadow: none;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
 }
 
 .fancybox-opened {
-  z-index: 1003;  
+	z-index: 8030;
 }
 
-.fancybox-opened .fancybox-outer {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+.fancybox-opened .fancybox-skin {
+	-webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	   -moz-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.fancybox-outer, .fancybox-inner {
+	position: relative;
 }
 
 .fancybox-inner {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  outline: none;
-  overflow: hidden;
+	overflow: hidden;
+}
+
+.fancybox-type-iframe .fancybox-inner {
+	-webkit-overflow-scrolling: touch;
 }
 
 .fancybox-error {
-  color: #444;
-    font: 14px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
-    margin: 0;
-    padding: 10px;
+	color: #444;
+	font: 14px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	margin: 0;
+	padding: 15px;
+	white-space: nowrap;
 }
 
 .fancybox-image, .fancybox-iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  vertical-align: top;
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 .fancybox-image {
-  max-width: 100%;
-  max-height: 100%;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
+	background-image: url('../_img/fancybox/fancybox_sprite.png');
 }
 
 #fancybox-loading {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-top: -21px;
-  margin-left: -21px;
-  width: 42px;
-  height: 42px;
-  background: url('../_img/fancybox/fancybox_loading.gif');
-  opacity: 0.8;
-  cursor: pointer;
-  z-index: 1010;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -22px;
+	margin-left: -22px;
+	background-position: 0 -108px;
+	opacity: 0.8;
+	cursor: pointer;
+	z-index: 8060;
 }
 
-.fancybox-close, .fancybox-prev span, .fancybox-next span {
-  background-image: url('../_img/fancybox/fancybox_sprite.png');
+#fancybox-loading div {
+	width: 44px;
+	height: 44px;
+	background: url('../_img/fancybox/fancybox_loading.gif') center center no-repeat;
 }
 
 .fancybox-close {
-  position: absolute;
-  top: -18px;
-  right: -18px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  z-index: 1004;
+	position: absolute;
+	top: -18px;
+	right: -18px;
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+	z-index: 8040;
 }
 
-.fancybox-prev, .fancybox-next {
-  position: absolute;
-  top: 0;
-  width: 40%;
-  height: 100%;
-  cursor: pointer;
-  background: transparent url('../_img/fancybox/blank.gif'); /* helps IE */
-  z-index: 1003;
+.fancybox-nav {
+	position: absolute;
+	top: 0;
+	width: 40%;
+	height: 100%;
+	cursor: pointer;
+	text-decoration: none;
+	background: transparent url('../_img/fancybox/blank.gif'); /* helps IE */
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	z-index: 8040;
 }
 
 .fancybox-prev {
-  left: 0;  
+	left: 0;
 }
 
 .fancybox-next {
-  right: 0;
+	right: 0;
 }
 
-.fancybox-prev span, .fancybox-next span {
-  position: absolute;
-  top: 50%;
-  left: -9999px;
-  width: 36px;
-  height: 36px;
-  margin-top: -18px;
-  cursor: pointer;
-  z-index: 1003;
+.fancybox-nav span {
+	position: absolute;
+	top: 50%;
+	width: 36px;
+	height: 34px;
+	margin-top: -18px;
+	cursor: pointer;
+	z-index: 8040;
+	visibility: hidden;
 }
 
 .fancybox-prev span {
-  background-position: 0 -36px;
+	left: 10px;
+	background-position: 0 -36px;
 }
 
 .fancybox-next span {
-  background-position: 0 -72px;
+	right: 10px;
+	background-position: 0 -72px;
 }
 
-.fancybox-prev:hover, .fancybox-next:hover {
-  visibility: visible;
-}
-
-.fancybox-prev:hover span {
-  left: 20px;
-}
-
-.fancybox-next:hover span {
-  left: auto;
-  right: 20px;
+.fancybox-nav:hover span {
+	visibility: visible;
 }
 
 .fancybox-tmp {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  padding: 0;
-  overflow: visible;
-  visibility: hidden;
+	position: absolute;
+	top: -99999px;
+	left: -99999px;
+	visibility: hidden;
+	max-width: 99999px;
+	max-height: 99999px;
+	overflow: visible !important;
 }
 
 /* Overlay helper */
 
-#fancybox-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  display: none;
-  z-index: 1001;
-  background: #000;
+.fancybox-lock {
+	overflow: hidden;
+}
+
+.fancybox-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	display: none;
+	z-index: 8010;
+	background: url('../_img/fancybox/fancybox_overlay.png');
+}
+
+.fancybox-overlay-fixed {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
+
+.fancybox-lock .fancybox-overlay {
+	overflow: auto;
+	overflow-y: scroll;
 }
 
 /* Title helper */
 
 .fancybox-title {
-  visibility: hidden;  
-  font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
-  position: relative;
-  text-shadow: none;
-  z-index: 1005;
+	visibility: hidden;
+	font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	position: relative;
+	text-shadow: none;
+	z-index: 8050;
 }
 
 .fancybox-opened .fancybox-title {
-  visibility: visible;
+	visibility: visible;
 }
 
 .fancybox-title-float-wrap {
-  position: absolute;
-  bottom: 0;
-  right: 50%;
-  margin-bottom: -35px;
-  z-index: 1003;
-  text-align: center;
+	position: absolute;
+	bottom: 0;
+	right: 50%;
+	margin-bottom: -35px;
+	z-index: 8050;
+	text-align: center;
 }
 
 .fancybox-title-float-wrap .child {
-  display: inline-block;
-  margin-right: -100%;
-  padding: 2px 20px;
-  background: transparent; /* Fallback for web browsers that doesn't support RGBa */
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 15px;
-  text-shadow: 0 1px 2px #222;
-  color: #FFF;
-  font-weight: bold;
-  line-height: 24px;
-  white-space: nowrap;
+	display: inline-block;
+	margin-right: -100%;
+	padding: 2px 20px;
+	background: transparent; /* Fallback for web browsers that doesn't support RGBa */
+	background: rgba(0, 0, 0, 0.8);
+	-webkit-border-radius: 15px;
+	   -moz-border-radius: 15px;
+	        border-radius: 15px;
+	text-shadow: 0 1px 2px #222;
+	color: #FFF;
+	font-weight: bold;
+	line-height: 24px;
+	white-space: nowrap;
 }
 
 .fancybox-title-outside-wrap {
-  position: relative;
-  margin-top: 10px;
-  color: #FFF;
+	position: relative;
+	margin-top: 10px;
+	color: #fff;
 }
 
 .fancybox-title-inside-wrap {
-  margin-top: 10px;
+	padding-top: 10px;
 }
 
 .fancybox-title-over-wrap {
-  position: absolute;
-  bottom: 0;
-  left: 0;  
-  color: #FFF;
-  padding: 10px;
-  background: #000;
-  background: rgba(0, 0, 0, .8);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	color: #fff;
+	padding: 10px;
+	background: #000;
+	background: rgba(0, 0, 0, .8);
 }

@@ -72,7 +72,7 @@ if( ($action=='import_siecle') && $periode_id )
     exit('Erreur : informations manquantes (année scolaire, période...) !');
   }
   // On affiche la demande de confirmation
-  exit('<p class="astuce">Ce fichier, généré le <b>'.html($date_export).'</b>, comporte les données de la période <b>'.html($periode_libelle).'</b>, allant du <b>'.html($periode_date_debut).'</b> au <b>'.html($periode_date_fin).'</b>.</p>');
+  exit('ok'.']¤['.html($date_export).']¤['.html($periode_libelle).']¤['.html($periode_date_debut).']¤['.html($periode_date_fin));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ if( ($action=='traitement_siecle') && $periode_id )
     exit('Erreur : aucun élève trouvé dans le fichier !');
   }
   // affichage du retour
-  exit('<tbody>'.$lignes_ok.$lignes_ko.'</tbody>');
+  exit($lignes_ok.$lignes_ko);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
     }
     $lignes .= '<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_non_justifie.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td></tr>';
   }
-  exit('<tbody>'.$lignes.'</tbody>');
+  exit($lignes);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

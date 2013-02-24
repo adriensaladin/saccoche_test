@@ -135,7 +135,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 </fieldset><hr />
 </form>
 
-<table id="table_gestion" class="form hsort t9 hide">
+<table id="table_action" class="form hsort t9 hide">
   <thead>
     <tr>
       <th>Date devoir</th>
@@ -189,7 +189,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
     <p>Confirmez-vous la suppression de l'évaluation &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ref" name="f_ref" type="hidden" value="" /><input id="f_type" name="f_type" type="hidden" value="<?php echo $TYPE; ?>" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ref" name="f_ref" type="hidden" value="" /><input id="f_type" name="f_type" type="hidden" value="<?php echo $TYPE; ?>" /><input id="f_fini" name="f_fini" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 
@@ -316,7 +316,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
   <p>
     <b id="titre_saisir"></b> <button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button> <label id="ajax_msg_saisir"></label>
     <input id="saisir_ref" name="f_ref" type="hidden" value="" />
-    <input id="saisir_date_mysql" name="f_date_mysql" type="hidden" value="" />
+    <input id="saisir_date_fr" name="f_date_fr" type="hidden" value="" />
     <input id="saisir_date_visible" name="f_date_visible" type="hidden" value="" />
     <input id="saisir_description" name="f_description" type="hidden" value="" />
   </p>

@@ -100,8 +100,10 @@ $(document).ready
     // Ajouter / Retirer une affectation en tant que professeur coordonnateur
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('table.affectation input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('table.affectation').on
+    (
+      'click',
+      'input[type=checkbox]',
       function()
       {
         var obj_bouton = $(this);

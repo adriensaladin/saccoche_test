@@ -82,7 +82,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  
     <thead><tr><th>élève(s) sans demande</th></tr></thead>
     <tbody><tr id="tr_sans"><td class="nu"></td></tr></tbody>
   </table>
-  <table id="table_demandes" class="form hsort t9">
+  <table id="table_action" class="form hsort t9">
     <thead>
       <tr>
         <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>

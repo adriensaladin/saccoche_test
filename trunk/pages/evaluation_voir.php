@@ -87,7 +87,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button i
 <form action="#" method="post" id="zone_eval_choix" class="hide">
   <hr />
   <h2></h2>
-  <table class="form hsort">
+  <table id="table_action" class="form hsort">
     <thead>
       <tr>
         <th>Date</th>

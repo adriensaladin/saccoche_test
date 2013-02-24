@@ -70,7 +70,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 <hr />
 
 <h2 class="identification"><?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
-<form action="#" method="post"><fieldset>
+<form id="form_auth" action="#" method="post"><fieldset>
   <input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
   <input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
   <label id="ajax_msg" class="loader">Chargement en cours...</label>

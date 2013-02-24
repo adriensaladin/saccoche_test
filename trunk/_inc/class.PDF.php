@@ -721,7 +721,7 @@ class PDF extends FPDF
   public function afficher_score_bilan($score,$br)
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , (bool)$this->officiel /*forcer_parent*/ );
+    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
     if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
@@ -744,7 +744,7 @@ class PDF extends FPDF
   // Méthode pour afficher une barre avec les états des items acquis (rectangles A VA NA et couleur de fond suivant le seuil)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_proportion_acquis($largeur,$hauteur,$tab_infos,$total)
+  public function afficher_proportion_acquis($largeur,$hauteur,$tab_infos,$total,$avec_texte_nombre,$avec_texte_code)
   {
     // $tab_infos contient 'A' / 'VA' / 'NA'
     $abscisse = $this->GetX();
@@ -754,8 +754,11 @@ class PDF extends FPDF
     {
       $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
       $largeur_case = $largeur*$nb/$total ;
-      $texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat];
-      $texte = (strlen($texte_complet)<$largeur_case) ? $texte_complet : $nb ;
+          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat]; }
+      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS_TEXTE'][$etat]; }
+      elseif( !$avec_texte_nombre && !$avec_texte_code ) { $texte_complet = ''; }
+      elseif(  $avec_texte_nombre && !$avec_texte_code ) { $texte_complet = $nb; }
+      $texte = ( (strlen($texte_complet)<$largeur_case) || !$avec_texte_nombre || !$avec_texte_code ) ? $texte_complet : $nb ;
       $this->CellFit($largeur_case , $hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
     // Bordure unique autour
@@ -906,7 +909,7 @@ class PDF extends FPDF
     if($type_legende=='score_bilan')
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , (bool)$this->officiel /*forcer_parent*/ );
+      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('Etats d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
@@ -1156,7 +1159,7 @@ class PDF extends FPDF
     }
   }
 
-  public function bilan_synthese_ligne_matiere($format,$matiere_nom,$lignes_nb,$tab_infos_matiere,$total,$moyenne_eleve,$moyenne_classe)
+  public function bilan_synthese_ligne_matiere($format,$matiere_nom,$lignes_nb,$tab_infos_matiere,$total,$moyenne_eleve,$moyenne_classe,$avec_texte_nombre,$avec_texte_code)
   {
     if($format=='multimatiere')
     {
@@ -1187,7 +1190,7 @@ class PDF extends FPDF
       $this->CellFit( $this->page_largeur_moins_marges - 80 , $this->lignes_hauteur*1.5 , To::pdf($matiere_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
       // Proportions acquis matière
       $this->SetFont('Arial' , 'B' , $this->taille_police);
-      $this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total);
+      $this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total,$avec_texte_nombre,$avec_texte_code);
       // Interligne
       $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
     }
@@ -1226,28 +1229,20 @@ class PDF extends FPDF
       {
         $nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
         $this->SetFont('Arial' , '' , $this->taille_police);
-        $this->afficher_proportion_acquis($demi_largeur,$this->lignes_hauteur*$nb_lignes_hauteur,$tab_infos_matiere,$total);
+        $this->afficher_proportion_acquis($demi_largeur,$this->lignes_hauteur*$nb_lignes_hauteur,$tab_infos_matiere,$total,$avec_texte_nombre,$avec_texte_code);
       }
       // Positionnement
       $this->SetXY($this->marge_gauche , $memo_y + $this->lignes_hauteur*2);
     }
   }
 
-  public function bilan_synthese_ligne_synthese($synthese_nom,$tab_infos_synthese,$total,$hauteur_ligne_synthese)
+  public function bilan_synthese_ligne_synthese($synthese_nom,$tab_infos_synthese,$total,$hauteur_ligne_synthese,$avec_texte_nombre,$avec_texte_code)
   {
     $hauteur_ligne = $this->lignes_hauteur * $hauteur_ligne_synthese ;
     $largeur_diagramme = ($this->officiel) ? 20 : 40 ;
     $this->SetFont('Arial' , '' , $this->taille_police*0.8);
-    $this->afficher_proportion_acquis($largeur_diagramme,$hauteur_ligne,$tab_infos_synthese,$total);
+    $this->afficher_proportion_acquis($largeur_diagramme,$hauteur_ligne,$tab_infos_synthese,$total,$avec_texte_nombre,$avec_texte_code);
     $intitule_synthese_largeur = ( ($this->officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ) ? ( $this->page_largeur_moins_marges ) / 2 - $largeur_diagramme : $this->page_largeur_moins_marges - $largeur_diagramme ;
-    // else
-    // {
-      // Pourcentage acquis synthèse
-      // $this->pourcentage_largeur = 10;
-      // $this->cases_hauteur = $hauteur_ligne;
-      // $this->afficher_pourcentage_acquis( '' /*gras*/ , $tab_infos_synthese , 'rien' /*affich*/ );
-      // $intitule_synthese_largeur = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ? ( $this->page_largeur_moins_marges ) / 2 - $this->pourcentage_largeur : $this->page_largeur_moins_marges - $this->pourcentage_largeur ;
-    // }
     // Intitulé synthèse
     $this->SetFont('Arial' , '' , $this->taille_police);
     $couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ;

@@ -38,7 +38,7 @@ $(document).ready
     // Clic pour tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_bilans input[name=all_check]').click
+    $('#table_action input[name=all_check]').click
     (
       function()
       {
@@ -46,7 +46,7 @@ $(document).ready
         $('input['+id_mask+']').prop('checked',true);
       }
     );
-    $('#table_bilans input[name=all_uncheck]').click
+    $('#table_action input[name=all_uncheck]').click
     (
       function()
       {
@@ -90,18 +90,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('td.label').live
-    ('click',
-      function()
-      {
-        $(this).parent().find("input[type=checkbox]").click();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Enregistrer les modifications de types et/ou d'accès
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,7 +102,7 @@ $(document).ready
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucun statut coché !");
           return false;
         }
-        var listing_id = new Array(); $("#table_bilans input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
         if(!listing_id.length)
         {
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucune case du tableau cochée !");
@@ -164,7 +152,7 @@ $(document).ready
     // Clic sur une image action
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_bilans q').click
+    $('#table_action q').click
     (
       function()
       {
@@ -180,7 +168,7 @@ $(document).ready
           if( (memo_section=='officiel_saisir') || (memo_section=='officiel_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
-            $('#cadre_statut , #table_bilans').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_eleve').html('<label class="loader">En cours&hellip;</label>').show(0);
             $.ajax
             (
@@ -205,7 +193,6 @@ $(document).ready
                   else
                   {
                     $('#zone_action_eleve').html(responseHTML);
-                    infobulle();
                     memo_eleve       = $('#go_selection_eleve option:selected').val();
                     memo_eleve_first = $('#go_selection_eleve option:first').val();
                     memo_eleve_last  = $('#go_selection_eleve option:last').val();
@@ -223,7 +210,7 @@ $(document).ready
           else if(memo_section=='officiel_examiner')
           {
             // Masquer le tableau ; Afficher la zone de choix des rubriques
-            $('#cadre_statut , #table_bilans').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
           }
@@ -232,7 +219,7 @@ $(document).ready
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
-            $('#cadre_statut , #table_bilans').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_classe h2').html(titre);
             $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
             $('#zone_action_classe , #zone_'+memo_objet).show(0);
@@ -248,13 +235,15 @@ $(document).ready
     // Clic sur le bouton pour fermer la zone zone_action_classe
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fermer_zone_action_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#fermer_zone_action_eleve',
       function()
       {
         $('#zone_action_eleve').html("&nbsp;").hide(0);
         $('#cadre_photo').hide(0);
-        $('#cadre_statut , #table_bilans').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -264,7 +253,7 @@ $(document).ready
       function()
       {
         $('#zone_chx_rubriques').hide(0);
-        $('#cadre_statut , #table_bilans').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -278,7 +267,7 @@ $(document).ready
         $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
         $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
         $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
-        $('#cadre_statut , #table_bilans').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -335,7 +324,6 @@ $(document).ready
                 $('#zone_resultat_eleve').html( responseHTML.substring(0,position_script) );
                 eval( responseHTML.substring(position_script+8) );
               }
-              infobulle();
               if(memo_auto_next || memo_auto_prev)
               {
                 memo_auto_next = false;
@@ -361,8 +349,10 @@ $(document).ready
       }
     }
 
-    $('#go_premier_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#go_premier_eleve',
       function()
       {
         var eleve_id = $('#go_selection_eleve option:first').val();
@@ -370,8 +360,10 @@ $(document).ready
       }
     );
 
-    $('#go_dernier_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#go_dernier_eleve',
       function()
       {
         var eleve_id = $('#go_selection_eleve option:last').val();
@@ -379,8 +371,10 @@ $(document).ready
       }
     );
 
-    $('#go_precedent_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#go_precedent_eleve',
       function()
       {
         if( $('#go_selection_eleve option:selected').prev().length )
@@ -391,8 +385,10 @@ $(document).ready
       }
     );
 
-    $('#go_suivant_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#go_suivant_eleve',
       function()
       {
         if( $('#go_selection_eleve option:selected').next().length )
@@ -403,8 +399,10 @@ $(document).ready
       }
     );
 
-    $('#go_selection_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('change',
+    $('#zone_action_eleve').on
+    (
+      'change',
+      '#go_selection_eleve',
       function()
       {
         var eleve_id = $('#go_selection_eleve option:selected').val();
@@ -412,8 +410,10 @@ $(document).ready
       }
     );
 
-    $('#change_mode').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#change_mode',
       function()
       {
         if($('#f_mode').val()=='texte')
@@ -435,8 +435,10 @@ $(document).ready
     // [officiel_saisir|officiel_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#archiver_imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#archiver_imprimer',
       function()
       {
         $('#ajax_msg_archiver_imprimer').removeAttr("class").html("");
@@ -491,8 +493,10 @@ $(document).ready
     // [officiel_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#simuler_impression').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#simuler_impression',
       function()
       {
         $('#f_listing_eleves').val(memo_eleve);
@@ -580,8 +584,10 @@ $(document).ready
       }
     }
 
-    $('#zone_resultat_eleve button.ajouter , #zone_resultat_eleve button.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      'button.ajouter , button.modifier',
       function()
       {
         memo_rubrique_nom  = $(this).closest('tr').attr('id');
@@ -604,8 +610,10 @@ $(document).ready
     // [officiel_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#f_appreciation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('keyup',
+    $('#zone_action_eleve').on
+    (
+      'keyup',
+      '#f_appreciation',
       function()
       {
         afficher_textarea_reste($(this),memo_long_max);
@@ -616,8 +624,10 @@ $(document).ready
     // [officiel_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent , #annuler_note , #annuler_note_suivant , #annuler_note_precedent').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent , #annuler_note , #annuler_note_suivant , #annuler_note_precedent',
       function()
       {
         if(memo_rubrique_type=='appr')
@@ -640,8 +650,10 @@ $(document).ready
     // [officiel_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#valider_appr , #valider_appr_suivant , #valider_appr_precedent , #valider_note , #valider_note_suivant , #valider_note_precedent').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#valider_appr , #valider_appr_suivant , #valider_appr_precedent , #valider_note , #valider_note_suivant , #valider_note_precedent',
       function()
       {
         if(memo_rubrique_type=='appr')
@@ -717,8 +729,10 @@ $(document).ready
     // [officiel_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_eleve button.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      'button.supprimer',
       function()
       {
         var obj_bouton = $(this);
@@ -769,8 +783,10 @@ $(document).ready
     // [officiel_saisir] Clic sur le bouton pour recalculer une note (soit effacée - NULL - soit figée car reportée manuellement)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_eleve button.nettoyer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      'button.nettoyer',
       function()
       {
         var obj_bouton = $(this);
@@ -1120,8 +1136,10 @@ $(document).ready
     // [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_eleve button.signaler , #zone_resultat_eleve button.corriger').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#zone_action_eleve').on
+    (
+      'click',
+      'button.signaler , button.corriger',
       function()
       {
         var objet        = $(this).attr('class');
@@ -1353,7 +1371,7 @@ $(document).ready
           {
             if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="fermer_calque_photo" type="button" class="annuler">Fermer</button>');
+              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
               leave_erreur = false;
             }
             else
@@ -1366,21 +1384,8 @@ $(document).ready
       );
     }
 
-    $('#voir_photo').live
-    ('click',
-      function()
-      {
-        charger_photo_eleve();
-      }
-    );
-
-    $('#fermer_calque_photo').live
-    ('click',
-      function()
-      {
-        $('#cadre_photo').html('<button id="voir_photo" type="button" class="voir_photo">Photo</button>');
-      }
-    );
+    $('#cadre_photo').on( 'click', '#voir_photo',    function() { charger_photo_eleve(); } );
+    $('#cadre_photo').on( 'click', '#masquer_photo', function() { $('#cadre_photo').html('<button id="voir_photo" type="button" class="voir_photo">Photo</button>'); } );
 
   }
 );

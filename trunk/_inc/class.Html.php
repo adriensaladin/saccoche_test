@@ -316,7 +316,7 @@ class Html
   public static function td_score( $score , $methode_tri , $pourcent='' , $make_officiel=FALSE )
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , $make_officiel /*forcer_parent*/ );
+    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
    if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
@@ -370,7 +370,7 @@ class Html
     if($score_bilan)
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , 0 /*matiere_coord*/ , $make_officiel /*forcer_parent*/ );
+      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
       $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
       $tab_seuils = array
       (
@@ -431,13 +431,17 @@ class Html
    * @param int     $total
    * @return string
    */
-  public static function td_barre_synthese( $td_width , $tab_infos , $total )
+  public static function td_barre_synthese( $td_width , $tab_infos , $total , $avec_texte_nombre , $avec_texte_code )
   {
     $span = '';
     foreach($tab_infos as $etat => $nb)
     {
       $span_width = $td_width * $nb / $total ;
-      $texte = ($span_width>30) ? $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat] : $nb ;
+          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat]; }
+      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS_TEXTE'][$etat]; }
+      elseif( !$avec_texte_nombre && !$avec_texte_code ) { $texte_complet = '&nbsp;'; }
+      elseif(  $avec_texte_nombre && !$avec_texte_code ) { $texte_complet = $nb; }
+      $texte = ( (5*strlen($texte_complet)<$span_width) || !$avec_texte_code ) ? $texte_complet : ( ($avec_texte_nombre) ? $nb : '&nbsp;' ) ;
       $span .= '<span class="'.Html::$tab_couleur[$etat].'" style="display:inline-block;width:'.$span_width.'px">'.$texte.'</span>';
     }
     return '<td style="padding:0;width:'.$td_width.'px" class="hc">'.$span.'</td>';

@@ -136,10 +136,11 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_niveaux q.ajouter').click( ajouter );
-    $('q.supprimer').live( 'click' , supprimer );
-    $('#bouton_annuler').click( annuler );
-    $('#bouton_valider').click( retirer );
+    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
+    $('#table_action').on( 'click' , 'q.supprimer'     , supprimer );
+
+    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
+    $('#form_gestion').on( 'click' , '#bouton_valider' , retirer );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour fermer le cadre de recherche d'un niveau à ajouter
@@ -180,7 +181,6 @@ $(document).ready
             {
               $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
-              infobulle();
             }
             else
             {
@@ -216,8 +216,10 @@ $(document).ready
 // Clic sur un bouton pour ajouter un niveau trouvé suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#f_recherche_resultat q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#f_recherche_resultat').on
+    (
+      'click',
+      'q.ajouter',
       function()
       {
         // afficher_masquer_images_action('hide');
@@ -249,9 +251,8 @@ $(document).ready
                 var pos_par_fer = texte.lastIndexOf(')');
                 var niveau_nom  = texte.substring(pos_separe,pos_par_ouv-1);
                 var niveau_ref  = texte.substring(pos_par_ouv+1,pos_par_fer);
-                $('#zone_niveaux table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
+                $('#zone_niveaux #table_action tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
                 $('#add_'+niveau_id).removeAttr("class").addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
-                infobulle();
               }
               else
               {

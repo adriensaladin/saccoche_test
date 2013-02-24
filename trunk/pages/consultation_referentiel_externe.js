@@ -70,7 +70,7 @@ $(document).ready
 
     // Charger au démarrage et au clic sur le lien obtenu si échec
     charger_formulaire_structures();
-    $('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
+    $('#ajax_msg').on( 'click', '#charger_formulaire_structures', charger_formulaire_structures );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Charger le select f_matiere en ajax
@@ -228,7 +228,6 @@ $(document).ready
                 initialiser_compteur();
                 $('#ajax_msg').removeAttr("class").html("&nbsp;");
                 $('#choisir_referentiel_communautaire ul').html(responseHTML).parent().show();
-                infobulle();
               }
             }
           }
@@ -240,8 +239,10 @@ $(document).ready
 // Clic sur l'image pour Voir le détail d'un référentiel partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#choisir_referentiel_communautaire q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#choisir_referentiel_communautaire').on
+    (
+      'click',
+      'q.voir',
       function()
       {
         referentiel_id = $(this).parent().attr('id').substr(3);
@@ -271,8 +272,7 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
-                infobulle();
+                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
               }
               $('label[id=temp]').remove();
             }

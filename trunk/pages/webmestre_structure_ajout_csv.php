@@ -70,7 +70,7 @@ FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 <p>&nbsp;</p>
 
 <form action="#" method="post" id="structures" class="hide">
-  <table class="form" id="transfert">
+  <table class="form" id="table_action">
     <thead>
       <tr>
         <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>

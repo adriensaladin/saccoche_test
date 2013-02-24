@@ -44,17 +44,6 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-    $('td.label').click
-    (
-      function()
-      {
-        $(this).parent().find("input[type=checkbox]").click();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur un checkbox
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
     $('input[type=checkbox]').click
@@ -74,7 +63,7 @@ $(document).ready
       {
         $("#bouton_valider").prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+        var check_ids = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
         $.ajax
         (
           {

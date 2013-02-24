@@ -8,6 +8,8 @@ CREATE TABLE sacoche_user (
   user_profil_sigle   CHAR(3)      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Nomenclature issue de la BCN (table n_fonction_filiere) et de user_profils SDET.",
   user_nom            VARCHAR(25)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_prenom         VARCHAR(25)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  user_naissance_date DATE                                 NULL     DEFAULT NULL ,
+  user_email          VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_login          VARCHAR(20)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_password       CHAR(32)     COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_daltonisme     TINYINT(1)   UNSIGNED                NOT NULL DEFAULT 0,

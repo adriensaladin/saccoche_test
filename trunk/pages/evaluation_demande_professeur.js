@@ -31,17 +31,10 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    var sorting = [[8,0],[1,0],[3,1],[2,0]];
-    $('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},9:{sorter:false}} });
-    function trier_tableau()
-    {
-      if($('table.form tbody tr').length>1)
-      {
-        $('table.form').trigger('update');
-        $('table.form').trigger('sorton',[sorting]);
-      }
-    }
-    trier_tableau();
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},7:{sorter:'date_fr'},9:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[8,0],[1,0],[3,1],[2,0]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
@@ -196,7 +189,7 @@ $(document).ready
     (
       function()
       {
-        $('table.form tbody').html('');
+        $('#table_action tbody').html('');
         $('#tr_sans').html('<td class="nu"></td>');
         $("#zone_actions").hide(0);
         $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
@@ -248,11 +241,10 @@ $(document).ready
         $('#ajax_msg_prechoix').removeAttr("class").addClass("valide").html("Demande réalisée !");
         
         $('#zone_messages').html(response_msg);
-        $('table.form tbody').html(response_tr);
+        $('#table_action tbody').html(response_tr);
         $('#tr_sans').html(response_td);
         format_liens('#zone_messages');
-        trier_tableau();
-        infobulle();
+        tableau_maj();
         var etat_disabled = ($("#f_groupe_id").val()>0) ? false : true ;
         $('#form_gestion').show();
         $("#f_qui option[value=groupe]").text($("#f_groupe_nom").val()).prop('disabled',etat_disabled);
@@ -277,22 +269,12 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic pour voir les messages des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    $('#voir_messages').live
-    ('click',
+
+    $('#voir_messages').click
+    (
       function()
       {
         $.fancybox( { 'href':'#zone_messages' , onStart:function(){$('#zone_messages').css("display","block");} , onClosed:function(){$('#zone_messages').css("display","none");} , 'centerOnScroll':true } );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-    $('td.label').live
-    ('click',
-      function()
-      {
-        $(this).parent().find("input[type=checkbox]").click();
       }
     );
 
@@ -344,7 +326,7 @@ $(document).ready
     (
       function()
       {
-        $('#table_demandes input[type=checkbox]').prop('checked',true);
+        $('#table_action input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -352,19 +334,21 @@ $(document).ready
     (
       function()
       {
-        $('#table_demandes input[type=checkbox]').prop('checked',false);
+        $('#table_action input[type=checkbox]').prop('checked',false);
         return false;
       }
     );
 
     // Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
-    $('#table_demandes input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-    ('click',
+    $('#table_action').on
+    (
+      'click',
+      'input[type=checkbox]',
       function()
       {
         // Récupérer les checkbox cochés
         var listing_refs = '';
-        $('#table_demandes input[type=checkbox]:checked').each
+        $('#table_action input[type=checkbox]:checked').each
         (
           function()
           {
@@ -545,20 +529,20 @@ $(document).ready
         if( ((quoi=='creer')&&(suite=='changer')) || ((quoi=='completer')&&(suite=='changer')) || (quoi=='changer') )
         {
           // Changer le statut des demandes cochées
-          $('#table_demandes input[type=checkbox]:checked').each
+          $('#table_action input[type=checkbox]:checked').each
           (
             function()
             {
               this.checked = false;
               $(this).parent().parent().removeAttr("class").children("td:last").prev().html('évaluation en préparation');
-              trier_tableau(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
+              tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
             }
           );
         }
         else if( ((quoi=='creer')&&(suite=='retirer')) || ((quoi=='completer')&&(suite=='retirer')) || (quoi=='retirer') )
         {
           // Retirer les demandes cochées
-          $('#table_demandes input[type=checkbox]:checked').each
+          $('#table_action input[type=checkbox]:checked').each
           (
             function()
             {

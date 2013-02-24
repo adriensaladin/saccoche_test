@@ -88,7 +88,7 @@ $select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures
 <p>&nbsp;</p>
 
 <form action="#" method="post" id="structures" class="hide">
-  <table class="form" id="transfert">
+  <table class="form" id="table_action">
     <thead>
       <tr>
         <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>

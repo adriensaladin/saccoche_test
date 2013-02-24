@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Absences / Retards";
 
-if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE']) )
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
@@ -38,7 +38,22 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specif
 
 // Formulaire de choix d'une période (utilisé deux fois)
 // Formulaire des classes
-$tab_groupes    = DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/);
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') )
+{
+  $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/);
+}
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
+{
+  if(test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP'))
+  {
+    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
+  }
+  else
+  {
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl() ;
+  }
+}
+
 $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE , $optgroup='non');
 $select_groupe  = Form::afficher_select($tab_groupes                                 , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 
@@ -82,3 +97,30 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
 </form>
 
 <hr />
+
+<div id="zone_confirmer" class="hide">
+  <h2>Confirmation d'import</h2>
+  <p class="astuce">Ce fichier, généré le <b id="date_export"></b>, comporte les données de la période <b id="periode_libelle"></b>, allant du <b id="periode_date_debut"></b> au <b id="periode_date_fin"></b>.</p>
+  <p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b id="periode_import"></b> ?</p>
+  <form action="#" method="post">
+    <p>
+      <span class="tab"></span><button id="confirmer_import" type="button" class="valider">Confirmer.</button> <button id="fermer_zone_confirmer" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirm">&nbsp;</label>
+    </p>
+  </form>
+</div>
+
+<div id="zone_saisir" class="hide">
+  <h2>Saisie des absences et retards | Résultat du traitement</h2>
+  <p>
+    <b id="titre_saisir"></b>
+  </p>
+  <table id="table_saisir" class="bilan">
+    <thead><tr><th>Élève</th><th>Absences<br />nb &frac12; journées</th><th>dont &frac12; journées<br />non justifiées</th><th>Nb retards</th></tr></thead>
+    <tbody><tr><td colspan="4"></td></tr></tbody>
+  </table>
+  <form action="#" method="post">
+    <p>
+      <span class="tab"></span><button id="Enregistrer_saisies" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="ajax_msg_saisir"></label>
+    </p>
+  </form>
+</div>

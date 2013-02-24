@@ -294,6 +294,7 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
         format_liens('#bilan');
+        infobulle();
       }
       else if(responseHTML.substring(0,17)=='<ul class="puce">')
       {

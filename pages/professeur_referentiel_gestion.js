@@ -86,7 +86,7 @@ $(document).ready
       );
     };
     // Appel de la fonction à chaque changement de méthode
-    $(document).on( 'change', 'q.voir', actualiser_select_limite );
+    $('#f_methode').live('change', actualiser_select_limite );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Changement de nb de demandes autorisées pour une matière -> soumission
@@ -133,10 +133,8 @@ $(document).ready
 // Clic sur l'image pour Voir un référentiel de son établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.voir',
+    $('table.vm_nug q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var ids = $(this).parent().attr('id');
@@ -165,7 +163,8 @@ $(document).ready
               }
               else
               {
-                $.fancybox( responseHTML.replace('<ul class="ul_m2">','<q class="imprimer_arbre" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
+                $.fancybox( responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
+                infobulle();
               }
               $('label[for='+ids+']').remove();
               afficher_masquer_images_action('show');
@@ -179,10 +178,8 @@ $(document).ready
 // Clic sur l'image pour Modifier le partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.partager',
+    $('q.partager').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         afficher_masquer_images_action('hide');
@@ -191,6 +188,7 @@ $(document).ready
         var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
         var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
         $(this).after(new_span);
+        infobulle();
       }
     );
 
@@ -198,10 +196,8 @@ $(document).ready
 // Clic sur l'image pour Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.envoyer',
+    $('q.envoyer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var ids = $(this).parent().attr('id');
@@ -232,6 +228,7 @@ $(document).ready
               {
                 $.fancybox( '<label class="valide">Référentiel partagé avec succès !</label>' , {'centerOnScroll':true} );
                 $('#'+ids).prev().prev().html(responseHTML);
+                infobulle();
               }
               $('label[for='+ids+']').remove();
               afficher_masquer_images_action('show');
@@ -245,10 +242,8 @@ $(document).ready
 // Clic sur l'image pour Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.calculer',
+    $('q.calculer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         afficher_masquer_images_action('hide');
@@ -261,6 +256,7 @@ $(document).ready
         var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected')+select_limite.replace('"'+limite+'"','"'+limite+'" selected')+select_retroactif.replace('"'+retroactif+'"','"'+retroactif+'" selected')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
         $(this).after(new_span);
         actualiser_select_limite();
+        infobulle();
       }
     );
 
@@ -268,15 +264,14 @@ $(document).ready
 // Clic sur l'image pour Retirer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.supprimer',
+    $('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         afficher_masquer_images_action('hide');
         var new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
         $(this).after(new_span);
+        infobulle();
       }
     );
 
@@ -284,10 +279,8 @@ $(document).ready
 // Clic sur l'image pour Valider la modification du partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=partager]',
+    $('q.valider[lang=partager]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var ids = $(this).parent().parent().attr('id');
@@ -327,6 +320,7 @@ $(document).ready
                 }
                 $('#ajax_msg').parent().remove();
                 afficher_masquer_images_action('show');
+                infobulle();
               }
             }
           }
@@ -338,10 +332,8 @@ $(document).ready
 // Clic sur l'image pour Valider la modification du mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=calculer]',
+    $('q.valider[lang=calculer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var ids = $(this).parent().parent().attr('id');
@@ -378,6 +370,7 @@ $(document).ready
                 $('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
                 $('#ajax_msg').parent().remove();
                 afficher_masquer_images_action('show');
+                infobulle();
               }
             }
           }
@@ -389,10 +382,8 @@ $(document).ready
 // Clic sur l'image pour Valider la suppression d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=retirer]',
+    $('q.valider[lang=retirer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         if(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les items et les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer ce référentiel ?"))
@@ -444,10 +435,8 @@ $(document).ready
 // Clic sur l'image pour Ajouter un référentiel => affichage de choisir_referentiel même dans le cas d'une matière spécifique à l'établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.ajouter',
+    $('q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var ids = $(this).parent().attr('id');
@@ -539,7 +528,7 @@ $(document).ready
     };
 
     // Charger au clic sur le lien obtenu si échec
-    $('#ajax_msg').on( 'click', '#charger_formulaire_structures', charger_formulaire_structures );
+    $('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour Afficher le formulaire de recherche sur le serveur communautaire
@@ -729,6 +718,7 @@ $(document).ready
                 responseHTML = responseHTML.replace(reg,'</q><q class="valider" title="Sélectionner ce référentiel.<br />(choix à confirmer de retour à la page principale)"></q>'); // Ajouter les paniers
                 $('#choisir_referentiel_communautaire ul').html(responseHTML);
                 $('#lister_referentiel_communautaire').show("fast");
+                infobulle();
               }
             }
           }
@@ -740,10 +730,8 @@ $(document).ready
 // Clic sur une image pour choisir un référentiel donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#choisir_referentiel_communautaire').on
-    (
-      'click',
-      'q.valider',
+    $('#choisir_referentiel_communautaire q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var referentiel_id = $(this).parent().attr('id').substr(3);
@@ -760,10 +748,8 @@ $(document).ready
 // Clic sur l'image pour Voir le détail d'un référentiel partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#choisir_referentiel_communautaire').on
-    (
-      'click',
-      'q.voir',
+    $('#choisir_referentiel_communautaire q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var referentiel_id = $(this).parent().attr('id').substr(3);
@@ -793,7 +779,8 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
+                $.fancybox( '<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
+                infobulle();
               }
               $('label[id=temp]').remove();
             }
@@ -888,6 +875,7 @@ $(document).ready
                 // ajout de la ligne
                 $('#mat_'+matiere_id).children('tbody').prepend('<tr class="new">'+td_niveau+td_partage+td_calcul+td_actions+'</tr>');
                 $('#mat_'+matiere_id).children('tbody').children('tr.absent').remove();
+                infobulle();
                 $('#choisir_annuler').click();
                 var label_message  = (referentiel_id) ? "Référentiel importé avec succès !" : "Référentiel vierge ajouté." ;
                 var astuce_message = (referentiel_id) ? "Pour éditer ce nouveau référentiel," : "Pour remplir ce nouveau référentiel," ;
@@ -903,10 +891,8 @@ $(document).ready
 // Clic sur l'image pour Annuler la suppression ou la modification du partage ou la modification du mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.annuler',
+    $('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).parent().remove();

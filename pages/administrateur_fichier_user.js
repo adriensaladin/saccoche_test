@@ -55,10 +55,8 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le lien pour revenir au formulaire principal
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    $('#form_bilan').on
-    (
-      'click',
-      '#bouton_annuler',
+    $('#bouton_annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#form_choix').show();
@@ -72,20 +70,16 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Tout cocher ou tout décocher
-    $('#form_bilan').on
-    (
-      'click',
-      'input[name=all_check]',
+    $('input[name=all_check]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
-    $('#form_bilan').on
-    (
-      'click',
-      'input[name=all_uncheck]',
+    $('input[name=all_uncheck]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',false);
@@ -267,10 +261,8 @@ $(document).ready
 // step52 | step53 | step62 | step82 -> step90   Nettoyage des fichiers temporaires
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_bilan').on
-    (
-      'click',
-      '#passer_etape_suivante',
+    $('#passer_etape_suivante').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var li_step = $(this).attr('href').substring(5,6);
@@ -302,6 +294,7 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").html('&nbsp;');
                 $('#form_bilan fieldset').html(responseHTML);
+                infobulle();
               }
             }
           }
@@ -314,10 +307,8 @@ $(document).ready
 // step41 -> step42     Envoyer les actions sur les groupes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_bilan').on
-    (
-      'click',
-      '#envoyer_infos_regroupements',
+    $('#envoyer_infos_regroupements').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         nb_pb = 0;
@@ -384,10 +375,8 @@ $(document).ready
 // step81 -> step82     Envoyer les modifications éventuelles sur les liens de responsabilité des parents (Sconet uniquement)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_bilan').on
-    (
-      'click',
-      '#envoyer_infos_utilisateurs',
+    $('#envoyer_infos_utilisateurs').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var f_step = $(this).attr('href').substring(5);
@@ -436,10 +425,8 @@ $(document).ready
 // step52 -> step53     Récupérer les identifiants des nouveaux utilisateurs
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_bilan').on
-    (
-      'click',
-      'a.step53',
+    $('a.step53').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#form_bilan fieldset table').remove();
@@ -480,10 +467,8 @@ $(document).ready
 // Retour au départ
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#form_bilan').on
-    (
-      'click',
-      '#retourner_depart',
+    $('#retourner_depart').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#bouton_annuler').click();

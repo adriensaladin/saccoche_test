@@ -37,14 +37,23 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
+    var sorting = [[1,0],[0,0]];
     $('#zone_partage table.form').tablesorter({ headers:{2:{sorter:false}} });
     $('#zone_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
-    var tableau_tri_partage = function(){ $('#zone_partage table.form').trigger( 'sorton' , [ [[1,0],[0,0]] ] ); };
-    var tableau_tri_perso   = function(){ $('#zone_perso   table.form').trigger( 'sorton' , [ [[1,0],[0,0]] ] ); };
-    var tableau_maj_partage = function(){ $('#zone_partage table.form').trigger( 'update' , [ true ] ); };
-    var tableau_maj_perso   = function(){ $('#zone_perso   table.form').trigger( 'update' , [ true ] ); };
-    tableau_tri_partage();
-    tableau_tri_perso();
+    function trier_tableau()
+    {
+      if($('#zone_partage table.form tbody tr').length>1)
+      {
+        $('#zone_partage table.form').trigger('update');
+        $('#zone_partage table.form').trigger('sorton',[sorting]);
+      }
+      if($('#zone_perso table.form tbody tr').length>1)
+      {
+        $('#zone_perso table.form').trigger('update');
+        $('#zone_perso table.form').trigger('sorton',[sorting]);
+      }
+    }
+    trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -186,17 +195,14 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_partage').on( 'click' , 'q.ajouter'       , ajouter_partage );
-    $('#zone_partage').on( 'click' , 'q.supprimer'     , supprimer );
-    $('#zone_perso'  ).on( 'click' , 'q.ajouter'       , ajouter_perso );
-    $('#zone_perso'  ).on( 'click' , 'q.modifier'      , modifier );
-    $('#zone_perso'  ).on( 'click' , 'q.supprimer'     , supprimer );
-
-    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
-    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
-    $('#form_gestion').on( 'keyup' , 'input'           , function(e){intercepter(e);} );
-
-    $('#zone_ajout_form').on( 'keyup' , '#f_motclef'   , function(e){intercepter_motclef(e);} );
+    $('#zone_partage q.ajouter').click( ajouter_partage );
+    $('#zone_perso   q.ajouter').click( ajouter_perso );
+    $('q.modifier').live(  'click' , modifier );
+    $('q.supprimer').live( 'click' , supprimer );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input').live( 'keyup' , function(e){intercepter(e);} );
+    $('#f_motclef').live(          'keyup' , function(e){intercepter_motclef(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour fermer le cadre de recherche d'une matière partagée à ajouter
@@ -263,6 +269,7 @@ $(document).ready
             {
               $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
+              infobulle();
             }
             else
             {
@@ -319,10 +326,8 @@ $(document).ready
 // Clic sur un bouton pour ajouter une matière partagée trouvée suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#f_recherche_resultat').on
-    (
-      'click',
-      'q.ajouter',
+    $('#f_recherche_resultat q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         // afficher_masquer_images_action('hide');
@@ -357,7 +362,8 @@ $(document).ready
                 $('#zone_partage table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
                 $('#zone_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
                 $('#add_'+matiere_id).removeAttr("class").addClass("ajouter_non").attr('title',"Matière déjà choisie.");
-                tableau_maj_partage();
+                infobulle();
+                trier_tableau();
                 $('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
                 $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
               }
@@ -556,9 +562,10 @@ $(document).ready
             $('#f_matiere_apres option[value='+matiere_id+']').remove();
             break;
         }
-        tableau_maj_perso();
+        trier_tableau();
         $.fancybox.close();
         mode = false;
+        infobulle();
       }
     }
 

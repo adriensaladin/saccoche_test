@@ -39,10 +39,17 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},10:{sorter:'date_fr'},11:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,0],[7,0]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    tableau_tri();
+    var sorting = [[6,0],[7,0]];
+    $('table.form').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},11:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
+    trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Recharger la page en restreignant l'affichage en fonction des choix préalables
@@ -60,6 +67,18 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('td.label').live
+    ('click',
+      function()
+      {
+        $(this).parent().find("input[type=checkbox]").click();
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic pour tout cocher ou tout décocher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +86,7 @@ $(document).ready
     (
       function()
       {
-        $('#table_action td.nu input[type=checkbox]').prop('checked',true);
+        $('table.form td.nu input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -75,7 +94,7 @@ $(document).ready
     (
       function()
       {
-        $('#table_action td.nu input[type=checkbox]').prop('checked',false);
+        $('table.form td.nu input[type=checkbox]').prop('checked',false);
         return false;
       }
     );
@@ -105,7 +124,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , login , date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , login , date , check )
     {
       $('#f_action').val(mode);
       $('#f_check').val(check);
@@ -127,6 +146,8 @@ $(document).ready
       $('#f_password').val('').parent().hide(0);
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
       // date de sortie
+      var date_mysql = date.substring(3,13); // garder la date mysql
+      var date_fr    = date.substring(17,date.length); // garder la date française
       if(date_fr=='-')
       {
         $('#box_date').prop('checked',true).next().show(0);
@@ -155,7 +176,7 @@ $(document).ready
       // Insérer l'information du groupe affiché
       $('#f_groupe').val($('#f_groupes option:selected').val());
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '-' /*date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '<i>9999-12-31</i>-' /*date*/ , '' /*check*/ );
     };
 
     /**
@@ -178,7 +199,7 @@ $(document).ready
       var nom        = objet_tds.eq( 6).html();
       var prenom     = objet_tds.eq( 7).html();
       var login      = objet_tds.eq( 8).html();
-      var date_fr    = objet_tds.eq(10).html();
+      var date       = objet_tds.eq(10).html();
       // Retirer une éventuelle balise image présente dans login
       position_image = login.indexOf('<');
       if (position_image!=-1)
@@ -186,7 +207,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , date , check );
     };
 
     /**
@@ -222,12 +243,11 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
-    $('#table_action').on( 'click' , 'q.modifier'      , modifier );
-
-    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
-    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
-    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
+    $('q.ajouter').click( ajouter );
+    $('q.modifier').live( 'click' , modifier );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
@@ -355,16 +375,16 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=12]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
-            $('#table_action tbody').prepend(responseHTML);
+            $('table.form tbody tr td[colspan=12]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('table.form tbody').prepend(responseHTML);
             break;
           case 'modifier':
             $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
             break;
         }
-        tableau_maj();
         $.fancybox.close();
         mode = false;
+        infobulle();
       }
     }
 
@@ -424,17 +444,16 @@ $(document).ready
                     switch (f_action)
                     {
                       case 'retirer':
-                        $('#id_'+tab_response[i]).children("td:last").prev().html(input_date);
+                        $('#id_'+tab_response[i]).children("td:last").prev().html('<i>'+date_mysql+'</i>'+input_date);
                         break;
                       case 'reintegrer':
-                        $('#id_'+tab_response[i]).children("td:last").prev().html('-');
+                        $('#id_'+tab_response[i]).children("td:last").prev().html('<i>9999-12-31</i>-');
                         break;
                       case 'supprimer':
                         $('#id_'+tab_response[i]).remove();
                         break;
                     }
                   }
-                  tableau_maj();
                 }
                 $('#zone_actions button').prop('disabled',false);
               }

@@ -68,7 +68,7 @@ if(empty($_POST['f_afficher']))
 }
 ?>
 
-<table id="table_action" class="form bilan_synthese vm_nug hsort">
+<table class="form bilan_synthese vm_nug hsort">
   <thead>
     <tr>
       <th class="nu"></th>
@@ -96,10 +96,10 @@ if(empty($_POST['f_afficher']))
       echo  '<td class="nu"><a href="#id_0">'.$img.'</a></td>';
       echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
       echo  '<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
-      echo  '<td class="label"><i>'.sprintf("%06u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
+      echo  '<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
       echo  '<td class="label">'.html($DB_ROW['structure_denomination']).'<br />'.html($DB_ROW['structure_uai']).'</td>';
       echo  '<td class="label"><span>'.html($DB_ROW['structure_contact_nom']).'</span> <span>'.html($DB_ROW['structure_contact_prenom']).'</span><div>'.html($DB_ROW['structure_contact_courriel']).'</div></td>';
-      echo  '<td class="label">'.$date_affich.'</td>';
+      echo  '<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
       echo  '<td class="nu">';
       echo    '<q class="modifier" title="Modifier cet établissement."></q>';
       echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -137,7 +137,7 @@ if(empty($_POST['f_afficher']))
     <p>Confirmez-vous la suppression de l'établissement &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="" /><input id="f_date_mysql" name="f_date_mysql" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 

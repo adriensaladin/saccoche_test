@@ -31,10 +31,16 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('table#bilan').tablesorter({ headers:{1:{sorter:'date_fr'}} });
-    var tableau_tri = function(){ $('table#bilan').trigger( 'sorton' , [ [[1,1]] ] ); };
-    var tableau_maj = function(){ $('table#bilan').trigger( 'update' , [ true ] ); };
-    tableau_tri();
+    var sorting = [[1,1]];
+    $('table#bilan').tablesorter({ headers:{} });
+    function trier_tableau()
+    {
+      if($('table#bilan tbody tr td').length>1)
+      {
+        $('table#bilan').trigger('update');
+        $('table#bilan').trigger('sorton',[sorting]);
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Réagir au clic sur un bouton radio ou un changement de select
@@ -95,7 +101,7 @@ $(document).ready
             {
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
               $('#bilan tbody').html(responseHTML);
-              tableau_maj();
+              trier_tableau();
               $('#div_bilan').removeAttr("class");
             }
           }

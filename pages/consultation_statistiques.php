@@ -29,8 +29,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Nombre de saisies";
 ?>
 
-<p class="astuce">Il ne s'agit que d'un indicateur d'utilisation : la performance de l'évaluation ne se résume pas à la multiplicité des items évalués.</p>
-
 <table id="bilan" class="hsort">
   <thead>
     <tr>
@@ -41,25 +39,20 @@ $TITRE = "Nombre de saisies";
   </thead>
   <tbody>
     <?php
-    $nb_lignes = 0;
     $DB_TAB = DB_STRUCTURE_DIRECTEUR::DB_compter_saisies_prof_classe();
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        if($DB_ROW['nombre'])
-        {
-          // Afficher une ligne du tableau
-          echo'<tr>';
-          echo  '<td>'.html($DB_ROW['professeur']).'</td>';
-          echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
-          echo  '<td class="hc">'.$DB_ROW['nombre'].'</td>';
-          echo'</tr>';
-          $nb_lignes++;
-        }
+        // Afficher une ligne du tableau
+        echo'<tr>';
+        echo  '<td>'.html($DB_ROW['professeur']).'</td>';
+        echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
+        echo  '<td class="hc">'.$DB_ROW['nombre'].'</td>';
+        echo'</tr>';
       }
     }
-    if(!$nb_lignes)
+    else
     {
       echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>';
     }

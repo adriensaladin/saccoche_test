@@ -124,6 +124,7 @@ $(document).ready
               }
               $('label[for='+id+']').remove();
               afficher_masquer_images_action('show');
+              infobulle();
             }
           }
         );
@@ -134,10 +135,8 @@ $(document).ready
 // Clic sur le bouton pour fermer la zone compet
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel').on
-    (
-      'click',
-      '#fermer_zone_elaboration_referentiel',
+    $('#fermer_zone_elaboration_referentiel').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#zone_elaboration_referentiel').html("&nbsp;");
@@ -151,10 +150,8 @@ $(document).ready
 // Clic sur l'image pour voir la page correspondant au lien
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel').on
-    (
-      'click',
-      'q.voir',
+    $('#zone_elaboration_referentiel q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         item_id   = $(this).parent().attr('id').substring(3);
@@ -177,10 +174,8 @@ $(document).ready
 // Réagir au changement dans un formulaire de lien associé à un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel').on
-    (
-      'change',
-      'input',
+    $('#zone_elaboration_referentiel input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('change',
       function()
       {
         $(this).parent().children('label').removeAttr("class").addClass("alerte").html("Penser à valider !");
@@ -192,10 +187,8 @@ $(document).ready
 // Clic sur l'image pour valider la modification du lien associé à un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel').on
-    (
-      'click',
-      'q.valider',
+    $('#zone_elaboration_referentiel q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         item_id   = $(this).parent().attr('id').substring(3);
@@ -227,6 +220,7 @@ $(document).ready
                 lien_title  = (item_lien=='') ? 'Absence de ressource.' : escapeHtml(item_lien) ;
                 $('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 tab_ressources[item_id] = (item_lien=='') ? '' : lien_title ;
+                infobulle();
                 $('#n3_'+item_id).children('label').removeAttr("class").addClass("valide").html('Lien enregistré.');
               }
               else
@@ -243,10 +237,8 @@ $(document).ready
 // Clic sur l'image afin d'élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_elaboration_referentiel').on
-    (
-      'click',
-      'q.ress_page_elaborer',
+    $('#zone_elaboration_referentiel q.ress_page_elaborer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         item_id   = $(this).parent().attr('id').substring(3);
@@ -293,6 +285,7 @@ $(document).ready
                 $('#sortable').html(responseHTML);
                 $('#zone_resultat_recherche_liens').html('');
                 format_liens('#sortable');
+                infobulle();
                 $('#zone_ressources q').show();
                 $('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
                 $.fancybox( { 'href':'#zone_ressources' , onStart:function(){$('#zone_ressources').css("display","block");} , onClosed:function(){$('#zone_ressources').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
@@ -323,10 +316,8 @@ $(document).ready
 // Clic sur le bouton pour supprimer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable').on
-    (
-      'click',
-      'q.supprimer',
+    $('#sortable q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var nb_li = $(this).parent().parent().children().length;
@@ -344,10 +335,8 @@ $(document).ready
 // Clic sur un bouton pour modifier un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable').on
-    (
-      'click',
-      'q.modifier',
+    $('#sortable q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var element = $(this).prev();
@@ -364,6 +353,7 @@ $(document).ready
           var lien_nom = element.html();
           $(this).parent().html('<label class="tab">Adresse :</label><input name="lien_url" value="'+lien_url+'" size="75" maxlength="256" /><input name="lien_url_old" value="'+lien_url+'" type="hidden" /><br /><label class="tab">Intitulé :</label><input name="lien_nom" value="'+lien_nom+'" size="75" maxlength="256" /><input name="lien_nom_old" value="'+lien_nom+'" type="hidden" /><q class="valider" title="Valider les modifications"></q><q class="annuler" title="Annuler les modifications"></q><label></label>');
         }
+        infobulle();
         return false;
       }
     );
@@ -372,10 +362,8 @@ $(document).ready
 // Clic sur un bouton pour dupliquer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable').on
-    (
-      'click',
-      'q.dupliquer',
+    $('#sortable q.dupliquer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var element = $(this).prev().prev();
@@ -401,10 +389,8 @@ $(document).ready
 // Clic sur un bouton pour annuler la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable').on
-    (
-      'click',
-      'q.annuler',
+    $('#sortable q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var nb_input = $(this).parent().children('input').length;
@@ -422,6 +408,7 @@ $(document).ready
           $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]);
           format_liens('#sortable');
         }
+        infobulle();
         return false;
       }
     );
@@ -430,10 +417,8 @@ $(document).ready
 // Clic sur un bouton pour valider la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable').on
-    (
-      'click',
-      'q.valider',
+    $('#sortable q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var nb_input = $(this).parent().children('input').length;
@@ -483,6 +468,7 @@ $(document).ready
           }
         }
         initialiser_compteur();
+        infobulle();
         return false;
       }
     );
@@ -507,6 +493,7 @@ $(document).ready
           initialiser_compteur();
           $('label[for=paragraphe_nom]').removeAttr("class").html('');
           $('#sortable').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[1]+'</li>');
+          infobulle();
           $('#sortable li.i').remove();
           $('#paragraphe_nom').val('');
         }
@@ -548,6 +535,7 @@ $(document).ready
         // ok
         initialiser_compteur();
         $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
+        infobulle();
         $('#sortable li.i').remove();
         format_liens('#sortable');
         $('#lien_url').val('');
@@ -690,6 +678,7 @@ $(document).ready
                 $('#zone_resultat_recherche_liens').html('<ul>'+responseHTML+'</ul>');
                 format_liens('#zone_resultat_recherche_liens');
                 initialiser_compteur();
+                infobulle();
               }
             }
           }
@@ -702,10 +691,8 @@ $(document).ready
 // Clic sur le bouton pour ajouter un lien trouvé suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_recherche_liens').on
-    (
-      'click',
-      'q.ajouter',
+    $('#zone_resultat_recherche_liens q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var lien_url = $(this).prev().attr('href');
@@ -713,6 +700,7 @@ $(document).ready
         $(this).parent().remove();
         initialiser_compteur();
         $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
+        infobulle();
         $('#sortable li.i').remove();
         format_liens('#sortable');
       }
@@ -846,6 +834,7 @@ $(document).ready
                 $('#zone_resultat_recherche_ressources').html('<ul>'+responseHTML+'</ul>');
                 format_liens('#zone_resultat_recherche_ressources');
                 initialiser_compteur();
+                infobulle();
               }
             }
           }
@@ -858,10 +847,8 @@ $(document).ready
 // Clic sur le bouton pour ajouter une ressource trouvée suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_resultat_recherche_ressources').on
-    (
-      'click',
-      'q.valider',
+    $('#zone_resultat_recherche_ressources q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var lien_url = $(this).prev().attr('href');
@@ -901,10 +888,8 @@ $(document).ready
 // Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'keyup',
-      'input',
+    $('input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('keyup',
       function(e)
       {
         if(e.which==13)  // touche entrée

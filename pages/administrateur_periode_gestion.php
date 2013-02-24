@@ -33,7 +33,7 @@ $TITRE = "Gérer les périodes";
 
 <hr />
 
-<table id="table_action" class="form hsort">
+<table class="form hsort">
   <thead>
     <tr>
       <th>Ordre</th>

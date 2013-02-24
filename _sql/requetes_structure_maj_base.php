@@ -2595,23 +2595,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-02-04')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-02-22';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de 2 paramètres
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_acquis_texte_nombre" , "1" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_acquis_texte_code"   , "1" )' );
-      // ajout champ table sacoche_devoir
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_fini TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 ' );
-      // ajout champs table sacoche_user (en prévision, car pas encore utilisé à ce jour)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_naissance_date DATE NULL DEFAULT NULL AFTER user_prenom ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_email VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER user_naissance_date ' );
-    }
-  }
-
 }
 
 }

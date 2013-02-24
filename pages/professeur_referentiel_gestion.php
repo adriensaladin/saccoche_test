@@ -27,14 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-
-if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
 ?>
 
 <?php
@@ -170,7 +162,7 @@ else
       $matiere_nom    = $tab['nom'];
       $matiere_coord  = $tab['coord'];
       $matiere_perso  = ($matiere_id>ID_MATIERE_PARTAGEE_MAX) ? 1 : 0 ;
-      $matiere_droit  = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
+      $matiere_droit  = test_user_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],$matiere_coord);
       $matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
       echo'<hr /><h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>';
       echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead><tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr></thead><tbody>'."\r\n";

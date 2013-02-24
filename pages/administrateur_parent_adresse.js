@@ -40,10 +40,17 @@ $(document).ready
     var td_resp = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{6:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    // tableau_tri(); // Ne pas trier volontairement c'est déjà trié à la sortie PHP et pour la recherche levenshtein il faut conserver un tri élève
+    var sorting = [[1,0]];
+    $('table.form').tablesorter({ headers:{6:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
+    // trier_tableau(); // Ne pas retrier volontairement c'est déjà trié à la sortie PHP et pour la recherche levenshtein il faut conserver un tri élève
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -128,11 +135,10 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on( 'click' , 'q.modifier'      , modifier );
-
-    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
-    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
-    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
+    $('q.modifier').live( 'click' , modifier );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
+    $('#form_gestion input , #form_gestion select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
@@ -249,6 +255,7 @@ $(document).ready
         }
         $.fancybox.close();
         mode = false;
+        infobulle();
       }
     }
 

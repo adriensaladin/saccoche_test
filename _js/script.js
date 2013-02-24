@@ -120,21 +120,7 @@ function format_liens(element)
  */
 function infobulle()
 {
-  $(document).tooltip
-  (
-    {
-      items: "img[title] , th[title] , td[title] , a[title] , q[title] , input[title]",
-      content: function()
-      {
-        if( ($(this).hasClass('fancybox-nav')) || ($(this).hasClass('fancybox-item')) )
-        {
-          $(this).removeAttr('title');
-          return false;
-        }
-        return '<b>'+$(this).attr("title")+'</b>'; // Cette ligne permet aussi la prise en compte des <br />... pas vraiment compris pourquoi mais bon...
-      }
-    }
-  );
+  $('img[title] , th[title] , td[title] , a[title] , q[title] , input[title]').tooltip({showURL:false});
 }
 
 /**
@@ -759,7 +745,7 @@ jQuery.validator.addMethod
   {
     return this.optional(element) || test_dateITA(value);
   }, 
-  "date JJ/MM/AAAA incorrecte"
+  "Veuillez entrer une date correcte."
 );
 
 // Ajout d'une méthode pour vérifier le format hexadécimal
@@ -792,18 +778,6 @@ jQuery.validator.addMethod
 ); 
 
 /**
- * Ajout d'une méthode pour tester la présence d'un mot
- */
-jQuery.validator.addMethod
-(
-  "isWord", function(value, element, param)
-  {
-    return this.optional(element) || (value.match(new RegExp(param))) ;
-  }
-  , "élément manquant"
-); 
-
-/**
  * jQuery !
  */
 $(document).ready
@@ -814,41 +788,6 @@ $(document).ready
     // Initialisation
     format_liens('body');
     infobulle();
-
-    /**
-     * Ajouter une méthode de tri au plugin TableSorter
-     */
-      $.tablesorter.addParser
-      (
-        {
-          // set a unique id
-          id: 'date_fr',
-          is: function(date_fr)
-          {
-            // return false so this parser is not auto detected
-            return false;
-          },
-          format: function(date_fr)
-          {
-            // format your data for normalization
-            if(date_fr=='-')
-            {
-              return 99991231;
-            }
-            tab_date = date_fr.split('/');
-            if(tab_date.length==3)
-            {
-              return tab_date[2]+tab_date[1]+tab_date[0]; // Il s'agit bien d'une concaténation, pas d'une somme.
-            }
-            else
-            {
-              return 0;
-            }
-          },
-          // set type, either numeric or text
-          type: 'numeric'
-        }
-      );
 
     /**
      * MENU - Rendre transparente la page au survol.
@@ -890,11 +829,9 @@ $(document).ready
      * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
      */
     // 
-    $(document).on
+    $('input[name=leurre]').live
     (
-      'click',
-      'input[name=leurre]',
-      function()
+      'click' , function()
       {
         return false;
       }
@@ -904,10 +841,8 @@ $(document).ready
      * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
      */
     $('.arbre_dynamique li span').siblings('ul').hide('fast');
-    $(document).on
-    (
-      'click',
-      '.arbre_dynamique li span',
+    $('.arbre_dynamique li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).siblings('ul').toggle();
@@ -939,10 +874,8 @@ $(document).ready
     /**
      * Réagir aux clics pour déployer / contracter l'ensemble d'un arbre à une étape donnée
      */
-    $(document).on
-    (
-      'click',
-      'a.all_extend',
+    $('a.all_extend').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var stade = $(this).attr('href');
@@ -977,28 +910,13 @@ $(document).ready
     );
 
     /**
-     * Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-     */
-    $('#table_action').on
-    (
-      'click',
-      'td.label',
-      function()
-      { 
-        $(this).parent().find("input[type=checkbox]:enabled").click();
-      }
-    );
-
-    /**
      * Clic sur une image-lien pour imprimer un referentiel en consultation
      */
-    $(document).on
-    (
-      'click',
-      'q.imprimer_arbre',
+    $('#fancybox_contenu q.imprimer').live
+    ('click',
       function()
       {
-        imprimer( $(this).closest('div').html() );
+        imprimer(document.getElementById('fancybox_contenu').innerHTML);
       }
     );
 
@@ -1017,10 +935,8 @@ $(document).ready
     /**
      * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
      */
-    $(document).on
-    (
-      'click',
-      'img.toggle',
+    $('img.toggle').live
+    ('click',
       function()
       {
         id = $(this).parent().attr('id').substring(3); // 'to_' + id
@@ -1041,10 +957,8 @@ $(document).ready
     /**
      * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
      */
-    $(document).on
-    (
-      'click',
-      'a.pop_up',
+    $('a.pop_up').live
+    ('click',
       function()
       {
         adresse = $(this).attr("href");
@@ -1094,10 +1008,8 @@ $(document).ready
     /**
      * Afficher le calque et le compléter : calendrier
      */
-    $(document).on
-    (
-      'click',
-      'q.date_calendrier',
+    $('q.date_calendrier').live
+    ('click',
       function(e)
       {
         // Récupérer les infos associées
@@ -1165,10 +1077,8 @@ $(document).ready
     );
 
     // Fermer le calque
-    $(document).on
-    (
-      'click',
-      '#form_calque #fermer_calque',
+    $("#form_calque #fermer_calque").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#calque").html('&nbsp;').hide();
@@ -1177,10 +1087,8 @@ $(document).ready
     );
 
     // Envoyer dans l'input une date du calendrier
-    $(document).on
-    (
-      'click',
-      '#form_calque a.actu',
+    $("#form_calque a.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         retour = $(this).attr("href").substring(0,10); // substring() car si l'identifiant de session est passé dans l'URL (session.use-trans-sid à ON) on peut récolter un truc comme "14/08/2012?SACoche-session=507ac2c6e1007ce8d311ab221fb41aeabaf879f79317c" !
@@ -1211,10 +1119,8 @@ $(document).ready
         }
       );
     }
-    $(document).on
-    (
-      'change',
-      '#form_calque select.actu',
+    $("#form_calque select.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('change',
       function()
       {
         m = $("#m option:selected").val();
@@ -1223,10 +1129,8 @@ $(document).ready
         return false;
       }
     );
-    $(document).on
-    (
-      'click',
-      '#form_calque input.actu',
+    $("#form_calque input.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         tab = $(this).attr('id').split('_'); // 'calendrier_' + mois + '_' + année
@@ -1241,10 +1145,8 @@ $(document).ready
      * Calque pour une demande d'évaluation élève
      */
 
-    $(document).on
-    (
-      'click',
-      'q.demander_add',
+    $('q.demander_add').live
+    ('click',
       function()
       {
         // Récupérer les infos associées
@@ -1278,10 +1180,8 @@ $(document).ready
       }
     );
 
-    $(document).on
-    (
-      'click',
-      '#fermer_demande_evaluation',
+    $('#fermer_demande_evaluation').live
+    ('click',
       function()
       {
         if(PAGE!='evaluation_voir')
@@ -1296,10 +1196,8 @@ $(document).ready
       }
     );
 
-    $(document).on
-    (
-      'click',
-      '#confirmer_demande_evaluation',
+    $('#confirmer_demande_evaluation').live
+    ('click',
       function()
       {
         $('#form_demande_evaluation button').prop('disabled',true);

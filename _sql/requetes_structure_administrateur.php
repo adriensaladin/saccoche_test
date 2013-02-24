@@ -1665,7 +1665,7 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     $DB_SQL.= 'WHERE user_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
-    $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
+    $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_fichier ';
     $DB_SQL.= 'WHERE user_id=:user_id';

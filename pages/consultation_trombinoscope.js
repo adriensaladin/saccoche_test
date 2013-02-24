@@ -81,6 +81,7 @@ $(document).ready
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
               $('#bilan').html(responseHTML);
               format_liens('#bilan');
+              infobulle();
             }
           }
         }
@@ -92,6 +93,18 @@ $(document).ready
       function()
       {
         maj_affichage();
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Imprimer un trombinoscope
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#bilan q.imprimer').live
+    ('click',
+      function()
+      {
+        imprimer(document.getElementById('bilan').innerHTML);
       }
     );
 

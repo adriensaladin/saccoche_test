@@ -605,37 +605,16 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
  * tester_prof_principal
  *
  * @param int $user_id
- * @param int $groupe_id   pour restreindre à une classe donnée
- * @return bool
+ * @return int
  */
-public static function DB_tester_prof_principal($prof_id,$groupe_id)
+public static function DB_tester_prof_principal($prof_id)
 {
-  $DB_SQL = 'SELECT 1 ';
+  $DB_SQL = 'SELECT groupe_id ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp AND groupe_type=:type ';
-  $DB_SQL.= ($groupe_id) ? 'AND groupe_id=:groupe_id ' : '' ;
+  $DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp ';
   $DB_SQL.= 'LIMIT 1'; // utile
-  $DB_VAR = array(':user_id'=>$prof_id,':pp'=>1,':type'=>'classe',':groupe_id'=>$groupe_id);
-  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * tester_prof_coordonnateur
- *
- * @param int $user_id
- * @param int $matiere_id   pour restreindre à une matière donnée
- * @return bool
- */
-public static function tester_prof_coordonnateur($prof_id,$matiere_id)
-{
-  $DB_SQL = 'SELECT 1 ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND jointure_coord=:coord ';
-  $DB_SQL.= ($matiere_id) ? 'AND matiere_id=:matiere_id ' : '' ;
-  $DB_SQL.= 'LIMIT 1'; // utile
-  $DB_VAR = array(':user_id'=>$prof_id,':coord'=>1,':matiere_id'=>$matiere_id);
-  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_VAR = array(':user_id'=>$prof_id,':pp'=>1);
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -716,8 +695,8 @@ public static function DB_ajouter_groupe_par_prof($groupe_type,$groupe_nom,$nive
 public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_id_profs=array())
 {
   $listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_devoir( prof_id, groupe_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date, devoir_partage, devoir_doc_sujet, devoir_doc_corrige, devoir_fini) ';
-  $DB_SQL.= 'VALUES                    (:prof_id,:groupe_id,:devoir_date,:devoir_info,:devoir_visible_date,:devoir_autoeval_date,:devoir_partage,:devoir_doc_sujet,:devoir_doc_corrige,:devoir_fini)';
+  $DB_SQL = 'INSERT INTO sacoche_devoir( prof_id, groupe_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date, devoir_partage, devoir_doc_sujet, devoir_doc_corrige) ';
+  $DB_SQL.= 'VALUES                    (:prof_id,:groupe_id,:devoir_date,:devoir_info,:devoir_visible_date,:devoir_autoeval_date,:devoir_partage,:devoir_doc_sujet,:devoir_doc_corrige)';
   $DB_VAR = array(
     ':prof_id'             => $prof_id,
     ':groupe_id'           => $groupe_id,
@@ -727,8 +706,7 @@ public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$
     ':devoir_autoeval_date'=> $date_autoeval_mysql,
     ':devoir_partage'      => $listing_id_profs,
     ':devoir_doc_sujet'    => $doc_sujet,
-    ':devoir_doc_corrige'  => $doc_corrige,
-    ':devoir_fini'         => 0
+    ':devoir_doc_corrige'  => $doc_corrige
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -861,7 +839,6 @@ public static function DB_modifier_selection_items($selection_item_id,$selection
 
 /**
  * modifier_devoir
- * sont traités à part devoir_doc_sujet / devoir_doc_corrige / devoir_fini : voir DB_modifier_devoir_document() et DB_modifier_devoir_fini()
  *
  * @param int    $devoir_id
  * @param int    $prof_id
@@ -869,15 +846,17 @@ public static function DB_modifier_selection_items($selection_item_id,$selection
  * @param string $info
  * @param string $date_visible_mysql
  * @param string $date_autoeval_mysql
+ * @param string $doc_sujet
+ * @param string $doc_corrige
  * @param string $tab_id_profs   tableau des id des profs avec qui l'évaluation est partagée ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return void
  */
-public static function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$tab_id_profs=array())
+public static function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_id_profs=array())
 {
   $listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
   // sacoche_devoir (maj)
   $DB_SQL = 'UPDATE sacoche_devoir ';
-  $DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_autoeval_date=:autoeval_date, devoir_partage=:devoir_partage ';
+  $DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_autoeval_date=:autoeval_date, devoir_partage=:devoir_partage , devoir_doc_sujet=:devoir_doc_sujet , devoir_doc_corrige=:devoir_doc_corrige ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
   $DB_VAR = array(
     ':date'               => $date_mysql,
@@ -885,6 +864,8 @@ public static function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,
     ':visible_date'       => $date_visible_mysql,
     ':autoeval_date'      => $date_autoeval_mysql,
     ':devoir_partage'     => $listing_id_profs,
+    ':devoir_doc_sujet'   => $doc_sujet,
+    ':devoir_doc_corrige' => $doc_corrige,
     ':devoir_id'          => $devoir_id,
     ':prof_id'            => $prof_id
   );
@@ -913,24 +894,6 @@ public static function DB_modifier_devoir_document($devoir_id,$prof_id,$objet,$f
   $DB_SQL.= 'SET devoir_doc_'.$objet.'=:fichier_nom ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
   $DB_VAR = array(':fichier_nom'=>$fichier_nom,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_devoir_fini
- *
- * @param int    $devoir_id
- * @param int    $prof_id
- * @param string $complet   oui | non
- * @return void
- */
-public static function DB_modifier_devoir_fini($devoir_id,$prof_id,$fini)
-{
-  $fini = ($fini=='oui') ? 1 : 0 ;
-  $DB_SQL = 'UPDATE sacoche_devoir ';
-  $DB_SQL.= 'SET devoir_fini=:fini ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
-  $DB_VAR = array(':fini'=>$fini,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

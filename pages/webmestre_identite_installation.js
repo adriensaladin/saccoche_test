@@ -95,6 +95,7 @@ $(document).ready
             {
               $('#ajax_listing').removeAttr("class").html('');
               $("#listing_logos").html(responseHTML);
+              infobulle();
             }
           }
         }
@@ -106,11 +107,8 @@ $(document).ready
     // Appel en ajax pour supprimer un logo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#listing_logos').on
-    (
-      'click',
-      'q.supprimer',
-      function()
+    $('q.supprimer').live
+    ( 'click' , function()
       {
         memo_li = $(this).parent();
         logo = $(this).prev().attr('alt');

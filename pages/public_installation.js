@@ -34,10 +34,8 @@ $(document).ready
     // * Départ | Étape n -> Étape 1
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step1',
+    $('a.step1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#step li").removeAttr("class");
@@ -79,10 +77,8 @@ $(document).ready
     // * Étape 1|n -> Étape 2
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step2',
+    $('a.step2').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#step li").removeAttr("class");
@@ -124,10 +120,8 @@ $(document).ready
     // * Étape 2|n -> Étape 3
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step3',
+    $('a.step3').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#step li").removeAttr("class");
@@ -158,6 +152,7 @@ $(document).ready
                 $('#form_type_install').html(responseHTML);
                 $('#form_info_heberg').html('');
                 $('#form_param_mysql').html('');
+                infobulle();
                 $('#f_installation').focus();
               }
             }
@@ -170,10 +165,8 @@ $(document).ready
     // * Étape 3 -> Étape 4
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step4',
+    $('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var f_installation = $(this).attr('id');
@@ -205,6 +198,7 @@ $(document).ready
                 $('#form_type_install').html('');
                 $('#form_info_heberg').html(responseHTML);
                 $('#form_param_mysql').html('');
+                infobulle();
                 $('#f_denomination').focus();
               }
             }
@@ -218,10 +212,8 @@ $(document).ready
     // ********************
 
     // Analyse de la robustesse du mot de passe
-    $(document).on
-    (
-      'keyup',
-      '#f_password1',
+    $('#f_password1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('keyup',
       function()
       {
         analyse_mdp( $(this).val() );
@@ -331,10 +323,8 @@ $(document).ready
     // * Étape 4|41|n -> Étape 5
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step5',
+    $('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#step li").removeAttr("class");
@@ -358,6 +348,7 @@ $(document).ready
               $('#form_type_install').html('');
               $('#form_info_heberg').html('');
               $('#form_param_mysql').html(responseHTML);
+              infobulle();
               $('#f_host').focus();
             }
           }
@@ -462,6 +453,7 @@ $(document).ready
         $('#form_type_install').html('');
         $('#form_info_heberg').html('');
         $('#form_param_mysql').html(responseHTML);
+        infobulle();
         $('#f_name').focus();
       }
       else
@@ -478,10 +470,8 @@ $(document).ready
     // * Étape 5|51|52|n -> Étape 6
     // ********************
 
-    $(document).on
-    (
-      'click',
-      'a.step6',
+    $('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $("#step li").removeAttr("class");

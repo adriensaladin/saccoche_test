@@ -145,10 +145,8 @@ $(document).ready
 
     // live est utilisé pour prendre en compte les nouveaux éléments html créés
 
-    $('#puce_info_export').on
-    (
-      'click',
-      '#a_reprise_export',
+    $('#a_reprise_export').live
+    ('click',
       function()
       {
         num = $('#ajax_export_num').html();
@@ -305,7 +303,7 @@ $(document).ready
         $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         $('#div_info_import').show('fast');
-        $('#structures').hide('fast').children('#table_action').children('tbody').html('');
+        $('#structures').hide('fast').children('#transfert').children('tbody').html('');
         importer();
       }
     );
@@ -349,7 +347,7 @@ $(document).ready
               }
               else
               {
-                $('#table_action tbody').append(tab_infos[1]);
+                $('#structures tbody').append(tab_infos[1]);
                 $('#ajax_import_num').html(num);
                 $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
                 $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
@@ -366,10 +364,10 @@ $(document).ready
       );
     }
 
-    $('#puce_info_import').on
-    (
-      'click',
-      '#a_reprise_import',
+    // live est utilisé pour prendre en compte les nouveaux éléments html créés
+
+    $('#a_reprise_import').live
+    ('click',
       function()
       {
         var num = $('#ajax_import_num').html();
@@ -389,7 +387,7 @@ $(document).ready
     (
       function()
       {
-        $('#table_action input[type=checkbox]').prop('checked',true);
+        $('#structures input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -397,8 +395,20 @@ $(document).ready
     (
       function()
       {
-        $('#table_action input[type=checkbox]').prop('checked',false);
+        $('#structures input[type=checkbox]').prop('checked',false);
         return false;
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('td.label').live
+    ('click',
+      function()
+      {
+        $(this).parent().find("input[type=checkbox]").click();
       }
     );
 

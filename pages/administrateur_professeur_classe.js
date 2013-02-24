@@ -100,10 +100,8 @@ $(document).ready
     // Ajouter / Retirer une affectation en tant que professeur principal
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('table.affectation').on
-    (
-      'click',
-      'input[type=checkbox]',
+    $('table.affectation input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var obj_bouton = $(this);

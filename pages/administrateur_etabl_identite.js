@@ -491,6 +491,7 @@ $(document).ready
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
               format_liens('#f_recherche_resultat');
+              infobulle();
               initialiser_compteur();
             }
             else
@@ -528,6 +529,7 @@ $(document).ready
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
               format_liens('#f_recherche_resultat');
+              infobulle();
               initialiser_compteur();
             }
             else
@@ -678,10 +680,8 @@ $(document).ready
 // Clic sur une image pour Valider le choix d'une structure
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#f_recherche_resultat').on
-    (
-      'click',
-      'q.valider',
+    $('#f_recherche_resultat q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var id_key_uai = $(this).parent().attr('id').substr(3); // id ; key ; uai séparés par '_' ; attention, le n°UAI peut être vide...
@@ -764,11 +764,8 @@ $(document).ready
     // Appel en ajax pour supprimer le logo de l'établissement
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#puce_logo').on
-    (
-      'click',
-      'q.supprimer',
-      function()
+    $('q.supprimer').live
+    ( 'click' , function()
       {
         $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax

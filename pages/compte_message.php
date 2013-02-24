@@ -45,7 +45,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 
 <hr />
 
-<table id="table_action" class="form hsort">
+<table class="form hsort">
   <thead>
     <tr>
       <th>Date début</th>
@@ -72,8 +72,8 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
         $destinataires_nombre = ($destinataires_nombre>1) ? $destinataires_nombre.' destinataires' : $destinataires_nombre.' destinataire' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['message_id'].'">';
-        echo  '<td>'.$date_debut_affich.'</td>';
-        echo  '<td>'.$date_fin_affich.'</td>';
+        echo  '<td><i>'.$DB_ROW['message_debut_date'].'</i>'.$date_debut_affich.'</td>';
+        echo  '<td><i>'.$DB_ROW['message_fin_date'].'</i>'.$date_fin_affich.'</td>';
         echo  '<td>'.$destinataires_nombre.'</td>';
         echo  '<td>'.html(mb_substr($DB_ROW['message_contenu'],0,50)).'</td>';
         echo  '<td class="nu">';
@@ -96,6 +96,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 
 <script type="text/javascript">
   var input_date = "<?php echo TODAY_FR ?>";
+  var date_mysql = "<?php echo TODAY_MYSQL ?>";
   var tab_destinataires = new Array();
   var tab_msg_contenus  = new Array();
   // <![CDATA[

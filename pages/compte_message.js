@@ -33,10 +33,16 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},1:{sorter:'date_fr'},2:{sorter:false},3:{sorter:false},4:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,1],[0,0]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    tableau_tri();
+    var sorting = [[1,1],[0,0]];
+    $('table.form').tablesorter({ headers:{2:{sorter:false},3:{sorter:false},4:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table.form tbody tr td').length>1)
+      {
+        $('table.form').trigger('update');
+        $('table.form').trigger('sorton',[sorting]);
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
@@ -92,10 +98,13 @@ $(document).ready
       var objet_tds            = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
       var id                   = objet_tr.attr('id').substring(3);
-      var debut_date_fr        = objet_tds.eq(0).html();
-      var fin_date_fr          = objet_tds.eq(1).html();
+      var debut_date           = objet_tds.eq(0).html();
+      var fin_date             = objet_tds.eq(1).html();
       var destinataires_nombre = objet_tds.eq(2).html();
       var message_info         = objet_tds.eq(3).text();
+      // enlever les date mysql cachées
+      var debut_date_fr        = debut_date.substring(17,debut_date.length);
+      var fin_date_fr          = fin_date.substring(17,fin_date.length);
       // liste des destinataires et contenu du message
       var destinataires_liste  = tab_destinataires[id];
       var message_contenu      = tab_msg_contenus[id];
@@ -179,7 +188,6 @@ $(document).ready
       }
       // Afficher la zone
       $.fancybox( { 'href':'#form_destinataires' , onStart:function(){$('#form_destinataires').css("display","block");} , onClosed:function(){$('#form_destinataires').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-      $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
     };
 
     /**
@@ -192,7 +200,6 @@ $(document).ready
       var message_contenu = $("#f_message_contenu").val();
       // Afficher la zone
       $.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-      $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
       $('#f_message').focus().val(unescapeHtml(message_contenu));
       afficher_textarea_reste( $('#f_message') , 999 );
     };
@@ -201,14 +208,14 @@ $(document).ready
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
-    $('#table_action').on( 'click' , 'q.modifier'      , modifier );
-    $('#table_action').on( 'click' , 'q.supprimer'     , supprimer );
+    $('q.ajouter').click( ajouter );
+    $('q.modifier').live(  'click' , modifier );
+    $('q.supprimer').live( 'click' , supprimer );
+    $('#bouton_annuler').click( annuler );
+    $('#bouton_valider').click( function(){formulaire.submit();} );
 
-    $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
-    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
-    $('#form_gestion').on( 'click' , 'q.choisir_eleve' , choisir_destinataires );
-    $('#form_gestion').on( 'click' , 'q.texte_editer'  , editer_contenu_message );
+    $('q.choisir_eleve').live( 'click' , choisir_destinataires );
+    $('q.texte_editer').live(  'click' , editer_contenu_message );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Indiquer le nombre de caractères restant autorisés dans le textarea
@@ -420,14 +427,14 @@ $(document).ready
         {
           f_debut_date           : { required:true , dateITA:true },
           f_fin_date             : { required:true , dateITA:true },
-          f_destinataires_nombre : { isWord:'destinataire' },
+          f_destinataires_nombre : { accept:'destinataire|destinataires' },
           f_message_info         : { minlength:10 } // On ne peut pas contrôler la longueur de f_message_contenu car il n'y a pas de vérifications sur un champ caché.
         },
         messages :
         {
           f_debut_date           : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
           f_fin_date             : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
-          f_destinataires_nombre : { isWord:"destinataire(s) manquant(s)" },
+          f_destinataires_nombre : { accept:"destinataire(s) manquant(s)" },
           f_message_info         : { minlength:"contenu manquant / insuffisant" }
         },
         errorElement : "label",
@@ -505,10 +512,10 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=5]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('table.form tbody tr td[colspan=5]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tr = responseHTML.substring(0,position_script);
-            $('#table_action tbody').prepend(new_tr);
+            $('table.form tbody').prepend(new_tr);
             eval( responseHTML.substring(position_script+8) );
             break;
           case 'modifier':
@@ -521,9 +528,9 @@ $(document).ready
             $('#id_'+$('#f_id').val()).remove();
             break;
         }
-        tableau_maj();
         $.fancybox.close();
         mode = false;
+        infobulle();
       }
     }
 

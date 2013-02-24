@@ -35,10 +35,28 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    tableau_tri();
+    var sorting = [[1,0]];
+    $('table#statistiques').tablesorter({ headers:{0:{sorter:false}} });
+    function trier_tableau()
+    {
+      if($('table#statistiques tbody tr').length>1)
+      {
+        $('table#statistiques').trigger('update');
+        $('table#statistiques').trigger('sorton',[sorting]);
+      }
+    }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('td.label').live
+    ('click',
+      function()
+      {
+        $(this).parent().find("input[type=checkbox]").click();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire et traitement
@@ -91,8 +109,8 @@ $(document).ready
                 $('#ajax_max').html(max);
                 $('#ajax_info').show('fast');
                 $('#structures').hide('fast');
-                $('#table_action tbody').html('');
-                $('#table_action tfoot').html('');
+                $('#statistiques tbody').html('');
+                $('#statistiques tfoot').html('');
                 calculer();
               }
             }
@@ -131,10 +149,10 @@ $(document).ready
               num++;
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#table_action tfoot').append(ligne);
+                $('#statistiques tfoot').append(ligne);
                 $('#ajax_msg1').removeAttr("class").addClass("valide").html('Calcul des statistiques terminé.');
                 $('#ajax_msg2').html('');
-                tableau_maj();
+                trier_tableau();
                 $('#structures').show('fast');
                 $('#ajax_info').hide('fast');
                 $("#bouton_valider").prop('disabled',false);
@@ -142,7 +160,7 @@ $(document).ready
               }
               else
               {
-                $('#table_action tbody').append(ligne);
+                $('#statistiques tbody').append(ligne);
                 $('#ajax_num').html(num);
                 $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
@@ -159,10 +177,10 @@ $(document).ready
       );
     }
 
-    $('#ajax_msg2').on
-    (
-      'click',
-      '#a_reprise',
+    // live est utilisé pour prendre en compte les nouveaux éléments html créés
+
+    $('#a_reprise').live
+    ('click',
       function()
       {
         num = $('#ajax_num').html();

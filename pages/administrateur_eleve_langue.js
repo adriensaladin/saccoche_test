@@ -138,6 +138,7 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
                 $('#bilan').html(responseHTML);
+                infobulle();
               }
             }
           }
@@ -171,6 +172,7 @@ $(document).ready
           {
             $('#ajax_msg').removeAttr("class").html("&nbsp;");
             $('#bilan').html(responseHTML);
+            infobulle();
           }
         }
       }

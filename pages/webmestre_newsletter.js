@@ -153,10 +153,10 @@ $(document).ready
       );
     }
 
-    $('#ajax_msg2').on
-    (
-      'click',
-      '#a_reprise',
+    // live est utilisé pour prendre en compte les nouveaux éléments html créés
+
+    $('#a_reprise').live
+    ('click',
       function()
       {
         num = $('#ajax_num').html();
@@ -167,10 +167,8 @@ $(document).ready
       }
     );
 
-    $('#ajax_msg2').on
-    (
-      'click',
-      '#a_retour',
+    $('#a_retour').live
+    ('click',
       function()
       {
         $('#ajax_msg').removeAttr("class").html("&nbsp;");

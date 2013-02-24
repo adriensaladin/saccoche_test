@@ -51,7 +51,7 @@ else
 
 <hr />
 
-<table id="table_action" class="form hsort">
+<table class="form hsort">
   <thead>
     <tr>
       <th>Niveau</th>

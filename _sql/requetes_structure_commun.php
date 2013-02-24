@@ -1086,26 +1086,6 @@ public static function DB_OPT_groupes_professeur($user_id)
 }
 
 /**
- * Retourner un tableau [valeur texte optgroup] des classes d'un professeur identifié
- * optgroup sert à pouvoir regrouper les options
- *
- * @param int $user_id
- * @return array|string
- */
-public static function DB_OPT_classes_professeur($user_id)
-{
-  $DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type1 ';
-  $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(':user_id'=>$user_id,':type1'=>'classe');
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
-}
-
-/**
  * Retourner un tableau [valeur texte] des classes de l'établissement
  *
  * @param bool   $with_ref   Avec la référence de la classe entre parenthèses.

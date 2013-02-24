@@ -135,6 +135,7 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").html("");
                 $('#fieldset_parents').html(responseHTML).show();
+                infobulle();
               }
               else
               {
@@ -150,10 +151,8 @@ $(document).ready
 // ORDONNER => Clic sur une image pour échanger deux responsables
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#fieldset_parents').on
-    (
-      'click',
-      'input[type=image]',
+    $('#fieldset_parents input[type=image]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         para_clic = $(this).parent();
@@ -174,13 +173,12 @@ $(document).ready
 // SUPPRIMER => Clic sur une image pour retirer un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.supprimer',
+    $('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
+        infobulle();
         $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
@@ -190,15 +188,14 @@ $(document).ready
 // MODIFIER => Clic sur une image pour modifier un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.ajouter , q.modifier',
+    $('q.ajouter , q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         memo_td_html = $(this).parent().prev('td').html();
         afficher_masquer_images_action('hide');
         $(this).parent().prev('td').html('<select id="f_parent" name="f_parent">'+select_parent+'</select><q class="valider" title="Choisir ce responsable."></q><q class="annuler" title="Annuler."></q><br /><label id="ajax_msg_select">&nbsp;</label>');
+        infobulle();
         $('#f_parent').focus();
       }
     );
@@ -207,10 +204,8 @@ $(document).ready
 // VALIDER => Clic sur une image pour valider l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.valider',
+    $('q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var parent_id  = $('#f_parent option:selected').val();
@@ -226,6 +221,7 @@ $(document).ready
           return false;
         }
         $(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
+        infobulle();
         afficher_masquer_images_action('show');
         $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
       }
@@ -235,10 +231,8 @@ $(document).ready
 // ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
-    (
-      'click',
-      'q.annuler',
+    $('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $(this).parent().html(memo_td_html);
@@ -250,8 +244,8 @@ $(document).ready
 // ENVOYER les modifications apportées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $("#Enregistrer").click
-    (
+    $("#Enregistrer").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         var tab_parents_id = new Array();
@@ -289,6 +283,7 @@ $(document).ready
                 $('button').prop('disabled',false);
                 $('#ajax_msg2').removeAttr("class").html("").parent().hide();
                 $('#fieldset_parents').html(responseHTML).show();
+                infobulle();
               }
               else
               {

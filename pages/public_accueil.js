@@ -83,10 +83,8 @@ $(document).ready
     chargement();
 
     // Choix dans le formulaire des structures => Afficher le formulaire de la structure
-    $('#form_auth').on
-    (
-      'click',
-      '#f_choisir',
+    $('#f_choisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('button').prop('disabled',true);
@@ -123,10 +121,8 @@ $(document).ready
     );
 
     // Clic sur le lien pour changer de structure
-    $('#form_auth').on
-    (
-      'click',
-      '#f_changer',
+    $('#f_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('click',
       function()
       {
         $('#f_changer').hide();
@@ -163,10 +159,8 @@ $(document).ready
     );
 
     // Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
-    $('#form_auth').on
-    (
-      'change',
-      'input[type=radio]',
+    $('input[type=radio]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+    ('change',
       function()
       {
         if($('#f_mode_normal').is(':checked'))

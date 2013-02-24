@@ -31,8 +31,8 @@ $TITRE = "Relevé de maîtrise du socle";
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des professeurs et directeurs :<div>';
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
+  // echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  // echo afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

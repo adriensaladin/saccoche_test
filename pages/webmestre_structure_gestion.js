@@ -132,9 +132,9 @@ $(document).ready
       var contact_prenom   = objet_tds.eq(5).children('span').eq(1).html();
       var contact_courriel = objet_tds.eq(5).children('div').html();
       var date_fr          = objet_tds.eq(6).html();
-      // séparer zone géographique et localisation
+      // retirer le champ caché pour le tri, séparer zone géographique et localisation
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
-      var tab_infos        = lieu.split(reg);
+      var tab_infos        = lieu.substring(13).split(reg);
       var geo              = tab_infos[0];
       var localisation     = tab_infos[1];
       // séparer denomination et UAI
@@ -142,8 +142,6 @@ $(document).ready
       var tab_infos        = structure.split(reg);
       var denomination     = tab_infos[0];
       var uai              = tab_infos[1];
-      // enlever l'indice de tri caché
-      geo = geo.substring(9,geo.length); 
       // Afficher le formulaire
       afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date_fr , acces , check );
     };

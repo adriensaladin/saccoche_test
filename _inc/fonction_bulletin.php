@@ -85,7 +85,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
     if(isset($tab_eval[$eleve_id]))
     {
       // Pour chaque matiere...
-      foreach($tab_matiere as $matiere_id => $matiere_nom)
+      foreach($tab_matiere as $matiere_id)
       {
         // Si cet élève a été évalué dans cette matière...
         if(isset($tab_eval[$eleve_id][$matiere_id]))

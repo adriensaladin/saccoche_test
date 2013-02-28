@@ -751,8 +751,7 @@ foreach($tab_eleve as $tab)
       {
         $page_debut = (isset($page_fin)) ? $page_fin+1 : 1 ;
         $page_fin   = $releve_PDF->page;
-        $page_nombre = $page_fin - $page_debut + 1;
-        $tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin , $page_nombre );
+        $tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin );
       }
     }
     if($make_html)

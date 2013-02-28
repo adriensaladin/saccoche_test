@@ -194,17 +194,15 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 if( ($ACTION=='imprimer') && ($etape==3) )
 {
   $date = date('Y-m-d');
-  $tab_pages_non_anonymes     = array();
-  $tab_pages_nombre_par_bilan = array();
+  $tab_pages_non_anonymes = array();
   $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
   FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
   foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     foreach($tab_tirages as $numero_tirage => $tab)
     {
-      list( $eleve_identite , $page_plage , $page_nombre ) = $tab;
-      $tab_pages_non_anonymes[]     = $page_plage;
-      $tab_pages_nombre_par_bilan[] = $page_nombre;
+      list( $eleve_identite , $page_plage ) = $tab;
+      $tab_pages_non_anonymes[]  = $page_plage;
       $fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
       $releve_pdf = new PDFMerger;
       $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
@@ -212,8 +210,7 @@ if( ($ACTION=='imprimer') && ($etape==3) )
   }
   FileSystem::zipper_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
   FileSystem::supprimer_dossier($chemin_temp_pdf);
-  $_SESSION['tmp']['pages_non_anonymes']     = implode(',',$tab_pages_non_anonymes);
-  $_SESSION['tmp']['pages_nombre_par_bilan'] = implode(' ; ',$tab_pages_nombre_par_bilan);
+  $_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
   unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
   exit('ok');
 }
@@ -230,11 +227,10 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
   }
   echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
   echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>';
   echo'</ul>';
-  echo'<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$_SESSION['tmp']['pages_nombre_par_bilan'].'</p>';
-  unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] , $_SESSION['tmp']['pages_nombre_par_bilan'] );
+  unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
   exit();
 }
 

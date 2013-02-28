@@ -239,7 +239,6 @@ class Form
       'aff_moyenne_scores'     => $check_moyenne_score ,
       'aff_pourcentage_acquis' => $check_pourcentage_acquis ,
       'conversion_sur_20'      => $check_conversion_sur_20 ,
-      'indicateur'             => 'moyenne_scores' ,
       'tableau_tri_objet'      => 'eleve',
       'tableau_tri_mode'       => 'score',
       'with_coef'              => 1 ,
@@ -308,10 +307,6 @@ class Form
       case 'items_multimatiere' :
         global $aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
         $tab_choix_new = compact('aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
-        break;
-      case 'bilan_chronologique' :
-        global $indicateur,$conversion_sur_20,$retroactif,$only_socle;
-        $tab_choix_new = compact('indicateur','conversion_sur_20','retroactif','only_socle');
         break;
       case 'synthese_matiere' :
         global $matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;

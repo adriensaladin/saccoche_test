@@ -35,96 +35,10 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-    // @see   http://www.highcharts.com/documentation/how-to-use
-    // @see   http://www.highcharts.com/ref
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ChartOptions = {
-      chart: {
-        renderTo: 'div_graphique',
-        type: 'column'
-       },
-      colors: [
-        BACKGROUND_A,
-        BACKGROUND_VA,
-        BACKGROUND_NA
-      ],
-      title: {
-        style: { color: '#333' } ,
-        text: null // Pourrait être MAJ ensuite
-      },
-      xAxis: {
-        labels: { style: { color: '#000' } },
-        categories: [] // MAJ ensuite
-      },
-      yAxis: [
-        {
-          labels: { enabled: false },
-          min: 0,
-          max: 100,
-          title: { style: { color: '#333' } , text: 'Items acquis' }
-        },
-        {} // MAJ ensuite
-      ],
-      tooltip: {
-        formatter: function() {
-          return this.series.name +' : '+ (this.y);
-        }
-      },
-      plotOptions: {
-        column: {
-          stacking: 'percent'
-        }
-      },
-      series: [] // MAJ ensuite
-      ,
-      credits: {
-        enabled: false
-      }
-    };
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Afficher / Masquer la photo d'un élève (module bulletin)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function charger_photo_eleve()
-    {
-      $("#cadre_photo").html('<label id="ajax_photo" class="loader">En cours&hellip;</label>');
-      $.ajax
-      (
-        {
-          type : 'GET',
-          url : 'ajax.php?page=calque_voir_photo',
-          data : 'user_id='+memo_eleve,
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_photo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-            leave_erreur = true;
-          },
-          success : function(responseHTML)
-          {
-            if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-            {
-              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
-              leave_erreur = false;
-            }
-            else
-            {
-              $('#ajax_photo').removeAttr("class").addClass("alerte").html(responseHTML);
-              leave_erreur = true;
-            }
-          }
-        }
-      );
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Clic pour tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil input[name=all_check]').click
+    $('#table_action input[name=all_check]').click
     (
       function()
       {
@@ -132,7 +46,7 @@ $(document).ready
         $('input['+id_mask+']').prop('checked',true);
       }
     );
-    $('#table_accueil input[name=all_uncheck]').click
+    $('#table_action input[name=all_uncheck]').click
     (
       function()
       {
@@ -188,7 +102,7 @@ $(document).ready
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucun statut coché !");
           return false;
         }
-        var listing_id = new Array(); $("#table_accueil input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
         if(!listing_id.length)
         {
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucune case du tableau cochée !");
@@ -238,7 +152,7 @@ $(document).ready
     // Clic sur une image action
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil q').click
+    $('#table_action q').click
     (
       function()
       {
@@ -254,7 +168,7 @@ $(document).ready
           if( (memo_section=='officiel_saisir') || (memo_section=='officiel_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
-            $('#cadre_statut , #table_accueil').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_eleve').html('<label class="loader">En cours&hellip;</label>').show(0);
             $.ajax
             (
@@ -296,7 +210,7 @@ $(document).ready
           else if(memo_section=='officiel_examiner')
           {
             // Masquer le tableau ; Afficher la zone de choix des rubriques
-            $('#cadre_statut , #table_accueil').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
           }
@@ -305,7 +219,7 @@ $(document).ready
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
-            $('#cadre_statut , #table_accueil').hide(0);
+            $('#cadre_statut , #table_action').hide(0);
             $('#zone_action_classe h2').html(titre);
             $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
             $('#zone_action_classe , #zone_'+memo_objet).show(0);
@@ -329,7 +243,7 @@ $(document).ready
       {
         $('#zone_action_eleve').html("&nbsp;").hide(0);
         $('#cadre_photo').hide(0);
-        $('#cadre_statut , #table_accueil').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -339,7 +253,7 @@ $(document).ready
       function()
       {
         $('#zone_chx_rubriques').hide(0);
-        $('#cadre_statut , #table_accueil').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -353,7 +267,7 @@ $(document).ready
         $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
         $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
         $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
-        $('#cadre_statut , #table_accueil').show(0);
+        $('#cadre_statut , #table_action').show(0);
         return(false);
       }
     );
@@ -1385,8 +1299,90 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Voir / masquer une photo
+    // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
+    // @see   http://www.highcharts.com/documentation/how-to-use
+    // @see   http://www.highcharts.com/ref
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChartOptions = {
+      chart: {
+        renderTo: 'div_graphique',
+        type: 'column'
+       },
+      colors: [
+        BACKGROUND_A,
+        BACKGROUND_VA,
+        BACKGROUND_NA
+      ],
+      title: {
+        style: { color: '#333' } ,
+        text: null // Pourrait être MAJ ensuite
+      },
+      xAxis: {
+        labels: { style: { color: '#000' } },
+        categories: [] // MAJ ensuite
+      },
+      yAxis: [
+        {
+          labels: { enabled: false },
+          min: 0,
+          max: 100,
+          title: { style: { color: '#333' } , text: 'Items acquis' }
+        },
+        {} // MAJ ensuite
+      ],
+      tooltip: {
+        formatter: function() {
+          return this.series.name +' : '+ (this.y);
+        }
+      },
+      plotOptions: {
+        column: {
+          stacking: 'percent'
+        }
+      },
+      series: [] // MAJ ensuite
+      ,
+      credits: {
+        enabled: false
+      }
+    };
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Afficher / Masquer la photo d'un élève (module bulletin)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function charger_photo_eleve()
+    {
+      $("#cadre_photo").html('<label id="ajax_photo" class="loader">En cours&hellip;</label>');
+      $.ajax
+      (
+        {
+          type : 'GET',
+          url : 'ajax.php?page=calque_voir_photo',
+          data : 'user_id='+memo_eleve,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_photo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            leave_erreur = true;
+          },
+          success : function(responseHTML)
+          {
+            if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
+              leave_erreur = false;
+            }
+            else
+            {
+              $('#ajax_photo').removeAttr("class").addClass("alerte").html(responseHTML);
+              leave_erreur = true;
+            }
+          }
+        }
+      );
+    }
 
     $('#cadre_photo').on( 'click', '#voir_photo',    function() { charger_photo_eleve(); } );
     $('#cadre_photo').on( 'click', '#masquer_photo', function() { $('#cadre_photo').html('<button id="voir_photo" type="button" class="voir_photo">Photo</button>'); } );

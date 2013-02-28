@@ -170,7 +170,7 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
 /**
  * recuperer_items_travailles
  * Retourner la liste des items travaillés par des élèves donnés (ou un seul), pour des matières données, durant une période donnée
- * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour le calcul des moyennes
+ * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour le calcul des moyennes ou un bilan chronologique
  *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules
  * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
@@ -180,17 +180,16 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
  */
 public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
 {
-  $join_matiere     = ($liste_matiere_id) ? '' : 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
   $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
   $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-  $DB_SQL = 'SELECT item_id , item_coef , matiere_id , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
+  $DB_SQL = 'SELECT item_id , item_coef , matiere_id , matiere_nom , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= $join_matiere;
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$where_matiere.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
   $DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
@@ -201,7 +200,7 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
   {
     foreach($tab as $key => $DB_ROW)
     {
-      $tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_id'];
+      $tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
       unset($DB_TAB[$item_id][$key]['matiere_id']);
     }
   }
@@ -364,9 +363,10 @@ public static function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_i
  * @param string $date_mysql_fin
  * @param string $user_profil_type
  * @param bool   $onlynote
+ * @param bool   $first_order_by_date
  * @return array
  */
-public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil_type,$onlynote=FALSE)
+public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil_type,$onlynote=FALSE,$first_order_by_date=FALSE)
 {
   $sql_debut = ($date_mysql_debut)          ? 'AND saisie_date>=:date_debut '   : '';
   $sql_fin   = ($date_mysql_fin)            ? 'AND saisie_date<=:date_fin '     : '';
@@ -384,7 +384,7 @@ public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item
   $DB_SQL.= $join_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND niveau_actif=1 AND saisie_note!="REQ" '.$sql_debut.$sql_fin.$sql_view;
-  $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+  $DB_SQL.= (!$first_order_by_date) ? 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC' : 'ORDER BY saisie_date ASC,'.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC' ;
   $DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

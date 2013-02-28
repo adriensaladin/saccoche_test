@@ -187,7 +187,7 @@ $(document).ready
       var prof_nombre   = objet_tds.eq(4).html();
       var description   = objet_tds.eq(5).html();
       var compet_nombre = objet_tds.eq(6).html();
-      var fini          =(objet_tds.eq(8).find('i').text()=='terminé') ? 'oui' : 'non' ;
+      var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
       // liste des profs et des items
       var prof_liste    = tab_profs[ref];
       var compet_liste  = tab_items[ref];
@@ -279,11 +279,13 @@ $(document).ready
       var date_visible  = objet_tds.eq(1).html();
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
+      var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
       // Mettre les infos de côté
       $('#saisir_ref').val(ref);
       $('#saisir_date_fr').val(date_fr);
       $('#saisir_date_visible').val(date_visible);
       $('#saisir_description').val(unescapeHtml(description));
+      $('#saisir_fini').val(fini);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -1581,7 +1583,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#saisir_ref").val()+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#saisir_description").val(),
+              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#saisir_ref").val()+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_fini='+$("#saisir_fini").val()+'&f_notes='+f_notes+'&f_description='+$("#saisir_description").val(),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {

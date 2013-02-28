@@ -205,7 +205,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_matieres',
-          data : 'f_groupe='+groupe_id+'&f_matiere='+matiere_id,
+          data : 'f_groupe='+groupe_id+'&f_matiere='+matiere_id+'&f_multiple=0',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -351,7 +351,7 @@ $(document).ready
         {
           if(element.is("select")) {element.after(error);}
           else if(element.attr("type")=="text") {element.next().after(error);}
-          else if(element.attr("type")=="radio") {element.parent().next().after(error);}
+          else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().next().after(error);}
         }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP

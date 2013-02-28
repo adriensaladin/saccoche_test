@@ -319,6 +319,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
     <input id="saisir_date_fr" name="f_date_fr" type="hidden" value="" />
     <input id="saisir_date_visible" name="f_date_visible" type="hidden" value="" />
     <input id="saisir_description" name="f_description" type="hidden" value="" />
+    <input id="saisir_fini" name="f_fini" type="hidden" value="" />
   </p>
   <table id="table_saisir" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>

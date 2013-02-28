@@ -97,13 +97,13 @@ $tab_droits  = array
     'tous',
     array( 'droit_modifier_mdp' , "modifier son mot de passe" , 'tous' )
   ),
-  "Relevé d'items (matière ou pluridisciplinaire)" => array
+  "Relevé d'items (matière ou pluridisciplinaire) & Bilan chronologique" => array
   (
     'parent_eleve',
-    array( 'droit_releve_etat_acquisition'   , "afficher la colonne avec les états d'acquisitions"           , 'parent_eleve' ),
-    array( 'droit_releve_moyenne_score'      , "afficher la ligne avec la moyenne des scores d'acquisitions" , 'parent_eleve' ),
-    array( 'droit_releve_pourcentage_acquis' , "afficher la ligne avec le pourcentage d'items acquis"        , 'parent_eleve' ),
-    array( 'droit_releve_conversion_sur_20'  , "ajouter la conversion en note sur 20"                        , 'personne' )
+    array( 'droit_releve_etat_acquisition'   , "afficher la colonne / le graphique avec les états d'acquisitions"        , 'parent_eleve' ),
+    array( 'droit_releve_moyenne_score'      , "afficher la ligne / la courbe avec la moyenne des scores d'acquisitions" , 'parent_eleve' ),
+    array( 'droit_releve_pourcentage_acquis' , "afficher la ligne / la courbe avec le pourcentage d'items acquis"        , 'parent_eleve' ),
+    array( 'droit_releve_conversion_sur_20'  , "ajouter la conversion en note sur 20"                                    , 'personne' )
   ),
   "Relevé de maîtrise du socle" => array
   (

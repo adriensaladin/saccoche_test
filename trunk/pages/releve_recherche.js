@@ -57,8 +57,8 @@ $(document).ready
         if(is_validation)                      {$('#span_validation').show();validation_requis = true;}       else {$('#span_validation').hide();validation_requis = false;}
         if( (!is_validation) && (objet!='') )  {$('#span_acquisition').show();acquisition_requis = true;}     else {$('#span_acquisition').hide();acquisition_requis = false;}
         // mélange des deux
-        if(objet=='matiere_items_bilanMS')     {$('#div_matiere_items_bilanMS').show();mode_requis = true;}   else {$('#div_matiere_items_bilanMS').hide();mode_requis = false;}
-        if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();coef_requis = true;}  else {$('#div_socle_item_pourcentage').hide();coef_requis = false;}
+        if(objet=='matiere_items_bilanMS')     {$('#div_matiere_items_bilanMS').show();coef_requis = true;}   else {$('#div_matiere_items_bilanMS').hide();coef_requis = false;}
+        if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();mode_requis = true;}  else {$('#div_socle_item_pourcentage').hide();mode_requis = false;}
         // initialisation
         $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#bilan').html("&nbsp;");

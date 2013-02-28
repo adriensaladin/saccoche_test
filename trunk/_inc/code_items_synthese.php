@@ -712,9 +712,10 @@ foreach($tab_eleve as $tab)
       // Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
       if($make_action=='imprimer')
       {
-        $page_debut = (isset($page_fin)) ? $page_fin+1 : 1 ;
-        $page_fin   = $releve_PDF->page;
-        $tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin );
+        $page_debut  = (isset($page_fin)) ? $page_fin+1 : 1 ;
+        $page_fin    = $releve_PDF->page;
+        $page_nombre = $page_fin - $page_debut + 1;
+        $tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin , $page_nombre );
       }
       if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
       {

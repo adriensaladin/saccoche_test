@@ -83,6 +83,7 @@ $tab_item_pilier  = array(); // id de l'item => id du pilier
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items du socle pour le ou les piliers sélectionné(s)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 $DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($tab_pilier_id[0]) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
 if(empty($DB_TAB))
 {

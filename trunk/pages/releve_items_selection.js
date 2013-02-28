@@ -419,7 +419,7 @@ $(document).ready
           if(element.is("select")) {element.after(error);}
           else if(element.attr("type")=="text") {element.next().next().after(error);}
           else if(element.attr("type")=="hidden") {element.next().after(error);}
-          else if(element.attr("type")=="radio") {element.parent().next().after(error);}
+          else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().next().next().after(error);}
         }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP

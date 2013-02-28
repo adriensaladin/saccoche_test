@@ -426,7 +426,7 @@ echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled[
 // Affichage du tableau.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-echo'<table id="table_action"><thead>';
+echo'<table id="table_accueil"><thead>';
 foreach($tab_affich as $ligne_id => $tab_colonne)
 {
   echo ( ($ligne_id!='check') ||($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
@@ -542,7 +542,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
       <p class="ti">
         <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
       </p>
-      <table class="form t9">
+      <table id="table_action" class="form t9">
         <thead>
           <tr>
             <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="eleve_check_all" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><input id="eleve_uncheck_all" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>

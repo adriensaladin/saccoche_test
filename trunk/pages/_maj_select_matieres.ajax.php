@@ -38,6 +38,14 @@ if(!$groupe)
   exit('Erreur avec les données transmises !');
 }
 
-echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=FALSE , $option_first='oui' , $selection=$matiere , $optgroup='non');
+// Autres valeurs à récupérer.
+
+$multiple     = (isset($_POST['f_multiple'])) ? Clean::entier($_POST['f_multiple']) : 0 ;
+$option_first = ($multiple) ? 'non' : 'oui' ;
+$selection    = ($multiple) ? TRUE  : $matiere ;
+
+// Affichage du retour.
+
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=FALSE , $option_first , $selection , $optgroup='non');
 
 ?>

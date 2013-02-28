@@ -824,7 +824,7 @@ public static function DB_OPT_matieres_groupe($groupe_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil_type=:profil_type ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil_type=:profil_type AND matiere_id IS NOT NULL ';
   $DB_SQL.= 'GROUP BY matiere_id ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC';
   $DB_VAR = array(':groupe_id'=>$groupe_id,':profil_type'=>'professeur');

@@ -78,7 +78,7 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
     <hr />
     <p>
       <label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
-      <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élèves :</label><select id="select_eleves" name="select_eleves[]" multiple size="8"><option value=""></option></select>
+      <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></span>
     </p>
   </fieldset>
 

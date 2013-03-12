@@ -30,17 +30,17 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
-$tab_select_groupes = (isset($_POST['select_groupes'])) ? ( (is_array($_POST['select_groupes'])) ? $_POST['select_groupes'] : explode(',',$_POST['select_groupes']) ) : array() ;
-$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves)  , 'positif' );
-$tab_select_groupes = array_filter( Clean::map_entier($tab_select_groupes) , 'positif' );
+$tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
+$tab_groupe = (isset($_POST['f_groupe'])) ? ( (is_array($_POST['f_groupe'])) ? $_POST['f_groupe'] : explode(',',$_POST['f_groupe']) ) : array() ;
+$tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
+$tab_groupe = array_filter( Clean::map_entier($tab_groupe) , 'positif' );
 
 // Ajouter des élèves à des groupes
 if($action=='ajouter')
 {
-  foreach($tab_select_eleves as $user_id)
+  foreach($tab_eleve as $user_id)
   {
-    foreach($tab_select_groupes as $groupe_id)
+    foreach($tab_groupe as $groupe_id)
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
     }
@@ -50,9 +50,9 @@ if($action=='ajouter')
 // Retirer des élèves à des groupes
 elseif($action=='retirer')
 {
-  foreach($tab_select_eleves as $user_id)
+  foreach($tab_eleve as $user_id)
   {
-    foreach($tab_select_groupes as $groupe_id)
+    foreach($tab_groupe as $groupe_id)
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
     }

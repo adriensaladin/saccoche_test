@@ -38,5 +38,5 @@ if(!$matiere)
 }
 
 Form::load_choix_memo();
-echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , $select_nom=FALSE , $option_first='non' , $selection=Form::$tab_choix['niveau_id'] , $optgroup='non');
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , 'non' /*option_first*/ , Form::$tab_choix['niveau_id'] /*selection*/ , 'non' /*optgroup*/ ) );
 ?>

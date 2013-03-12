@@ -31,24 +31,24 @@ $TITRE = "Affecter les élèves aux classes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()            , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_classes   = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(TRUE /*with_ref*/) , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='non');
+$select_eleve  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()            , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_classe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(TRUE /*with_ref*/) , $select_nom='f_classe' , $option_first='non' , $selection=FALSE , $optgroup='non' , $multiple=TRUE);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span></p>
 
 <hr />
 
-<form action="#" method="post">
+<form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Liste des élèves :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-      <select id="f_groupe" name="f_groupe" class="t8"><?php echo $select_f_groupes ?></select><br />
-      <select id="select_eleves" name="select_eleves[]" multiple size="8" class="t8"><option value=""></option></select>
+      <b>Élèves :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <select id="select_groupe" name="select_groupe"><?php echo $select_eleve ?></select><br />
+      <span id="f_eleve" class="select_multiple"></span>
     </td>
     <td class="nu" style="width:20em">
-      <b>Liste des classes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-      <select id="select_classes" name="select_classes[]" multiple size="10" class="t8"><?php echo $select_classes; ?></select>
+      <b>Classes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <span id="f_classe" class="select_multiple"><?php echo $select_classe; ?></span>
     </td>
     <td class="nu" style="width:25em">
       <button id="ajouter" type="button" class="groupe_ajouter">Ajouter ces associations.</button><br />

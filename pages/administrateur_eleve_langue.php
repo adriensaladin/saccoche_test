@@ -33,24 +33,24 @@ $TITRE = "Choisir la langue étrangère pour le socle commun";
 // Fabrication des éléments select du formulaire
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
-$select_f_groupes = Form::afficher_select($tab_groupes , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_langue    = Form::afficher_select($tab_langues , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='non');
+$select_eleve  = Form::afficher_select($tab_groupes , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_langue = Form::afficher_select($tab_langues , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_choisir_langue">DOC : Choisir la langue étrangère pour le socle commun</a></span></p>
 
 <hr />
 
-<form action="#" method="post">
+<form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Liste des élèves :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-      <select id="f_groupe" name="f_groupe" class="t8"><?php echo $select_f_groupes ?></select><br />
-      <select id="select_eleves" name="select_eleves[]" multiple size="8" class="t8"><option value=""></option></select>
+      <b>Élèves :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <select id="select_groupe" name="select_groupe"><?php echo $select_eleve ?></select><br />
+      <span id="f_eleve" class="select_multiple"></span>
     </td>
     <td class="nu" style="width:20em">
-      <b>Choix de la langue :</b><br />
-      <select id="select_langue" name="select_langue"><?php echo $select_langue; ?></select>
+      <b>Langue :</b><br />
+      <select id="f_langue" name="f_langue"><?php echo $select_langue; ?></select>
     </td>
     <td class="nu" style="width:25em">
       <button id="associer" type="button" class="parametre">Effectuer ces associations.</button>

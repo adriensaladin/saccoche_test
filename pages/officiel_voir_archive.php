@@ -48,8 +48,14 @@ foreach($tab_types as $BILAN_TYPE => $tab)
 if(!$droit_voir_archives_pdf)
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  // echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
-  // echo afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_'.***.'_VOIR_ARCHIVE'],'li');
+  echo'<p class="astuce">Profils autorisés (par les administrateurs) :<p>';
+  foreach($tab_types as $BILAN_TYPE => $tab)
+  {
+    $titre = ($BILAN_TYPE!='palier1') ? $tab['titre'] : 'Maîtrise du socle' ;
+    echo'<h4>'.$titre.'</h4>';
+    echo afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab['droit'].'_VOIR_ARCHIVE'],'li');
+    if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
+  }
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

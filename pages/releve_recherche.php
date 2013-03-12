@@ -35,12 +35,27 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 Form::$tab_select_optgroup = array( 1=>'item(s) matière(s)' , 2=>'item du socle' , 3=>'compétence du socle' );
 $select_critere_objet = Form::afficher_select(Form::$tab_select_recherche_objet , $select_nom='f_critere_objet' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 
-$select_critere_seuil_acquis = '<option value="NA" selected>'.html($_SESSION['ACQUIS_LEGENDE']['NA']).'</option><option value="VA">'.html($_SESSION['ACQUIS_LEGENDE']['VA']).'</option><option value="A">'.html($_SESSION['ACQUIS_LEGENDE']['A']).'</option><option value="X">Indéterminé</option>';
-$select_critere_seuil_valide = '<option value="0" selected>Invalidé</option><option value="1">Validé</option><option value="2">Non renseigné</option>';
+$select_critere_seuil_acquis = '';
+$tab_options = array( 'NA'=>$_SESSION['ACQUIS_LEGENDE']['NA'] , 'VA'=>$_SESSION['ACQUIS_LEGENDE']['VA'] , 'A'=>$_SESSION['ACQUIS_LEGENDE']['A'] , 'X'=>'Indéterminé' );
+foreach($tab_options as $val => $txt)
+{
+  $class   = ($val=='NA') ? ' class="check"' : '' ;
+  $checked = ($val=='NA') ? ' checked'       : '' ;
+  $select_critere_seuil_acquis .= '<label for="f_critere_seuil_acquis_'.$val.'"'.$class.'><input type="checkbox" name="f_critere_seuil_acquis[]" id="f_critere_seuil_acquis_'.$val.'" value="'.$val.'"'.$checked.' /> '.html($txt).'</label>';
+}
+
+$select_critere_seuil_valide = '';
+$tab_options = array( 0=>'Invalidé' , 1=>'Validé' , 2=>'Non renseigné' );
+foreach($tab_options as $val => $txt)
+{
+  $class   = ($val==0) ? ' class="check"' : '' ;
+  $checked = ($val==0) ? ' checked'       : '' ;
+  $select_critere_seuil_valide .= '<label for="f_critere_seuil_valide_'.$val.'"'.$class.'><input type="checkbox" name="f_critere_seuil_valide[]" id="f_critere_seuil_valide_'.$val.'" value="'.$val.'"'.$checked.' /> '.html($txt).'</label>';
+}
 
 $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 
-$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=FALSE             , $option_first='non' , $selection=TRUE  , $optgroup='non');
+$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom='f_matiere'       , $option_first='non' , $selection=TRUE  , $optgroup='non' , TRUE /*multiple*/);
 $select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 
 ?>
@@ -66,13 +81,13 @@ $select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_pili
   </div>
   <div id="div_socle_item_pourcentage" class="hide">
     <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
-    <div id="div_matiere" class="hide"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
+    <div id="div_matiere" class="hide"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></div>
   </div>
   <span id="span_acquisition" class="hide">
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple." /> État(s) :</label><select id="f_critere_seuil_acquis" name="f_critere_seuil_acquis[]" multiple size="4"><?php echo $select_critere_seuil_acquis ?></select><br />
+    <label class="tab" for="f_critere_seuil_acquis">État(s) :</label><span id="f_critere_seuil_acquis" class="select_multiple"><?php echo $select_critere_seuil_acquis ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
   </span>
   <span id="span_validation" class="hide">
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple." /> État(s) :</label><select id="f_critere_seuil_valide" name="f_critere_seuil_valide[]" multiple size="3"><?php echo $select_critere_seuil_valide ?></select><br />
+    <label class="tab" for="f_critere_seuil_valide">État(s) :</label><span id="f_critere_seuil_valide" class="select_multiple"><?php echo $select_critere_seuil_valide ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
   </span>
   <p><span class="tab"></span><button id="bouton_valider" type="submit" class="rechercher">Rechercher.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

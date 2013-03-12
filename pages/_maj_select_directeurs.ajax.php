@@ -30,5 +30,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-echo Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , FALSE /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ );
+$selection = (empty($_POST['f_selection'])) ? FALSE : TRUE ;
+$multiple  = (empty($_POST['f_multiple']))  ? FALSE : TRUE ;
+
+// Autres valeurs à récupérer ou à définir.
+
+$select_nom   = ($multiple) ? 'f_user' : FALSE ;
+$option_first = ($multiple) ? 'non'    : 'oui' ;
+$selection    = ($multiple) ? $selection : FALSE ;
+
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 ?>

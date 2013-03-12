@@ -94,6 +94,20 @@ $(document).ready
           $('#info_inacheve').show();
         }
       }
+      else if(connexion_mode=='shibboleth')
+      {
+        var is_operationnel = tab_param[connexion_mode][connexion_ref];
+        if(is_operationnel=='1')
+        {
+          $("#bouton_valider").prop('disabled',false);
+          $('#lien_direct').show();
+        }
+        else
+        {
+          $("#bouton_valider").prop('disabled',true);
+          $('#info_inacheve').show();
+        }
+      }
       else if(connexion_mode=='gepi')
       {
         var valeur = tab_param[connexion_mode][connexion_ref];

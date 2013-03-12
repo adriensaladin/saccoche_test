@@ -709,6 +709,11 @@ foreach($tab_eleve as $tab)
       {
         $releve_PDF->afficher_ligne_additionnelle($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']);
       }
+      // Indiquer a postériori le nombre de pages par élève
+      if($make_pdf)
+      {
+        $releve_PDF->reporter_page_nb();
+      }
       // Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
       if($make_action=='imprimer')
       {

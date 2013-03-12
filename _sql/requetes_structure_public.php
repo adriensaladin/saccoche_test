@@ -36,7 +36,7 @@ class DB_STRUCTURE_PUBLIC extends DB
 /**
  * Récuperer, à partir d'un identifiant, les données d'un utilisateur tentant de se connecter (le mdp est comparé ensuite)
  *
- * @param string $mode_connection   'normal' | 'cas' | 'gepi' | ...
+ * @param string $mode_connection   'normal' | 'cas' | 'shibboleth' | 'gepi' | ...
  * @param string $login
  * @return array
  */
@@ -44,13 +44,14 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
 {
   switch($mode_connection)
   {
-    case 'normal' : $champ = 'user_login';   break;
-    case 'cas'    : $champ = 'user_id_ent';  break;
-    case 'gepi'   : $champ = 'user_id_gepi'; break;
+    case 'normal'     : $champ = 'user_login';   break;
+    case 'cas'        : $champ = 'user_id_ent';  break;
+    case 'shibboleth' : $champ = 'user_id_ent';  break;
+    case 'gepi'       : $champ = 'user_id_gepi'; break;
   }
   $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, ';
-  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
-  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h soit ~35j mais peu importe
+  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
+  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';

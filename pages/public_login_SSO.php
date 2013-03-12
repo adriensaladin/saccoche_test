@@ -30,7 +30,7 @@ $TITRE = "Connexion SSO";
 
 /*
  * Cette page n'est pas (plus en fait) appelée directement.
- * Elle est appelée lors lien direct vers une page nécessitant une identification :
+ * Elle est appelée lors d'un lien direct vers une page nécessitant une identification :
  * - si des paramètres dans l'URL indiquent explicitement un SSO (nouvelle connexion, appel depuis un service tiers...)
  * - ou si des informations en cookies indiquent un SSO (session perdue mais tentative de reconnexion automatique)
  * 
@@ -319,12 +319,54 @@ if($connexion_mode=='cas')
   list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
   if($auth_resultat!='ok')
   {
-    exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
+    exit_error( 'Incident authentification CAS' /*titre*/ , $auth_resultat /*contenu*/ );
   }
+  // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
   // Redirection vers la page demandée en cas de succès.
   // En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
   // Rediriger le navigateur.
+  header('Status: 307 Temporary Redirect', TRUE, 307);
+  header('Location: '.URL_BASE.$_SERVER['REQUEST_URI'].'&verif_cookie');
+  exit();
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Authentification assurée par Shibboleth
+// La redirection est effectuée en amont (configuration du serveur web qui est "shibbolisé"), l'utilisateur doit donc être authentifié à ce stade.
+// @see https://services.renater.fr/federation/docs/fiches/shibbolisation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($connexion_mode=='shibboleth')
+{
+  /*
+  * Récupération de l'identifiant de l'utilisateur authentifié dans les variables serveur.
+  * A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID arrive en double séparé par un « ; ».
+  */
+  if( (empty($_SERVER['HTTP_UID'])) || empty($_SERVER['HTTP_SHIB_SESSION_ID']) )
+  {
+    $http_uid             = isset($_SERVER['HTTP_UID'])             ? 'vaut "'.html($_SERVER['HTTP_UID']).'"'             : 'n\'est pas définie' ;
+    $http_shib_session_id = isset($_SERVER['HTTP_SHIB_SESSION_ID']) ? 'vaut "'.html($_SERVER['HTTP_SHIB_SESSION_ID']).'"' : 'n\'est pas définie' ;
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , 'Ce serveur ne semble pas disposer d\'une authentification Shibboleth, ou bien celle ci n\'a pas été mise en &oelig;uvre :<br />- la variable $_SERVER["HTTP_UID"] '.$http_uid.'<br />- la variable $_SERVER["HTTP_SHIB_SESSION_ID"] '.$http_shib_session_id /*contenu*/ );
+  }
+  $http_uid = explode( ';' , $_SERVER['HTTP_UID'] );
+  $id_ENT = $http_uid[0];
+  // Comparer avec les données de la base
+  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'shibboleth' /*mode_connection*/ );
+  if($auth_resultat!='ok')
+  {
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_resultat /*contenu*/ );
+  }
+  // En cas d'authentification avec le protocole Shibboleth, on prend l'ID Shibboleth comme identifiant de session afin de pouvoir propager une éventuelle déconnexion.
+  // SACoche comportant une partie publique ne requérant pas d'authentification, et un accès possible avec une authentification locale, toute l'application n'est pas shibbolisée.
+  // La session a donc déjà pu être ouverte par SACoche avec un autre identifiant perso.
+  if( $_COOKIE[SESSION_NOM] != $_SERVER['HTTP_SHIB_SESSION_ID'] )
+  {
+    Session::close();Session::open_new();Session::init(); // Pour init(), seul session_key() a ici de l'intérêt.
+  }
+  // Connecter l'utilisateur
+  SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
+  // Redirection vers la page demandée en cas de succès, avec transmission de &verif_cookie
   header('Status: 307 Temporary Redirect', TRUE, 307);
   header('Location: '.URL_BASE.$_SERVER['REQUEST_URI'].'&verif_cookie');
   exit();
@@ -367,8 +409,9 @@ if($connexion_mode=='gepi')
   list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login_GEPI /*login*/ , FALSE /*password*/ , 'gepi' /*mode_connection*/ );
   if($auth_resultat!='ok')
   {
-    exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
+    exit_error( 'Incident authentification Gepi' /*titre*/ , $auth_resultat /*contenu*/ );
   }
+  // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
   // Pas de redirection car passage possible d'infos en POST à conserver ; tant pis pour la vérification du cookie...
 }

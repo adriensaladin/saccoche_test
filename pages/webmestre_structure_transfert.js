@@ -38,12 +38,12 @@ $(document).ready
     (
       function()
       {
-        if( $('#f_base option:selected').length==0 )
+        if( $("#f_base input:checked").length==0 )
         {
           $('#ajax_msg_export').removeAttr("class").addClass("erreur").html("structure(s) manquante(s)");
           return false;
         }
-        var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
+        var bases = new Array(); $("#f_base input:checked").each(function(){bases.push($(this).val());});
         $("button").prop('disabled',true);
         $('#ajax_msg_export').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -163,7 +163,7 @@ $(document).ready
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    if( $('#f_base option:selected').length )
+    if( $('#f_base input:checked').length )
     {
       $('#bouton_exporter').click();
     }
@@ -433,11 +433,11 @@ $(document).ready
             }
             else
             {
-              $("#f_base option:selected").each
+              $("#f_base input:checked").each
               (
                 function()
                 {
-                  $(this).remove();
+                  $(this).parent().remove();
                 }
               );
               $('#ajax_supprimer_export').removeAttr("class").html('&nbsp;');
@@ -453,7 +453,7 @@ $(document).ready
     (
       function()
       {
-        var listing_id = new Array(); $("#f_base option:selected").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#f_base input:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer_export').removeAttr("class").addClass("erreur").html("Aucune structure sélectionnée !");
@@ -516,7 +516,7 @@ $(document).ready
             }
             else
             {
-              $("input[type=checkbox]:checked").each
+              $("#table_action input[type=checkbox]:checked").each
               (
                 function()
                 {
@@ -536,7 +536,7 @@ $(document).ready
     (
       function()
       {
-        var listing_id = new Array(); $("input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer_import').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");

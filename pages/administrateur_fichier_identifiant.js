@@ -30,9 +30,23 @@ $(document).ready
   function()
   {
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au changement dans le premier formulaire (choix principal)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Enlever le message ajax au changement d'un élément de formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#form_select').on
+    (
+      'change',
+      'select, input',
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir au changement dans le premier formulaire (choix principal)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#f_choix_principal").change
     (
@@ -46,7 +60,7 @@ $(document).ready
         var objet = $(this).val();
         switch (objet)
         {
-          case 'new_loginmdp' : maj_select_users(); $('#fieldset_new_loginmdp').show(); break;
+          case 'new_loginmdp' : maj_f_user(); $('#fieldset_new_loginmdp').show();   break;
           case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
           case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
           case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
@@ -57,9 +71,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au changement dans le choix d'un profil ou d'un groupe
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir au changement dans le choix d'un profil ou d'un groupe
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#f_profil , #f_groupe").change
     (
@@ -67,15 +81,15 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#ajax_retour').html("&nbsp;");
-        maj_select_users();
+        maj_f_user();
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour la liste des utilisateurs concernés
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mettre à jour la liste des utilisateurs concernés
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_select_users()
+    function maj_f_user()
     {
       $('#fieldset_new_loginmdp button').prop('disabled',true);
       $('#div_users').hide();
@@ -96,7 +110,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_'+profil,
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1&f_selection=1',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1'+'&f_nom=f_user',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -105,10 +119,10 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-              $('#select_users').html(responseHTML).show();
+              $('#f_user').html(responseHTML);
               $('#div_users').show();
               $('#fieldset_new_loginmdp button').prop('disabled',false);
             }
@@ -121,27 +135,15 @@ $(document).ready
       );
     }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au clic dans un select multiple
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('select[multiple]').click
-    (
-      function()
-      {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au clic sur un bouton pour demander un export csv de la base (user_ent -> user_export)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir au clic sur un bouton pour demander un export csv de la base (user_ent -> user_export)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#user_export').click
     (
       function()
       {
-        $('button').prop('disabled',true);
+        $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
@@ -152,7 +154,7 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
@@ -161,12 +163,12 @@ $(document).ready
               initialiser_compteur();
               if(responseHTML.substring(0,3)!='<ul')
               {
-                $('button').prop('disabled',false);
+                $('#form_select button').prop('disabled',false);
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('button').prop('disabled',false);
+                $('#form_select button').prop('disabled',false);
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
                 $('#ajax_retour').html(responseHTML);
                 format_liens('#ajax_retour');
@@ -177,9 +179,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Soumission du formulaire - choix 1 et 2
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Soumission du formulaire - choix 1 et 2
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#generer_login , #generer_mdp').click
     (
@@ -191,30 +193,30 @@ $(document).ready
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
           return(false);
         }
-        if( $("#select_users option:selected").length==0 )
+        if( !$("#f_user input:checked").length )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
           return(false);
         }
-        $('button').prop('disabled',true);
+        $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action+'&'+$("form").serialize(),
+            data : 'csrf='+CSRF+'&action='+action+'&'+$("#form_select").serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               if(responseHTML.substring(0,3)!='<ul')
               {
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -325,7 +327,7 @@ $(document).ready
       }
       else
       {
-        $('button').prop('disabled',true);
+        $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
@@ -333,7 +335,7 @@ $(document).ready
 
     function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      $('button').prop('disabled',false);
+      $('#form_select button').prop('disabled',false);
       if( (responseHTML.substring(0,3)!='<ul') && (responseHTML.substring(0,3)!='<UL') )
       {
         $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -357,7 +359,7 @@ $(document).ready
       {
         var action = $(this).attr('id');
         $('#ajax_retour').html('&nbsp;');
-        $('button').prop('disabled',true);
+        $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
@@ -368,14 +370,14 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               if(responseHTML=='ok')
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");

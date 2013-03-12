@@ -28,10 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
-$tab_select_eleves = (isset($_POST['select_eleves'])) ? Clean::map_entier( explode(',',$_POST['select_eleves']) ) : array() ;
-$tab_select_eleves = array_filter($tab_select_eleves,'positif');
-$nb = count($tab_select_eleves);
+$action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
+$tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 $top_depart = microtime(TRUE);
 
@@ -39,10 +39,10 @@ $top_depart = microtime(TRUE);
 // Exporter un fichier de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
+if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_eleve) )
 {
   $tab_validations  = array(); // [i] => [user_id][palier_id][pilier_id][entree_id] => [date][etat] Retenir les validations ; item à 0 si validation d'un palier.
-  $listing_eleve_id = implode(',',$tab_select_eleves);
+  $listing_eleve_id = implode(',',$tab_eleve);
   $only_positives   = ($action=='export_lpc') ? TRUE : FALSE ;
   // Validations des items
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_items($listing_eleve_id,$only_positives);
@@ -177,7 +177,10 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
   $in = $only_positives ? '' : '(in)-' ;
   echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
   echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
-  echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
+  if($action=='export_lpc')
+  {
+    echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
+  }
   echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
   exit();
 }

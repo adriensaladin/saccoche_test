@@ -31,23 +31,23 @@ $TITRE = "Affecter les périodes aux classes &amp; groupes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_periodes        = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='non');
-$select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='oui');
+$select_periodes        = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , $select_nom='select_periodes'        , $option_first='non' , $selection=FALSE , $optgroup='non' , $multiple=TRUE);
+$select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , $select_nom='select_classes_groupes' , $option_first='non' , $selection=FALSE , $optgroup='oui' , $multiple=TRUE);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>
 
 <hr />
 
-<form action="#" method="post">
+<form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Liste des périodes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-      <select id="select_periodes" name="select_periodes[]" multiple size="11" class="t8"><?php echo $select_periodes; ?></select>
+      <b>Périodes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <span id="select_periodes" class="select_multiple"><?php echo $select_periodes; ?></span>
     </td>
     <td class="nu" style="width:20em">
-      <b>Liste des classes &amp; groupes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-      <select id="select_classes_groupes" name="select_classes_groupes[]" multiple size="11" class="t8"><?php echo $select_classes_groupes; ?></select>
+      <b>Classes &amp; groupes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <span id="select_classes_groupes" class="select_multiple"><?php echo $select_classes_groupes; ?></span>
     </td>
     <td class="nu" style="width:25em">
       <p>

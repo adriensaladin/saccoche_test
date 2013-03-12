@@ -67,16 +67,16 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_matieres = 'Choisir d\'abord un groupe ci-dessus...'; // maj en ajax suivant le choix du groupe
   $of_g = 'oui'; $sel_g = FALSE; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
-  $multiple_eleve = ' multiple size="9"';
-  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $is_select_multiple = 1;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $of_g = 'oui'; $sel_g = FALSE; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
-  $multiple_eleve = ' multiple size="9"';
-  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $is_select_multiple = 1;
   $bouton_modifier_matieres = '<button id="modifier_matiere" type="button" class="form_ajouter">&plusmn;</button>';
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
@@ -84,24 +84,24 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $of_g = 'oui'; $sel_g = FALSE; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
-  $multiple_eleve = ''; // volontaire
-  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
+  $is_select_multiple = 0; // volontaire
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
   $of_g = 'non'; $sel_g = TRUE; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
-  $multiple_eleve = '';
-  $select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+  $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
+  $is_select_multiple = 0;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
   $of_g = 'non'; $sel_g = TRUE; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
-  $multiple_eleve = '';
-  $select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+  $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
+  $is_select_multiple = 0;
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
@@ -124,7 +124,8 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
 
 <script type="text/javascript">
   var profil_type = "<?php echo $_SESSION['USER_PROFIL_TYPE'] ?>";
-  var date_mysql="<?php echo TODAY_MYSQL ?>";
+  var date_mysql  = "<?php echo TODAY_MYSQL ?>";
+  var is_multiple = <?php echo $is_select_multiple ?>;
   <?php echo $tab_groupe_periode_js ?> 
 </script>
 
@@ -146,7 +147,7 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
   </p>
   <p class="<?php echo $class_form_eleve ?>">
     <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
-    <label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]"<?php echo $multiple_eleve ?>><?php echo $select_eleves ?></select>
+    <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">
     <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>

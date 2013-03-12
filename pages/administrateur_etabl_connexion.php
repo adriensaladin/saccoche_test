@@ -54,6 +54,9 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
       case 'cas' :
         $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
         break;
+      case 'shibboleth' :
+        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
+        break;
       case 'gepi' :
         $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
         break;

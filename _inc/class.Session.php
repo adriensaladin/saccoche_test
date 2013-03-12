@@ -188,7 +188,7 @@ class Session
    */
   private static function exit_sauf_SSO()
   {
-    $test_get = ( (isset($_GET['sso'])) && ( (isset($_GET['base'])) || (isset($_GET['id'])) || (isset($_GET['uai'])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ) ? TRUE : FALSE ;
+    $test_get =    ( (isset($_GET['sso'])) && ( (isset($_GET['base'])) || (isset($_GET['id'])) || (isset($_GET['uai'])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) )                   ? TRUE : FALSE ;
     $test_cookie = ( ( (isset($_COOKIE[COOKIE_STRUCTURE])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') ) ? TRUE : FALSE ;
     // si html
     if(SACoche=='index')
@@ -256,9 +256,9 @@ class Session
   public static function open_new()
   {
     Session::param();
-    // Utiliser l'option préfixe ou entropie de uniqid() insère un '.'
-    // qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
-    $ID = uniqid().md5('grain_de_sable'.mt_rand());
+    // Utiliser l'option préfixe ou entropie de uniqid() insère un '.' qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
+    // En cas d'authentification avec le protocole Shibboleth, on prend l'ID Shibboleth comme identifiant de session afin de pouvoir propager une éventuelle déconnexion.
+    $ID = empty($_SERVER['HTTP_SHIB_SESSION_ID']) ? uniqid().md5('grain_de_sable'.mt_rand()) : $_SERVER['HTTP_SHIB_SESSION_ID'] ;
     session_id($ID);
     return session_start();
   }
@@ -329,6 +329,7 @@ class Session
         else
         {
           // 2.1.2. Session perdue ou expirée et page publique : création d'une nouvelle session, pas de message d'alerte pour indiquer que la session perdue
+          // On passe aussi par là 
           Session::close();Session::open_new();Session::init();
         }
       }
@@ -357,12 +358,19 @@ class Session
         if(Session::$tab_droits_page[$_SESSION['USER_PROFIL_TYPE']])
         {
           // 2.4.1. Espace identifié => Espace identifié identique : RAS
+          // Si utilisation du protocole Shibboleth, on vérifie quand même que la session retrouvée a un identifiant qui est l'ID Shibboleth.
+          // Le test sur $_SERVER['HTTP_SHIB_SESSION_ID'] est seulement à placer ici car toute l'application n'est pas protégée par Shibboleth.
+          if( !empty($_SERVER['HTTP_SHIB_SESSION_ID']) && ( $_COOKIE[SESSION_NOM] != $_SERVER['HTTP_SHIB_SESSION_ID'] ) )
+          {
+            Session::close();
+            exit_error( 'Session incompatible avec votre authentification' /*titre*/ , 'Identifiant de session différent de l\'identifiant Shibboleth !<br />Veuillez vous reconnecter.' /*contenu*/ );
+          }
         }
         elseif(Session::$tab_droits_page['public'])
         {
-          // 2.4.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session perdue
+          // 2.4.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session est perdue
           // A un moment il fallait tester que ce n'était pas un appel ajax,pour éviter une déconnexion si appel au calendrier qui était dans l'espace public, mais ce n'est plus le cas...
-          // Par contre il faut conserver la session de SimpleSAMLphp pour laisser à l'utilisateur la choix de se déconnecter ou non de son SSO.
+          // Par contre il faut conserver la session de SimpleSAMLphp pour laisser à l'utilisateur le choix de se déconnecter ou non de son SSO.
           $SimpleSAMLphp_SESSION = ( ($_SESSION['CONNEXION_MODE']=='gepi') && (isset($_SESSION['SimpleSAMLphp_SESSION'])) ) ? $_SESSION['SimpleSAMLphp_SESSION'] : FALSE ; // isset() pour le cas où l'admin vient de cocher le mode Gepi mais c'est connecté sans juste avant
           Session::close();Session::open_new();Session::init();
           if($SimpleSAMLphp_SESSION) { $_SESSION['SimpleSAMLphp_SESSION'] = $SimpleSAMLphp_SESSION; }

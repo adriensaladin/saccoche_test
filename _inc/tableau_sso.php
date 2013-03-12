@@ -28,9 +28,10 @@
 // Tableau avec les différents modes d'identification possibles
 
 $tab_connexion_mode = array();
-$tab_connexion_mode['normal'] = 'Normal';
-$tab_connexion_mode['cas']    = 'Serveur CAS';
-$tab_connexion_mode['gepi']   = 'GEPI';
+$tab_connexion_mode['normal']     = 'Normal';
+$tab_connexion_mode['cas']        = 'Serveur CAS';
+$tab_connexion_mode['shibboleth'] = 'Shibboleth';
+$tab_connexion_mode['gepi']       = 'GEPI';
 /*
 $tab_connexion_mode['ldap']   = '???';
 */
@@ -108,6 +109,12 @@ $tab_connexion_info['cas'][ '93|celia']            = array( 'txt'=>'ENT Celi@ (c
 $tab_connexion_info['cas'][ '93|lilie']            = array( 'txt'=>'ENT Lilie (lycées d\'Ile de France).'                         , 'etat'=>1 , 'societe'=>'Logica'             , 'serveur_host'=>'ent.iledefrance.fr'                     , 'serveur_port'=>443  , 'serveur_root'=>'connexion'         , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    );
 $tab_connexion_info['cas'][ '95|ent_95']           = array( 'txt'=>'ENT Anper95 (département du Val d\'Oise).'                    , 'etat'=>1 , 'societe'=>'iTOP'               , 'serveur_host'=>'ent95.valdoise.fr'                      , 'serveur_port'=>443  , 'serveur_root'=>'cas'               , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
 $tab_connexion_info['cas']['974|ent_reunion']      = array( 'txt'=>'ENT département de La Réunion.'                               , 'etat'=>1 , 'societe'=>'DSI La Réunion'     , 'serveur_host'=>'seshat.ac-reunion.fr'                   , 'serveur_port'=>8443 , 'serveur_root'=>''                  , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>NULL );
+
+$tab_connexion_info['shibboleth'][ '24|argos']   = array( 'txt'=>'ENT Argos (académie de Bordeaux).'                   , 'etat'=>1 , 'societe'=>'DSI Bordeaux' , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
+$tab_connexion_info['shibboleth'][ '33|argos']   = array( 'txt'=>'ENT Argos (académie de Bordeaux).'                   , 'etat'=>1 , 'societe'=>'DSI Bordeaux' , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
+$tab_connexion_info['shibboleth'][ '40|argos']   = array( 'txt'=>'ENT Argos (académie de Bordeaux).'                   , 'etat'=>1 , 'societe'=>'DSI Bordeaux' , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
+$tab_connexion_info['shibboleth'][ '47|argos']   = array( 'txt'=>'ENT Argos (académie de Bordeaux).'                   , 'etat'=>1 , 'societe'=>'DSI Bordeaux' , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
+$tab_connexion_info['shibboleth'][ '64|argos64'] = array( 'txt'=>'ENT Argos64 (département des Pyrénées-Atlantiques).' , 'etat'=>1 , 'societe'=>'DSI Bordeaux' , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
 
 /*
 Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/

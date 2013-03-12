@@ -28,6 +28,11 @@
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 // A priori pas utile pour les webmestres / parents / élèves.
 
+$astuce_evaluation_taux_remplissage     = '<p><em>SACoche</em> comporte un indicateur du <b>taux de saisie</b> par évaluation. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_indicateur_remplissage">Documentation</a></span></p>';
+$astuce_previsualisation_bulletin       = '<p><em>SACoche</em> permet de <b>simuler l\'impression PDF d\'un bilan officiel</b> sans attendre que toutes les données soient saisies. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_simuler_impression">Documentation</a></span></p>';
+$astuce_corriger_appreciation           = '<p><em>SACoche</em> permet d\'attribuer le droit de <b>corriger l\'appréciation d\'un collègue</b> sur un bulletin. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_erreurs_appreciations">Documentation</a></span></p>';
+$astuce_gestion_profils                 = '<p>Vous pouvez gérer des profils supplémentaires : <b>documentaliste, CPE, médecin, conseiller d\'orientation</b> , etc. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_profils">Documentation</a></span></p>';
+$astuce_duree_session                   = '<p>Vous pouvez paramétrer <b>la durée de vie d\'une session</b> (avant déconnexion) <b>jusqu\'a 2 heures</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_delai_deconnexion">Documentation</a></span></p>';
 $astuce_photos                          = '<p><em>SACoche</em> permet de gérer les <b>photos des élèves</b> : outil trombinoscope, aide pour les bulletins. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__photos_eleves">Documentation</a></span></p>';
 $astuce_bulletin_scolaire               = '<p><em>SACoche</em> permet d\'éditer des <b>bulletins scolaires</b> (avec appréciations, moyennes, coordonnées établissement et parents, signature numérique). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_bulletin_scolaire">Documentation</a></span></p>';
 $astuce_panneau_affichage               = '<p>Vous pouvez <b>programmer l\'affichage d\'un message à destination d\'utilisateurs ciblés</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__messages_accueil">Documentation</a></span></p>';
@@ -47,6 +52,10 @@ $astuce_authentification_ent            = '<p>On peut se connecter à <em>SACoch
 
 $tab_astuces = array(
   'administrateur' => array(
+    $astuce_previsualisation_bulletin,
+    $astuce_corriger_appreciation,
+    $astuce_gestion_profils,
+    $astuce_duree_session,
     $astuce_photos,
     $astuce_bulletin_scolaire,
     $astuce_panneau_affichage,
@@ -55,6 +64,8 @@ $tab_astuces = array(
     $astuce_authentification_ent
   ),
   'directeur' => array(
+    $astuce_previsualisation_bulletin,
+    $astuce_corriger_appreciation,
     $astuce_photos,
     $astuce_bulletin_scolaire,
     $astuce_panneau_affichage,
@@ -65,6 +76,7 @@ $tab_astuces = array(
     $astuce_faq_b2i
   ),
   'professeur' => array(
+    $astuce_evaluation_taux_remplissage,
     $astuce_photos,
     $astuce_bulletin_scolaire,
     $astuce_panneau_affichage,

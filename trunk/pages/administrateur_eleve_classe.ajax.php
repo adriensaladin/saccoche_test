@@ -30,16 +30,16 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
-$tab_select_classes = (isset($_POST['select_classes'])) ? ( (is_array($_POST['select_classes'])) ? $_POST['select_classes'] : explode(',',$_POST['select_classes']) ) : array() ;
-$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves)  , 'positif' );
-$tab_select_classes = array_filter( Clean::map_entier($tab_select_classes) , 'positif' );
+$tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
+$tab_classe = (isset($_POST['f_classe'])) ? ( (is_array($_POST['f_classe'])) ? $_POST['f_classe'] : explode(',',$_POST['f_classe']) ) : array() ;
+$tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
+$tab_classe = array_filter( Clean::map_entier($tab_classe) , 'positif' );
 
 // Ajouter des élèves à des classes
 if($action=='ajouter')
 {
-  $classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
-  foreach($tab_select_eleves as $user_id)
+  $classe_id = current($tab_classe); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
+  foreach($tab_eleve as $user_id)
   {
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , TRUE );
   }
@@ -49,9 +49,9 @@ if($action=='ajouter')
 elseif($action=='retirer')
 {
   // on doit tout passer en revue car on ne sait pas si la classe de l'élève est dans la liste transmise
-  foreach($tab_select_eleves as $user_id)
+  foreach($tab_eleve as $user_id)
   {
-    foreach($tab_select_classes as $classe_id)
+    foreach($tab_classe as $classe_id)
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , FALSE );
     }

@@ -30,16 +30,18 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])   : ''; // ajouter | retirer
-$matiere = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0;
+$action   = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])   : ''; // ajouter | retirer
+$matiere  = (isset($_POST['f_matiere']))  ? Clean::entier($_POST['f_matiere']) : 0;
+$multiple = (empty($_POST['f_multiple'])) ? FALSE                              : TRUE ;
 
 // Autres valeurs à récupérer.
 
-$multiple     = (isset($_POST['f_multiple'])) ? Clean::entier($_POST['f_multiple']) : 0 ;
-$option_first = ($multiple) ? 'non' : 'oui' ;
-$selection    = ($multiple) ? TRUE  : $matiere ;
+$select_nom   = ($multiple) ? 'f_matiere' : FALSE ;
+$option_first = ($multiple) ? 'non'       : 'oui' ;
+$selection    = ($multiple) ? TRUE        : $matiere ;
 
 $tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
-echo Form::afficher_select( $tab_matieres , $select_nom=FALSE , $option_first , $selection , $optgroup='non' );
+
+exit( Form::afficher_select( $tab_matieres , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 
 ?>

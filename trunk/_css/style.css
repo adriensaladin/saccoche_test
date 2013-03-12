@@ -436,11 +436,13 @@ input[type=text],input[type=password],select,textarea {margin:1px 0;background:#
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
 select[multiple],textarea {vertical-align:middle}
 
-/* formulaire en page d'accueil pour choisir son établissement */
-#f_base {font-size:90%}
-
-/* réduire la taille des select multiple (professeurs / élèves / matières) */
-select.t8 {font-size:90%}
+/* select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur) */
+span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
+span.select_multiple span {display:block;font-weight:bold;font-style:italic;padding-left:2em;background-color:#CCC}
+span.select_multiple label:hover {cursor:pointer}
+span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px;}
+span.select_multiple label.check {color:#FFF;background-color:#88F;}
+span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px;margin-left:3px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style généraux pour les tableaux                                                                    */
@@ -562,7 +564,7 @@ table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
-#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0%;padding:0} /* Pour indiquer les scores calculés. */
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:50%;padding:0} /* Pour indiquer les scores calculés. */
 #tableau_validation tbody td:hover {cursor:pointer}
 #tableau_validation tbody td.v3 {background:#FFF;}
 #tableau_validation tbody td.v3:hover {cursor:default}
@@ -871,7 +873,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 
 .fancybox-skin {
 	position: relative;
-	background: #f9f9f9;
+	background: #fff;
 	color: #444;
 	text-shadow: none;
 	-webkit-border-radius: 4px;

@@ -733,7 +733,7 @@ public static function DB_OPT_familles_matieres()
  */
 public static function DB_OPT_matieres_famille($matiere_famille_id)
 {
-  Form::$tab_select_option_first = array(ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id,'Toutes les matières de cette famille','');
+  Form::$tab_select_option_first = array(ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id,'Toutes les matières de cette famille');
   $DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_matiere ';
   $DB_SQL.= ($matiere_famille_id==ID_FAMILLE_MATIERE_USUELLE) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$matiere_famille_id.' ' ;
@@ -749,7 +749,7 @@ public static function DB_OPT_matieres_famille($matiere_famille_id)
  */
 public static function DB_OPT_matieres_professeur($user_id)
 {
-  Form::$tab_select_option_first = array(0,'Toutes les matières','');
+  Form::$tab_select_option_first = array(0,'Toutes les matières');
   $DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -870,7 +870,7 @@ public static function DB_OPT_niveaux_etabl()
  */
 public static function DB_OPT_niveaux()
 {
-  Form::$tab_select_option_first = array(0,'Tous les niveaux','');
+  Form::$tab_select_option_first = array(0,'Tous les niveaux');
   $DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_niveau ';
   $DB_SQL.= 'ORDER BY niveau_ordre ASC';
@@ -886,7 +886,7 @@ public static function DB_OPT_niveaux()
  */
 public static function DB_OPT_niveaux_famille($niveau_famille_id)
 {
-  Form::$tab_select_option_first = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille','');
+  Form::$tab_select_option_first = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille');
   // Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
   $tab_sql = array(
     1 => '',
@@ -973,7 +973,7 @@ public static function DB_OPT_paliers_piliers()
  */
 public static function DB_OPT_piliers($palier_id)
 {
-  Form::$tab_select_option_first = array(0,'Toutes les compétences','');
+  Form::$tab_select_option_first = array(0,'Toutes les compétences');
   $DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_socle_pilier ';
   $DB_SQL.= 'WHERE palier_id=:palier_id ';
@@ -991,7 +991,7 @@ public static function DB_OPT_piliers($palier_id)
  */
 public static function DB_OPT_domaines($pilier_id)
 {
-  Form::$tab_select_option_first = array(0,'Tous les domaines','');
+  Form::$tab_select_option_first = array(0,'Tous les domaines');
   $DB_SQL = 'SELECT section_id AS valeur, section_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_socle_section ';
   $DB_SQL.= 'WHERE pilier_id=:pilier_id ';
@@ -1072,7 +1072,7 @@ public static function DB_OPT_groupes_etabl()
  */
 public static function DB_OPT_groupes_professeur($user_id)
 {
-  Form::$tab_select_option_first = array(0,'Tous les regroupements','');
+  Form::$tab_select_option_first = array(0,'Tous les regroupements');
   $DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
@@ -1133,7 +1133,7 @@ public static function DB_OPT_classes_etabl($with_ref)
  */
 public static function DB_OPT_classes_groupes_etabl()
 {
-  Form::$tab_select_option_first = array(0,'Tous les regroupements','');
+  Form::$tab_select_option_first = array(0,'Tous les regroupements');
   $DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -1211,7 +1211,7 @@ public static function DB_OPT_selection_items($user_id)
  */
 public static function DB_OPT_periodes_etabl($alerte=FALSE)
 {
-  Form::$tab_select_option_first = array(0,'Personnalisée','');
+  Form::$tab_select_option_first = array(0,'Personnalisée');
   $DB_SQL = 'SELECT periode_id AS valeur, periode_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_periode ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
@@ -1297,7 +1297,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
   $DB_SQL.= 'ORDER BY user_profil_type DESC, user_nom ASC, user_prenom ASC';
   $DB_VAR = array(':profil_type1'=>'professeur',':profil_type2'=>'directeur');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  Form::$tab_select_option_first = array(0,'Tampon de l\'établissement','');
+  Form::$tab_select_option_first = array(0,'Tampon de l\'établissement');
   Form::$tab_select_optgroup = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
 }

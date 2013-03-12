@@ -50,7 +50,7 @@ if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]))
 
 list($f_connexion_departement,$f_connexion_nom) = explode('|',$f_connexion_ref);
 
-if($f_connexion_mode=='normal')
+if( ($f_connexion_mode=='normal') || ($f_connexion_mode=='shibboleth') )
 {
   DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement) );
   // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
@@ -118,5 +118,11 @@ if($f_connexion_mode=='gepi')
   $_SESSION['GEPI_CERTIFICAT_EMPREINTE'] = $gepi_saml_certif;
   exit('ok');
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
 
 ?>

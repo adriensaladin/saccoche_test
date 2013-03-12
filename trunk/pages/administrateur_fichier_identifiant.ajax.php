@@ -31,9 +31,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $action = (isset($_POST['action']))   ? $_POST['action']   : '';
 $profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
 // Normalement c'est un tableau qui est transmis, mais au cas où...
-$tab_select_users = (isset($_POST['select_users'])) ? ( (is_array($_POST['select_users'])) ? $_POST['select_users'] : explode(',',$_POST['select_users']) ) : array() ;
-$tab_select_users = array_filter( Clean::map_entier($tab_select_users) , 'positif' );
-$nb = count($tab_select_users);
+$tab_user = (isset($_POST['f_user'])) ? ( (is_array($_POST['f_user'])) ? $_POST['f_user'] : explode(',',$_POST['f_user']) ) : array() ;
+$tab_user = array_filter( Clean::map_entier($tab_user) , 'positif' );
 
 $tab_profils = array('eleves','parents','professeurs','directeurs');
 
@@ -42,7 +41,7 @@ $tab_profils = array('eleves','parents','professeurs','directeurs');
 // Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,$tab_profils)) && $nb )
+if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,$tab_profils)) && count($tab_user) )
 {
   $prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
   // Nom sans extension des fichiers de sortie
@@ -57,7 +56,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
     $tab_login = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
     $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
     // Mettre à jour les noms d'utilisateurs des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
     {
@@ -81,7 +80,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
     $tab_password = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
     $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
     // Mettre à jour les mots de passe des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
     {

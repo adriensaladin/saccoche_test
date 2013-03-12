@@ -49,14 +49,14 @@ $(document).ready
       function()
       {
         // grouper le select multiple
-        if( $("#f_base option:selected").length==0 )
+        if( $("#f_base input:checked").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
           return(false);
         }
         else
         {
-          var f_listing_id = new Array(); $("#f_base option:selected").each(function(){f_listing_id.push($(this).val());});
+          var f_listing_id = new Array(); $("#f_base input:checked").each(function(){f_listing_id.push($(this).val());});
         }
         // on envoie
         $("#bouton_valider").prop('disabled',true);
@@ -177,7 +177,7 @@ $(document).ready
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    if( $('#f_base option:selected').length )
+    if( $('#f_base input:checked').length )
     {
       $('#bouton_valider').click();
     }
@@ -191,7 +191,7 @@ $(document).ready
     (
       function()
       {
-        $('#structures input[type=checkbox]').prop('checked',true);
+        $('#table_action input[type=checkbox]').prop('checked',true);
         return false;
       }
     );
@@ -199,7 +199,7 @@ $(document).ready
     (
       function()
       {
-        $('#structures input[type=checkbox]').prop('checked',false);
+        $('#table_action input[type=checkbox]').prop('checked',false);
         return false;
       }
     );
@@ -235,11 +235,11 @@ $(document).ready
             }
             else
             {
-              $("input[type=checkbox]:checked").each
+              $("#table_action input[type=checkbox]:checked").each
               (
                 function()
                 {
-                  $('#f_base option[value='+$(this).val()+']').remove();
+                  $('#f_base option[value='+$(this).val()+']').parent().remove();
                   $(this).parent().parent().remove();
                 }
               );
@@ -256,7 +256,7 @@ $(document).ready
     (
       function()
       {
-        var listing_id = new Array(); $("input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");

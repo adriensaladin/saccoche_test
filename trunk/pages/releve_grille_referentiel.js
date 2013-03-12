@@ -30,15 +30,14 @@ $(document).ready
   function()
   {
 
-    // Initialisation
-    $("#f_eleve").hide();
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Enlever le message ajax et le résultat précédent au changement d'un select
+    // Enlever le message ajax et le résultat précédent au changement d'un élément de formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('select').change
+    $('#form_select').on
     (
+      'change',
+      'select, input',
       function()
       {
         $('#ajax_msg').removeAttr("class").html("&nbsp;");
@@ -279,14 +278,14 @@ $(document).ready
     // Charger le select f_eleve en ajax (au changement de f_groupe)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_eleve(groupe_val,type)
+    function maj_eleve(groupe_id,groupe_type)
     {
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe='+groupe_val+'&f_type='+type+'&f_statut=1',
+          data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1'+'&f_multiple='+is_multiple+'&f_selection=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -295,10 +294,10 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if( ( is_multiple && (responseHTML.substring(0,6)=='<label') ) || ( !is_multiple && (responseHTML.substring(0,7)=='<option') ) ) // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
-              $('#f_eleve').html(responseHTML).show();
+              $('#f_eleve').html(responseHTML).parent().show();
             }
           else
             {
@@ -312,13 +311,13 @@ $(document).ready
     (
       function()
       {
-        $("#f_eleve").html('<option value=""></option>').hide();
-        var groupe_val = $("#f_groupe").val();
-        if(groupe_val)
+        $("#f_eleve").html('').parent().hide();
+        var groupe_id = $("#f_groupe").val();
+        if(groupe_id)
         {
-          type = $("#f_groupe option:selected").parent().attr('label');
+          groupe_type = $("#f_groupe option:selected").parent().attr('label');
           $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          maj_eleve(groupe_val,type);
+          maj_eleve(groupe_id,groupe_type);
         }
         else
         {
@@ -343,7 +342,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_matieres_prof',
-            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action,
+            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action+'&f_multiple=0',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -435,8 +434,11 @@ $(document).ready
         errorPlacement : function(error,element)
         {
           if(element.attr("id")=='f_matiere') { element.next().after(error); }
-          else if(element.attr("type")=="checkbox") {element.parent().next().after(error);}
           else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
+          else if(element.attr("type")=="checkbox") {
+            if(element.parent().parent().hasClass('select_multiple')) {element.parent().parent().next().after(error);}
+            else {element.parent().next().after(error);}
+          }
           else {element.after(error);}
         }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
@@ -478,7 +480,7 @@ $(document).ready
       var readytogo = validation.form();
       if(readytogo)
       {
-        $('button').prop('disabled',true);
+        $('#bouton_valider').prop('disabled',true);
         $('#bilan').html("&nbsp;");
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
@@ -488,7 +490,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $('button').prop('disabled',false);
+      $('#bouton_valider').prop('disabled',false);
       var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
       $('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
     }
@@ -497,7 +499,7 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
-      $('button').prop('disabled',false);
+      $('#bouton_valider').prop('disabled',false);
       if(responseHTML.substring(0,6)=='<hr />')
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");

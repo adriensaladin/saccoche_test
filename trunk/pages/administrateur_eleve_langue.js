@@ -30,9 +30,19 @@ $(document).ready
   function()
   {
 
-    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Alerter au changement d'un élément de formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $("#select_eleves").hide();
+    $('#form_select').on
+    (
+      'change',
+      'select, input',
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+      }
+    );
 
     // Charger le select f_eleve en ajax
 
@@ -43,7 +53,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=0',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -52,10 +62,10 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-              $('#select_eleves').html(responseHTML).show();
+              $('#f_eleve').html(responseHTML);
             }
             else
             {
@@ -67,11 +77,11 @@ $(document).ready
     }
     function changer_groupe()
     {
-      $("#select_eleves").html('<option value=""></option>').hide();
-      var groupe_val = $("#f_groupe").val();
+      $("#f_eleve").html('');
+      var groupe_val = $("#select_groupe").val();
       if(groupe_val)
       {
-        // type = $("#f_groupe option:selected").parent().attr('label');
+        // type = $("#select_groupe option:selected").parent().attr('label');
         groupe_type = groupe_val.substring(0,1);
         groupe_id   = groupe_val.substring(1);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
@@ -82,21 +92,11 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").html("&nbsp;");
       }
     }
-    $("#f_groupe").change
+    $("#select_groupe").change
     (
       function()
       {
         changer_groupe();
-      }
-    );
-
-    // Réagir au changement d'un select
-
-    $('select').change
-    (
-      function()
-      {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
       }
     );
 
@@ -106,30 +106,30 @@ $(document).ready
     (
       function()
       {
-        if( $("#select_eleves option:selected").length==0 || $("#select_langue option:selected").length==0 )
+        if( !$("#f_eleve input:checked").length || !$("#f_langue option:selected").val() )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
           return(false);
         }
-        $('button').prop('disabled',true);
+        $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE+'&action=associer',
-            data : 'csrf='+CSRF+'&'+$("form").serialize(),
+            data : 'csrf='+CSRF+'&'+$('#form_select').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $('button').prop('disabled',false);
+              $('#form_select button').prop('disabled',false);
               if(responseHTML.substring(0,6)!='<hr />')
               {
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

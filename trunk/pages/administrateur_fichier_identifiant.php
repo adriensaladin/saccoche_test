@@ -43,7 +43,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 
 <hr />
 
-<form action="#" method="post">
+<form action="#" method="post" id="form_select">
 
   <fieldset>
     <label class="tab" for="f_choix_principal">Objectif :</label>
@@ -66,7 +66,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
         <td class="nu" style="width:30em;text-align:left">
           <div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><option value=""></option><option value="eleves">élèves</option><option value="parents">responsables légaux</option><option value="professeurs">professeurs</option><option value="directeurs">directeurs</option></select></div>
           <div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?></div>
-          <div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
+          <div id="div_users" class="hide"><label class="tab" for="f_user">Utilisateur(s) :</label><span id="f_user" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></div>
         </td>
         <td id="td_bouton" class="nu" style="width:25em">
           <p><button id="generer_login" type="button" class="mdp_groupe">Générer de nouveaux noms d'utilisateurs.</button></p>

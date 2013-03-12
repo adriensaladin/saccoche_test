@@ -65,9 +65,9 @@ $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier  = Form::afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=FALSE                         , $optgroup=$og_g);
-$select_matiere = Form::afficher_select($tab_matieres , $select_nom=FALSE      , $option_first='non' , $selection=TRUE                          , $optgroup='non');
+$select_palier  = Form::afficher_select($tab_paliers  , $select_nom='f_palier'  , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first=$of_g , $selection=FALSE                         , $optgroup=$og_g);
+$select_matiere = Form::afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='non' , $selection=TRUE                          , $optgroup='non' , TRUE /*multiple*/);
 ?>
 
 <script type="text/javascript">
@@ -85,15 +85,15 @@ $select_matiere = Form::afficher_select($tab_matieres , $select_nom=FALSE      ,
   <p>
     <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
     <label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
-    <label class="tab" for="f_domaine"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Domaine(s) :</label><select id="f_domaine" name="f_domaine[]" multiple size="5" class="hide"><option></option></select>
+    <span id="bloc_domaine" class="hide"><label class="tab" for="f_domaine">Domaine(s) :</label><span id="f_domaine" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></span>
   </p>
   <p>
     <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-    <label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select>
+    <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></span>
   </p>
   <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
-  <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
-  <p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
+  <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></div>
+  <p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider">Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_validation" class="hide">

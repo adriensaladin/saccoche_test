@@ -37,7 +37,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande d'exports depuis structure_multi.php
-$select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=FALSE , $option_first='non' , $selection , $optgroup='oui') ;
+$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , 'non' /*option_first*/ , $selection , 'oui' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_transfert">DOC : Transfert d'établissements (multi-structures)</a></span></p>
@@ -46,15 +46,17 @@ $select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures
 
 <h2>Exporter des établissements (données &amp; bases)</h2>
 
-<form action="#" method="post" id="form_exporter"><fieldset>
-  <label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
-  <span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
+<form action="#" method="post" id="form_exporter">
+  <p>
+    <label class="tab" for="f_base">Structure(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+    <span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
+  </p>
   <div id="div_info_export" class="hide">
     <ul id="puce_info_export" class="puce"><li></li></ul>
     <span id="ajax_export_num" class="hide"></span>
     <span id="ajax_export_max" class="hide"></span>
   </div>
-  <div id="zone_actions_export" class="hide">
+  <p id="zone_actions_export" class="hide">
     <label class="alerte">Ces deux fichiers sont nécessaires pour toute importation ; vérifiez leur validité une fois récupérés.</label><br />
     <label class="alerte">Pour des raisons de sécurité et de confidentialité, ces fichiers seront effacés du serveur dans 1h.</label><br />
     Pour les structures sélectionnées : <!-- input listing_ids plus bas -->
@@ -62,8 +64,8 @@ $select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures
     <button id="bouton_stats_export" type="button" class="stats">Calculer les statistiques.</button>
     <button id="bouton_supprimer_export" type="button" class="supprimer">Supprimer.</button>
     <label id="ajax_supprimer_export">&nbsp;</label>
-  </div>
-</fieldset></form>
+  </p>
+</form>
 
 
 <hr />

@@ -155,7 +155,7 @@ else
       }
     }
     // Construction du formulaire select du nombre de demandes
-    $select_demandes = '<select name="f_eleve_demandes" class="t8">';
+    $select_demandes = '<select name="f_eleve_demandes" class="t9">';
     for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
     {
       $texte = ($nb_demandes>0) ? ( ($nb_demandes>1) ? $nb_demandes.' demandes' : '1 seule demande' ) : 'aucune demande' ;

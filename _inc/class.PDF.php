@@ -471,10 +471,6 @@ class PDF extends FPDF
   private $coef_conv_pixel_to_mm = 0;
   private $photo_hauteur_maxi    = 0;
   private $cadre_photo_hauteur   = 0;
-  // Définition de qqs variables supplémentaires
-  private $page_nombre_alias      = '{|}'; // Pas celui de FPDF ($this->AliasNbPages) car géré différemment (plusieurs élèves par fichier) ; court car occupation en largeur prise en compte.
-  private $page_numero_first      = 1;
-  private $page_nombre_alignement = '';
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
@@ -568,8 +564,6 @@ class PDF extends FPDF
     // mm = (pixels * 25.4) / dpi
     // pixels = (mm * dpi) / 25.4
     $this->coef_conv_pixel_to_mm = 25.4 / 96 ;
-    // Alignement du nombre de pages et du rappel des infos sur les pages
-    $this->page_nombre_alignement = ($this->officiel) ? 'R' : 'C' ;
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1012,25 +1006,10 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour remplacer le nombre de pages par la bonne valeur
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public function reporter_page_nb()
-  {
-    $page_nb = $this->page - $this->page_numero_first + 1 ;
-    for( $page_numero=$this->page_numero_first ; $page_numero<=$this->page ; $page_numero++ )
-    {
-      $this->pages[$page_numero] = ($page_numero<$this->page) ? gzcompress(str_replace( $this->page_nombre_alias , $page_nb , gzuncompress($this->pages[$page_numero]) )) : str_replace( $this->page_nombre_alias , $page_nb , $this->pages[$page_numero] ) ;
-    }
-  }
-
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthodes pour la mise en page d'une synthèse matiere ou pluridisciplinaire ; a priori pas de pb avec la hauteur de ligne minimale
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // bilan_synthese_initialiser()   c'est là que les calculs se font pour une sortie "matiere"
   // bilan_synthese_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
-  // bilan_synthese_premiere_page()
-  // bilan_synthese_rappel_eleve_page()
   // bilan_synthese_ligne_matiere()
   // bilan_synthese_ligne_synthese()
   // bilan_synthese_appreciation_rubrique()
@@ -1053,7 +1032,7 @@ class PDF extends FPDF
       $eleves_nb_par_page         = ceil( $eleves_nb / $nb_page_moyen ) ;
       // $nb_page_calcule = ceil( $eleves_nb / $eleves_nb_par_page ) ; // devenu inutile
       $lignes_nb_moyen_eleve      = $lignes_nb_tous_eleves / $eleves_nb ;
-      $lignes_nb_calcule_par_page = $eleves_nb_par_page * $lignes_nb_moyen_eleve ; // $lignes_nb/$nb_page_calcule ne va pas car un élève peut alors être considéré à cheval sur 2 pages
+      $lignes_nb_calcule_par_page = $eleves_nb_par_page * $lignes_nb_moyen_eleve ; // $lignes_nb/$nb_page_calcule ne va pas à cause un élève peut alors être considéré à cheval sur 2 pages
       $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
       $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
       $this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
@@ -1087,7 +1066,7 @@ class PDF extends FPDF
     elseif($format=='multimatiere')
     {
       // On prend une nouvelle page PDF
-      $this->bilan_synthese_premiere_page();
+      $this->AddPage($this->orientation , 'A4');
       if($this->officiel)
       {
         // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
@@ -1114,10 +1093,10 @@ class PDF extends FPDF
         }
         else
         {
-          // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
+          // En haut à droite
           $bloc_titre_largeur = 100;
-          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur)+4;
+          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut );
+          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur);
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
@@ -1180,27 +1159,6 @@ class PDF extends FPDF
     }
   }
 
-  public function bilan_synthese_premiere_page()
-  {
-    $this->AddPage($this->orientation , 'A4');
-    $this->page_numero_first = $this->page;
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , 'B' , 7);
-    $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-    $this->SetXY($this->marge_gauche,$this->marge_haut);
-  }
-
-  public function bilan_synthese_rappel_eleve_page()
-  {
-    $this->AddPage($this->orientation , 'A4');
-    $page_numero = $this->page - $this->page_numero_first + 1 ;
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-  }
-
   public function bilan_synthese_ligne_matiere($format,$matiere_nom,$lignes_nb,$tab_infos_matiere,$total,$moyenne_eleve,$moyenne_classe,$avec_texte_nombre,$avec_texte_code)
   {
     if($format=='multimatiere')
@@ -1210,7 +1168,11 @@ class PDF extends FPDF
       $test_nouvelle_page = ($this->lignes_hauteur*$lignes_nb > $hauteur_dispo_restante) && ($this->GetY() > $this->lignes_hauteur*5) ; // 2e condition pour éviter un saut de page si déjà en haut (à cause d'une liste à rallonge dans une matière)
       if( $test_nouvelle_page )
       {
-        $this->bilan_synthese_rappel_eleve_page();
+        $this->AddPage($this->orientation , 'A4');
+        $this->SetFont('Arial' , 'B' , $this->taille_police);
+        $this->choisir_couleur_texte('gris_fonce');
+        $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+        $this->choisir_couleur_texte('noir');
       }
       else
       {
@@ -1314,7 +1276,10 @@ class PDF extends FPDF
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
-      $this->bilan_synthese_rappel_eleve_page();
+      $this->AddPage($this->orientation , 'A4');
+      $this->choisir_couleur_texte('gris_fonce');
+      $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->choisir_couleur_texte('noir');
       $this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
     }
     else
@@ -1337,8 +1302,6 @@ class PDF extends FPDF
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere" ou "selection"
   // bilan_item_individuel_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
-  // bilan_item_individuel_premiere_page()
-  // bilan_item_individuel_rappel_eleve_page()
   // bilan_item_individuel_transdisciplinaire_ligne_matiere()
   // bilan_item_individuel_appreciation_rubrique()
   // bilan_item_individuel_appreciation_generale()
@@ -1393,26 +1356,6 @@ class PDF extends FPDF
     }
   }
 
-  public function bilan_item_individuel_premiere_page()
-  {
-    $this->AddPage($this->orientation , 'A4');
-    $this->page_numero_first = $this->page;
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , '' , 7);
-    $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-    $this->SetXY($this->marge_gauche,$this->marge_haut);
-  }
-
-  public function bilan_item_individuel_rappel_eleve_page()
-  {
-    $this->AddPage($this->orientation , 'A4');
-    $page_numero = $this->page - $this->page_numero_first + 1 ;
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-  }
-
   public function bilan_item_individuel_entete($pages_nb_methode,$tab_infos_entete,$eleve_nom,$eleve_prenom,$eleve_nb_lignes)
   {
     $this->eleve_nom    = $eleve_nom;
@@ -1436,7 +1379,7 @@ class PDF extends FPDF
     elseif($this->format=='multimatiere')
     {
       // On prend une nouvelle page PDF
-      $this->bilan_item_individuel_premiere_page();
+      $this->AddPage($this->orientation , 'A4');
       $this->legende_deja_affichee = FALSE; // Si multimatières, on n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
       if($this->officiel)
       {
@@ -1464,10 +1407,10 @@ class PDF extends FPDF
         }
         else
         {
-          // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
+          // En haut à droite
           $bloc_titre_largeur = 100;
-          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur)+4;
+          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut );
+          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur);
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
@@ -1556,6 +1499,7 @@ class PDF extends FPDF
           $this->legende_deja_affichee = TRUE;
         }
       }
+      $this->AddPage($this->orientation , 'A4');
     }
     else
     {
@@ -1565,7 +1509,9 @@ class PDF extends FPDF
     // Intitulé matière + éventuellement rappel élève
     if( $test_nouvelle_page )
     {
-      $this->bilan_item_individuel_rappel_eleve_page();
+      $this->choisir_couleur_texte('gris_fonce');
+      $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->choisir_couleur_texte('noir');
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
     $this->Cell($this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($matiere_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
@@ -1584,7 +1530,10 @@ class PDF extends FPDF
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
-      $this->bilan_item_individuel_rappel_eleve_page();
+      $this->AddPage($this->orientation , 'A4');
+      $this->choisir_couleur_texte('gris_fonce');
+      $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->choisir_couleur_texte('noir');
       $this->SetXY( $this->marge_gauche+$this->reference_largeur , $this->GetY() + 2 );
     }
     else
@@ -2019,9 +1968,8 @@ class PDF extends FPDF
   // Méthodes pour la mise en page d'un releve d'attestation de socle commun
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // releve_socle_initialiser()
+  // releve_socle_identite()
   // releve_socle_entete()
-  // releve_socle_premiere_page()
-  // releve_socle_rappel_eleve_page()
   // releve_socle_pilier()
   // releve_socle_section()
   // releve_socle_item()
@@ -2043,6 +1991,22 @@ class PDF extends FPDF
     $this->SetAutoPageBreak(FALSE);
   }
 
+  public function releve_socle_identite()
+  {
+    // On met le document au nom de l'élève, ou on établit un document générique
+    if(!$this->eleve_id)
+    {
+      $this->choisir_couleur_trait('gris_moyen');
+      $this->SetLineWidth(0.1);
+      $this->Line($this->page_largeur-$this->marge_droite-75 , $this->marge_haut+2*$this->cases_hauteur , $this->page_largeur-$this->marge_droite , $this->marge_haut+2*$this->cases_hauteur);
+      $this->choisir_couleur_trait('noir');
+    }
+    $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+    $this->SetXY($this->page_largeur-$this->marge_droite-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
+    $this->Cell(50 , $this->cases_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->Cell(50 , $this->cases_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom)   , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+  }
+
   public function releve_socle_entete($tab_infos_entete,$break,$eleve_id,$eleve_nom,$eleve_prenom,$eleve_nb_lignes)
   {
     $this->eleve_id     = $eleve_id;
@@ -2051,14 +2015,13 @@ class PDF extends FPDF
     // On prend une nouvelle page PDF pour chaque élève en cas d'affichage d'un palier avec tous les piliers ; pour un seul pilier, on étudie la place restante... tout en forçant une nouvelle page pour le 1er élève
     if( ($break==FALSE) || ($this->GetY()==0) )
     {
-      $this->releve_socle_premiere_page();
+      $this->AddPage($this->orientation , 'A4');
       if($break==FALSE)
       {
         if($this->officiel)
         {
           // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
           list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
-          $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
           // Bloc adresse en positionnement contraint
           if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
           {
@@ -2080,10 +2043,10 @@ class PDF extends FPDF
           }
           else
           {
-          // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
+            // En haut à droite
             $bloc_titre_largeur = 100;
-            $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-            $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur+4);
+            $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut );
+            $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur);
             $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
             $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
           }
@@ -2110,7 +2073,6 @@ class PDF extends FPDF
         $lignes_nb                = ( $hauteur_entete / 4.5 ) + $eleve_nb_lignes + ($this->legende*2) + 2 ; // entete + lignes dont résumés + légendes + marge
         $lignes_nb_moyen_par_page = $hauteur_dispo_par_page / $hauteur_ligne_moyenne ;
         $nb_page_moyen            = $lignes_nb / $lignes_nb_moyen_par_page ;
-        /*
         $nb_page_pleines          = floor($nb_page_moyen) ;
         $prop_last_page           = $nb_page_moyen - $nb_page_pleines ;
         if( ($nb_page_pleines==1) && ($prop_last_page<0.25) )
@@ -2129,8 +2091,6 @@ class PDF extends FPDF
         {
           $nb_page_calcule = max(0.9,$nb_page_moyen) ;
         }
-        */
-        $nb_page_calcule = $nb_page_moyen*0.9; // Pour tenter de compenser la place perdue à cause des blocs par pilier
         $lignes_nb_calcule_par_page = $lignes_nb / $nb_page_calcule ;
         $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
         $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
@@ -2160,7 +2120,8 @@ class PDF extends FPDF
       $hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
       if($hauteur_requise > $hauteur_restante)
       {
-        $this->releve_socle_premiere_page();
+        $this->AddPage($this->orientation , 'A4');
+        $this->SetXY($this->marge_gauche,$this->marge_haut);
       }
       else
       {
@@ -2170,47 +2131,13 @@ class PDF extends FPDF
     if(!$this->officiel)
     {
       list( $titre , $palier_nom ) = $tab_infos_entete;
-      $this->doc_titre = $titre.' - '.$palier_nom;
       // Intitulé
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
       $this->Cell( $this->page_largeur-$this->marge_droite-75 , $this->cases_hauteur , To::pdf($titre)      , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->Cell( $this->page_largeur-$this->marge_droite-75 , $this->cases_hauteur , To::pdf($palier_nom) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      // Structure + Nom / prénom ; on met le document au nom de l'élève ou on établit un document générique
-      if(!$this->eleve_id)
-      {
-        $this->choisir_couleur_trait('gris_moyen');
-        $this->SetLineWidth(0.1);
-        $this->Line($this->page_largeur-$this->marge_droite-75 , $this->marge_haut+2*$this->cases_hauteur , $this->page_largeur-$this->marge_droite , $this->marge_haut+2*$this->cases_hauteur);
-        $this->choisir_couleur_trait('noir');
-      }
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->SetXY($this->page_largeur-$this->marge_droite-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
-      $this->Cell(50 , $this->cases_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
-      $this->Cell(50 , $this->cases_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom)   , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      // Nom / prénom
+      $this->releve_socle_identite();
     }
-  }
-
-  public function releve_socle_premiere_page()
-  {
-    $this->AddPage($this->orientation , 'A4');
-    $this->page_numero_first = $this->page;
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , 'B' , 7);
-    $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-    $this->SetXY($this->marge_gauche,$this->marge_haut);
-  }
-
-  public function releve_socle_rappel_eleve_page()
-  {
-    $info_identite = ($this->eleve_id) ? ' - '.$this->eleve_nom.' '.$this->eleve_prenom : '' ;
-    $this->AddPage($this->orientation , 'A4');
-    $page_numero = $this->page - $this->page_numero_first + 1 ;
-    $this->SetFont('Arial' , 'B' , 7);
-    $this->choisir_couleur_texte('gris_fonce');
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.$info_identite.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
-    $this->choisir_couleur_texte('noir');
-    $this->SetXY( $this->marge_gauche+$this->retrait_pourcentage , $this->GetY()+1 );
   }
 
   public function releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation,$drapeau_langue)
@@ -2221,7 +2148,9 @@ class PDF extends FPDF
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
-      $this->releve_socle_rappel_eleve_page();
+      $this->AddPage($this->orientation , 'A4');
+      $this->releve_socle_identite();
+      $this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY()+2);
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
     $this->choisir_couleur_fond('gris_moyen');
@@ -2278,7 +2207,9 @@ class PDF extends FPDF
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
-      $this->releve_socle_rappel_eleve_page();
+      $this->AddPage($this->orientation , 'A4');
+      $this->releve_socle_identite();
+      $this->SetXY( $this->marge_gauche+$this->retrait_pourcentage , $this->GetY()+2 );
     }
     $this->officiel_bloc_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $this->item_largeur , $this->cases_hauteur , NULL /*moyenne_generale_eleve*/ , NULL /*moyenne_generale_classe*/ );
   }

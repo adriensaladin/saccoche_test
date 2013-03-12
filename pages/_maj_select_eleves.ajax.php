@@ -74,19 +74,15 @@ else
   $groupe_type = $tab_types[$groupe_type];
 }
 
-// Autres valeurs à récupérer ou à définir.
+// Autres valeurs à récupérer.
 
-$statut       = (isset($_POST['f_statut']))    ? Clean::entier($_POST['f_statut']) : 0;
-$select_nom   = (isset($_POST['f_nom']))       ? Clean::texte($_POST['f_nom'])     : 'f_eleve';
-$multiple     = (empty($_POST['f_multiple']))  ? FALSE                             : TRUE ;
-$selection    = (empty($_POST['f_selection'])) ? FALSE                             : ( ($_POST['f_selection']==1) ? TRUE : explode(',',$_POST['f_selection']) ) ;
-
-$select_nom   = ($multiple) ? $select_nom : FALSE ;
-$option_first = ($multiple) ? 'non'       : 'oui' ;
-$selection    = ($multiple) ? $selection  : FALSE ;
+$statut       = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut'])   : 0;
+$multiple     = (isset($_POST['f_multiple'])) ? Clean::entier($_POST['f_multiple']) : 1 ;
+$option_first = ($multiple) ? 'non' : 'oui' ;
+$selection    = ($multiple) ? TRUE  : FALSE ;
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=FALSE , $option_first , $selection , $optgroup='non');
 
 ?>

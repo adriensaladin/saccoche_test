@@ -359,30 +359,14 @@ class Form
   /**
    * Afficher un élément select de formulaire à partir d'un tableau de données et d'options
    * 
-   * Les select multiples sont convertis en une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur).
-   * Cela revient à remplacer ...
-   *  <select id="select_nom" name="select_nom[]" multiple size="8">
-   *    <optgroup label="Groupe A">
-   *      <option value="2204" selected>Option 1</option>
-   *      <option value="2206">Option 2</option>
-   *    </optgroup>
-   *  </select>
-   * ... par ...
-   *  <span id="select_nom" class="select_multiple">
-   *    <span>Groupe A</span>
-   *    <label for="select_nom_2204" class="check"><input type="checkbox" name="select_nom[]" id="select_nom_2204" value="2204" checked /> Option 1</label>
-   *    <label for="select_nom_2206"><input type="checkbox" name="select_nom[]" id="select_nom_2206" value="2206" /> Option 2</label>
-   *  </span>
-   * 
-   * @param array             $DB_TAB       tableau des données [i] => [valeur texte optgroup]
-   * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select (doit être transmis si $multiple l'est aussi)
+   * @param array             $DB_TAB       tableau des données [i] => [valeur texte optgroup class]
+   * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select
    * @param string            $option_first 1ère option éventuelle [non] [oui] [val]
    * @param string|bool|array $selection    préselection éventuelle [FALSE] [TRUE] [val] [ou $...] [ou array(...)]
    * @param string            $optgroup     regroupement d'options éventuel [non] [oui]
-   * @param bool              $multiple     TRUE si transmis pour forcer un faux select multiple
    * @return string
    */
-  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup,$multiple=FALSE)
+  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
   {
     // On commence par la 1ère option
     if($option_first==='non')
@@ -393,13 +377,13 @@ class Form
     elseif($option_first==='oui')
     {
       // ... avec une option initiale vierge
-      $options = (!$multiple) ? '<option value=""></option>' : '' ;
+      $options = '<option value=""></option>';
     }
     elseif($option_first==='val')
     {
       // ... avec une option initiale dont le contenu est à récupérer
-      list($option_valeur,$option_texte) = Form::$tab_select_option_first;
-      $options = (!$multiple) ? '<option value="'.$option_valeur.'">'.html($option_texte).'</option>' : '<label for="'.$select_nom.'_'.$option_valeur.'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$option_valeur.'" value="'.$option_valeur.'" /> '.html($option_texte).'</label>' ;
+      list($option_valeur,$option_texte,$option_class) = Form::$tab_select_option_first;
+      $options = '<option value="'.$option_valeur.'" class="'.$option_class.'">'.html($option_texte).'</option>';
     }
     if(is_array($DB_TAB))
     {
@@ -409,7 +393,8 @@ class Form
         // ... classiquement, sans regroupements
         foreach($DB_TAB as $DB_ROW)
         {
-          $options .= (!$multiple) ? '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>' : '<label for="'.$select_nom.'_'.$DB_ROW['valeur'].'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label>' ;
+          $class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
+          $options .= '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
         }
       }
       elseif($optgroup==='oui')
@@ -418,11 +403,12 @@ class Form
         $tab_options = array();
         foreach($DB_TAB as $DB_ROW)
         {
-          $tab_options[$DB_ROW['optgroup']][] = (!$multiple) ? '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>' : '<label for="'.$select_nom.'_'.$DB_ROW['valeur'].'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label>' ;
+          $class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
+          $tab_options[$DB_ROW['optgroup']][] = '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
         }
         foreach($tab_options as $group_key => $tab_group_options)
         {
-          $options .= (!$multiple) ? '<optgroup label="'.html(Form::$tab_select_optgroup[$group_key]).'">'.implode('',$tab_group_options).'</optgroup>' : '<span>'.html(Form::$tab_select_optgroup[$group_key]).'</span>'.implode('',$tab_group_options) ;
+          $options .= '<optgroup label="'.html(Form::$tab_select_optgroup[$group_key]).'">'.implode('',$tab_group_options).'</optgroup>';
         }
       }
       // On sélectionne les options qu'il faut... (fait après le foreach précédent sinon c'est compliqué à gérer simultanément avec les groupes d'options éventuels
@@ -433,7 +419,7 @@ class Form
       elseif($selection===TRUE)
       {
         // ... tout sélectionner
-        $options = (!$multiple) ? str_replace( '<option' , '<option selected' , $options ) : str_replace( array('><input','" />') , array(' class="check"><input','" checked />') , $options ) ;
+        $options = str_replace('<option' , '<option selected' , $options);
       }
       else
       {
@@ -441,13 +427,13 @@ class Form
         $selection = ($selection==='val') ? Form::$select_option_selected : $selection ;
         if(!is_array($selection))
         {
-          $options = (!$multiple) ? str_replace( 'value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options ) : str_replace( array($selection.'"><input',$selection.'" />') , array($selection.'" class="check"><input',$selection.'" checked />') , $options ) ;
+          $options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options);
         }
         else
         {
           foreach($selection as $selection_val)
           {
-            $options = (!$multiple) ? str_replace( 'value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options ) : str_replace( array($selection_val.'"><input',$selection_val.'" />') , array($selection_val.'" class="check"><input',$selection_val.'" checked />') , $options ) ;
+            $options = str_replace('value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options);
           }
         }
       }
@@ -455,16 +441,16 @@ class Form
     // Si $DB_TAB n'est pas un tableau alors c'est une chaine avec un message d'erreur affichée sous la forme d'une option disable
     else
     {
-      $options .= (!$multiple) ? '<option value="" disabled>'.$DB_TAB.'</option>' : $DB_TAB;
+      $options .= '<option value="" disabled>'.$DB_TAB.'</option>';
     }
     // On insère dans un select si demandé
-    return (!$multiple) ? ( ($select_nom) ? '<select id="'.$select_nom.'" name="'.$select_nom.'">'.$options.'</select>' : $options ) : $options ;
+    return ($select_nom) ? '<select id="'.$select_nom.'" name="'.$select_nom.'">'.$options.'</select>' : $options ;
   }
 
   /**
    * Fabrication de tableau javascript de jointures à partir des groupes
    * 
-   * @param array     $tab_groupes               tableau des données [i] => [valeur texte optgroup]
+   * @param array     $tab_groupes               tableau des données [i] => [valeur texte optgroup class]
    * @param bool      $return_jointure_periode   renvoyer ou non "tab_groupe_periode" pour les jointures groupes/périodes
    * @param bool      $return_jointure_niveau    renvoyer ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
    * @return array                               ( $tab_groupe_periode_js , $tab_groupe_niveau_js )
@@ -521,7 +507,7 @@ class Form
   /**
    * Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
    * 
-   * @param array             $tab_groupes   tableau des données [i] => [valeur texte optgroup]
+   * @param array             $tab_groupes   tableau des données [i] => [valeur texte optgroup class]
    * @return string
    */
   public static function fabriquer_tab_groupe_niveau_js($tab_groupes)

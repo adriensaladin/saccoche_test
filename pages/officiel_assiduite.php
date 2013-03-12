@@ -50,7 +50,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
   }
   else
   {
-    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/) ;
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl() ;
   }
 }
 

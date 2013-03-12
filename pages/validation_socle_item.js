@@ -30,6 +30,24 @@ $(document).ready
   function()
   {
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tester l'affichage du bouton de validation au changement des formulaires
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var maj_bouton_validation = function()
+    {
+      if( ($("#f_eleve").val()) && ($("#f_pilier").val()) )
+      {
+        $('#Afficher_validation').prop('disabled',false);
+      }
+      else
+      {
+        $('#Afficher_validation').prop('disabled',true);
+      }
+    };
+
+    $("#f_pilier").change( maj_bouton_validation );
+
     $('#f_cnil_numero').focus
     (
       function()
@@ -76,7 +94,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_piliers',
-            data : 'f_palier='+palier_id+'&f_multiple=0',
+            data : 'f_palier='+palier_id+'&f_first='+'oui',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -89,11 +107,13 @@ $(document).ready
               {
                 $('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
                 $('#f_pilier').html(responseHTML).show();
+                maj_bouton_validation();
                 maj_domaine();
               }
               else
               {
                 $('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html(responseHTML);
+                maj_bouton_validation();
               }
             }
           }
@@ -115,7 +135,7 @@ $(document).ready
 
     var maj_domaine = function()
     {
-      $("#f_domaine").html('').parent().hide();
+      $("#f_domaine").html('<option value=""></option>').hide();
       pilier_id = $("#f_pilier").val();
       if(pilier_id)
       {
@@ -125,7 +145,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_domaines',
-            data : 'f_pilier='+pilier_id+'&f_multiple=1',
+            data : 'f_pilier='+pilier_id+'&f_first='+'non',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -134,10 +154,10 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_domaine').removeAttr("class").html('&nbsp;');
-                $('#f_domaine').html(responseHTML).parent().show();
+                $('#f_domaine').html(responseHTML).attr('size',$('#f_domaine option').size()).show();
               }
               else
               {
@@ -161,7 +181,7 @@ $(document).ready
 
     var maj_eleve = function()
     {
-      $("#f_eleve").html('').parent().hide();
+      $("#f_eleve").html('<option value=""></option>').hide();
       groupe_id = $("#f_groupe").val();
       if(groupe_id)
       {
@@ -173,7 +193,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_eleves',
-            data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+            data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -182,14 +202,16 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
-                $('#f_eleve').html(responseHTML).parent().show();
+                $('#f_eleve').html(responseHTML).show();
+                maj_bouton_validation();
               }
               else
               {
                 $('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html(responseHTML);
+                maj_bouton_validation();
               }
             }
           }
@@ -198,6 +220,7 @@ $(document).ready
       else
       {
         $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
+        maj_bouton_validation();
       }
     };
 
@@ -229,20 +252,19 @@ $(document).ready
         messages :
         {
           f_palier      : { required:"palier manquant" },
-          f_pilier      : { required:"compétence manquante" },
+          f_pilier      : { required:"pilier(s) manquant(s)" },
           'f_domaine[]' : { required:"domaine(s) manquant(s)" },
           f_groupe      : { required:"classe / groupe manquant" },
           'f_eleve[]'   : { required:"élève(s) manquant(s)" },
           f_mode        : { required:"choix manquant" },
-          'f_matiere[]' : { required:"matière(s) manquante(s)" }
+          'f_matiere[]' : { required:"matiere(s) manquant(e)" }
         },
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.is("select")) {element.after(error);}
-          else if(element.attr("type")=="radio") {$('#div_matiere').after(error);}
-          else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
+          if(element.attr("type")=="radio") {$('#div_matiere').after(error);}
+          else { element.after(error); }
         }
       }
     );
@@ -278,7 +300,7 @@ $(document).ready
       var readytogo = validation0.form();
       if(readytogo)
       {
-        $("#Afficher_validation").prop('disabled',true);
+        $("button").prop('disabled',true);
         $('#ajax_msg_choix').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
@@ -287,7 +309,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
-      $("#Afficher_validation").prop('disabled',false);
+      $("button").prop('disabled',false);
       $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
@@ -295,7 +317,7 @@ $(document).ready
     function retour_form_valide0(responseHTML)
     {
       initialiser_compteur();
-      $("#Afficher_validation").prop('disabled',false);
+      $("button").prop('disabled',false);
       if(responseHTML.substring(0,7)!='<thead>')
       {
         $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -325,8 +347,8 @@ $(document).ready
       '#Afficher_pourcentage',
       function()
       {
-        color = ($(this).is(':checked')) ? '#000' : '' ;
-        $('#tableau_validation tbody td').css('color',color);
+        cell_font_size = ($(this).is(':checked')) ? 50 : 0 ;
+        $('#tableau_validation tbody td').css('font-size',cell_font_size+'%');
         return false;
       }
     );

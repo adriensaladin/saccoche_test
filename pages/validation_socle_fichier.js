@@ -30,6 +30,10 @@ $(document).ready
   function()
   {
 
+    // Initialisation
+
+    $("#select_eleves").hide();
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +45,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -50,10 +54,10 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg_groupe').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-              $('#f_eleve').html(responseHTML).parent().show();
+              $('#select_eleves').html(responseHTML).show();
             }
             else
             {
@@ -65,7 +69,7 @@ $(document).ready
     }
     function changer_groupe()
     {
-      $("#f_eleve").html('').parent().hide();
+      $("#select_eleves").html('<option value=""></option>').hide();
       var groupe_val = $("#f_groupe").val();
       if(groupe_val)
       {
@@ -122,14 +126,14 @@ $(document).ready
       {
         var action = $(this).attr('id');
         // grouper le select multiple
-        if( $("#f_eleve input:checked").length==0 )
+        if( $("#select_eleves option:selected").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un élève !");
           return(false);
         }
         else
         {
-          var f_eleve = new Array(); $("#f_eleve input:checked").each(function(){f_eleve.push($(this).val());});
+          var select_eleves = new Array(); $("#select_eleves option:selected").each(function(){select_eleves.push($(this).val());});
         }
         // on envoie
         $('button.enabled').prop('disabled',true);
@@ -140,7 +144,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+action+'&f_eleve='+f_eleve,
+            data : 'csrf='+CSRF+'&f_action='+action+'&select_eleves='+select_eleves,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

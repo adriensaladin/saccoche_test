@@ -30,14 +30,10 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Alerter au changement d'un élément de formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir au clic dans un select multiple
 
-    $('#form_select').on
+    $('select[multiple]').click
     (
-      'change',
-      'select, input',
       function()
       {
         $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
@@ -66,7 +62,7 @@ $(document).ready
       function()
       {
         id = $(this).attr('id');
-        if( $("#select_periodes input:checked").length==0 || $("#select_classes_groupes input:checked").length==0 )
+        if( $("#select_periodes option:selected").length==0 || $("#select_classes_groupes option:selected").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
           return(false);
@@ -91,7 +87,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE+'&action='+id,
-            data : 'csrf='+CSRF+'&'+$("#form_select").serialize(),
+            data : 'csrf='+CSRF+'&'+$("form").serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

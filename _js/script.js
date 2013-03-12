@@ -901,50 +901,6 @@ $(document).ready
     );
 
     /**
-     * Select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur)
-     * - modifier le style du parent d'un chekbox coché (non réalisable en css)
-     * - réagir aux clics pour tout cocher ou tout décocher
-     */
-
-    $('span.select_multiple').on
-    (
-      'change',
-      'input',
-      function()
-      {
-        if(this.checked)
-        {
-          $(this).parent().addClass('check');
-        }
-        else
-        {
-          $(this).parent().removeAttr('class');
-        }
-      }
-    );
-
-    $('span.check_multiple input[name=all_check]').click
-    (
-      function()
-      {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').prop('checked',true);
-        obj_select_multiple.children('label').addClass('check');
-        return false;
-      }
-    );
-    $('span.check_multiple input[name=all_uncheck]').click
-    (
-      function()
-      {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').prop('checked',false);
-        obj_select_multiple.children('label').removeAttr('class');
-        return false;
-      }
-    );
-
-    /**
      * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
      */
     $('.arbre_dynamique li span').siblings('ul').hide('fast');

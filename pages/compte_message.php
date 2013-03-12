@@ -132,23 +132,18 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
       <select id="f_profil" name="f_profil"><?php echo $select_profil ?></select><br />
       <b>Regroupement :</b><br />
       <?php echo $select_groupe ?><br />
-      <div id="div_users" class="hide">
-        <b>Utilisateur(s) :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
-        <span id="f_user" class="select_multiple"></span>
-      </div>
+      <b>Utilisateur(s) :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+      <select id="f_user" name="f_user[]" multiple size="7" class="t8 hide"><option></option></select><br />
       <button id="ajouter_destinataires" type="button" class="groupe_ajouter" disabled>Ajouter.</button><br />
       <label id="ajax_msg_destinataires">&nbsp;</label>
     </td>
     <td class="nu" style="width:30em">
-      <b>Destinataires :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
-      <span id="f_destinataires" class="select_multiple"></span><br />
+      <b>Liste des destinataires :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+      <select id="select_destinataires" name="select_destinataires[]" multiple size="12" class="t8"><option></option></select><br />
       <button id="retirer_destinataires" type="button" class="groupe_retirer" disabled>Retirer.</button>
-      <p>
-        <button id="valider_destinataires" type="button" class="valider" disabled>Valider ces destinataires</button><br />
-        <button id="annuler_destinataires" type="button" class="annuler">Annuler / Retour</button>
-      </p>
     </td>
   </tr></table>
+  <div><span class="tab"></span><button id="valider_destinataires" type="button" class="valider" disabled>Valider la liste de destinataires</button>&nbsp;&nbsp;&nbsp;<button id="annuler_destinataires" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
 <form action="#" method="post" id="form_message" class="hide">

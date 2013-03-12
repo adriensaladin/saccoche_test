@@ -33,20 +33,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 $statut      = (isset($_POST['f_statut']))      ? Clean::entier($_POST['f_statut'])     : 1;
 $groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : 'd'; // d n c g
 $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
-$selection   = (empty($_POST['f_selection']))   ? FALSE                                 : TRUE ;
-$multiple    = (empty($_POST['f_multiple']))    ? FALSE                                 : TRUE ;
-
+$selection   = (isset($_POST['f_selection']))   ? TRUE                                 : FALSE ;
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
 
-if( ($groupe_id) && (!isset($tab_types[$groupe_type])) )
-{
-  exit('Erreur avec les données transmises !');
-}
-
-// Autres valeurs à récupérer ou à définir.
-
-$select_nom   = ($multiple) ? 'f_user' : FALSE ;
-$option_first = ($multiple) ? 'non'    : 'oui' ;
-
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($statut,$tab_types[$groupe_type],$groupe_id) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($statut,$tab_types[$groupe_type],$groupe_id) , $select_nom=FALSE , $option_first='non' , $selection , $optgroup='non');
 ?>

@@ -30,14 +30,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$statut    = (isset($_POST['f_statut']))    ? Clean::entier($_POST['f_statut']) : 0;
-$selection = (empty($_POST['f_selection'])) ? FALSE                             : TRUE ;
-$multiple  = (empty($_POST['f_multiple']))  ? FALSE                             : TRUE ;
+$statut = (isset($_POST['f_statut'])) ? Clean::entier($_POST['f_statut']) : 0;
 
-// Autres valeurs à récupérer ou à définir.
-
-$select_nom   = ($multiple) ? 'f_user' : FALSE ;
-$option_first = ($multiple) ? 'non'    : 'oui' ;
-
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'oui' /*optgroup*/ , $multiple ) );
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='oui');
 ?>

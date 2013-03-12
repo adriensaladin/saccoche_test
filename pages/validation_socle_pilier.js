@@ -31,12 +31,28 @@ $(document).ready
   {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tester l'affichage du bouton de validation au changement des formulaires
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var maj_bouton_validation = function()
+    {
+      if($("#f_eleve").val())
+      {
+        $('#Afficher_validation').prop('disabled',false);
+      }
+      else
+      {
+        $('#Afficher_validation').prop('disabled',true);
+      }
+    };
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Charger le select f_pilier en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var maj_pilier = function()
     {
-      $("#f_pilier").html('').parent().hide();
+      $("#f_pilier").html('<option value=""></option>').hide();
       palier_id = $("#f_palier").val();
       if(palier_id)
       {
@@ -46,7 +62,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_piliers',
-            data : 'f_palier='+palier_id+'&f_multiple=1',
+            data : 'f_palier='+palier_id+'&f_first='+'non',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -55,10 +71,10 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
-                $('#f_pilier').html(responseHTML).parent().show();
+                $('#f_pilier').html(responseHTML).attr('size',$('#f_pilier option').size()).show();
               }
               else
               {
@@ -84,7 +100,7 @@ $(document).ready
 
     var maj_eleve = function()
     {
-      $("#f_eleve").html('').parent().hide();
+      $("#f_eleve").html('<option value=""></option>').hide();
       groupe_id = $("#f_groupe").val();
       if(groupe_id)
       {
@@ -96,7 +112,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_eleves',
-            data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+            data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -105,14 +121,16 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
-                $('#f_eleve').html(responseHTML).parent().show();
+                $('#f_eleve').html(responseHTML).show();
+                maj_bouton_validation();
               }
               else
               {
                 $('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html(responseHTML);
+                maj_bouton_validation();
               }
             }
           }
@@ -121,6 +139,7 @@ $(document).ready
       else
       {
         $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
+        maj_bouton_validation();
       }
     };
 
@@ -153,11 +172,7 @@ $(document).ready
         },
         errorElement : "label",
         errorClass : "erreur",
-        errorPlacement : function(error,element)
-        {
-          if(element.is("select")) {element.after(error);}
-          else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
-        }
+        errorPlacement : function(error,element){element.after(error);}
       }
     );
 
@@ -192,7 +207,7 @@ $(document).ready
       var readytogo = validation0.form();
       if(readytogo)
       {
-        $("#Afficher_validation").prop('disabled',true);
+        $("button").prop('disabled',true);
         $('#ajax_msg_choix').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
@@ -201,7 +216,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
-      $("#Afficher_validation").prop('disabled',false);
+      $("button").prop('disabled',false);
       $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
@@ -209,7 +224,7 @@ $(document).ready
     function retour_form_valide0(responseHTML)
     {
       initialiser_compteur();
-      $("#Afficher_validation").prop('disabled',false);
+      $("button").prop('disabled',false);
       if(responseHTML.substring(0,7)!='<thead>')
       {
         $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html(responseHTML);

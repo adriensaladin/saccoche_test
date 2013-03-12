@@ -133,7 +133,7 @@ $(document).ready
 // Clic sur l'image pour Voir un référentiel de son établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#div_tableaux').on
+    $(document).on
     (
       'click',
       'q.voir',

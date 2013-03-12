@@ -254,7 +254,7 @@ $(document).ready
           f_socle_item_nom           : { required:"item manquant" },
           f_select_pilier            : { required:"compétence manquante" },
           f_mode                     : { required:"choix manquant" },
-          'f_matiere[]'              : { required:"matière(s) manquante(s)" },
+          'f_matiere[]'              : { required:"matiere(s) manquant(e)" },
           'f_critere_seuil_acquis[]' : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" },
           'f_critere_seuil_valide[]' : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" }
         },
@@ -262,10 +262,9 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.is("select"))                  {element.after(error);}
-          else if(element.attr("type")=="text")     {element.next().next().after(error);}
-          else if(element.attr("type")=="radio")    {element.parent().next().after(error);}
-          else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
+          if(element.is("select"))               {element.after(error);}
+          else if(element.attr("type")=="text")  {element.next().next().after(error);}
+          else if(element.attr("type")=="radio") {element.parent().next().after(error);}
         }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }

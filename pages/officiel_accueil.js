@@ -124,15 +124,20 @@ $(document).ready
     // Clic pour tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil').on
+    $('#table_accueil input[name=all_check]').click
     (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
       function()
       {
         var id_mask = $(this).attr('id').replace('_deb1_','^=').replace('_deb2_','^=').replace('_fin1_','$=').replace('_fin2_','$=');
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('input['+id_mask+']').prop('checked',etat);
+        $('input['+id_mask+']').prop('checked',true);
+      }
+    );
+    $('#table_accueil input[name=all_uncheck]').click
+    (
+      function()
+      {
+        var id_mask = $(this).attr('id').replace('_deb1_','^=').replace('_deb2_','^=').replace('_fin1_','$=').replace('_fin2_','$=');
+        $('input['+id_mask+']').prop('checked',false);
       }
     );
 
@@ -153,14 +158,20 @@ $(document).ready
       }
     );
 
-    $('#table_action').on
+    $('#eleve_check_all').click
     (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
+        $('#form_choix_eleves input[type=checkbox]').prop('checked',true);
+        return false;
+      }
+    );
+    $('#eleve_uncheck_all').click
+    (
+      function()
+      {
+        $('#form_choix_eleves input[type=checkbox]').prop('checked',false);
+        return false;
       }
     );
 

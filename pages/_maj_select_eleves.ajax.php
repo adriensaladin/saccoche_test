@@ -82,11 +82,11 @@ $multiple     = (empty($_POST['f_multiple']))  ? FALSE                          
 $selection    = (empty($_POST['f_selection'])) ? FALSE                             : ( ($_POST['f_selection']==1) ? TRUE : explode(',',$_POST['f_selection']) ) ;
 
 $select_nom   = ($multiple) ? $select_nom : FALSE ;
-$option_first = ($multiple) ? FALSE       : ''    ;
+$option_first = ($multiple) ? 'non'       : 'oui' ;
 $selection    = ($multiple) ? $selection  : FALSE ;
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 
 ?>

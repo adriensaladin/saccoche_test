@@ -123,7 +123,7 @@ function infobulle()
   $(document).tooltip
   (
     {
-      items: "img[title] , th[title] , td[title] , a[title] , q[title]",
+      items: "img[title] , th[title] , td[title] , a[title] , q[title] , input[title]",
       content: function()
       {
         if( ($(this).hasClass('fancybox-nav')) || ($(this).hasClass('fancybox-item')) )
@@ -600,8 +600,7 @@ function fermer_session()
         $('#menu').remove();
         if(CONNEXION_USED=='normal')
         {
-          var adresse = (PROFIL_TYPE!='webmestre') ? './index.php' : './index.php?webmestre' ;
-          $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="'+adresse+'">Se reconnecter&hellip;</a></span>');
+          $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="./index.php">Se reconnecter&hellip;</a></span>');
         }
         else
         {
@@ -924,45 +923,24 @@ $(document).ready
       }
     );
 
-    $('span.check_multiple q.cocher_tout').click
+    $('span.check_multiple input[name=all_check]').click
     (
       function()
       {
         var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
         obj_select_multiple.find('input[type=checkbox]').prop('checked',true);
         obj_select_multiple.children('label').addClass('check');
+        return false;
       }
     );
-    $('span.check_multiple q.cocher_rien').click
+    $('span.check_multiple input[name=all_uncheck]').click
     (
       function()
       {
         var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
         obj_select_multiple.find('input[type=checkbox]').prop('checked',false);
         obj_select_multiple.children('label').removeAttr('class');
-      }
-    );
-    $('span.check_multiple q.cocher_inverse').click
-    (
-      function()
-      {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').each
-        (
-          function()
-          {
-            if($(this).is(':checked'))
-            {
-              $(this).prop('checked',false);
-              $(this).parent().removeAttr('class');
-            }
-            else
-            {
-              $(this).prop('checked',true);
-              $(this).parent().addClass('check');
-            }
-          }
-        );
+        return false;
       }
     );
 
@@ -983,20 +961,22 @@ $(document).ready
     /**
      * Réagir aux clics pour cocher / décocher un ensemble de cases d'un arbre (items)
      */
-    $('.arbre_check q.cocher_tout').click
+    $('.arbre_check input[name=all_check]').click
     (
       function()
       {
         $(this).parent().find('ul').show();
         $(this).parent().find('input[type=checkbox]').prop('checked',true);
+        return false;
       }
     );
-    $('.arbre_check q.cocher_rien').click
+    $('.arbre_check input[name=all_uncheck]').click
     (
       function()
       {
         $(this).parent().find('ul').hide();
         $(this).parent().find('input[type=checkbox]').prop('checked',false);
+        return false;
       }
     );
 
@@ -1006,10 +986,10 @@ $(document).ready
     $(document).on
     (
       'click',
-      'q.deployer_m1 , q.deployer_m2 , q.deployer_n1 , q.deployer_n2 , q.deployer_n3',
+      'a.all_extend',
       function()
       {
-        var stade = $(this).attr('class').substring(9); // 'deployer_' + stade
+        var stade = $(this).attr('href');
         var id_arbre = $(this).parent().parent().attr('id');
         $('#'+id_arbre+' ul').css("display","none");
         switch(stade)
@@ -1025,22 +1005,7 @@ $(document).ready
           case 'm1' :  // matière
             $('#'+id_arbre+' ul.ul_m1').css("display","block");
         }
-      }
-    );
-
-    /**
-     * Réagir aux clics quand on coche/décoche un élève d'une arborescence pour le répercuter sur d'autres regroupements
-     */
-    $('#zone_eleve').on
-    (
-      'click',
-      'input[type=checkbox]',
-      function()
-      {
-        var tab_id = $(this).attr('id').split('_');
-        var id_debut = 'id_'+tab_id[1]+'_';
-        var etat = ($(this).is(':checked')) ? true : false ;
-        $('#zone_eleve input[id^='+id_debut+']').prop('checked',etat);
+        return false;
       }
     );
 
@@ -1293,7 +1258,7 @@ $(document).ready
     $(document).on
     (
       'change',
-      '#form_calque select.navig',
+      '#form_calque select.actu',
       function()
       {
         m = $("#m option:selected").val();
@@ -1305,7 +1270,7 @@ $(document).ready
     $(document).on
     (
       'click',
-      '#form_calque a.navig',
+      '#form_calque input.actu',
       function()
       {
         tab = $(this).attr('id').split('_'); // 'calendrier_' + mois + '_' + année

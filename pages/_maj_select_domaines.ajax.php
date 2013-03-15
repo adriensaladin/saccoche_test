@@ -39,9 +39,9 @@ if(!$pilier)
 }
 
 $select_nom   = ($multiple) ? 'f_domaine' : FALSE ;
-$option_first = ($multiple) ? FALSE       : ''    ;
+$option_first = ($multiple) ? 'non'       : 'oui' ;
 $selection    = ($multiple) ? TRUE        : FALSE ;
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_domaines($pilier) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_domaines($pilier) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 
 ?>

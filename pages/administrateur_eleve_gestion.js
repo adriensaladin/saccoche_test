@@ -60,17 +60,23 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Tout cocher ou tout décocher
+// Clic pour tout cocher ou tout décocher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on
+    $('#all_check').click
     (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
+        $('#table_action td.nu input[type=checkbox]').prop('checked',true);
+        return false;
+      }
+    );
+    $('#all_uncheck').click
+    (
+      function()
+      {
+        $('#table_action td.nu input[type=checkbox]').prop('checked',false);
+        return false;
       }
     );
 

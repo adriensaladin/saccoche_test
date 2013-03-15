@@ -40,11 +40,11 @@ if(!$groupe)
 }
 
 $select_nom   = ($multiple) ? 'f_matiere' : FALSE ;
-$option_first = ($multiple) ? FALSE       : ''    ;
+$option_first = ($multiple) ? 'non'       : 'oui' ;
 $selection    = ($multiple) ? TRUE        : $matiere ;
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 
 ?>

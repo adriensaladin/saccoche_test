@@ -381,17 +381,24 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Tout cocher ou tout décocher
+// Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on
+    // Tout cocher ou tout décocher
+    $('#all_check').click
     (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
+        $('#table_action input[type=checkbox]').prop('checked',true);
+        return false;
+      }
+    );
+    $('#all_uncheck').click
+    (
+      function()
+      {
+        $('#table_action input[type=checkbox]').prop('checked',false);
+        return false;
       }
     );
 
@@ -402,6 +409,7 @@ $(document).ready
     var supprimer_structures_selectionnees = function(listing_id)
     {
       $("button").prop('disabled',true);
+      // afficher_masquer_images_action('hide');
       $('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
@@ -414,6 +422,7 @@ $(document).ready
           {
             $('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
+            // afficher_masquer_images_action('show');
           },
           success : function(responseHTML)
           {
@@ -433,6 +442,7 @@ $(document).ready
               );
               $('#ajax_supprimer_export').removeAttr("class").html('&nbsp;');
               $("button").prop('disabled',false);
+              // afficher_masquer_images_action('show');
             }
           }
         }
@@ -482,6 +492,7 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
+      // afficher_masquer_images_action('hide');
       $('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
@@ -494,6 +505,7 @@ $(document).ready
           {
             $('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
+            // afficher_masquer_images_action('show');
           },
           success : function(responseHTML)
           {
@@ -513,6 +525,7 @@ $(document).ready
               );
               $('#ajax_supprimer_import').removeAttr("class").html('&nbsp;');
               $("button").prop('disabled',false);
+              // afficher_masquer_images_action('show');
             }
           }
         }

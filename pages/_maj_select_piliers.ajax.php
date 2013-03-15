@@ -39,9 +39,9 @@ if(!$palier)
 }
 
 $select_nom   = ($multiple) ? 'f_pilier' : FALSE ;
-$option_first = ($multiple) ? FALSE      : ''    ;
+$option_first = ($multiple) ? 'non'      : 'oui' ;
 $selection    = ($multiple) ? TRUE       : FALSE ;
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
 
 ?>

@@ -153,7 +153,7 @@ $(document).ready
     $('#fieldset_parents').on
     (
       'click',
-      'q.echanger',
+      'input[type=image]',
       function()
       {
         para_clic = $(this).parent();
@@ -166,6 +166,7 @@ $(document).ready
         para_clic.before(table_next);
         para_clic.after(table_prev);
         $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+        return false;
       }
     );
 

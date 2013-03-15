@@ -49,7 +49,7 @@ $(document).ready
     $('#bilan').on
     (
       'click',
-      'q.date_ajouter',
+      'input[type=image]',
       function()
       {
         texte = $(this).parent().html();

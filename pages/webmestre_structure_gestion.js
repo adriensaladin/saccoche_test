@@ -262,19 +262,12 @@ $(document).ready
     $('#zone_generer_mdp').on( 'click' , '#fermer_zone_generer_mdp' , annuler );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Tout cocher ou tout décocher
+// Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on
-    (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
-      function()
-      {
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
-      }
-    );
+    // Tout cocher ou tout décocher
+    $('#table_action').on( 'click', '#all_check',   function(){ $('#table_action input[type=checkbox]').prop('checked',true);  return false; } );
+    $('#table_action').on( 'click', '#all_uncheck', function(){ $('#table_action input[type=checkbox]').prop('checked',false); return false; } );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur un bouton pour bloquer ou débloquer une structure
@@ -328,6 +321,7 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
+      afficher_masquer_images_action('hide');
       $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
@@ -340,6 +334,7 @@ $(document).ready
           {
             $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
+            afficher_masquer_images_action('show');
           },
           success : function(responseHTML)
           {
@@ -359,6 +354,7 @@ $(document).ready
               );
               $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
               $("button").prop('disabled',false);
+              afficher_masquer_images_action('show');
             }
           }
         }

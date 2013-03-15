@@ -190,7 +190,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
   charger_parametres_mysql_supplementaires($base_id);
-  exit( Form::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , FALSE /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/) );
+  exit( Form::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='non') );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

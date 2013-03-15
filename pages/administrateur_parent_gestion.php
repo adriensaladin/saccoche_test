@@ -34,7 +34,7 @@ $statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_stat
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
@@ -72,7 +72,7 @@ foreach($DB_TAB as $DB_ROW)
 <table id="table_action" class="form t9 hsort">
   <thead>
     <tr>
-      <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+      <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
       <th>Resp</th>
       <th>Id. ENT</th>
       <th>Id. GEPI</th>

@@ -31,8 +31,7 @@ $TITRE = "Photos des élèves";
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ , FALSE /*tout*/ );
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_groupe = Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ , FALSE /*tout*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__photos_eleves">DOC : Photos des élèves</a></span></p>

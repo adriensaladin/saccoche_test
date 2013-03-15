@@ -59,7 +59,7 @@ $aplus  = $a+10;
 $amoins = $a-10;
 // Choix préliminaire de la période : Formulaires select pour choisir un mois et une année
 $calendrier_navigation = '<div>';
-$calendrier_navigation.= '<select id="m" name="m" class="actu">';
+$calendrier_navigation.= '<select id="m" name="m" class="navig">';
 for($i=1;$i<=12;$i++)
 {
   $selected = ($i==$m) ? ' selected' : '';
@@ -67,7 +67,7 @@ for($i=1;$i<=12;$i++)
 }
 $calendrier_navigation .= '</select>';
 $calendrier_navigation .= '&nbsp;';
-$calendrier_navigation .= '<select id="a" name="a" class="actu">';
+$calendrier_navigation .= '<select id="a" name="a" class="navig">';
 if($amoins>=$annee_mini)
   $calendrier_navigation .= '<option value="'.$amoins.'">10 ans avant</option>';
 for($i=$a-5;$i<=$a+5;$i++)
@@ -87,14 +87,14 @@ $calendrier_navigation .= '<div class="v1 t12 g cr">';
 $an   = ($m==1) ? $a-1 : $a;
 $mois = ($m==1) ? 12   : $m-1;
 if( ( ($m==1) && ($a<=$annee_mini) ) == FALSE)
-  $calendrier_navigation .= '<input type="image" alt="Mois précédent" class="actu" src="./_img/fleche/fleche_g1.gif" id="calendrier_'.$mois.'_'.$an.'" />&nbsp;';
+  $calendrier_navigation .= '<a class="navig" alt="Mois précédent" href="#calque" id="calendrier_'.$mois.'_'.$an.'"><img alt="" src="./_img/fleche/fleche_g1.gif" /></a>&nbsp;';
 else
   $calendrier_navigation .= '<img alt="1 mois avant" src="./_img/fleche/fleche_g0.gif" />&nbsp;';
 $calendrier_navigation .= $tab_mois[$m].' '.$a;
 $an   = ($m==12) ? $a+1 : $a;
 $mois = ($m==12) ? 1   : $m+1;
 if( ($m<$mois_actuel) || ($a<$annee_maxi) )
-  $calendrier_navigation .= '&nbsp;<input type="image" alt="Mois suivant" class="actu" src="./_img/fleche/fleche_d1.gif" id="calendrier_'.$mois.'_'.$an.'" />';
+  $calendrier_navigation .= '&nbsp;<a class="navig" alt="Mois suivant" href="#calque" id="calendrier_'.$mois.'_'.$an.'"><img alt="" src="./_img/fleche/fleche_d1.gif" /></a>';
 else
   $calendrier_navigation .= '<img alt="1 mois apres" src="./_img/fleche/fleche_d0.gif" />&nbsp;';
 $calendrier_navigation .= '</div>';

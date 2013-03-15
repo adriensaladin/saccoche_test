@@ -35,7 +35,7 @@ $TITRE = "Statistiques d'utilisation";
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 
 <?php
-list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
+list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
 ?>
 
 <ul class="puce">
@@ -56,11 +56,11 @@ list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_WEBMESTRE
 <?php
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande de stats depuis structure_multi.php
-$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , 'non' /*option_first*/ , $selection , 'oui' /*optgroup*/ , TRUE /*multiple*/ );
+$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , $selection , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <form action="#" method="post" id="form_stats"><fieldset>
-  <label class="tab" for="f_base">Structure(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+  <label class="tab" for="f_base">Structure(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span><br />
   <span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="calculer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="button" class="stats">Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
@@ -79,26 +79,27 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
   <table class="form hsort" id="table_action">
     <thead>
       <tr>
-        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+        <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
         <th>Id</th>
-        <th>Structure</th>
-        <th>Contact</th>
-        <th>Ancienneté</th>
+        <th>structure</th>
+        <th>contact</th>
+        <th>ancienneté</th>
         <th>professeurs<br />enregistrés</th>
         <th>professeurs<br />connectés</th>
         <th>élèves<br />enregistrés</th>
         <th>élèves<br />connectés</th>
         <th>saisies<br />enregistrées</th>
+        <th>connexion</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="10"></td>
+        <td class="nu" colspan="11"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="10"></td>
+        <td class="nu" colspan="11"></td>
       </tr>
     </tbody>
   </table>

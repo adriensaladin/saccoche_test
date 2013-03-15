@@ -31,8 +31,8 @@ $TITRE = "Parents &amp; élèves";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non');
+$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
 
 ?>
 
@@ -42,7 +42,7 @@ $select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_et
 
 <form action="#" method="post">
   <fieldset id="fieldset_eleves">
-    <label class="tab" for="f_groupe">Élève :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
+    <label class="tab" for="f_groupe">Élève :</label><?php echo $select_f_groupes ?> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
   </fieldset>
 
   <hr />

@@ -325,7 +325,6 @@ $(document).ready
       'q.ajouter',
       function()
       {
-        // afficher_masquer_images_action('hide');
         var matiere_id = $(this).attr('id').substr(4); // add_
         $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -337,14 +336,12 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              afficher_masquer_images_action('show');
               $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              afficher_masquer_images_action('show');
               if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_msg_recherche').removeAttr("class").addClass("valide").html("Matière ajoutée.");

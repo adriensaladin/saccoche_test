@@ -40,8 +40,8 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 $geo_id = (isset($_POST['f_geo_id'])) ? Clean::entier($_POST['f_geo_id']) : -1 ;
 
 // Construire et personnaliser le formulaire "f_geo" pour le choix d'une zone géographique ainsi que le formulaire "f_geo_id" pour restreindre l'affichage
-$select_f_geo    = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE   , $optgroup='non');
-$select_f_geo_id = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , $select_nom='f_geo_id' , $option_first='oui' , $selection=$geo_id , $optgroup='non');
+$select_f_geo    = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE   /*selection*/ , '' /*optgroup*/);
+$select_f_geo_id = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , 'f_geo_id' /*select_nom*/ , '' /*option_first*/ , $geo_id /*selection*/ , '' /*optgroup*/);
 $selected = ($geo_id===0) ? ' selected' : '' ;
 $select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""></option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
 ?>
@@ -72,7 +72,7 @@ if(empty($_POST['f_afficher']))
   <thead>
     <tr>
       <th class="nu"></th>
-      <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+      <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
       <th>Id</th>
       <th>Localisation</th>
       <th>Établissement</th>

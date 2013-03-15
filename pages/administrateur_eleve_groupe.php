@@ -31,8 +31,8 @@ $TITRE = "Affecter les élèves aux groupes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_eleve  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl()       , $select_nom='f_groupe' , $option_first='non' , $selection=FALSE , $optgroup='non' , $multiple=TRUE);
+$select_eleve  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , 'select_groupe' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl()       , 'f_groupe'      /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ , $multiple=TRUE);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>
@@ -42,12 +42,12 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl
 <form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Élèves :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
-      <select id="select_groupe" name="select_groupe"><?php echo $select_eleve ?></select><br />
+      <b>Élèves :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q><q class="cocher_inverse" title="Tout échanger."></q></span><br />
+      <?php echo $select_eleve ?><br />
       <span id="f_eleve" class="select_multiple"></span>
     </td>
     <td class="nu" style="width:20em">
-      <b>Groupes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <b>Groupes :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
       <span id="f_groupe" class="select_multiple"><?php echo $select_groupe; ?></span>
     </td>
     <td class="nu" style="width:25em">

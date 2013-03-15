@@ -68,28 +68,17 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Éléments dynamiques du formulaire
+// Tout cocher ou tout décocher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Tout cocher ou tout décocher
     $('#form_bilan').on
     (
       'click',
-      'input[name=all_check]',
+      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        $(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',true);
-        return false;
-      }
-    );
-    $('#form_bilan').on
-    (
-      'click',
-      'input[name=all_uncheck]',
-      function()
-      {
-        $(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',false);
-        return false;
+        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
+        $(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',etat);
       }
     );
 

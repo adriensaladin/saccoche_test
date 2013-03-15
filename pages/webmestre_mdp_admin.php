@@ -29,13 +29,13 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Mot de passe administrateur";
 
 // Uniquement pour une installation de type mono-structure ; pour du multi-structures, cela se fait à la page de gestion des établissements.
-$select_admin = Form::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , $select_nom=FALSE , $option_first='non' , $selection=FALSE , $optgroup='non');
+$select_admin = Form::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , 'f_admin' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 ?>
 
 <hr />
 
 <form action="#" method="post"><fieldset>
-  <label class="tab" for="f_admin">Administrateur :</label><select id="f_admin" name="f_admin" size="5"><?php echo $select_admin ?></select><br />
+  <label class="tab" for="f_admin">Administrateur :</label><?php echo $select_admin ?><br />
   <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Générer un nouveau mot de passe.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 

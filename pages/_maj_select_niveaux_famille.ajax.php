@@ -37,6 +37,6 @@ if(!$niveau_famille_id)
   exit('Erreur avec les données transmises !');
 }
 
-exit( Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , FALSE /*select_nom*/ , 'val' /*option_first*/ , FALSE /*selection*/ , 'non' /*optgroup*/ ) );
+exit( Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , FALSE /*select_nom*/ , 'niveaux_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 
 ?>

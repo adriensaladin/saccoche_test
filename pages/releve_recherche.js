@@ -197,29 +197,17 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Éléments dynamiques du formulaire
+    // Tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Tout cocher ou tout décocher
     $('#bilan').on
     (
       'click',
-      '#all_check',
+      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        $('#form_synthese input[type=checkbox]').prop('checked',true);
-        return false;
-      }
-    );
-    // Tout cocher ou tout décocher
-    $('#bilan').on
-    (
-      'click',
-      '#all_uncheck',
-      function()
-      {
-        $('#form_synthese input[type=checkbox]').prop('checked',false);
-        return false;
+        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
+        $('#form_synthese td.nu input[type=checkbox]').prop('checked',etat);
       }
     );
 

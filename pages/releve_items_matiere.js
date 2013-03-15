@@ -268,7 +268,7 @@ $(document).ready
         // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
         // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
         // Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
-        if(profil_type=='directeur')
+        if(PROFIL_TYPE=='directeur')
         {
           matiere_id = $("#f_matiere").val();
           $("#f_matiere").html('<option value=""></option>').hide();
@@ -279,11 +279,11 @@ $(document).ready
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');
           $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          if(profil_type=='directeur')
+          if(PROFIL_TYPE=='directeur')
           {
             maj_matiere(groupe_id,matiere_id);
           }
-          else if( (profil_type=='professeur') || (profil_type=='parent') )
+          else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
           {
             maj_eleve(groupe_id,groupe_type);
           }

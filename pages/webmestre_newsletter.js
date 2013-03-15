@@ -187,7 +187,6 @@ $(document).ready
     var supprimer_structures_selectionnees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      // afficher_masquer_images_action('hide');
       $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
@@ -200,7 +199,6 @@ $(document).ready
           {
             $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
-            // afficher_masquer_images_action('show');
           },
           success : function(responseHTML)
           {
@@ -220,7 +218,6 @@ $(document).ready
                 }
               );
               $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
-              // afficher_masquer_images_action('show');
             }
           }
         }

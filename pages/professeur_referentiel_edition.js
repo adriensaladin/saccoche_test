@@ -114,7 +114,7 @@ $(document).ready
               {
                 $('#zone_choix_referentiel').hide();
                 initialiser_action_groupe();
-                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter : <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseHTML);
+                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseHTML);
                 // Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
                 $('#zone_elaboration_referentiel li.li_n3').each
                 (

@@ -34,26 +34,26 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
-  $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
+  $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
-  $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
+  $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $tab_matieres = array();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/);
   $tab_paliers  = array();
-  $of_p = 'non';
+  $of_p = FALSE;
 }
 
-$select_matiere = Form::afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='oui' , $selection=Form::$tab_choix['matiere_id'] , $optgroup='non');
-$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first='oui' , $selection=FALSE                          , $optgroup='oui');
-$select_palier  = Form::afficher_select($tab_paliers  , $select_nom='f_palier'  , $option_first=$of_p , $selection=Form::$tab_choix['palier_id']  , $optgroup='non');
+$select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['matiere_id'] /*selection*/ ,              '' /*optgroup*/ );
+$select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,    '' /*option_first*/ , FALSE                          /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_palier  = Form::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']  /*selection*/ ,              '' /*optgroup*/ );
 
 $select_type = ($_SESSION['USER_PROFIL_TYPE']!='administrateur')
              ? '<option value="listing_eleves">listes des élèves par classe</option><option value="listing_matiere">listes des items par matière</option><option value="arbre_matiere">arborescence des items par matière</option><option value="arbre_socle">arborescence des items du socle</option><option value="jointure_socle_matiere">liens socle &amp; matières</option>'

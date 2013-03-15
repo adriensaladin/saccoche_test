@@ -64,10 +64,9 @@ $date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); //
 // Fabrication des éléments select du formulaire
 
 $tab_matieres   = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
-$select_matiere = Form::afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='val' , $selection=FALSE , $optgroup='non');
-
 $tab_groupes    = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first='val' , $selection=FALSE , $optgroup='oui');
+$select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    'toutes_matieres' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
+$select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , 'tous_regroupements' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <form action="#" method="post" id="form_prechoix"><fieldset>
@@ -85,7 +84,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  
   <table id="table_action" class="form hsort t9">
     <thead>
       <tr>
-        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+        <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th>
         <th>Matière</th>
         <th>Item</th>
         <th>Popularité</th>
@@ -101,9 +100,12 @@ $select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe'  
       <tr><td class="nu" colspan="10"></td></tr>
     </tbody>
   </table>
-  <p><ul class="puce">
-    <li><a id="voir_messages" href="#">Récupérer les messages.</a></li>
-  </ul></p>
+  <p>
+    <ul class="puce">
+      <li><a id="voir_messages" href="#"><span class="file file_htm">Voir tous les messages à la fois.</span></a></li>
+      <li><a id="export_fichier" href=""><span class="file file_zip">Récupérer / Manipuler les informations (fichier <em>csv</em> pour tableur).</span></a></li>
+    </ul>
+  </p>
   <div id="zone_actions" class="hide">
     <h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
     <fieldset>

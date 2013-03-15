@@ -109,7 +109,7 @@ function afficher_form_element_checkbox_collegues()
       $checked_and_disabled = ($DB_ROW['valeur']==$_SESSION['USER_ID']) ? ' checked disabled' : '' ; // readonly ne fonctionne pas sur un checkbox
       $tab_div[floor($i/$nb_profs_par_col)] .= '<input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /><label for="p_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
     }
-    $affichage .= '<p><a href="#prof_liste" id="prof_check_all"><img src="./_img/all_check.gif" alt="Tout cocher." /> Tout le monde</a>&nbsp;&nbsp;&nbsp;<a href="#prof_liste" id="prof_uncheck_all"><img src="./_img/all_uncheck.gif" alt="Tout décocher." /> Seulement moi</a></p>';
+    $affichage .= '<p><a href="#prof_liste" id="prof_check_all" class="cocher_tout">Tout le monde</a>&nbsp;&nbsp;&nbsp;<a href="#prof_liste" id="prof_uncheck_all" class="cocher_rien">Seulement moi</a></p>';
     $affichage .=  '<div class="prof_liste">'.implode('</div><div class="prof_liste">',$tab_div).'</div>';
   }
   return $affichage;

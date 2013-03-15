@@ -183,24 +183,17 @@ $(document).ready
     }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Éléments dynamiques du formulaire
+// Tout cocher ou tout décocher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Tout cocher ou tout décocher
-    $('#all_check').click
+    $('#table_action').on
     (
+      'click',
+      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        $('#table_action input[type=checkbox]').prop('checked',true);
-        return false;
-      }
-    );
-    $('#all_uncheck').click
-    (
-      function()
-      {
-        $('#table_action input[type=checkbox]').prop('checked',false);
-        return false;
+        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
+        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
       }
     );
 
@@ -211,7 +204,6 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      // afficher_masquer_images_action('hide');
       $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
@@ -224,7 +216,6 @@ $(document).ready
           {
             $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
-            // afficher_masquer_images_action('show');
           },
           success : function(responseHTML)
           {
@@ -245,7 +236,6 @@ $(document).ready
               );
               $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
               $("button").prop('disabled',false);
-              // afficher_masquer_images_action('show');
             }
           }
         }

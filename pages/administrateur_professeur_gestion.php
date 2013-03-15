@@ -32,7 +32,7 @@ $TITRE = "Professeurs / Personnels";
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $statut = (isset($_POST['f_statut'])) ? Clean::entier($_POST['f_statut']) : 1  ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 
 // Options du formulaire de profils, et variable en session pour la page ajax associée
 $options = '';
@@ -56,7 +56,7 @@ foreach($DB_TAB as $DB_ROW)
 <table id="table_action" class="form t9 hsort">
   <thead>
     <tr>
-      <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+      <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
       <th>Id. ENT</th>
       <th>Id. GEPI</th>
       <th>Id Sconet</th>

@@ -37,11 +37,11 @@ $multiple = (empty($_POST['f_multiple'])) ? FALSE                              :
 // Autres valeurs à récupérer.
 
 $select_nom   = ($multiple) ? 'f_matiere' : FALSE ;
-$option_first = ($multiple) ? 'non'       : 'oui' ;
+$option_first = ($multiple) ? FALSE       : ''    ;
 $selection    = ($multiple) ? TRUE        : $matiere ;
 
 $tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
 
-exit( Form::afficher_select( $tab_matieres , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( $tab_matieres , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

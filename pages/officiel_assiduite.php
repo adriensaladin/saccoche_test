@@ -54,8 +54,8 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
   }
 }
 
-$select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom=FALSE      , $option_first='oui' , $selection=FALSE , $optgroup='non');
-$select_groupe  = Form::afficher_select($tab_groupes                                 , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+$select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+$select_groupe  = Form::afficher_select($tab_groupes                                 , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );

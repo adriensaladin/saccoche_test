@@ -217,6 +217,18 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu a.trombinoscope         {background-position: 1px -1439px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de saisie des résultats d'une évaluation                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px;}
+label span.arrow_continue_down  {background-position: 0    0px}
+label span.arrow_continue_rigth {background-position: 0  -20px}
+label span.pilot_keyboard       {background-position: 0  -40px}
+label span.pilot_mouse          {background-position: 0  -60px}
+label span.retrecir_hauteur     {background-position: 0  -80px}
+label span.retrecir_largeur     {background-position: 0 -100px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -275,6 +287,17 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 .complet  {background-position: 0  -80px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images pour les pages de validation du socle                                                        */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 0 no-repeat;padding-left:19px;}
+span.eleve      {background-position: 0    0px}
+span.socle_n1   {background-position: 0  -20px}
+span.socle_n3   {background-position: 0  -40px}
+span.stats      {background-position: 0  -60px}
+span.voir       {background-position: 0  -80px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces diverses                                                                                      */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -287,76 +310,89 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 *.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
 *.probleme {background:#FF3;color:#C00;font-weight:bold}
 
+a.cocher_tout {padding-left:19px;background:transparent url(../_img/check/cocher_tout.png) no-repeat top left}
+a.cocher_rien {padding-left:19px;background:transparent url(../_img/check/cocher_rien.png) no-repeat top left}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_8.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
-body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
-body q.activer            {background-position: 0     0px}
-body q.ajouter            {background-position: 0   -20px}
-body q.ajouter_non        {background-position: 0   -40px}
-body q.annuler            {background-position: 0   -60px}
-body q.choisir_compet     {background-position: 0   -80px}
-body q.choisir_eleve      {background-position: 0  -100px}
-body q.choisir_prof       {background-position: 0  -120px}
-body q.date_calendrier    {background-position: 0  -140px}
-body q.date_periode       {background-position: 0  -160px}
-body q.demander_add       {background-position: 0  -180px}
-body q.demander_non       {background-position: 0  -200px}
-body q.detailler          {background-position: 0  -220px}
-body q.detailler_non      {background-position: 0  -240px}
-body q.dupliquer          {background-position: 0  -260px}
-body q.imprimer_arbre     {background-position: 0  -280px}
-body q.imprimer           {background-position: 0  -280px}
-body q.imprimer_non       {background-position: 0  -300px}
-body q.initialiser_mdp    {background-position: 0  -320px}
-body q.modifier           {background-position: 0  -340px}
-body q.modifier_non       {background-position: 0  -360px}
-body q.ordonner           {background-position: 0  -380px}
-body q.ordonner_non       {background-position: 0  -400px}
-body q.calculer           {background-position: 0  -420px}
-body q.calculer_non       {background-position: 0  -440px}
-body q.envoyer            {background-position: 0  -460px}
-body q.envoyer_non        {background-position: 0  -480px}
-body q.partager           {background-position: 0  -500px}
-body q.partager_non       {background-position: 0  -520px}
-body q.ress_ajouter       {background-position: 0  -540px}
-body q.ress_page_elaborer {background-position: 0  -560px}
-body q.retourner          {background-position: 0  -580px}
-body q.saisir             {background-position: 0  -600px}
-body q.saisir_non         {background-position: 0  -620px}
-body q.supprimer          {background-position: 0  -640px}
-body q.supprimer_non      {background-position: 0  -660px}
-body q.tamponner          {background-position: 0  -680px}
-body q.tamponner_non      {background-position: 0  -700px}
-body q.texte_editer       {background-position: 0  -720px}
-body q.uploader_doc       {background-position: 0  -740px}
-body q.uploader_doc_non   {background-position: 0  -760px}
-body q.valider            {background-position: 0  -780px}
-body q.voir_archive       {background-position: 0  -800px}
-body q.voir_archive_non   {background-position: 0  -820px}
-body q.voir_repart        {background-position: 0  -840px}
-body q.voir               {background-position: 0  -860px}
-body q.voir_non           {background-position: 0  -880px}
-body q.n1_add             {background-position: 0  -900px}
-body q.n1_del             {background-position: 0  -920px}
-body q.n1_edit            {background-position: 0  -940px}
-body q.n1_move            {background-position: 0  -960px}
-body q.n1_move2           {background-position: 0  -980px}
-body q.n2_add             {background-position: 0 -1000px}
-body q.n2_del             {background-position: 0 -1020px}
-body q.n2_edit            {background-position: 0 -1040px}
-body q.n2_move            {background-position: 0 -1060px}
-body q.n2_move2           {background-position: 0 -1080px}
-body q.n3_add             {background-position: 0 -1100px}
-body q.n3_del             {background-position: 0 -1120px}
-body q.n3_edit            {background-position: 0 -1140px}
-body q.n3_fus             {background-position: 0 -1160px}
-body q.n3_fus2            {background-position: 0 -1180px}
-body q.n3_move            {background-position: 0 -1200px}
-body q.n3_move2           {background-position: 0 -1220px}
-body q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
+q {background:transparent url(../_img/sprite_action_9.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
+q.activer            {background-position: 0     0px}
+q.ajouter            {background-position: 0   -20px}
+q.ajouter_non        {background-position: 0   -40px}
+q.annuler            {background-position: 0   -60px}
+q.choisir_compet     {background-position: 0   -80px}
+q.choisir_eleve      {background-position: 0  -100px}
+q.choisir_prof       {background-position: 0  -120px}
+q.cocher_inverse     {background-position: 0  -140px}
+q.cocher_rien        {background-position: 0  -160px}
+q.cocher_tout        {background-position: 0  -180px}
+q.date_ajouter       {background-position: 0  -200px}
+q.date_calendrier    {background-position: 0  -220px}
+q.date_periode       {background-position: 0  -240px}
+q.demander_add       {background-position: 0  -260px}
+q.demander_non       {background-position: 0  -280px}
+q.deployer_m1        {background-position: 0  -300px}
+q.deployer_m2        {background-position: 0  -320px}
+q.deployer_n1        {background-position: 0  -340px}
+q.deployer_n2        {background-position: 0  -360px}
+q.deployer_n3        {background-position: 0  -380px}
+q.detailler          {background-position: 0  -400px}
+q.detailler_non      {background-position: 0  -420px}
+q.dupliquer          {background-position: 0  -440px}
+q.echanger           {background-position: 0  -460px}
+q.imprimer_arbre     {background-position: 0  -480px}
+q.imprimer           {background-position: 0  -480px} /* attention : même décalage */
+q.imprimer_non       {background-position: 0  -500px}
+q.initialiser_mdp    {background-position: 0  -520px}
+q.modifier           {background-position: 0  -540px}
+q.modifier_non       {background-position: 0  -560px}
+q.ordonner           {background-position: 0  -580px}
+q.ordonner_non       {background-position: 0  -600px}
+q.calculer           {background-position: 0  -620px}
+q.calculer_non       {background-position: 0  -640px}
+q.envoyer            {background-position: 0  -660px}
+q.envoyer_non        {background-position: 0  -680px}
+q.partager           {background-position: 0  -700px}
+q.partager_non       {background-position: 0  -720px}
+q.ress_ajouter       {background-position: 0  -740px}
+q.ress_page_elaborer {background-position: 0  -760px}
+q.retourner          {background-position: 0  -780px}
+q.saisir             {background-position: 0  -800px}
+q.saisir_non         {background-position: 0  -820px}
+q.supprimer          {background-position: 0  -840px}
+q.supprimer_non      {background-position: 0  -860px}
+q.tamponner          {background-position: 0  -880px}
+q.tamponner_non      {background-position: 0  -900px}
+q.texte_editer       {background-position: 0  -920px}
+q.uploader_doc       {background-position: 0  -940px}
+q.uploader_doc_non   {background-position: 0  -960px}
+q.valider            {background-position: 0  -980px}
+q.voir_archive       {background-position: 0 -1000px}
+q.voir_archive_non   {background-position: 0 -1020px}
+q.voir_repart        {background-position: 0 -1040px}
+q.voir               {background-position: 0 -1060px}
+q.voir_non           {background-position: 0 -1080px}
+q.n1_add             {background-position: 0 -1100px}
+q.n1_del             {background-position: 0 -1120px}
+q.n1_edit            {background-position: 0 -1140px}
+q.n1_move            {background-position: 0 -1160px}
+q.n1_move2           {background-position: 0 -1180px}
+q.n2_add             {background-position: 0 -1200px}
+q.n2_del             {background-position: 0 -1220px}
+q.n2_edit            {background-position: 0 -1240px}
+q.n2_move            {background-position: 0 -1260px}
+q.n2_move2           {background-position: 0 -1280px}
+q.n3_add             {background-position: 0 -1300px}
+q.n3_del             {background-position: 0 -1320px}
+q.n3_edit            {background-position: 0 -1340px}
+q.n3_fus             {background-position: 0 -1360px}
+q.n3_fus2            {background-position: 0 -1380px}
+q.n3_move            {background-position: 0 -1400px}
+q.n3_move2           {background-position: 0 -1420px}
+q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les formulaires                                                                          */
@@ -442,7 +478,7 @@ span.select_multiple span {display:block;font-weight:bold;font-style:italic;padd
 span.select_multiple label:hover {cursor:pointer}
 span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px;}
 span.select_multiple label.check {color:#FFF;background-color:#88F;}
-span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px;margin-left:3px;}
+span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style généraux pour les tableaux                                                                    */
@@ -497,7 +533,6 @@ table.simulation td.nu {border:none}
 /* Tableau de saisie des compétences                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.scor_eval td {font-size:90%}
 table.scor_eval th, table.scor_eval td {text-align:center}
 table.scor_eval thead th {vertical-align:bottom}
 table.scor_eval thead td {background:#FFF;border:none;}
@@ -876,9 +911,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 	background: #fff;
 	color: #444;
 	text-shadow: none;
-	-webkit-border-radius: 4px;
-	   -moz-border-radius: 4px;
-	        border-radius: 4px;
+	border-radius: 4px;
 }
 
 .fancybox-opened {
@@ -886,9 +919,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 }
 
 .fancybox-opened .fancybox-skin {
-	-webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-	   -moz-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-	        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .fancybox-outer, .fancybox-inner {
@@ -1065,9 +1096,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 	padding: 2px 20px;
 	background: transparent; /* Fallback for web browsers that doesn't support RGBa */
 	background: rgba(0, 0, 0, 0.8);
-	-webkit-border-radius: 15px;
-	   -moz-border-radius: 15px;
-	        border-radius: 15px;
+	border-radius: 15px;
 	text-shadow: 0 1px 2px #222;
 	color: #FFF;
 	font-weight: bold;

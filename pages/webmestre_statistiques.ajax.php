@@ -69,7 +69,7 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
   extract($_SESSION['tmp']['infos'][$num-1]);
   // Récupérer une série de stats
   charger_parametres_mysql_supplementaires($base_id);
-  list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
+  list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
   // maj les totaux
   $_SESSION['tmp']['totaux']['prof_nb']   += $prof_nb;
   $_SESSION['tmp']['totaux']['prof_use']  += $prof_use;
@@ -77,11 +77,11 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
   $_SESSION['tmp']['totaux']['eleve_use'] += $eleve_use;
   $_SESSION['tmp']['totaux']['score_nb']  += $score_nb;
   // Retour
-  exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($structure_denomination).'</td><td class="label">'.html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
+  exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($structure_denomination).'</td><td class="label">'.html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td><td class="label">'.html($connexion_nom).'</td></tr>');
 }
 if( ($action=='calculer') && $num && $max && ($num==$max) )
 {
-  $ligne_total = '<tr><td class="nu"></td><th colspan="4" class="hc">Total</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['score_nb'],0,'',' ').'</th></tr>';
+  $ligne_total = '<tr><td class="nu"></td><th colspan="4" class="nu">Totaux</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['score_nb'],0,'',' ').'</th><th class="nu"></th></tr>';
   unset($_SESSION['tmp']);
   exit('ok-'.$ligne_total);
 }

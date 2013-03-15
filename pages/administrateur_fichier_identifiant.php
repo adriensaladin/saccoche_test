@@ -33,7 +33,7 @@ $TITRE = "Importer / Imposer des identifiants";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 // Fabrication des éléments select du formulaire
-$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <ul class="puce">
@@ -66,7 +66,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
         <td class="nu" style="width:30em;text-align:left">
           <div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><option value=""></option><option value="eleves">élèves</option><option value="parents">responsables légaux</option><option value="professeurs">professeurs</option><option value="directeurs">directeurs</option></select></div>
           <div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?></div>
-          <div id="div_users" class="hide"><label class="tab" for="f_user">Utilisateur(s) :</label><span id="f_user" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></div>
+          <div id="div_users" class="hide"><label class="tab" for="f_user">Utilisateur(s) :</label><span id="f_user" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
         </td>
         <td id="td_bouton" class="nu" style="width:25em">
           <p><button id="generer_login" type="button" class="mdp_groupe">Générer de nouveaux noms d'utilisateurs.</button></p>

@@ -163,13 +163,34 @@ class Form
     array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (très long)')
   );
 
-  // //////////////////////////////////////////////////
-  // Variables utilisées pouvant être initialisés lors d'une requête puis utilisées lors de la construction du formulaire
-  // //////////////////////////////////////////////////
+  public static $tab_select_optgroup = array(
+    'regroupements'     => array( 'divers'=>'Divers' , 'niveau'=>'Niveaux' , 'classe'=>'Classes' , 'groupe'=>'Groupes' , 'besoin'=>'Besoins' ),
+    'familles_matieres' => array( 1=>'Enseignements usuels' , 2=>'Enseignements généraux' , 3=>'Enseignements spécifiques' ),
+    'familles_niveaux'  => array( 1=>'Niveaux classes' , 2=>'Niveaux spécifiques' ),
+    'profs_directeurs'  => array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' ),
+    'langues'           => array( 0=>'Inconnue' , 1=>'Enseignées' , 2=>'Autres' ),
+    'objet_recherche'   => array( 1=>'item(s) matière(s)' , 2=>'item du socle' , 3=>'compétence du socle' ),
+    // complété à partir de la base si besoin (contenu dynamique)
+    'zones_geo'         => array( ), 
+    'continents'        => array( ),
+    'paliers'           => array( )
+  );
 
-  public static $tab_select_option_first = array();
-  public static $tab_select_optgroup     = array();
-  public static $select_option_selected  = '';
+  public static $tab_select_option_first = array(
+    'periode_personnalisee' => array( 0 , 'Personnalisée' ),
+    'tous_regroupements'    => array( 0 , 'Tous les regroupements' ),
+    'toutes_matieres'       => array( 0 , 'Toutes les matières' ),
+    'fiche_generique'       => array( 0 , 'Fiche générique' ),
+    'tampon_structure'      => array( 0 , 'Tampon de l\'établissement' ),
+    'structures_partage'    => array( 0 , 'Toutes les structures partageant au moins un référentiel' ),
+    // inutilisé
+    'tous_niveaux'          => array( 0 , 'Tous les niveaux' ),
+    'tous_piliers'          => array( 0 , 'Toutes les compétences' ),
+    'tous_domaines'         => array( 0 , 'Tous les domaines' ),
+    // complété à partir de la base si besoin (car indice variable)
+    'matieres_famille'      => array( ), 
+    'niveaux_famille'       => array( )
+  );
 
   // //////////////////////////////////////////////////
   // Méthodes
@@ -376,35 +397,35 @@ class Form
    * 
    * @param array             $DB_TAB       tableau des données [i] => [valeur texte optgroup]
    * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select (doit être transmis si $multiple l'est aussi)
-   * @param string            $option_first 1ère option éventuelle [non] [oui] [val]
+   * @param string|bool       $option_first 1ère option éventuelle [FALSE] [] [nom_option]
    * @param string|bool|array $selection    préselection éventuelle [FALSE] [TRUE] [val] [ou $...] [ou array(...)]
-   * @param string            $optgroup     regroupement d'options éventuel [non] [oui]
+   * @param string            $optgroup     regroupement d'options éventuel [] [nom_du_regroupement]
    * @param bool              $multiple     TRUE si transmis pour forcer un faux select multiple
    * @return string
    */
-  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup,$multiple=FALSE)
+  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup='',$multiple=FALSE)
   {
     // On commence par la 1ère option
-    if($option_first==='non')
+    if($option_first===FALSE)
     {
       // ... sans option initiale
       $options = '';
     }
-    elseif($option_first==='oui')
+    elseif($option_first==='')
     {
       // ... avec une option initiale vierge
       $options = (!$multiple) ? '<option value=""></option>' : '' ;
     }
-    elseif($option_first==='val')
+    else
     {
       // ... avec une option initiale dont le contenu est à récupérer
-      list($option_valeur,$option_texte) = Form::$tab_select_option_first;
+      list($option_valeur,$option_texte) = Form::$tab_select_option_first[$option_first];
       $options = (!$multiple) ? '<option value="'.$option_valeur.'">'.html($option_texte).'</option>' : '<label for="'.$select_nom.'_'.$option_valeur.'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$option_valeur.'" value="'.$option_valeur.'" /> '.html($option_texte).'</label>' ;
     }
     if(is_array($DB_TAB))
     {
       // On construit les options...
-      if($optgroup==='non')
+      if(!$optgroup)
       {
         // ... classiquement, sans regroupements
         foreach($DB_TAB as $DB_ROW)
@@ -412,9 +433,9 @@ class Form
           $options .= (!$multiple) ? '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>' : '<label for="'.$select_nom.'_'.$DB_ROW['valeur'].'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label>' ;
         }
       }
-      elseif($optgroup==='oui')
+      else
       {
-        // ... en regroupant par optgroup ; $optgroup est alors un tableau à 2 champs
+        // ... en regroupant par optgroup ; $tab_select_optgroup[$optgroup] est alors un tableau à 2 champs
         $tab_options = array();
         foreach($DB_TAB as $DB_ROW)
         {
@@ -422,7 +443,7 @@ class Form
         }
         foreach($tab_options as $group_key => $tab_group_options)
         {
-          $options .= (!$multiple) ? '<optgroup label="'.html(Form::$tab_select_optgroup[$group_key]).'">'.implode('',$tab_group_options).'</optgroup>' : '<span>'.html(Form::$tab_select_optgroup[$group_key]).'</span>'.implode('',$tab_group_options) ;
+          $options .= (!$multiple) ? '<optgroup label="'.html(Form::$tab_select_optgroup[$optgroup][$group_key]).'">'.implode('',$tab_group_options).'</optgroup>' : '<span>'.html(Form::$tab_select_optgroup[$optgroup][$group_key]).'</span>'.implode('',$tab_group_options) ;
         }
       }
       // On sélectionne les options qu'il faut... (fait après le foreach précédent sinon c'est compliqué à gérer simultanément avec les groupes d'options éventuels
@@ -437,8 +458,7 @@ class Form
       }
       else
       {
-        // ... sélectionner une ou plusieurs option ; soit $selection contient la valeur / le tableau à sélectionner soit elle a été définie avant
-        $selection = ($selection==='val') ? Form::$select_option_selected : $selection ;
+        // ... sélectionner une ou plusieurs option ; $selection contient la valeur / le tableau à sélectionner
         if(!is_array($selection))
         {
           $options = (!$multiple) ? str_replace( 'value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options ) : str_replace( array($selection.'"><input',$selection.'" />') , array($selection.'" class="check"><input',$selection.'" checked />') , $options ) ;

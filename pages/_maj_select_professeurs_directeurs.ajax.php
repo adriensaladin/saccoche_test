@@ -37,7 +37,7 @@ $multiple  = (empty($_POST['f_multiple']))  ? FALSE                             
 // Autres valeurs à récupérer ou à définir.
 
 $select_nom   = ($multiple) ? 'f_user' : FALSE ;
-$option_first = ($multiple) ? 'non'    : 'oui' ;
+$option_first = ($multiple) ? FALSE    : ''    ;
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'oui' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'profs_directeurs' /*optgroup*/ , $multiple ) );
 ?>

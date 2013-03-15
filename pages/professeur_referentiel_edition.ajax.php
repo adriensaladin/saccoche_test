@@ -57,7 +57,7 @@ $tab_granulosite = array( 'referentiel','domaine','theme' );
 if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 {
   $listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',Clean::map_entier(explode(',',$_POST['id_matieres']))) : '0' ;
-  exit( Form::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non' ) );
+  exit( Form::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

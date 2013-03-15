@@ -37,7 +37,7 @@ class DB_STRUCTURE_WEBMESTRE extends DB
  * Retourner au webmestre les statistiques d'un établissement (mono ou multi structures)
  *
  * @param void
- * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
+ * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom)
  */
 public static function DB_recuperer_statistiques()
 {
@@ -71,8 +71,13 @@ public static function DB_recuperer_statistiques()
   $DB_SQL.= 'FROM sacoche_saisie';
   $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $score_nb = $DB_ROW['nombre'];
+  //  de connexion
+  $DB_SQL = 'SELECT parametre_valeur ';
+  $DB_SQL.= 'FROM sacoche_parametre ';
+  $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';
+  $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   // Retour
-  return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb);
+  return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom);
 }
 
 /**

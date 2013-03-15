@@ -70,7 +70,7 @@ if( ($action=='afficher_parents') && $eleve_id )
   {
     $tab_parents[$resp_legal_num] = str_replace( '$TITRE$' , 'Resp légal '.$resp_legal_num , $affichage );
   }
-  exit(implode('<div class="ti"><input type="image" alt="Echanger ces responsables" src="./_img/action_echanger.png" title="Echanger ces responsables" /></div>',$tab_parents));
+  exit(implode('<div class="ti"><q class="echanger" title="Échanger ces responsables."></q></div>',$tab_parents));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

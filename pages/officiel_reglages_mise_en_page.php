@@ -69,7 +69,7 @@ $options_vertical_milieu   = str_replace( '"'.$_SESSION['ENVELOPPE']['VERTICAL_M
 $options_vertical_bas      = str_replace( '"'.$_SESSION['ENVELOPPE']['VERTICAL_BAS']     .'"' , '"'.$_SESSION['ENVELOPPE']['VERTICAL_BAS']     .'" selected' , fabriquer_chaine_option(15,25) );
 
 // Formulaire avec la liste des directeurs et professeurs
-$select_user = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/) , 'f_user' /*select_nom*/ , 'val' /*option_first*/ , FALSE /*selection*/ , 'oui' /*optgroup*/ );
+$select_user = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/) , 'f_user' /*select_nom*/ , 'tampon_structure' /*option_first*/ , FALSE /*selection*/ , 'profs_directeurs' /*optgroup*/ );
 
 // Récupérer les signatures existantes, dont le tampon de l'établissement.
 $li_signatures = '';

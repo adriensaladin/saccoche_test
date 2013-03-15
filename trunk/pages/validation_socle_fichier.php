@@ -49,7 +49,7 @@ $bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bout
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_export_import">DOC : Import / Export de validations du socle</a></span></p>
@@ -77,8 +77,8 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
   <fieldset id="fieldset_export" class="hide">
     <hr />
     <p>
-      <label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
-      <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></span>
+      <label class="tab">Regroupement :</label><?php echo $select_f_groupes ?><label id="ajax_msg_groupe">&nbsp;</label><br />
+      <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
     </p>
   </fieldset>
 

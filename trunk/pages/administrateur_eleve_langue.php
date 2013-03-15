@@ -30,11 +30,33 @@ $TITRE = "Choisir la langue étrangère pour le socle commun";
 ?>
 
 <?php
-// Fabrication des éléments select du formulaire
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
-$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
-$select_eleve  = Form::afficher_select($tab_groupes , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_langue = Form::afficher_select($tab_langues , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non');
+// Fonction adaptant le tableau pour un affichage dans un formulaire de type select avec des groupes d'options suivant que ces langues soient ou non enseignées dans l'établissement
+function OPT_langues($tab_langues)
+{
+  $tab_optgroup = $tab_matiere_nom = array(); // pour array_multisort()
+  $tab_matieres_enseignées = explode(',',DB_STRUCTURE_COMMUN::DB_recuperer_matieres_etabl());
+  foreach($tab_langues as $id =>$tab)
+  {
+    $tab_langues[$id]['optgroup'] = ($id==100) ? 0 : ( count(array_intersect($tab_langues[$id]['tab_matiere_id'],$tab_matieres_enseignées)) ? 1 : 2 ) ;
+    $tab_optgroup[$id]    = $tab_langues[$id]['optgroup'];
+    $tab_matiere_nom[$id] = $tab_langues[$id]['texte'];
+  }
+  array_multisort($tab_optgroup, SORT_ASC, $tab_matiere_nom, SORT_ASC, $tab_langues);
+  return $tab_langues;
+}
+
+// Fabrication des éléments select du formulaire
+if($_SESSION['USER_PROFIL_TYPE']=='professeur')
+{
+  $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+}
+else // directeur ou administrateur
+{
+  $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
+}
+$select_eleve  = Form::afficher_select($tab_groupes              , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_langue = Form::afficher_select(OPT_langues($tab_langues) , 'f_langue'      /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,       'langues' /*optgroup*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_choisir_langue">DOC : Choisir la langue étrangère pour le socle commun</a></span></p>
@@ -44,13 +66,13 @@ $select_langue = Form::afficher_select($tab_langues , $select_nom=FALSE , $optio
 <form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Élèves :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
-      <select id="select_groupe" name="select_groupe"><?php echo $select_eleve ?></select><br />
+      <b>Élèves :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q><q class="cocher_inverse" title="Tout échanger."></q></span><br />
+      <?php echo $select_eleve ?><br />
       <span id="f_eleve" class="select_multiple"></span>
     </td>
     <td class="nu" style="width:20em">
       <b>Langue :</b><br />
-      <select id="f_langue" name="f_langue"><?php echo $select_langue; ?></select>
+      <?php echo $select_langue; ?>
     </td>
     <td class="nu" style="width:25em">
       <button id="associer" type="button" class="parametre">Effectuer ces associations.</button>

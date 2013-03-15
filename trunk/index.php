@@ -243,9 +243,10 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
   <script type="text/javascript">
     var PAGE='<?php echo $PAGE ?>';
     var CSRF='<?php echo Session::$_CSRF_value ?>';
+    var PROFIL_TYPE='<?php echo $_SESSION['USER_PROFIL_TYPE'] ?>';
     var DUREE_AUTORISEE='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
-    var DUREE_AFFICHEE='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
-    var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
+    var DUREE_AFFICHEE ='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
+    var CONNEXION_USED ='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
   </script>
   <!-- Objet flash pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/ -->
   <h6><object class="playerpreview" id="myFlash" type="application/x-shockwave-flash" data="./_mp3/player_mp3_js.swf" height="1" width="1">

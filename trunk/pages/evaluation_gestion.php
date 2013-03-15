@@ -82,7 +82,7 @@ if($TYPE=='groupe')
     }
   }
   // Élément de formulaire "f_aff_periode" pour le choix d'une période
-  $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=FALSE , $optgroup='non');
+  $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , 'f_aff_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
   // On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
   $select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 }
@@ -91,7 +91,7 @@ if($TYPE=='groupe')
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 ?>
 
 <script type="text/javascript">
@@ -194,7 +194,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 </form>
 
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
-  <div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
+  <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
   <?php
   // Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
@@ -257,11 +257,11 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 <?php
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
-$select_cart_contenu = Form::afficher_select(Form::$tab_select_cart_contenu , $select_nom='f_contenu'     , $option_first='non' , $selection=Form::$tab_choix['cart_contenu'] , $optgroup='non');
-$select_cart_detail  = Form::afficher_select(Form::$tab_select_cart_detail  , $select_nom='f_detail'      , $option_first='non' , $selection=Form::$tab_choix['cart_detail']  , $optgroup='non');
-$select_orientation  = Form::afficher_select(Form::$tab_select_orientation  , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']  , $optgroup='non');
-$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_couleur'     , $option_first='non' , $selection=Form::$tab_choix['couleur']      , $optgroup='non');
-$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']    , $optgroup='non');
+$select_cart_contenu = Form::afficher_select(Form::$tab_select_cart_contenu , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu'] /*selection*/ , '' /*optgroup*/);
+$select_cart_detail  = Form::afficher_select(Form::$tab_select_cart_detail  , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']  /*selection*/ , '' /*optgroup*/);
+$select_orientation  = Form::afficher_select(Form::$tab_select_orientation  , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']  /*selection*/ , '' /*optgroup*/);
+$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ , '' /*optgroup*/);
+$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ , '' /*optgroup*/);
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
@@ -347,6 +347,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
         <li><a id="export_file_saisir_tableau_scores_vierge" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
         <li><button id="import_file" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button><label id="msg_import">&nbsp;</label></li>
       </ul>
+      <p class="astuce">Pour récupérer un fichier <em>csv</em> ou un tableau <em>pdf</em> avec les notes saisies, choisir "<em>Voir les acquisitions</em>".</p>
     </div>
   </div>
 </form>
@@ -369,6 +370,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $s
         <li><a id="export_file_voir_tableau_scores_couleur" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> en couleurs).</span></a></li>
         <li><a id="export_file_voir_tableau_scores_gris" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
       </ul>
+      <p class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</p>
     </div>
   </p>
 </div>

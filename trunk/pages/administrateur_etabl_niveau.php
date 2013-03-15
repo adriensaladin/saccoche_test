@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Niveaux";
 
 // Formulaire des familles de niveaux, en 2 catégories
-$select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , $select_nom='f_famille' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_niveaux' /*optgroup*/);
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux</a></span></div>

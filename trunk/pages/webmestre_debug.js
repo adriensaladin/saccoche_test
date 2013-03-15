@@ -161,9 +161,7 @@ $(document).ready
       {
         var f_action  = $(this).attr('class');
         var f_fichier = $(this).parent().attr('id');
-        afficher_masquer_images_action('hide');
-        new_label  = '<label class="loader">En cours&hellip;</label>';
-        $(this).after(new_label);
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
@@ -174,8 +172,6 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              $('#fichiers_logs label').remove();
-              afficher_masquer_images_action('show');
               return false;
             },
             success : function(responseHTML)
@@ -184,6 +180,7 @@ $(document).ready
               {
                 initialiser_compteur();
                 $('#'+f_fichier).remove();
+                $.fancybox.close();
               }
               else if( (f_action=='voir') && (responseHTML.substring(0,4)=='<ul ') )
               {
@@ -198,8 +195,6 @@ $(document).ready
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
-              $('#fichiers_logs label').remove();
-              afficher_masquer_images_action('show');
               return false;
             }
           }

@@ -137,6 +137,7 @@ $tab_droits_par_page = array
   'webmestre_structure_gestion'             => $tab_droits_profil_webmestre,
   'webmestre_structure_transfert'           => $tab_droits_profil_webmestre,
   // Profil professeur | directeur | administrateur
+  'administrateur_eleve_langue'             => $tab_droits_profil_prof_dir_admin,
   'officiel'                                => $tab_droits_profil_prof_dir_admin,
   'officiel_accueil'                        => $tab_droits_profil_prof_dir_admin,
   'officiel_assiduite'                      => $tab_droits_profil_prof_dir_admin,
@@ -158,7 +159,6 @@ $tab_droits_par_page = array
   'validation_socle_pilier'                 => $tab_droits_profil_prof_dir,
   'validation_socle_pilier_annuler'         => $tab_droits_profil_prof_dir,
   // Profil directeur | administrateur
-  'administrateur_eleve_langue'             => $tab_droits_profil_dir_admin,
   'officiel_reglages_ordre_matieres'        => $tab_droits_profil_dir_admin,
   'officiel_reglages_format_synthese'       => $tab_droits_profil_dir_admin,
   'officiel_reglages_mise_en_page'          => $tab_droits_profil_dir_admin,

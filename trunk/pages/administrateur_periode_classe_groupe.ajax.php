@@ -118,7 +118,7 @@ foreach($DB_TAB as $DB_ROW)
   $groupe_id = $DB_ROW['groupe_id'];
   $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
   $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-  $tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
+  $tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).'<q class="date_ajouter" title="Importer ces dates dans les champs."></q>';
   // graphique (début)
   if($memo_groupe_id!=$groupe_id)
   {

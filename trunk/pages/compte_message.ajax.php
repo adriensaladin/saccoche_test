@@ -63,14 +63,14 @@ if( ($action=='afficher_users') && $profil && $groupe_id && isset($tab_types[$gr
 {
   $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
-  exit( Form::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , 'non' /*option_first*/ , TRUE /*selection*/ , 'non' /*optgroup*/ , TRUE /*multiple*/ ) );
+  exit( Form::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , TRUE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
 if( ($action=='afficher_destinataires') && $nb_ids )
 {
   $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_ids) , 'user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte' , '' /*avec_info*/ );
-  exit( Form::afficher_select( $DB_TAB , 'f_destinataires' /*select_nom*/ , 'non' /*option_first*/ , FALSE /*selection*/ , 'non' /*optgroup*/ , TRUE /*multiple*/ ) );
+  exit( Form::afficher_select( $DB_TAB , 'f_destinataires' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

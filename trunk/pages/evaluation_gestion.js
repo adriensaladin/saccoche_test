@@ -2315,7 +2315,6 @@ $(document).ready
         $('#table_action tbody').html( responseHTML.substring(0,position_script) );
         eval( responseHTML.substring(position_script+8) );
         tableau_maj();
-        afficher_masquer_images_action('show');
         if( reception_todo )
         {
           $('q.ajouter').click();

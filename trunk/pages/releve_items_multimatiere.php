@@ -59,49 +59,49 @@ $check_aff_theme          = (Form::$tab_choix['aff_theme'])              ? ' che
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-  $of_g = 'oui'; $sel_g = FALSE; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
-  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $of_g = ''; $sel_g = FALSE; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-  $of_g = 'oui'; $sel_g = FALSE; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
-  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $of_g = ''; $sel_g = FALSE; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-  $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
-  $of_g = 'oui'; $sel_g = FALSE; $class_form_option = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
+  $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
+  $of_g = ''; $sel_g = FALSE; $class_form_option = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
-  $of_g = 'non'; $sel_g = TRUE; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
+  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
+  $of_g = FALSE; $sel_g = TRUE; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $is_select_multiple = 0;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_groupes = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
-  $of_g = 'non'; $sel_g = TRUE; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
+  $tab_groupes = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
+  $of_g = FALSE; $sel_g = TRUE; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $is_select_multiple = 0;
 }
 $tab_periodes          = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe      = Form::afficher_select($tab_groupes                  , $select_nom='f_groupe'      , $option_first=$of_g , $selection=$sel_g                            , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
-$select_periode     = Form::afficher_select($tab_periodes                 , $select_nom='f_periode'     , $option_first='val' , $selection=FALSE                             , $optgroup='non');
-$select_orientation = Form::afficher_select(Form::$tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']   , $optgroup='non');
-$select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']     , $optgroup='non');
-$select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , $select_nom='f_pages_nb'    , $option_first='non' , $selection=Form::$tab_choix['pages_nb']      , $optgroup='non');
-$select_couleur     = Form::afficher_select(Form::$tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=Form::$tab_choix['couleur']       , $optgroup='non');
-$select_legende     = Form::afficher_select(Form::$tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=Form::$tab_choix['legende']       , $optgroup='non');
-$select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Form::$tab_choix['cases_nb']      , $optgroup='non');
-$select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Form::$tab_choix['cases_largeur'] , $optgroup='non');
+$select_groupe      = Form::afficher_select($tab_groupes                  , 'f_groupe'      /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                            /*selection*/ , 'regroupements' /*optgroup*/);
+$select_periode     = Form::afficher_select($tab_periodes                 , 'f_periode'     /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                             /*selection*/ ,              '' /*optgroup*/);
+$select_orientation = Form::afficher_select(Form::$tab_select_orientation , 'f_orientation' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , 'f_marge_min'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ ,              '' /*optgroup*/);
+$select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , 'f_pages_nb'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']      /*selection*/ ,              '' /*optgroup*/);
+$select_couleur     = Form::afficher_select(Form::$tab_select_couleur     , 'f_couleur'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ ,              '' /*optgroup*/);
+$select_legende     = Form::afficher_select(Form::$tab_select_legende     , 'f_legende'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']       /*selection*/ ,              '' /*optgroup*/);
+$select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , 'f_cases_nb'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']      /*selection*/ ,              '' /*optgroup*/);
+$select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_cases_larg'  /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur'] /*selection*/ ,              '' /*optgroup*/);
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );

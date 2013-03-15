@@ -66,19 +66,19 @@ $check_aff_theme          = (Form::$tab_choix['aff_theme'])              ? ' che
 $tab_groupes   = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 $tab_periodes  = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_tri_objet   = Form::afficher_select(Form::$tab_select_tri_objet   , $select_nom='f_tri_objet'   , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');
-$select_tri_mode    = Form::afficher_select(Form::$tab_select_tri_mode    , $select_nom='f_tri_mode'    , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_mode']  , $optgroup='non');
-$select_groupe      = Form::afficher_select($tab_groupes                  , $select_nom='f_groupe'      , $option_first='oui' , $selection=FALSE                                 , $optgroup='oui');
-$select_periode     = Form::afficher_select($tab_periodes                 , $select_nom='f_periode'     , $option_first='val' , $selection=FALSE                                 , $optgroup='non');
-$select_orientation = Form::afficher_select(Form::$tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
-$select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
-$select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , $select_nom='f_pages_nb'    , $option_first='non' , $selection=Form::$tab_choix['pages_nb']          , $optgroup='non');
-$select_couleur     = Form::afficher_select(Form::$tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=Form::$tab_choix['couleur']           , $optgroup='non');
-$select_legende     = Form::afficher_select(Form::$tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=Form::$tab_choix['legende']           , $optgroup='non');
-$select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Form::$tab_choix['cases_nb']          , $optgroup='non');
-$select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
+$select_tri_objet   = Form::afficher_select(Form::$tab_select_tri_objet   , 'f_tri_objet'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_objet'] /*selection*/ ,              '' /*optgroup*/);
+$select_tri_mode    = Form::afficher_select(Form::$tab_select_tri_mode    , 'f_tri_mode'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']  /*selection*/ ,              '' /*optgroup*/);
+$select_groupe      = Form::afficher_select($tab_groupes                  , 'f_groupe'      /*select_nom*/ ,                      '' /*option_first*/ , FALSE                                 /*selection*/ , 'regroupements' /*optgroup*/);
+$select_periode     = Form::afficher_select($tab_periodes                 , 'f_periode'     /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                 /*selection*/ ,              '' /*optgroup*/);
+$select_orientation = Form::afficher_select(Form::$tab_select_orientation , 'f_orientation' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']       /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , 'f_marge_min'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']         /*selection*/ ,              '' /*optgroup*/);
+$select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , 'f_pages_nb'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']          /*selection*/ ,              '' /*optgroup*/);
+$select_couleur     = Form::afficher_select(Form::$tab_select_couleur     , 'f_couleur'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']           /*selection*/ ,              '' /*optgroup*/);
+$select_legende     = Form::afficher_select(Form::$tab_select_legende     , 'f_legende'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']           /*selection*/ ,              '' /*optgroup*/);
+$select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , 'f_cases_nb'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']          /*selection*/ ,              '' /*optgroup*/);
+$select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_cases_larg'  /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']     /*selection*/ ,              '' /*optgroup*/);
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
@@ -108,7 +108,7 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
     <label class="tab">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="aucun" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q>
   </p>
   <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
-  <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></span>
+  <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   <p id="zone_periodes" class="hide">
     <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
     <span id="dates_perso" class="show">
@@ -133,7 +133,7 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
 </fieldset></form>
 
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
-  <div><label class="tab">Déployer / contracter</label><a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
+  <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
   <?php
   // Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux

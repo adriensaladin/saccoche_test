@@ -37,7 +37,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande d'exports depuis structure_multi.php
-$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , 'non' /*option_first*/ , $selection , 'oui' /*optgroup*/ , TRUE /*multiple*/ );
+$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , $selection , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_transfert">DOC : Transfert d'établissements (multi-structures)</a></span></p>
@@ -48,7 +48,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
 
 <form action="#" method="post" id="form_exporter">
   <p>
-    <label class="tab" for="f_base">Structure(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+    <label class="tab" for="f_base">Structure(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span><br />
     <span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
   </p>
   <div id="div_info_export" class="hide">
@@ -93,7 +93,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
   <table class="form" id="table_action">
     <thead>
       <tr>
-        <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+        <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th>
         <th>Id</th>
         <th>Structure</th>
         <th>Contact</th>

@@ -32,7 +32,7 @@ $TITRE = "Messages d'accueil";
 <?php
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_profil = '<option value=""></option>';
 $select_profil.= ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<option value="administrateur">Administrateurs</option>' : '' ;
 $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))) ? '<option value="directeur">Directeurs</option>' : '' ;
@@ -133,14 +133,14 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
       <b>Regroupement :</b><br />
       <?php echo $select_groupe ?><br />
       <div id="div_users" class="hide">
-        <b>Utilisateur(s) :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+        <b>Utilisateur(s) :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
         <span id="f_user" class="select_multiple"></span>
       </div>
       <button id="ajouter_destinataires" type="button" class="groupe_ajouter" disabled>Ajouter.</button><br />
       <label id="ajax_msg_destinataires">&nbsp;</label>
     </td>
     <td class="nu" style="width:30em">
-      <b>Destinataires :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <b>Destinataires :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
       <span id="f_destinataires" class="select_multiple"></span><br />
       <button id="retirer_destinataires" type="button" class="groupe_retirer" disabled>Retirer.</button>
       <p>

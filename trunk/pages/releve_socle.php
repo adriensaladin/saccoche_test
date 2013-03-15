@@ -58,24 +58,22 @@ $socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-  Form::$tab_select_option_first = array(0,'Fiche générique');
-  $of_g = 'val'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
-  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $of_g = 'fiche_generique'; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
 }
 elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-  Form::$tab_select_option_first = array(0,'Fiche générique');
-  $of_g = 'val'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
-  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>'; // maj en ajax suivant le choix du groupe
+  $of_g = 'fiche_generique'; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
+  $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
 }
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-  $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
-  $of_g = 'oui'; $sel_g = FALSE; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'hide';
+  $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
+  $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
   $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
@@ -83,8 +81,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
-  $of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
+  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
+  $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $is_select_multiple = 0;
   $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
@@ -93,8 +91,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 
 elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
-  $of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
+  $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
+  $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $is_select_multiple = 0;
   $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
@@ -102,14 +100,14 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
+$of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
-$select_palier    = Form::afficher_select($tab_paliers                , $select_nom='f_palier'    , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe    = Form::afficher_select($tab_groupes                , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                        , $optgroup=$og_g);
-$select_matiere   = Form::afficher_select($tab_matieres               , $select_nom='f_matiere'   , $option_first='non' , $selection=TRUE                          , $optgroup='non' , TRUE /*multiple*/);
-$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min'] , $optgroup='non');
-$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']   , $optgroup='non');
-$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']   , $optgroup='non');
+$select_palier    = Form::afficher_select($tab_paliers                , 'f_palier'    /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id'] /*selection*/ ,              '' /*optgroup*/);
+$select_groupe    = Form::afficher_select($tab_groupes                , 'f_groupe'    /*select_nom*/ , $of_g /*option_first*/ , $sel_g                        /*selection*/ , 'regroupements' /*optgroup*/);
+$select_matiere   = Form::afficher_select($tab_matieres               , 'f_matiere'   /*select_nom*/ , FALSE /*option_first*/ , TRUE                          /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
+$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , 'f_marge_min' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min'] /*selection*/ ,              '' /*optgroup*/);
+$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_couleur'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']   /*selection*/ ,              '' /*optgroup*/);
+$select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
 ?>
 
 <script type="text/javascript">
@@ -120,7 +118,7 @@ $select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_
 
 <form action="#" method="post" id="form_select"><fieldset>
   <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
-  <label class="tab" for="f_pilier">Compétence(s) :</label><span id="f_pilier" class="select_multiple"></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span>
+  <label class="tab" for="f_pilier">Compétence(s) :</label><span id="f_pilier" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>
   <p class="<?php echo $class_form_eleve ?>">
     <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
@@ -131,7 +129,7 @@ $select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_
     <label class="tab">Indications :</label><?php echo $socle_PA.'&nbsp;&nbsp;&nbsp;'.$socle_EV ?>
     <div id="option_mode" class="<?php echo $class_option_mode ?>">
       <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
-      <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span></div>
+      <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
     </div>
   </div>
   <div class="toggle">

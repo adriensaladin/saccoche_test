@@ -31,8 +31,8 @@ $TITRE = "Affecter les périodes aux classes &amp; groupes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_periodes        = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , $select_nom='select_periodes'        , $option_first='non' , $selection=FALSE , $optgroup='non' , $multiple=TRUE);
-$select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , $select_nom='select_classes_groupes' , $option_first='non' , $selection=FALSE , $optgroup='oui' , $multiple=TRUE);
+$select_periodes        = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , 'select_periodes'        /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ , $multiple=TRUE);
+$select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , 'select_classes_groupes' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ , $multiple=TRUE);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>
@@ -42,11 +42,11 @@ $select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_clas
 <form action="#" method="post" id="form_select">
   <table><tr>
     <td class="nu" style="width:25em">
-      <b>Périodes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <b>Périodes :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
       <span id="select_periodes" class="select_multiple"><?php echo $select_periodes; ?></span>
     </td>
     <td class="nu" style="width:20em">
-      <b>Classes &amp; groupes :</b> <span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+      <b>Classes &amp; groupes :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q><q class="cocher_inverse" title="Tout échanger."></q></span><br />
       <span id="select_classes_groupes" class="select_multiple"><?php echo $select_classes_groupes; ?></span>
     </td>
     <td class="nu" style="width:25em">

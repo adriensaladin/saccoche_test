@@ -45,7 +45,7 @@ if( ($groupe_id) && (!isset($tab_types[$groupe_type])) )
 // Autres valeurs à récupérer ou à définir.
 
 $select_nom   = ($multiple) ? 'f_user' : FALSE ;
-$option_first = ($multiple) ? 'non'    : 'oui' ;
+$option_first = ($multiple) ? FALSE    : ''    ;
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , $select_nom , $option_first , $selection , 'non' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 ?>

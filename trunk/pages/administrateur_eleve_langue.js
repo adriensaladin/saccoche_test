@@ -82,8 +82,16 @@ $(document).ready
       if(groupe_val)
       {
         // type = $("#select_groupe option:selected").parent().attr('label');
-        groupe_type = groupe_val.substring(0,1);
-        groupe_id   = groupe_val.substring(1);
+        if(PROFIL_TYPE=='professeur')
+        {
+          groupe_type = $("#select_groupe option:selected").parent().attr('label');
+          groupe_id = groupe_val;
+        }
+        else
+        {
+          groupe_type = groupe_val.substring(0,1);
+          groupe_id   = groupe_val.substring(1);
+        }
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }

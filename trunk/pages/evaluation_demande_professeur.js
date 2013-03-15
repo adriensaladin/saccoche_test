@@ -31,7 +31,7 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},7:{sorter:'date_fr'},9:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},9:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[8,0],[1,0],[3,1],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -235,11 +235,12 @@ $(document).ready
       }
       else
       {
-        response_msg = tab_response[1];
-        response_td  = tab_response[2];
-        response_tr  = tab_response[3];
+        response_file = tab_response[1];
+        response_msg  = tab_response[2];
+        response_td   = tab_response[3];
+        response_tr   = tab_response[4];
         $('#ajax_msg_prechoix').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        
+        $('#export_fichier').attr('href',response_file);
         $('#zone_messages').html(response_msg);
         $('#table_action tbody').html(response_tr);
         $('#tr_sans').html(response_td);
@@ -318,26 +319,23 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Éléments dynamiques du formulaire
+    // Tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Tout cocher ou tout décocher
-    $('#all_check').click
+    $('#table_action').on
     (
+      'click',
+      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        $('#table_action input[type=checkbox]').prop('checked',true);
-        return false;
+        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
+        $('#table_action td.nu input[type=checkbox]').prop('checked',etat);
       }
     );
-    $('#all_uncheck').click
-    (
-      function()
-      {
-        $('#table_action input[type=checkbox]').prop('checked',false);
-        return false;
-      }
-    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Éléments dynamiques du formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
     $('#table_action').on

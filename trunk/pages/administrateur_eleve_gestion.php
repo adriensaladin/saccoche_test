@@ -35,8 +35,8 @@ $groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes'])
 $groupe_type = Clean::texte( substr($groupe,0,1) );
 $groupe_id   = Clean::entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='oui' , $selection=$groupe , $optgroup='oui');
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut                          , $select_nom='f_statut'  , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , 'f_groupes' /*select_nom*/ ,    '' /*option_first*/ , $groupe /*selection*/ , 'regroupements' /*optgroup*/);
+$select_f_statuts = Form::afficher_select(Form::$tab_select_statut                          , 'f_statut'  /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ ,              '' /*optgroup*/);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
@@ -65,7 +65,7 @@ if(empty($_POST['f_afficher']))
 <table id="table_action" class="form t9 hsort">
   <thead>
     <tr>
-      <th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+      <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
       <th>Id. ENT</th>
       <th>Id. GEPI</th>
       <th>Id Sconet</th>

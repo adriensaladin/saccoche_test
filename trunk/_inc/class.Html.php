@@ -507,7 +507,7 @@ class Html
    */
   public static function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input,$aff_id_li='')
   {
-    $input_all = ($aff_input) ? '<input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." />' : '' ;
+    $input_all = ($aff_input) ? '<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q>' : '' ;
     $input_texte = '';
     $coef_texte  = '';
     $cart_texte  = '';
@@ -599,8 +599,7 @@ class Html
     // Affichage de l'arborescence
     $span_avant = ($dynamique) ? '<span>' : '' ;
     $span_apres = ($dynamique) ? '</span>' : '' ;
-    $retour  = '<ul class="ul_m1">';
-    $retour .= ($aff_input) ? '<input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" />'."\r\n" : "\r\n" ;
+    $retour  = '<ul class="ul_m1">'."\r\n";
     if(count($tab_matiere))
     {
       foreach($tab_matiere as $matiere_id => $matiere_texte)

@@ -370,7 +370,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $nb_resultats = count($tab_tr);
-$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
+$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></td>' : '' ;
 $releve_html  = '<hr />';
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';

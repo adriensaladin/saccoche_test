@@ -37,7 +37,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande de newsletter depuis webmestre_structure_multi.php ou webmestre_statistiques.php
-$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , 'non' /*option_first*/ , $selection , 'oui' /*optgroup*/ , TRUE /*multiple*/ );
+$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , $selection , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__publipostage">DOC : Lettre d'information (multi-structures)</a></span></p>
@@ -51,7 +51,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
 </div>
 
 <form action="#" method="post" id="newsletter"><fieldset>
-  <label class="tab" for="f_base">Destinataire(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></span><br />
+  <label class="tab" for="f_base">Destinataire(s) :</label><span id="f_base" class="select_multiple"><?php echo $select_structure ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span><br />
   <label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" value="" size="50" /><br />
   <label class="tab" for="f_contenu">Contenu :</label><textarea id="f_contenu" name="f_contenu" rows="15" cols="100">message ici, sans bonjour ni au revoir, car l'en-tête et le pied du message sont automatiquement ajoutés</textarea><br />
   <span class="tab"></span><button id="bouton_valider" type="button" class="mail_envoyer">Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>

@@ -146,7 +146,7 @@ if( $step==3 )
 
 if( $step==4 )
 {
-  // récupérer et teste le paramètre
+  // récupérer et tester le paramètre
   $installation = (isset($_POST['f_installation'])) ? Clean::texte($_POST['f_installation']) : '';
   if( in_array($installation,array('mono-structure','multi-structures')) )
   {
@@ -418,6 +418,16 @@ if( $step==6 )
   {
     exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' !');
   }
+  // Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
+  if(HEBERGEUR_INSTALLATION=='mono-structure')
+  {
+    $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
+    foreach($tab_sous_dossier as $sous_dossier)
+    {
+      FileSystem::creer_dossier( CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0' , $affichage );
+      FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0');
+    }
+  }
   // On cherche d'éventuelles tables existantes de SACoche.
   $DB_TAB = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations() : DB_WEBMESTRE_PUBLIC::DB_recuperer_tables_informations() ;
   $nb_tables_presentes = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
@@ -451,18 +461,6 @@ if( $step==6 )
       // Insérer un compte administrateur dans la base de la structure
       $password = fabriquer_mdp();
       $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','ADM',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
-      // Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-      /*
-        Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...
-        De même, en multi-structures, il faudrait tester la présence de tous les dossiers éventuels...
-        Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on n'a plus ensuite les identifiants admin sous les yeux...
-      */
-      $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
-      foreach($tab_sous_dossier as $sous_dossier)
-      {
-        FileSystem::creer_dossier( CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0' , $affichage );
-        FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0');
-      }
       // Affichage du retour
       $affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
       $affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";

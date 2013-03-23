@@ -224,7 +224,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe='+groupe_val+'&f_type='+type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+          data : 'f_groupe_id='+groupe_val+'&f_groupe_type='+type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {

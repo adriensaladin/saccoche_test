@@ -28,14 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? Clean::texte($_POST['f_connexion_mode'])  : '';
-$f_connexion_ref  = (isset($_POST['f_connexion_ref']))  ? Clean::texte($_POST['f_connexion_ref'])   : '';
-$cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? Clean::texte($_POST['cas_serveur_host'])  : '';
-$cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? Clean::entier($_POST['cas_serveur_port']) : 0;
-$cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? Clean::texte($_POST['cas_serveur_root'])  : '';
-$gepi_saml_url    = (isset($_POST['gepi_saml_url']))    ? Clean::texte($_POST['gepi_saml_url'])     : '';
-$gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? Clean::uai($_POST['gepi_saml_rne'])       : '';
-$gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? Clean::texte($_POST['gepi_saml_certif'])  : '';
+$f_connexion_mode         = (isset($_POST['f_connexion_mode']))         ? Clean::texte($_POST['f_connexion_mode'])         : '';
+$f_connexion_ref          = (isset($_POST['f_connexion_ref']))          ? Clean::texte($_POST['f_connexion_ref'])          : '';
+$cas_serveur_host         = (isset($_POST['cas_serveur_host']))         ? Clean::texte($_POST['cas_serveur_host'])         : '';
+$cas_serveur_port         = (isset($_POST['cas_serveur_port']))         ? Clean::entier($_POST['cas_serveur_port'])        : 0;
+$cas_serveur_root         = (isset($_POST['cas_serveur_root']))         ? Clean::texte($_POST['cas_serveur_root'])         : '';
+$cas_serveur_url_login    = (isset($_POST['cas_serveur_url_login']))    ? Clean::texte($_POST['cas_serveur_url_login'])    : '';
+$cas_serveur_url_logout   = (isset($_POST['cas_serveur_url_logout']))   ? Clean::texte($_POST['cas_serveur_url_logout'])   : '';
+$cas_serveur_url_validate = (isset($_POST['cas_serveur_url_validate'])) ? Clean::texte($_POST['cas_serveur_url_validate']) : '';
+$gepi_saml_url            = (isset($_POST['gepi_saml_url']))            ? Clean::texte($_POST['gepi_saml_url'])            : '';
+$gepi_saml_rne            = (isset($_POST['gepi_saml_rne']))            ? Clean::uai($_POST['gepi_saml_rne'])              : '';
+$gepi_saml_certif         = (isset($_POST['gepi_saml_certif']))         ? Clean::texte($_POST['gepi_saml_certif'])         : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mode de connexion (normal, SSO...)
@@ -73,17 +76,34 @@ if($f_connexion_mode=='cas')
   }
   if ( !preg_match('/[\.\d\-_abcdefghijklmnopqrstuvwxyz\/]*/',$cas_serveur_root) )
   {
-    exit('Syntaxe du chemin incorrect !');
+    exit('Syntaxe du chemin incorrecte !');
+  }
+  // Expression régulière pour tester une URL (pas trop compliquée)
+  $masque = '#^http(s)?://[\w-]+[\w.-]+\.[a-zA-Z]{2,6}(:[0-9]+)?#';
+  if ( $cas_serveur_url_login && !preg_match($masque,$cas_serveur_url_login) )
+  {
+    exit('Syntaxe URL login incorrecte !');
+  }
+  if ( $cas_serveur_url_logout && !preg_match($masque,$cas_serveur_url_logout) )
+  {
+    exit('Syntaxe URL logout incorrecte !');
+  }
+  if ( $cas_serveur_url_validate && !preg_match($masque,$cas_serveur_url_validate) )
+  {
+    exit('Syntaxe URL validate incorrecte !');
   }
   // C'est ok
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root,'cas_serveur_url_login'=>$cas_serveur_url_login,'cas_serveur_url_logout'=>$cas_serveur_url_logout,'cas_serveur_url_validate'=>$cas_serveur_url_validate) );
   // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
   $_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
   $_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
   $_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
-  $_SESSION['CAS_SERVEUR_HOST'] = $cas_serveur_host;
-  $_SESSION['CAS_SERVEUR_PORT'] = $cas_serveur_port;
-  $_SESSION['CAS_SERVEUR_ROOT'] = $cas_serveur_root;
+  $_SESSION['CAS_SERVEUR']['HOST'] = $cas_serveur_host;
+  $_SESSION['CAS_SERVEUR']['PORT'] = $cas_serveur_port;
+  $_SESSION['CAS_SERVEUR']['ROOT'] = $cas_serveur_root;
+  $_SESSION['CAS_SERVEUR']['URL_LOGIN']    = $cas_serveur_url_login;
+  $_SESSION['CAS_SERVEUR']['URL_LOGOUT']   = $cas_serveur_url_logout;
+  $_SESSION['CAS_SERVEUR']['URL_VALIDATE'] = $cas_serveur_url_validate;
   exit('ok');
 }
 

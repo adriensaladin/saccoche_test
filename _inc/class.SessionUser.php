@@ -269,7 +269,8 @@ class SessionUser
     );
     $tab_type_tableau = array(
       'CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE',
-      'ETABLISSEMENT','ENVELOPPE','OFFICIEL'
+      'ETABLISSEMENT','ENVELOPPE','OFFICIEL',
+      'CAS_SERVEUR'
     );
     foreach($DB_TAB as $DB_ROW)
     {

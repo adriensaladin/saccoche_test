@@ -38,6 +38,7 @@ $tab_profil_join_matieres_js = 'var tab_profil_join_matieres = new Array();';
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_court_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
 $DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_COORD' , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />coordonnateurs<br />matières' );
 $DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_PP'    , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />professeurs<br />principaux' );
+$DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_LV'    , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />professeurs<br />de LV' );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_profils_libelles[$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_court_pluriel'];
@@ -54,7 +55,9 @@ foreach($DB_TAB as $DB_ROW)
 // Tableau avec les sigles des profils pouvant être proposés, ou à cocher par défaut
 $tab_profils_possibles = array();
 $tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_pers_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_prof_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP');
+$tab_profils_possibles['dir_prof_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV');
 $tab_profils_possibles['dir_pers']     = array(                  'DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_cpe']      = array(                  'DIR',                            'EDU');
 $tab_profils_possibles['dir']          = array(                  'DIR');
@@ -67,12 +70,10 @@ $tab_profils_possibles['personne']     = array();
 // Tableau avec les infos (titres, profils, options par défaut)
 $tab_droits  = array
 (
-  "Validations du socle" => array
+  "Mot de passe" => array
   (
-    'dir_pers_pp',
-    array( 'droit_validation_entree' , "valider des items du socle"             , 'dir_pers' ),
-    array( 'droit_validation_pilier' , "valider des compétences du socle"       , 'dir_prof_pp' ),
-    array( 'droit_annulation_pilier' , "annuler des validations de compétences" , 'dir' )
+    'tous',
+    array( 'droit_modifier_mdp' , "modifier son mot de passe" , 'tous' )
   ),
   "Gestion des référentiels de l'établissement" => array
   (
@@ -92,10 +93,17 @@ $tab_droits  = array
     array( 'droit_voir_score_bilan' , "voir les scores des items (bilans)"     , 'tous' ),
     array( 'droit_voir_algorithme'  , "voir et simuler l'algorithme de calcul" , 'tous' )
   ),
-  "Mot de passe" => array
+  "Socle &rarr; Choix de la langue" => array
   (
-    'tous',
-    array( 'droit_modifier_mdp' , "modifier son mot de passe" , 'tous' )
+    'dir_pers_lv',
+    array( 'droit_affecter_langue' , "affecter la langue vivante" , 'dir_prof_lv' )
+  ),
+  "Socle &rarr; Validations" => array
+  (
+    'dir_pers_pp',
+    array( 'droit_validation_entree' , "valider des items du socle"             , 'dir_pers' ),
+    array( 'droit_validation_pilier' , "valider des compétences du socle"       , 'dir_prof_pp' ),
+    array( 'droit_annulation_pilier' , "annuler des validations de compétences" , 'dir' )
   ),
   "Relevé d'items (matière ou pluridisciplinaire) & Bilan chronologique" => array
   (
@@ -178,6 +186,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
     $tab_check = explode(',',$_SESSION[strtoupper($droit_key)]);
     $check_pp    = (in_array('ONLY_PP'   ,$tab_check)) ? TRUE : FALSE ;
     $check_coord = (in_array('ONLY_COORD',$tab_check)) ? TRUE : FALSE ;
+    $check_lv    = (in_array('ONLY_LV'   ,$tab_check)) ? TRUE : FALSE ;
     foreach($tab_profils_possibles[$i_profils_possibles] as $profil_sigle)
     {
       if(isset($tab_profils_libelles[$profil_sigle]))
@@ -185,7 +194,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
         $init = in_array($profil_sigle,$tab_profils_possibles[$i_profils_defaut]) ? 'true' : 'false' ;
         $tab_init_js .= 'tab_init["'.$droit_key.'"]["'.$profil_sigle.'"] = '.$init.';';
         $checked = (in_array($profil_sigle,$tab_check)) ? ' checked' : '' ;
-        $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
+        $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) || ($check_lv && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
         $affichage .= '<td class="hc '.$color.'"><input type="checkbox" name="'.$droit_key.'" value="'.$profil_sigle.'"'.$checked.' /></td>';
       }
     }

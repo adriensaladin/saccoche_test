@@ -521,7 +521,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
     <input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" />
     <input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" />
     <input type="hidden" id="f_mode" name="f_mode" value="texte" />
-    <input type="hidden" id="f_parite" name="f_parite" type="" />
   </div>
 </form>
 
@@ -540,6 +539,9 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <div id="zone_resultat_classe"></div>
   <div id="zone_imprimer" class="hide">
     <form action="#" method="post" id="form_choix_eleves">
+      <p class="ti">
+        <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
+      </p>
       <table id="table_action" class="form t9">
         <thead>
           <tr>
@@ -553,12 +555,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
         </tbody>
       </table>
     </form>
-    <p class="ti">
-      <label for="check_parite"><input id="check_parite" type="checkbox" checked /> Insérer des pages blanches si nécessaires pour forcer un nombre de pages pair par bilan (utile pour une impression recto-verso en série).</label>
-    </p>
-    <p class="ti">
-      <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
-    </p>
   </div>
   <div id="zone_voir_archive" class="hide">
     <p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu'à la fin de l'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>

@@ -2612,6 +2612,33 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-02-22')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-03-20';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // ajout de paramètres
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "cas_serveur_url_login"    , "" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "cas_serveur_url_logout"   , "" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "cas_serveur_url_validate" , "" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_affecter_langue" , "DIR,ENS,ONLY_LV" )' );
+      // Intégration des niveaux APSA comme nouveaux niveaux.
+      if(empty($reload_sacoche_niveau_famille))
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau_famille VALUES ( 10, 2, 3, "APSA (activités physiques, sportives et artistiques)") ' );
+      }
+      if(empty($reload_sacoche_niveau))
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 211, 0, 10,  32, "N1", "", "Niveau 1") ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 212, 0, 10,  50, "N2", "", "Niveau 2") ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 213, 0, 10,  80, "N3", "", "Niveau 3") ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 214, 0, 10,  90, "N4", "", "Niveau 4") ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 215, 0, 10, 180, "N5", "", "Niveau 5") ' );
+      }
+    }
+  }
+
 }
 
 }

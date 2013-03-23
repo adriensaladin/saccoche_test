@@ -31,9 +31,12 @@ $TITRE = "Mode d'identification";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 // Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
-$tab_connexion_info['cas']['|perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
-$tab_connexion_info['cas']['|perso']['serveur_port'] = $_SESSION['CAS_SERVEUR_PORT'];
-$tab_connexion_info['cas']['|perso']['serveur_root'] = $_SESSION['CAS_SERVEUR_ROOT'];
+$tab_connexion_info['cas']['|perso']['serveur_host'] = $_SESSION['CAS_SERVEUR']['HOST'];
+$tab_connexion_info['cas']['|perso']['serveur_port'] = $_SESSION['CAS_SERVEUR']['PORT'];
+$tab_connexion_info['cas']['|perso']['serveur_root'] = $_SESSION['CAS_SERVEUR']['ROOT'];
+$tab_connexion_info['cas']['|perso']['serveur_url_login']    = $_SESSION['CAS_SERVEUR']['URL_LOGIN'];
+$tab_connexion_info['cas']['|perso']['serveur_url_logout']   = $_SESSION['CAS_SERVEUR']['URL_LOGOUT'];
+$tab_connexion_info['cas']['|perso']['serveur_url_validate'] = $_SESSION['CAS_SERVEUR']['URL_VALIDATE'];
 
 // Liste des possibilités
 // Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas)
@@ -52,7 +55,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     switch($connexion_mode)
     {
       case 'cas' :
-        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
+        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
         break;
       case 'shibboleth' :
         $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
@@ -82,9 +85,12 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 <form action="#" method="post"><fieldset>
   <p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
   <div id="cas_options" class="hide">
-    <label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_HOST']) ?>" /><br />
-    <label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Parfois 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
-    <label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
+    <label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['HOST']) ?>" /><br />
+    <label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Parfois 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['PORT']) ?>" /><br />
+    <label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['ROOT']) ?>" /><br />
+    <label class="tab" for="cas_serveur_url_login">URL Login <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/login'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_login" name="cas_serveur_url_login" size="50" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['URL_LOGIN']) ?>" /><br />
+    <label class="tab" for="cas_serveur_url_logout">URL Logout <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/logout'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_logout" name="cas_serveur_url_logout" size="50" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['URL_LOGOUT']) ?>" /><br />
+    <label class="tab" for="cas_serveur_url_validate">URL Validate <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/serviceValidate'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_validate" name="cas_serveur_url_validate" size="50" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['URL_VALIDATE']) ?>" /><br />
   </div>
   <div id="gepi_options" class="hide">
     <label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="<?php echo html($_SESSION['GEPI_URL']) ?>" /><br />

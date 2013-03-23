@@ -639,6 +639,23 @@ public static function tester_prof_coordonnateur($prof_id,$matiere_id)
 }
 
 /**
+ * tester_prof_langue_vivante
+ *
+ * @param int $user_id
+ * @return bool
+ */
+public static function tester_prof_langue_vivante($prof_id)
+{
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+  $DB_SQL = 'SELECT 1 ';
+  $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND matiere_id IN('.implode(',',$tab_langues[100]['tab_matiere_id']).') ';
+  $DB_SQL.= 'LIMIT 1'; // utile
+  $DB_VAR = array(':user_id'=>$prof_id);
+  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * tester_groupe_nom
  *
  * @param string $groupe_nom

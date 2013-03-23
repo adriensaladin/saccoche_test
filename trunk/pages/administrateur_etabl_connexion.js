@@ -79,6 +79,9 @@ $(document).ready
         $('#cas_serveur_host').val( tab_infos[1] );
         $('#cas_serveur_port').val( tab_infos[2] );
         $('#cas_serveur_root').val( tab_infos[3] );
+        $('#cas_serveur_url_login').val(    tab_infos[4] );
+        $('#cas_serveur_url_logout').val(   tab_infos[5] );
+        $('#cas_serveur_url_validate').val( tab_infos[6] );
         if(connexion_ref=='|perso')
         {
           $('#cas_options').show();
@@ -112,8 +115,8 @@ $(document).ready
       {
         var valeur = tab_param[connexion_mode][connexion_ref];
         var tab_infos = valeur.split(']¤[');
-        $('#gepi_saml_url').val( tab_infos[0] );
-        $('#gepi_saml_rne').val( tab_infos[1] );
+        $('#gepi_saml_url').val(    tab_infos[0] );
+        $('#gepi_saml_rne').val(    tab_infos[1] );
         $('#gepi_saml_certif').val( tab_infos[2] );
         $("#bouton_valider").prop('disabled',false);
         $('#gepi_options').show();

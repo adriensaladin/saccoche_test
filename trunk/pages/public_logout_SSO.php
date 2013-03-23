@@ -63,7 +63,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_structure_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
+$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","cas_serveur_url_login","cas_serveur_url_logout","cas_serveur_url_validate","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
   ${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -91,6 +91,10 @@ if($connexion_mode=='cas')
   phpCAS::setLang(PHPCAS_LANG_FRENCH);
   // On indique qu'il n'y a pas de validation du certificat SSL à faire
   phpCAS::setNoCasServerValidation();
+  // Surcharge éventuelle des URL
+  if ($cas_serveur_url_login)    { phpCAS::setServerLoginURL($cas_serveur_url_login); }
+  if ($cas_serveur_url_logout)   { phpCAS::setServerLogoutURL($cas_serveur_url_logout); }
+  if ($cas_serveur_url_validate) { phpCAS::setServerServiceValidateURL($cas_serveur_url_validate); }
   // Gestion du single sign-out
   phpCAS::handleLogoutRequests(FALSE);
   // Appliquer un proxy si défini par le webmestre ; voir url_get_contents() pour les commentaires.
@@ -108,6 +112,25 @@ if($connexion_mode=='cas')
   // Déconnexion de CAS
   phpCAS::logout();
   exit();
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Déconnexion avec Shibboleth
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($connexion_mode=='shibboleth')
+{
+  /*
+  Pour le moment, on a acté avec le Catice qu'une déconnexion depuis une application entrainera seulement une déconnexion de cette application.
+  Seule une déconnexion depuis Argos lancera le SLO (single sign out).
+  Juste pour info, nous faisons le SLO par un appel à un url dont le path est /Shibboleth.sso/Logout
+  Donc on ne rentre pas dans l'application (argos), c'est Shibboleth qui reçoit cette requête.
+  Il envoie un message xml/soap (contenant l'ID Shibboleth) à une opération soap d'argos (implémentée pour l'occasion),
+  qui déclenche la suppression du fichier de session php,
+  puis envoie une réponse xml à shibboleth,
+  qui ensuite demande à l'IdP de tuer la session en cours.
+  */
+  exit('Fonctionnalité non implémentée&hellip;');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

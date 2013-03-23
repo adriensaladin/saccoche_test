@@ -40,11 +40,13 @@ $f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 
 // Tableau avec les sigles des profils pouvant être proposés
 $tab_profils_possibles = array();
 $tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_pers_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['pers_coord']   = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF','ONLY_COORD');
 $tab_profils_possibles['tous']         = array('ELV','TUT','AVS','DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
 
 $tab_objet_profils = array();
+$tab_objet_profils['droit_affecter_langue']    = $tab_profils_possibles['dir_pers_lv'];
 $tab_objet_profils['droit_validation_entree']  = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_validation_pilier']  = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_annulation_pilier']  = $tab_profils_possibles['dir_pers_pp'];

@@ -30,10 +30,14 @@ $(document).ready
   function()
   {
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Afficher ou masquer des éléments de formulaire
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    var tab_restriction_type_to_tab = new Array();
+    tab_restriction_type_to_tab['ONLY_PP']    = tab_profil_join_groupes;
+    tab_restriction_type_to_tab['ONLY_COORD'] = tab_profil_join_matieres;
+    tab_restriction_type_to_tab['ONLY_LV']    = tab_profil_join_matieres;
 
+    /*
+     * Afficher ou masquer des éléments de formulaire
+     */
     function view_bilans()
     {
       // "droit_releve_etat_acquisition" => "droit_releve_moyenne_score" + "droit_releve_pourcentage_acquis"
@@ -53,6 +57,9 @@ $(document).ready
     }
     view_bilans();
 
+    /*
+     * Afficher ou masquer des éléments de formulaire
+     */
     function view_socle()
     {
       var opacite_parent = $('#form_autorisations input[name="droit_socle_acces"][value="TUT"]').is(':checked') ? 1 : 0 ;
@@ -67,99 +74,79 @@ $(document).ready
     }
     view_socle();
 
-    function view_all_pp()
+    /*
+     * Initialisation au chargement de l'opacité des cases dépendant d'un type de restriction, pour tout le document
+     */
+    function view_all_pp_coord_lv()
     {
-      $('#form_autorisations input[value="ONLY_PP"]').each
-      (
-        function()
-        {
-          var objet = $(this).attr('name');
-          var count_check = 0;
-          for(var value in tab_profil_join_groupes) // Parcourir un tableau associatif...
+      for(var restriction_type in tab_restriction_type_to_tab) // Parcourir un tableau associatif...
+      {
+        $('#form_autorisations input[value="'+restriction_type+'"]').each
+        (
+          function()
           {
-            if(tab_profil_join_groupes[value])
+            var objet = $(this).attr('name');
+            var count_check = 0;
+            for(var value in tab_restriction_type_to_tab[restriction_type]) // Parcourir un tableau associatif...
+            {
+              if(tab_restriction_type_to_tab[restriction_type][value])
+              {
+                count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
+              }
+            }
+            var opacite = count_check ? 1 : 0 ;
+            $(this).parent().fadeTo(0,opacite);
+          }
+        );
+      }
+    }
+    view_all_pp_coord_lv();
+
+    /*
+     * Mise à jour de l'opacité des cases dépendant d'un type de restriction, pour un droit donné
+     */
+    function view_pp_coord_lv(objet)
+    {
+      for(var restriction_type in tab_restriction_type_to_tab) // Parcourir un tableau associatif...
+      {
+        if($('#form_autorisations input[name="'+objet+'"][value="'+restriction_type+'"]').length)
+        {
+          var count_check = 0;
+          for(var value in tab_restriction_type_to_tab[restriction_type]) // Parcourir un tableau associatif...
+          {
+            if(tab_restriction_type_to_tab[restriction_type][value])
             {
               count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
             }
           }
           var opacite = count_check ? 1 : 0 ;
-          $(this).parent().fadeTo(0,opacite);
+          $('#form_autorisations input[name="'+objet+'"][value="'+restriction_type+'"]').parent().fadeTo(0,opacite);
         }
-      );
-    }
-    view_all_pp();
-
-    function view_pp(objet)
-    {
-      if($('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]').length)
-      {
-        var count_check = 0;
-        for(var value in tab_profil_join_groupes) // Parcourir un tableau associatif...
-        {
-          if(tab_profil_join_groupes[value])
-          {
-            count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
-          }
-        }
-        var opacite = count_check ? 1 : 0 ;
-        $('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]').parent().fadeTo(0,opacite);
       }
     }
 
-    function view_all_coord()
-    {
-      $('#form_autorisations input[value="ONLY_COORD"]').each
-      (
-        function()
-        {
-          var objet = $(this).attr('name');
-          var count_check = 0;
-          for(var value in tab_profil_join_matieres) // Parcourir un tableau associatif...
-          {
-            if(tab_profil_join_matieres[value])
-            {
-              count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
-            }
-          }
-          var opacite = count_check ? 1 : 0 ;
-          $(this).parent().fadeTo(0,opacite);
-        }
-      );
-    }
-    view_all_coord();
-
-    function view_coord(objet)
-    {
-      if($('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').length)
-      {
-        var count_check = 0;
-        for(var value in tab_profil_join_matieres) // Parcourir un tableau associatif...
-        {
-          if(tab_profil_join_matieres[value])
-          {
-            count_check += $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').is(':checked') ? 1 : 0 ;
-          }
-        }
-        var opacite = count_check ? 1 : 0 ;
-        $('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').parent().fadeTo(0,opacite);
-      }
-    }
-
+    /*
+     * Mise à jour de la couleur de fond des cases dépendant d'un type de restriction, pour un droit donné
+     */
     function coloriser_cellules_ligne(objet)
     {
       var check_pp    = $('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]'   ).is(':checked') ? true : false ;
       var check_coord = $('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').is(':checked') ? true : false ;
+      var check_lv    = $('#form_autorisations input[name="'+objet+'"][value="ONLY_LV"]'   ).is(':checked') ? true : false ;
       $('#form_autorisations input[name="'+objet+'"]').each
       (
         function()
         {
           var valeur = $(this).val();
-          var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
+          var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) || (check_lv && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
           $(this).parent().removeAttr("class").addClass('hc '+color);
         }
       );
     }
 
+    /*
+     * Actualiser des affichage ou des couleurs
+     */
     function actualiser_si_besoin(objet)
     {
       if( (objet=='droit_releve_etat_acquisition') || (objet=='droit_releve_moyenne_score') || (objet=='droit_releve_pourcentage_acquis') )
@@ -170,9 +157,8 @@ $(document).ready
       {
         view_socle();
       }
+      view_pp_coord_lv(objet);
       coloriser_cellules_ligne(objet);
-      view_pp(objet);
-      view_coord(objet);
     }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,9 +27,15 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Choisir la langue étrangère pour le socle commun";
-?>
 
-<?php
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
+{
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_AFFECTER_LANGUE'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 // Fonction adaptant le tableau pour un affichage dans un formulaire de type select avec des groupes d'options suivant que ces langues soient ou non enseignées dans l'établissement
 function OPT_langues($tab_langues)

@@ -574,6 +574,7 @@ $(document).ready
       '#simuler_impression',
       function()
       {
+        $('#f_parite').val(0);
         $('#f_listing_eleves').val(memo_eleve);
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -1019,6 +1020,8 @@ $(document).ready
           return false;
         }
         $('#f_listing_eleves').val(listing_id);
+        var parite = $('#check_parite').is(':checked') ? 1 : 0 ;
+        $('#f_parite').val(parite);
         $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
         imprimer(1);
       }

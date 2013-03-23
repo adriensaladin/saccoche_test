@@ -33,32 +33,18 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 $groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
 $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
 
-// Le code n'est pas exactement le même pour un administrateur...
+// Le code n'est pas exactement le même pour un administrateur que pour un professeur / directeur / parent.
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ( ($_SESSION['USER_PROFIL_TYPE']=='directeur') && (isset($_POST['f_groupe_id'])) ) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs et les professeurs
+$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin') + array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe') ;
+
+if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {
-  $tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
-  if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
-  {
-    exit('Erreur avec les données transmises !');
-  }
-  $groupe_type = $tab_types[$groupe_type];
-  if($groupe_type=='Divers')
-  {
-    $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
-  }
+  exit('Erreur avec les données transmises !');
 }
-
-// ... que pour un professeur / directeur / parent.
-
-else
+$groupe_type = $tab_types[$groupe_type];
+if($groupe_type=='Divers')
 {
-  $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
-  if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
-  {
-    exit('Erreur avec les données transmises !');
-  }
-  $groupe_type = $tab_types[$groupe_type];
+  $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 }
 
 // Autres valeurs à récupérer ou à définir.

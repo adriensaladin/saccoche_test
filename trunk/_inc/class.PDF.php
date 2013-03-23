@@ -1022,6 +1022,16 @@ class PDF extends FPDF
     {
       $this->pages[$page_numero] = ($page_numero<$this->page) ? gzcompress(str_replace( $this->page_nombre_alias , $page_nb , gzuncompress($this->pages[$page_numero]) )) : str_replace( $this->page_nombre_alias , $page_nb , $this->pages[$page_numero] ) ;
     }
+    return $page_nb;
+  }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Méthode pour ajouter une page blanche
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function ajouter_page_blanche()
+  {
+    $this->AddPage($this->orientation , 'A4');
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

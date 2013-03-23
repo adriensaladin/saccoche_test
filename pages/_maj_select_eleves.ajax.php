@@ -30,13 +30,24 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
+// Le code n'est pas exactement le même pour un parent...
 
-// Le code n'est pas exactement le même pour un administrateur...
-
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ( ($_SESSION['USER_PROFIL_TYPE']=='directeur') && (isset($_POST['f_groupe_id'])) ) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs et les professeurs
+if($_SESSION['USER_PROFIL_TYPE']=='parent')
 {
+  $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0 ;
+  if(!$groupe_id)
+  {
+    exit('Erreur avec les données transmises !');
+  }
+  $groupe_type = 'classe';
+}
+
+// ... que pour un administrateur...
+
+elseif( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (isset($_POST['f_groupe_id'])) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs
+{
+  $groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
+  $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
   $tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
   if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
   {
@@ -49,10 +60,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ( ($_SESSION['USER_PROF
   }
 }
 
-// ... que pour un professeur / directeur / parent.
+// ... ou que pour un professeur / directeur.
 
 else
 {
+  $groupe_type = (isset($_POST['f_type']))   ? Clean::texte($_POST['f_type'])    : ''; // Classes Groupes Besoins
+  $groupe_id   = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
   $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
   if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
   {

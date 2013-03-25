@@ -64,8 +64,9 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
         <option value="base-eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
-        <option value="tableur_eleves">Importer les élèves (avec leurs affectations).</option>
         <option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
+        <option value="tableur_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option value="tableur_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
     </select><br />
   </fieldset>
@@ -128,6 +129,14 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     </ul>
   </fieldset>
 
+  <fieldset id="fieldset_tableur_professeurs_directeurs" class="hide">
+    <hr />
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_profs">DOC : Import d'utilisateurs avec un tableur</a></span></li>
+      <li>Indiquez le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
+    </ul>
+  </fieldset>
+
   <fieldset id="fieldset_tableur_eleves" class="hide">
     <hr />
     <ul class="puce">
@@ -136,11 +145,11 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_tableur_professeurs_directeurs" class="hide">
+  <fieldset id="fieldset_tableur_parents" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_profs">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-      <li>Indiquez le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_parents">DOC : Import d'utilisateurs avec un tableur</a></span></li>
+      <li>Indiquez le fichier <em>nom-du-fichier-parents.csv</em> (ou <em>nom-du-fichier-parents.txt</em>) : <button id="tableur_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

@@ -130,7 +130,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   echo  '<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>';
   echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
   echo  '<td class="label">'.$base_id.'</td>';
-  echo  '<td class="label"><i>'.sprintf("%04u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
+  echo  '<td class="label"><i>'.sprintf("%06u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
   echo  '<td class="label">'.html($denomination).'<br />'.html($uai).'</td>';
   echo  '<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>';
   echo  '<td class="label">'.$date_fr.'</td>';
@@ -171,7 +171,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
   echo'<td class="nu"><a href="#id_0">'.$img_acces.'</a></td>';
   echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'"'.$checked.' /></td>';
   echo'<td class="label">'.$base_id.'</td>';
-  echo  '<td class="label"><i>'.sprintf("%04u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
+  echo  '<td class="label"><i>'.sprintf("%06u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
   echo  '<td class="label">'.html($denomination).'<br />'.html($uai).'</td>';
   echo  '<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>';
   echo  '<td class="label">'.$date_fr.'</td>';

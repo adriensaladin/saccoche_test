@@ -369,7 +369,7 @@ $(document).ready
     (
       function()
       {
-        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");

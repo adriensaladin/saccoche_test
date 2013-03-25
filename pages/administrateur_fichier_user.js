@@ -42,7 +42,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html('&nbsp;');
         // Masquer tout
-        $('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_base-eleves_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
+        $('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_base-eleves_parents , #fieldset_tableur_eleves , #fieldset_tableur_professeurs_directeurs').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
         if(f_action!='')
@@ -154,19 +154,6 @@ $(document).ready
       }
     );
     new AjaxUpload
-    ('#tableur_professeurs_directeurs',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_professeurs_directeurs'},
-        autoSubmit: true,
-        responseType: "html",
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    new AjaxUpload
     ('#tableur_eleves',
       {
         action: 'ajax.php?page='+PAGE,
@@ -180,11 +167,11 @@ $(document).ready
       }
     );
     new AjaxUpload
-    ('#tableur_parents',
+    ('#tableur_professeurs_directeurs',
       {
         action: 'ajax.php?page='+PAGE,
         name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_parents'},
+        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_professeurs_directeurs'},
         autoSubmit: true,
         responseType: "html",
         onChange: changer_fichier,
@@ -296,7 +283,7 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,15)!='<p><label class')
+              if(responseHTML.substring(0,25)!='<p><label class="valide">')
               {
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
@@ -381,9 +368,9 @@ $(document).ready
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // step51 -> step52     Envoyer les actions sur les utilisateurs
-// step61 -> step62     Envoyer les actions sur les ajouts d'affectations éventuelles
-// step71 -> step72     Envoyer les actions sur les ajouts d'affectations éventuelles
-// step81 -> step82     Envoyer les modifications éventuelles sur les liens de responsabilité des parents
+// step61 -> step62     Envoyer les actions sur les ajouts d'affectations éventuelles (Sconet uniquement)
+// step71 -> step72     Envoyer les actions sur les ajouts d'affectations éventuelles (Sconet uniquement)
+// step81 -> step82     Envoyer les modifications éventuelles sur les liens de responsabilité des parents (Sconet uniquement)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#form_bilan').on

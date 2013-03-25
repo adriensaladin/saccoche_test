@@ -554,7 +554,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
       </table>
     </form>
     <p class="ti">
-      <label for="check_parite"><input id="check_parite" type="checkbox" checked /> Insérer des pages blanches si nécessaire pour forcer un nombre de pages pair par bilan (utile pour une impression recto-verso en série).</label>
+      <label for="check_parite"><input id="check_parite" type="checkbox" checked /> Insérer des pages blanches si nécessaires pour forcer un nombre de pages pair par bilan (utile pour une impression recto-verso en série).</label>
     </p>
     <p class="ti">
       <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>

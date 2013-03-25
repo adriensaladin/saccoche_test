@@ -31,7 +31,16 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $action = (isset($_POST['f_action'])) ? $_POST['f_action']              : ''; // transmis la 1e fois manuellement, ensuite dans un INPUT
 $step   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
-$tab_actions = array('sconet_professeurs_directeurs_oui'=>'sconet_professeurs_directeurs','tableur_professeurs_directeurs'=>'tableur_professeurs_directeurs','sconet_eleves_oui'=>'sconet_eleves','sconet_parents_oui'=>'sconet_parents','base-eleves_eleves'=>'base-eleves_eleves','base-eleves_parents'=>'base-eleves_parents','tableur_eleves'=>'tableur_eleves');
+$tab_actions = array(
+  'sconet_professeurs_directeurs_oui' => 'sconet_professeurs_directeurs',
+  'sconet_eleves_oui'                 => 'sconet_eleves',
+  'sconet_parents_oui'                => 'sconet_parents',
+  'base-eleves_eleves'                => 'base-eleves_eleves',
+  'base-eleves_parents'               => 'base-eleves_parents',
+  'tableur_professeurs_directeurs'    => 'tableur_professeurs_directeurs',
+  'tableur_eleves'                    => 'tableur_eleves',
+  'tableur_parents'                   => 'tableur_parents'
+);
 $tab_etapes  = array();
 
 if( !isset($tab_actions[$action]) )
@@ -74,12 +83,6 @@ $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step5">Étape 5 - Util
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>';
 
-$tab_etapes['tableur_professeurs_directeurs']  = $tab_etapes['sconet_professeurs_directeurs'];
-
-$tab_etapes['sconet_eleves']                   = $tab_etapes['sconet_professeurs_directeurs'];
-
-$tab_etapes['tableur_eleves']                  = $tab_etapes['sconet_professeurs_directeurs'];
-
 $tab_etapes['sconet_parents']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>';
@@ -93,10 +96,14 @@ $tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Clas
 $tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
+$tab_etapes['sconet_eleves']                   = $tab_etapes['sconet_professeurs_directeurs'];
+$tab_etapes['tableur_professeurs_directeurs']  = $tab_etapes['sconet_professeurs_directeurs'];
+$tab_etapes['tableur_eleves']                  = $tab_etapes['sconet_professeurs_directeurs'];
 $tab_etapes['base-eleves_parents']             = $tab_etapes['sconet_parents'];
+$tab_etapes['tableur_parents']                 = $tab_etapes['sconet_parents'];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 10 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 10 - Récupération du fichier (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==10 )
@@ -143,7 +150,7 @@ if( $step==10 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 20 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 20 - Extraction des données (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==20 )
@@ -748,10 +755,78 @@ if( $step==20 )
       }
     }
   }
+  if($action=='tableur_parents')
+  {
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Étape 2f - Extraction tableur_parents
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+    $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+    $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+    $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+    unset($tab_lignes[0]); // Supprimer la 1e ligne
+    // L'import ne contient aucun id parent ni enfant.
+    // On récupère la liste des références des élèves actuels pour comparer au contenu du fichier.
+    $tab_eleves_actuels  = array();
+    $tab_responsabilites = array();
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_reference' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_eleves_actuels[ $DB_ROW['user_id']] = $DB_ROW['user_reference'];
+      $tab_responsabilites[$DB_ROW['user_id']] = 0;
+    }
+    //
+    // On passe les utilisateurs en revue : on mémorise leurs infos et les classes trouvées
+    //
+    $tab_adresses_uniques = array();
+    foreach ($tab_lignes as $ligne_contenu)
+    {
+      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = array_slice($tab_elements,0,19);
+      if(count($tab_elements)>=11)
+      {
+        $tab_elements = Clean::map_quotes($tab_elements);
+        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array(3=>NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        if( ($nom!='') && ($prenom!='') && ($enfant1!='') )
+        {
+          // enfants
+          $tab_enfants = array();
+          for( $num_enfant=1 ; $num_enfant<10 ; $num_enfant++ )
+          {
+            $enfant_ref = Clean::ref(${'enfant'.$num_enfant});
+            if(!$enfant_ref) break;
+            $enfant_id = array_search( $enfant_ref , $tab_eleves_actuels );
+            if($enfant_id)
+            {
+              $tab_responsabilites[$enfant_id]++;
+              $tab_enfants[$enfant_id] = $tab_responsabilites[$enfant_id];
+            }
+          }
+          //
+          // Si pas d'enfant trouvé, on laisse tomber, comme pour Sconet.
+          //
+          if( count($tab_enfants) )
+          {
+            $tab_users_fichier['sconet_id' ][] = 0;
+            $tab_users_fichier['sconet_num'][] = 0;
+            $tab_users_fichier['reference' ][] = Clean::ref($reference);
+            $tab_users_fichier['profil'    ][] = 'TUT';
+            $tab_users_fichier['nom'       ][] = Clean::nom($nom);
+            $tab_users_fichier['prenom'    ][] = Clean::prenom($prenom);
+            $tab_users_fichier['adresse'   ][] = array( Clean::adresse($adresse_ligne1) , Clean::adresse($adresse_ligne2) , Clean::adresse($adresse_ligne3) , Clean::adresse($adresse_ligne4) , Clean::entier($codepostal) , Clean::commune($commune) , Clean::pays($pays) ) ;
+            $tab_users_fichier['enfant'    ][] = $tab_enfants;
+            $tab_adresses_uniques[$adresse_ligne1.'#'.$adresse_ligne2.'#'.$adresse_ligne3.'#'.$adresse_ligne4.'#'.$codepostal.'#'.$commune.'#'.$pays] = TRUE;
+          }
+        }
+      }
+    }
+    $nb_lien_responsabilite = array_sum($tab_responsabilites);
+    $nb_adresses = count($tab_adresses_uniques);
+  }
   if($action=='base-eleves_eleves')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Étape 2f - Extraction base-eleves_eleves
+    // Étape 2g - Extraction base-eleves_eleves
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
     $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -845,7 +920,7 @@ if( $step==20 )
   if($action=='base-eleves_parents')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Étape 2g - Extraction base-eleves_parents
+    // Étape 2h - Extraction base-eleves_parents
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
     $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -966,6 +1041,7 @@ if( $step==20 )
       break;
     case 'sconet_parents' :
     case 'base-eleves_parents' :
+    case 'tableur_parents' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['adresse'],$tab_users_fichier['enfant']);
       break;
   }
@@ -998,16 +1074,16 @@ if( $step==20 )
       echo'<p><label class="valide">'.$nombre.' '.$tab_profils_libelles[$profil][min(2,$nombre)].' trouvé'.$s.'.</label></p>';
     }
   }
-  else if( ($action=='sconet_parents') || ($action=='base-eleves_parents') )
+  else if( ($action=='sconet_parents') || ($action=='base-eleves_parents') || ($action=='tableur_parents') )
   {
-    echo'<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>';
+    exit('<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>');
   }
   else
   {
-    echo'<p><label class="alerte">Aucun utilisateur trouvé !</label></p>';
+    exit('<p><label class="alerte">Aucun utilisateur trouvé !</label></p>');
   }
   // On affiche le bilan des classes trouvées
-   if( ($action!='sconet_parents') && ($action!='base-eleves_parents') )
+   if( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='tableur_parents') )
   {
     $nombre = count($tab_classes_fichier['ref']);
     if($nombre)
@@ -1021,7 +1097,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des groupes trouvés
-  if( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='base-eleves_eleves') )
+  if( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='base-eleves_eleves') && ($action!='tableur_parents') )
   {
     $nombre = count($tab_groupes_fichier['ref']);
     if($nombre)
@@ -1035,7 +1111,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des parents trouvés
-  if( ($action=='sconet_parents') || ($action=='base-eleves_parents') )
+  if( ($action=='sconet_parents') || ($action=='base-eleves_parents') || ($action=='tableur_parents') )
   {
     if($nb_adresses)
     {
@@ -1057,7 +1133,7 @@ if( $step==20 )
     }
   }
   // Fin de l'extraction
-  $step = ( ($action!='sconet_parents') && ($action!='base-eleves_parents') ) ? '3' : '5' ;
+  $step = ( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='tableur_parents') ) ? '3' : '5' ;
   echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>';
   exit();
 }
@@ -1464,7 +1540,7 @@ if( $step==42 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 51 - Analyse des données des utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 51 - Analyse des données des utilisateurs (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==51 )
@@ -1709,7 +1785,7 @@ if( $step==51 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 52 - Traitement des actions à effectuer sur les utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 52 - Traitement des actions à effectuer sur les utilisateurs (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==52 )
@@ -1907,6 +1983,7 @@ if( $step==52 )
       case 'tableur_eleves'                 : $etape = 6; $step = 61; break;
       case 'tableur_professeurs_directeurs' : $etape = 6; $step = 61; break;
       case 'sconet_parents'                 : $etape = 4; $step = 71; break;
+      case 'tableur_parents'                : $etape = 4; $step = 71; break;
       case 'base-eleves_parents'            : $etape = 4; $step = 71; break;
       case 'base-eleves_eleves'             : $etape = 5; $step = 90; break;
     }
@@ -1916,7 +1993,7 @@ if( $step==52 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 53 - Récupérer les identifiants des nouveaux utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 53 - Récupérer les identifiants des nouveaux utilisateurs (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==53 )
@@ -1939,6 +2016,7 @@ if( $step==53 )
     case 'tableur_eleves'                 : $etape = 5; $step = 61; break;
     case 'tableur_professeurs_directeurs' : $etape = 4; $step = 61; break;
     case 'sconet_parents'                 : $etape = 4; $step = 71; break;
+    case 'tableur_parents'                : $etape = 4; $step = 71; break;
     case 'base-eleves_parents'            : $etape = 4; $step = 71; break;
     case 'base-eleves_eleves'             : $etape = 5; $step = 90; break;
   }
@@ -2327,7 +2405,7 @@ if( $step==62 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 71 - Adresses des parents (sconet_parents | base-eleves_parents)
+// Étape 71 - Adresses des parents (sconet_parents | base-eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==71 )
@@ -2425,7 +2503,7 @@ if( $step==71 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base-eleves_parents)
+// Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base-eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==72 )
@@ -2468,7 +2546,7 @@ if( $step==72 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 81 - Liens de responsabilités des parents (sconet_parents | base-eleves_parents)
+// Étape 81 - Liens de responsabilités des parents (sconet_parents | base-eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==81 )
@@ -2608,7 +2686,7 @@ if( $step==81 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base-eleves_parents)
+// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base-eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==82 )
@@ -2651,7 +2729,7 @@ if( $step==82 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 90 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | base-eleves_parents | tableur_eleves)
+// Étape 90 - Nettoyage des fichiers temporaires (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==90 )

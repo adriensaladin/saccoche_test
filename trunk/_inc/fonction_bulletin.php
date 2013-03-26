@@ -149,7 +149,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
   $tab_matiere_id = ($liste_matiere_id) ? explode(',',$liste_matiere_id) : array_keys($tab_moyennes_enregistrees['eleve']);
   foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
   {
-    if(in_array($matiere_id,$tab_matiere_id)) // Parce que dans le cas d'un prof effectuant une saisie, toutes les matières ne sont pas récupérées : il ne faut pas supprimer les notes des autres matières.
+    if( $matiere_id && in_array($matiere_id,$tab_matiere_id) ) // Parce que dans le cas d'un prof effectuant une saisie, toutes les matières ne sont pas récupérées : il ne faut pas supprimer les notes des autres matières (ni la moyenne générale, donc quand l'id matière est à 0).
     {
       foreach($tab as $eleve_id => $note)
       {

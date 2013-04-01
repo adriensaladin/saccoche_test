@@ -34,16 +34,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * [./pages/officiel_action_***.ajax.php]
  */
 
-// La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
-// Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
-// De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
-// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
-// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
-// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
-// D'où une combinaison de toutes ces pistes, plus une détection par javascript du statusCode.
-
-augmenter_memory_limit();
-register_shutdown_function('rapporter_erreur_fatale_memoire');
+prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 // Chemins d'enregistrement
 
@@ -188,6 +179,10 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
       }
     }
   }
+}
+if( !count($tab_eval) && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
+{
+  exit('Aucune évaluation trouvée sur cette période selon les paramètres choisis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,6 +704,12 @@ foreach($tab_eleve as $tab)
       {
         $releve_PDF->afficher_ligne_additionnelle($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']);
       }
+      // Bulletin - Légende
+      if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+      {
+        if($make_pdf)  { $releve_PDF->bilan_synthese_legende($format); }
+        if($make_html) { $releve_HTML .= $legende_html; }
+      }
       // Indiquer a posteriori le nombre de pages par élève
       if($make_pdf)
       {
@@ -725,11 +726,6 @@ foreach($tab_eleve as $tab)
         $page_fin    = $releve_PDF->page;
         $page_nombre = $page_fin - $page_debut + 1;
         $tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin , $page_nombre );
-      }
-      if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
-      {
-        if($make_pdf)  { $releve_PDF->bilan_synthese_legende($format); }
-        if($make_html) { $releve_HTML .= $legende_html; }
       }
     }
   }

@@ -484,7 +484,7 @@ function __autoload($class_name)
 }
 
 // ============================================================================
-// Quelques fonctions utiles : html() - perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - rapporter_erreur_fatale_memoire() - rapporter_erreur_fatale_phpcas() - exit_error()
+// Quelques fonctions utiles : html() - perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - augmenter_max_execution_time() - rapporter_erreur_fatale_memoire_ou_duree() - rapporter_erreur_fatale_phpcas() - exit_error()
 // ============================================================================
 
 /*
@@ -521,13 +521,28 @@ function augmenter_memory_limit()
 {
   if( (int)ini_get('memory_limit') < 256 )
   {
-    @ini_set('memory_limit','256M');
+    @ini_set(  'memory_limit','256M');
     @ini_alter('memory_limit','256M');
   }
 }
 
 /*
- * Pour intercepter les erreurs de dépassement de mémoire (une erreur fatale échappe à un try{...}catch(){...}).
+ * Augmenter le memory_limit (si autorisé) pour les pages les plus gourmandes
+ * 
+ * @param void
+ * @return void
+ */
+function augmenter_max_execution_time()
+{
+  if( (int)ini_get('max_execution_time') < 30 )
+  {
+    @ini_set(  'max_execution_time',30);
+    @ini_alter('max_execution_time',30);
+  }
+}
+
+/*
+ * Pour intercepter les erreurs de dépassement de mémoire ou de durée d'exécution (une erreur fatale échappe à un try{...}catch(){...}).
  *
  * Source : http://pmol.fr/programmation/web/la-gestion-des-erreurs-en-php/
  * Mais ça ne fonctionne pas en CGI : PHP a déjà envoyé l'erreur 500 et cette fonction est appelée trop tard, PHP n'a plus la main.
@@ -537,13 +552,51 @@ function augmenter_memory_limit()
  * @param void
  * @return void
  */
-function rapporter_erreur_fatale_memoire()
+function rapporter_erreur_fatale_memoire_ou_duree()
 {
   $tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
-  if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) && (mb_substr($tab_last_error['message'],0,19)=='Allowed memory size') )
+  if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) )
   {
-    exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
+    if(mb_substr($tab_last_error['message'],0,19)=='Allowed memory size')
+    {
+      exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
+    }
+    if(mb_substr($tab_last_error['message'],0,22)=='Maximum execution time')
+    {
+      exit_error( 'Temps alloué insuffisant' /*titre*/ , 'Temps de '.ini_get('max_execution_time').'s alloué au script insuffisant ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' /*contenu*/ );
+    }
   }
+}
+
+/*
+ * Pour enclencher les fonctions de prévention et d'interception des erreurs fatales dépassement de mémoire ou de durée d'exécution.
+ * 
+ * 1/ dépassement de mémoire (memory_limit)
+ * La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
+ * Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
+// Un graphique sur une longue période peut aussi nécessiter de nombreux calculs.
+ * De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
+ * Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+ * 
+ * 2/ durée d'exécution (max_execution_time)
+ * La découpe d'un PDF peut provoquer un dépassement de la durée d'exécution allouée au script.
+ * Un max_execution_time() de 10s peut ainsi être dépassé avec un pdf de bulletins d'une classe de 25 élèves (archives + tirages responsables : ça fait plus de 100 pages).
+ * 
+ * 3/ Solution
+ * On commence par un ini_set(), même si cette directive peut être interdite dans la conf PHP.
+ * Pour memory_limit, elle peut aussi être bloquée via Suhosin (http:*www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit).
+ * En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
+ * D'où une combinaison de toutes ces pistes, plus une détection par javascript du statusCode.
+ * 
+ * @param bool $memory
+ * @param bool $time
+ * @return void
+ */
+function prevention_et_gestion_erreurs_fatales($memory,$time)
+{
+  if($memory) augmenter_memory_limit();
+  if($time)   augmenter_max_execution_time();
+  register_shutdown_function('rapporter_erreur_fatale_memoire_ou_duree');
 }
 
 /*

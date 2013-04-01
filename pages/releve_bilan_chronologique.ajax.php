@@ -69,14 +69,7 @@ if( !in_array($indicateur,array('moyenne_scores','pourcentage_acquis')) || !$gro
 
 Form::save_choix('bilan_chronologique');
 
-// La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
-// Et un graphique sur une longue période peut nécessiter de nnombreux calculs.
-// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
-// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
-// D'où une combinaison de toutes ces pistes, plus une détection par javascript du statusCode.
-
-augmenter_memory_limit();
-register_shutdown_function('rapporter_erreur_fatale_memoire');
+prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 // Initialisation de tableaux
 

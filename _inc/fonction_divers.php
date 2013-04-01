@@ -107,6 +107,19 @@ function test_NA($score,$seuil=NULL)
   return $score<$seuil ;
 }
 
+
+/**
+ * roundTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près
+ * @see   http://fr.php.net/manual/fr/function.round.php#93747
+ * @param float $nombre
+ * @param float $precision
+ * @return float
+ */
+function roundTo($nombre,$precision)
+{
+  return ($precision) ? round( $nombre/$precision , 0 ) * $precision : $nombre ;
+} 
 /**
  * Calculer le score d'un item, à partir des notes transmises et des paramètres de calcul.
  * 

@@ -79,18 +79,6 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
     }
   }
   charger_parametres_mysql_supplementaires($BASE);
-  // Remplacer l'info par le numéro de base correspondant dans toutes les variables accessibles à PHP avant que la classe SSO ne s'en mèle.
-  // Pourquoi ??? Economiser une requête ? Retiré car trifouillage pas indispensable et pouvant dérouter des partenaires ENT autorisant un format d'URL donné.
-  /*
-  $bad = 'uai='.$_GET['uai'];
-  $bon = 'base='.$BASE;
-  $_GET['base']     = $BASE;
-  $_REQUEST['base'] = $BASE;
-  if(isset($_SERVER['HTTP_REFERER'])) { $_SERVER['HTTP_REFERER'] = str_replace($bad,$bon,$_SERVER['HTTP_REFERER']); }
-  if(isset($_SERVER['QUERY_STRING'])) { $_SERVER['QUERY_STRING'] = str_replace($bad,$bon,$_SERVER['QUERY_STRING']); }
-  if(isset($_SERVER['REQUEST_URI'] )) { $_SERVER['REQUEST_URI']  = str_replace($bad,$bon,$_SERVER['REQUEST_URI'] ); }
-  unset($_GET['uai']);
-  */
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +113,7 @@ if($connexion_mode=='cas')
    */
   function exit_CAS_Exception($msg_sup='')
   {
-    // on veut pas afficher ça mais notre jolie page
+    // on ne veut pas afficher ça mais notre jolie page
     $content = ob_get_clean();
     if ($content)
     {
@@ -138,7 +126,7 @@ if($connexion_mode=='cas')
         exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ , FALSE /*setup*/ );
       }
     }
-    // si on arrive là, on a pas trouvé le contenu, on laisse l'existant (à priori la page moche de phpCAS)
+    // si on arrive là, c'est qu'on n'a pas trouvé le contenu, on laisse l'existant (a priori la page moche de phpCAS)
     exit();
   }
   /**
@@ -343,16 +331,14 @@ if($connexion_mode=='cas')
 
 if($connexion_mode=='shibboleth')
 {
-  /*
-  * Récupération de l'identifiant de l'utilisateur authentifié dans les variables serveur.
-  * A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID arrive en double séparé par un « ; ».
-  */
+  // Récupération dans les variables serveur de l'identifiant de l'utilisateur authentifié.
   if( (empty($_SERVER['HTTP_UID'])) || empty($_SERVER['HTTP_SHIB_SESSION_ID']) )
   {
     $http_uid             = isset($_SERVER['HTTP_UID'])             ? 'vaut "'.html($_SERVER['HTTP_UID']).'"'             : 'n\'est pas définie' ;
     $http_shib_session_id = isset($_SERVER['HTTP_SHIB_SESSION_ID']) ? 'vaut "'.html($_SERVER['HTTP_SHIB_SESSION_ID']).'"' : 'n\'est pas définie' ;
     exit_error( 'Incident authentification Shibboleth' /*titre*/ , 'Ce serveur ne semble pas disposer d\'une authentification Shibboleth, ou bien celle ci n\'a pas été mise en &oelig;uvre :<br />- la variable $_SERVER["HTTP_UID"] '.$http_uid.'<br />- la variable $_SERVER["HTTP_SHIB_SESSION_ID"] '.$http_shib_session_id /*contenu*/ );
   }
+  // A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID arrive en double séparé par un « ; ».
   $http_uid = explode( ';' , $_SERVER['HTTP_UID'] );
   $id_ENT = $http_uid[0];
   // Comparer avec les données de la base

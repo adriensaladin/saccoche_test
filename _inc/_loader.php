@@ -131,6 +131,7 @@ define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
 define('CHEMIN_FICHIER_DEBUG_CONFIG'  , CHEMIN_DOSSIER_TMP.'debug.txt');
 define('CHEMIN_FICHIER_WS_LCS'        , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_ARGOS'      , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
+define('CHEMIN_FICHIER_CONFIG_ARGOS'  , CHEMIN_DOSSIER_WEBSERVICES.'argos_serveur_config.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -265,7 +266,15 @@ function getServerProtocole()
   return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
-define('URL_BASE',getServerProtocole().getServerUrl());
+if( (SERVEUR_TYPE=='LOCAL') || !is_file(CHEMIN_FICHIER_CONFIG_ARGOS) )
+{
+  define('URL_BASE',getServerProtocole().getServerUrl());
+}
+else
+{
+  require(CHEMIN_FICHIER_CONFIG_ARGOS);
+}
+
 
 // ============================================================================
 // URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)

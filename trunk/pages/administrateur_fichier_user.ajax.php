@@ -1179,7 +1179,7 @@ if( $step==31 )
   {
     foreach($tab_classes_base['ref'] as $id_base => $ref)
     {
-      $lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
+      $lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
     }
   }
   // Contenu du fichier à ajouter
@@ -1234,7 +1234,7 @@ if( $step==31 )
   // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
   if($lignes_del)
   {
-    echo'<p class="danger">Des classes non trouvées sont proposées à la suppression. Il se peut que les services / affectations manquent dans le fichier. Décochez alors ces suppressions.</p>';
+    echo'<p class="danger">Des classes non trouvées sont proposées à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>';
   }
   echo'<table>';
   echo' <tbody>';
@@ -1382,7 +1382,7 @@ if( $step==41 )
   {
     foreach($tab_groupes_base['ref'] as $id_base => $ref)
     {
-      $lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
+      $lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
     }
   }
   // Contenu du fichier à ajouter
@@ -1433,7 +1433,7 @@ if( $step==41 )
   // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
   if($lignes_del)
   {
-    echo'<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Décochez alors ces suppressions.</p>';
+    echo'<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>';
   }
   echo'<table>';
   echo' <tbody>';

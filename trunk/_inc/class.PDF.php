@@ -313,11 +313,12 @@ class PDF extends FPDF
   {
     $text = trim($text);
     if ($text==='')
-      return 0;
+    {
+      return array(0,'');
+    }
     $space = $this->GetStringWidth(' ');
     $lines = explode("\n", $text);
     $text = '';
-    $count = 0;
     foreach ($lines as $line)
     {
       $words = preg_split('/ +/', $line);
@@ -340,7 +341,6 @@ class PDF extends FPDF
             {
               $width = $wordwidth;
               $text = rtrim($text)."\n".substr($word, $i, 1);
-              $count++;
             }
           }
         }
@@ -353,13 +353,12 @@ class PDF extends FPDF
         {
           $width = $wordwidth + $space;
           $text = rtrim($text)."\n".$word.' ';
-          $count++;
         }
       }
       $text = rtrim($text)."\n";
-      $count++;
     }
     $text = rtrim($text);
+    $count = mb_substr_count($text,"\n")+1;
     return array($count,$text);
   }
 
@@ -1880,10 +1879,10 @@ class PDF extends FPDF
     $jeu_minimum    = 2 ;
     $jeu_horizontal = $enveloppe_largeur - $this->page_largeur - $jeu_minimum ;
     $jeu_vertical   = $jeu_minimum ;
-    $ligne2_y = $this->page_hauteur - $enveloppe_hauteur - $jeu_vertical ;
+    $ligne2_y = $this->page_hauteur - $enveloppe_hauteur + $jeu_vertical ;
     $this->Line( $this->marge_gauche-$longueur_tiret , $ligne2_y , $this->marge_gauche , $ligne2_y );
     $this->Line( $this->page_largeur-$this->marge_droite , $ligne2_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne2_y );
-    $ligne1_y = $ligne2_y - $enveloppe_hauteur - $jeu_vertical ;
+    $ligne1_y = $ligne2_y - $enveloppe_hauteur + $jeu_vertical ;
     $this->Line( $this->marge_gauche-$longueur_tiret , $ligne1_y , $this->marge_gauche , $ligne1_y );
     $this->Line( $this->page_largeur-$this->marge_droite , $ligne1_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne1_y );
     $jeu_vertical -= 1 ; // Le pliage est manuel donc imparfait et il y a l'épaisseur du papier ;)

@@ -103,7 +103,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
   <p>
     <ul class="puce">
       <li><a id="voir_messages" href="#"><span class="file file_htm">Voir tous les messages à la fois.</span></a></li>
-      <li><a id="export_fichier" href=""><span class="file file_zip">Récupérer / Manipuler les informations (fichier <em>csv</em> pour tableur).</span></a></li>
+      <li><a id="export_fichier" href=""><span class="file file_txt">Récupérer / Manipuler les informations (fichier <em>csv</em> pour tableur).</span></a></li>
     </ul>
   </p>
   <div id="zone_actions" class="hide">
@@ -115,9 +115,9 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
       <label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
     </fieldset>
     <fieldset id="step_creer" class="hide">
-      <label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-      <label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
-      <label class="tab" for="f_date_autoeval">Fin auto-éval. :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+      <label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
+      <label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+      <label class="tab" for="f_date_autoeval">Fin auto-éval. :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
       <label class="tab" for="f_info">Description :</label><input id="f_info" name="f_info" size="30" type="text" value="" />
     </fieldset>
     <fieldset id="step_completer" class="hide">

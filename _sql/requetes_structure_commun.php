@@ -1435,7 +1435,7 @@ public static function DB_OPT_enfants_parent($parent_id)
   $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(':parent_id'=>$parent_id,':profil_type'=>'eleve');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève associé à ce compte.' ;
+  return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève n\'est associé à votre compte !' ;
 }
 
 }

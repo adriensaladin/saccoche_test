@@ -63,12 +63,12 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -100,12 +100,12 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   }
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé).</span></a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -204,12 +204,12 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -289,12 +289,12 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -401,12 +401,12 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les associations (fichier <em>csv</em> zippé).</span></a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -444,12 +444,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_infos-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -487,12 +487,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_infos-parents_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -527,12 +527,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 
   // Finalisation de l'export CSV (archivage dans un fichier zippé)
   $fnom = 'export_infos-professeurs_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }

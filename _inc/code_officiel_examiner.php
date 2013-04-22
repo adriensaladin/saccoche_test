@@ -147,6 +147,7 @@ $affichage_assiduite = FALSE ;
 
 $tab_resultat_examen = array();
 $make_officiel = TRUE;
+$make_brevet   = FALSE;
 $make_action   = 'examiner';
 $make_html     = FALSE;
 $make_pdf      = FALSE;

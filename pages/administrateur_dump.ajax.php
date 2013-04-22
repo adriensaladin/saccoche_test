@@ -68,7 +68,7 @@ if( ($action=='sauvegarder') && $etape )
   echo'<li><label class="valide">'.$texte_etape.' en '.$duree.'s.</label></li>';
   if(strpos($texte_etape,'terminée'))
   {
-    echo'<li><a class="lien_ext" href="'.URL_DIR_DUMP.$fichier_zip_nom.'"><span class="file file_zip">Récupérez le fichier de sauvegarde au format ZIP.</span></a></li>';
+    echo'<li><a class="lien_ext" href="'.URL_DIR_DUMP.$fichier_zip_nom.'"><span class="file file_zip">Récupérer le fichier de sauvegarde au format ZIP.</span></a></li>';
   }
   exit();
 }

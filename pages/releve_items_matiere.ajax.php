@@ -112,6 +112,7 @@ $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $make_officiel = FALSE;
+$make_brevet   = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
@@ -159,9 +160,9 @@ else
     echo $bulletin_alerte;
     echo'<h2>Bulletin Gepi</h2>';
     echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
     echo'</ul>';
   }
 }

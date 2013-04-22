@@ -10,7 +10,7 @@ CREATE TABLE sacoche_devoir (
   devoir_date          DATE                                 NOT NULL DEFAULT "0000-00-00",
   devoir_info          VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   devoir_visible_date  DATE                                 NOT NULL DEFAULT "0000-00-00",
-  devoir_autoeval_date DATE                                 NULL     DEFAULT NULL ,
+  devoir_autoeval_date DATE                                          DEFAULT NULL ,
   devoir_partage       TEXT         COLLATE utf8_unicode_ci NOT NULL,
   devoir_doc_sujet     VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   devoir_doc_corrige   VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",

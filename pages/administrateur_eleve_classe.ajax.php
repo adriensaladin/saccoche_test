@@ -61,7 +61,7 @@ elseif($action=='retirer')
 // Affichage du bilan des affectations des élèves dans les classes ; en deux requêtes pour récupérer les élèves sans classes et les classes sans élèves
 $tab_niveau_groupe = array();
 $tab_user          = array();
-$tab_niveau_groupe[0][0] = '<i>sans classe</i>';
+$tab_niveau_groupe[0][0] = 'sans classe';
 $tab_user[0]             = '';
 
 // Récupérer la liste des classes
@@ -98,10 +98,13 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 echo'<hr />';
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
-  echo'<table class="affectation">';
-  echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-  echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-  echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-  echo'</table>';
+  if(mb_strlen($TB[$niveau_id])>9)
+  {
+    echo'<table class="affectation">';
+    echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
+    echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
+    echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
+    echo'</table>';
+  }
 }
 ?>

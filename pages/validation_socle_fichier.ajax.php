@@ -29,8 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
-// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 $top_depart = microtime(TRUE);
@@ -66,15 +65,14 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   $tab_eleves     = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par classe et alphabet.
   $only_sconet_id = ($action=='export_lpc') ? TRUE : FALSE ;
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id);
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
-  }
-  // Elèves trouvés ?
   if(empty($DB_TAB))
   {
     $identifiant = $only_sconet_id ? 'n\'ont pas d\'identifiant Sconet ou ' : '' ;
     exit('Erreur : les élèves trouvés '.$identifiant.'sont anciens !');
+  }
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
   }
   // Fabrication du XML
   $nb_eleves  = 0;
@@ -176,7 +174,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   $si = ($nb_items>1)   ? 's' : '' ;
   $in = $only_positives ? '' : '(in)-' ;
   echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
+  echo'<li><a class="lien_ext" href="./force-download.php?fichier='.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>';
   if($action=='export_lpc')
   {
     echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';

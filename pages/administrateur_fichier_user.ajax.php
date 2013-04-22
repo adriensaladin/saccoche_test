@@ -1941,7 +1941,7 @@ if( $step==52 )
   $s_del = ($nb_del>1) ? 's' : '';
   if($nb_add)
   {
-    // On archive les nouveaux identifiants dans un fichier tableur zippé (csv tabulé)
+    // On archive les nouveaux identifiants dans un fichier tableur (csv tabulé)
     $profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : 'personnel' ) ;
     $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu_csv) );

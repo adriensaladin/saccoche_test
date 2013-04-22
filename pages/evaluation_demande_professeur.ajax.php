@@ -151,10 +151,10 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
   }
   // Enregistrer le csv des commentaires
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.zip' , $fnom_export.'.csv' , To::csv($fichier_csv) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.csv' , To::csv($fichier_csv) );
   // Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
   $chaine_autres = ( $selection_matiere && $selection_groupe ) ? implode('<br />',$tab_autres) : 'sur choix d\'une matière et d\'un regroupement' ;
-  exit('ok'.'<¤>'.URL_DIR_EXPORT.$fnom_export.'.zip'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
+  exit('ok'.'<¤>'.'./force-download.php?fichier='.$fnom_export.'.csv'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

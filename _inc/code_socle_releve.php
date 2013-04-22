@@ -30,7 +30,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 /**
  * Code inclus commun aux pages
  * [./pages/releve_socle.ajax.php]
- * [./_inc/code_officiel_***.ajax.php]
+ * [./pages/officiel_action_***.ajax.php]
+ * 
  */
 
 prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );

@@ -54,13 +54,13 @@ else
     $table_log_extrait .= '<tr><td>'.$date_heure.'</td><td>'.$utilisateur.'</td><td>'.$action.'</td></tr>'; // Pas de html(), cela a déjà été fait lors de l'enregistrement des logs
   }
   $table_log_extrait .= '</tbody></table>';
-  // 2 Enregistrer un csv récupérable
+  // 2 En faire un csv zippé récupérable
   $fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
   $fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.zip' , $fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
   // Afficher tout ça
   echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="./force-download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
+  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
   echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
   echo'</ul>';
   echo $table_log_extrait;

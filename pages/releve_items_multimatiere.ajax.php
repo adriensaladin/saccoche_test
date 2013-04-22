@@ -96,7 +96,6 @@ $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $make_officiel = FALSE;
-$make_brevet   = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;

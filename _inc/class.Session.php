@@ -475,7 +475,7 @@ class Session
     {
       if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) )
       {
-        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ );
+        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ , FALSE /*setup*/ );
       }
     }
   }

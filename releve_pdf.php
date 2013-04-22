@@ -25,7 +25,7 @@
  * 
  */
 
-// Fichier appelé pour l'affichage d'une archive PDF d'un bulletin.
+// Fichier appelé pour l'affichage d'un relevé HTML enregistré temporairement.
 // Passage en GET d'un paramètre pour savoir quelle page charger.
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
@@ -40,7 +40,7 @@ header('Content-Type: text/html; charset=utf-8');
 $PAGE = 'releve_pdf';
 if(!Session::verif_droit_acces($PAGE))
 {
-  exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ , '' /*lien*/ );
+  exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ );
 }
 Session::execute();
 

@@ -29,7 +29,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,form,fieldset,pre,input,p,blockquote,th,td,img,hr {margin:0;padding:0}
-ol,ul,li {list-style:none}
+ol,ul,li {list-style:none;}
 table {border-collapse:collapse;border-spacing:0;font-size:100%}
 fieldset,img,hr {border:0}
 
@@ -38,7 +38,7 @@ fieldset,img,hr {border:0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 html {height:100%;width:100%;background:#FFF;font-size:13px;}
-body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
+body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
@@ -53,7 +53,7 @@ h1.logo{text-align:center}
 h1.logo a{margin:auto 1em}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
-a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0}
+a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
 #aide_en_ligne {margin:1ex 1em}
@@ -79,7 +79,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
 
 /* zone identifiée */
-#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
+#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
 #cadre_bas    {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
 #cadre_navig  {z-index:3;position:fixed;top:2px;right:2px}
 #cadre_photo  {z-index:4;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
@@ -94,7 +94,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Titres de la page d'authentification                                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#cadre_milieu h2 {background:transparent url(../_img/sprite_accueil_1.png) 0 0 no-repeat;padding-left:24px}
+#cadre_milieu h2 {background:transparent url(../_img/sprite_accueil_1.png) 0 0 no-repeat;padding-left:24px;}
 #cadre_milieu h2.hebergement    {background-position: 0    0px}
 #cadre_milieu h2.identification {background-position: 0  -20px}
 #cadre_milieu h2.informations   {background-position: 0  -40px}
@@ -135,12 +135,12 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_13.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_12.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
-#menu li {float:left}
+#menu li {float:left;}
 #menu li li {float:none}
-#menu li ul {position:absolute;left:-9999em;background:#FFF}
-#menu li:hover ul {left:auto}
+#menu li ul {position:absolute;left:-9999em;background:#FFF;}
+#menu li:hover ul {left:auto;}
 
 #menu a.menu                  {background-position: 1px     1px}
 #menu a.administrateur        {background-position: 1px   -19px}
@@ -175,53 +175,52 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu a.nettoyage             {background-position: 1px  -599px}
 #menu a.newsletter            {background-position: 1px  -619px}
 #menu a.officiel_assiduite    {background-position: 1px  -639px}
-#menu a.officiel_brevet       {background-position: 1px  -659px}
-#menu a.officiel_bulletin     {background-position: 1px  -679px}
-#menu a.officiel_palier1      {background-position: 1px  -699px}
-#menu a.officiel_palier2      {background-position: 1px  -719px}
-#menu a.officiel_palier3      {background-position: 1px  -739px}
-#menu a.officiel_reglages     {background-position: 1px  -759px}
-#menu a.officiel_releve       {background-position: 1px  -779px}
-#menu a.officiel_voir_archive {background-position: 1px  -799px}
-#menu a.parent                {background-position: 1px  -819px}
-#menu a.periode               {background-position: 1px  -839px}
-#menu a.periode_groupe        {background-position: 1px  -859px}
-#menu a.professeur            {background-position: 1px  -879px}
-#menu a.referentiel_gestion   {background-position: 1px  -899px}
-#menu a.referentiel_voir      {background-position: 1px  -919px}
-#menu a.releve_chrono         {background-position: 1px  -939px}
-#menu a.releve_grille         {background-position: 1px  -959px}
-#menu a.releve_items          {background-position: 1px  -979px}
-#menu a.releve_recherche      {background-position: 1px  -999px}
-#menu a.releve_socle          {background-position: 1px -1019px}
-#menu a.releve_synthese       {background-position: 1px -1039px}
-#menu a.releve_synthese_socle {background-position: 1px -1059px}
-#menu a.resilier              {background-position: 1px -1079px}
-#menu a.rss                   {background-position: 1px -1099px}
-#menu a.serveur_database      {background-position: 1px -1119px}
-#menu a.serveur_debug         {background-position: 1px -1139px}
-#menu a.serveur_fichiers      {background-position: 1px -1159px}
-#menu a.serveur_geographie    {background-position: 1px -1179px}
-#menu a.serveur_identite      {background-position: 1px -1199px}
-#menu a.serveur_info          {background-position: 1px -1219px}
-#menu a.serveur_maintenance   {background-position: 1px -1239px}
-#menu a.serveur_proxy         {background-position: 1px -1259px}
-#menu a.socle_annuler         {background-position: 1px -1279px}
-#menu a.socle_fichier         {background-position: 1px -1299px}
-#menu a.socle_item            {background-position: 1px -1319px}
-#menu a.socle_langue          {background-position: 1px -1339px}
-#menu a.socle_pilier          {background-position: 1px -1359px}
-#menu a.statistiques          {background-position: 1px -1379px}
-#menu a.structure_ajout_csv   {background-position: 1px -1399px}
-#menu a.structure_gestion     {background-position: 1px -1419px}
-#menu a.structure_transfert   {background-position: 1px -1439px}
-#menu a.trombinoscope         {background-position: 1px -1459px}
+#menu a.officiel_bulletin     {background-position: 1px  -659px}
+#menu a.officiel_palier1      {background-position: 1px  -679px}
+#menu a.officiel_palier2      {background-position: 1px  -699px}
+#menu a.officiel_palier3      {background-position: 1px  -719px}
+#menu a.officiel_reglages     {background-position: 1px  -739px}
+#menu a.officiel_releve       {background-position: 1px  -759px}
+#menu a.officiel_voir_archive {background-position: 1px  -779px}
+#menu a.parent                {background-position: 1px  -799px}
+#menu a.periode               {background-position: 1px  -819px}
+#menu a.periode_groupe        {background-position: 1px  -839px}
+#menu a.professeur            {background-position: 1px  -859px}
+#menu a.referentiel_gestion   {background-position: 1px  -879px}
+#menu a.referentiel_voir      {background-position: 1px  -899px}
+#menu a.releve_chrono         {background-position: 1px  -919px}
+#menu a.releve_grille         {background-position: 1px  -939px}
+#menu a.releve_items          {background-position: 1px  -959px}
+#menu a.releve_recherche      {background-position: 1px  -979px}
+#menu a.releve_socle          {background-position: 1px  -999px}
+#menu a.releve_synthese       {background-position: 1px -1019px}
+#menu a.releve_synthese_socle {background-position: 1px -1039px}
+#menu a.resilier              {background-position: 1px -1059px}
+#menu a.rss                   {background-position: 1px -1079px}
+#menu a.serveur_database      {background-position: 1px -1099px}
+#menu a.serveur_debug         {background-position: 1px -1119px}
+#menu a.serveur_fichiers      {background-position: 1px -1139px}
+#menu a.serveur_geographie    {background-position: 1px -1159px}
+#menu a.serveur_identite      {background-position: 1px -1179px}
+#menu a.serveur_info          {background-position: 1px -1199px}
+#menu a.serveur_maintenance   {background-position: 1px -1219px}
+#menu a.serveur_proxy         {background-position: 1px -1239px}
+#menu a.socle_annuler         {background-position: 1px -1259px}
+#menu a.socle_fichier         {background-position: 1px -1279px}
+#menu a.socle_item            {background-position: 1px -1299px}
+#menu a.socle_langue          {background-position: 1px -1319px}
+#menu a.socle_pilier          {background-position: 1px -1339px}
+#menu a.statistiques          {background-position: 1px -1359px}
+#menu a.structure_ajout_csv   {background-position: 1px -1379px}
+#menu a.structure_gestion     {background-position: 1px -1399px}
+#menu a.structure_transfert   {background-position: 1px -1419px}
+#menu a.trombinoscope         {background-position: 1px -1439px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des résultats d'une évaluation                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px}
+label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px;}
 label span.arrow_continue_down  {background-position: 0    0px}
 label span.arrow_continue_rigth {background-position: 0  -20px}
 label span.pilot_keyboard       {background-position: 0  -40px}
@@ -245,7 +244,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;}
 .file_doc  {background-position: 0    0px}
 .file_docx {background-position: 0  -20px}
 .file_exe  {background-position: 0  -40px}
@@ -280,7 +279,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Images relatives aux états des bilans officiels                                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 0 no-repeat;padding-left:19px;}
 .absence  {background-position: 0    0px}
 .vide     {background-position: 0  -20px}
 .rubrique {background-position: 0  -40px}
@@ -291,7 +290,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Images pour les pages de validation du socle                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 0 no-repeat;padding-left:19px}
+span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 0 no-repeat;padding-left:19px;}
 span.eleve      {background-position: 0    0px}
 span.socle_n1   {background-position: 0  -20px}
 span.socle_n3   {background-position: 0  -40px}
@@ -305,8 +304,8 @@ span.voir       {background-position: 0  -80px}
 *.travaux {background:#FF0        url(../_img/chantier.gif)          no-repeat 5px;     padding-left:50px;min-height:40px;line-height:40px;color:#000;font-weight:bold}
 *.noprint {background:transparent url(../_img/puce/puce_noprint.png) no-repeat top left;padding-left:19px;color:#C00}
 *.danger  {background:transparent url(../_img/puce/puce_danger.gif)  no-repeat top left;padding-left:19px;color:#C00}
-*.astuce  {background:transparent url(../_img/puce/puce_astuce.png)  no-repeat top left;padding-left:19px;padding-top:1px}
-*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px;padding-top:1px}
+*.astuce  {background:transparent url(../_img/puce/puce_astuce.png)  no-repeat top left;padding-left:19px}
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
 *.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
 *.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
 *.probleme {background:#FF3;color:#C00;font-weight:bold}
@@ -477,8 +476,8 @@ select[multiple],textarea {vertical-align:middle}
 span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
 span.select_multiple span {display:block;font-weight:bold;font-style:italic;padding-left:2em;background-color:#CCC}
 span.select_multiple label:hover {cursor:pointer}
-span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px}
-span.select_multiple label.check {color:#FFF;background-color:#88F}
+span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px;}
+span.select_multiple label.check {color:#FFF;background-color:#88F;}
 span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -492,7 +491,7 @@ table th {border:1px solid #66F;background:#DDF;font-weight:bold}
 table td {border:1px solid #66F;vertical-align:top}
 tr.new{background:#CFC}
 td.new{font-weight:bold}
-th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 /* colorer une ligne au survol */
 table.form tbody tr:hover td {background:#BBF}
 table.form tbody tr:hover td.nu {background:#FFF}
@@ -645,7 +644,6 @@ th.v- , td.v- , span.v- {background:#---}
 
 table.vm_nug td {vertical-align:middle}
 table.vm_nug td.nu {text-align:left}
-table.notanet td {height:30px}
 /* Pour rester indépendant des préférences établissements pour les background NA / VA A */
 td.br{background-color:#F99}
 td.bj{background-color:#FD3}
@@ -676,8 +674,8 @@ table.xdebug-error i {display:inline-block} /* pour éviter une répercussion su
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #calque{position:absolute;z-index:9999;left:0;top:0;border:1px dotted #66F;background:#EEE;font-size:12px;padding:0.25em;text-align:center}
-#calque h5 {display:block;font-size:120%;color:#33A;letter-spacing:0.1em} /* Titre de calque */
-#calque h6 {margin:0.5em auto;color:#33A;font-size:110%} /* Consigne */
+#calque h5 {display:block;font-size:120%;color:#33A;letter-spacing:0.1em;} /* Titre de calque */
+#calque h6 {margin:0.5em auto;color:#33A;font-size:110%;} /* Consigne */
 #calque th,#calque td {text-align:center}
 #calque td.hoy {background-color:#99FF99}
 
@@ -725,7 +723,7 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 #zone_validation .m1 , #zone_information .m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;padding-left:19px}
 #zone_validation .n1 , #zone_information .n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;padding-left:19px}
 #zone_validation .n2 , #zone_information .n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;padding-left:19px}
-#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:19px}
+#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:19px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone d'information des évaluations associées à un item                                              */
@@ -745,29 +743,28 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* Liste à puce avec flèches bleues                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png)} /* line-height:20px */
+ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png);}
 *.li       {padding-left:2em;background:transparent url(../_img/puce/puce_li.png) no-repeat left;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste ordonnable par drag & drop                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#sortable , #sortable_oui , #sortable_non {padding:6px;min-height:30px;background:#EEF}
-#sortable li , #sortable_oui li , #sortable_non li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF}
-.sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF}
+#sortable li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF;}
+.sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces des liens pour masquer ou montrer des options                                                 */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-a.puce_plus  {background:transparent url(../_img/puce/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px}
-a.puce_moins {background:transparent url(../_img/puce/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px}
+a.puce_plus  {background:transparent url(../_img/puce/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px;}
+a.puce_moins {background:transparent url(../_img/puce/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone affichée pour le choix d'une note à la souris                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-div#td_souris_container{display:none}
+div#td_souris_container{display:none;}
 div.td_souris {font-size:0}
 div.td_souris img {padding:2px;margin:1px;background-color:#FFF}
 div.td_souris img.on {background-color:#FF0}
@@ -777,8 +774,8 @@ div.td_souris img.on {background-color:#FF0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .graph_total  {background-color:#99F;text-align:center;width:100%}
-.graph_partie {background-color:#080;height:3px} /* margin-left et width ajoutés en PHP */
-.graph_erreur {background-color:#A00;height:3px} /* margin-left et width ajoutés en PHP */
+.graph_partie {background-color:#080;height:3px;} /* margin-left et width ajoutés en PHP */
+.graph_erreur {background-color:#A00;height:3px;} /* margin-left et width ajoutés en PHP */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Indicateur de robustesse d'un mot de passe                                                          */

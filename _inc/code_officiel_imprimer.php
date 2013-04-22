@@ -400,7 +400,6 @@ $tag_date_heure_initiales = date('d/m/Y H:i').' '.$_SESSION['USER_PRENOM']{0}.'.
 
 $tab_pages_decoupe_pdf = array();
 $make_officiel = TRUE;
-$make_brevet   = FALSE;
 $make_action   = 'imprimer';
 $make_html     = FALSE;
 $make_pdf      = TRUE;

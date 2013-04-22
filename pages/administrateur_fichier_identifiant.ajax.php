@@ -154,8 +154,8 @@ if($action=='user_export')
   }
   // On archive dans un fichier tableur zippé (csv tabulé)
   $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($fcontenu_csv) );
-  exit('<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>');
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu_csv) );
+  exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez le fichier exporté de la base SACoche.</span></a></li></ul>');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

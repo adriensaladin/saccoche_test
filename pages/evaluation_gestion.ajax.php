@@ -561,7 +561,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     foreach($tab_comp_id as $comp_id=>$val_comp)
     {
       $num_ligne++;
-      $tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" /></td>'; // readonly retiré pour faire apparaître un clavier virtuel sur les dispositif tactiles
+      $tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
     }
   }
   // configurer le champ input
@@ -579,7 +579,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
   $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   //
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
   //
@@ -727,7 +727,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
   $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -1167,7 +1167,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   }
   // On attaque l'élaboration des sorties HTML, CSV et PDF
   $sacoche_htm = '<hr /><a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-  $sacoche_htm.= '<a class="lien_ext" href="./force-download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
+  $sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
   $sacoche_csv = '';
   $separateur  = ';';
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
@@ -1236,8 +1236,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
       }
     }
   }
-  // On archive le cartouche dans un fichier csv
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
+  // On archive le cartouche dans un fichier tableur zippé (csv tabulé)
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.zip' , 'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
   // On archive le cartouche dans un fichier pdf
   $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
   // Affichage

@@ -131,7 +131,6 @@ define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
 define('CHEMIN_FICHIER_DEBUG_CONFIG'  , CHEMIN_DOSSIER_TMP.'debug.txt');
 define('CHEMIN_FICHIER_WS_LCS'        , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_ARGOS'      , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
-define('CHEMIN_FICHIER_CONFIG_ARGOS'  , CHEMIN_DOSSIER_WEBSERVICES.'argos_serveur_config.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -266,15 +265,7 @@ function getServerProtocole()
   return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
-if( (SERVEUR_TYPE=='LOCAL') || !is_file(CHEMIN_FICHIER_CONFIG_ARGOS) )
-{
-  define('URL_BASE',getServerProtocole().getServerUrl());
-}
-else
-{
-  require(CHEMIN_FICHIER_CONFIG_ARGOS);
-}
-
+define('URL_BASE',getServerProtocole().getServerUrl());
 
 // ============================================================================
 // URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)
@@ -443,7 +434,6 @@ function __autoload($class_name)
     'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
 
     'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
-    'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
     'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
     'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
     'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
@@ -569,11 +559,11 @@ function rapporter_erreur_fatale_memoire_ou_duree()
   {
     if(mb_substr($tab_last_error['message'],0,19)=='Allowed memory size')
     {
-      exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ , '' /*lien*/ );
+      exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
     }
     if(mb_substr($tab_last_error['message'],0,22)=='Maximum execution time')
     {
-      exit_error( 'Temps alloué insuffisant' /*titre*/ , 'Temps de '.ini_get('max_execution_time').'s alloué au script insuffisant ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' /*contenu*/ , '' /*lien*/ );
+      exit_error( 'Temps alloué insuffisant' /*titre*/ , 'Temps de '.ini_get('max_execution_time').'s alloué au script insuffisant ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' /*contenu*/ );
     }
   }
 }
@@ -647,13 +637,14 @@ function rapporter_erreur_fatale_phpcas()
  * 
  * @param string $titre     titre de la page
  * @param string $contenu   contenu HTML affiché (ou AJAX retourné) ; il doit déjà avoir été filtré si besoin avec html()
- * @param string $lien      "accueil" | "install" | "" pour un lien vers l'accueil (par défaut) ou la procédure d'installation au aucun.
+ * @param bool   $setup     facultatif ; TRUE pour un lien vers la procédure d'installation au lieu d'un lien vers l'accueil.
  * @return void
  */
-function exit_error( $titre , $contenu , $lien='accueil' )
+function exit_error( $titre , $contenu , $setup=FALSE )
 {
   if(SACoche!='ajax')
   {
+    $tab_lien = ($setup) ? array('href'=>'index.php?page=public_installation','txt'=>'Procédure d\'installation') : array('href'=>'index.php','txt'=>'Retour en page d\'accueil') ;
     // start html
     header('Content-Type: text/html; charset='.CHARSET);
     echo'<!DOCTYPE html><html>';
@@ -669,8 +660,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     echo'<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>';
     echo'<h1>» '.$titre.'</h1>';
     echo'<p>'.str_replace('<br />','</p><p>',$contenu).'</p>';
-        if($lien=='accueil') { echo'<p><a href="./index.php">Retour en page d\'accueil de SACoche.</a></p>'; } 
-    elseif($lien=='install') { echo'<p><a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'; } 
+    echo'<p><a href="./'.$tab_lien['href'].'">'.$tab_lien['txt'].' de SACoche.</a></p>';
     echo'</div></body>';
     // end html
     echo'</html>';

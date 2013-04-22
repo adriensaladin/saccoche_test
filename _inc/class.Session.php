@@ -153,6 +153,34 @@ class Session
   }
 
   /*
+   * Initialiser une session ouverte
+   * 
+   * @param void
+   * @return void
+   */
+  private static function init()
+  {
+    $_SESSION = array();
+    // Clef pour éviter les vols de session.
+    $_SESSION['SESSION_KEY']           = Session::session_key();
+    // Numéro de la base
+    $_SESSION['BASE']                  = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']     = 'OUT';
+    $_SESSION['USER_PROFIL_TYPE']      = 'public';
+    $_SESSION['USER_PROFIL_NOM_COURT'] = 'non connecté';
+    $_SESSION['USER_PROFIL_NOM_LONG']  = 'utilisateur non connecté';
+    $_SESSION['USER_DUREE_INACTIVITE'] = 0;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']               = 0;
+    $_SESSION['USER_NOM']              = '-';
+    $_SESSION['USER_PRENOM']           = '-';
+    // Données associées à l'établissement.
+    $_SESSION['SESAMATH_ID']           = 0;
+    $_SESSION['CONNEXION_MODE']        = 'normal';
+  }
+
+  /*
    * Rediriger vers l'authentification SSO si détecté, ou afficher une page HTML avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
    * 
    * @param void
@@ -253,35 +281,6 @@ class Session
   }
 
   /*
-   * Initialiser une session ouverte
-   * Appelé une fois depuis /pages/public_login_SSO.php
-   * 
-   * @param void
-   * @return void
-   */
-  public static function init()
-  {
-    $_SESSION = array();
-    // Clef pour éviter les vols de session.
-    $_SESSION['SESSION_KEY']           = Session::session_key();
-    // Numéro de la base
-    $_SESSION['BASE']                  = 0;
-    // Données associées au profil de l'utilisateur.
-    $_SESSION['USER_PROFIL_SIGLE']     = 'OUT';
-    $_SESSION['USER_PROFIL_TYPE']      = 'public';
-    $_SESSION['USER_PROFIL_NOM_COURT'] = 'non connecté';
-    $_SESSION['USER_PROFIL_NOM_LONG']  = 'utilisateur non connecté';
-    $_SESSION['USER_DUREE_INACTIVITE'] = 0;
-    // Données personnelles de l'utilisateur.
-    $_SESSION['USER_ID']               = 0;
-    $_SESSION['USER_NOM']              = '-';
-    $_SESSION['USER_PRENOM']           = '-';
-    // Données associées à l'établissement.
-    $_SESSION['SESAMATH_ID']           = 0;
-    $_SESSION['CONNEXION_MODE']        = 'normal';
-  }
-
-  /*
    * Rechercher une session existante et gérer les différents cas possibles.
    * Session::$tab_droits_page a déjà été renseigné lors de l'appel à Session::verif_droit_acces()
    * 
@@ -364,7 +363,7 @@ class Session
           if( !empty($_SERVER['HTTP_SHIB_SESSION_ID']) && ( $_COOKIE[SESSION_NOM] != $_SERVER['HTTP_SHIB_SESSION_ID'] ) )
           {
             Session::close();
-            exit_error( 'Session incompatible avec votre authentification' /*titre*/ , 'Identifiant de session ("'.$_COOKIE[SESSION_NOM].'") différent de l\'identifiant Shibboleth ("'.$_SERVER['HTTP_SHIB_SESSION_ID'].'") !<br />Veuillez vous reconnecter.' /*contenu*/ );
+            exit_error( 'Session incompatible avec votre authentification' /*titre*/ , 'Identifiant de session différent de l\'identifiant Shibboleth !<br />Veuillez vous reconnecter.' /*contenu*/ );
           }
         }
         elseif(Session::$tab_droits_page['public'])
@@ -475,7 +474,7 @@ class Session
     {
       if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) )
       {
-        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ );
+        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ , FALSE /*setup*/ );
       }
     }
   }

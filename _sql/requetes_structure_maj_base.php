@@ -2608,7 +2608,7 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_fini TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 ' );
       // ajout champs table sacoche_user (en prévision, car pas encore utilisé à ce jour)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_naissance_date DATE NULL DEFAULT NULL AFTER user_prenom ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_email VARCHAR(63) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER user_naissance_date ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_email VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER user_naissance_date ' );
     }
   }
 
@@ -2636,54 +2636,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 214, 0, 10,  90, "N4", "", "Niveau 4") ' );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 215, 0, 10, 180, "N5", "", "Niveau 5") ' );
       }
-    }
-  }
-
-  if($version_base_structure_actuelle=='2013-03-20')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-04-22';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // nouvelle table sacoche_brevet_serie
-      $reload_sacoche_brevet_serie = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_brevet_serie.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // nouvelle table sacoche_brevet_epreuve
-      $reload_sacoche_brevet_epreuve = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_brevet_epreuve.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // nouvelle table sacoche_brevet_saisie
-      $reload_sacoche_brevet_saisie = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_brevet_saisie.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // nouvelle table sacoche_geo_academie
-      $reload_sacoche_geo_academie = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_geo_academie.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // nouvelle table sacoche_geo_departement
-      $reload_sacoche_geo_departement = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_geo_departement.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // ajout champ table sacoche_user
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_brevet_serie VARCHAR(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet." AFTER eleve_langue ' );
-      // modification sacoche_groupe
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD fiche_brevet ENUM( "","1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
-      // modification sacoche_parametre (paramètres CAS pour ENT Toutatice)
-      $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-      if($connexion_nom=='toutatice')
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="casshib/shib/toutatice" WHERE parametre_nom="cas_serveur_root" ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="https://www.toutatice.fr/casshib/shib/666666/serviceValidate" WHERE parametre_nom="cas_serveur_url_validate" ' );
-      }
-      // réordonner un peu la table sacoche_parametre et retirer une ligne qui ne correspond à rien
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="annee_utilisation_numero" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom ' );
     }
   }
 

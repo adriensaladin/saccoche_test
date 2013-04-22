@@ -32,8 +32,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * [./pages/releve_items_matiere.ajax.php]
  * [./pages/releve_items_multimatiere.ajax.php]
  * [./pages/releve_items_selection.ajax.php]
- * [./pages/brevet_moyennes.ajax.php]
- * [./_inc/code_officiel_***.ajax.php]
+ * [./pages/officiel_action_***.ajax.php]
+ * 
  */
 
 prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
@@ -140,7 +140,7 @@ elseif($format=='selection')
 }
 
 $item_nb = count($tab_item);
-if( !$item_nb && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
+if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
   exit('Aucun item évalué sur cette période selon les paramètres choisis !');
 }
@@ -195,7 +195,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
     }
   }
 }
-if( !count($tab_eval) && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
+if( !count($tab_eval) && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
   exit('Aucune évaluation trouvée sur cette période selon les paramètres choisis !');
 }
@@ -379,22 +379,14 @@ if($type_synthese)
 
 if( $type_synthese || $type_bulletin )
 {
-  if($item_nb) // Peut valoir 0 dans le cas d'une récupération pour une fiche brevet (il ne faut pas qu'un élève sans rien soit bloquant).
-  {
-    // $moyenne_moyenne_scores
-    $somme  = array_sum($tab_moyenne_scores_eleve[$matiere_id]);
-    $nombre = count( array_filter($tab_moyenne_scores_eleve[$matiere_id],'non_nul') );
-    $moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : FALSE ;
-    // $moyenne_pourcentage_acquis
-    $somme  = array_sum($tab_pourcentage_acquis_eleve[$matiere_id]);
-    $nombre = count( array_filter($tab_pourcentage_acquis_eleve[$matiere_id],'non_nul') );
-    $moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : FALSE ;
-  }
-  else
-  {
-    $moyenne_moyenne_scores     = FALSE ;
-    $moyenne_pourcentage_acquis = FALSE ;
-  }
+  // $moyenne_moyenne_scores
+  $somme  = array_sum($tab_moyenne_scores_eleve[$matiere_id]);
+  $nombre = count( array_filter($tab_moyenne_scores_eleve[$matiere_id],'non_nul') );
+  $moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : FALSE ;
+  // $moyenne_pourcentage_acquis
+  $somme  = array_sum($tab_pourcentage_acquis_eleve[$matiere_id]);
+  $nombre = count( array_filter($tab_pourcentage_acquis_eleve[$matiere_id],'non_nul') );
+  $moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : FALSE ;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1006,7 +998,7 @@ if($type_synthese)
 // Elaboration du bulletin (moyenne et/ou appréciation) en HTML + CSV pour GEPI + Formulaire pour report prof
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( $type_bulletin && $make_html )
+if($type_bulletin)
 {
   $tab_bulletin_input = array();
   $bulletin_form = $bulletin_periode = $bulletin_alerte = '' ;

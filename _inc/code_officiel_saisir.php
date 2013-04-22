@@ -312,7 +312,6 @@ if( $affichage_assiduite && $eleve_id )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $make_officiel = TRUE;
-$make_brevet   = FALSE;
 $make_action   = 'saisir';
 $make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf      = FALSE;

@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_officiel_assiduite".
+// Ces méthodes ne concernent essentiellement que les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_officiel_assiduite".
 
 class DB_STRUCTURE_OFFICIEL extends DB
 {
@@ -139,14 +139,14 @@ public static function DB_recuperer_bilan_officiel_saisies_classe($periode_id,$c
 }
 
 /**
- * recuperer_bilan_officiel_notes_eleves
+ * recuperer_bilan_officiel_notes_eleves_periode
  *
  * @param int     $periode_id
  * @param string  $liste_eleve_id
  * @param bool    $tri_matiere
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_notes_eleves($periode_id,$liste_eleve_id,$tri_matiere)
+public static function DB_recuperer_bilan_officiel_notes_eleves_periode($periode_id,$liste_eleve_id,$tri_matiere)
 {
   $DB_SQL = 'SELECT eleve_ou_classe_id AS eleve_id, rubrique_id, saisie_note, saisie_appreciation ';
   $DB_SQL.= ($tri_matiere)   ? ', matiere_nom as rubrique_nom ' : '' ;
@@ -155,6 +155,23 @@ public static function DB_recuperer_bilan_officiel_notes_eleves($periode_id,$lis
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id IN ('.$liste_eleve_id.') AND prof_id=:prof_id AND saisie_type=:saisie_type ';
   $DB_SQL.= ($tri_matiere) ? 'ORDER BY matiere_ordre ASC ' : '' ;
   $DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':prof_id'=>0,':saisie_type'=>'eleve');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * recuperer_bilan_officiel_notes_eleve_periodes
+ *
+ * @param int     $eleve_id
+ * @return array
+ */
+public static function DB_recuperer_bilan_officiel_notes_eleve_periodes($eleve_id)
+{
+  $DB_SQL = 'SELECT rubrique_id AS matiere_id, periode_id, saisie_note, periode_nom ';
+  $DB_SQL.= 'FROM sacoche_officiel_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
+  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND eleve_ou_classe_id=:eleve_id AND prof_id=:prof_id AND saisie_type=:saisie_type AND saisie_note IS NOT NULL ';
+  $DB_SQL.= 'ORDER BY periode_ordre ASC ';
+  $DB_VAR = array(':officiel_type'=>'bulletin',':eleve_id'=>$eleve_id,':prof_id'=>0,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

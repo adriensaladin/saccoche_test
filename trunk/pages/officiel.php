@@ -57,7 +57,7 @@ $TITRE = "Synthèses / Bilans";
 <?php
 if($SECTION=='reglages')
 {
-  echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>';
   $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
   $s = ($nb_inconnu>1) ? 's' : '' ;
   echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
@@ -87,11 +87,13 @@ else
     else
     {
       echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
+      return; // Ne pas exécuter la suite de ce fichier inclus.
     }
   }
   else
   {
     echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
+    return; // Ne pas exécuter la suite de ce fichier inclus.
   }
 }
 ?>

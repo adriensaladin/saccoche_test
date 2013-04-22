@@ -81,7 +81,7 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
     </select>
   </p>
   <ul class="puce">
-    <li>Indiquez le fichier <em>SIECLE_exportAbsence.xml</em> : <button type="button" id="import_siecle" class="fichier_import">Parcourir...</button><label id="ajax_msg_import">&nbsp;</label></li>
+    <li>Indiquer le fichier <em>SIECLE_exportAbsence.xml</em> : <button type="button" id="import_siecle" class="fichier_import">Parcourir...</button><label id="ajax_msg_import">&nbsp;</label></li>
   </ul>
 </form>
 

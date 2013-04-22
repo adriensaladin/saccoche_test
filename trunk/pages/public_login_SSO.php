@@ -123,7 +123,7 @@ if($connexion_mode=='cas')
       preg_match($pattern, $content, $matches);
       if (!empty($matches[1]))
       {
-        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ , FALSE /*setup*/ );
+        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ );
       }
     }
     // si on arrive là, c'est qu'on n'a pas trouvé le contenu, on laisse l'existant (a priori la page moche de phpCAS)
@@ -297,7 +297,7 @@ if($connexion_mode=='cas')
     {
       // peut-on passer là ?
       trigger_error('phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté mais ce n\'est pas une CAS_AuthenticationException');
-      exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_sup /*contenu*/ , $setup=FALSE );
+      exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_sup /*contenu*/ );
     }
   }
   // A partir de là, l'utilisateur est forcément authentifié sur son CAS.

@@ -107,7 +107,6 @@ function test_NA($score,$seuil=NULL)
   return $score<$seuil ;
 }
 
-
 /**
  * roundTo
  * Arrondir à une précision donnée, par exemple à 0,5 près
@@ -119,7 +118,32 @@ function test_NA($score,$seuil=NULL)
 function roundTo($nombre,$precision)
 {
   return ($precision) ? round( $nombre/$precision , 0 ) * $precision : $nombre ;
-} 
+}
+
+/**
+ * ceilTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près, par excès
+ * @param float $nombre
+ * @param float $precision
+ * @return float
+ */
+function ceilTo($nombre,$precision)
+{
+  return ($precision) ? ceil( $nombre/$precision ) * $precision : $nombre ;
+}
+
+/**
+ * floorTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près, par défaut
+ * @param float $nombre
+ * @param float $precision
+ * @return float
+ */
+function floorTo($nombre,$precision)
+{
+  return ($precision) ? floor( $nombre/$precision ) * $precision : $nombre ;
+}
+
 /**
  * Calculer le score d'un item, à partir des notes transmises et des paramètres de calcul.
  * 

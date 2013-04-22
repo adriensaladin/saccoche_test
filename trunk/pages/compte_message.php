@@ -107,8 +107,8 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
   <h2>Ajouter | Modifier un message d'accueil</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_debut_date">Date de début :</label><input id="f_debut_date" name="f_debut_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-      <label class="tab" for="f_fin_date">Date de fin :</label><input id="f_fin_date" name="f_fin_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+      <label class="tab" for="f_debut_date">Date de début :</label><input id="f_debut_date" name="f_debut_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
+      <label class="tab" for="f_fin_date">Date de fin :</label><input id="f_fin_date" name="f_fin_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </p>
     <p>
       <label class="tab" for="f_destinataires_nombre">Destinataires :</label><input id="f_destinataires_nombre" name="f_destinataires_nombre" size="13" type="text" value="" readonly /><q class="choisir_eleve" title="Voir ou choisir les destinataires."></q><input id="f_destinataires_liste" name="f_destinataires_liste" type="hidden" value="" />

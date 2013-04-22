@@ -141,49 +141,56 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
     }
   }
   // Créer les fichiers sql table par table, et morceau par morceau...
-  $i_stop = ($etape) ? min(10,count($_SESSION['tab_tables_info'])) : count($_SESSION['tab_tables_info']) ;
-  for($i=0 ; $i<$i_stop ; $i++)
-  {
-    $tab_table_info = array_shift($_SESSION['tab_tables_info']);
-    extract($tab_table_info); // TableNom NombreLignes NombreBoucles NumeroBoucle
-    $fichier_contenu = '';
-    // ... la structure
-    if($NumeroBoucle==0)
-    {
-      $fichier_contenu .= 'DROP TABLE IF EXISTS '.$TableNom.';'."\r\n";
-      $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_table_structure($TableNom);
-      $fichier_contenu .= str_replace('`','',$DB_ROW['Create Table']).';'."\r\n";
-      $fichier_contenu .= 'ALTER TABLE '.$TableNom.' DISABLE KEYS;'."\r\n";
-    }
-    // ... les données
-    $tab_ligne_insert = array();
-    $from = $NumeroBoucle*$NombreLignes;
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $TableNom , $from ,$NombreLignes );
-    if(!empty($DB_TAB))
-    {
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $DB_ROW = array_map('formater_valeur',$DB_ROW);
-        $tab_ligne_insert[] = '('.implode(',',$DB_ROW).')';
-      }
-      $fichier_contenu .= 'INSERT INTO '.$TableNom.' VALUES '."\r\n".implode(','."\r\n",$tab_ligne_insert).';'."\r\n";
-    }
-    if($NumeroBoucle==$NombreBoucles-1)
-    {
-      $fichier_contenu .= 'ALTER TABLE '.$TableNom.' ENABLE KEYS;'."\r\n";
-    }
-    // Enregistrer le fichier
-    $fichier_sql_nom = 'dump_'.$TableNom.'_'.sprintf("%03u",$NumeroBoucle).'.sql';
-    FileSystem::ecrire_fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
-  }
-  //
   if(count($_SESSION['tab_tables_info']))
   {
-    // Ce n'est pas la dernière étape
-    return'Sauvegarde de la base en cours ; étape réalisée';
+    $i_stop = ($etape) ? min(10,count($_SESSION['tab_tables_info'])) : count($_SESSION['tab_tables_info']) ;
+    for($i=0 ; $i<$i_stop ; $i++)
+    {
+      $tab_table_info = array_shift($_SESSION['tab_tables_info']);
+      extract($tab_table_info); // TableNom NombreLignes NombreBoucles NumeroBoucle
+      $fichier_contenu = '';
+      // ... la structure
+      if($NumeroBoucle==0)
+      {
+        $fichier_contenu .= 'DROP TABLE IF EXISTS '.$TableNom.';'."\r\n";
+        $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_table_structure($TableNom);
+        $fichier_contenu .= str_replace('`','',$DB_ROW['Create Table']).';'."\r\n";
+        $fichier_contenu .= 'ALTER TABLE '.$TableNom.' DISABLE KEYS;'."\r\n";
+      }
+      // ... les données
+      $tab_ligne_insert = array();
+      $from = $NumeroBoucle*$NombreLignes;
+      $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $TableNom , $from ,$NombreLignes );
+      if(!empty($DB_TAB))
+      {
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $DB_ROW = array_map('formater_valeur',$DB_ROW);
+          $tab_ligne_insert[] = '('.implode(',',$DB_ROW).')';
+        }
+        $fichier_contenu .= 'INSERT INTO '.$TableNom.' VALUES '."\r\n".implode(','."\r\n",$tab_ligne_insert).';'."\r\n";
+      }
+      if($NumeroBoucle==$NombreBoucles-1)
+      {
+        $fichier_contenu .= 'ALTER TABLE '.$TableNom.' ENABLE KEYS;'."\r\n";
+      }
+      // Enregistrer le fichier
+      $fichier_sql_nom = 'dump_'.$TableNom.'_'.sprintf("%03u",$NumeroBoucle).'.sql';
+      FileSystem::ecrire_fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
+    }
+    if($etape>0)
+    {
+      return'Sauvegarde de la base en cours ; étape réalisée';
+    }
+    else
+    {
+      unset($_SESSION['tab_tables_info']);
+      return TRUE;
+    }
   }
   else
   {
+    // A la dernière étape on ne fait rien ici, on zippe juste les fichiers après appel de cette fonction
     unset($_SESSION['tab_tables_info']);
     return'Sauvegarde de la base terminée';
   }

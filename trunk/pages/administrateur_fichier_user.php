@@ -74,7 +74,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
   <fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
-    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voyez la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
+    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
   <fieldset id="fieldset_sconet_professeurs_directeurs_oui" class="hide">
@@ -88,7 +88,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
   <fieldset id="fieldset_sconet_eleves_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
-    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voyez la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
+    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
   <fieldset id="fieldset_sconet_eleves_oui" class="hide">
@@ -102,14 +102,14 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
   <fieldset id="fieldset_sconet_parents_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
-    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voyez la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
+    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
   <fieldset id="fieldset_sconet_parents_oui" class="hide">
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
-      <li>Indiquez le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
@@ -117,7 +117,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
@@ -125,7 +125,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
@@ -133,7 +133,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_profs">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-      <li>Indiquez le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
@@ -141,7 +141,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_eleves">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-      <li>Indiquez le fichier <em>nom-du-fichier-eleves.csv</em> (ou <em>nom-du-fichier-eleves.txt</em>) : <button id="tableur_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>nom-du-fichier-eleves.csv</em> (ou <em>nom-du-fichier-eleves.txt</em>) : <button id="tableur_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
@@ -149,7 +149,7 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur#toggle_importer_parents">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-      <li>Indiquez le fichier <em>nom-du-fichier-parents.csv</em> (ou <em>nom-du-fichier-parents.txt</em>) : <button id="tableur_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>nom-du-fichier-parents.csv</em> (ou <em>nom-du-fichier-parents.txt</em>) : <button id="tableur_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

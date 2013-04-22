@@ -224,7 +224,7 @@ $(document).ready
           $('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable est déjà associé à l'élève !");
           return false;
         }
-        $(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
+        $(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Penser à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
         afficher_masquer_images_action('show');
         $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
       }

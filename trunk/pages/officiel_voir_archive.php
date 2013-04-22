@@ -80,6 +80,11 @@ if(!empty($DB_TAB))
   }
   else
   {
+    if(!$_SESSION['NB_ENFANTS'])
+    {
+      echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>';
+      return; // Ne pas exécuter la suite de ce fichier inclus.
+    }
     foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab)
     {
       $tab_eleve_id[] = $tab['valeur'];

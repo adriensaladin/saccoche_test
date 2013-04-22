@@ -85,7 +85,7 @@ $(document).ready
         $("button").prop('disabled',true);
         $('#ajax_msg_sauvegarde').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $('#ajax_msg_restauration').removeAttr("class").html('');
-        $('#ajax_info').html();
+        $('#ajax_info').html('');
         initialiser_compteur();
         sauvegarder(1);
       }

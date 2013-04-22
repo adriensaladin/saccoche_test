@@ -135,7 +135,7 @@ foreach($DB_TAB as $DB_ROW)
     <label class="tab" for="f_password">Mot de passe :</label><input id="box_password" name="box_password" value="1" type="checkbox" checked /> <label for="box_password">aléatoire | inchangé</label><span><input id="f_password" name="f_password" size="15" maxlength="20" type="text" value="" /></span>
   </p>
   <p>
-    <label class="tab" for="f_sortie_date">Date de sortie :</label><input id="box_date" name="box_date" value="1" type="checkbox" /> <label for="box_date">sans objet</label><span><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span>
+    <label class="tab" for="f_sortie_date">Date de sortie :</label><input id="box_date" name="box_date" value="1" type="checkbox" /> <label for="box_date">sans objet</label><span><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span>
   </p>
   <p>
     <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>

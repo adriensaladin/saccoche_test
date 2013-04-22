@@ -121,7 +121,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
   // Rechercher les moyennes déjà enregistrées, et si elles ont été calculées automatiquement ou imposées
   $tab_moyennes_enregistrees      = array();
   $tab_appreciations_enregistrees = array();
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_notes_eleves( $periode_id , $liste_eleve_id , FALSE /*tri_matiere*/ );
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_notes_eleves_periode( $periode_id , $liste_eleve_id , FALSE /*tri_matiere*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_moyennes_enregistrees['eleve'][$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']] = ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note'] : FALSE ; // Pas NULL car un test isset() sur une valeur NULL renvoie FALSE !!! (voir qq lignes plus bas)

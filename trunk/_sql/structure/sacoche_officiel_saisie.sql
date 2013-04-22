@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS sacoche_officiel_saisie;
 -- rubrique_id>0 + prof_id>0 = appréciation rubrique
 -- rubrique_id=0 + prof_id>0 = appréciation synthèse
 -- rubrique_id>0 + prof_id=0 = moyenne rubrique (bulletin)
--- les moyennes et appréciations de classe (par matière ou générale) (bulletin) ne sont pas enregistrées dans cette table car elles nécessitent une référence à la classe.
 
 CREATE TABLE sacoche_officiel_saisie (
   officiel_type       ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin",

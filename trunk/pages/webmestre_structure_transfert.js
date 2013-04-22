@@ -118,8 +118,8 @@ $(document).ready
                 var fichier_csv = tab_infos[2];
                 var fichier_zip = tab_infos[3];
                 $('#ajax_msg_export').removeAttr("class").addClass("valide").html('Export terminé.');
-                var li1 = '<li><a class="lien_ext" href="'+fichier_csv+'">Récupérez le listing des bases exportées au format <em>CSV</em>.</a></li>';
-                var li2 = '<li><a class="lien_ext" href="'+fichier_zip+'">Récupérez le fichier des bases sauvegardées au format <em>ZIP</em>.</a></li>';
+                var li1 = '<li><a class="lien_ext" href="'+fichier_csv+'">Récupérer le listing des bases exportées au format <em>CSV</em>.</a></li>';
+                var li2 = '<li><a class="lien_ext" href="'+fichier_zip+'">Récupérer le fichier des bases sauvegardées au format <em>ZIP</em>.</a></li>';
                 $('#puce_info_export').html(li1+li2);
                 format_liens('#puce_info_export');
                 $('#zone_actions_export').show('fast');

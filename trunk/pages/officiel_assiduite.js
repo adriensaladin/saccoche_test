@@ -126,7 +126,7 @@ $(document).ready
     {
       if (!id_periode_import)
       {
-        $('#ajax_msg_import').removeAttr("class").addClass("erreur").html("Choisissez d'abord la période concernée.");
+        $('#ajax_msg_import').removeAttr("class").addClass("erreur").html("Choisir d'abord la période concernée.");
         return false;
       }
       else if (fichier_nom==null || fichier_nom.length<5)

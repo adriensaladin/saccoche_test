@@ -321,7 +321,7 @@ class SAML2_Assertion implements SAML2_SignedElement {
 			}
 			switch ($node->localName) {
 			case 'AudienceRestriction':
-				$audiences = SAML2_Utils::extractStrings($node, './saml_assertion:Audience');
+				$audiences = SAML2_Utils::extractStrings($node, SAML2_Const::NS_SAML, 'Audience');
 				if ($this->validAudiences === NULL) {
 					/* The first (and probably last) AudienceRestriction element. */
 					$this->validAudiences = $audiences;
@@ -401,7 +401,7 @@ class SAML2_Assertion implements SAML2_SignedElement {
 			$this->authnContext = trim($accr[0]->textContent);
 		}
 		
-		$this->AuthenticatingAuthority = SAML2_Utils::extractStrings($ac, './saml_assertion:AuthenticatingAuthority');		
+		$this->AuthenticatingAuthority = SAML2_Utils::extractStrings($ac, SAML2_Const::NS_SAML, 'AuthenticatingAuthority');
 	}
 
 
@@ -645,15 +645,16 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	 * Decrypt the NameId of the subject in the assertion.
 	 *
 	 * @param XMLSecurityKey $key  The decryption key.
+	 * @param array $blacklist  Blacklisted decryption algorithms.
 	 */
-	public function decryptNameId(XMLSecurityKey $key) {
+	public function decryptNameId(XMLSecurityKey $key, array $blacklist = array()) {
 
 		if ($this->encryptedNameId === NULL) {
 			/* No NameID to decrypt. */
 			return;
 		}
 
-		$nameId = SAML2_Utils::decryptElement($this->encryptedNameId, $key);
+		$nameId = SAML2_Utils::decryptElement($this->encryptedNameId, $key, $blacklist);
 		SimpleSAML_Utilities::debugMessage($nameId, 'decrypt');
 		$this->nameId = SAML2_Utils::parseNameId($nameId);
 
@@ -661,14 +662,14 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	}
 
 
-	public function decryptAttributes($key){
+	public function decryptAttributes($key, array $blacklist = array()){
 		if($this->encryptedAttribute === null){
 			return;
 		}
 		$attributes = $this->encryptedAttribute;
 		foreach ($attributes as $attributeEnc) {
 			/*Decrypt node <EncryptedAttribute>*/
-			$attribute = SAML2_Utils::decryptElement($attributeEnc->getElementsByTagName('EncryptedData')->item(0), $key);
+			$attribute = SAML2_Utils::decryptElement($attributeEnc->getElementsByTagName('EncryptedData')->item(0), $key, $blacklist);
 
 			if (!$attribute->hasAttribute('Name')) {
 				throw new Exception('Missing name on <saml:Attribute> element.');

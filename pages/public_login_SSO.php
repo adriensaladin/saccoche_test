@@ -326,8 +326,62 @@ if($connexion_mode=='cas')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentification assurée par Shibboleth
 // La redirection est effectuée en amont (configuration du serveur web qui est "shibbolisé"), l'utilisateur doit donc être authentifié à ce stade.
+// Attention : SACoche comportant une partie publique ne requérant pas d'authentification, et un accès possible avec une authentification locale, toute l'application n'est pas à shibboliser.
 // @see https://services.renater.fr/federation/docs/fiches/shibbolisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+
+>>> extrait conf shibboleth2.xml
+
+<RequestMapper type="Native">
+ <RequestMap applicationId="default">
+  <Host name="vm-iozone3.in.ac-bordeaux.fr">
+   <Path name="sacoche">
+    <Query name="sso" authType="shibboleth" requireSession="true" />
+   </Path>
+  </Host>
+ </RequestMap>
+</RequestMapper>
+
+>>> extrait httpd.conf
+
+Redirect permanent /sacoche /sacoche/
+ProxyPass /sacoche/ https://ent2d.ac-bordeaux.fr/sacoche/
+ProxyPassReverse /sacoche/ https://ent2d.ac-bordeaux.fr/sacoche/
+
+>>> extrait $_SERVER[]
+
+[HTTP_AFFILIATION]
+[HTTP_CTEMAIL]
+[HTTP_ENTELEVESTRUCTRATTACHID]
+[HTTP_ENTITLEMENT]
+[HTTP_ENTPERSONFONCTIONS]
+[HTTP_ENTPERSONLOGIN]
+[HTTP_EPPN]
+[HTTP_FREDUCODEMEF]
+[HTTP_FREDUVECTEUR]
+[HTTP_GIVENNAME]
+[HTTP_ID_SOURCE]
+[HTTP_MAIL]
+[HTTP_PERSISTENT_ID]
+[HTTP_SHIB_APPLICATION_ID]
+[HTTP_SHIB_ASSERTION_COUNT]
+[HTTP_SHIB_AUTHENTICATION_INSTANT]
+[HTTP_SHIB_AUTHENTICATION_METHOD]
+[HTTP_SHIB_AUTHNCONTEXT_CLASS]
+[HTTP_SHIB_AUTHNCONTEXT_DECL]
+[HTTP_SHIB_COOKIE_NAME]
+[HTTP_SHIB_IDENTITY_PROVIDER]
+[HTTP_SHIB_SESSION_ID]
+[HTTP_SHIB_SESSION_INDEX]
+[HTTP_SN]
+[HTTP_TARGETED_ID]
+[HTTP_TSSCONETID]
+[HTTP_UID]
+[HTTP_UNSCOPED_AFFILIATION]
+
+*/
 
 if($connexion_mode=='shibboleth')
 {
@@ -346,13 +400,6 @@ if($connexion_mode=='shibboleth')
   if($auth_resultat!='ok')
   {
     exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_resultat /*contenu*/ );
-  }
-  // En cas d'authentification avec le protocole Shibboleth, on prend l'ID Shibboleth comme identifiant de session afin de pouvoir propager une éventuelle déconnexion.
-  // SACoche comportant une partie publique ne requérant pas d'authentification, et un accès possible avec une authentification locale, toute l'application n'est pas shibbolisée.
-  // La session a donc déjà pu être ouverte par SACoche avec un autre identifiant perso.
-  if( $_COOKIE[SESSION_NOM] != $_SERVER['HTTP_SHIB_SESSION_ID'] )
-  {
-    Session::close();Session::open_new();Session::init(); // Pour init(), seul session_key() a ici de l'intérêt.
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);

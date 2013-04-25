@@ -7,7 +7,7 @@ $config = array(
 		'saml:SP',
 		'idp' => 'gepi-idp',
 		'entityID' => 'sacoche-sp',
-		// Ce paramêtre doit correspondre avec l' entityID dans le fichier simplesaml/metadata/saml20-sp-remote.php du fournisseur d'identité (Gepi)
+		// Ce paramètre doit correspondre avec l' entityID dans le fichier simplesaml/metadata/saml20-sp-remote.php du fournisseur d'identité (Gepi)
 		// En l'absence de ce paramètre, c'est l'url de départ (monserveurSACoche/_lib/SimpleSAMLphp/modules/saml/www/sp/saml2-acs.php) qui est utilisé comme entityID
 		'name' => array(
 			'fr' => 'Gepi'

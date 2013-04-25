@@ -130,7 +130,11 @@ if($connexion_mode=='shibboleth')
   puis envoie une réponse xml à shibboleth,
   qui ensuite demande à l'IdP de tuer la session en cours.
   */
-  exit('Fonctionnalité non implémentée&hellip;');
+  // Redirection mise en dure ici pour l'instant, tant que ça ne concerne que Bordeaux et qu'on ne sait pas trop si ça fonctionne...
+  // Remarque : le code 307 peut causer des soucis ; le code 302 semble mieux. http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
+  header('Status: 302 Found', TRUE, 302);
+  header('Location: https://ent2d.ac-bordeaux.fr/Shibboleth.sso/Logout');
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

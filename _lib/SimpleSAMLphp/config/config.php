@@ -1,15 +1,14 @@
 <?php
-
 /* 
  * The configuration of simpleSAMLphp
  * 
- * $Id: config.php 2725 2011-01-28 08:48:53Z olavmrk $
+ * $Id: config.php 3171 2012-09-25 08:54:06Z jaimepc@gmail.com $
  */
 
 if(!session_id())
 {
 	// Est défini si SimpleSAMLphp est appelé par SACoche, mais pas quand Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
-	// Ainsi; les informations de SACoche dont SimpleSAMLphp a besoin sont mises en session par SACoche préventivement, et peuvent être récupérées directement par SimpleSAMLphp.
+	// Ainsi les informations de SACoche dont SimpleSAMLphp a besoin sont mises en session par SACoche préventivement, et peuvent être récupérées directement par SimpleSAMLphp.
 	define('SESSION_NOM','SACoche-session');
 	session_name(SESSION_NOM);
 	$ID = $_COOKIE[SESSION_NOM];
@@ -22,6 +21,17 @@ $config = array (
 	/**
 	 * Setup the following parameters to match the directory of your installation.
 	 * See the user manual for more details.
+	 *
+	 * Valid format for baseurlpath is:
+	 * [(http|https)://(hostname|fqdn)[:port]]/[path/to/simplesaml/]
+	 * (note that it must end with a '/')
+	 *
+	 * The full url format is useful if your simpleSAMLphp setup is hosted behind
+	 * a reverse proxy. In that case you can specify the external url here.
+	 *
+	 * Please note that simpleSAMLphp will then redirect all queries to the
+	 * external url, no matter where you come from (direct access or via the
+	 * reverse proxy).
 	 */
 	'baseurlpath'           => $_SESSION['SACoche-SimpleSAMLphp']['SIMPLESAMLPHP_BASEURLPATH'], /* issu de SACoche */
 	'certdir'               => 'cert/',
@@ -48,14 +58,14 @@ $config = array (
 	'debug' => FALSE,
 
 
-	'showerrors' => TRUE,
+	'showerrors'            =>	TRUE,
 
 	/**
 	 * Custom error show function called from SimpleSAML_Error_Error::show.
 	 * See docs/simplesamlphp-errorhandling.txt for function code example.
 	 *
 	 * Example:
-	 *   'errors.show_function' => 'sspmod_exmaple_Error_Show::show',
+	 *   'errors.show_function' => array('sspmod_example_Error_Show', 'show'),
 	 */
 
 	/**
@@ -68,10 +78,11 @@ $config = array (
 	 * This password must be kept secret, and modified from the default value 123.
 	 * This password will give access to the installation page of simpleSAMLphp with
 	 * metadata listing and diagnostics pages.
+	 * You can also put a hash here; run "bin/pwgen.php" to generate one.
 	 */
 	'auth.adminpassword'     => '', //inutile car l'authentification de l'admin simplesaml se fait par sacoche avec un login webmestre ; SimpleSAMLphp n'acceptant pas une saisie de mot de passe vide...
-	'admin.protectindexpage' => TRUE,
-	'admin.protectmetadata'  => TRUE,
+	'admin.protectindexpage'	=> false,
+	'admin.protectmetadata'		=> false,
 
 	/**
 	 * This is a secret salt used by simpleSAMLphp when it needs to generate a secure hash
@@ -104,18 +115,18 @@ $config = array (
 	 * Logging.
 	 * 
 	 * define the minimum log level to log
-	 *		LOG_ERR				No statistics, only errors
-	 *		LOG_WARNING			No statistics, only warnings/errors
-	 *		LOG_NOTICE			Statistics and errors 
-	 *		LOG_INFO			Verbose logs
-	 *		LOG_DEBUG			Full debug logs - not reccomended for production
+	 *		SimpleSAML_Logger::ERR		No statistics, only errors
+	 *		SimpleSAML_Logger::WARNING	No statistics, only warnings/errors
+	 *		SimpleSAML_Logger::NOTICE	Statistics and errors
+	 *		SimpleSAML_Logger::INFO		Verbose logs
+	 *		SimpleSAML_Logger::DEBUG	Full debug logs - not reccomended for production
 	 * 
 	 * Choose logging handler.
 	 * 
 	 * Options: [syslog,file,errorlog]
 	 * 
 	 */
-	'logging.level'         => LOG_WARNING,
+	'logging.level'         => SimpleSAML_Logger::NOTICE,
 	'logging.handler'       => 'syslog',
 
 	/*
@@ -140,8 +151,29 @@ $config = array (
 	/* Logging: file - Logfilename in the loggingdir from above.
 	 */
 	'logging.logfile'		=> 'simplesamlphp.log',
-	
-	
+
+	/* (New) statistics output configuration.
+	 *
+	 * This is an array of outputs. Each output has at least a 'class' option, which
+	 * selects the output.
+	 */
+	'statistics.out' => array(
+		// Log statistics to the normal log.
+		/*
+		array(
+			'class' => 'core:Log',
+			'level' => 'notice',
+		),
+		*/
+		// Log statistics to files in a directory. One file per day.
+		/*
+		array(
+			'class' => 'core:File',
+			'directory' => '/var/log/stats',
+		),
+		*/
+	),
+
 
 	/*
 	 * Enable
@@ -150,18 +182,18 @@ $config = array (
 	 * one of the functionalities below, but in some cases you could run multiple functionalities.
 	 * In example when you are setting up a federation bridge.
 	 */
-	'enable.saml20-idp'    => false,
-	'enable.shib13-idp'    => false,
-	'enable.adfs-idp'      => false,
-	'enable.wsfed-sp'      => false,
+	'enable.saml20-idp'		=> false,
+	'enable.shib13-idp'		=> false,
+	'enable.adfs-idp'		=> false,
+	'enable.wsfed-sp'		=> false,
 	'enable.authmemcookie' => TRUE,
 
 	/* 
 	 * This value is the duration of the session in seconds. Make sure that the time duration of
 	 * cookies both at the SP and the IdP exceeds this duration.
 	 */
-	'session.duration'     =>  8 * (60*60), // 8 hours.
-	'session.requestcache' =>  4 * (60*60), // 4 hours
+	'session.duration'		=>  8 * (60*60), // 8 hours.
+	'session.requestcache'	=>  4 * (60*60), // 4 hours
 
 	/*
 	 * Sets the duration, in seconds, data should be stored in the datastore. As the datastore is used for
@@ -170,6 +202,15 @@ $config = array (
 	 */
 	'session.datastore.timeout' => (4*60*60), // 4 hours
 	
+	/*
+	 * Sets the duration, in seconds, auth state should be stored.
+	 */
+	'session.state.timeout' => (60*60), // 1 hour
+
+	/*
+	 * Option to override the default settings for the session cookie name
+	 */
+	'session.cookie.name' => 'SimpleSAMLSessionID',
 
 	/*
 	 * Expiration time for the session cookie, in seconds.
@@ -211,17 +252,54 @@ $config = array (
 	'session.cookie.secure' => FALSE,
 
 	/*
+	 * When set to FALSE fallback to transient session on session initialization
+	 * failure, throw exception otherwise.
+	 */
+	'session.disable_fallback' => FALSE,
+
+	/*
+	 * Enable secure POST from HTTPS to HTTP.
+	 *
+	 * If you have some SP's on HTTP and IdP is normally on HTTPS, this option
+	 * enables secure POSTing to HTTP endpoint without warning from browser.
+	 *
+	 * For this to work, module.php/core/postredirect.php must be accessible
+	 * also via HTTP on IdP, e.g. if your IdP is on
+	 * https://idp.example.org/ssp/, then
+	 * http://idp.example.org/ssp/module.php/core/postredirect.php must be accessible.
+	 */
+	'enable.http_post' => FALSE,
+
+	/*
 	 * Options to override the default settings for php sessions.
 	 */
 	'session.phpsession.cookiename'  => SESSION_NOM, /* issu de SACoche */
 	'session.phpsession.savepath'    => null,
 	'session.phpsession.httponly'    => FALSE,
-	
+
 	/*
-	 * Languages available and what language is default
+	 * Option to override the default settings for the auth token cookie
 	 */
-	'language.available'	=> array('en', 'no', 'nn', 'se', 'da', 'de', 'sv', 'fi', 'es', 'fr', 'it', 'nl', 'lb', 'cs', 'sl', 'lt', 'hr', 'hu', 'pl', 'pt', 'pt-BR', 'tr', 'ja', 'zh-tw'),
+	'session.authtoken.cookiename' => 'SimpleSAMLAuthToken',
+
+	/*
+	 * Languages available, RTL languages, and what language is default
+	 */
+	'language.available'	=> array('en', 'no', 'nn', 'se', 'da', 'de', 'sv', 'fi', 'es', 'fr', 'it', 'nl', 'lb', 'cs', 'sl', 'lt', 'hr', 'hu', 'pl', 'pt', 'pt-br', 'tr', 'ja', 'zh', 'zh-tw', 'ru', 'et', 'he', 'id', 'sr'),
+	'language.rtl'		=> array('ar','dv','fa','ur','he'),
 	'language.default'		=> 'fr',
+
+	/**
+	 * Custom getLanguage function called from SimpleSAML_XHTML_Template::getLanguage().
+	 * Function should return language code of one of the available languages or NULL.
+	 * See SimpleSAML_XHTML_Template::getLanguage() source code for more info.
+	 *
+	 * This option can be used to implement a custom function for determining
+	 * the default language for the user.
+	 *
+	 * Example:
+	 *   'language.get_language_function' => array('sspmod_example_Template', 'getLanguage'),
+	 */
 
 	/*
 	 * Extra dictionary for attribute names.
@@ -294,8 +372,65 @@ $config = array (
 	 */
 	'shib13.signresponse' => TRUE,
 	
+	
+	
 	/*
 	 * Authentication processing filters that will be executed for all IdPs
+	 * Both Shibboleth and SAML 2.0
+	 */
+	'authproc.idp' => array(
+		/* Enable the authproc filter below to add URN Prefixces to all attributes
+ 		10 => array(
+ 			'class' => 'core:AttributeMap', 'addurnprefix'
+ 		), */
+ 		/* Enable the authproc filter below to automatically generated eduPersonTargetedID. 
+ 		20 => 'core:TargetedID',
+ 		*/
+
+		// Adopts language from attribute to use in UI
+ 		30 => 'core:LanguageAdaptor',
+ 		
+		/* Add a realm attribute from edupersonprincipalname
+		40 => 'core:AttributeRealm',
+		 */
+		45 => array(
+			'class' => 'core:StatisticsWithAttribute',
+			'attributename' => 'realm',
+			'type' => 'saml20-idp-SSO',
+		),
+
+		/* When called without parameters, it will fallback to filter attributes ‹the old way›
+		 * by checking the 'attributes' parameter in metadata on IdP hosted and SP remote.
+		 */
+		50 => 'core:AttributeLimit', 
+
+		/* 
+		 * Search attribute "distinguishedName" for pattern and replaces if found
+
+		60 => array(
+			'class'		=> 'core:AttributeAlter',
+			'pattern'	=> '/OU=studerende/',
+			'replacement'	=> 'Student',
+			'subject'	=> 'distinguishedName',
+			'%replace',	
+		),
+		 */
+
+		/*
+		 * Consent module is enabled (with no permanent storage, using cookies).
+
+		90 => array(
+			'class' 	=> 'consent:Consent', 
+			'store' 	=> 'consent:Cookie', 
+			'focus' 	=> 'yes', 
+			'checked' 	=> TRUE
+		),
+		 */
+		// If language is set in Consent module it will be added as an attribute.
+ 		99 => 'core:LanguageAdaptor',
+	),
+	/*
+	 * Authentication processing filters that will be executed for all SPs
 	 * Both Shibboleth and SAML 2.0
 	 */
 	'authproc.sp' => array(
@@ -305,11 +440,13 @@ $config = array (
 		),
 		*/
 
-		/* When called without parameters, it will fallback to filter attributes ‹the old way›
-		 * by checking the 'attributes' parameter in metadata on SP hosted and IdP remote.
+		/*
+		 * Generate the 'group' attribute populated from other variables, including eduPersonAffiliation.
 		 */
-		50 => 'core:AttributeLimit', 
-
+ 		60 => array('class' => 'core:GenerateGroups', 'eduPersonAffiliation'),
+ 		// All users will be members of 'users' and 'members' 	
+ 		61 => array('class' => 'core:AttributeAdd', 'groups' => array('users', 'members')),
+ 		
 		// Adopts language from attribute to use in UI
  		90 => 'core:LanguageAdaptor',
 

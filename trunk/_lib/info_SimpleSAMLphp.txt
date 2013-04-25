@@ -1,5 +1,5 @@
 ================================================================================
-Librairie : SimpleSAMLphp               Version : 1.8.0
+Librairie : SimpleSAMLphp               Version : 1.10.0
 ================================================================================
 
 SimpleSAMLphp permet d'interroger un service d'authentification (CAS, LDAP, ...) mais aussi de fournir ce service.
@@ -17,11 +17,25 @@ Modifications apportées à la source
 
 
 Pour alléger autant que possible cette librairie bien lourde :
-- Dossier /docs/ retiré 
-- Dossier /modules/ vidé des dossiers inutilisés (tous sauf /core/ et /saml/)
+- Suppression des dossiers
+  /attributemap/
+  /bin/
+  /cert/
+  /config-templates/
+  /data/
+  /dictionaries/
+  /docs/
+  /extra/
+  /log/
+  /metadata-templates/
+  /schemas/
+  /templates/
+
 - Dossier /lib/Auth/ retiré (inutilisé)
-- Dossier /www/resources/ retiré (inutilisé + contient des sources js inutiles / obsolètes et un fichier _x_ qui est un jpg sans extension et qui fait râler TortoiseSVN, ...)
-On passe ainsi de 4,59Mo à 1,88Mo.
+- Dossier /modules/ vidé des dossiers inutilisés (tous sauf /core/ et /saml/)
+- Dossier /www/ vidé de tous ses sous-dossiers (dont /resources/ qui contient des sources js inutiles / obsolètes et un fichier _x_ qui est un jpg sans extension et qui fait râler TortoiseSVN, ...)
+
+On passe ainsi de 5,12Mo à 1,33Mo.
 
 
 Configuration de SimpleSAMLphp
@@ -34,13 +48,6 @@ Modification complète du fichier /config/authsources.php
 
 Ajout metadata du fournisseur d'identité Gepi
 Modification complète du fichier /metadata/saml20-idp-remote.php
-
-
-Modification de SimpleSAMLphp par Josselin (pas normal de modifier la classe...)
-fichiers /lib/SAML2/AuthnRequest.php
-         /modules/saml/docs/sp.txt
-         /modules/saml/lib/Auth/Source/SP.php
-voir https://github.com/kigeia/sacoche/commit/b3a0780273b20405c6b777f7412183a98aa052c0
 
 
 ========================================

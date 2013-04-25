@@ -142,34 +142,6 @@ class Session
   }
 
   /*
-   * Initialiser une session ouverte
-   * 
-   * @param void
-   * @return void
-   */
-  private static function init()
-  {
-    $_SESSION = array();
-    // Clef pour éviter les vols de session.
-    $_SESSION['SESSION_KEY']           = Session::session_key();
-    // Numéro de la base
-    $_SESSION['BASE']                  = 0;
-    // Données associées au profil de l'utilisateur.
-    $_SESSION['USER_PROFIL_SIGLE']     = 'OUT';
-    $_SESSION['USER_PROFIL_TYPE']      = 'public';
-    $_SESSION['USER_PROFIL_NOM_COURT'] = 'non connecté';
-    $_SESSION['USER_PROFIL_NOM_LONG']  = 'utilisateur non connecté';
-    $_SESSION['USER_DUREE_INACTIVITE'] = 0;
-    // Données personnelles de l'utilisateur.
-    $_SESSION['USER_ID']               = 0;
-    $_SESSION['USER_NOM']              = '-';
-    $_SESSION['USER_PRENOM']           = '-';
-    // Données associées à l'établissement.
-    $_SESSION['SESAMATH_ID']           = 0;
-    $_SESSION['CONNEXION_MODE']        = 'normal';
-  }
-
-  /*
    * Renvoyer une clef associée au navigateur, à l'adresse IP et à la session en cours
    * 
    * @param void
@@ -257,7 +229,8 @@ class Session
   {
     Session::param();
     // Utiliser l'option préfixe ou entropie de uniqid() insère un '.' qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
-    $ID = uniqid().md5('grain_de_sable'.mt_rand());
+    // En cas d'authentification avec le protocole Shibboleth, on prend l'ID Shibboleth comme identifiant de session afin de pouvoir propager une éventuelle déconnexion.
+    $ID = empty($_SERVER['HTTP_SHIB_SESSION_ID']) ? uniqid().md5('grain_de_sable'.mt_rand()) : $_SERVER['HTTP_SHIB_SESSION_ID'] ;
     session_id($ID);
     return session_start();
   }
@@ -277,6 +250,35 @@ class Session
     session_unset();
     setcookie( session_name() /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     session_destroy();
+  }
+
+  /*
+   * Initialiser une session ouverte
+   * Appelé une fois depuis /pages/public_login_SSO.php
+   * 
+   * @param void
+   * @return void
+   */
+  public static function init()
+  {
+    $_SESSION = array();
+    // Clef pour éviter les vols de session.
+    $_SESSION['SESSION_KEY']           = Session::session_key();
+    // Numéro de la base
+    $_SESSION['BASE']                  = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']     = 'OUT';
+    $_SESSION['USER_PROFIL_TYPE']      = 'public';
+    $_SESSION['USER_PROFIL_NOM_COURT'] = 'non connecté';
+    $_SESSION['USER_PROFIL_NOM_LONG']  = 'utilisateur non connecté';
+    $_SESSION['USER_DUREE_INACTIVITE'] = 0;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']               = 0;
+    $_SESSION['USER_NOM']              = '-';
+    $_SESSION['USER_PRENOM']           = '-';
+    // Données associées à l'établissement.
+    $_SESSION['SESAMATH_ID']           = 0;
+    $_SESSION['CONNEXION_MODE']        = 'normal';
   }
 
   /*
@@ -357,6 +359,13 @@ class Session
         if(Session::$tab_droits_page[$_SESSION['USER_PROFIL_TYPE']])
         {
           // 2.4.1. Espace identifié => Espace identifié identique : RAS
+          // Si utilisation du protocole Shibboleth, on vérifie quand même que la session retrouvée a un identifiant qui est l'ID Shibboleth.
+          // Le test sur $_SERVER['HTTP_SHIB_SESSION_ID'] est seulement à placer ici car toute l'application n'est pas protégée par Shibboleth.
+          if( !empty($_SERVER['HTTP_SHIB_SESSION_ID']) && ( $_COOKIE[SESSION_NOM] != $_SERVER['HTTP_SHIB_SESSION_ID'] ) )
+          {
+            Session::close();
+            exit_error( 'Session incompatible avec votre authentification' /*titre*/ , 'Identifiant de session ("'.$_COOKIE[SESSION_NOM].'") différent de l\'identifiant Shibboleth ("'.$_SERVER['HTTP_SHIB_SESSION_ID'].'") !<br />Veuillez vous reconnecter.' /*contenu*/ );
+          }
         }
         elseif(Session::$tab_droits_page['public'])
         {

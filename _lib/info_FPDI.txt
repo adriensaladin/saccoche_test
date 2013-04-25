@@ -1,6 +1,6 @@
 ﻿================================================================================
-Librairie : FPDI                        Version : 1.4.4
-Librairie : FPDF_TPL                    Version : 1.2.2
+Librairie : FPDI                        Version : 1.4.2
+Librairie : FPDF_TPL                    Version : 1.2
 Extension : PDFMerger                   Version : 1.0 alpha
 ================================================================================
 
@@ -14,12 +14,7 @@ FPDI permet de découper un PDF ou d'en assembler les pages autrement (miniature
 
 Pour simplement assembler ou découper des PDF, PDFMerger (http://pdfmerger.codeplex.com/) peut servir d'interface simplificatrice.
 
-<<< Modifs >>>
-
-Dans fpdf_tpl.php, "class FPDF_TPL extends FPDF" remplacé par "class FPDF_TPL extends PDF" pour bénéficier des mathodes ajoutées.
-Du coup, il ne faut plus simplement appeler "new FPDI()" mais "new FPDI( FALSE /*officiel*/ , ... )".
-
-<<< Correctifs >>>
+Correction de bugs :
 
 - Remplacer "=& new" et "=&  new" par "= new" pour éviter "Deprecated: Assigning the return value of new by reference is deprecated".
 

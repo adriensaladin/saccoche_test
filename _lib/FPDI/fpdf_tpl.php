@@ -1,8 +1,8 @@
 <?php
 //
-//  FPDF_TPL - Version 1.2.2
+//  FPDF_TPL - Version 1.2
 //
-//    Copyright 2004-2013 Setasign - Jan Slabon
+//    Copyright 2004-2010 Setasign - Jan Slabon
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 //  limitations under the License.
 //
 
-class FPDF_TPL extends PDF {
+class FPDF_TPL extends FPDF {
     /**
      * Array of Tpl-Data
      * @var array
@@ -104,10 +104,6 @@ class FPDF_TPL extends PDF {
             'o_rMargin' => $this->rMargin,
             'o_h' => $this->h,
             'o_w' => $this->w,
-            'o_FontFamily' => $this->FontFamily,
-            'o_FontStyle' => $this->FontStyle,
-            'o_FontSizePt' => $this->FontSizePt,
-            'o_FontSize' => $this->FontSize,
             'buffer' => '',
             'x' => $x,
             'y' => $y,
@@ -125,9 +121,6 @@ class FPDF_TPL extends PDF {
         $this->SetXY($x + $this->lMargin, $y + $this->tMargin);
         $this->SetRightMargin($this->w - $w + $this->rMargin);
 
-        if ($this->CurrentFont)
-        	$this->_out(sprintf('BT /F%d %.2f Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
-        
         return $this->tpl;
     }
     
@@ -154,15 +147,6 @@ class FPDF_TPL extends PDF {
             $this->h = $tpl['o_h'];
             $this->w = $tpl['o_w'];
             $this->SetAutoPageBreak($tpl['o_AutoPageBreak'], $tpl['o_bMargin']);
-            
-            $this->FontFamily = $tpl['o_FontFamily'];
-			$this->FontStyle = $tpl['o_FontStyle'];
-			$this->FontSizePt = $tpl['o_FontSizePt'];
-			$this->FontSize = $tpl['o_FontSize'];
-        	
-			$fontkey = $this->FontFamily . $this->FontStyle;
-			if ($fontkey)
-            	$this->CurrentFont =& $this->fonts[$fontkey];
             
             return $this->tpl;
         } else {
@@ -229,6 +213,13 @@ class FPDF_TPL extends PDF {
         $this->_out(sprintf('q %.4F 0 0 %.4F %.4F %.4F cm', $tData['scaleX'], $tData['scaleY'], $tData['tx'] * $this->k, $tData['ty'] * $this->k)); // Translate 
         $this->_out(sprintf('%s%d Do Q', $this->tplprefix, $tplidx));
 
+        // reset font in the outer graphic state
+        if ($this->FontFamily) {
+	        $family = $this->FontFamily;
+	        $this->FontFamily = '';
+	        $this->SetFont($family);
+        }
+        
         $this->lastUsedTemplateData = $tData;
         
         return array('w' => $_w, 'h' => $_h);
@@ -245,7 +236,7 @@ class FPDF_TPL extends PDF {
      * @return array The height and width of the template
      */
     function getTemplateSize($tplidx, $_w = 0, $_h = 0) {
-        if (!isset($this->tpls[$tplidx]))
+        if (!$this->tpls[$tplidx])
             return false;
 
         $tpl =& $this->tpls[$tplidx];
@@ -274,6 +265,12 @@ class FPDF_TPL extends PDF {
         	return call_user_func_array(array($this, 'TCPDF::SetFont'), $args);
         }
         
+        /**
+         * force the resetting of font changes in a template
+         */
+        if ($this->_intpl)
+            $this->FontFamily = '';
+            
         parent::SetFont($family, $style, $size);
        
         $fontkey = $this->FontFamily . $this->FontStyle;
@@ -288,11 +285,7 @@ class FPDF_TPL extends PDF {
     /**
      * See FPDF/TCPDF-Documentation ;-)
      */
-    function Image(
-		$file, $x = '', $y = '', $w = 0, $h = 0, $type = '', $link = '', $align = '', $resize = false,
-		$dpi = 300, $palign = '', $ismask = false, $imgmask = false, $border = 0, $fitbox = false,
-		$hidden = false, $fitonpage = false, $alt = false, $altimgs = array()
-    ) {
+    function Image($file, $x = null, $y = null, $w = 0, $h = 0, $type = '', $link = '') {
         if (is_subclass_of($this, 'TCPDF')) {
         	$args = func_get_args();
 			return call_user_func_array(array($this, 'TCPDF::Image'), $args);
@@ -313,7 +306,7 @@ class FPDF_TPL extends PDF {
      *
      * AddPage is not available when you're "in" a template.
      */
-    function AddPage($orientation = '', $format = '', $keepmargins = false, $tocpage = false) {
+    function AddPage($orientation = '', $format = '') {
     	if (is_subclass_of($this, 'TCPDF')) {
         	$args = func_get_args();
         	return call_user_func_array(array($this, 'TCPDF::AddPage'), $args);
@@ -328,7 +321,7 @@ class FPDF_TPL extends PDF {
     /**
      * Preserve adding Links in Templates ...won't work
      */
-    function Link($x, $y, $w, $h, $link, $spaces = 0) {
+    function Link($x, $y, $w, $h, $link) {
         if (is_subclass_of($this, 'TCPDF')) {
         	$args = func_get_args();
 			return call_user_func_array(array($this, 'TCPDF::Link'), $args);

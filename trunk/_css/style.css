@@ -221,7 +221,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Tableau de saisie des résultats d'une évaluation                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px}
+#table_saisir label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
 label span.arrow_continue_down  {background-position: 0    0px}
 label span.arrow_continue_rigth {background-position: 0  -20px}
 label span.pilot_keyboard       {background-position: 0  -40px}

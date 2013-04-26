@@ -467,7 +467,7 @@ class Form
         {
           foreach($selection as $selection_val)
           {
-            $options = (!$multiple) ? str_replace( 'value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options ) : str_replace( array($selection_val.'"><input',$selection_val.'" />') , array($selection_val.'" class="check"><input',$selection_val.'" checked />') , $options ) ;
+            $options = (!$multiple) ? str_replace( 'value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options ) : str_replace( array('for="'.$select_nom.'_'.$selection_val.'"','value="'.$selection_val.'"') , array('for="'.$select_nom.'_'.$selection_val.'" class="check"','value="'.$selection_val.'" checked') , $options ) ;
           }
         }
       }

@@ -309,6 +309,19 @@ $(document).ready
         $('#ajax_msg_choix').removeAttr("class").html('');
         $('#zone_choix').hide('fast');
         var texte = ($('#f_mode_manuel').is(':checked')) ? ' [matières resteintes]' : '';
+        if(texte)
+        {
+          // Conserver la liste des matières (besoin pour récupérer les résultats d'un item donné si sélection manuelle
+          var tab_matiere = new Array();
+          $('#f_matiere input[type=checkbox]:checked').each
+          (
+            function()
+            {
+              tab_matiere.push($(this).val());
+            }
+          );
+          $('#f_memo_matieres').val(tab_matiere);
+        }
         $('#span_restriction').html(texte);
         $('#zone_information').show('fast');
         $("body").oneTime("1s", function() {window.scrollTo(0,1000);} );
@@ -463,7 +476,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=Afficher_information'+'&f_user='+user_id+'&f_item='+item_id+'&f_pilier='+$('#f_pilier').val()+'&f_mode='+$('input[type=radio]:checked').val()+'&f_matiere='+$('#f_matiere').val()+'&langue='+langue,
+          data : 'csrf='+CSRF+'&f_action=Afficher_information'+'&f_user='+user_id+'&f_item='+item_id+'&f_pilier='+$('#f_pilier').val()+'&f_mode='+$('input[type=radio]:checked').val()+'&f_matiere='+$('#f_memo_matieres').val()+'&langue='+langue,
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {

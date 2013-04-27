@@ -50,6 +50,7 @@ $profils_archives_pdf = 'administrateurs (de l\'établissement)<br />'.afficher_
 
 // Droit de modifier le statut d'un bilan (dans le cas PP, restera à affiner classe par classe...).
 $affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT']) ;
+
 $tab_etats = array
 (
   '0absence'  => 'indéfini',
@@ -67,7 +68,7 @@ $tab_etats = array
 if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
   $tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
-  $new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
+  $new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])       : '' ;
   if( count($tab_ids) && isset($tab_etats[$new_etat]) )
   {
     Session::verifier_jeton_anti_CSRF($PAGE);
@@ -83,15 +84,6 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
     }
   }
 }
-
-$tab_etats = array
-(
-  '0absence'  => 'indéfini',
-  '1vide'     => 'Vide (fermé)',
-  '2rubrique' => '<span class="now">Saisies Profs</span>',
-  '3synthese' => '<span class="now">Saisie Synthèse</span>',
-  '4complet'  => 'Complet (fermé)'
-);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération et traitement des données postées, si formulaire soumis
@@ -249,7 +241,7 @@ if(!count($tab_classe))
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
-// Initialiser au passages les cellules du tableau à afficher
+// Initialiser au passage les cellules du tableau à afficher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();

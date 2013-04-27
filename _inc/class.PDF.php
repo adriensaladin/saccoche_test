@@ -477,9 +477,10 @@ class PDF extends FPDF
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
+  // Tous les paramètres doivent avoir des valeurs par défaut pour ne pas poser de soucis en cas d'instanciation depuis une autre classe (FPDF_TPL ou PDFMerger par exemples).
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function __construct($officiel,$orientation,$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui',$filigrane=NULL)
+  public function __construct($officiel=TRUE,$orientation='portrait',$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui',$filigrane=NULL)
   {
     // Register var stream protocol => Voir MemImage()
     if (in_array('var', stream_get_wrappers()))

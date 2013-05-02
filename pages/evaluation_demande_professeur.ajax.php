@@ -154,7 +154,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.csv' , To::csv($fichier_csv) );
   // Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
   $chaine_autres = ( $selection_matiere && $selection_groupe ) ? implode('<br />',$tab_autres) : 'sur choix d\'une matière et d\'un regroupement' ;
-  exit('ok'.'<¤>'.'./force_download.php?fichier='.$fnom_export.'.csv'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
+  exit('ok'.'<¤>'.'./force-download.php?fichier='.$fnom_export.'.csv'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

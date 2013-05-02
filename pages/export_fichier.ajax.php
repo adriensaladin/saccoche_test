@@ -68,7 +68,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -105,7 +105,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -209,7 +209,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -294,7 +294,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -406,7 +406,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $export_html.= '</div>';
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -449,7 +449,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -492,7 +492,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }
@@ -532,7 +532,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   $export_html .= '</tbody></table>'."\r\n";
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force-download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
   echo $export_html;
   exit();
 }

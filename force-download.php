@@ -29,43 +29,37 @@
 // Passage en GET d'un paramètre pour savoir quelle page charger.
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
-define('SACoche','force_download');
+define('SACoche','force-download');
 
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
 // Paramètre transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
-$FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : ''; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
+$fichier_nom = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : ''; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
 
-// Vérification de la cohérence du paramètre transmis et de l'existence du fichier concerné
-if(!$FICHIER)
+// Vérification de la cohérence du paramètre transmis
+$extension = strtolower(pathinfo($fichier_nom,PATHINFO_EXTENSION));
+if( !$fichier_nom || !in_array($extension,array('txt','csv')))
 {
-  exit_error( 'Paramètre manquant' /*titre*/ , 'Page appelée sans indiquer le nom du fichier à récupérer.' /*contenu*/ , '' /*lien*/ );
+  exit_error( 'Paramètre manquant ou incorrect' /*titre*/ , 'Le nom "'.html($fichier_nom).'" du fichier demandé est invalide.' /*contenu*/ , '' /*lien*/ );
 }
-$fichier_chemin = CHEMIN_DOSSIER_EXPORT.$FICHIER;
+// Vérification de l'existence du fichier concerné
+$fichier_chemin = CHEMIN_DOSSIER_EXPORT.$fichier_nom;
 if(!is_file($fichier_chemin))
 {
   exit_error( 'Document manquant' /*titre*/ , 'Les fichiers sont conservés sur le serveur pendant une durée limitée !' /*contenu*/ , '' /*lien*/ );
 }
-$extension = strtolower(pathinfo($FICHIER,PATHINFO_EXTENSION));
-if(!in_array($extension,array('txt','csv')))
-{
-  exit_error( 'Paramètre incorrect' /*titre*/ , 'Le fichier demandé "'.html($FICHIER).'" a une extension interdite.' /*contenu*/ , '' /*lien*/ );
-}
 
 // Cette méthode pour forcer le téléchargement d'un fichier consomme des ressources serveur (par rapport à une banale rerirection).
-// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv donc on ne veut pas qu'ils s'ouvrent dans le navigateur.
-// Remarque : il y a aussi la possibilité de les proposer zippés, mais cela complique la démarche de l'utilisateur.
-header('Content-Description: File Transfer');
-header('Content-Disposition: attachment; filename="'.$FICHIER.'"');
-header('Content-Type: application/octet-stream'); // header('Content-Type: application/force-download'); // http://fr.php.net/manual/fr/function.readfile.php#70296
+// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv donc on ne veut pas qu'ils s'ouvrent dans le navigateur
+// (ni compliquer la démarche de l'utilisateur en les zippant).
+header('Content-disposition: attachment; filename="'.$fichier_nom.'"');
+header('Content-Type: application/force-download');
 header('Content-Transfer-Encoding: binary');
 header('Content-Length: '. filesize($fichier_chemin));
 header('Pragma: no-cache');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0'); // IE n'aime pas "no-store" ni "no-cache".
 header('Expires: 0');
-ob_clean();
-flush();
 readfile($fichier_chemin);
 exit();
 ?>

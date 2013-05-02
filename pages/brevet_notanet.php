@@ -27,7 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Étape n°4 - Générer le fichier d'export pour Notanet";
+?>
 
+<?php
 // Lister les séries de Brevet en place
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB))

@@ -2687,55 +2687,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-04-22')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-04-29';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // Ajout de niveaux
-      if(empty($reload_sacoche_niveau_famille))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau_famille VALUES ( 11, 1, 8, "Métiers d\'arts") ' );
-      }
-      if(empty($reload_sacoche_niveau))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  10, 0,  2,   0,    "TPS", "0041000111.", "Maternelle, très petite section") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  55, 0,  4,  65,   "DIMA", "115..99911.", "Dispositif d\'initiation des métiers en alternance") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 117, 0,  7, 157,     "MC", "253.....11.", "Mention complémentaire") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 118, 0,  7, 158,   "1BP2", "254.....21.", "Brevet Professionnel 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 119, 0,  7, 159,   "2BP2", "254.....22.", "Brevet Professionnel 2 ans, 2e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 141, 0, 11, 181,  "1BMA1", "250.....11.", "BMA 1 an") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 142, 0, 11, 182,  "1BMA2", "251.....21.", "BMA 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 143, 0, 11, 183,  "2BMA2", "251.....22.", "BMA 2 ans, 2e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 151, 0, 11, 191,  "1DMA1", "315.....11.", "DMA 1 an") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 152, 0, 11, 192,  "1DMA2", "316.....21.", "DMA 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 153, 0, 11, 193,  "2DMA2", "316.....22.", "DMA 2 ans, 2e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 154, 0, 11, 194,  "2DUT1", "350.....21.", "DUT 2 ans, 1e année") ' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 155, 0, 11, 195,  "2DUT2", "350.....22.", "DUT 2 ans, 2e année") ' );
-      }
-    }
-  }
-
-/*
-  if($version_base_structure_actuelle=='2013-04-29')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-05-06';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de paramètres
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_appreciation_generale" , "DIR" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_corriger_appreciation" , "DIR" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_impression_pdf"        , "DIR" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_modifier_statut"       , "DIR" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_voir_archive"          , "DIR,ENS,DOC,EDU" )' );
-      // réordonner la table sacoche_parametre
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
-    }
-  }
-*/
-
 }
 
 }

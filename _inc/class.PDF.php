@@ -423,7 +423,7 @@ class PDF extends FPDF
   // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
   private $tab_lettre = array();
   // Valeurs des marges principales pour la mise en page PDF
-  private $officiel      = NULL;
+  private $officiel      = FALSE;
   private $orientation   = '';
   private $couleur       = 'oui';
   private $legende       = 1;
@@ -477,10 +477,10 @@ class PDF extends FPDF
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
-  // Tous les paramètres doivent avoir des valeurs par défaut pour ne pas poser de soucis en cas d'instanciation depuis une autre classe (FPDF_TPL ou PDFMerger par exemple).
+  // Tous les paramètres doivent avoir des valeurs par défaut pour ne pas poser de soucis en cas d'instanciation depuis une autre classe (FPDF_TPL ou PDFMerger par exemples).
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function __construct( $officiel=NULL , $orientation='portrait' , $marge_gauche=5 , $marge_droite=5 , $marge_haut=5 , $marge_bas=12 , $couleur='oui' , $legende='oui' , $filigrane=NULL )
+  public function __construct($officiel=TRUE,$orientation='portrait',$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui',$filigrane=NULL)
   {
     // Register var stream protocol => Voir MemImage()
     if (in_array('var', stream_get_wrappers()))
@@ -986,11 +986,7 @@ class PDF extends FPDF
 
   public function Footer()
   {
-    if($this->officiel===NULL)
-    {
-      return;
-    }
-    if($this->officiel===FALSE)
+    if(!$this->officiel)
     {
       $this->SetXY( 0 , -$this->distance_pied );
       $this->SetFont( 'Arial' , '' , 7 );
@@ -998,7 +994,7 @@ class PDF extends FPDF
       $this->choisir_couleur_trait('gris_moyen');
       $this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.') , 'TB' /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ , SERVEUR_PROJET);
     }
-    elseif($this->officiel===TRUE)
+    else
     {
       if($this->filigrane)
       {

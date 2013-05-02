@@ -318,7 +318,7 @@ $(document).ready
               $('#ajax_msg_saisir').removeAttr("class").html('&nbsp;');
               $('#table_saisir').html(tab_response[0]);
               $('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-              $('#export_file_saisir_tableau_scores_csv'   ).attr("href", './force-download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
+              $('#export_file_saisir_tableau_scores_csv'   ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
               $('#export_file_saisir_tableau_scores_vierge').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
               colorer_cellules();
               format_liens('#table_saisir');
@@ -385,7 +385,7 @@ $(document).ready
               $('#table_voir').html(tab_response[0]);
               $('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
               format_liens('#table_voir');
-              $('#export_file_voir_tableau_scores_csv'    ).attr("href", './force-download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
+              $('#export_file_voir_tableau_scores_csv'    ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
               $('#export_file_voir_tableau_scores_vierge' ).attr("href", url_export+'tableau_sans_notes_'           +tab_response[1]+'.pdf' );
               $('#export_file_voir_tableau_scores_couleur').attr("href", url_export+'tableau_avec_notes_couleur_'   +tab_response[1]+'.pdf' );
               $('#export_file_voir_tableau_scores_gris'   ).attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );

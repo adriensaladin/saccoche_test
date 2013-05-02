@@ -60,7 +60,7 @@ else
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
   // Afficher tout ça
   echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="./force-download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
+  echo'<li><a class="lien_ext" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
   echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
   echo'</ul>';
   echo $table_log_extrait;

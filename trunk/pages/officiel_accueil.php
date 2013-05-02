@@ -421,7 +421,7 @@ echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled[
 echo'<table id="table_accueil"><thead>';
 foreach($tab_affich as $ligne_id => $tab_colonne)
 {
-  echo ( ($ligne_id!='check') ||($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
+  echo ( ($ligne_id!='check') || ($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
   echo ($ligne_id=='title') ? '</thead><tbody>'."\r\n" : '' ;
 }
 echo'</tbody></table>';

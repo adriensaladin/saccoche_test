@@ -30,6 +30,7 @@ INSERT INTO sacoche_niveau VALUES
 
 -- Primaire
 
+(  10, 0,  2,   0,    "TPS", "0041000111.", "Maternelle, très petite section"),
 (  11, 0,  2,   1,     "PS", "0001000131.", "Maternelle, petite section"),
 (  12, 0,  2,   2,     "MS", "0001000132.", "Maternelle, moyenne section"),
 (  13, 0,  2,   3,     "GS", "0001000133.", "Maternelle, grande section"),
@@ -63,6 +64,7 @@ INSERT INTO sacoche_niveau VALUES
 (  52, 0,  4,  62,    "CPA", "112..99911.", "Classe préparatoire à l'apprentissage"),
 (  53, 0,  4,  63,  "CLIPA", "113..99911.", "Classe d'initiation pré-professionnelle en alternance"),
 (  54, 0,  4,  64,    "FAJ", "114..99911.", "Formation d'apprenti junior"),
+(  55, 0,  4,  65,   "DIMA", "115..99911.", "Dispositif d'initiation des métiers en alternance"),
 
 -- Lycée général
 
@@ -108,6 +110,9 @@ INSERT INTO sacoche_niveau VALUES
 ( 114, 0,  7, 154,  "1PRO3", "247.....31.", "Bac Pro 3 ans, 1e année (seconde pro)"),
 ( 115, 0,  7, 155,  "2PRO3", "247.....32.", "Bac Pro 3 ans, 2e année (première pro)"),
 ( 116, 0,  7, 156,  "3PRO3", "247.....33.", "Bac Pro 3 ans, 3e année (terminale pro)"),
+( 117, 0,  7, 157,     "MC", "253.....11.", "Mention complémentaire"),
+( 118, 0,  7, 158,   "1BP2", "254.....21.", "Brevet Professionnel 2 ans, 1e année"),
+( 119, 0,  7, 159,   "2BP2", "254.....22.", "Brevet Professionnel 2 ans, 2e année"),
 
 -- BTS
 
@@ -120,6 +125,17 @@ INSERT INTO sacoche_niveau VALUES
 ( 131, 0,  8, 171, "1BTS1A", "370.....11.", "BTS Agricole 1 an"),
 ( 132, 0,  8, 172, "1BTS2A", "371.....21.", "BTS Agricole 2 ans, 1e année"),
 ( 133, 0,  8, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année"),
+
+-- Métiers d'arts
+
+( 141, 0, 11, 181,  "1BMA1", "250.....11.", "BMA 1 an"),
+( 142, 0, 11, 182,  "1BMA2", "251.....21.", "BMA 2 ans, 1e année"),
+( 143, 0, 11, 183,  "2BMA2", "251.....22.", "BMA 2 ans, 2e année"),
+( 151, 0, 11, 191,  "1DMA1", "315.....11.", "DMA 1 an"),
+( 152, 0, 11, 192,  "1DMA2", "316.....21.", "DMA 2 ans, 1e année"),
+( 153, 0, 11, 193,  "2DMA2", "316.....22.", "DMA 2 ans, 2e année"),
+( 154, 0, 11, 194,  "2DUT1", "350.....21.", "DUT 2 ans, 1e année"),
+( 155, 0, 11, 195,  "2DUT2", "350.....22.", "DUT 2 ans, 2e année"),
 
 -- CECRL (cadre européen commun de référence pour les langues)
 

@@ -181,7 +181,8 @@ public static function DB_lister_niveaux_famille($niveau_famille_id)
     7 => 'OR niveau_id IN(4,204,205,206) ',
     8 => 'OR niveau_id IN(4,204,205,206) ',
     9 => '',
-   10 => ''
+   10 => '',
+   11 => 'OR niveau_id IN(4,204,205,206) '
   );
   $DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom, niveau_actif ';
   $DB_SQL.= 'FROM sacoche_niveau ';

@@ -139,7 +139,7 @@ else
     echo'<h2>Relevé individuel</h2>';
     echo'<ul class="puce">';
     echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
     echo'</ul>';
   }
   if($type_synthese)
@@ -147,22 +147,22 @@ else
     echo'<h2>Synthèse collective</h2>';
     echo'<ul class="puce">';
     echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
     echo'</ul>';
   }
   if($type_bulletin)
   {
     echo'<h2>Bulletin SACoche</h2>';
     echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
     echo $bulletin_form;
     echo'</ul>';
     echo $bulletin_alerte;
     echo'<h2>Bulletin Gepi</h2>';
     echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./force-download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
     echo'</ul>';
   }
 }

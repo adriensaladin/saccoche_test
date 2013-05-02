@@ -101,7 +101,7 @@ public static function DB_lister_brevet_epreuves($serie_ref)
 /**
  * lister_brevet_eleves_avec_serie_et_total
  *
- * @param string   $serie_ref
+ * @param void
  * @return array
  */
 public static function DB_lister_brevet_eleves_avec_serie_et_total()
@@ -206,6 +206,22 @@ public static function DB_modifier_epreuve_choix($serie_ref , $epreuve_code , $c
 }
 
 /**
+ * modifier_brevet_classe_etat
+ *
+ * @param int     $classe_id
+ * @param string  $new_etat
+ * @return void
+ */
+public static function DB_modifier_brevet_classe_etat($classe_id , $new_etat)
+{
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET fiche_brevet=:fiche_brevet ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
+  $DB_VAR = array(':groupe_id'=>$classe_id,':fiche_brevet'=>$new_etat);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * ajouter_brevet_note
  *
  * @param string  $serie_ref
@@ -272,6 +288,49 @@ public static function DB_compter_eleves_actuels_sans_INE()
   $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND (user_reference NOT REGEXP "^[0-9]{10}[A-Z]{1}$") ';
   $DB_VAR = array(':profil_type'=>'eleve');
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * recuperer_brevet_listing_classes_editables
+ *
+ * @param void
+ * @return string
+ */
+public static function DB_recuperer_brevet_listing_classes_editables()
+{
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
+  $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT eleve_classe_id SEPARATOR ",") AS listing_classes ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_brevet_saisie ON ( sacoche_user.user_id=sacoche_brevet_saisie.eleve_ou_classe_id AND sacoche_user.eleve_brevet_serie=sacoche_brevet_saisie.brevet_serie_ref ) ';
+  $DB_SQL.= 'WHERE sacoche_user.eleve_brevet_serie!="X" AND user_sortie_date>NOW() AND eleve_classe_id>0 ';
+  $DB_SQL.= 'AND brevet_epreuve_code=255 AND saisie_type="eleve" ';
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * lister_brevet_classes_editables_etat
+ * Au passage, on tague les classes concernées.
+ *
+ * @param string   $listing_classes
+ * @return array
+ */
+public static function DB_lister_brevet_classes_editables_etat($listing_classes)
+{
+  // Marquer les classes concernées
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET fiche_brevet="1vide" ';
+  $DB_SQL.= 'WHERE groupe_id IN('.$listing_classes.') AND fiche_brevet="" ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET fiche_brevet="" ';
+  $DB_SQL.= 'WHERE groupe_id NOT IN('.$listing_classes.') ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  // Retourner les états
+  $DB_SQL = 'SELECT groupe_id , fiche_brevet ';
+  $DB_SQL.= 'FROM sacoche_groupe ';
+  $DB_SQL.= 'WHERE groupe_id IN('.$listing_classes.') ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 }

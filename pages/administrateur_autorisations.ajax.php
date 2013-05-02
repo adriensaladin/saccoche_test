@@ -77,9 +77,14 @@ $tab_objet_profils['droit_officiel_socle_modifier_statut']          = $tab_profi
 $tab_objet_profils['droit_officiel_socle_corriger_appreciation']    = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_socle_appreciation_generale']    = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_socle_impression_pdf']           = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_modifier_statut']            = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_corriger_appreciation']      = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_appreciation_generale']      = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_impression_pdf']             = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_releve_voir_archive']   = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_officiel_bulletin_voir_archive'] = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_officiel_socle_voir_archive']    = $tab_profils_possibles['tous'];
+$tab_objet_profils['droit_fiche_brevet_voir_archive']      = $tab_profils_possibles['tous'];
 
 if(!isset($tab_objet_profils[$f_objet]))
 {

@@ -44,11 +44,8 @@
  */
 
 // Ce fichier est directement appelé par le navigateur et n'inclut pas tous les fichiers habituels.
-
 header("Content-type: image/png");
 
-// Atteste l'appel de cette page avant l'inclusion d'une autre
-define('SACoche','etiquette');
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('../../_inc/_loader.php');
 // Non chargé par le loader dont on ne prend que le début

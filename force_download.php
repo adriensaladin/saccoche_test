@@ -25,11 +25,8 @@
  * 
  */
 
-// Fichier appelé pour l'affichage d'un relevé HTML enregistré temporairement.
+// Fichier appelé pour forcer le téléchargement d'un fichier txt | csv | xml (préférable à une ouverture dans le navigateur).
 // Passage en GET d'un paramètre pour savoir quelle page charger.
-
-// Atteste l'appel de cette page avant l'inclusion d'une autre
-define('SACoche','force_download');
 
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
@@ -48,13 +45,13 @@ if(!is_file($fichier_chemin))
   exit_error( 'Document manquant' /*titre*/ , 'Les fichiers sont conservés sur le serveur pendant une durée limitée !' /*contenu*/ , '' /*lien*/ );
 }
 $extension = strtolower(pathinfo($FICHIER,PATHINFO_EXTENSION));
-if(!in_array($extension,array('txt','csv')))
+if(!in_array($extension,array('csv','txt','xml')))
 {
   exit_error( 'Paramètre incorrect' /*titre*/ , 'Le fichier demandé "'.html($FICHIER).'" a une extension interdite.' /*contenu*/ , '' /*lien*/ );
 }
 
 // Cette méthode pour forcer le téléchargement d'un fichier consomme des ressources serveur (par rapport à une banale rerirection).
-// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv donc on ne veut pas qu'ils s'ouvrent dans le navigateur.
+// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv ou xml donc on ne veut pas qu'ils s'ouvrent dans le navigateur.
 // Remarque : il y a aussi la possibilité de les proposer zippés, mais cela complique la démarche de l'utilisateur.
 header('Content-Description: File Transfer');
 header('Content-Disposition: attachment; filename="'.$FICHIER.'"');

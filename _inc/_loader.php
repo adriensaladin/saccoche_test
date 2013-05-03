@@ -26,72 +26,6 @@
  */
 
 // ============================================================================
-// Fonctions non disponibles en PHP 5.1
-// ============================================================================
-
-/*
- * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
- * http://fr.php.net/manual/fr/function.error-get-last.php#103539
- */
-if(!function_exists('error_get_last'))
-{
-  set_error_handler(
-      create_function(
-        '$errno,$errstr,$errfile,$errline,$errcontext',
-        '
-          global $__error_get_last_retval__;
-          $__error_get_last_retval__ = array(
-            \'type\'    => $errno,
-            \'message\' => $errstr,
-            \'file\'    => $errfile,
-            \'line\'    => $errline
-          );
-          return NULL;
-        '
-      )
-  );
-  function error_get_last()
-  {
-    global $__error_get_last_retval__;
-    if( !isset($__error_get_last_retval__) )
-    {
-      return NULL;
-    }
-    return $__error_get_last_retval__;
-  }
-}
-
-/*
- * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
- */
-if(!function_exists('array_fill_keys'))
-{
-  function array_fill_keys($tab_clefs,$valeur)
-  {
-    return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
-  }
-}
-
-/*
- * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, traiter ce cas si besoin.
- */
-function pathinfo_filename($file)
-{
-  if(defined('PATHINFO_FILENAME'))
-  {
-    return pathinfo($file,PATHINFO_FILENAME);
-  }
-  else
-  {
-    $position_filename  = strrpos($file,'/');
-    $position_filename  = ($position_filename!==FALSE) ? $position_filename+1 : 0 ;
-    $position_extension = strrpos($file,'.');
-    $filename_length    = ($position_extension!==FALSE) ? $position_extension - $position_filename : strlen($file) ;
-    return substr($file,$position_filename,$filename_length);
-  }
-}
-
-// ============================================================================
 // Config PHP - Versions PHP & MySQL - Modules PHP
 // ============================================================================
 
@@ -142,13 +76,6 @@ if(get_magic_quotes_gpc())
   array_walk_recursive($_POST   ,'tab_stripslashes');
   array_walk_recursive($_REQUEST,'tab_stripslashes');
 }
-
-// ============================================================================
-// Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
-// ============================================================================
-
-define( 'SACoche', pathinfo_filename($_SERVER['SCRIPT_NAME']) );
-if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 
 // ============================================================================
 // Type de serveur (LOCAL|DEV|PROD)
@@ -745,4 +672,52 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   }
   exit();
 }
+
+// ============================================================================
+// Fonctions non disponibles en PHP 5.1
+// ============================================================================
+
+/*
+ * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ * http://fr.php.net/manual/fr/function.error-get-last.php#103539
+ */
+if(!function_exists('error_get_last'))
+{
+  set_error_handler(
+      create_function(
+        '$errno,$errstr,$errfile,$errline,$errcontext',
+        '
+          global $__error_get_last_retval__;
+          $__error_get_last_retval__ = array(
+            \'type\'    => $errno,
+            \'message\' => $errstr,
+            \'file\'    => $errfile,
+            \'line\'    => $errline
+          );
+          return NULL;
+        '
+      )
+  );
+  function error_get_last()
+  {
+    global $__error_get_last_retval__;
+    if( !isset($__error_get_last_retval__) )
+    {
+      return NULL;
+    }
+    return $__error_get_last_retval__;
+  }
+}
+
+/*
+ * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ */
+if(!function_exists('array_fill_keys'))
+{
+  function array_fill_keys($tab_clefs,$valeur)
+  {
+    return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
+  }
+}
+
 ?>

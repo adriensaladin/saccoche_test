@@ -28,6 +28,9 @@
 // Fichier appelé pour chaque appel ajax.
 // Passage en GET des paramètres pour savoir quelle page charger.
 
+// Atteste l'appel de cette page avant l'inclusion d'une autre
+define('SACoche','ajax');
+
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 

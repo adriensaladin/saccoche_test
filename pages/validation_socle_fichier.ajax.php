@@ -160,7 +160,6 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
       exit(html($xml));
     }
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
-    $fichier_lien = './force_download.php?fichier='.$fichier_nom;
   }
   else
   {
@@ -168,7 +167,6 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     $xml.= '</sacoche>'."\r\n";
     // L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
     FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
-    $fichier_lien = URL_DIR_EXPORT.$fichier_nom;
   }
   // Afficher le retour
   $se = ($nb_eleves>1)  ? 's' : '' ;
@@ -176,7 +174,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   $si = ($nb_items>1)   ? 's' : '' ;
   $in = $only_positives ? '' : '(in)-' ;
   echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-  echo'<li><a class="lien_ext" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>';
+  echo'<li><a class="lien_ext" href="./force_download.php?fichier='.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>';
   if($action=='export_lpc')
   {
     echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';

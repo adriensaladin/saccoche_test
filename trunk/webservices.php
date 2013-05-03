@@ -29,9 +29,6 @@
 // Une clef est transmise ; elle est comparée avec celle stockée dans un fichier du dossier /webservices/ donc non visible dans les sources / le svn.
 // Passage en POST des paramètres.
 
-// Atteste l'appel de cette page avant l'inclusion d'une autre
-define('SACoche','webservices');
-
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 

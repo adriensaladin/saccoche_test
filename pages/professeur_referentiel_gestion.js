@@ -97,7 +97,7 @@ $(document).ready
       function()
       {
         var element = $(this);
-        var nb_demandes = $(this).val();
+        var nb_demandes = $(this).attr('value');
         var matiere_id = $(this).closest('table').attr('id').substring(4);
         element.parent().find('label').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax

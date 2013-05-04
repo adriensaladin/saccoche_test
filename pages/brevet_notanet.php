@@ -28,19 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Étape n°4 - Générer le fichier d'export pour Notanet";
 
-// Test présence INE
-$nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();
-$s = ($nb_eleves_sans_INE>1) ? 's' : '' ;
-$msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_INE.' élève'.$s.' (par forcément parmi ceux ci-dessous) trouvé'.$s.' dans la base sans Identifiant National Élève (INE).</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
-?>
-
-<p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape4_notanet">DOC : Notanet &amp; Fiches brevet &rarr; Export vers Notanet</a></span><br />
-  <?php echo $msg_INE ?>
-</p>
-<hr />
-
-<?php
 // Lister les séries de Brevet en place
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB))
@@ -138,7 +125,18 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
     $tables_affectations .= '</table>';
   }
 }
+
+// Test présence INE
+$nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();
+$s = ($nb_eleves_sans_INE>1) ? 's' : '' ;
+$msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_INE.' élève'.$s.' (par forcément parmi ceux ci-dessous) trouvé'.$s.' dans la base sans Identifiant National Élève (INE).</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
 ?>
+
+<p>
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape4_notanet">DOC : Notanet &amp; Fiches brevet &rarr; Export vers Notanet</a></span><br />
+  <?php echo $msg_INE ?>
+</p>
+<hr />
 
 <div id="table_accueil">
   <?php echo $tables_affectations ?>

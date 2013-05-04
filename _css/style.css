@@ -79,11 +79,11 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
 
 /* zone identifiée */
-#cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
-#cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
-#cadre_navig  {z-index:1003;position:fixed;top:2px;right:2px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
-#cadre_photo  {z-index:1004;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
-#cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
+#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
+#cadre_bas    {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+#cadre_navig  {z-index:3;position:fixed;top:2px;right:2px}
+#cadre_photo  {z-index:4;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
+#cadre_statut {z-index:4;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* 300 requis pour l'admin ; 230 suffisent pour les autres profils... */
 
 /* dans #cadre_haut */
 #top_info {position:absolute;top:3px;left:4px}
@@ -512,7 +512,6 @@ table.vsort thead th.sorter-false           {background:#DDF;padding-bottom:0px;
 table.hsort thead th.nu                     {background:#FFF;text-align:center}
 table.vsort thead th.nu                     {background:#FFF;text-align:center}
 th.tablesorter-header div {font-weight:bold} /* C'est le plugin tablesorter qui ajoute le div */
-.thfloat-table{margin-left:0} /* Pour le plugin THFloat */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
@@ -601,7 +600,7 @@ table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
-#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:1%;padding:0;line-height:1em;} /* Pour indiquer les scores calculés ; 0% pour font-size pose problème au navigateur Safari. */
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:50%;padding:0} /* Pour indiquer les scores calculés. */
 #tableau_validation tbody td:hover {cursor:pointer}
 #tableau_validation tbody td.v3 {background:#FFF;}
 #tableau_validation tbody td.v3:hover {cursor:default}

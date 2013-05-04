@@ -30,12 +30,18 @@ $(document).ready
   function()
   {
 
-    // Initialisation
-    var modification = false;
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Afficher / masquer des éléments de formulaire
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    $('#f_cnil_numero').focus
+    (
+      function()
+      {
+        if($('#f_cnil_oui').is(':checked')==false)
+        {
+          $('#f_cnil_oui').prop('checked',true);
+          $("#cnil_dates").show();
+          return false; // important, sinon pb de récursivité
+        }
+      }
+    );
 
     $('#f_mode_auto').click
     (
@@ -323,7 +329,7 @@ $(document).ready
     }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Afficher / Masquer les pourcentages d'items d'enseignements acquis
+// Afficher / Masquer les pourcentages d'items acquis
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#tableau_validation').on
@@ -332,17 +338,8 @@ $(document).ready
       '#Afficher_pourcentage',
       function()
       {
-        if($(this).is(':checked'))
-        {
-          color = '#000';
-          cell_font_size = '50%';
-        }
-        else
-        {
-          color = '';
-          cell_font_size = '1%'; /* 0% pour font-size pose problème au navigateur Safari. */
-        }
-        $('#tableau_validation tbody td').css({ 'color':color, 'font-size':cell_font_size })
+        color = ($(this).is(':checked')) ? '#000' : '' ;
+        $('#tableau_validation tbody td').css('color',color);
         return false;
       }
     );
@@ -366,12 +363,8 @@ $(document).ready
         var classe = $(this).attr('class');
         var new_classe = classe.charAt(0) + tab_class_next[classe.charAt(1)] ;
         $(this).removeAttr("class").addClass(new_classe);
-        if(modification==false)
-        {
-          $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
-          $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-          modification = true;
-        }
+        $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+        $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
         return false;
       }
     );
@@ -388,12 +381,8 @@ $(document).ready
           // Intitulé du socle
           return false;
         }
-        if(modification==false)
-        {
-          $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
-          $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-          modification = true;
-        }
+        $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+        $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
         var classe_debut = classe.substring(0,4);
         var classe_fin   = classe.charAt(4);
         var new_classe_th = classe_debut + tab_class_next[classe_fin] ;
@@ -517,54 +506,23 @@ $(document).ready
 // Clic sur le bouton pour fermer la zone de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function fermer_zone_validation()
-    {
-      $('#zone_choix').show('fast');
-      $('#zone_validation').hide('fast');
-      $('#tableau_validation').html('<tbody><tr><td></td></tr></tbody>');
-      // Vider aussi la zone d'informations
-      $('#zone_information').hide('fast');
-      $('#identite').html('');
-      $('#entree').html('');
-      $('#stats').html('');
-      $('#items').html('');
-      $('#ajax_msg_information').removeAttr("class").html('');
-      modification = false;
-      return(false);
-    }
-
     $('#tableau_validation').on
     (
       'click',
       '#fermer_zone_validation',
       function()
       {
-        if(!modification)
-        {
-          fermer_zone_validation();
-        }
-        else
-        {
-          $.fancybox( { 'href':'#zone_confirmer_fermer_validation' , onStart:function(){$('#zone_confirmer_fermer_validation').css("display","block");} , onClosed:function(){$('#zone_confirmer_fermer_validation').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-          return(false);
-        }
-      }
-    );
-
-    $('#confirmer_fermer_zone_validation').click
-    (
-      function()
-      {
-        $.fancybox.close();
-        fermer_zone_validation();
-      }
-    );
-
-    $('#annuler_fermer_zone_validation').click
-    (
-      function()
-      {
-        $.fancybox.close();
+        $('#zone_choix').show('fast');
+        $('#zone_validation').hide('fast');
+        $('#tableau_validation').html('<tbody><tr><td></td></tr></tbody>');
+        // Vider aussi la zone d'informations
+        $('#zone_information').hide('fast');
+        $('#identite').html('');
+        $('#entree').html('');
+        $('#stats').html('');
+        $('#items').html('');
+        $('#ajax_msg_information').removeAttr("class").html('');
+        return(false);
       }
     );
 
@@ -605,7 +563,6 @@ $(document).ready
             },
             success : function(responseHTML)
             {
-              modification = false; // Mis ici pour le cas "aucune modification détectée"
               initialiser_compteur();
               $("button").prop('disabled',false);
               if(responseHTML.substring(0,2)!='OK')

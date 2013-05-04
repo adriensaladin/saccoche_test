@@ -245,44 +245,44 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
 function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichiers , $titre_page , $css_additionnel=FALSE )
 {
   header('Content-Type: text/html; charset='.CHARSET);
-  echo'<!DOCTYPE html>'."\r\n";
-  echo'<html>'."\r\n";
-  echo'<head>'."\r\n";
-  echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'."\r\n";
+  echo'<!DOCTYPE html>';
+  echo'<html>';
+  echo'<head>';
+  echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
   if($is_meta_robots)
   {
-    echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />'."\r\n";
-    echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />'."\r\n";
-    echo'<meta name="author" content="Thomas Crespin pour Sésamath" />'."\r\n";
-    echo'<meta name="robots" content="index,follow" />'."\r\n";
+    echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />';
+    echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />';
+    echo'<meta name="author" content="Thomas Crespin pour Sésamath" />';
+    echo'<meta name="robots" content="index,follow" />';
   }
   if($is_favicon)
   {
-    echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />'."\r\n";
-    echo'<link rel="icon" type="image/png" href="./favicon.png" />'."\r\n";
-    echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />'."\r\n";
-    echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />'."\r\n";
+    echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />';
+    echo'<link rel="icon" type="image/png" href="./favicon.png" />';
+    echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />';
+    echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />';
   }
   if($is_rss)
   {
-    echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />'."\r\n";
+    echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />';
   }
   foreach($tab_fichiers as $tab_infos)
   {
     list( $type , $url ) = $tab_infos;
     switch($type)
     {
-      case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'."\r\n"; break;
-  //  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'."\r\n"; break;
-      case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'."\r\n"; break;
+      case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'; break;
+  //  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
+      case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'; break;
     }
   }
   if($css_additionnel)
   {
-    echo $css_additionnel."\r\n"; // style complémentaire déjà dans <style type="text/css">...</style>
+    echo $css_additionnel; // style complémentaire déjà dans <style type="text/css">...</style>
   }
-  echo'<title>'.$titre_page.'</title>'."\r\n";
-  echo'</head>'."\r\n";
+  echo'<title>'.$titre_page.'</title>';
+  echo'</head>';
 }
 
 /**

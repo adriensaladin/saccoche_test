@@ -1180,8 +1180,8 @@ $(document).ready
       function(e)
       {
         // Récupérer les infos associées
-        champ   = $(this).prev().attr('id');    // champ dans lequel retourner les valeurs
-        date_fr = $(this).prev().val();
+        champ   = $(this).prev().attr("id");    // champ dans lequel retourner les valeurs
+        date_fr = $(this).prev().attr("value");
         tab_date = date_fr.split('/');
         if(tab_date.length==3)
         {

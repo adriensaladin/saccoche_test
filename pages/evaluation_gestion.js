@@ -43,7 +43,6 @@ $(document).ready
     var ligne   = 1;
     var nb_colonnes = 1;
     var nb_lignes   = 1;
-    var nb_lignes_max = 20;
 
     // tri du tableau (avec jquery.tablesorter.js).
     if(TYPE=='groupe')
@@ -336,10 +335,6 @@ $(document).ready
               nb_colonnes = $('#table_saisir thead th').length;
               nb_lignes   = $('#table_saisir tbody tr').length;
               $('#zone_saisir').css("display","block");
-              if(nb_lignes>nb_lignes_max)
-              {
-                $('#table_saisir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
-              }
             }
           }
         }
@@ -395,12 +390,7 @@ $(document).ready
               $('#export_file_voir_tableau_scores_couleur').attr("href", url_export+'tableau_avec_notes_couleur_'   +tab_response[1]+'.pdf' );
               $('#export_file_voir_tableau_scores_gris'   ).attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
               $('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
-              nb_lignes   = $('#table_voir tbody tr').length;
               $('#zone_voir').css("display","block");
-              if(nb_lignes>nb_lignes_max)
-              {
-                $('#table_voir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
-              }
             }
           }
         }
@@ -737,10 +727,6 @@ $(document).ready
     {
       $('#titre_saisir').html("");
       $('#table_saisir').html("<tbody><tr><td></td></tr></tbody>");
-      if(nb_lignes>nb_lignes_max)
-      {
-        $('#table_saisir').thfloat('destroy'); /* jQuery TH Float Plugin */
-      }
       $('#zone_saisir').css("display","none");
       $('#form_prechoix , #table_action').show('fast');
       return(false);
@@ -789,10 +775,6 @@ $(document).ready
       {
         $('#titre_voir').html("");
         $('#table_voir').html("<tbody><tr><td></td></tr></tbody>");
-        if(nb_lignes>nb_lignes_max)
-        {
-          $('#table_voir').thfloat('destroy'); /* jQuery TH Float Plugin */
-        }
         $('#zone_voir').css("display","none");
         $('#form_prechoix , #table_action').show('fast');
         return(false);
@@ -1218,19 +1200,11 @@ $(document).ready
       {
         ligne = nb_lignes;
         colonne = (colonne!=1) ? colonne-1 : nb_colonnes ;
-        if(nb_lignes>nb_lignes_max)
-        {
-          window.scrollTo(0,10000); /* jQuery TH Float Plugin */
-        }
       }
       else if(ligne>nb_lignes)
       {
         ligne = 1;
         colonne = (colonne!=nb_colonnes) ? colonne+1 : 1 ;
-        if(nb_lignes>nb_lignes_max)
-        {
-          window.scrollTo(0,150); /* jQuery TH Float Plugin */
-        }
       }
       var new_id = 'C'+colonne+'L'+ligne;
       $('#'+new_id).focus();

@@ -380,6 +380,6 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f
   <p>Confirmez-vous vouloir quitter l'interface de saisie ?</p>
   <p>
     <button id="confirmer_fermer_zone_saisir" type="button" class="valider">Oui, je ne veux pas enregistrer</button>
-    <button id="annuler_fermer_zone_saisir" type="button" class="annuler">Non, je reste sur l'interface</button>
+    <button id="annuler_fermer_zone_saisir" type="button" class="annuler">Non, je retourne sur l'interface</button>
   </p>
 </div>

@@ -48,7 +48,6 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 {
   Form::save_choix('palier');
   $affichage = '';
-  $tab_modif_cellule = array();  // ['html'] , ['class'] , ['title'] , ['lang']
   // Tableau des langues
   $tfoot = '';
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
@@ -71,7 +70,6 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $affichage .= '<th><img alt="Tous les élèves" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode('TOUS LES ÉLÈVES').'" /></th>';
   $affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
   $affichage .= '<th class="nu">';
-  $affichage .=   '<p><label for="Afficher_pourcentage"><input type="checkbox" id="Afficher_pourcentage" /> <span for="Afficher_pourcentage" class="socle_info voir">Afficher / Masquer le nombre d\'items du socle validés et invalidés.</span></label></p>';
   $affichage .=   '<p class="danger">Rappel : la validation d\'une compétence est définitive (une invalidation peut être changée).</p>';
   $affichage .=   '<p><button id="Enregistrer_validation" type="button" class="valider">Enregistrer les validations</button> <button id="fermer_zone_validation" type="button" class="retourner">Retour</button><label id="ajax_msg_validation"></label></p>';
   $affichage .= '</th>';
@@ -99,8 +97,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
       $affichage .= '<tr>';
       foreach($tab_eleve_id as $eleve_id)
       {
-        $affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'"></td>'; // class/title + lang + contenu seront ajoutés ensuite 
-        $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_v1'=>'0' , 'html_v0'=>'0' , 'class'=>' class="v2"' , 'title'=>'' , 'lang'=>'' );
+        $affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
       }
       $affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
       $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
@@ -113,37 +110,18 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   // Récupérer la liste des jointures (validations)
   $listing_eleve_id  = implode(',',$tab_eleve_id);
   $listing_pilier_id = implode(',',$tab_pilier_id);
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier( $listing_eleve_id , $listing_pilier_id , 0 /*palier_id*/ ); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+  $tab_bad = array();
+  $tab_bon = array();
   foreach($DB_TAB as $DB_ROW)
   {
     $etat = ($DB_ROW['validation_pilier_etat']) ? 'Validé' : 'Invalidé' ;
     $lang = ($DB_ROW['validation_pilier_etat']) ? ' lang="lock"' : '' ;
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['class'] = ' class="v'.$DB_ROW['validation_pilier_etat'].'"';
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['title'] = ' title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"';
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['lang']  = $lang;
-  }
-
-  // Compter le nombre d'items validés par élève et compétence
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_nombre_validations_eleves_items( $listing_eleve_id , $listing_pilier_id );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['html_v'.$DB_ROW['validation_entree_etat']] = $DB_ROW['nombre'];
-  }
-
-  // Afficher le résultat après adaptation des cellules "centrales".
-  $tab_bad = array();
-  $tab_bon = array();
-  foreach($tab_eleve_id as $eleve_id)
-  {
-    foreach($tab_pilier_id as $pilier_id)
-    {
-      extract($tab_modif_cellule[$eleve_id][$pilier_id]);  // $lang $class $title $html_v1 $html_v0
-      $html = ($tab_modif_cellule[$eleve_id][$pilier_id]['lang']) ? '' : ( ($html_v1 || $html_v0) ? $html_v1.'<br />'.$html_v0 : '-' ) ;
-      $tab_bad[] = 'U'.$eleve_id.'C'.$pilier_id.'"></td>';
-      $tab_bon[] = 'U'.$eleve_id.'C'.$pilier_id.'"'.$lang.$class.$title.'>'.$html.'</td>';
-    }
+    $tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v2">';
+    $tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"'.$lang.'>';
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);
+  // $affichage = str_replace('class="v2"','class="v2" title="Cliquer pour valider ou invalider."',$affichage); // Retiré car embêtant si modifié ensuite.
   // Afficher le résultat
   echo $affichage;
 }

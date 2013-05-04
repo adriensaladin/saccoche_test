@@ -112,11 +112,11 @@ public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
 /**
  * Retourner les résultats pour 1 élève donné, pour 1 item du socle donné
  *
- * @param string $eleve_id
- * @param string $entree_id
+ * @param int $eleve_id
+ * @param int $entree_id
  * @return array
  */
-public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
+public static function DB_lister_result_eleve_item($eleve_id,$entree_id)
 {
   $DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
   $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
@@ -133,6 +133,25 @@ public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
   $DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Retourner le nombre de validations d'items par élève pour des piliers d'un palier donné
+ *
+ * @param string $listing_eleve_id    id des élèves séparés par des virgules
+ * @param string $listing_pilier_id   id des piliers séparés par des virgules
+ * @return array
+ */
+public static function DB_lister_nombre_validations_eleves_items($listing_eleve_id,$listing_pilier_id)
+{
+  $DB_SQL = 'SELECT user_id, pilier_id, validation_entree_etat, COUNT(entree_id) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_jointure_user_entree ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (section_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
+  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND pilier_id IN('.$listing_pilier_id.') ';
+  $DB_SQL.= 'GROUP BY user_id, pilier_id, validation_entree_etat ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

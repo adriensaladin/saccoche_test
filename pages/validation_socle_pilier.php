@@ -97,3 +97,12 @@ $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ 
   <div id="items">
   </div>
 </div>
+
+<div id="zone_confirmer_fermer_validation" class="hide">
+  <p class="danger">Des modifications ont été effectuées, mais n'ont pas été enregistrées.</p>
+  <p>Confirmez-vous vouloir quitter l'interface de saisie ?</p>
+  <p>
+    <button id="confirmer_fermer_zone_validation" type="button" class="valider">Oui, je ne veux pas enregistrer</button>
+    <button id="annuler_fermer_zone_validation" type="button" class="annuler">Non, je reste sur l'interface</button>
+  </p>
+</div>

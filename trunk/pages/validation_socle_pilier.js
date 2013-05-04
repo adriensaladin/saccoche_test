@@ -249,7 +249,7 @@ $(document).ready
           color = '';
           cell_font_size = '1%'; /* 0% pour font-size pose problème au navigateur Safari. */
         }
-        $('#tableau_validation tbody td').css({ 'color':color, 'font-size':cell_font_size })
+        $('#tableau_validation tbody td').css({ 'color':color, 'font-size':cell_font_size });
         return false;
       }
     );

@@ -223,19 +223,20 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
       $hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="'.URL_DIR_LOGO.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
       $hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
       $SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
-      echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>';
+      echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>'."\r\n";
     }
     else
     {
-      echo'<h1>» '.$TITRE.'</h1>';
+      echo'<h1>» '.$TITRE.'</h1>'."\r\n";
     }
   }
   if(count($tab_messages_erreur))
   {
-    echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>';
+    echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>'."\r\n";
   }
   echo $CONTENU_PAGE;
-  echo'<span id="ancre_bas"></span></div>'."\r\n";
+  echo'<div id="ancre_bas"></div>'."\r\n"; // Il faut un div et pas seulement un span pour le navigateur Safari (sinon href="#ancre_bas" ne fonctionne pas).
+  echo'</div>'."\r\n";
   ?>
   <script type="text/javascript">
     var PAGE='<?php echo $PAGE ?>';

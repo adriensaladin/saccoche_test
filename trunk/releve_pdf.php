@@ -31,13 +31,10 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
-header('Content-Type: text/html; charset=utf-8');
-
 // Ouverture de la session et gestion des droits d'accès
-$PAGE = 'releve_pdf';
-if(!Session::verif_droit_acces($PAGE))
+if(!Session::verif_droit_acces(SACoche))
 {
-  exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ , '' /*lien*/ );
+  exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.SACoche.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ , '' /*lien*/ );
 }
 Session::execute();
 
@@ -58,22 +55,27 @@ $tab_types = array( 'releve' , 'bulletin' , 'palier1' , 'palier2' , 'palier3' );
 
 // Vérification des paramètres principaux
 
+if(!$FICHIER)
+{
+  exit_error( 'Paramètre manquant' /*titre*/ , 'Page appelée sans indiquer la référence de l\'archive PDF à récupérer.' /*contenu*/ , '' /*lien*/ );
+}
+
 if( (!in_array($BILAN_TYPE,$tab_types)) || !$periode_id || !$eleve_id )
 {
-  exit('Erreur avec les données transmises !');
+  exit_error( 'Paramètre incorrect' /*titre*/ , 'La valeur "'.html($FICHIER).'" transmise n\'est pas conforme.' /*contenu*/ , '' /*lien*/ );
 }
 
 // Vérifications complémentaires
 
 if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE]))
 {
-  exit('Erreur de droit d\'accès ! Veuillez n\'utiliser qu\'un onglet.');
+  exit_error( 'Accès non autorisé' /*titre*/ , 'Erreur de droit d\'accès ! Veuillez n\'utiliser qu\'un onglet.' /*contenu*/ , '' /*lien*/ );
 }
 
 $fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 if(!is_file($fichier_archive))
 {
-  exit('Erreur : archive non trouvée sur ce serveur.');
+  exit_error( 'Document manquant' /*titre*/ , 'Archive non trouvée sur ce serveur.' /*contenu*/ , '' /*lien*/ );
 }
 
 // Copie du fichier pour préserver son anonymat

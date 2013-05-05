@@ -2717,11 +2717,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+/*
   if($version_base_structure_actuelle=='2013-04-29')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
     {
-      $version_base_structure_actuelle = '2013-05-05';
+      $version_base_structure_actuelle = '2013-05-06';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_appreciation_generale" , "DIR" )' );
@@ -2733,6 +2734,7 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }
   }
+*/
 
 }
 

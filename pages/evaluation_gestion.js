@@ -325,20 +325,24 @@ $(document).ready
               format_liens('#table_saisir');
               $('#radio_'+memo_pilotage).click();
               $('#arrow_continue_'+memo_direction).click();
-              if(memo_pilotage=='clavier')
-              {
-                $('#C'+colonne+'L'+ligne).focus();
-              }
-              else
-              {
-                $('#arrow_continue').hide();
-              }
               nb_colonnes = $('#table_saisir thead th').length;
               nb_lignes   = $('#table_saisir tbody tr').length;
               $('#zone_saisir').css("display","block");
               if(nb_lignes>nb_lignes_max)
               {
                 $('#table_saisir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
+              }
+              if(memo_pilotage=='clavier')
+              {
+                $('#C'+colonne+'L'+ligne).focus();
+                if(isMobile)
+                {
+                  $('#cadre_tactile').show();
+                }
+              }
+              else
+              {
+                $('#arrow_continue').hide();
               }
             }
           }
@@ -741,6 +745,10 @@ $(document).ready
       {
         $('#table_saisir').thfloat('destroy'); /* jQuery TH Float Plugin */
       }
+      if(isMobile)
+      {
+        $('#cadre_tactile').hide();
+      }
       $('#zone_saisir').css("display","none");
       $('#form_prechoix , #table_action').show('fast');
       return(false);
@@ -1095,10 +1103,18 @@ $(document).ready
         {
           $('#arrow_continue').show(0);
           $('#C'+colonne+'L'+ligne).focus();
+          if(isMobile)
+          {
+            $('#cadre_tactile').show();
+          }
         }
         else
         {
           $('#arrow_continue').hide(0);
+          if(isMobile)
+          {
+            $('#cadre_tactile').hide();
+          }
         }
       }
     );
@@ -1199,7 +1215,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Gérer la saisie des acquisitions au clavier
+    // Gérer la saisie des acquisitions au clavier ou avec un dispositif tactile
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function focus_cellule_suivante_en_evitant_sortie_tableau()
@@ -1236,6 +1252,29 @@ $(document).ready
       $('#'+new_id).focus();
     }
 
+    $('#cadre_tactile').on
+    (
+      'click',
+      'kbd',
+      function()
+      {
+        var code = parseInt( $(this).attr('id').substring(4) , 10 ); // "kbd_" + ref
+        navigation_clavier(code);
+      }
+    );
+
+    $('#table_saisir').on
+    (
+      'click',
+      'tbody td input',
+      function(e)
+      {
+        var cellule_id  = $(this).attr("id");
+        colonne = parseInt(cellule_id.substring(1,cellule_id.indexOf('L')),10);
+        ligne   = parseInt(cellule_id.substring(cellule_id.indexOf('L')+1),10);
+      }
+    );
+
     $('#table_saisir').on
     (
       'keydown',  // keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
@@ -1244,146 +1283,153 @@ $(document).ready
       {
         if(memo_pilotage=='clavier')
         {
-          var id = $(this).attr("id");
-          var findme = '.'+e.which+'.';
-          var endroit_report_note = 'cellule';
-          colonne = parseInt(id.substring(1,id.indexOf('L')),10);
-          ligne   = parseInt(id.substring(id.indexOf('L')+1),10);
-          if('.8.46.49.50.51.52.65.68.78.80.97.98.99.100.'.indexOf(findme)!=-1)
-          {
-            // Une touche d'item a été pressée
-            switch (e.which)
-            {
-              case   8: note = 'X';    break; // backspace
-              case  46: note = 'X';    break; // suppr
-              case  97: note = 'RR';   break; // 1
-              case  49: note = 'RR';   break; // 1 (&)
-              case  98: note = 'R';    break; // 2
-              case  50: note = 'R';    break; // 2 (é)
-              case  99: note = 'V';    break; // 3
-              case  51: note = 'V';    break; // 3 (")
-              case 100: note = 'VV';   break; // 4
-              case  52: note = 'VV';   break; // 4 (')
-              case  65: note = 'ABS';  break; // A
-              case  68: note = 'DISP'; break; // D
-              case  78: note = 'NN';   break; // N
-              case  80: note = 'REQ';  break; // P
-              // case  69: note = 'NE';   break; // E
-            }
-            endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
-            if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
-            {
-              // pour une seule case
-              $(this).val(note).removeAttr("class").addClass(note);
-              $(this).parent().css("background-color","#F6D");
-              if(memo_direction=='down')
-              {
-                ligne++;
-              }
-              else
-              {
-                colonne++;
-              }
-            }
-            else if(endroit_report_note=='tableau')
-            {
-              // pour toutes les cases vides du tableau
-              $("#table_saisir tbody td input").each
-              (
-                function()
-                {
-                  if($(this).val()=='X')
-                  {
-                    $(this).val(note).removeAttr("class").addClass(note);
-                    $(this).parent().css("background-color","#F6D");
-                  }
-                }
-              );
-            }
-            else if(endroit_report_note=='colonne')
-            {
-              // pour toutes les cases vides d'une colonne
-              $("#table_saisir tbody td input[id^=C"+colonne+"L]").each
-              (
-                function()
-                {
-                  if($(this).val()=='X')
-                  {
-                    $(this).val(note).removeAttr("class").addClass(note);
-                    $(this).parent().css("background-color","#F6D");
-                  }
-                }
-              );
-              colonne++;
-            }
-            else if(endroit_report_note=='ligne')
-            {
-              // pour toutes les cases vides d'une ligne
-              $("#table_saisir tbody td input[id$=L"+ligne+"]").each
-              (
-                function()
-                {
-                  if($(this).val()=='X')
-                  {
-                    $(this).val(note).removeAttr("class").addClass(note);
-                    $(this).parent().css("background-color","#F6D");
-                  }
-                }
-              );
-              ligne++;
-            }
-            if(modification==false)
-            {
-              $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-              modification = true;
-            }
-            $('#ajax_msg_saisir').removeAttr("class").html("&nbsp;");
-            focus_cellule_suivante_en_evitant_sortie_tableau();
-            endroit_report_note = 'cellule';
-          }
-          else if('.37.38.39.40.'.indexOf(findme)!=-1)
-          {
-            // Une flèche a été pressée
-            switch (e.which)
-            {
-              case 37: colonne--; break; // flèche gauche
-              case 38: ligne--;   break; // flèche haut
-              case 39: colonne++; break; // flèche droit
-              case 40: ligne++;   break; // flèche bas
-            }
-            focus_cellule_suivante_en_evitant_sortie_tableau();
-          }
-          else if(e.which==13)  // touche entrée
-          {
-            // La touche entrée a été pressée
-            $('#valider_saisir').click();
-          }
-          else if(e.which==27)
-          {
-            // La touche escape a été pressée
-            $('#fermer_zone_saisir').click();
-          }
-          else if('.67.76.84.'.indexOf(findme)!=-1)
-          {
-            // Une touche de préparation de modification par lot a été pressée
-            switch (e.which)
-            {
-              case 67: endroit_report_note = 'colonne'; break; // C
-              case 76: endroit_report_note = 'ligne';   break; // L
-              case 84: endroit_report_note = 'tableau'; break; // T
-            }
-          }
-          else if('.16.17.18.20.144.'.indexOf(findme)!=-1)
-          {
-            // Une touche Shift / Ctrl / Alt / CapsLock / VerrNum [*] a été pressée
-            // [*] 144 est aussi un signal particulier envoyé par un clavier étendu en parallèle à chaque appui sur une touche du pavé numérique pour signaler qu'il est actif
-            endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
-          }
-          $('#f_report_'+endroit_report_note).prop('checked',true);
-          return false; // Evite notamment qu'IE fasse "page précédente" si on appuie sur backspace.
+          var cellule_id  = $(this).attr("id");
+          colonne = parseInt(cellule_id.substring(1,cellule_id.indexOf('L')),10);
+          ligne   = parseInt(cellule_id.substring(cellule_id.indexOf('L')+1),10);
+          navigation_clavier(e.which);
         }
       }
     );
+
+    function navigation_clavier(touche_code)
+    {
+      var cellule_obj = $('#C'+colonne+'L'+ligne);
+      var findme = '.'+touche_code+'.';
+      var endroit_report_note = 'cellule';
+      if('.8.46.49.50.51.52.65.68.78.80.97.98.99.100.'.indexOf(findme)!=-1)
+      {
+        // Une touche d'item a été pressée
+        switch (touche_code)
+        {
+          case   8: var note = 'X';    break; // backspace
+          case  46: var note = 'X';    break; // suppr
+          case  97: var note = 'RR';   break; // 1
+          case  49: var note = 'RR';   break; // 1 (&)
+          case  98: var note = 'R';    break; // 2
+          case  50: var note = 'R';    break; // 2 (é)
+          case  99: var note = 'V';    break; // 3
+          case  51: var note = 'V';    break; // 3 (")
+          case 100: var note = 'VV';   break; // 4
+          case  52: var note = 'VV';   break; // 4 (')
+          case  65: var note = 'ABS';  break; // A
+          case  68: var note = 'DISP'; break; // D
+          case  78: var note = 'NN';   break; // N
+          case  80: var note = 'REQ';  break; // P
+          // case  69: var note = 'NE';   break; // E
+        }
+        endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
+        if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
+        {
+          // pour une seule case
+          cellule_obj.val(note).removeAttr("class").addClass(note);
+          cellule_obj.parent().css("background-color","#F6D");
+          if(memo_direction=='down')
+          {
+            ligne++;
+          }
+          else
+          {
+            colonne++;
+          }
+        }
+        else if(endroit_report_note=='tableau')
+        {
+          // pour toutes les cases vides du tableau
+          $("#table_saisir tbody td input").each
+          (
+            function()
+            {
+              if(cellule_obj.val()=='X')
+              {
+                cellule_obj.val(note).removeAttr("class").addClass(note);
+                cellule_obj.parent().css("background-color","#F6D");
+              }
+            }
+          );
+        }
+        else if(endroit_report_note=='colonne')
+        {
+          // pour toutes les cases vides d'une colonne
+          $("#table_saisir tbody td input[id^=C"+colonne+"L]").each
+          (
+            function()
+            {
+              if(cellule_obj.val()=='X')
+              {
+                cellule_obj.val(note).removeAttr("class").addClass(note);
+                cellule_obj.parent().css("background-color","#F6D");
+              }
+            }
+          );
+          colonne++;
+        }
+        else if(endroit_report_note=='ligne')
+        {
+          // pour toutes les cases vides d'une ligne
+          $("#table_saisir tbody td input[id$=L"+ligne+"]").each
+          (
+            function()
+            {
+              if(cellule_obj.val()=='X')
+              {
+                cellule_obj.val(note).removeAttr("class").addClass(note);
+                cellule_obj.parent().css("background-color","#F6D");
+              }
+            }
+          );
+          ligne++;
+        }
+        if(modification==false)
+        {
+          $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr("class").addClass("img annuler");
+          modification = true;
+        }
+        $('#ajax_msg_saisir').removeAttr("class").html("&nbsp;");
+        focus_cellule_suivante_en_evitant_sortie_tableau();
+        endroit_report_note = 'cellule';
+      }
+      else if('.37.38.39.40.'.indexOf(findme)!=-1)
+      {
+        // Une flèche a été pressée
+        switch (touche_code)
+        {
+          case 37: colonne--; break; // flèche gauche
+          case 38: ligne--;   break; // flèche haut
+          case 39: colonne++; break; // flèche droit
+          case 40: ligne++;   break; // flèche bas
+        }
+        focus_cellule_suivante_en_evitant_sortie_tableau();
+      }
+      else if(touche_code==13)  // touche entrée
+      {
+        // La touche entrée a été pressée
+        $('#valider_saisir').click();
+      }
+      else if(touche_code==27)
+      {
+        // La touche escape a été pressée
+        $('#fermer_zone_saisir').click();
+      }
+      else if('.67.76.84.'.indexOf(findme)!=-1)
+      {
+        // Une touche de préparation de modification par lot a été pressée
+        switch (touche_code)
+        {
+          case 67: endroit_report_note = 'colonne'; break; // C
+          case 76: endroit_report_note = 'ligne';   break; // L
+          case 84: endroit_report_note = 'tableau'; break; // T
+        }
+      }
+      else if('.16.17.18.20.144.'.indexOf(findme)!=-1)
+      {
+        // Une touche Shift / Ctrl / Alt / CapsLock / VerrNum [*] a été pressée
+        // [*] 144 est aussi un signal particulier envoyé par un clavier étendu en parallèle à chaque appui sur une touche du pavé numérique pour signaler qu'il est actif
+        endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
+      }
+      $('#f_report_'+endroit_report_note).prop('checked',true);
+      return false; // Evite notamment qu'IE fasse "page précédente" si on appuie sur backspace.
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Gérer la saisie des acquisitions à la souris
@@ -1505,6 +1551,7 @@ $(document).ready
         if(modification==false)
         {
           $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr("class").addClass("img annuler");
           modification = true;
         }
         $('#ajax_msg_saisir').removeAttr("class").html("&nbsp;");
@@ -1619,6 +1666,7 @@ $(document).ready
               },
               success : function(responseHTML)
               {
+                modification = false; // Mis ici pour le cas "aucune modification détectée"
                 initialiser_compteur();
                 $('button').prop('disabled',false);
                 if(responseHTML.substring(0,4)!='<td ')
@@ -1627,9 +1675,9 @@ $(document).ready
                 }
                 else
                 {
-                  modification = false;
                   $('#ajax_msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
                   $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
+                  $('#kbd_27').removeAttr("class").addClass("img retourner");
                   colorer_cellules();
                   $("#devoir_"+$("#saisir_ref").val()).prev().replaceWith(responseHTML);
                 }

@@ -228,7 +228,7 @@ if($astuce_nombre)
 echo Browser::afficher_navigateurs_alertes();
 
 // Alerte si pas de javascript activé
-echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
+echo'<noscript><hr /><div class="probleme">Pour utiliser <em>SACoche</em> il est nécessaire d\'activer JavaScript dans votre navigateur.</div></noscript>';
 
 $tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'demandes'=>'Demandes d\'évaluations' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
 

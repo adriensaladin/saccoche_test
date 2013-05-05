@@ -27,6 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
+// Détecter si usage d'un appareil mobile (tablette, téléphone...) auquel cas on propose un mode de saisie des acquisitions adapté.
+$MobileDetect = new MobileDetect();
+$isMobile = $MobileDetect->isMobile();
+
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
@@ -103,6 +107,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   var input_date = "<?php echo TODAY_FR ?>";
   var date_mysql = "<?php echo TODAY_MYSQL ?>";
   var input_autoeval = "<?php echo date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))) ?>"; // J + 1 semaine
+  var isMobile = <?php echo (int)$isMobile; ?>;
   var tab_items    = new Array();
   var tab_profs    = new Array();
   var tab_eleves   = new Array();
@@ -382,4 +387,12 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f
     <button id="confirmer_fermer_zone_saisir" type="button" class="valider">Oui, je ne veux pas enregistrer</button>
     <button id="annuler_fermer_zone_saisir" type="button" class="annuler">Non, je reste sur l'interface</button>
   </p>
+</div>
+
+<!--  Clavier virtuel pour les dispositifs tactiles -->
+<div id="cadre_tactile">
+  <div><kbd id="kbd_37"><img alt="Gauche" src="./_img/fleche/fleche_g1.gif" /></kbd><kbd id="kbd_39"><img alt="Droite" src="./_img/fleche/fleche_d1.gif" /></kbd><kbd id="kbd_38"><img alt="Haut" src="./_img/fleche/fleche_h1.gif" /></kbd><kbd id="kbd_40"><img alt="Bas" src="./_img/fleche/fleche_b1.gif" /></kbd></div>
+  <div><kbd id="kbd_97"><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /></kbd><kbd id="kbd_98"><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /></kbd><kbd id="kbd_99"><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /></kbd><kbd id="kbd_100"><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /></kbd></div>
+  <div><kbd id="kbd_65"><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /></kbd><kbd id="kbd_68"><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /></kbd><kbd id="kbd_78"><img alt="NN" src="./_img/note/commun/h/NN.gif" /></kbd><kbd id="kbd_46"><img alt="X" src="./_img/note/commun/h/X.gif" /></kbd></div>
+  <div><kbd id="kbd_80"><img alt="ABS" src="./_img/note/commun/h/REQ.gif" /></kbd><kbd style="visibility:hidden"></kbd><kbd id="kbd_13" class="img valider"></kbd><kbd id="kbd_27" class="img retourner"></kbd></div>
 </div>

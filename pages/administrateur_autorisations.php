@@ -154,7 +154,7 @@ $tab_droits  = array
     'dir_pers_pp',
     array( 'droit_fiche_brevet_modifier_statut'       , "modifier le statut (accès saisies&hellip;)"                , 'dir' ),
     array( 'droit_fiche_brevet_corriger_appreciation' , "corriger l'appréciation d'un collègue"                     , 'dir' ),
-    array( 'droit_fiche_brevet_appreciation_generale' , "éditer l'avis du conseil de classe / chef d'établissement" , 'dir' ),
+    array( 'droit_fiche_brevet_appreciation_generale' , "éditer l'avis de synthèse".' <img alt="" src="./_img/bulle_aide.png" title="Avis du conseil de classe (“doit faire ses preuves” ou “favorable”).<br />Avis circonstancié du chef d’établissement." />' , 'dir' ),
     array( 'droit_fiche_brevet_impression_pdf'        , "générer la version PDF imprimable"                         , 'dir' )
   ),
   "Consultation des documents officiels finalisés" => array

@@ -59,6 +59,8 @@ hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#666}
+kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
+kbd:hover{background-color:#CCC;border-color:#AAA}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
@@ -84,6 +86,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #cadre_navig  {z-index:1003;position:fixed;top:2px;right:2px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
 #cadre_photo  {z-index:1004;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
 #cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
+#cadre_tactile{z-index:1004;position:fixed;top:60px;left:5px;text-align:center;background:#FF9;padding:2px;border:1px solid #AA0;border-radius:3px;display:none}
 
 /* dans #cadre_haut */
 #top_info {position:absolute;top:3px;left:4px}
@@ -480,6 +483,13 @@ span.select_multiple label:hover {cursor:pointer}
 span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px}
 span.select_multiple label.check {color:#FFF;background-color:#88F}
 span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
+
+/* Certaines touches KBD */
+kbd.img{background:#EEE url(../_img/sprite_bouton_7.png) 0 0 no-repeat;height:15px}
+kbd.img:hover{background-color:#CCC}
+kbd.annuler   {background-position: 7px  -34px}
+kbd.retourner {background-position: 7px -674px}
+kbd.valider   {background-position: 7px -814px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style généraux pour les tableaux                                                                    */

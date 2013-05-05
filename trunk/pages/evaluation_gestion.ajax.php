@@ -108,6 +108,10 @@ $tab_profs  = array_filter($tab_profs,'positif');
 // Liste des notes transmises
 $tab_notes  = (isset($_POST['f_notes'])) ? explode(',',$_POST['f_notes']) : array() ;
 
+// Détecter si usage d'un appareil mobile (tablette, téléphone...) auquel cas on propose un tableau de saisi condensé.
+$MobileDetect = new MobileDetect();
+$isMobile = $MobileDetect->isMobile();
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -514,6 +518,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     exit('Aucun élève n\'est associé à cette évaluation !');
   }
   $separateur = ';';
+  $check_largeur = $isMobile ? ' checked' : '' ;
   $tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
@@ -524,7 +529,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="arrow_continue_rigth">par item</span></label></span><br />';
   $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
   $tab_affich[0][0].= '</p><p>';
-  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur"'.$check_largeur.' /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
   $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
   $tab_affich[0][0].= '</p>';
   $tab_affich[0][0].= '</td>';
@@ -532,9 +537,10 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $csv_ligne_eleve_nom = $separateur;
   $csv_ligne_eleve_id  = $separateur;
   $csv_nb_colonnes = 1;
+  $br = $isMobile ? '' : '&amp;br' ;
   foreach($DB_TAB_USER as $DB_ROW)
   {
-    $tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+    $tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).$br.'" /></th>';
     $tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
     $csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
     $csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
@@ -561,7 +567,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     foreach($tab_comp_id as $comp_id=>$val_comp)
     {
       $num_ligne++;
-      $tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" /></td>'; // readonly retiré pour faire apparaître un clavier virtuel sur les dispositif tactiles
+      $tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
     }
   }
   // configurer le champ input
@@ -608,6 +614,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   //
   // c'est fini ; affichage du retour
   //
+  $tbody_class = $isMobile ? 'v' : 'h' ;
   foreach($tab_affich as $comp_id => $tab_user)
   {
     if(!$comp_id)
@@ -622,7 +629,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     echo'</tr>';
     if(!$comp_id)
     {
-      echo'</thead><tbody class="h">';
+      echo'</thead><tbody class="'.$tbody_class.'">';
     }
   }
   echo'</tbody>';

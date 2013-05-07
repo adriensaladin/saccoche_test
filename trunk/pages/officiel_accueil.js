@@ -101,19 +101,16 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#ajax_photo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-            leave_erreur = true;
           },
           success : function(responseHTML)
           {
             if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
-              leave_erreur = false;
             }
             else
             {
               $('#ajax_photo').removeAttr("class").addClass("alerte").html(responseHTML);
-              leave_erreur = true;
             }
           }
         }

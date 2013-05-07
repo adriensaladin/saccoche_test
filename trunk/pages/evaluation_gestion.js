@@ -1293,7 +1293,6 @@ $(document).ready
 
     function navigation_clavier(touche_code)
     {
-      var cellule_obj = $('#C'+colonne+'L'+ligne);
       var findme = '.'+touche_code+'.';
       var endroit_report_note = 'cellule';
       if('.8.46.49.50.51.52.65.68.78.80.97.98.99.100.'.indexOf(findme)!=-1)
@@ -1321,6 +1320,7 @@ $(document).ready
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
         {
           // pour une seule case
+          var cellule_obj = $('#C'+colonne+'L'+ligne);
           cellule_obj.val(note).removeAttr("class").addClass(note);
           cellule_obj.parent().css("background-color","#F6D");
           if(memo_direction=='down')
@@ -1339,10 +1339,10 @@ $(document).ready
           (
             function()
             {
-              if(cellule_obj.val()=='X')
+              if($(this).val()=='X')
               {
-                cellule_obj.val(note).removeAttr("class").addClass(note);
-                cellule_obj.parent().css("background-color","#F6D");
+                $(this).val(note).removeAttr("class").addClass(note);
+                $(this).parent().css("background-color","#F6D");
               }
             }
           );
@@ -1354,10 +1354,10 @@ $(document).ready
           (
             function()
             {
-              if(cellule_obj.val()=='X')
+              if($(this).val()=='X')
               {
-                cellule_obj.val(note).removeAttr("class").addClass(note);
-                cellule_obj.parent().css("background-color","#F6D");
+                $(this).val(note).removeAttr("class").addClass(note);
+                $(this).parent().css("background-color","#F6D");
               }
             }
           );
@@ -1370,10 +1370,10 @@ $(document).ready
           (
             function()
             {
-              if(cellule_obj.val()=='X')
+              if($(this).val()=='X')
               {
-                cellule_obj.val(note).removeAttr("class").addClass(note);
-                cellule_obj.parent().css("background-color","#F6D");
+                $(this).val(note).removeAttr("class").addClass(note);
+                $(this).parent().css("background-color","#F6D");
               }
             }
           );

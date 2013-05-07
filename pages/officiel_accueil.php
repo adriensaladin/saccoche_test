@@ -478,13 +478,13 @@ elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
   foreach($DB_TAB as $DB_ROW)
   {
     $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-    $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<label for="rubrique_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
+    $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /><label for="rubrique_'.$DB_ROW['matiere_id'].'"> '.html($DB_ROW['matiere_nom']).'</label><br />';
   }
   $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 }
 // Choix de vérifier ou pas l'appréciation générale ; le test ($etat=='3synthese') dépend de chaque classe...
 $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '' : ' disabled' ;
-$tab_checkbox_rubriques[0] = '<label for="rubrique_0"><input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /> <i>Appréciation de synthèse générale</i></label><br />';
+$tab_checkbox_rubriques[0] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /><label for="rubrique_0"> <i>Appréciation de synthèse générale</i></label><br />';
 // Présenter les rubriques en colonnes de hauteur raisonnables
 $tab_checkbox_rubriques    = array_values($tab_checkbox_rubriques);
 $nb_rubriques              = count($tab_checkbox_rubriques);

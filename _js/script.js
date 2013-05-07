@@ -531,10 +531,7 @@ function tester_compteur()
     }
     else
     {
-      if(window.HTMLAudioElement) // Éviter une erreur si balise audio HTML5 non supportée
-      {
-        $('#audio_bip').get(0).play(); // Fonctionne sauf avec IE<9 et Safari sous Windows si Quicktime n'est pas installé.
-      }
+      setVolume(100);play("bip");
       $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_anim");
       if(DUREE_AFFICHEE==0)
       {
@@ -614,6 +611,64 @@ function fermer_session()
       }
     }
   );
+}
+
+/**
+ * Lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/
+ */
+
+// Objet js
+var myListener = new Object();
+// Initialisation
+myListener.onInit = function()
+{
+  this.position = 0;
+};
+// Update
+myListener.onUpdate = function()
+{
+  info_playing  = this.isPlaying;
+  info_url      = this.url;
+  info_volume   = this.volume;
+  info_position = this.position;
+  info_duration = this.duration;
+  info_bytes    = this.bytesLoaded + "/" + this.bytesTotal + " (" + this.bytesPercent + "%)";
+  var isPlaying = (this.isPlaying == "true");
+};
+// Le lecteur flash
+function getFlashObject()
+{
+  return document.getElementById("myFlash");
+}
+// Play
+function play(file)
+{
+  if (myListener.position == 0)
+  {
+    getFlashObject().SetVariable("method:setUrl", "./_mp3/"+file+".mp3");
+  }
+  getFlashObject().SetVariable("method:play", "");
+  getFlashObject().SetVariable("enabled", "true");
+}
+// Pause
+function pause()
+{
+  getFlashObject().SetVariable("method:pause", "");
+}
+// Stop
+function stop()
+{
+  getFlashObject().SetVariable("method:stop", "");
+}
+// setPosition
+function setPosition(position)
+{
+  getFlashObject().SetVariable("method:setPosition", position);
+}
+// setVolume
+function setVolume(volume)
+{
+  getFlashObject().SetVariable("method:setVolume", volume);
 }
 
 /**

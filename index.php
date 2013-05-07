@@ -183,10 +183,6 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
     echo'    <span class="button clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span>'."\r\n";
     echo'    <button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
     echo'  </div>'."\r\n";
-    echo'  <audio id="audio_bip" preload="none" class="hide">'."\r\n";
-    echo'    <source src="./_audio/bip.mp3" type="audio/mpeg" />'."\r\n";
-    echo'    <source src="./_audio/bip.ogg" type="audio/ogg" />'."\r\n";
-    echo'  </audio>'."\r\n";
     // Le menu '<ul id="menu">...</ul>
     if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
     {
@@ -211,6 +207,7 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
       }
       echo $contenu_menu;
     }
+    
     echo'</div>'."\r\n";
     echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'."\r\n";
     echo'<div id="cadre_bas">'."\r\n";
@@ -249,5 +246,11 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
     var DUREE_AFFICHEE ='<?php echo $_SESSION['USER_DUREE_INACTIVITE'] ?>';
     var CONNEXION_USED ='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
   </script>
+  <!-- Objet flash pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/ -->
+  <h6><object class="playerpreview" id="myFlash" type="application/x-shockwave-flash" data="./_mp3/player_mp3_js.swf" height="1" width="1">
+    <param name="movie" value="./_mp3/player_mp3_js.swf" />
+    <param name="AllowScriptAccess" value="always" />
+    <param name="FlashVars" value="listener=myListener&amp;interval=500" />
+  </object></h6>
 </body>
 </html>

@@ -128,7 +128,7 @@ if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
-$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note);
+$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
@@ -179,7 +179,7 @@ if($BILAN_TYPE=='releve')
   $type_synthese          = 0;
   $type_bulletin          = 0;
   $tab_matiere_id         = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 }
 elseif($BILAN_TYPE=='bulletin')
 {
@@ -197,7 +197,7 @@ elseif($BILAN_TYPE=='bulletin')
   $tab_eleve      = $tab_eleve_id;
   $liste_eleve    = $liste_eleve_id;
   $tab_matiere_id = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 {
@@ -213,7 +213,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $tab_pilier_id  = $tab_pilier_id; // Pas $tab_rubrique_id car il ne faut pas juste restreindre à la liste des rubriques dont on souhaite vérifier l'appréciation afin de récupérer les bilans de tous les élèves concernés.
   $tab_eleve_id   = $tab_eleve_id;
   $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

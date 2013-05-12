@@ -35,7 +35,6 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var memo_eleve_info = '';
-    var memo_classe_id  = 0;
     var memo_eleve_id   = 0;
     var memo_serie_ref  = '';
     var memo_eleve_info_first = $('#go_selection_eleve option:first').val();
@@ -49,9 +48,8 @@ $(document).ready
     {
       memo_eleve_info = eleve_info;
       tab_id = eleve_info.split('_');
-      memo_classe_id = tab_id[0];
-      memo_eleve_id  = tab_id[1];
-      memo_serie_ref = tab_id[2];
+      memo_eleve_id  = tab_id[0];
+      memo_serie_ref = tab_id[1];
       $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',true);
       $('#ajax_msg').removeAttr("class").addClass("loader").html('En cours&hellip;');
       $.ajax
@@ -59,7 +57,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+'proposer'+'&f_classe='+memo_classe_id+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref,
+          data : 'csrf='+CSRF+'&f_action='+'proposer'+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref,
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -250,7 +248,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'enregistrer'+'&f_classe='+memo_classe_id+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref+'&'+$('#zone_resultat_eleve').serialize(),
+            data : 'csrf='+CSRF+'&f_action='+'enregistrer'+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref+'&'+$('#zone_resultat_eleve').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

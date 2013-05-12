@@ -399,7 +399,7 @@ define('ID_DEMO'                   , 9999); // id de l'établissement de démons
 define('ID_MATIERE_PARTAGEE_MAX'   , 9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
 define('ID_NIVEAU_MAX'             , 1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
 define('ID_FAMILLE_MATIERE_USUELLE',   99);
-define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
+
 
 // cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
@@ -481,7 +481,6 @@ function __autoload($class_name)
     'Browser'                     => '_inc'.DS.'class.Browser.php' ,
     'Clean'                       => '_inc'.DS.'class.Clean.php' ,
     'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
-    'Erreur500'                   => '_inc'.DS.'class.Erreur500.php' ,
     'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
     'Form'                        => '_inc'.DS.'class.Form.php' ,
     'Html'                        => '_inc'.DS.'class.Html.php' ,
@@ -560,8 +559,21 @@ function __autoload($class_name)
 }
 
 // ============================================================================
-// Fonctions d'affichage et de sortie
+// Quelques fonctions utiles : html() - perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - augmenter_max_execution_time() - rapporter_erreur_fatale_memoire_ou_duree() - rapporter_erreur_fatale_phpcas() - exit_error()
 // ============================================================================
+
+/*
+ * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML, ou simple texte HTML valide...).
+ * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
+ * 
+ * @param string
+ * @return string
+ */
+function html($text)
+{
+  // Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+  return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+}
 
 /**
  * Fonction pour remplacer mb_detect_encoding() à cause d'un bug : http://fr2.php.net/manual/en/function.mb-detect-encoding.php#81936
@@ -575,24 +587,132 @@ function perso_mb_detect_encoding_utf8($text)
 }
 
 /*
- * Convertir les caractères spéciaux (&"'<>) en entité HTML afin d'éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML, ou simple texte HTML valide...).
- * Pour que les retours à la ligne soient convertis en <br /> il faut coupler cette fontion à la fonction nl2br()
+ * Augmenter le memory_limit (si autorisé) pour les pages les plus gourmandes
  * 
- * @param string
- * @return string
+ * @param void
+ * @return void
  */
-function html($text)
+function augmenter_memory_limit()
 {
-  // Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
-  return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+  if( (int)ini_get('memory_limit') < 256 )
+  {
+    @ini_set(  'memory_limit','256M');
+    @ini_alter('memory_limit','256M');
+  }
 }
 
 /*
- * Afficher une page HTML minimale (mais aux couleurs de SACoche) avec un message explicatif et un lien adapté éventuel.
+ * Augmenter le memory_limit (si autorisé) pour les pages les plus gourmandes
+ * 
+ * @param void
+ * @return void
+ */
+function augmenter_max_execution_time()
+{
+  if( (int)ini_get('max_execution_time') < 30 )
+  {
+    @ini_set(  'max_execution_time',30);
+    @ini_alter('max_execution_time',30);
+  }
+}
+
+/*
+ * Pour intercepter les erreurs de dépassement de mémoire ou de durée d'exécution (une erreur fatale échappe à un try{...}catch(){...}).
+ *
+ * Source : http://pmol.fr/programmation/web/la-gestion-des-erreurs-en-php/
+ * Mais ça ne fonctionne pas en CGI : PHP a déjà envoyé l'erreur 500 et cette fonction est appelée trop tard, PHP n'a plus la main.
+ * Pour avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted » on peut aussi mettre dans les pages sensibles :
+ * ajouter_log_PHP( 'Demande de bilan' , serialize($_POST) , __FILE__ , __LINE__ , TRUE );
+ * 
+ * @param void
+ * @return void
+ */
+function rapporter_erreur_fatale_memoire_ou_duree()
+{
+  $tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
+  if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) )
+  {
+    if(mb_substr($tab_last_error['message'],0,19)=='Allowed memory size')
+    {
+      exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ , '' /*lien*/ );
+    }
+    if(mb_substr($tab_last_error['message'],0,22)=='Maximum execution time')
+    {
+      exit_error( 'Temps alloué insuffisant' /*titre*/ , 'Temps de '.ini_get('max_execution_time').'s alloué au script insuffisant ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' /*contenu*/ , '' /*lien*/ );
+    }
+  }
+}
+
+/*
+ * Pour enclencher les fonctions de prévention et d'interception des erreurs fatales dépassement de mémoire ou de durée d'exécution.
+ * 
+ * 1/ dépassement de mémoire (memory_limit)
+ * La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
+ * Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
+// Un graphique sur une longue période peut aussi nécessiter de nombreux calculs.
+ * De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
+ * Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+ * 
+ * 2/ durée d'exécution (max_execution_time)
+ * La découpe d'un PDF peut provoquer un dépassement de la durée d'exécution allouée au script.
+ * Un max_execution_time() de 10s peut ainsi être dépassé avec un pdf de bulletins d'une classe de 25 élèves (archives + tirages responsables : ça fait plus de 100 pages).
+ * 
+ * 3/ Solution
+ * On commence par un ini_set(), même si cette directive peut être interdite dans la conf PHP.
+ * Pour memory_limit, elle peut aussi être bloquée via Suhosin (http:*www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit).
+ * En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
+ * D'où une combinaison de toutes ces pistes, plus une détection par javascript du statusCode.
+ * 
+ * @param bool $memory
+ * @param bool $time
+ * @return void
+ */
+function prevention_et_gestion_erreurs_fatales($memory,$time)
+{
+  if($memory) augmenter_memory_limit();
+  if($time)   augmenter_max_execution_time();
+  register_shutdown_function('rapporter_erreur_fatale_memoire_ou_duree');
+}
+
+/*
+ * Pour intercepter les erreurs de phpCAS (une erreur fatale échappe à un try{...}catch(){...}).
+ *
+ * phpCAS renvoie parfois des erreurs fatales
+ * pas beaucoup, pas systématiquement, mais régulièrement
+ * 
+ * Une cause (je ne sais pas encore si c'est la seule cause)
+ * est que le XML renvoyé par le serveur CAS est syntaxiquement invalide.
+ * En général car il contient un caractère parmi & < >
+ * 
+ * Quand c'est un &, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): xmlParseEntityRef: no name in Entity...
+ * Quand c'est un <, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): StartTag: invalid element name...
+ * Quand c'est un >, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): Start tag expected, '<' not found in Entity...
+ * L'ENT doit s'arranger pour envoyer un XML valide, donc :
+ * - soit convertir ces caractères en entités HTML (&amp; &lt; &gt;)
+ * - soit retirer ces caractères ou les remplacer par d'autres
+ * - soit utiliser des sections CDATA : <![CDATA[some text & some more text]]>
+ * 
+ * Par ailleurs, il est tout de même dommage que phpCas ne renvoie pas un message plus causant 
+ * (genre xml parse error, ou à défaut invalid Response).
+ * 
+ * @param void
+ * @return void
+ */
+function rapporter_erreur_fatale_phpcas()
+{
+  $tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
+  if( ($tab_last_error!==NULL) && ( ($tab_last_error['type']==E_ERROR) || ($tab_last_error['type']>=E_CORE_ERROR) ) )
+  {
+    exit_error( 'Erreur CAS' /*titre*/ , $tab_last_error['message'] /*contenu*/ );
+  }
+}
+
+/*
+ * Afficher une page HTML minimale (mais aux couleurs de SACoche) avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
  * 
  * @param string $titre     titre de la page
  * @param string $contenu   contenu HTML affiché (ou AJAX retourné) ; il doit déjà avoir été filtré si besoin avec html()
- * @param string $lien      "accueil" pour un lien vers l'accueil (par défaut) OU "install" vers la procédure d'installation OU "" pour aucun
+ * @param string $lien      "accueil" | "install" | "" pour un lien vers l'accueil (par défaut) ou la procédure d'installation au aucun.
  * @return void
  */
 function exit_error( $titre , $contenu , $lien='accueil' )

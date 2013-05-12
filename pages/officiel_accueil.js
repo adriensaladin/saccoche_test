@@ -36,7 +36,7 @@ $(document).ready
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-    // @see   http://docs.highcharts.com/
+    // @see   http://www.highcharts.com/documentation/how-to-use
     // @see   http://www.highcharts.com/ref
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -612,7 +612,7 @@ $(document).ready
 
     function afficher_textarea_appreciation_ou_input_moyenne(obj_lieu,champ_contenu)
     {
-      // fabriquer le formulaire textarea ou input
+      // fabriquer le formulare textarea ou input
       if(memo_rubrique_type=='appr')
       {
         memo_html = obj_lieu.closest('td').html();

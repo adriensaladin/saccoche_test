@@ -106,23 +106,8 @@ if($connexion_mode=='cas')
 {
   /**
    * Si la bufferisation est active et contient la sortie de phpCAS sur une CAS_Exception,
-   * récupère le contenu et l'affiche dans notre template (sinon lance un exit sans rien faire).
+   *   récupère le contenu et l'affiche dans notre template (sinon lance un exit sans rien faire)
    *
-   * Une cause rencontrée (peut-être pas la seule)
-   * est que le XML renvoyé par le serveur CAS est syntaxiquement invalide.
-   * En général car il contient un caractère parmi & < >
-   * 
-   * Quand c'est un &, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): xmlParseEntityRef: no name in Entity...
-   * Quand c'est un <, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): StartTag: invalid element name...
-   * Quand c'est un >, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): Start tag expected, '<' not found in Entity...
-   * L'ENT doit s'arranger pour envoyer un XML valide, donc :
-   * - soit convertir ces caractères en entités HTML (&amp; &lt; &gt;)
-   * - soit retirer ces caractères ou les remplacer par d'autres
-   * - soit utiliser des sections CDATA : <![CDATA[some text & some more text]]>
-   * 
-   * Par ailleurs, il est tout de même dommage que phpCas ne renvoie pas un message plus causant 
-   * (genre xml parse error, ou à défaut invalid Response).
-   * 
    * @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
    * @param string $msg_sup (facultatif) Du contenu supplémentaire ajouté juste avant le </body> (mettre les <p>)
    */

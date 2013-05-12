@@ -30,12 +30,11 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 
 // Récupération et test des paramètres communs (affichage et enregistrement)
 
-$action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '' ;
-$serie_ref = (isset($_POST['f_serie']))  ? Clean::texte($_POST['f_serie'])   : '' ;
-$classe_id = (isset($_POST['f_classe'])) ? Clean::entier($_POST['f_classe']) : 0 ;
-$eleve_id  = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0 ;
+$action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '' ;
+$serie_ref = (isset($_POST['f_serie']))  ? Clean::texte($_POST['f_serie'])  : '' ;
+$eleve_id  = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])  : 0 ;
 
-if( !in_array($action,array('proposer','enregistrer')) || !$serie_ref || !$classe_id || !$eleve_id )
+if( !in_array($action,array('proposer','enregistrer')) || !$serie_ref || !$eleve_id )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -46,6 +45,8 @@ if(empty($DB_TAB_epreuves))
 {
   exit('Erreur : série inconnue !');
 }
+
+$epreuve_code_total = '255';
 
 // Récupérer les paramètres des épreuves
 
@@ -85,34 +86,44 @@ if(count($DB_TAB))
 
 if($action=='proposer')
 {
-  $tab_codes = array(
+  $tab_options = array();
+  $tab_codes   = array(
     'AB' => 'AB (absent)',
     'DI' => 'DI (dispensé)',
     'VA' => 'VA (validé)',
     'NV' => 'NV (non validé)'
   );
-  $optgroup_notes_chiffrees = '<optgroup label="Notes chiffrées">';
-  for( $note=0 ; $note<=20 ; $note+=0.5 )
-  {
-    $optgroup_notes_chiffrees .= '<option value="'.str_replace('.','v',(string)$note).'">'.sprintf("%05.2f",$note).' / 20</option>';
-  }
-  $optgroup_notes_chiffrees .= '</optgroup>';
   /*
-   * Fonction pour fabriquer la liste des options d'un select de choix d'une note d'une épreuve
+   * Fonction pour fabriquer la liste des optiosn d'un select de choix d'une note d'une épreuve
    */
-  function options_note($epreuve_obligatoire,$epreuve_note_chiffree,$epreuve_code_speciaux)
+  function options_note($epreuve_obligatoire,$epreuve_note_chiffree,$epreuve_point_sup_10,$epreuve_code_speciaux,$epreuve_coefficient)
   {
-    global $optgroup_notes_chiffrees,$tab_codes;
-    $option_sans_objet = ($epreuve_obligatoire) ? '' : '<option value="">sans objet</option>' ;
+    global $tab_options,$tab_codes;
+    $options = ($epreuve_obligatoire) ? '' : '<option value="">sans objet</option>' ;
     // Codes spéciaux
-    $optgroup_codes_speciaux = '<optgroup label="Codes spéciaux">';
+    $options .= '<optgroup label="Codes spéciaux">';
     $tab_code_speciaux = explode(',',$epreuve_code_speciaux);
     foreach($tab_code_speciaux as $code_special)
     {
-      $optgroup_codes_speciaux .= '<option value="'.$code_special.'">'.$tab_codes[$code_special].'</option>';
+      $options .= '<option value="'.$code_special.'">'.$tab_codes[$code_special].'</option>';
     }
-    $optgroup_codes_speciaux .= '</optgroup>';
-    return(!$epreuve_note_chiffree) ? $option_sans_objet.$optgroup_codes_speciaux : $option_sans_objet.$optgroup_codes_speciaux.$optgroup_notes_chiffrees;
+    $options .= '</optgroup>';
+    if(!$epreuve_note_chiffree)
+    {
+      return $options;
+    }
+    // Notes chiffrées
+    $note_maxi = ($epreuve_point_sup_10) ? 10 : 20*$epreuve_coefficient ;
+    if(!isset($tab_options[$note_maxi]))
+    {
+      $tab_options[$note_maxi] = '<optgroup label="Notes chiffrées">';
+      for( $note=0 ; $note<=$note_maxi ; $note+=0.5 )
+      {
+        $tab_options[$note_maxi] .= '<option value="'.str_replace('.','v',(string)$note).'">'.sprintf("%05.2f",$note).' / '.$note_maxi.'</option>';
+      }
+      $tab_options[$note_maxi] .= '</optgroup>';
+    }
+    return $options.$tab_options[$note_maxi];
   }
   // Récupérer les moyennes de bulletins (on ne sait pas encore pour quelle matière c'est demandé, mais c'est le mode par défaut, et ce n'est pas dur à récupérer)
   $tab_moyennes_bulletin = array();
@@ -130,7 +141,7 @@ if($action=='proposer')
   {
     $tab_matieres_etabl[$DB_ROW['valeur']] = html($DB_ROW['texte']);
   }
-  // Paramètres requis par [noyau_items_releve.php] pour calculer une moyenne annuelle
+  // Paramètres requis par [code_items_releve.php] pour calculer une moyenne annuelle
   $format                 = 'matiere';
   $aff_etat_acquisition   = 0;
   $aff_moyenne_scores     = 0;
@@ -199,7 +210,6 @@ if($action=='proposer')
       $tab_moyenne_referentiel = array();
       $tab_moyenne_annuelle    = array();
       $tab_choix_matieres = explode(',',$epreuve_choix_matieres);
-      $tab_choix_matieres_avec_donnees = array();
       foreach($tab_choix_matieres as $matiere_id)
       {
         $tab_moyenne_referentiel[$matiere_id] = FALSE ;
@@ -209,21 +219,19 @@ if($action=='proposer')
         {
           $tab_moyenne_referentiel[$matiere_id] = round( array_sum($tab_moyennes_bulletin[$matiere_id]['note']) / count($tab_moyennes_bulletin[$matiere_id]['note']) , 1 );
           $ligne_calcul_moyenne = '<div>Bulletins : '.implode(' ',$tab_moyennes_bulletin[$matiere_id]['txt']).' &rarr; <b>'.$tab_moyenne_referentiel[$matiere_id].'</b></div>';
-          $tab_choix_matieres_avec_donnees[] = $matiere_id;
         }
         // Calculer une moyenne annuelle des acquisitions
         if($tab_moyenne_referentiel[$matiere_id]===FALSE)
         {
           if(!isset($tab_moyenne_annuelle[$matiere_id]))
           {
-            require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
+            require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
             $tab_moyenne_annuelle[$matiere_id] = ($moyenne_moyenne_scores!==FALSE) ? round( $moyenne_moyenne_scores/5 , 1 ) : FALSE ;
           }
           if($tab_moyenne_annuelle[$matiere_id]!==FALSE)
           {
             $tab_moyenne_referentiel[$matiere_id] = $tab_moyenne_annuelle[$matiere_id];
             $ligne_calcul_moyenne = '<div>Moyenne annuelle des acquisitions : <b>'.$tab_moyenne_annuelle[$matiere_id].'</b></div>';
-            $tab_choix_matieres_avec_donnees[] = $matiere_id;
           }
         }
         // Déterminer celui qui doit être coché et dont la note doit être reportée
@@ -242,7 +250,7 @@ if($action=='proposer')
         // Attention au test suivant : ( 414 == '414,406' ) renvoie TRUE
         $checked       = ((string)$matiere_id===(string)$test_checked) ? ' checked' : '' ;
         $note_proposee = ((string)$matiere_id===(string)$test_checked) ? $tab_moyenne_referentiel[$matiere_id] : $note_proposee ;
-        $note_reportee = ($tab_moyenne_referentiel[$matiere_id]!==FALSE) ? ceilTo( $tab_moyenne_referentiel[$matiere_id] , 0.5 ) : '' ;
+        $note_reportee = ($tab_moyenne_referentiel[$matiere_id]!==FALSE) ? ceilTo( $epreuve_coefficient * $tab_moyenne_referentiel[$matiere_id] , 0.5 ) : '' ;
         $tab_td[2] .= '<div class="b"><input type="radio" id="radio_'.$epreuve_code.'_'.$matiere_id.'" name="check_'.$epreuve_code.'" value="'.$matiere_id.'"'.$checked.' /><i>'.str_replace('.','v',(string)$note_reportee).'</i><label for="radio_'.$epreuve_code.'_'.$matiere_id.'"> '.$tab_matieres_etabl[$matiere_id].'</label></div>'.$ligne_calcul_moyenne;
       }
       // Si besoin, terminer avec une moyenne des référentiels
@@ -256,8 +264,8 @@ if($action=='proposer')
         // Attention au test suivant : ( 414 == '414,406' ) renvoie TRUE
         $checked       = ((string)$epreuve_choix_matieres===(string)$test_checked) ? ' checked' : '' ;
         $note_proposee = ((string)$epreuve_choix_matieres===(string)$test_checked) ? $moyenne_moyenne_referentiels : $note_proposee ;
-        $note_reportee = ($moyenne_moyenne_referentiels!==FALSE) ? ceilTo( $moyenne_moyenne_referentiels , 0.5 ) : '' ;
-        $tab_td[2] .= '<div class="b"><input type="radio" id="radio_'.$epreuve_code.'_multi" name="check_'.$epreuve_code.'" value="'.implode('-',$tab_choix_matieres_avec_donnees).'"'.$checked.' /><i>'.str_replace('.','v',(string)$note_reportee).'</i><label for="radio_'.$epreuve_code.'_multi"> Ensemble des référentiels</label></div>';
+        $note_reportee = ($moyenne_moyenne_referentiels!==FALSE) ? ceilTo( $epreuve_coefficient * $moyenne_moyenne_referentiels , 0.5 ) : '' ;
+        $tab_td[2] .= '<div class="b"><input type="radio" id="radio_'.$epreuve_code.'_multi" name="check_'.$epreuve_code.'" value="'.str_replace(',','-',$epreuve_choix_matieres).'"'.$checked.' /><i>'.str_replace('.','v',(string)$note_reportee).'</i><label for="radio_'.$epreuve_code.'_multi"> Ensemble des référentiels</label></div>';
         if($moyenne_moyenne_referentiels!==FALSE)
         {
           $tab_td[2] .= '<div>Moyenne : <b>'.$moyenne_moyenne_referentiels.'</b></div>';
@@ -270,7 +278,11 @@ if($action=='proposer')
     {
       if($epreuve_note_chiffree)
       {
-        $note_selectionnee = ceilTo( $note_proposee , 0.5 );
+        $note_selectionnee = ceilTo( $epreuve_coefficient * $note_proposee , 0.5 );
+        if($epreuve_point_sup_10)
+        {
+          $note_selectionnee = max(0,$note_selectionnee-10);
+        }
       }
       else
       {
@@ -299,7 +311,7 @@ if($action=='proposer')
       $class = is_numeric($note_selectionnee) ? 'bv' : 'bj' ;
     }
     $note_recherchee = str_replace('.','v',(string)$note_selectionnee);
-    $tab_td[3] = '<td class="'.$class.'"><select id="note_'.$epreuve_code.'" name="note_'.$epreuve_code.'">'.str_replace( 'value="'.$note_recherchee.'"' , 'value="'.$note_recherchee.'" selected' , options_note($epreuve_obligatoire,$epreuve_note_chiffree,$epreuve_code_speciaux) ).'</select></td>';
+    $tab_td[3] = '<td class="'.$class.'"><select id="note_'.$epreuve_code.'" name="note_'.$epreuve_code.'">'.str_replace( 'value="'.$note_recherchee.'"' , 'value="'.$note_recherchee.'" selected' , options_note($epreuve_obligatoire,$epreuve_note_chiffree,$epreuve_point_sup_10,$epreuve_code_speciaux,$epreuve_coefficient) ).'</select></td>';
     if(!is_numeric($note_selectionnee))
     {
       $tab_td[2] = str_replace( '<i></i>' , '<i>'.$note_selectionnee.'</i>' , $tab_td[2] );
@@ -319,15 +331,15 @@ if($action=='proposer')
     echo'<tr>'.implode('',$tab_td).'</tr>';
   }
   // Ligne avec le total des points
-  if(isset($tab_notes_enregistrees[CODE_BREVET_EPREUVE_TOTAL]))
+  if(isset($tab_notes_enregistrees[$epreuve_code_total]))
   {
-    $note = is_numeric($tab_notes_enregistrees[CODE_BREVET_EPREUVE_TOTAL]['note']) ? sprintf("%06.2f",$tab_notes_enregistrees[CODE_BREVET_EPREUVE_TOTAL]['note']) : $tab_notes_enregistrees[CODE_BREVET_EPREUVE_TOTAL]['note'] ;
+    $note = is_numeric($tab_notes_enregistrees[$epreuve_code_total]['note']) ? sprintf("%06.2f",$tab_notes_enregistrees[$epreuve_code_total]['note']) : $tab_notes_enregistrees[$epreuve_code_total]['note'] ;
   }
   else
   {
     $note = '-';
   }
-  echo'<tr><th colspan="2" class="nu"></th><th class="hc">Total des points</th><th class="hc">'.$note.'</th></tr>';
+  echo'<tr><th colspan="2" class="nu"></th><th class="hc">Total</th><th class="hc">'.$note.'</th></tr>';
   exit();
 }
 
@@ -341,7 +353,7 @@ if($action=='enregistrer')
   // Récupérer et contrôler les valeurs transmises épreuve par épreuve
   // Calculer au passage le total des points
   $tab_notes_transmises = array();
-  $tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL] = array( 'note' => 'AB' , 'matieres_id' => '' );
+  $tab_notes_transmises[$epreuve_code_total] = array( 'note' => 'AB' , 'matieres_id' => '' );
   foreach($tab_epreuve as $epreuve_code => $tab_infos)
   {
     extract($tab_infos); // $epreuve_*
@@ -360,7 +372,7 @@ if($action=='enregistrer')
     {
       exit('Note manquante pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
-    if( is_numeric($note_transmise) && ( (ceilTo($note_transmise,0.5)!=$note_transmise) || ($note_transmise<0) || ($note_transmise>20) || (!$epreuve_note_chiffree) ) )
+    if( is_numeric($note_transmise) && ( (ceilTo($note_transmise,0.5)!=$note_transmise) || ($note_transmise<0) || ($note_transmise>$epreuve_coefficient*20) || ( $epreuve_point_sup_10 && ($note_transmise>10) ) || (!$epreuve_note_chiffree) ) )
     {
       exit('Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
@@ -376,7 +388,7 @@ if($action=='enregistrer')
         $tab_notes_transmises[$epreuve_code] = array( 'note' => (float)$note_transmise , 'matieres_id' => $matieres_id );
         if($epreuve_note_comptee)
         {
-          $tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note'] += ($epreuve_point_sup_10) ? max(0,$note_transmise-10) : $note_transmise*$epreuve_coefficient ;
+          $tab_notes_transmises[$epreuve_code_total]['note'] += $note_transmise ;
         }
       }
       else
@@ -385,10 +397,9 @@ if($action=='enregistrer')
       }
     }
   }
-  // Mettre à jour ce qu'il faut, en retenant ce qui est concerné pour un (re)calcul des moyennes
+  // Mettre à jour ce qu'il faut
   // S'occuper aussi du total des points
-  $tab_epreuves_maj = array();
-  $tab_epreuve[CODE_BREVET_EPREUVE_TOTAL] = array();
+  $tab_epreuve[$epreuve_code_total] = array();
   $tab_td = array();
   foreach($tab_epreuve as $epreuve_code => $tab_infos)
   {
@@ -399,28 +410,25 @@ if($action=='enregistrer')
       if(isset($tab_notes_enregistrees[$epreuve_code]))
       {
         // Retirer la note (et l'appréciation éventuelle)
-        DB_STRUCTURE_BREVET::DB_supprimer_brevet_saisie( $serie_ref , $epreuve_code , 'eleve' /*saisie_type*/ , $eleve_id );
-        $tab_epreuves_maj[] = $epreuve_code;
+        DB_STRUCTURE_BREVET::DB_supprimer_brevet_saisie( $serie_ref , $epreuve_code , $eleve_id );
       }
     }
     // Si note transmise et non enregistrée...
     elseif(!isset($tab_notes_enregistrees[$epreuve_code]))
     {
       // Ajouter la note
-      DB_STRUCTURE_BREVET::DB_ajouter_brevet_note( $serie_ref , $epreuve_code , 'eleve' /*saisie_type*/ , $eleve_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $tab_notes_transmises[$epreuve_code]['note'] );
-      $tab_epreuves_maj[] = $epreuve_code;
+      DB_STRUCTURE_BREVET::DB_ajouter_brevet_note( $serie_ref , $epreuve_code , $eleve_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $tab_notes_transmises[$epreuve_code]['note'] );
     }
     // Si note transmise et différente de celle enregistrée...
     elseif( ( $tab_notes_enregistrees[$epreuve_code]['note'] != $tab_notes_transmises[$epreuve_code]['note'] ) || ( $tab_notes_enregistrees[$epreuve_code]['matieres_id'] != $tab_notes_transmises[$epreuve_code]['matieres_id'] ) )
     {
       // Mettre à jour la note (sans toucher à l'appréciation)
-      DB_STRUCTURE_BREVET::DB_modifier_brevet_note( $serie_ref , $epreuve_code , 'eleve' /*saisie_type*/ , $eleve_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $tab_notes_transmises[$epreuve_code]['note'] );
-      $tab_epreuves_maj[] = $epreuve_code;
+      DB_STRUCTURE_BREVET::DB_modifier_brevet_note( $serie_ref , $epreuve_code , $eleve_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $tab_notes_transmises[$epreuve_code]['note'] );
     }
     // Retour à renvoyer
-    if($epreuve_code==CODE_BREVET_EPREUVE_TOTAL)
+    if($epreuve_code==$epreuve_code_total)
     {
-      $note = is_numeric($tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note']) ? sprintf("%06.2f",$tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note']) : $tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note'] ;
+      $note = is_numeric($tab_notes_transmises[$epreuve_code_total]['note']) ? sprintf("%06.2f",$tab_notes_transmises[$epreuve_code_total]['note']) : $tab_notes_transmises[$epreuve_code_total]['note'] ;
       $tab_td[] = '<th class="hc">'.$note.'</th>';
     }
     elseif(isset($tab_notes_transmises[$epreuve_code]))
@@ -433,46 +441,6 @@ if($action=='enregistrer')
       $tab_td[] = '<td class="hc">-</td>';
     }
   }
-  // (re)calculer les moyennes de classe concernées
-  if(count($tab_epreuves_maj))
-  {
-    $listing_epreuves_maj = implode(',',$tab_epreuves_maj);
-    $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_notes_epreuves_classe( $serie_ref , $listing_epreuves_maj , $classe_id );
-    if(count($DB_TAB))
-    {
-      $tab_notes_considerees = array();
-      foreach($DB_TAB as $DB_ROW)
-      {
-        if(is_numeric($DB_ROW['saisie_note']))
-        {
-          $tab_notes_considerees[$DB_ROW['brevet_epreuve_code']][$DB_ROW['saisie_type']][] = (float)$DB_ROW['saisie_note'];
-        }
-      }
-      foreach($tab_notes_considerees as $epreuve_code => $tab_saisie_type)
-      {
-        if(isset($tab_saisie_type['eleve']))
-        {
-          $moyenne_classe_epreuve = round( array_sum($tab_saisie_type['eleve']) / count($tab_saisie_type['eleve']) , 1 );
-          if(!isset($tab_saisie_type['classe']))
-          {
-            // Ajouter la moyenne de classe
-            DB_STRUCTURE_BREVET::DB_ajouter_brevet_note( $serie_ref , $epreuve_code , 'classe' /*saisie_type*/ , $classe_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $moyenne_classe_epreuve );
-          }
-          elseif($tab_saisie_type['classe'][0]!=$moyenne_classe_epreuve)
-          {
-            // Mettre à jour la moyenne de classe
-            DB_STRUCTURE_BREVET::DB_modifier_brevet_note( $serie_ref , $epreuve_code , 'classe' /*saisie_type*/ , $classe_id , $tab_notes_transmises[$epreuve_code]['matieres_id'] , $moyenne_classe_epreuve );
-          }
-        }
-        elseif(isset($tab_saisie_type['classe']))
-        {
-          // Retirer la moyenne de classe
-          DB_STRUCTURE_BREVET::DB_supprimer_brevet_saisie( $serie_ref , $epreuve_code , 'classe' /*saisie_type*/ , $classe_id );
-        }
-      }
-    }
-  }
-  // game over
   exit(implode('¤',$tab_td));
 }
 

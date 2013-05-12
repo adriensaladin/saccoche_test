@@ -176,7 +176,7 @@ if($ACTION=='initialiser')
 
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
-  Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
+  prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
   foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     list( $eleve_identite , $page_plage ) = $tab_tirages[0];
@@ -195,7 +195,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 
 if( ($ACTION=='imprimer') && ($etape==3) )
 {
-  Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
+  prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
   $date = date('Y-m-d');
   $tab_pages_non_anonymes     = array();
   $tab_pages_nombre_par_bilan = array();
@@ -253,7 +253,7 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 // Initialiser les signatures numériques
 
-$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note);
+$tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
 $tab_signature = array(0=>NULL);  // [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_assiduite = array_fill_keys( $tab_eleve_id , array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) );  // [eleve_id] => array(absence,non_justifie,retard);
 $tab_prof_id = array();
@@ -444,7 +444,7 @@ if($BILAN_TYPE=='releve')
   $type_synthese          = 0;
   $type_bulletin          = 0;
   $tab_matiere_id         = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
   $nom_bilan_html         = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -472,7 +472,7 @@ elseif($BILAN_TYPE=='bulletin')
   $tab_eleve      = $tab_eleve_id;
   $liste_eleve    = $liste_eleve_id;
   $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
   $nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -498,7 +498,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $tab_pilier_id  = $tab_pilier_id;
   $tab_eleve_id   = $tab_eleve_id;
   $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
   $nom_bilan_html = 'releve_HTML';
 }
 

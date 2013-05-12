@@ -29,8 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Nombre de saisies";
 ?>
 
-<div class="astuce">Il s'agit du nombre de notes saisies au cours de cette année scolaire.</div>
-<p class="danger">Ce n'est qu'un simple indicateur d'utilisation, pas un gage d'efficacité !<br >La performance de l'évaluation ne se résumant pas à la multiplicité des items évalués&hellip;</p>
+<p class="astuce">Il ne s'agit que d'un indicateur d'utilisation : la performance de l'évaluation ne se résume pas à la multiplicité des items évalués.</p>
 
 <table id="bilan" class="hsort">
   <thead>

@@ -30,10 +30,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 /**
  * Code inclus commun aux pages
  * [./pages/releve_socle.ajax.php]
- * [./_inc/code_officiel_***.php]
+ * [./_inc/code_officiel_***.ajax.php]
  */
 
-Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
+prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 // Chemins d'enregistrement
 
@@ -51,7 +51,7 @@ $tab_pilier       = array();  // [pilier_id] => array(pilier_nom);
 $tab_section      = array();  // [pilier_id][section_id] => section_nom;
 $tab_socle        = array();  // [section_id][socle_id] => socle_nom;
 $tab_entree_id    = array();  // [i] => entree_id
-$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,date_naissance,eleve_langue)
+$tab_eleve        = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_langue)
 $tab_eval         = array();  // [eleve_id][socle_id][item_id][]['note'] => note
 $tab_item         = array();  // [item_id] => array(item_ref,item_nom,item_cart,matiere_id,calcul_methode,calcul_limite);
 $tab_user_entree  = array();  // [eleve_id][entree_id] => array(etat,date,info);
@@ -123,7 +123,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 elseif($groupe_id && count($tab_eleve_id))
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=TRUE);
   if($mode=='auto')
   {
     foreach($tab_eleve as $key => $tab)
@@ -134,7 +134,7 @@ elseif($groupe_id && count($tab_eleve_id))
 }
 else
 {
-  $tab_eleve[] = array( 'eleve_id'=>0 , 'eleve_nom'=>'' , 'eleve_prenom'=>'' , 'date_naissance'=>NULL , 'eleve_langue'=>0 );
+  $tab_eleve[] = array('eleve_id'=>0,'eleve_nom'=>'','eleve_prenom'=>'','eleve_langue'=>0);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ $tab_infos_socle_eleve   = array();  // [socle_id][eleve_id] => array()         
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance
+  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
   // Pour chaque pilier...
   if(count($tab_pilier))
   {
@@ -343,7 +343,7 @@ if($only_presence)
 {
   foreach($tab_eleve as $tab)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
+    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
     if(count($tab_pilier))
     {
       foreach($tab_pilier as $pilier_id => $tab)
@@ -389,7 +389,7 @@ $nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + ($tes
 
 foreach($tab_eleve as $key => $tab)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
+  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
   if(count($tab_pilier))
   {
     foreach($tab_pilier as $pilier_id => $tab)
@@ -478,8 +478,7 @@ if($make_pdf)
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
-  $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
+  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
   if($make_officiel)
   {
     // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
@@ -492,7 +491,7 @@ foreach($tab_eleve as $tab)
     if($make_pdf)
     {
       $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-      $tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
+      $tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
       $releve_PDF->releve_socle_entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
     }
     if($make_html)
@@ -730,17 +729,12 @@ foreach($tab_eleve as $tab)
       $texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
       if($make_html)
       {
-        $releve_HTML .= '<div class="i">'.$texte_assiduite.'</div>'."\r\n";
+        $releve_HTML .= '<p class="i">'.$texte_assiduite.'</p>'."\r\n";
       }
       elseif($make_action=='imprimer')
       {
         $releve_PDF->afficher_assiduite($texte_assiduite);
       }
-    }
-    // État de maîtrise du socle - Date de naissance
-    if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
-    {
-      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'."\r\n";
     }
     // État de maîtrise du socle - Ligne additionnelle
     if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )

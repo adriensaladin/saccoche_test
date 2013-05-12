@@ -84,7 +84,7 @@ $make_html     = TRUE;
 $make_pdf      = TRUE;
 $make_graph    = FALSE;
 
-require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
+require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat

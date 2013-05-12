@@ -45,13 +45,13 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
 
 // Extraction des infos
-list( $eleve_id , $bilan_type , $periode_id ) = explode( '_' , $FICHIER) + Array( NULL , NULL , NULL );
+list( $eleve_id , $BILAN_TYPE , $periode_id ) = explode( '_' , $FICHIER) + Array( NULL , NULL , NULL );
 
-$bilan_type = Clean::texte($bilan_type);
+$BILAN_TYPE = Clean::texte($BILAN_TYPE);
 $periode_id = Clean::entier($periode_id);
 $eleve_id   = Clean::entier($eleve_id);
 
-$tab_types = array( 'releve' , 'bulletin' , 'palier1' , 'palier2' , 'palier3' , 'brevet' );
+$tab_types = array( 'releve' , 'bulletin' , 'palier1' , 'palier2' , 'palier3' );
 
 // Vérification des paramètres principaux
 
@@ -60,19 +60,19 @@ if(!$FICHIER)
   exit_error( 'Paramètre manquant' /*titre*/ , 'Page appelée sans indiquer la référence de l\'archive PDF à récupérer.' /*contenu*/ , '' /*lien*/ );
 }
 
-if( (!in_array($bilan_type,$tab_types)) || !$periode_id || !$eleve_id )
+if( (!in_array($BILAN_TYPE,$tab_types)) || !$periode_id || !$eleve_id )
 {
   exit_error( 'Paramètre incorrect' /*titre*/ , 'La valeur "'.html($FICHIER).'" transmise n\'est pas conforme.' /*contenu*/ , '' /*lien*/ );
 }
 
 // Vérifications complémentaires
 
-if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]))
+if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE]))
 {
   exit_error( 'Accès non autorisé' /*titre*/ , 'Erreur de droit d\'accès ! Veuillez n\'utiliser qu\'un onglet.' /*contenu*/ , '' /*lien*/ );
 }
 
-$fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id );
+$fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 if(!is_file($fichier_archive))
 {
   exit_error( 'Document manquant' /*titre*/ , 'Archive non trouvée sur ce serveur.' /*contenu*/ , '' /*lien*/ );
@@ -80,7 +80,7 @@ if(!is_file($fichier_archive))
 
 // Copie du fichier pour préserver son anonymat
 
-$fichier_copie_nom = 'officiel_'.$bilan_type.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
+$fichier_copie_nom = 'officiel_'.$BILAN_TYPE.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
 copy($fichier_archive,CHEMIN_DOSSIER_EXPORT.$fichier_copie_nom);
 
 // Redirection du navigateur

@@ -2734,22 +2734,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-05-05')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-05-12';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // nouvelle table sacoche_brevet_fichier
-      $reload_sacoche_brevet_fichier = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_brevet_fichier.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-      // vider table sacoche_brevet_saisie maintenant que les choix de fonctionnement sont arrêtés
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_saisie' );
-    }
-  }
-
 }
 
 }

@@ -33,10 +33,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * [./pages/releve_items_multimatiere.ajax.php]
  * [./pages/releve_items_selection.ajax.php]
  * [./pages/brevet_moyennes.ajax.php]
- * [./_inc/code_officiel_***.php]
+ * [./_inc/code_officiel_***.ajax.php]
  */
 
-Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
+prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 /*
 $type_individuel   $type_synthese   $type_bulletin
@@ -54,7 +54,7 @@ $calcul_acquisitions = ( $type_synthese || $type_bulletin || $aff_etat_acquisiti
 
 $tab_item       = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite,calcul_retroactif);
 $tab_liste_item = array();  // [i] => item_id
-$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,date_naissance,eleve_id_gepi)
+$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_id_gepi)
 $tab_matiere    = array();  // [matiere_id] => matiere_nom
 $tab_eval       = array();  // [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
 $tab_matiere_for_item = array();  // [item_id] => matiere_id
@@ -155,11 +155,11 @@ $liste_item = implode(',',$tab_liste_item);
 
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM'],'date_naissance'=>NULL,'eleve_id_gepi'=>$_SESSION['USER_ID_GEPI']);
+  $tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM'],'eleve_id_gepi'=>$_SESSION['USER_ID_GEPI']);
 }
 else
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , TRUE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=TRUE,$with_langue=FALSE);
   if(!is_array($tab_eleve))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -243,7 +243,7 @@ if($calcul_acquisitions)
   // Pour chaque élève...
   foreach($tab_eleve as $key => $tab)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
+    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
     if( ($matiere_nb>1) && $type_synthese )
     {
       $tab_total[$eleve_id] = array
@@ -414,7 +414,7 @@ $nb_lignes_matiere_synthese = $aff_moyenne_scores + $aff_pourcentage_acquis ;
 
 foreach($tab_eleve as $key => $tab)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
+  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
   foreach($tab_matiere as $matiere_id => $matiere_nom)
   {
     if(isset($tab_eval[$eleve_id][$matiere_id])) // $tab_eval[] utilisé plutôt que $tab_score_eleve_item[] au cas où $calcul_acquisitions=FALSE
@@ -477,8 +477,7 @@ if($type_individuel)
   // Pour chaque élève...
   foreach($tab_eleve as $tab)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
-    $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
+    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
     if($make_officiel)
     {
       // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
@@ -495,7 +494,7 @@ if($type_individuel)
         if($make_pdf)
         {
           $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-          $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
+          $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
           $releve_PDF->bilan_item_individuel_entete( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
         }
         // Pour chaque matiere...
@@ -804,17 +803,12 @@ if($type_individuel)
           $texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
           if($make_html)
           {
-            $releve_HTML_individuel .= '<div class="i">'.$texte_assiduite.'</div>'."\r\n";
+            $releve_HTML_individuel .= '<p class="i">'.$texte_assiduite.'</p>'."\r\n";
           }
           elseif($make_action=='imprimer')
           {
             $releve_PDF->afficher_assiduite($texte_assiduite);
           }
-        }
-        // Relevé de notes - Date de naissance
-        if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
-        {
-          $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'."\r\n";
         }
         // Relevé de notes - Ligne additionnelle
         if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )
@@ -889,7 +883,7 @@ if($type_synthese)
   {
     foreach($tab_eleve as $tab)  // Pour chaque élève...
     {
-      extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
+      extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
       $releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
       $releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
     }

@@ -499,25 +499,24 @@ public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
 /**
  * ajouter_utilisateur
  *
- * @param int         $user_sconet_id
- * @param int         $user_sconet_elenoet
- * @param string      $user_reference
- * @param string      $user_profil_sigle
- * @param string      $user_nom
- * @param string      $user_prenom
- * @param string|NULL $user_naissance_date
- * @param string      $user_login
- * @param string      $password_crypte
- * @param int         $eleve_classe_id facultatif, 0 si pas de classe ou profil non élève
- * @param string      $user_id_ent     facultatif
- * @param string      $user_id_gepi    facultatif
+ * @param string $user_sconet_id
+ * @param string $user_sconet_elenoet
+ * @param string $user_reference
+ * @param string $user_profil_sigle
+ * @param string $user_nom
+ * @param string $user_prenom
+ * @param string $user_login
+ * @param string $password_crypte
+ * @param int    $eleve_classe_id   facultatif, 0 si pas de classe ou profil non élève
+ * @param string $user_id_ent       facultatif
+ * @param string $user_id_gepi      facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_nom,$user_prenom,$user_naissance_date,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_nom,$user_prenom,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
-  $DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_nom,:user_prenom,:user_naissance_date,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
-  $DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_sconet_elenoet'=>$user_sconet_elenoet,':user_reference'=>$user_reference,':user_profil_sigle'=>$user_profil_sigle,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_naissance_date'=>$user_naissance_date,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
+  $DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
+  $DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_sconet_elenoet'=>$user_sconet_elenoet,':user_reference'=>$user_reference,':user_profil_sigle'=>$user_profil_sigle,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }

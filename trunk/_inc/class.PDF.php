@@ -919,12 +919,11 @@ class PDF extends FPDF
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('Etats d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $tab_seuils = array
-      (
-        TRUE  => array( 'NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'] , 'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] , 'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100' ) ,
-        FALSE => array( 'NA'=>''                                    , 'VA'=>''                                                                  , 'A'=>'' )
-      );
-      foreach($tab_seuils[$afficher_score] as $etat => $texte)
+      $seuil_NA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']>0)   ) ? '0 à '.($_SESSION['CALCUL_SEUIL']['R']-1)   : '' ;
+      $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
+      $seuil_VA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']!=$_SESSION['CALCUL_SEUIL']['V']) ) ? $_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] : '' ;
+      $tab_seuils = array( 'NA'=>$seuil_NA, 'VA'=>$seuil_VA, 'A'=>$seuil_A );
+      foreach($tab_seuils as $etat => $texte)
       {
         $this->Write($hauteur , $espace , '');
         $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
@@ -1105,7 +1104,7 @@ class PDF extends FPDF
       if($this->officiel)
       {
         // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
-        list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
+        list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
@@ -1135,8 +1134,8 @@ class PDF extends FPDF
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
-        // Tag date heure initiales (sous le bloc titres dans toutes les situations)
-        $this->officiel_ligne_tag($tag_date_heure_initiales,$bloc_titre_largeur);
+        // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
+        $this->officiel_ligne_tag($date_naissance,$tag_date_heure_initiales,$bloc_titre_largeur);
         // Bloc adresse en positionnement libre
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {
@@ -1455,7 +1454,7 @@ class PDF extends FPDF
       if($this->officiel)
       {
         // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
-        list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
+        list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
@@ -1485,8 +1484,8 @@ class PDF extends FPDF
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
-        // Tag date heure initiales (sous le bloc titres dans toutes les situations)
-        $this->officiel_ligne_tag($tag_date_heure_initiales,$bloc_titre_largeur);
+        // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
+        $this->officiel_ligne_tag($date_naissance,$tag_date_heure_initiales,$bloc_titre_largeur);
         // Bloc adresse en positionnement libre
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {
@@ -1854,8 +1853,18 @@ class PDF extends FPDF
     return $bloc_hauteur;
   }
 
-  private function officiel_ligne_tag($tag_date_heure_initiales,$ligne_largeur)
+  private function officiel_ligne_tag($date_naissance,$tag_date_heure_initiales,$ligne_largeur)
   {
+    // Date de naissance
+    if($date_naissance)
+    {
+      $ligne_largeur = $ligne_largeur / 2;
+      $taille_police = 7 ;
+      $ligne_hauteur = $taille_police*0.4 ;
+      $this->SetFont('Arial' , '' , $taille_police);
+      $this->Cell( $ligne_largeur , $ligne_hauteur , To::pdf('né(e) le '.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    }
+    // Tag date heure initiales
     $taille_police = 5 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $this->SetFont('Arial' , '' , $taille_police);
@@ -2071,7 +2080,7 @@ class PDF extends FPDF
         if($this->officiel)
         {
           // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
-          list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
+          list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $date_naissance ) = $tab_infos_entete;
           $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
           // Bloc adresse en positionnement contraint
           if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
@@ -2101,8 +2110,8 @@ class PDF extends FPDF
             $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
             $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
           }
-          // Tag date heure initiales (sous le bloc titres dans toutes les situations)
-          $this->officiel_ligne_tag($tag_date_heure_initiales,$bloc_titre_largeur);
+          // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
+          $this->officiel_ligne_tag($date_naissance,$tag_date_heure_initiales,$bloc_titre_largeur);
           // Bloc adresse en positionnement libre
           if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
           {
@@ -2828,7 +2837,7 @@ class PDF extends FPDF
     $this->choisir_couleur_fond('gris_clair');
   }
 
-  public function tableau_appreciation_rubrique_eleves_prof($eleve_id,$eleve_nom,$eleve_prenom,$note,$appreciation,$with_moyenne)
+  public function tableau_appreciation_rubrique_eleves_prof($eleve_id,$eleve_nom,$eleve_prenom,$note,$appreciation,$with_moyenne,$is_brevet=FALSE)
   {
     $nb_lignes = max( 2 , ceil(mb_strlen($appreciation)/125) );
     $note_largeur = 10; // valeur fixe
@@ -2846,7 +2855,14 @@ class PDF extends FPDF
     $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
     if($with_moyenne)
     {
-      $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+      if(!$is_brevet)
+      {
+        $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+      }
+      else
+      {
+        $moyenne_eleve = $note;
+      }
       $this->CellFit( $note_largeur , $nb_lignes*$this->lignes_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     }
     else
@@ -2858,7 +2874,7 @@ class PDF extends FPDF
     $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
   }
 
-  public function tableau_appreciation_rubrique_eleves_collegues($eleve_id,$eleve_nom,$eleve_prenom,$rubrique_nom,$note,$appreciations,$with_moyenne)
+  public function tableau_appreciation_rubrique_eleves_collegues($eleve_nom,$eleve_prenom,$rubrique_nom,$note,$appreciations,$with_moyenne)
   {
     $nb_lignes = max( 2 , ceil(mb_strlen($appreciations)/125) );
     // On prend une nouvelle page PDF si besoin
@@ -2935,15 +2951,17 @@ class PDF extends FPDF
     $this->SetAutoPageBreak(TRUE);
   }
 
-  public function tableau_moyennes_intitule( $classe_nom , $periode_nom )
+  public function tableau_moyennes_intitule( $classe_nom , $periode_nom , $is_brevet )
   {
+    $ligne1 = (!$is_brevet) ? 'Bulletin scolaire'    : 'Fiche Brevet'              ;
+    $ligne2 = (!$is_brevet) ? 'Tableau des moyennes' : 'Notes et total des points' ;
     $hauteur_quart = $this->etiquette_hauteur / 4 ;
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf('Bulletin scolaire')    , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf('Tableau des moyennes') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($classe_nom)            , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($periode_nom)           , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($ligne1)      , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($ligne2)      , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($classe_nom)  , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($periode_nom) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->SetFont('Arial' , '' , $this->taille_police);
     $this->Cell( $this->reference_largeur , $this->etiquette_hauteur , '' , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2963,12 +2981,138 @@ class PDF extends FPDF
     $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($eleve_nom_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
   }
 
-  public function tableau_moyennes_note($eleve_id,$rubrique_id,$note)
+  public function tableau_moyennes_note($eleve_id,$rubrique_id,$note,$is_brevet=FALSE)
   {
-    $couleur = ($eleve_id && $rubrique_id) ? 'blanc' : 'gris_fonce' ;
+    $couleur = ($eleve_id && ( ((!$is_brevet)&&($rubrique_id)) || (($is_brevet)&&($rubrique_id!=CODE_BREVET_EPREUVE_TOTAL)) ) ) ? 'blanc' : 'gris_fonce' ;
     $this->choisir_couleur_fond($couleur);
-    $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+      if(!$is_brevet)
+      {
+        $moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+      }
+      else
+      {
+        $moyenne_eleve = $note;
+      }
     $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+  }
+
+  public function tableau_appreciation_epreuve_eleves_collegues_thead($eleve_nom,$eleve_prenom,$serie_nom)
+  {
+    // On prend une nouvelle page PDF si besoin
+    $this->tableau_appreciation_page_break();
+    $this->choisir_couleur_fond('gris_moyen');
+    // nom-prénom-série
+    $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom.' - '.$serie_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+  }
+
+  public function tableau_appreciation_epreuve_eleves_collegues_tbody($epreuve_nom,$note,$appreciation)
+  {
+    $nb_lignes = max( 1 , ceil(mb_strlen($appreciation)/125) );
+    // On prend une nouvelle page PDF si besoin
+    $this->tableau_appreciation_page_break();
+    $this->choisir_couleur_fond('gris_moyen');
+    // cadre
+    $memo_x = $this->GetX();
+    $memo_y = $this->GetY();
+    $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    // épreuve, moyenne, appréciation
+    $this->SetXY($memo_x , $memo_y);
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($epreuve_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
+    // appréciations
+    $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
+    $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $note.' - '.$appreciation );
+    $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
+  }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Méthodes pour les fiches brevet
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // fiche_brevet_information()
+  // fiche_brevet_precision()
+  // fiche_brevet_note()
+  // fiche_brevet_case()
+  // fiche_brevet_appreciation()
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function fiche_brevet_information( $tab_pdf_coords , $type , $contenu )
+  {
+    $size = ($type!='Session') ? 9  : 13 ;
+    $bold = (!in_array($type,array('Session','Avertissement'))) ? '' : 'B' ;
+    list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
+    $this->SetXY($posx,$posy);
+    $this->SetFont('Arial',$bold,$size);
+    if(!in_array($type,array('Établissement','Avertissement')))
+    {
+      $this->CellFit( $largeur , $hauteur , To::pdf($contenu) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE  /*remplissage*/ );
+    }
+    else
+    {
+      $this->Rect(23,54,37,6,'F');
+      if($type=='Établissement')
+      {
+        foreach($contenu as $ligne)
+        {
+          $this->CellFit( $largeur , $hauteur , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+        }
+      }
+      elseif($type=='Avertissement')
+      {
+        $this->choisir_couleur_texte('rougevif');
+        $this->CellFit( $largeur , 6 , To::pdf('Exemplaire archivé.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+        $this->CellFit( $largeur , 6 , To::pdf('Copie pour information.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+        $this->CellFit( $largeur , 6 , To::pdf('Seul l\'original fait foi.')        , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+        $this->choisir_couleur_texte('noir');
+      }
+    }
+  }
+
+  public function fiche_brevet_precision( $tab_pdf_coords , $contenu )
+  {
+    list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
+    $this->SetXY($posx,$posy);
+    $this->SetFont('Arial','',8);
+    $this->SetFillColor(255,255,255);
+    foreach($contenu as $ligne)
+    {
+      $this->CellFit( $largeur , $hauteur , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , TRUE  /*remplissage*/ );
+    }
+  }
+
+  public function fiche_brevet_note( $tab_pdf_coords , $type , $contenu )
+  {
+    $size = ($type=='total')  ? 13 : 11 ;
+    $bold = ($type=='classe') ? '' : 'B' ;
+    list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
+    $this->SetXY($posx,$posy);
+    $this->SetFont('Arial',$bold,$size);
+    $this->CellFit( $largeur , $hauteur , To::pdf($contenu) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+  }
+
+  public function fiche_brevet_case($tab_pdf_coords)
+  {
+    list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
+    $this->SetFillColor(0,0,0);
+    $this->Rect($posx,$posy,$largeur,$hauteur,'F');
+  }
+
+  public function fiche_brevet_appreciation($tab_pdf_coords,$contenu)
+  {
+    list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
+    $this->SetXY($posx,$posy);
+    $this->afficher_appreciation($largeur,$hauteur, 10 /*taille_police*/ , 5 /*taille_interligne*/ , To::pdf($contenu) );
+  }
+
+  public function fiche_brevet_ligne_tag($tag_date_heure_initiales)
+  {
+    $taille_police = 5 ;
+    $ligne_hauteur = $taille_police*0.4 ;
+    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetXY( $this->marge_gauche-1 , $this->marge_haut+8.5 );
+    $this->Cell( $this->page_largeur_moins_marges , $ligne_hauteur , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

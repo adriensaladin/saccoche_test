@@ -220,7 +220,7 @@ if($ACTION=='initialiser')
     exit('Aucun élève trouvé dans ce regroupement !');
   }
   $tab_eleve_id = array();
-  $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+  $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
   $form_choix_eleve.= ($BILAN_TYPE=='bulletin') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
   foreach($DB_TAB as $DB_ROW)
   {
@@ -269,8 +269,8 @@ if($ACTION=='initialiser')
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné, pour la période en cours et les périodes antérieures
 
-$tab_saisie       = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info); avec eleve_id=0 pour note ou appréciation sur la classe
-$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_ordre][prof_id] => array(periode_nom_avant,prof_info,appreciation,note,info);
+$tab_saisie       = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note); avec eleve_id=0 pour note ou appréciation sur la classe
+$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_ordre][prof_id] => array(periode_nom_avant,prof_info,appreciation,note);
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
@@ -358,7 +358,7 @@ if($BILAN_TYPE=='releve')
   $type_synthese          = 0;
   $type_bulletin          = 0;
   $tab_matiere_id         = $tab_matiere_id;
-  require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
   $nom_bilan_html         = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -386,7 +386,7 @@ elseif($BILAN_TYPE=='bulletin')
   $tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
   $liste_eleve    = (string)$eleve_id;
   $tab_matiere_id = $tab_matiere_id;
-  require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
   $nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -412,7 +412,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $tab_pilier_id  = $tab_pilier_id;
   $tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
   $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
   $nom_bilan_html = 'releve_HTML';
 }
 

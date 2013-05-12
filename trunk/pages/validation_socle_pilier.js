@@ -269,6 +269,11 @@ $(document).ready
       'tbody td',
       function()
       {
+        if($(this).attr('lang')=='lock')
+        {
+          $('#ajax_msg_validation').removeAttr("class").addClass("danger").html('Pour annuler une validation, utiliser l\'interface dédiée.');
+          return false;
+        }
         // Appliquer un état pour un item pour un élève
         var classe = $(this).attr('class');
         var new_classe = classe.charAt(0) + tab_class_next[classe.charAt(1)] ;

@@ -421,13 +421,15 @@ public static function DB_lister_result_eleves_palier_sans_infos_items($liste_el
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
  * @param bool     $with_gepi
  * @param bool     $with_langue
- * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...);
+ * @param bool     $with_brevet_serie
+ * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
  */
-public static function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
+public static function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue,$with_brevet_serie)
 {
-  $DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom ';
-  $DB_SQL.= ($with_gepi)   ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
-  $DB_SQL.= ($with_langue) ? ', eleve_langue ' : '' ;
+  $DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_naissance_date AS date_naissance ';
+  $DB_SQL.= ($with_gepi)         ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
+  $DB_SQL.= ($with_langue)       ? ', eleve_langue '                  : '' ;
+  $DB_SQL.= ($with_brevet_serie) ? ', eleve_brevet_serie '            : '' ;
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type ';

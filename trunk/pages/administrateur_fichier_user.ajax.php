@@ -177,6 +177,7 @@ if( $step==20 )
   $tab_users_fichier['matiere']    = array(); // Avec id sconet_id // Matières du professeur, avec indication méthode récupération
   $tab_users_fichier['adresse']    = array(); // Avec id sconet_id // Adresse du responsable légal
   $tab_users_fichier['enfant']     = array(); // Avec id sconet_id // Liste des élèves rattachés
+  $tab_users_fichier['birth_date'] = array();
   // Pour récupérer les données des classes et des groupes
   $tab_classes_fichier['ref']    = array();
   $tab_classes_fichier['nom']    = array();
@@ -466,6 +467,7 @@ if( $step==20 )
           $tab_users_fichier['profil'    ][$i_fichier] = 'ELV' ;
           $tab_users_fichier['nom'       ][$i_fichier] = Clean::nom($eleve->NOM);
           $tab_users_fichier['prenom'    ][$i_fichier] = Clean::prenom($eleve->PRENOM);
+          $tab_users_fichier['birth_date'][$i_fichier] = Clean::texte($eleve->DATE_NAISS);
           $tab_users_fichier['classe'    ][$i_fichier] = '';
           $tab_users_fichier['groupe'    ][$i_fichier] = array();
           $tab_users_fichier['niveau'    ][$i_fichier] = Clean::ref($eleve->CODE_MEF);
@@ -706,11 +708,11 @@ if( $step==20 )
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = explode($separateur,$ligne_contenu);
-      $tab_elements = array_slice($tab_elements,0,5);
-      if(count($tab_elements)>=4)
+      $tab_elements = array_slice($tab_elements,0,6);
+      if(count($tab_elements)>=5)
       {
         $tab_elements = Clean::map_quotes($tab_elements);
-        list($reference,$nom,$prenom,$classe,$groupes) = $tab_elements + array(4=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(4=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
         if( ($nom!='') && ($prenom!='') )
         {
           $tab_users_fichier['sconet_id' ][] = 0;
@@ -719,6 +721,7 @@ if( $step==20 )
           $tab_users_fichier['profil'    ][] = 'ELV';
           $tab_users_fichier['nom'       ][] = Clean::nom($nom);
           $tab_users_fichier['prenom'    ][] = Clean::prenom($prenom);
+          $tab_users_fichier['birth_date'][] = Clean::texte($birth_date);
           // classe
           $classe_ref = mb_substr(Clean::ref($classe),0,8);
           $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
@@ -841,10 +844,11 @@ if( $step==20 )
     {
       switch($element)
       {
-        case 'Nom Elève'    : $tab_numero_colonne['nom'   ] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
-        case 'Prénom Elève' : $tab_numero_colonne['prenom'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
-        case 'Niveau'       : $tab_numero_colonne['niveau'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 14
-        case 'Classe'       : $tab_numero_colonne['classe'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15
+        case 'Nom Elève'      : $tab_numero_colonne['nom'   ]     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
+        case 'Prénom Elève'   : $tab_numero_colonne['prenom']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
+        case 'Date naissance' : $tab_numero_colonne['birth_date'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 3
+        case 'Niveau'         : $tab_numero_colonne['niveau']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 14
+        case 'Classe'         : $tab_numero_colonne['classe']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15
       }
     }
     if(array_sum($tab_numero_colonne)<0)
@@ -884,10 +888,11 @@ if( $step==20 )
       if(count($tab_elements)>$numero_max)
       {
         $tab_elements = Clean::map_quotes($tab_elements);
-        $nom    = $tab_elements[$tab_numero_colonne['nom']   ];
-        $prenom = $tab_elements[$tab_numero_colonne['prenom']];
-        $niveau = $tab_elements[$tab_numero_colonne['niveau']];
-        $classe = $tab_elements[$tab_numero_colonne['classe']];
+        $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
+        $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
+        $birth_date = $tab_elements[$tab_numero_colonne['birth_date']];
+        $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
+        $classe     = $tab_elements[$tab_numero_colonne['classe']];
         if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe!='') )
         {
           // Réduire la longueur du niveau et de la classe
@@ -906,6 +911,7 @@ if( $step==20 )
           $tab_users_fichier['profil'    ][] = 'ELV';
           $tab_users_fichier['nom'       ][] = Clean::nom($nom);
           $tab_users_fichier['prenom'    ][] = Clean::prenom($prenom);
+          $tab_users_fichier['birth_date'][] = Clean::texte($birth_date);
           $tab_users_fichier['classe'    ][] = $i_classe;
           if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
           {
@@ -1031,12 +1037,12 @@ if( $step==20 )
     case 'sconet_eleves' :
     case 'tableur_eleves' :
     case 'tableur_professeurs_directeurs' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
+      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
     case 'base-eleves_eleves' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe']);
+      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
     case 'sconet_parents' :
@@ -1556,7 +1562,7 @@ if( $step==51 )
   $tab_users_fichier = load_fichier('users');
   // On récupère le fichier avec les classes : $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['nom'] : i -> nom ; $tab_classes_fichier['niveau'] : i -> niveau
   $tab_classes_fichier = load_fichier('classes');
-  // On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / statut / classe / adresse
+  // On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / birth_date / statut / classe / adresse
   $tab_users_base               = array();
   $tab_users_base['sconet_id' ] = array();
   $tab_users_base['sconet_num'] = array();
@@ -1564,6 +1570,7 @@ if( $step==51 )
   $tab_users_base['profil'    ] = array();
   $tab_users_base['nom'       ] = array();
   $tab_users_base['prenom'    ] = array();
+  $tab_users_base['birth_date'] = array();
   $tab_users_base['sortie'    ] = array();
   $tab_users_base['classe'    ] = array();
   $tab_users_base['adresse'   ] = array();
@@ -1577,6 +1584,7 @@ if( $step==51 )
     $tab_users_base['reference' ][$DB_ROW['user_id']] = $DB_ROW['user_reference'];
     $tab_users_base['profil'    ][$DB_ROW['user_id']] = $DB_ROW['user_profil_sigle'];
     $tab_users_base['nom'       ][$DB_ROW['user_id']] = $DB_ROW['user_nom'];
+    $tab_users_base['birth_date'][$DB_ROW['user_id']] = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
     $tab_users_base['prenom'    ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
     $tab_users_base['sortie'    ][$DB_ROW['user_id']] = $DB_ROW['user_sortie_date'] ;
     $tab_users_base['classe'    ][$DB_ROW['user_id']] = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : '' ;
@@ -1638,6 +1646,10 @@ if( $step==51 )
       $lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
       $id_classe = ( ($is_profil_eleve) && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
       $tab_users_ajouter[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
+      if($is_profil_eleve)
+      {
+        $tab_users_ajouter[$i_fichier]['birth_date'] = $tab_users_fichier['birth_date'][$i_fichier];
+      }
     }
     // Cas [3] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), actuel dans la base : contenu à retirer (probablement des élèves nouvellement sortants)
     elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]==SORTIE_DEFAUT_MYSQL) )
@@ -1658,7 +1670,7 @@ if( $step==51 )
       // On compare les données de 2 enregistrements pour voir si des choses ont été modifiées
       $td_modif = '';
       $nb_modif = 0;
-      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
+      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
       foreach($tab_champs as $champ_ref => $champ_aff)
       {
         if($champ_ref=='classe')
@@ -1870,8 +1882,10 @@ if( $step==52 )
         }
         // Construire le password
         $password = fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil']);
+        // Attention à la dater de naissaise, définie seulement pour les élèves
+        $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : convert_date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
         // Ajouter l'utilisateur
-        $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajouter'][$i_fichier]['reference'],$tab_memo_analyse['ajouter'][$i_fichier]['profil'],$tab_memo_analyse['ajouter'][$i_fichier]['nom'],$tab_memo_analyse['ajouter'][$i_fichier]['prenom'],$login,crypter_mdp($password),$tab_memo_analyse['ajouter'][$i_fichier]['classe']);
+        $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajouter'][$i_fichier]['reference'],$tab_memo_analyse['ajouter'][$i_fichier]['profil'],$tab_memo_analyse['ajouter'][$i_fichier]['nom'],$tab_memo_analyse['ajouter'][$i_fichier]['prenom'],$birth_date,$login,crypter_mdp($password),$tab_memo_analyse['ajouter'][$i_fichier]['classe']);
         $tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
         $nb_add++;
         $tab_password[$user_id] = $password;
@@ -1892,13 +1906,13 @@ if( $step==52 )
     foreach($tab_mod as $id_base)
     {
       // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
-      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' ) : array( 'sconet_id' , 'reference' , 'profil' , 'nom' , 'prenom' ) ;
+      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'birth_date' ) : array( 'sconet_id' , 'reference' , 'profil' , 'nom' , 'prenom' ) ;
       $DB_VAR  = array();
       foreach($tab_champs as $champ_ref)
       {
         if($tab_memo_analyse['modifier'][$id_base][$champ_ref] !== FALSE)
         {
-          $DB_VAR[':'.$champ_ref] = $tab_memo_analyse['modifier'][$id_base][$champ_ref];
+          $DB_VAR[':'.$champ_ref] = ($champ_ref!='birth_date') ? $tab_memo_analyse['modifier'][$id_base][$champ_ref] : convert_date_french_to_mysql($tab_memo_analyse['modifier'][$id_base][$champ_ref]) ;
         }
       }
       if($tab_memo_analyse['modifier'][$id_base]['entree'] !== FALSE)
@@ -1922,7 +1936,7 @@ if( $step==52 )
   $nb_fin_ancien = 0;
   $profil_type = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
   $with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_nom_court_singulier,user_nom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , $with_classe , TRUE /*tri_statut*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_nom_court_singulier,user_nom,user_prenom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , $with_classe , TRUE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
@@ -1963,7 +1977,7 @@ if( $step==52 )
   echo'<p><label class="valide">'.$nb_debut_actuel.' utilisateur'.$s_debut_actuel.' actuel'.$s_debut_actuel.' et '.$nb_debut_ancien.' utilisateur'.$s_debut_ancien.' ancien'.$s_debut_ancien.' &rarr; '.$nb_mod.' utilisateur'.$s_mod.' modifié'.$s_mod.' + '.$nb_add.' utilisateur'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' utilisateur'.$s_del.' retiré'.$s_del.' &rarr; '.$nb_fin_actuel.' utilisateur'.$s_fin_actuel.' actuel'.$s_fin_actuel.' et '.$nb_fin_ancien.' utilisateur'.$s_fin_ancien.' ancien'.$s_fin_ancien.'.</label></p>';
   echo'<table>';
   echo' <thead>';
-  echo'  <tr><th>Id Sconet</th><th>N° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Statut</th></tr>';
+  echo'  <tr><th>Id Sconet</th><th>N° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Sortie</th></tr>';
   echo' </thead>';
   echo' <tbody>';
   echo   $lignes;

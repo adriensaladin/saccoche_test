@@ -55,7 +55,7 @@ if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!coun
 
 Form::save_choix('synthese_socle');
 
-prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
+Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 $tab_pilier       = array();  // [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();  // [pilier_id][socle_id] => array(section_nom,socle_nom);
@@ -111,7 +111,7 @@ $listing_entree_id = implode(',',$tab_entree_id);
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=TRUE);
+$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
 if( ($type=='pourcentage') && ($mode=='auto') )
 {
   foreach($tab_eleve as $key => $tab)

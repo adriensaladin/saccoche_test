@@ -1056,6 +1056,7 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':profil_sigle': $tab_set[] = 'user_profil_sigle='.$key;   break;
       case ':nom'         : $tab_set[] = 'user_nom='.$key;            break;
       case ':prenom'      : $tab_set[] = 'user_prenom='.$key;         break;
+      case ':birth_date'  : $tab_set[] = 'user_naissance_date='.$key; break;
       case ':login'       : $tab_set[] = 'user_login='.$key;          break;
       case ':password'    : $tab_set[] = 'user_password='.$key;       break;
       case ':daltonisme'  : $tab_set[] = 'user_daltonisme='.$key;     break;
@@ -1558,9 +1559,10 @@ public static function DB_supprimer_bilans_officiels()
  * @param void
  * @return void
  */
-public static function DB_supprimer_brevet_saisies()
+public static function DB_supprimer_bilans_brevet()
 {
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_saisie' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_saisie'  , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_fichier' , NULL);
 }
 
 /**
@@ -1688,6 +1690,9 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_brevet_saisie ';
     $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    $DB_SQL = 'DELETE FROM sacoche_brevet_fichier ';
+    $DB_SQL.= 'WHERE user_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
   if($user_profil_type=='parent')
@@ -2035,6 +2040,16 @@ public static function DB_corriger_anomalies()
   $message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
   $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
   $tab_bilan[] = '<label class="'.$classe.'">Jointures période/assiduité bilan officiel : '.$message.'.</label>';
+  // Recherche d'anomalies : fiche brevet associée à un user supprimé...
+  $DB_SQL = 'DELETE sacoche_brevet_fichier ';
+  $DB_SQL.= 'FROM sacoche_brevet_fichier ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'WHERE user_id IS NULL ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  $message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+  $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+  $tab_bilan[] = '<label class="'.$classe.'">Jointures élève/fichier fiche brevet : '.$message.'.</label>';
   // Recherche d'anomalies : jointures user/groupe associées à un user ou un groupe supprimé...
   $DB_SQL = 'DELETE sacoche_jointure_user_groupe ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';

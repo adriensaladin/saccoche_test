@@ -117,7 +117,7 @@ $make_html     = TRUE;
 $make_pdf      = TRUE;
 $make_graph    = FALSE;
 
-require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On retourne les résultats

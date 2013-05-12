@@ -60,7 +60,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
   $test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
   // Récupérer les données des élèves
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
+  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');

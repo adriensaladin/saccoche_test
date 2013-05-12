@@ -28,32 +28,34 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
-$check        = (isset($_POST['f_check']))       ? Clean::entier($_POST['f_check'])      : 0;
-$id           = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])         : 0;
-$id_ent       = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])      : '';
-$id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])     : '';
-$sconet_id    = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])  : 0;
-$sconet_num   = (isset($_POST['f_sconet_num']))  ? Clean::entier($_POST['f_sconet_num']) : 0;
-$reference    = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])     : '';
-$profil       = 'ELV';
-$nom          = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])           : '';
-$prenom       = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])     : '';
-$login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])       : '';
-$password     = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password']) : '' ;
-$sortie_date  = (isset($_POST['f_sortie_date'])) ? Clean::texte($_POST['f_sortie_date']) : '' ;
-$box_login    = (isset($_POST['box_login']))     ? Clean::entier($_POST['box_login'])    : 0;
-$box_password = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
-$box_date     = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])     : 0;
-$groupe       = (isset($_POST['f_groupe']))      ? Clean::texte($_POST['f_groupe'])      : 'd2' ;
-$groupe_type  = Clean::texte( substr($groupe,0,1) );
-$groupe_id    = Clean::entier( substr($groupe,1) );
+$action          = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])         : '';
+$check           = (isset($_POST['f_check']))         ? Clean::entier($_POST['f_check'])         : 0;
+$id              = (isset($_POST['f_id']))            ? Clean::entier($_POST['f_id'])            : 0;
+$id_ent          = (isset($_POST['f_id_ent']))        ? Clean::texte($_POST['f_id_ent'])         : '';
+$id_gepi         = (isset($_POST['f_id_gepi']))       ? Clean::texte($_POST['f_id_gepi'])        : '';
+$sconet_id       = (isset($_POST['f_sconet_id']))     ? Clean::entier($_POST['f_sconet_id'])     : 0;
+$sconet_num      = (isset($_POST['f_sconet_num']))    ? Clean::entier($_POST['f_sconet_num'])    : 0;
+$reference       = (isset($_POST['f_reference']))     ? Clean::ref($_POST['f_reference'])        : '';
+$profil          = 'ELV';
+$nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom'])              : '';
+$prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
+$birth_date      = (isset($_POST['f_birth_date']))    ? Clean::texte($_POST['f_birth_date'])     : '' ;
+$login           = (isset($_POST['f_login']))         ? Clean::login($_POST['f_login'])          : '';
+$password        = (isset($_POST['f_password']))      ? Clean::password($_POST['f_password'])    : '' ;
+$sortie_date     = (isset($_POST['f_sortie_date']))   ? Clean::texte($_POST['f_sortie_date'])    : '' ;
+$box_birth_date  = (isset($_POST['box_birth_date']))  ? Clean::entier($_POST['box_birth_date'])  : 0;
+$box_login       = (isset($_POST['box_login']))       ? Clean::entier($_POST['box_login'])       : 0;
+$box_password    = (isset($_POST['box_password']))    ? Clean::entier($_POST['box_password'])    : 0;
+$box_sortie_date = (isset($_POST['box_sortie_date'])) ? Clean::entier($_POST['box_sortie_date']) : 0;
+$groupe          = (isset($_POST['f_groupe']))        ? Clean::texte($_POST['f_groupe'])         : 'd2' ;
+$groupe_type     = Clean::texte( substr($groupe,0,1) );
+$groupe_id       = Clean::entier( substr($groupe,1) );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouvel élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_date || $sortie_date) )
+if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
 {
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
   if($id_ent)
@@ -126,10 +128,20 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
       exit('Erreur : mot de passe trop court pour ce profil !');
     }
   }
+  // Cas de la date de naissance
+  if($box_birth_date)
+  {
+    $birth_date = '-' ;
+    $birth_date_mysql = NULL;
+  }
+  else
+  {
+    $birth_date_mysql = convert_date_french_to_mysql($birth_date);
+  }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $nom , $prenom , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $nom , $prenom , $birth_date_mysql , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
-  if($box_date)
+  if($box_sortie_date)
   {
     $sortie_date = '-' ;
     $sortie_date_mysql = SORTIE_DEFAUT_MYSQL;
@@ -155,6 +167,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
   echo  '<td class="label">'.html($reference).'</td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
+  echo  '<td class="label">'.$birth_date.'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le login généré !" /></td>';
   echo  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
   echo  '<td class="label">'.$sortie_date.'</td>';
@@ -169,7 +182,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
 // Modifier un élève existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_date || $sortie_date) )
+if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
 {
   $tab_donnees = array();
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
@@ -226,8 +239,18 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   {
     $tab_donnees[':password'] = crypter_mdp($password);
   }
+  // Cas de la date de naissance
+  if($box_birth_date)
+  {
+    $birth_date = '-' ;
+    $birth_date_mysql = NULL;
+  }
+  else
+  {
+    $birth_date_mysql = convert_date_french_to_mysql($birth_date);
+  }
   // Cas de la date de sortie
-  if($box_date)
+  if($box_sortie_date)
   {
     $sortie_date = '-' ;
     $sortie_date_mysql = SORTIE_DEFAUT_MYSQL;
@@ -237,7 +260,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
     $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(':sconet_id'=>$sconet_id,':sconet_num'=>$sconet_num,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
+  $tab_donnees += array(':sconet_id'=>$sconet_id,':sconet_num'=>$sconet_num,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':birth_date'=>$birth_date_mysql,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Afficher le retour
   $checked = ($check) ? ' checked' : '' ;
@@ -249,6 +272,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   echo'<td class="label">'.html($reference).'</td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
+  echo'<td class="label">'.$birth_date.'</td>';
   echo'<td class="label">'.html($login).'</td>';
   echo ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
   echo'<td class="label">'.$sortie_date.'</td>';

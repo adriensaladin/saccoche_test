@@ -73,6 +73,7 @@ if(empty($_POST['f_afficher']))
       <th>Référence</th>
       <th>Nom</th>
       <th>Prénom</th>
+      <th>Date Naiss.</th>
       <th>Login</th>
       <th>Mot de passe</th>
       <th>Date sortie</th>
@@ -88,14 +89,15 @@ if(empty($_POST['f_afficher']))
     {
       $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
     }
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,user_sortie_date' );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,user_sortie_date' );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        // Formater la date
+        // Formater les dates
         $date_mysql  = $DB_ROW['user_sortie_date'];
-        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
+        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL)  ? convert_date_mysql_to_french($date_mysql)                    : '-' ;
+        $date_naissance = ($DB_ROW['user_naissance_date']) ? convert_date_mysql_to_french($DB_ROW['user_naissance_date']) : '-' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
@@ -106,6 +108,7 @@ if(empty($_POST['f_afficher']))
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
+        echo  '<td class="label">'.$date_naissance.'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
         echo  '<td class="label">'.$date_affich.'</td>';
@@ -117,7 +120,7 @@ if(empty($_POST['f_afficher']))
     }
     else
     {
-      echo'<tr><td class="nu" colspan="12"></td></tr>';
+      echo'<tr><td class="nu" colspan="13"></td></tr>';
     }
     ?>
   </tbody>
@@ -141,14 +144,15 @@ if(empty($_POST['f_afficher']))
   </p>
   <p>
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
-    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
+    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
+    <label class="tab" for="f_birth_date">Date Naiss. :</label><input id="box_birth_date" name="box_birth_date" value="1" type="checkbox" /> <label for="box_birth_date">inconnue</label><span><input id="f_birth_date" name="f_birth_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span>
   </p>
   <p>
     <label class="tab" for="f_login">Login :</label><input id="box_login" name="box_login" value="1" type="checkbox" checked /> <label for="box_login">automatique | inchangé</label><span><input id="f_login" name="f_login" type="text" value="" size="15" maxlength="20" /></span><br />
     <label class="tab" for="f_password">Mot de passe :</label><input id="box_password" name="box_password" value="1" type="checkbox" checked /> <label for="box_password">aléatoire | inchangé</label><span><input id="f_password" name="f_password" size="15" maxlength="20" type="text" value="" /></span>
   </p>
   <p>
-    <label class="tab" for="f_sortie_date">Date de sortie :</label><input id="box_date" name="box_date" value="1" type="checkbox" /> <label for="box_date">sans objet</label><span><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span>
+    <label class="tab" for="f_sortie_date">Date de sortie :</label><input id="box_sortie_date" name="box_sortie_date" value="1" type="checkbox" /> <label for="box_sortie_date">sans objet</label><span><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span>
   </p>
   <p>
     <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><input id="f_groupe" name="f_groupe" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>

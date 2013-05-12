@@ -86,8 +86,8 @@ $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_eleves_avec_serie_et_total();
 foreach($DB_TAB as $DB_ROW)
 {
   $class = ($DB_ROW['saisie_note']===NULL) ? 'erreur' : 'valide' ;
-  $tab_user[  $DB_ROW['eleve_classe_id']] .= '<a id="m_'.$DB_ROW['user_id'].'_'.$DB_ROW['eleve_brevet_serie'].'" href="#"><img src="./_img/brevet/serie_'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /><label class="'.$class.'"></label> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</a><br />';
-  $tab_select[$DB_ROW['eleve_classe_id']] .= '<option value="'.$DB_ROW['user_id'].'_'.$DB_ROW['eleve_brevet_serie'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+  $tab_user[  $DB_ROW['eleve_classe_id']] .= '<a id="m_'.$DB_ROW['eleve_classe_id'].'_'.$DB_ROW['user_id'].'_'.$DB_ROW['eleve_brevet_serie'].'" href="#"><img src="./_img/brevet/serie_'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /><label class="'.$class.'"></label> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</a><br />';
+  $tab_select[$DB_ROW['eleve_classe_id']] .= '<option value="'.$DB_ROW['eleve_classe_id'].'_'.$DB_ROW['user_id'].'_'.$DB_ROW['eleve_brevet_serie'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 }
 // Assemblage du tableau résultant
 $TH = array();

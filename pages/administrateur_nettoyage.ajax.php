@@ -98,8 +98,8 @@ if($action=='purger')
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
   // Supprimer les saisies & les archives des bilans officiels
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
-  // Supprimer les saisies brevet (Notanet & fiches brevet)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_brevet_saisies();
+  // Supprimer les saisies brevet & les archives (Notanet & fiches brevet)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_brevet();
   // Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
   if(!empty($DB_TAB))

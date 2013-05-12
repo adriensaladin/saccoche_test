@@ -372,15 +372,14 @@ class Html
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
       $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
       $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
-      $tab_seuils = array
-      (
-        TRUE  => array( 'NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'] , 'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] , 'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100' ) ,
-        FALSE => array( 'NA'=>''                                    , 'VA'=>''                                                                  , 'A'=>'' )
-      );
+      $seuil_NA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']>0)   ) ? '0 à '.($_SESSION['CALCUL_SEUIL']['R']-1)   : '' ;
+      $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
+      $seuil_VA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']!=$_SESSION['CALCUL_SEUIL']['V']) ) ? $_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] : '' ;
+      $tab_seuils = array( 'NA'=>$seuil_NA, 'VA'=>$seuil_VA, 'A'=>$seuil_A );
       $retour .= '<div><b>Etats d\'acquisitions :</b>';
       foreach($tab_etats as $etat => $couleur)
       {
-        $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$afficher_score][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
+        $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
       }
       $retour .= '</div>';
     }

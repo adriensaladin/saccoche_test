@@ -112,7 +112,7 @@ if($type_generique)
   $type_synthese   = 0 ;
 }
 
-prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
+Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 // Initialisation de tableaux
 
@@ -222,7 +222,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 elseif(count($tab_eleve_id))
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
+  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');

@@ -69,7 +69,7 @@ if( !in_array($indicateur,array('moyenne_scores','pourcentage_acquis')) || !$gro
 
 Form::save_choix('bilan_chronologique');
 
-prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
+Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 // Initialisation de tableaux
 

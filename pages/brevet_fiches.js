@@ -24,10 +24,6 @@
  * 
  */
 
-// Variable globale Highcharts
-var graphique;
-var ChartOptions;
-
 // jQuery !
 $(document).ready
 (
@@ -43,13 +39,8 @@ $(document).ready
     ChartOptions = {
       chart: {
         renderTo: 'div_graphique',
-        type: 'column'
+        type: 'line'
        },
-      colors: [
-        BACKGROUND_A,
-        BACKGROUND_VA,
-        BACKGROUND_NA
-      ],
       title: {
         style: { color: '#333' } ,
         text: null // Pourrait être MAJ ensuite
@@ -58,23 +49,14 @@ $(document).ready
         labels: { style: { color: '#000' } },
         categories: [] // MAJ ensuite
       },
-      yAxis: [
-        {
-          labels: { enabled: false },
-          min: 0,
-          max: 100,
-          title: { style: { color: '#333' } , text: 'Items acquis' }
-        },
-        {} // MAJ ensuite
-      ],
+      yAxis: { 
+        min: 0,
+        max: 20,
+        title: { style: { color: "#333" } , text: "Moyennes" }
+      },
       tooltip: {
         formatter: function() {
           return this.series.name +' : '+ (this.y);
-        }
-      },
-      plotOptions: {
-        column: {
-          stacking: 'percent'
         }
       },
       series: [] // MAJ ensuite
@@ -121,15 +103,20 @@ $(document).ready
     // Clic pour tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil').on
+    $('#classe_check_all').click
     (
-      'click',
-      'q.cocher_tout , q.cocher_rien',
       function()
       {
-        var id_mask = $(this).attr('id').replace('_deb1_','^=').replace('_deb2_','^=').replace('_fin1_','$=').replace('_fin2_','$=');
-        var etat = ( $(this).attr('class').substring(7) == 'tout' ) ? true : false ;
-        $('input['+id_mask+']').prop('checked',etat);
+        $('#table_accueil input[type=checkbox]').prop('checked',true);
+        return false;
+      }
+    );
+    $('#classe_uncheck_all').click
+    (
+      function()
+      {
+        $('#table_accueil input[type=checkbox]').prop('checked',false);
+        return false;
       }
     );
 
@@ -174,17 +161,17 @@ $(document).ready
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucun statut coché !");
           return false;
         }
-        var listing_id = new Array(); $("#table_accueil input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
-        if(!listing_id.length)
+        var classe_ids = new Array(); $("#table_accueil input[type=checkbox]:checked").each(function(){classe_ids.push($(this).attr('id').substring(1));});
+        if(!classe_ids.length)
         {
           $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucune case du tableau cochée !");
           return false;
         }
         $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("Envoi&hellip;"); // volontairement court
-        $('#listing_ids').val(listing_id);
+        $('#classe_ids').val(classe_ids);
         $('#csrf').val(CSRF);
         var form = document.getElementById('cadre_statut');
-        form.action = './index.php?page=officiel&section=accueil_'+BILAN_TYPE;
+        form.action = './index.php?page='+PAGE;
         form.method = 'post';
         form.submit();
       }
@@ -194,31 +181,30 @@ $(document).ready
     // Initialisation de variables utiles accessibles depuis toute fonction
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var memo_objet         = '';
-    var memo_section       = '';
-    var memo_classe        = 0;
-    var memo_groupe        = 0;
-    var memo_periode       = 0;
-    var memo_eleve         = 0;
-    var memo_rubrique_nom  = 0;
-    var memo_rubrique_type = '';
-    var memo_rubrique_id   = 0;
-    var memo_html          = '';
-    var memo_long_max      = '';
-    var memo_auto_next     = false;
-    var memo_auto_prev     = false;
-    var memo_eleve_first   = 0;
-    var memo_eleve_last    = 0;
-    var memo_classe_first  = 0;
-    var memo_classe_last   = 0;
+    var memo_objet        = '';
+    var memo_section      = '';
+    var memo_classe       = 0;
+    var memo_groupe       = 0;
+    var memo_eleve        = 0;
+    var memo_ligne_ids    = '';
+    var memo_serie        = '';
+    var memo_epreuve      = 0;
+    var memo_html         = '';
+    var memo_long_max     = 250;
+    var memo_auto_next    = false;
+    var memo_auto_prev    = false;
+    var memo_eleve_first  = 0;
+    var memo_eleve_last   = 0;
+    var memo_classe_first = 0;
+    var memo_classe_last  = 0;
 
     var tab_classe_action_to_section = new Array();
-    tab_classe_action_to_section['modifier']     = 'officiel_saisir';
-    tab_classe_action_to_section['tamponner']    = 'officiel_saisir';
-    tab_classe_action_to_section['detailler']    = 'officiel_examiner';
-    tab_classe_action_to_section['voir']         = 'officiel_consulter';
-    tab_classe_action_to_section['imprimer']     = 'officiel_imprimer';
-    tab_classe_action_to_section['voir_archive'] = 'officiel_imprimer';
+    tab_classe_action_to_section['modifier']     = 'brevet_fiches_saisir';
+    tab_classe_action_to_section['tamponner']    = 'brevet_fiches_saisir';
+    tab_classe_action_to_section['detailler']    = 'brevet_fiches_examiner';
+    tab_classe_action_to_section['voir']         = 'brevet_fiches_consulter';
+    tab_classe_action_to_section['imprimer']     = 'brevet_fiches_imprimer';
+    tab_classe_action_to_section['voir_archive'] = 'brevet_fiches_imprimer';
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Clic sur une image action
@@ -235,9 +221,8 @@ $(document).ready
           var tab_ids = $(this).parent().attr('id').split('_');
           memo_classe  = tab_ids[1];
           memo_groupe  = tab_ids[2];
-          memo_periode = tab_ids[3];
           $('#f_objet').val(memo_objet);
-          if( (memo_section=='officiel_saisir') || (memo_section=='officiel_consulter') )
+          if( (memo_section=='brevet_fiches_saisir') || (memo_section=='brevet_fiches_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
             $('#cadre_statut , #table_accueil').hide(0);
@@ -247,7 +232,7 @@ $(document).ready
               {
                 type : 'POST',
                 url : 'ajax.php?page='+PAGE,
-                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
                 dataType : "html",
                 error : function(jqXHR, textStatus, errorThrown)
                 {
@@ -279,21 +264,20 @@ $(document).ready
               }
             );
           }
-          else if(memo_section=='officiel_examiner')
+          else if(memo_section=='brevet_fiches_examiner')
           {
             // Masquer le tableau ; Afficher la zone de choix des rubriques
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
           }
-          else if(memo_section=='officiel_imprimer')
+          else if(memo_section=='brevet_fiches_imprimer')
           {
-            // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
-            var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
+            // Masquer le tableau ; Afficher la zone de choix des élèves, et si les fiches brevet sont déjà imprimées
+            var titre = (memo_objet=='imprimer') ? 'Imprimer les fiches brevet (PDF)' : 'Consulter les fiches brevet imprimées (PDF)' ;
             configurer_form_choix_classe();
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_classe h2').html(titre);
-            $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
             $('#zone_action_classe , #zone_'+memo_objet).show(0);
             charger_formulaire_imprimer();
           }
@@ -345,7 +329,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Navigation d'un élève à un autre
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Navigation d'un élève à un autre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_nouvel_eleve(eleve_id,reload)
@@ -362,7 +346,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -400,7 +384,7 @@ $(document).ready
               {
                 memo_auto_next = false;
                 memo_auto_prev = false;
-                $('#'+memo_rubrique_nom).find('button').click();
+                $('#'+memo_ligne_ids).find('button').click();
               }
             }
           }
@@ -504,7 +488,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -519,7 +503,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur un lien pour archiver / imprimer des saisies
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Clic sur un lien pour archiver / imprimer des saisies
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_archiver_imprimer button').click
@@ -534,7 +518,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -562,7 +546,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
+    // [brevet_fiches_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -579,7 +563,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -596,7 +580,7 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<h4>Test impression PDF finale</h4><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a class="lien_ext" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
+                $.fancybox( '<h4>Test impression PDF finale</h4><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a class="lien_ext" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression de la fiche brevet demandée.</span></a></li></ul></div>' , {'centerOnScroll':true} );
                 format_liens('#imprimer_liens');
               }
             }
@@ -606,55 +590,58 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
-    // [officiel_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
+    // [brevet_fiches_saisir] Clic sur le bouton pour ajouter une appréciation
+    // [brevet_fiches_saisir] Clic sur le bouton pour modifier une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function afficher_textarea_appreciation_ou_input_moyenne(obj_lieu,champ_contenu)
     {
-      // fabriquer le formulaire textarea ou input
-      if(memo_rubrique_type=='appr')
+      // fabriquer le formulaire textarea
+      memo_html = obj_lieu.closest('td').html();
+      var nb_lignes = parseInt(memo_long_max/100,10);
+      if(memo_epreuve!=CODE_TOTAL)
       {
-        memo_html = obj_lieu.closest('td').html();
-        memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE : APP_GENERALE ;
-        var nb_lignes = parseInt(memo_long_max/100,10);
-        var formulaire_saisie = '<div class="ti"><b>Appréciation / Conseils pour progresser [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
-                              + '<div class="ti"><textarea id="f_appreciation" name="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'
-                              + '<div class="ti"><label id="f_appreciation_reste"></label></div>'
-                              + '<div class="ti"><button id="valider_appr_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_appr" type="button" class="valider">Valider</button> <button id="valider_appr_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_appr_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_appr" type="button" class="annuler">Annuler</button> <button id="annuler_appr_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_appr">&nbsp;</label></div>';
+        var div_avis_conseil = '';
+        var intitule = 'Appréciation sur les résultats et l\'évolution du candidat';
       }
-      if(memo_rubrique_type=='note')
+      else
       {
-        memo_html = obj_lieu.closest('tr').html();
-        var pourcent = (CONVERSION_SUR_20) ? '' : '%' ;
-        var texte    = (CONVERSION_SUR_20) ? 'en note sur 20' : 'en pourcentage' ;
-        var formulaire_saisie = '<div><b>Moyenne '+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_moyenne" name="f_moyenne" type="text" size="3" value="" />'+pourcent+'</div>'
-                              + '<div><button id="valider_note_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_note" type="button" class="valider">Valider</button> <button id="valider_note_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_note_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_note" type="button" class="annuler">Annuler</button> <button id="annuler_note_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_note">&nbsp;</label></div>';
+        var check_D = '';
+        var check_F = '';
+        if( $('#avis_conseil_classe').length )
+        {
+          if( $('#avis_conseil_classe').text() == 'Avis favorable' )
+          {
+            check_F = ' checked';
+          }
+          else
+          {
+            check_D = ' checked';
+          }
+        }
+        var div_avis_conseil = '<div class="ti"><b>Avis du conseil de classe :</b>&nbsp;&nbsp;&nbsp;<label for="f_avis_conseil_F"><input type="radio" name="f_avis_conseil" id="f_avis_conseil_F" value="F"'+check_F+' /> Avis favorable</label>&nbsp;&nbsp;&nbsp;<label for="f_avis_conseil_D"><input type="radio" name="f_avis_conseil" id="f_avis_conseil_D" value="D"'+check_D+' /> Doit faire ses preuves</label></div>';
+        var intitule = 'Avis circonstancié du chef d\'établissement';
       }
+      var formulaire_saisie = '<div class="ti"><label id="f_appreciation_reste"></label></div>'
+                            + '<div class="ti"><b>'+intitule+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
+                            + '<div class="ti"><textarea id="f_appreciation" name="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'
+                            + div_avis_conseil
+                            + '<div class="ti"><button id="valider_appr_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_appr" type="button" class="valider">Valider</button> <button id="valider_appr_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_appr_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_appr" type="button" class="annuler">Annuler</button> <button id="annuler_appr_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_appr">&nbsp;</label></div>';
       // modif affichage
       $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
       obj_lieu.closest('td').html(formulaire_saisie);
       if(memo_eleve==memo_eleve_first)
       {
-        $('#valider_'+memo_rubrique_type+'_precedent , #annuler_'+memo_rubrique_type+'_precedent').css('visibility','hidden');
+        $('#valider_appr_precedent , #annuler_appr_precedent').css('visibility','hidden');
       }
       if(memo_eleve==memo_eleve_last)
       {
-        $('#valider_'+memo_rubrique_type+'_suivant , #annuler_'+memo_rubrique_type+'_suivant').css('visibility','hidden');
+        $('#valider_appr_suivant , #annuler_appr_suivant').css('visibility','hidden');
       }
       // finalisation (remplissage et focus)
-      if(memo_rubrique_type=='appr')
-      {
-        $('#f_appreciation').focus().html(champ_contenu);
-        afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
-        window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
-      }
-      if(memo_rubrique_type=='note')
-      {
-        var valeur = (CONVERSION_SUR_20) ? parseFloat(champ_contenu,10) : parseInt(champ_contenu.substr(0,champ_contenu.length-1),10) ;
-        valeur = (isNaN(valeur)) ? '' : valeur ;
-        $('#f_moyenne').focus().val(valeur);
-      }
+      $('#f_appreciation').focus().html(champ_contenu);
+      afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
+      window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
     }
 
     $('#zone_action_eleve').on
@@ -663,13 +650,13 @@ $(document).ready
       'button.ajouter , button.modifier',
       function()
       {
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
-        memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
+        memo_ligne_ids = $(this).closest('tr').attr('id');
+        var tab_ids    = memo_ligne_ids.split('_');
+        memo_serie     = tab_ids[1];
+        memo_epreuve   = parseInt( tab_ids[2] , 10 );
         if($(this).attr('class')=='modifier')
         {
-          var contenu = (memo_rubrique_type=='appr') ? $(this).parent().next().html() : $(this).closest('td').prev().html() ;
+          var contenu = $(this).parent().next().html();
         }
         else
         {
@@ -680,7 +667,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
+    // [brevet_fiches_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -694,80 +681,62 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
+    // [brevet_fiches_saisir] Clic sur un bouton pour annuler une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
     (
       'click',
-      '#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent , #annuler_note , #annuler_note_suivant , #annuler_note_precedent',
+      '#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent',
       function()
       {
-        if(memo_rubrique_type=='appr')
-        {
-          $(this).closest('td').html(memo_html);
-        }
-        else if(memo_rubrique_type=='note')
-        {
-          $(this).closest('tr').html(memo_html);
-        }
+        $(this).closest('td').html(memo_html);
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-        memo_auto_next = ($(this).attr('id')=='annuler_'+memo_rubrique_type+'_suivant')   ? true : false ;
-        memo_auto_prev = ($(this).attr('id')=='annuler_'+memo_rubrique_type+'_precedent') ? true : false ;
+        memo_auto_next = ($(this).attr('id')=='annuler_appr_suivant')   ? true : false ;
+        memo_auto_prev = ($(this).attr('id')=='annuler_appr_precedent') ? true : false ;
         if(memo_auto_next) { $('#go_suivant_eleve').click(); }
         if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
+    // [brevet_fiches_saisir] Clic sur un bouton pour valider une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
     (
       'click',
-      '#valider_appr , #valider_appr_suivant , #valider_appr_precedent , #valider_note , #valider_note_suivant , #valider_note_precedent',
+      '#valider_appr , #valider_appr_suivant , #valider_appr_precedent',
       function()
       {
-        if(memo_rubrique_type=='appr')
+        if( !$.trim($('#f_appreciation').val()).length )
         {
-          if( !$.trim($('#f_appreciation').val()).length )
+          $('#ajax_msg_appr').removeAttr("class").addClass("erreur").html("Absence d'appréciation !");
+          $('#f_appreciation').focus();
+          return false;
+        }
+        if(memo_epreuve==CODE_TOTAL)
+        {
+          if( typeof( $("input[name=f_avis_conseil]:checked").val() ) == 'undefined' )
           {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Absence d'appréciation !");
-            $('#f_appreciation').focus();
+            $('#ajax_msg_appr').removeAttr("class").addClass("erreur").html("Avis du conseil de classe non coché !");
             return false;
           }
         }
-        if(memo_rubrique_type=='note')
-        {
-          var note = parseFloat($('#f_moyenne').val(),10);
-          if( isNaN(note) )
-          {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Moyenne incorrecte !");
-            $('#f_moyenne').focus();
-            return false;
-          }
-          if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le code VV pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
-          {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Valeur incorrecte !");
-            $('#f_moyenne').focus();
-            return false;
-          }
-        }
-        memo_auto_next = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_suivant')   ? true : false ;
-        memo_auto_prev = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_precedent') ? true : false ;
+        memo_auto_next = ($(this).attr('id')=='valider_appr'+'_suivant')   ? true : false ;
+        memo_auto_prev = ($(this).attr('id')=='valider_appr'+'_precedent') ? true : false ;
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-        $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_appr').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_appr'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_user='+memo_eleve+'&f_serie='+memo_serie+'&f_epreuve='+memo_epreuve+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg_appr').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
@@ -777,18 +746,11 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
               {
-                $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_appr').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                if(memo_rubrique_type=='appr')
-                {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('td').html(responseHTML);
-                }
-                else if(memo_rubrique_type=='note')
-                {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('tr').html(responseHTML);
-                }
+                $('#ajax_msg_appr').closest('td').html(responseHTML);
                 if(memo_auto_next) { $('#go_suivant_eleve').click(); }
                 if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
               }
@@ -799,7 +761,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
+    // [brevet_fiches_saisir] Clic sur le bouton pour supprimer une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -809,17 +771,17 @@ $(document).ready
       function()
       {
         var obj_bouton = $(this);
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
-        memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
+        memo_ligne_ids = $(this).closest('tr').attr('id');
+        var tab_ids    = memo_ligne_ids.split('_');
+        memo_serie     = tab_ids[1];
+        memo_epreuve   = parseInt( tab_ids[2] , 10 );
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_appr'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_user='+memo_eleve+'&f_serie='+memo_serie+'&f_epreuve='+memo_epreuve+'&'+$('#form_hidden').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -837,14 +799,7 @@ $(document).ready
               }
               else
               {
-                if(memo_rubrique_type=='appr')
-                {
-                  obj_bouton.closest('td').html(responseHTML);
-                }
-                else if(memo_rubrique_type=='note')
-                {
-                  obj_bouton.closest('tr').html(responseHTML);
-                }
+                obj_bouton.closest('td').html(responseHTML);
               }
             }
           }
@@ -853,54 +808,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur le bouton pour recalculer une note (soit effacée - NULL - soit figée car reportée manuellement)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      'button.nettoyer',
-      function()
-      {
-        var obj_bouton = $(this);
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
-        memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
-        $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-              $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-              if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                obj_bouton.closest('tr').html(responseHTML);
-              }
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_examiner] Charger le contenu (résultat de l'examen pour une classe)
+    // [brevet_fiches_examiner] Charger le contenu (résultat de l'examen pour une classe)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#lancer_recherche').click
@@ -921,7 +829,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -943,7 +851,6 @@ $(document).ready
                 configurer_form_choix_classe();
                 masquer_element_navigation_choix_classe();
                 $('#ajax_msg_recherche').removeAttr("class").html('');
-                $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
                 $('#zone_resultat_classe').html(responseHTML);
                 $('#zone_chx_rubriques').hide(0);
                 $('#zone_action_classe').show(0);
@@ -955,7 +862,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_imprimer] Lancer l'impression pour une liste d'élèves
+    // [brevet_fiches_imprimer] Lancer l'impression pour une liste d'élèves
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function imprimer(etape)
@@ -966,7 +873,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1018,14 +925,13 @@ $(document).ready
         }
         $('#f_listing_eleves').val(listing_id);
         var parite = $('#check_parite').is(':checked') ? 1 : 0 ;
-        $('#f_parite').val(parite);
         $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
         imprimer(1);
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
+    // [brevet_fiches_imprimer] Charger la liste de choix des élèves, et si les fiches brevet sont déjà imprimées
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_formulaire_imprimer()
@@ -1040,7 +946,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1070,7 +976,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_examiner|officiel_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
+    // [brevet_fiches_examiner|brevet_fiches_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function masquer_element_navigation_choix_classe()
@@ -1097,13 +1003,13 @@ $(document).ready
       var numero = 0;
       tab_id_option_to_numero = new Array();
       tab_numero_to_id_option = new Array();
-      var indice = (memo_section=='officiel_examiner') ? 'examiner' : ( (memo_objet=='imprimer') ? 'imprimer' : 'voir_pdf' ) ;
+      var indice = (memo_section=='brevet_fiches_examiner') ? 'examiner' : ( (memo_objet=='imprimer') ? 'imprimer' : 'voir_pdf' ) ;
       $('#go_selection_classe option').each
       (
         function()
         {
           var id_option = $(this).val();
-          var etat = tab_disabled[indice][id_option+'_'+memo_periode];
+          var etat = tab_disabled[indice][id_option];
           $(this).prop( 'disabled' , etat );
           if(etat==false)
           {
@@ -1118,7 +1024,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_examiner|officiel_imprimer] Navigation d'une classe à une autre
+    // [brevet_fiches_examiner|brevet_fiches_imprimer] Navigation d'une classe à une autre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_nouvelle_classe(classe_groupe_id)
@@ -1130,11 +1036,11 @@ $(document).ready
       var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
       memo_classe = tab_indices[0];
       memo_groupe = tab_indices[1];
-      if(memo_section=='officiel_imprimer')
+      if(memo_section=='brevet_fiches_imprimer')
       {
         charger_formulaire_imprimer();
       }
-      else if(memo_section=='officiel_examiner')
+      else if(memo_section=='brevet_fiches_examiner')
       {
         $('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
         $('#zone_resultat_classe').html('<label class="loader">En cours&hellip;</label>');
@@ -1143,7 +1049,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_page='+BILAN_TYPE+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&'+$('#form_hidden').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1208,7 +1114,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler ou corriger une faute
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Afficher le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1217,14 +1123,21 @@ $(document).ready
       'button.signaler , button.corriger',
       function()
       {
-        var objet        = $(this).attr('class');
-        var tab_ids      = $(this).closest('tr').attr('id').split('_');
-        var prof_id      = parseInt( tab_ids[2] , 10 );
-        memo_rubrique_id = parseInt( tab_ids[1] , 10 );
+        var objet    = $(this).attr('class');
+        var tab_ids  = $(this).closest('tr').attr('id').split('_');
+        var prof_id  = parseInt( tab_ids[3] , 10 );
+        memo_serie   = tab_ids[1];
+        memo_epreuve = parseInt( tab_ids[2] , 10 );
         $('#f_action').val(objet+'_faute');
         $('#zone_signaler_corriger h2').html(objet[0].toUpperCase() + objet.substring(1) + " une faute");
         var appreciation_contenu = $(this).parent().next().html();
-        var message_contenu = $('h1').text().substring(2)+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
+        var input_avis_conseil = '';
+        if( $('#avis_conseil_classe').length )
+        {
+          var input_value = ( $('#avis_conseil_classe').text() == 'Avis favorable' ) ? 'F' : 'D' ;
+          input_avis_conseil = '<input type="hidden" name="f_avis_conseil" id="f_avis_conseil" value="'+input_value+'" />';
+        }
+        var message_contenu = $('h1').text().substring(2)+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataires_liste').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation
         if(objet=='corriger')
@@ -1237,10 +1150,9 @@ $(document).ready
           {
             $('#section_signaler').hide(0);
           }
-          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE : APP_GENERALE ;
           var nb_lignes = parseInt(memo_long_max/100,10);
           message_contenu += 'je me suis permis de corriger son appréciation en remplaçant " .......... " par " .......... ".';
-          $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label></div>').show(0);
+          $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label>'+input_avis_conseil+'</div>').show(0);
           $('#f_appreciation').focus().html(unescapeHtml(appreciation_contenu));
           afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
         }
@@ -1258,7 +1170,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_message_contenu').keyup
@@ -1270,7 +1182,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'une faute (annuler / retour)
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'une faute (annuler / retour)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#annuler_signaler_corriger').click
@@ -1285,7 +1197,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir|officiel_consulter] Valider le formulaire pour signaler ou corriger une faute
+    // [brevet_fiches_saisir|brevet_fiches_consulter] Valider le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#valider_signaler_corriger').click
@@ -1343,7 +1255,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_section='+'officiel_saisir'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
+              data : 'csrf='+CSRF+'&f_section='+'brevet_fiches_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_user='+memo_eleve+'&f_serie='+memo_serie+'&f_epreuve='+memo_epreuve+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -1362,7 +1274,7 @@ $(document).ready
                 }
                 else
                 {
-                  $('#appr_'+memo_rubrique_id+'_'+prof_id).find('div.appreciation').html(responseHTML.substring(4));
+                  $('#appr_'+memo_serie+'_'+memo_epreuve+'_'+prof_id).find('div.appreciation').html(responseHTML.substring(4));
                   $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
                   $('#annuler_signaler_corriger').click();
                 }

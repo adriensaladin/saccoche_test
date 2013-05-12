@@ -231,7 +231,7 @@ if($action=='imprimer_donnees_eleves_collegues')
       foreach($tab_saisie[$eleve_id] as $rubrique_id => $tab)
       {
         extract($tab);  // $rubrique_nom $note $appreciation
-        $releve_PDF->tableau_appreciation_rubrique_eleves_collegues( $eleve_id , $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
+        $releve_PDF->tableau_appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
         $eleve_nom = $eleve_prenom = '' ;
       }
     }

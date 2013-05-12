@@ -37,7 +37,6 @@ if( !count($tab_eleve) )
 }
 
 $listing_eleve_id   = implode(',',$tab_eleve);
-$epreuve_code_total = '255';
 
 // Récupérer les données élèves
 
@@ -52,15 +51,26 @@ foreach($DB_TAB as $DB_ROW)
   $tab_eleves[$DB_ROW['user_id']] = $DB_ROW['user_reference'];
 }
 
-// Récupérer les notes enregistrées
+// Récupérer les notes enregistrées ; convertir si besoin en nombre de points correspondants
 
-$tab_notes_enregistrees = array();
+$tab_points = array();
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_notes_eleves($listing_eleve_id);
 if(count($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_notes_enregistrees[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = $DB_ROW['saisie_note'];
+    if($DB_ROW['brevet_epreuve_code']==CODE_BREVET_EPREUVE_TOTAL)
+    {
+      $tab_points[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = $DB_ROW['saisie_note'];
+    }
+    elseif($DB_ROW['brevet_epreuve_point_sup_10'])
+    {
+      $tab_points[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = max(0,$DB_ROW['saisie_note']-10);
+    }
+    else
+    {
+      $tab_points[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = is_numeric($DB_ROW['saisie_note']) ? $DB_ROW['saisie_note']*$DB_ROW['brevet_epreuve_coefficient'] : $DB_ROW['saisie_note'] ;
+    }
   }
 }
 
@@ -72,11 +82,11 @@ $csv_eof        = "\r\n";
 
 foreach($tab_eleves as $eleve_id => $user_reference)
 {
-  foreach($tab_notes_enregistrees[$eleve_id] as $epreuve_code => $saisie_note)
+  foreach($tab_points[$eleve_id] as $epreuve_code => $points)
   {
-    $csv_code = ($epreuve_code!=$epreuve_code_total) ? (string)$epreuve_code : 'TOT' ;
-    $format   = ($epreuve_code!=$epreuve_code_total) ? "%05.2f" : "%06.2f" ;
-    $csv_note = is_numeric($saisie_note) ? sprintf($format,$saisie_note) : (string)$saisie_note ;
+    $csv_code = ($epreuve_code!=CODE_BREVET_EPREUVE_TOTAL) ? (string)$epreuve_code : 'TOT' ;
+    $format   = ($epreuve_code!=CODE_BREVET_EPREUVE_TOTAL) ? "%05.2f" : "%06.2f" ;
+    $csv_note = is_numeric($points) ? sprintf($format,$points) : (string)$points ;
     $csv_contenu .= $user_reference.$csv_separateur.$csv_code.$csv_separateur.$csv_note.$csv_separateur.$csv_eof;
   }
 }

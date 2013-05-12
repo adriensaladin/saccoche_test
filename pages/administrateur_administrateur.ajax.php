@@ -94,7 +94,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
     }
   }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $nom , $prenom , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Afficher le retour
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td>'.html($id_ent).'</td>';

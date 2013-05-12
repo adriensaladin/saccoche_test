@@ -39,7 +39,7 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},10:{sorter:'date_fr'},11:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},8:{sorter:'date_fr'},10:{sorter:false},11:{sorter:'date_fr'},12:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,0],[7,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -77,10 +77,11 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le checkbox pour choisir ou non un login
 // Clic sur le checkbox pour choisir ou non un mot de passe
+// Clic sur le checkbox pour choisir ou non une date de naissance
 // Clic sur le checkbox pour choisir ou non une date de sortie
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#box_login , #box_password , #box_date').click
+    $('#box_login , #box_password , #box_birth_date , #box_sortie_date').click
     (
       function()
       {
@@ -99,7 +100,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , login , date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , birth_date_fr , login , sortie_date_fr , check )
     {
       $('#f_action').val(mode);
       $('#f_check').val(check);
@@ -120,16 +121,27 @@ $(document).ready
       var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
       $('#f_password').val('').parent().hide(0);
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
-      // date de sortie
-      if(date_fr=='-')
+      // date de naissance
+      if(birth_date_fr=='-')
       {
-        $('#box_date').prop('checked',true).next().show(0);
+        $('#box_birth_date').prop('checked',true).next().show(0);
+        $('#f_birth_date').val(input_date).parent().hide(0);
+      }
+      else
+      {
+        $('#box_birth_date').prop('checked',false).next().hide(0);
+        $('#f_birth_date').val(birth_date_fr).parent().show(0);
+      }
+      // date de sortie
+      if(sortie_date_fr=='-')
+      {
+        $('#box_sortie_date').prop('checked',true).next().show(0);
         $('#f_sortie_date').val(input_date).parent().hide(0);
       }
       else
       {
-        $('#box_date').prop('checked',false).next().hide(0);
-        $('#f_sortie_date').val(date_fr).parent().show(0);
+        $('#box_sortie_date').prop('checked',false).next().hide(0);
+        $('#f_sortie_date').val(sortie_date_fr).parent().show(0);
       }
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un utilisateur");
@@ -149,7 +161,7 @@ $(document).ready
       // Insérer l'information du groupe affiché
       $('#f_groupe').val($('#f_groupes option:selected').val());
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '-' /*date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '-' /*birth_date_fr*/ , '' /*login*/ , '-' /*sortie_date_fr*/ , '' /*check*/ );
     };
 
     /**
@@ -162,17 +174,18 @@ $(document).ready
       var objet_tr   = $(this).parent().parent();
       var objet_tds  = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      var id         = objet_tr.attr('id').substring(3);
-      var check      = Number(objet_tds.eq(0).children('input').is(':checked'));
-      var id_ent     = objet_tds.eq( 1).html();
-      var id_gepi    = objet_tds.eq( 2).html();
-      var sconet_id  = objet_tds.eq( 3).html();
-      var sconet_num = objet_tds.eq( 4).html();
-      var reference  = objet_tds.eq( 5).html();
-      var nom        = objet_tds.eq( 6).html();
-      var prenom     = objet_tds.eq( 7).html();
-      var login      = objet_tds.eq( 8).html();
-      var date_fr    = objet_tds.eq(10).html();
+      var id             = objet_tr.attr('id').substring(3);
+      var check          = Number(objet_tds.eq(0).children('input').is(':checked'));
+      var id_ent         = objet_tds.eq( 1).html();
+      var id_gepi        = objet_tds.eq( 2).html();
+      var sconet_id      = objet_tds.eq( 3).html();
+      var sconet_num     = objet_tds.eq( 4).html();
+      var reference      = objet_tds.eq( 5).html();
+      var nom            = objet_tds.eq( 6).html();
+      var prenom         = objet_tds.eq( 7).html();
+      var birth_date_fr  = objet_tds.eq( 8).html();
+      var login          = objet_tds.eq( 9).html();
+      var sortie_date_fr = objet_tds.eq(11).html();
       // Retirer une éventuelle balise image présente dans login
       position_image = login.indexOf('<');
       if (position_image!=-1)
@@ -180,7 +193,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , birth_date_fr , unescapeHtml(login) , sortie_date_fr , check );
     };
 
     /**
@@ -244,8 +257,9 @@ $(document).ready
           f_nom         : { required:true , maxlength:25 },
           f_prenom      : { required:true , maxlength:25 },
           f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
+          f_birth_date  : { required:function(){return !$('#box_birth_date').is(':checked');} , dateITA:true },
           f_password    : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 },
-          f_sortie_date : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true }
+          f_sortie_date : { required:function(){return !$('#box_sortie_date').is(':checked');} , dateITA:true }
         },
         messages :
         {
@@ -257,6 +271,7 @@ $(document).ready
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
           f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+          f_birth_date  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_password    : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" },
           f_sortie_date : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
         },
@@ -264,7 +279,7 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.attr("id")=='f_sortie_date') { element.next().after(error); }
+          if((element.attr("id")=='f_birth_date')||(element.attr("id")=='f_sortie_date')) { element.next().after(error); }
           else {element.after(error);}
         }
       }

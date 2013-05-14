@@ -1,0 +1,1139 @@
+/**
+ * @version $Id$
+ * @author Thomas Crespin <thomas.crespin@sesamath.net>
+ * @copyright Thomas Crespin 2010
+ * 
+ * ****************************************************************************************************
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
+ * ****************************************************************************************************
+ * 
+ * Ce fichier est une partie de SACoche.
+ * 
+ * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
+ * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+ * 
+ * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+ * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
+ * 
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
+ * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Généralités normatives                                                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,form,fieldset,pre,input,p,blockquote,th,td,img,hr {margin:0;padding:0}
+ol,ul,li {list-style:none}
+table {border-collapse:collapse;border-spacing:0;font-size:100%}
+fieldset,img,hr {border:0}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Personnalisations globales                                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+html {height:100%;width:100%;background:#FFF;font-size:13px;}
+body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
+table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
+p, *.p{margin-top:1em;margin-bottom:1em}
+img {vertical-align:middle}
+#aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px}
+.legende div {margin:2px 1em}
+.legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px;white-space:nowrap}
+/* td img {vertical-align:baseline} */
+/* label img {vertical-align:text-top} */
+h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
+h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
+h1.logo{text-align:center}
+h1.logo a{margin:auto 1em}
+/* h3 réservé pour l'infobulle */
+h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
+a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0}
+a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
+hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
+#aide_en_ligne {margin:1ex 1em}
+em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
+del{text-decoration:line-through;color:#666}
+kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
+kbd:hover{background-color:#CCC;border-color:#AAA}
+.hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
+.i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
+.hide{display:none}
+.t9{font-size:90%}
+.breakafter{page-break-after:always}
+.fd{float:right;margin-right:1em}
+.avant{color:#666;background-color:#FFC;font-size:12px}
+.notnow{color:#666}.now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
+.fluo{background:#FF0;padding:2px 1ex}
+div.appreciation {white-space:pre-wrap}
+td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Cadres principaux (dont le menu déroulant)                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* page accueil (identification) */
+#cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
+
+/* zone identifiée */
+#cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
+#cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+#cadre_navig  {z-index:1003;position:fixed;top:2px;right:2px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
+#cadre_photo  {z-index:1004;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
+#cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
+#cadre_tactile{z-index:1004;position:fixed;top:60px;left:5px;text-align:center;background:#FF9;padding:2px;border:1px solid #AA0;border-radius:3px;display:none}
+
+/* dans #cadre_haut */
+#top_info {position:absolute;top:3px;left:4px}
+#logo     {position:absolute;top:1px;left:824px} /* left:840px */
+#menu     {position:absolute;bottom:-2px;left:3px;right:0}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Titres de la page d'authentification                                                                */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#cadre_milieu h2 {background:transparent url(../_img/sprite_accueil_1.png) 0 0 no-repeat;padding-left:24px}
+#cadre_milieu h2.hebergement    {background-position: 0    0px}
+#cadre_milieu h2.identification {background-position: 0  -20px}
+#cadre_milieu h2.informations   {background-position: 0  -40px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Boutons d'informations (dans #cadre_haut)                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_2.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
+#top_info span.alerte                {background-position: 1px    1px;font-weight:bold;color:#C00}
+#top_info span.connexion             {background-position: 1px  -19px;font-weight:bold}
+#top_info span.favicon               {background-position: 1px  -39px}
+#top_info span.home                  {background-position: 1px  -59px}
+#top_info span.profil_administrateur {background-position: 1px  -79px}
+#top_info span.profil_directeur      {background-position: 1px  -99px}
+#top_info span.profil_eleve          {background-position: 1px -119px}
+#top_info span.profil_parent         {background-position: 1px -139px}
+#top_info span.profil_professeur     {background-position: 1px -159px}
+#top_info span.profil_webmestre      {background-position: 1px -179px}
+#top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
+#top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
+#top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Boutons de navigation (dans #cadre_navig)                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#cadre_navig a{display:block;width:18px;height:18px;border:1px solid #99F;margin-top:1px}
+#go_haut {background:#DDF url(../_img/fleche/go_haut.png) center center no-repeat}
+#go_bas  {background:#DDF url(../_img/fleche/go_bas.png)  center center no-repeat}
+#cadre_navig a:hover{background-color:#EEF}
+
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Menu déroulant (dans #cadre_haut)                                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_13.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
+#menu li {float:left}
+#menu li li {float:none}
+#menu li ul {position:absolute;left:-9999em;background:#FFF}
+#menu li:hover ul {left:auto}
+
+#menu a.menu                  {background-position: 1px     1px}
+#menu a.administrateur        {background-position: 1px   -19px}
+#menu a.algorithme_edition    {background-position: 1px   -39px}
+#menu a.algorithme_voir       {background-position: 1px   -59px}
+#menu a.blocage               {background-position: 1px   -79px}
+#menu a.compte_accueil        {background-position: 1px   -99px}
+#menu a.compte_cnil           {background-position: 1px  -119px}
+#menu a.compte_daltonisme     {background-position: 1px  -139px}
+#menu a.compte_password       {background-position: 1px  -159px}
+#menu a.date_connexion        {background-position: 1px  -179px}
+#menu a.directeur             {background-position: 1px  -199px}
+#menu a.dump                  {background-position: 1px  -219px}
+#menu a.eleve                 {background-position: 1px  -239px}
+#menu a.etabl_autorisations   {background-position: 1px  -259px}
+#menu a.etabl_choix           {background-position: 1px  -279px}
+#menu a.etabl_connexion       {background-position: 1px  -299px}
+#menu a.etabl_couleurs        {background-position: 1px  -319px}
+#menu a.etabl_duree           {background-position: 1px  -339px}
+#menu a.etabl_identite        {background-position: 1px  -359px}
+#menu a.etabl_login           {background-position: 1px  -379px}
+#menu a.evaluation_demande    {background-position: 1px  -399px}
+#menu a.evaluation_gestion    {background-position: 1px  -419px}
+#menu a.evaluation_voir       {background-position: 1px  -439px}
+#menu a.fichier_export        {background-position: 1px  -459px}
+#menu a.fichier_import        {background-position: 1px  -479px}
+#menu a.groupe                {background-position: 1px  -499px}
+#menu a.item_selection        {background-position: 1px  -519px}
+#menu a.log_actions           {background-position: 1px  -539px}
+#menu a.mdp_admin             {background-position: 1px  -559px}
+#menu a.message_accueil       {background-position: 1px  -579px}
+#menu a.nettoyage             {background-position: 1px  -599px}
+#menu a.newsletter            {background-position: 1px  -619px}
+#menu a.officiel_assiduite    {background-position: 1px  -639px}
+#menu a.officiel_brevet       {background-position: 1px  -659px}
+#menu a.officiel_bulletin     {background-position: 1px  -679px}
+#menu a.officiel_palier1      {background-position: 1px  -699px}
+#menu a.officiel_palier2      {background-position: 1px  -719px}
+#menu a.officiel_palier3      {background-position: 1px  -739px}
+#menu a.officiel_reglages     {background-position: 1px  -759px}
+#menu a.officiel_releve       {background-position: 1px  -779px}
+#menu a.officiel_voir_archive {background-position: 1px  -799px}
+#menu a.parent                {background-position: 1px  -819px}
+#menu a.periode               {background-position: 1px  -839px}
+#menu a.periode_groupe        {background-position: 1px  -859px}
+#menu a.professeur            {background-position: 1px  -879px}
+#menu a.referentiel_gestion   {background-position: 1px  -899px}
+#menu a.referentiel_voir      {background-position: 1px  -919px}
+#menu a.releve_chrono         {background-position: 1px  -939px}
+#menu a.releve_grille         {background-position: 1px  -959px}
+#menu a.releve_items          {background-position: 1px  -979px}
+#menu a.releve_recherche      {background-position: 1px  -999px}
+#menu a.releve_socle          {background-position: 1px -1019px}
+#menu a.releve_synthese       {background-position: 1px -1039px}
+#menu a.releve_synthese_socle {background-position: 1px -1059px}
+#menu a.resilier              {background-position: 1px -1079px}
+#menu a.rss                   {background-position: 1px -1099px}
+#menu a.serveur_database      {background-position: 1px -1119px}
+#menu a.serveur_debug         {background-position: 1px -1139px}
+#menu a.serveur_fichiers      {background-position: 1px -1159px}
+#menu a.serveur_geographie    {background-position: 1px -1179px}
+#menu a.serveur_identite      {background-position: 1px -1199px}
+#menu a.serveur_info          {background-position: 1px -1219px}
+#menu a.serveur_maintenance   {background-position: 1px -1239px}
+#menu a.serveur_proxy         {background-position: 1px -1259px}
+#menu a.socle_annuler         {background-position: 1px -1279px}
+#menu a.socle_fichier         {background-position: 1px -1299px}
+#menu a.socle_item            {background-position: 1px -1319px}
+#menu a.socle_langue          {background-position: 1px -1339px}
+#menu a.socle_pilier          {background-position: 1px -1359px}
+#menu a.statistiques          {background-position: 1px -1379px}
+#menu a.structure_ajout_csv   {background-position: 1px -1399px}
+#menu a.structure_gestion     {background-position: 1px -1419px}
+#menu a.structure_transfert   {background-position: 1px -1439px}
+#menu a.trombinoscope         {background-position: 1px -1459px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de saisie des résultats d'une évaluation                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#table_saisir label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+label span.arrow_continue_down  {background-position: 0    0px}
+label span.arrow_continue_rigth {background-position: 0  -20px}
+label span.pilot_keyboard       {background-position: 0  -40px}
+label span.pilot_mouse          {background-position: 0  -60px}
+label span.retrecir_hauteur     {background-position: 0  -80px}
+label span.retrecir_largeur     {background-position: 0 -100px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.rien64     {padding-left:70px}
+.messages64,
+.demandes64 {background:transparent url(../_img/icone64/info.png)  no-repeat left;padding-left:70px;min-height:64px}
+.alert64    {background:transparent url(../_img/icone64/alert.png) no-repeat left;padding-left:70px;min-height:64px}
+.help64     {background:transparent url(../_img/icone64/help.png)  no-repeat left;padding-left:70px;min-height:64px}
+.user64     {background:transparent url(../_img/icone64/user.png)  no-repeat left;padding-left:70px;min-height:64px}
+.ecolo64    {background:transparent url(../_img/icone64/ecolo.png) no-repeat left;padding-left:70px;min-height:64px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liens vers un fichier à récupérer ou un document généré                                             */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.file_doc  {background-position: 0    0px}
+.file_docx {background-position: 0  -20px}
+.file_exe  {background-position: 0  -40px}
+.file_fla  {background-position: 0  -60px}
+.file_htm  {background-position: 0  -80px}
+.file_iso  {background-position: 0 -100px}
+.file_jpg  {background-position: 0 -120px}
+.file_mp4  {background-position: 0 -140px}
+.file_odg  {background-position: 0 -160px}
+.file_odp  {background-position: 0 -180px}
+.file_ods  {background-position: 0 -200px}
+.file_odt  {background-position: 0 -220px}
+.file_pdf  {background-position: 0 -240px}
+.file_php  {background-position: 0 -260px}
+.file_ppt  {background-position: 0 -280px}
+.file_pptx {background-position: 0 -300px}
+.file_rtf  {background-position: 0 -320px}
+.file_swf  {background-position: 0 -340px}
+.file_sxc  {background-position: 0 -360px}
+.file_sxd  {background-position: 0 -380px}
+.file_sxi  {background-position: 0 -400px}
+.file_sxw  {background-position: 0 -420px}
+.file_tep  {background-position: 0 -440px}
+.file_tex  {background-position: 0 -460px}
+.file_txt  {background-position: 0 -480px}
+.file_xls  {background-position: 0 -500px}
+.file_xlsx {background-position: 0 -520px}
+.file_xml  {background-position: 0 -540px}
+.file_zip  {background-position: 0 -560px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images relatives aux états des bilans officiels                                                     */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.absence  {background-position: 0    0px}
+.vide     {background-position: 0  -20px}
+.rubrique {background-position: 0  -40px}
+.synthese {background-position: 0  -60px}
+.complet  {background-position: 0  -80px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images pour les pages de validation du socle                                                        */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 0 no-repeat;padding-left:19px}
+span.eleve      {background-position: 0    0px}
+span.socle_n1   {background-position: 0  -20px}
+span.socle_n3   {background-position: 0  -40px}
+span.stats      {background-position: 0  -60px}
+span.voir       {background-position: 0  -80px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Puces diverses                                                                                      */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+*.travaux {background:#FF0        url(../_img/chantier.gif)          no-repeat 5px;     padding-left:50px;min-height:40px;line-height:40px;color:#000;font-weight:bold}
+*.noprint {background:transparent url(../_img/puce/puce_noprint.png) no-repeat top left;padding-left:19px;color:#C00}
+*.danger  {background:transparent url(../_img/puce/puce_danger.gif)  no-repeat top left;padding-left:19px;color:#C00}
+*.astuce  {background:transparent url(../_img/puce/puce_astuce.png)  no-repeat top left;padding-left:19px;padding-top:1px}
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px;padding-top:1px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+*.probleme {background:#FF3;color:#C00;font-weight:bold}
+
+a.cocher_tout {padding-left:19px;background:transparent url(../_img/check/cocher_tout.png) no-repeat top left}
+a.cocher_rien {padding-left:19px;background:transparent url(../_img/check/cocher_rien.png) no-repeat top left}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images cliquables                                                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+q {background:transparent url(../_img/sprite_action_9.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
+q.activer            {background-position: 0     0px}
+q.ajouter            {background-position: 0   -20px}
+q.ajouter_non        {background-position: 0   -40px}
+q.annuler            {background-position: 0   -60px}
+q.choisir_compet     {background-position: 0   -80px}
+q.choisir_eleve      {background-position: 0  -100px}
+q.choisir_prof       {background-position: 0  -120px}
+q.cocher_inverse     {background-position: 0  -140px}
+q.cocher_rien        {background-position: 0  -160px}
+q.cocher_tout        {background-position: 0  -180px}
+q.date_ajouter       {background-position: 0  -200px}
+q.date_calendrier    {background-position: 0  -220px}
+q.date_periode       {background-position: 0  -240px}
+q.demander_add       {background-position: 0  -260px}
+q.demander_non       {background-position: 0  -280px}
+q.deployer_m1        {background-position: 0  -300px}
+q.deployer_m2        {background-position: 0  -320px}
+q.deployer_n1        {background-position: 0  -340px}
+q.deployer_n2        {background-position: 0  -360px}
+q.deployer_n3        {background-position: 0  -380px}
+q.detailler          {background-position: 0  -400px}
+q.detailler_non      {background-position: 0  -420px}
+q.dupliquer          {background-position: 0  -440px}
+q.echanger           {background-position: 0  -460px}
+q.imprimer_arbre     {background-position: 0  -480px}
+q.imprimer           {background-position: 0  -480px} /* attention : même décalage */
+q.imprimer_non       {background-position: 0  -500px}
+q.initialiser_mdp    {background-position: 0  -520px}
+q.modifier           {background-position: 0  -540px}
+q.modifier_non       {background-position: 0  -560px}
+q.ordonner           {background-position: 0  -580px}
+q.ordonner_non       {background-position: 0  -600px}
+q.calculer           {background-position: 0  -620px}
+q.calculer_non       {background-position: 0  -640px}
+q.envoyer            {background-position: 0  -660px}
+q.envoyer_non        {background-position: 0  -680px}
+q.partager           {background-position: 0  -700px}
+q.partager_non       {background-position: 0  -720px}
+q.ress_ajouter       {background-position: 0  -740px}
+q.ress_page_elaborer {background-position: 0  -760px}
+q.retourner          {background-position: 0  -780px}
+q.saisir             {background-position: 0  -800px}
+q.saisir_non         {background-position: 0  -820px}
+q.supprimer          {background-position: 0  -840px}
+q.supprimer_non      {background-position: 0  -860px}
+q.tamponner          {background-position: 0  -880px}
+q.tamponner_non      {background-position: 0  -900px}
+q.texte_editer       {background-position: 0  -920px}
+q.uploader_doc       {background-position: 0  -940px}
+q.uploader_doc_non   {background-position: 0  -960px}
+q.valider            {background-position: 0  -980px}
+q.voir_archive       {background-position: 0 -1000px}
+q.voir_archive_non   {background-position: 0 -1020px}
+q.voir_repart        {background-position: 0 -1040px}
+q.voir               {background-position: 0 -1060px}
+q.voir_non           {background-position: 0 -1080px}
+q.n1_add             {background-position: 0 -1100px}
+q.n1_del             {background-position: 0 -1120px}
+q.n1_edit            {background-position: 0 -1140px}
+q.n1_move            {background-position: 0 -1160px}
+q.n1_move2           {background-position: 0 -1180px}
+q.n2_add             {background-position: 0 -1200px}
+q.n2_del             {background-position: 0 -1220px}
+q.n2_edit            {background-position: 0 -1240px}
+q.n2_move            {background-position: 0 -1260px}
+q.n2_move2           {background-position: 0 -1280px}
+q.n3_add             {background-position: 0 -1300px}
+q.n3_del             {background-position: 0 -1320px}
+q.n3_edit            {background-position: 0 -1340px}
+q.n3_fus             {background-position: 0 -1360px}
+q.n3_fus2            {background-position: 0 -1380px}
+q.n3_move            {background-position: 0 -1400px}
+q.n3_move2           {background-position: 0 -1420px}
+q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Style pour les formulaires                                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* Affichage des message ajax */
+label.erreur {background:transparent url(../_img/ajax/ajax_erreur.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
+label.valide {background:transparent url(../_img/ajax/ajax_valide.png) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
+label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#139;padding-left:19px;margin-left:5px}
+label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
+
+/* Mise en page tabulée des éléments */
+form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
+form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25em;margin-right:1em;font-weight:bold}
+form span.tab{line-height:2em;margin-left:11.5em}
+form label.mini{width:8em;}
+#zone_ressources label.tab{width:6em}
+#zone_ressources span.tab{margin-left:6.5em}
+
+/* Boutons de validation */
+button{background:#DDF url(../_img/sprite_bouton_7.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px}
+button.actualiser        {background-position: 3px    1px}
+button.ajouter           {background-position: 3px  -19px}
+button.annuler           {background-position: 3px  -39px}
+button.annuler_next      {background-position: 3px  -59px}
+button.annuler_prev      {background-position: 3px  -79px}
+button.colorer           {background-position: 3px  -99px}
+button.deconnecter       {background-position: 3px -119px}
+button.corriger          {background-position: 3px -139px}
+button.deconnecter:hover {background-position: 3px -159px}
+button.dump_export       {background-position: 3px -179px}
+button.eclair            {background-position: 3px -199px}
+button.fichier_export    {background-position: 3px -219px}
+button.fichier_import    {background-position: 3px -239px}
+button.form_ajouter      {background-position: 3px -259px}
+button.form_retirer      {background-position: 3px -279px}
+button.generer           {background-position: 3px -299px}
+button.go_dernier        {background-position: 3px -319px}
+button.go_precedent      {background-position: 3px -339px}
+button.go_premier        {background-position: 3px -359px}
+button.go_suivant        {background-position: 3px -379px}
+button.groupe_ajouter    {background-position: 3px -399px}
+button.groupe_retirer    {background-position: 3px -419px}
+button.imprimer          {background-position: 3px -439px}
+button.mail_ecrire       {background-position: 3px -459px}
+button.mail_envoyer      {background-position: 3px -479px}
+button.mdp_groupe        {background-position: 3px -499px}
+button.mdp_perso         {background-position: 3px -519px}
+button.modifier          {background-position: 3px -539px}
+button.nettoyer          {background-position: 3px -559px}
+button.parametre         {background-position: 3px -579px}
+button.periode_ajouter   {background-position: 3px -599px}
+button.periode_retirer   {background-position: 3px -619px}
+button.rechercher        {background-position: 3px -639px}
+button.referencer_lien   {background-position: 3px -659px}
+button.retourner         {background-position: 3px -679px}
+button.signaler          {background-position: 3px -699px}
+button.stats             {background-position: 3px -719px}
+button.supprimer         {background-position: 3px -739px}
+button.texte             {background-position: 3px -759px}
+button.user_ajouter      {background-position: 3px -779px}
+button.user_desactiver   {background-position: 3px -799px}
+button.valider           {background-position: 3px -819px}
+button.valider_next      {background-position: 3px -839px}
+button.valider_prev      {background-position: 3px -859px}
+button.voir_photo        {background-position: 3px -879px}
+
+button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
+button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
+*[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
+*[disabled]:hover,*[disabled].hover{cursor:default}
+button img{width:16px;height:16px}
+
+/* input / select / textarea */
+input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
+input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
+input[readonly],input[disabled] {color:#666;border:1px solid #666;}
+select[multiple],textarea {vertical-align:middle}
+
+/* select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur) */
+span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
+span.select_multiple span {display:block;font-weight:bold;font-style:italic;padding-left:2em;background-color:#CCC}
+span.select_multiple label:hover {cursor:pointer}
+span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;padding-right:20px}
+span.select_multiple label.check {color:#FFF;background-color:#88F}
+span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
+
+/* Certaines touches KBD */
+kbd.img{background:#EEE url(../_img/sprite_bouton_7.png) 0 0 no-repeat;height:15px}
+kbd.img:hover{background-color:#CCC}
+kbd.annuler   {background-position: 7px  -34px}
+kbd.retourner {background-position: 7px -674px}
+kbd.valider   {background-position: 7px -814px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Style généraux pour les tableaux                                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table {margin-left:1ex}
+th,td {padding:0 2px;text-align:left;white-space:nowrap}
+table tr {background:#EEF}
+table th {border:1px solid #66F;background:#DDF;font-weight:bold}
+table td {border:1px solid #66F;vertical-align:top}
+tr.new{background:#CFC}
+td.new{font-weight:bold}
+th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+/* colorer une ligne au survol */
+table.form tbody tr:hover td {background:#BBF}
+table.form tbody tr:hover td.nu {background:#FFF}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des en-têtes de tableaux dont on peut trier les lignes                                       */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.hsort thead th.tablesorter-header     {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat center right;padding-right:13px;cursor:pointer;vertical-align:middle;text-align:left} 
+table.hsort thead th.tablesorter-headerAsc  {background:#99F url(../_img/tablesorter/desc.gif) no-repeat center right}
+table.hsort thead th.tablesorter-headerDesc {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat center right}
+table.vsort thead th.tablesorter-header     {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat bottom center;padding-bottom:13px;cursor:pointer;vertical-align:bottom;text-align:center} 
+table.vsort thead th.tablesorter-headerAsc  {background:#99F url(../_img/tablesorter/desc.gif) no-repeat bottom center}
+table.vsort thead th.tablesorter-headerDesc {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat bottom center}
+table.hsort thead th.sorter-false           {background:#DDF;padding-right:2px;cursor:default}
+table.vsort thead th.sorter-false           {background:#DDF;padding-bottom:0px;cursor:default}
+table.hsort thead th.nu                     {background:#FFF;text-align:center}
+table.vsort thead th.nu                     {background:#FFF;text-align:center}
+th.tablesorter-header div {font-weight:bold} /* C'est le plugin tablesorter qui ajoute le div */
+.thfloat-table{margin-left:0} /* Pour le plugin THFloat */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.affectation {font-size:85%;margin:1em}
+table.affectation tfoot td {background:#DDF;color:#333}
+table.affectation span.proprio {color:#22B;font-weight:bold;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de simulation de calcul des scores, aussi utilisé pour dessiner les cellules d'un tableur.  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.simulation {border-collapse:separate;border-spacing:3px;empty-cells:hide;text-align:center}
+table.simulation colgroup {margin:auto 10px}
+table.simulation th, table.simulation td {border:1px solid #000;text-align:center}
+table.simulation td.nu {border:none}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de saisie des compétences                                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.scor_eval th, table.scor_eval td {text-align:center}
+table.scor_eval thead th {vertical-align:bottom}
+table.scor_eval thead td {background:#FFF;border:none;}
+table.scor_eval tbody th {white-space:normal;font-weight:normal}
+table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#DDF;font-size:90%}
+table.scor_eval tbody tr th {text-align:left}
+table.scor_eval th, table.saisir td {padding:0}
+table.scor_eval tbody td img {vertical-align:middle;}
+table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
+table.scor_eval tbody td input:focus {border:2px solid #00F}
+table.scor_eval tbody.h td input {width:22px;height:16px}
+table.scor_eval tbody.v td input {width:12px;height:22px}
+table.scor_eval tbody.h td input.ABS  {background:#FFF url(../_img/note/commun/h/ABS.gif)  no-repeat center center;}
+table.scor_eval tbody.v td input.ABS  {background:#FFF url(../_img/note/commun/v/ABS.gif)  no-repeat center center;}
+table.scor_eval tbody.h td input.DISP {background:#FFF url(../_img/note/commun/h/DISP.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.DISP {background:#FFF url(../_img/note/commun/v/DISP.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NN   {background:#FFF url(../_img/note/commun/h/NN.gif)   no-repeat center center;}
+table.scor_eval tbody.v td input.NN   {background:#FFF url(../_img/note/commun/v/NN.gif)   no-repeat center center;}
+table.scor_eval tbody.h td input.X    {background:#FFF url(../_img/note/commun/h/X.gif)    no-repeat center center;}
+table.scor_eval tbody.v td input.X    {background:#FFF url(../_img/note/commun/v/X.gif)    no-repeat center center;}
+table.scor_eval tbody.h td input.REQ  {background:#FFF url(../_img/note/commun/h/REQ.gif)  no-repeat center center;}
+table.scor_eval tbody.v td input.REQ  {background:#FFF url(../_img/note/commun/v/REQ.gif)  no-repeat center center;}
+/* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+/*
+table.scor_eval tbody.- td input.--   {background:#FFF url(./_img/note/-----/h/RR.gif)     no-repeat center center;}
+*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Couleur de fond pour indiquer A / VA / NA                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+/*
+table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
+*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Couleur de fond pour les saisies anciennes                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+span.prev_date, td.prev_date {background-color:#CCC}
+span.prev_year, td.prev_year {background-color:#AAA}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des tableaux de bilans de compétences : .bilan et .bilan_synthese                            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.bilan, table.bilan_synthese {font-size:85%;margin-top:1em;margin-bottom:1em}
+table.bilan tfoot th, table.bilan tfoot td {background:#DDF;text-align:right}
+table.bilan tfoot td.nu {background:#FFF;}
+table.bilan_synthese {margin-top:1em;margin-bottom:1em}
+table.bilan th.domaine {background:#99F;}
+table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
+table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des tableaux du socle                                                                        */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#tableau_validation th {margin:0;padding:0;white-space:nowrap}
+#tableau_validation th.nu {background:#FFF;border:0;text-align:left;font-weight:normal}
+#tableau_validation thead th{vertical-align:bottom}
+#tableau_validation tbody th {height:15px}
+#tableau_validation tbody th:hover {opacity:1;cursor:pointer}
+#tableau_validation tbody th.nu:hover {cursor:default}
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:1%;padding:0;line-height:1em;} /* Pour indiquer les scores calculés ; 0% pour font-size pose problème au navigateur Safari. */
+#tableau_validation tbody td:hover {cursor:pointer}
+#tableau_validation tbody td.v3 {background:#FFF;}
+#tableau_validation tbody td.v3:hover {cursor:default}
+#tableau_validation tfoot td{border:0}
+#tableau_validation tfoot td.L100{background:#FFF url(../_img/drapeau/100.gif) no-repeat center center;}
+#tableau_validation tfoot td.L101{background:#FFF url(../_img/drapeau/101.gif) no-repeat center center;}
+#tableau_validation tfoot td.L109{background:#FFF url(../_img/drapeau/109.gif) no-repeat center center;}
+#tableau_validation tfoot td.L122{background:#FFF url(../_img/drapeau/122.gif) no-repeat center center;}
+#tableau_validation tfoot td.L123{background:#FFF url(../_img/drapeau/123.gif) no-repeat center center;}
+#tableau_validation tfoot td.L127{background:#FFF url(../_img/drapeau/127.gif) no-repeat center center;}
+#tableau_validation tfoot td.L132{background:#FFF url(../_img/drapeau/132.gif) no-repeat center center;}
+#tableau_validation tfoot td.L134{background:#FFF url(../_img/drapeau/134.gif) no-repeat center center;}
+#tableau_validation tfoot td.L135{background:#FFF url(../_img/drapeau/135.gif) no-repeat center center;}
+#tableau_validation tfoot td.L139{background:#FFF url(../_img/drapeau/139.gif) no-repeat center center;}
+#tableau_validation tfoot td.L201{background:#FFF url(../_img/drapeau/201.gif) no-repeat center center;}
+#tableau_validation tfoot td.L216{background:#FFF url(../_img/drapeau/216.gif) no-repeat center center;}
+#tableau_validation tfoot td.L217{background:#FFF url(../_img/drapeau/217.gif) no-repeat center center;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des tableaux à double entrée avec checkbox                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#autocheckbox thead th {padding:2px 0;text-align:center;vertical-align:bottom;width:18px}
+#autocheckbox tbody th {padding:0 2px;text-align:left;vertical-align:middle;height:18px;font-weight:normal}
+#autocheckbox tbody td {padding:0;text-align:center;vertical-align:middle;height:18px;width:18px}
+#autocheckbox tbody td.off  , table.affectation div.off  {background:#BBF}
+#autocheckbox tbody td.on   , table.affectation div.on   {background:#FF0}
+#autocheckbox tbody td.load , table.affectation div.load {background:#FFF url(../_img/ajax/ajax_loader.gif) no-repeat center center;}
+
+/* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+/*
+#tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}
+th.v- , td.v- , span.v- {background:#---}
+#zone_information .v- {background:#---;padding:0 1em;margin-right:1ex}
+#tableau_validation tbody td[lang=lock] {background:#BBF url(./_img/socle/lock.gif) no-repeat center center;}
+#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif) no-repeat center center;}
+*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format de divers tableaux                                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.vm_nug td {vertical-align:middle}
+table.vm_nug td.nu {text-align:left}
+table.notanet td {height:30px}
+/* Pour rester indépendant des préférences établissements pour les background NA / VA A */
+td.br{background-color:#F99}
+td.bj{background-color:#FD3}
+td.bv{background-color:#9F9}
+td.bf{background-color:#9F9} /* A mettre en dernier pour surcharger les précédents */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format du tableau webmestre présentant les statistiques                                             */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table#statistiques td {text-align:center}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Marqueur invisible pour le tri d'un tableau                                                         */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table i {display:none}
+table.xdebug-error i {display:inline-block} /* pour éviter une répercussion sur les notifications d'erreurs de Xdebug */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Infobulles                                                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.ui-tooltip {position:absolute;z-index:9999;border:1px dotted #66F;background:#FFF;color:#222;font-size:12px;padding:0.25em;opacity:0.95} /* Contenu de l'infobulle ; pas réussi à faire fonctionner font-weight:bold => ajouter en js */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Calque de recherche (uniquement le calendrier en fait)                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#calque{position:absolute;z-index:9999;left:0;top:0;border:1px dotted #66F;background:#EEE;font-size:12px;padding:0.25em;text-align:center}
+#calque h5 {display:block;font-size:120%;color:#33A;letter-spacing:0.1em} /* Titre de calque */
+#calque h6 {margin:0.5em auto;color:#33A;font-size:110%} /* Consigne */
+#calque th,#calque td {text-align:center}
+#calque td.hoy {background-color:#99FF99}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste à puce pour l'affichage de l'arborescence des compétences ou du socle                         */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ul.ul_m1 {font-size:95%}
+ul.ul_m1 li, ul.ul_n1 li {margin:0;padding-left:19px}
+ul.ul_m1 li span:hover {cursor:pointer}
+ul.ul_n1 li span:hover {cursor:pointer}
+li.li_m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;color:#081}  /* matiere ; socle_palier */
+li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top left;color:#04F}  /* niveau */
+li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}  /* referentiel_domaine ; socle_pilier */
+li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}  /* referentiel_theme ; socle_section */
+li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}  /* referentiel_item ; socle_entree */
+#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}  /* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
+#zone_upload {min-width:600px;min-height:300px}  /* pour le fancybox qui se montre radin en place allouée */
+
+li.li_n3 b{font-weight:normal}
+li.li_n3 b img{margin-right:2px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Pour indiquer la liste des élèves associés à une évaluation de même nom (à mettre après les puces)  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+span.deja {display:inline-block;width:415px}
+label.deja{display:inline-block;width:400px;margin-left:3px;color:#666}
+span.gradient_pourcent{font-weight:bold}
+span.gradient_outer{display:inline-block;height:0.9em;vertical-align:sub;width:100px;border:1px solid #333;margin-right:1em}
+span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;background:transparent url(../_img/gradiant.png) repeat-y top left;} /* width fixé plus tard */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone de modification d'un référentiel                                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_elaboration_referentiel li {line-height:1.5em}  /* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_elaboration_referentiel i.tab {display:inline-block;width:4.5em;}
+#zone_elaboration_referentiel .sep {margin-right:3em}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_validation .m1 , #zone_information .m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;padding-left:19px}
+#zone_validation .n1 , #zone_information .n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;padding-left:19px}
+#zone_validation .n2 , #zone_information .n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;padding-left:19px}
+#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:19px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone d'information des évaluations associées à un item                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_information {overflow:scroll;white-space:nowrap;margin:1ex;border:1px dotted #66F;background:#EEF;padding:0.5ex} /* height défini dans la page (différent suivant item / pilier) */
+#zone_information #items {margin-top:1ex;font-size:90%}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste à puce pour les étapes lors de l'import sconet                                                */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#step li {color:#777;margin-left:2em;}
+#step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce/puce_li.png);}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste à puce avec flèches bleues                                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png)} /* line-height:20px */
+*.li       {padding-left:2em;background:transparent url(../_img/puce/puce_li.png) no-repeat left;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste ordonnable par drag & drop                                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#sortable , #sortable_oui , #sortable_non {padding:6px;min-height:30px;background:#EEF}
+#sortable li , #sortable_oui li , #sortable_non li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF}
+.sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Puces des liens pour masquer ou montrer des options                                                 */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+a.puce_plus  {background:transparent url(../_img/puce/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px}
+a.puce_moins {background:transparent url(../_img/puce/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone affichée pour le choix d'une note à la souris                                                  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+div#td_souris_container{display:none}
+div.td_souris {font-size:0}
+div.td_souris img {padding:2px;margin:1px;background-color:#FFF}
+div.td_souris img.on {background-color:#FF0}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone avec barres de progressions pour des intervalles de dates                                      */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.graph_total  {background-color:#99F;text-align:center;width:100%}
+.graph_partie {background-color:#080;height:3px} /* margin-left et width ajoutés en PHP */
+.graph_erreur {background-color:#A00;height:3px} /* margin-left et width ajoutés en PHP */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Indicateur de robustesse d'un mot de passe                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#robustesse {border:1px solid #66F;margin:auto 10% auto 1em;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Listes d'utilisateurs                                                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.prof_liste {float:left;margin-right:10px;margin-bottom:1em}
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Diagramme Highcharts                                                                                */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#div_graphique {width:100%;height:350px}
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Vignette photo                                                                                      */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.photo {float:left;padding:3px;margin:6px;border:1px dashed #77F;text-align:center;min-height:180px} /* 144+36 */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Pour la gestion privée (livre d'or, RSS)                                                            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#EEF;border:1px solid #66F;}
+form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#EEF;border:1px solid #66F;color:#D74C12;}
+form.encadre fieldset.new{background:#CFC}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Colorpicker                                                                                         */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#colorpicker    {height:195px;width:200px;float:left;margin-left:1em}
+div.colorpicker {height:195px;width:200px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
+div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
+
+/**
+ * Farbtastic Color Picker 1.2
+ * © 2008 Steven Wittens
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+.farbtastic {
+  position: relative;
+}
+.farbtastic * {
+  position: absolute;
+  cursor: crosshair;
+}
+.farbtastic, .farbtastic .wheel {
+  width: 195px;
+  height: 195px;
+}
+.farbtastic .color, .farbtastic .overlay {
+  top: 47px;
+  left: 47px;
+  width: 101px;
+  height: 101px;
+}
+.farbtastic .wheel {
+  background: url(../_img/colorpicker/wheel.png) no-repeat;
+  width: 195px;
+  height: 195px;
+}
+.farbtastic .overlay {
+  background: url(../_img/colorpicker/mask.png) no-repeat;
+}
+.farbtastic .marker {
+  width: 17px;
+  height: 17px;
+  margin: -8px 0 0 -8px;
+  overflow: hidden; 
+  background: url(../_img/colorpicker/marker.png) no-repeat;
+}
+
+/*!
+ * fancyBox - jQuery Plugin
+ * version: 2.1.4 (Thu, 10 Jan 2013)
+ * @requires jQuery v1.6 or later
+ *
+ * Examples at http://fancyapps.com/fancybox/
+ * License: www.fancyapps.com/fancybox/#license
+ *
+ * Copyright 2012 Janis Skarnelis - janis@fancyapps.com
+ *
+ */
+
+.fancybox-wrap,
+.fancybox-skin,
+.fancybox-outer,
+.fancybox-inner,
+.fancybox-image,
+.fancybox-wrap iframe,
+.fancybox-wrap object,
+.fancybox-nav,
+.fancybox-nav span,
+.fancybox-tmp
+{
+	padding: 0;
+	margin: 0;
+	border: 0;
+	outline: none;
+	vertical-align: top;
+}
+
+.fancybox-wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 8020;
+}
+
+.fancybox-skin {
+	position: relative;
+	background: #fff;
+	color: #444;
+	text-shadow: none;
+	border-radius: 4px;
+}
+
+.fancybox-opened {
+	z-index: 8030;
+}
+
+.fancybox-opened .fancybox-skin {
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.fancybox-outer, .fancybox-inner {
+	position: relative;
+}
+
+.fancybox-inner {
+	overflow: hidden;
+}
+
+.fancybox-type-iframe .fancybox-inner {
+	-webkit-overflow-scrolling: touch;
+}
+
+.fancybox-error {
+	color: #444;
+	font: 14px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	margin: 0;
+	padding: 15px;
+	white-space: nowrap;
+}
+
+.fancybox-image, .fancybox-iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.fancybox-image {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
+	background-image: url('../_img/fancybox/fancybox_sprite.png');
+}
+
+#fancybox-loading {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -22px;
+	margin-left: -22px;
+	background-position: 0 -108px;
+	opacity: 0.8;
+	cursor: pointer;
+	z-index: 8060;
+}
+
+#fancybox-loading div {
+	width: 44px;
+	height: 44px;
+	background: url('../_img/fancybox/fancybox_loading.gif') center center no-repeat;
+}
+
+.fancybox-close {
+	position: absolute;
+	top: -18px;
+	right: -18px;
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+	z-index: 8040;
+}
+
+.fancybox-nav {
+	position: absolute;
+	top: 0;
+	width: 40%;
+	height: 100%;
+	cursor: pointer;
+	text-decoration: none;
+	background: transparent url('../_img/fancybox/blank.gif'); /* helps IE */
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	z-index: 8040;
+}
+
+.fancybox-prev {
+	left: 0;
+}
+
+.fancybox-next {
+	right: 0;
+}
+
+.fancybox-nav span {
+	position: absolute;
+	top: 50%;
+	width: 36px;
+	height: 34px;
+	margin-top: -18px;
+	cursor: pointer;
+	z-index: 8040;
+	visibility: hidden;
+}
+
+.fancybox-prev span {
+	left: 10px;
+	background-position: 0 -36px;
+}
+
+.fancybox-next span {
+	right: 10px;
+	background-position: 0 -72px;
+}
+
+.fancybox-nav:hover span {
+	visibility: visible;
+}
+
+.fancybox-tmp {
+	position: absolute;
+	top: -99999px;
+	left: -99999px;
+	visibility: hidden;
+	max-width: 99999px;
+	max-height: 99999px;
+	overflow: visible !important;
+}
+
+/* Overlay helper */
+
+.fancybox-lock {
+	overflow: hidden;
+}
+
+.fancybox-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	display: none;
+	z-index: 8010;
+	background: url('../_img/fancybox/fancybox_overlay.png');
+}
+
+.fancybox-overlay-fixed {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
+
+.fancybox-lock .fancybox-overlay {
+	overflow: auto;
+	overflow-y: scroll;
+}
+
+/* Title helper */
+
+.fancybox-title {
+	visibility: hidden;
+	font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	position: relative;
+	text-shadow: none;
+	z-index: 8050;
+}
+
+.fancybox-opened .fancybox-title {
+	visibility: visible;
+}
+
+.fancybox-title-float-wrap {
+	position: absolute;
+	bottom: 0;
+	right: 50%;
+	margin-bottom: -35px;
+	z-index: 8050;
+	text-align: center;
+}
+
+.fancybox-title-float-wrap .child {
+	display: inline-block;
+	margin-right: -100%;
+	padding: 2px 20px;
+	background: transparent; /* Fallback for web browsers that doesn't support RGBa */
+	background: rgba(0, 0, 0, 0.8);
+	border-radius: 15px;
+	text-shadow: 0 1px 2px #222;
+	color: #FFF;
+	font-weight: bold;
+	line-height: 24px;
+	white-space: nowrap;
+}
+
+.fancybox-title-outside-wrap {
+	position: relative;
+	margin-top: 10px;
+	color: #fff;
+}
+
+.fancybox-title-inside-wrap {
+	padding-top: 10px;
+}
+
+.fancybox-title-over-wrap {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	color: #fff;
+	padding: 10px;
+	background: #000;
+	background: rgba(0, 0, 0, .8);
+}

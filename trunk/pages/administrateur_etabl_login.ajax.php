@@ -31,12 +31,13 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
 $login  = (isset($_POST['f_login']))  ? Clean::texte($_POST['f_login'])  : '' ;
 $mdp    = (isset($_POST['f_mdp']))    ? Clean::entier($_POST['f_mdp'])   : 0  ;
+$birth  = (isset($_POST['f_birth']))  ? Clean::entier($_POST['f_birth']) : -1 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Choix d'un format de noms d'utilisateurs et/ou de la longueur minimale d'un mot de passe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($profil && $login && $mdp)
+if($profil && $login && $mdp && ($birth!=-1))
 {
   if( ($profil!='ALL') && !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
   {
@@ -57,6 +58,10 @@ if($profil && $login && $mdp)
   // Mettre à jour les paramètres dans la base
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_login_modele'    , $login );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_mdp_longueur_mini' , $mdp );
+  if($profil=='ELV')
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_mdp_date_naissance' , $birth );
+  }
   // Mettre aussi à jour la session
   if($profil=='ALL')
   {
@@ -67,6 +72,10 @@ if($profil && $login && $mdp)
   {
     $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'][$profil]      = $login;
     $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$profil] = $mdp;
+  }
+  if($profil=='ELV')
+  {
+    $_SESSION['TAB_PROFILS_ADMIN']['MDP_DATE_NAISSANCE'][$profil] = $birth;
   }
   exit('ok');
 }

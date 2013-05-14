@@ -36,7 +36,7 @@ for($mdp_length=4 ; $mdp_length<9 ; $mdp_length++)
 }
 
 // Lister les profils de l'établissement
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_court_pluriel,user_profil_nom_long_pluriel,user_profil_login_modele,user_profil_mdp_longueur_mini' /*listing_champs*/ , TRUE /*only_actif*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_court_pluriel,user_profil_nom_long_pluriel,user_profil_login_modele,user_profil_mdp_longueur_mini,user_profil_mdp_date_naissance' /*listing_champs*/ , TRUE /*only_actif*/ );
 
 ?>
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_format_logins">DOC : Format des identifiants</a></span></div>
@@ -65,6 +65,11 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
     echo'<p>';
     echo'  <label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />';
     echo'  <label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />';
+    if($DB_ROW['user_profil_sigle']=='ELV')
+    {
+      $checked = ($DB_ROW['user_profil_mdp_date_naissance']) ? ' checked' : '' ;
+      echo'  <label class="tab"></label><label for="f_birth_'.$DB_ROW['user_profil_sigle'].'"><input type="checkbox" id="f_birth_'.$DB_ROW['user_profil_sigle'].'" name="f_birth_'.$DB_ROW['user_profil_sigle'].'"'.$checked.'> Prendre la date de naissance comme mot de passe (format JJMMAAAA).</label><br />';
+    }
     echo'  <label class="tab"></label><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>';
     echo'</p>';
   }

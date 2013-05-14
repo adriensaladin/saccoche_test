@@ -40,7 +40,7 @@ $(document).ready
     (
       function()
       {
-        profil = $(this).attr('id').substr(8); // f_login_XXX
+        profil = $(this).attr('id').substr(8); // f_login_XXX & f_birth_ELV
         $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
       }
     );
@@ -79,6 +79,7 @@ $(document).ready
         profil = $(this).attr('id').substr(15); // bouton_valider_XXX
         var login = $('#f_login_'+profil).val();
         var mdp   = $('#f_mdp_'+profil+' option:selected').val();
+        var birth = ( (profil=='ELV') && ($('#f_birth_'+profil).is(':checked')) ) ? 1 : 0 ;
         if( test_format_login(login)==false )
         {
           $('#ajax_msg_'+profil).removeAttr('class').addClass("erreur").html("Modèle de nom d'utilisateur incorrect !");
@@ -91,7 +92,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_profil='+profil+'&f_login='+login+'&f_mdp='+mdp,
+            data : 'csrf='+CSRF+'&f_profil='+profil+'&f_login='+login+'&f_mdp='+mdp+'&f_birth='+birth,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

@@ -71,6 +71,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
         <td id="td_bouton" class="nu" style="width:25em">
           <p><button id="generer_login" type="button" class="mdp_groupe">Générer de nouveaux noms d'utilisateurs.</button></p>
           <p><button id="generer_mdp" type="button" class="mdp_groupe">Générer de nouveaux mots de passe.</button></p>
+          <p id="eleve_birth"><button id="forcer_mdp_birth" type="button" class="mdp_groupe">Prendre la date de naissance comme mot de passe.</button></p>
         </td>
       </tr>
     </table>

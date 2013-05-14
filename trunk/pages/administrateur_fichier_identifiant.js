@@ -60,7 +60,7 @@ $(document).ready
         var objet = $(this).val();
         switch (objet)
         {
-          case 'new_loginmdp' : maj_f_user(); $('#fieldset_new_loginmdp').show();   break;
+          case 'new_loginmdp' : maj_eleve_birth(); maj_f_user(); $('#fieldset_new_loginmdp').show(); break;
           case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
           case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
           case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
@@ -81,9 +81,26 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#ajax_retour').html("&nbsp;");
+        maj_eleve_birth();
         maj_f_user();
       }
     );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mettre à jour la liste des utilisateurs concernés
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function maj_eleve_birth()
+    {
+      if($('#f_profil option:selected').val()=='eleves')
+      {
+        $('#eleve_birth').show();
+      }
+      else
+      {
+        $('#eleve_birth').hide();
+      }
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Mettre à jour la liste des utilisateurs concernés
@@ -183,7 +200,7 @@ $(document).ready
     // Soumission du formulaire - choix 1 et 2
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#generer_login , #generer_mdp').click
+    $('#generer_login , #generer_mdp , #forcer_mdp_birth').click
     (
       function()
       {

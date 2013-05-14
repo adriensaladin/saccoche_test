@@ -2750,6 +2750,20 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-05-12')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-05-14';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // ajout d'une colonne à la table sacoche_user_profil
+      if(empty($reload_sacoche_user_profil))
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user_profil ADD user_profil_mdp_date_naissance TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT 0 AFTER user_profil_mdp_longueur_mini ');
+      }
+    }
+  }
+
 }
 
 }

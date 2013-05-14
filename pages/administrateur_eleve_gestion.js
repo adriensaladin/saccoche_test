@@ -125,7 +125,7 @@ $(document).ready
       if(birth_date_fr=='-')
       {
         $('#box_birth_date').prop('checked',true).next().show(0);
-        $('#f_birth_date').val(input_date).parent().hide(0);
+        $('#f_birth_date').val('').parent().hide(0);
       }
       else
       {

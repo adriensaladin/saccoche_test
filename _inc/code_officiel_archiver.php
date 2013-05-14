@@ -175,7 +175,7 @@ if($action=='imprimer_donnees_eleves_prof')
       if(isset($tab[$eleve_id]))
       {
         extract($tab[$eleve_id]);  // $note $appreciation
-        $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne );
+        $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
       }
     }
   }
@@ -338,7 +338,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
       $note = NULL;
       $appreciation = '';
     }
-    $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne );
+    $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
   }
 }
 
@@ -398,7 +398,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
   $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   $releve_PDF->tableau_moyennes_initialiser( $nb_eleves , $nb_rubriques );
   // 1ère ligne : intitulés, noms rubriques
-  $releve_PDF->tableau_moyennes_intitule( $classe_nom , $periode_nom );
+  $releve_PDF->tableau_moyennes_intitule( $classe_nom , $periode_nom , FALSE /*is_brevet*/ );
   foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
   {
     $releve_PDF->tableau_moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
@@ -413,7 +413,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
       $note = (isset($tab_saisie[$eleve_id][$rubrique_id])) ? $tab_saisie[$eleve_id][$rubrique_id] : NULL ;
-      $releve_PDF->tableau_moyennes_note( $eleve_id , $rubrique_id , $note );
+      $releve_PDF->tableau_moyennes_note( $eleve_id , $rubrique_id , $note , FALSE /*is_brevet*/ );
     }
     $releve_PDF->SetXY($releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur);
   }

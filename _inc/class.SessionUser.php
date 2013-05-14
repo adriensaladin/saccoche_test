@@ -232,13 +232,14 @@ class SessionUser
     if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     {
       $_SESSION['TAB_PROFILS_ADMIN'] = array( 'TYPE'=>array() , 'LOGIN_MODELE'=>array() , 'MDP_LONGUEUR_MINI'=>array() , 'DUREE_INACTIVITE'=>array() );
-      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_login_modele,user_profil_mdp_longueur_mini,user_profil_duree_inactivite' /*listing_champs*/ , FALSE /*only_actif*/ );
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_login_modele,user_profil_mdp_longueur_mini,user_profil_mdp_date_naissance,user_profil_duree_inactivite' /*listing_champs*/ , FALSE /*only_actif*/ );
       foreach($DB_TAB as $DB_ROW)
       {
-        $_SESSION['TAB_PROFILS_ADMIN']['TYPE']             [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_type'];
-        $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']     [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_login_modele'];
-        $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_mdp_longueur_mini'];
-        $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'] [$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_duree_inactivite'];
+        $_SESSION['TAB_PROFILS_ADMIN']['TYPE']              [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_type'];
+        $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      [$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_login_modele'];
+        $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] [$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_mdp_longueur_mini'];
+        $_SESSION['TAB_PROFILS_ADMIN']['MDP_DATE_NAISSANCE'][$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_mdp_date_naissance'];
+        $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE']  [$DB_ROW['user_profil_sigle']] = (int) $DB_ROW['user_profil_duree_inactivite'];
       }
     }
     // Récupérer et Enregistrer en session les noms des profils utilisateurs d'un établissement (activés) pour afficher les droits de certaines pages.

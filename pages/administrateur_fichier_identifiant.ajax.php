@@ -41,7 +41,7 @@ $tab_profils = array('eleves','parents','professeurs','directeurs');
 // Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp_birth')) && (in_array($profil,$tab_profils)) && count($tab_user) )
+if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,$tab_profils)) && count($tab_user) )
 {
   $prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
   // Nom sans extension des fichiers de sortie
@@ -90,34 +90,6 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     }
   }
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Forcer plusieurs mots de passe avec la date de naissance
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  if($action=='forcer_mdp_birth')
-  {
-    if($profil!='eleves')
-    {
-      exit('Fonctionnalité disponible uniquement pour les élèves !');
-    }
-    $tab_password = array();
-    // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_login,user_naissance_date' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
-    // Mettre à jour les mots de passe des utilisateurs concernés
-    foreach($DB_TAB as $key => $DB_ROW)
-    {
-      if($DB_ROW['user_naissance_date'])
-      {
-        $password = str_replace('/','',convert_date_mysql_to_french($DB_ROW['user_naissance_date']));
-        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>crypter_mdp($password)) );
-        $tab_password[$DB_ROW[$prefixe.'id']] = $password;
-      }
-    }
-    if(!count($tab_password))
-    {
-      exit('Les mots de passe de ces élèves ne sont pas dans la base !');
-    }
-  }
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Générer une sortie csv zippé (login ou mdp) (élève ou prof)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $separateur = ';';
@@ -125,12 +97,12 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   $fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
   foreach($DB_TAB as $DB_ROW)
   {
-    $login = ($action=='generer_login') ? $tab_login[$DB_ROW[$prefixe.'id']] : $DB_ROW[$prefixe.'login'] ;
-    $mdp   = ($action=='generer_login') ? 'inchangé' : $tab_password[$DB_ROW[$prefixe.'id']] ;
+    $login = ($action=='generer_login') ? $tab_login[$DB_ROW[$prefixe.'id']]    : $DB_ROW[$prefixe.'login'] ;
+    $mdp   = ($action=='generer_mdp')   ? $tab_password[$DB_ROW[$prefixe.'id']] : 'inchangé' ;
     $info  = (isset($DB_ROW['info']))   ? $DB_ROW['info'] : '' ;
     $fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil_sigle'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
   }
-  FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu) ); // zippé car pas dans dossier CHEMIN_DOSSIER_EXPORT où va lire force_download.php
+  FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu) );
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +119,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     $ligne1.= (isset($DB_ROW['info']))   ? ' : '.Clean::perso_ucwords($DB_ROW['info']) : '' ;
     $ligne2 = $DB_ROW[$prefixe.'nom'].' '.$DB_ROW[$prefixe.'prenom'];
     $ligne3 = ($action=='generer_login') ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;
-    $ligne4 = ($action=='generer_login') ? 'Mot de passe : inchangé' : 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] ;
+    $ligne4 = ($action=='generer_mdp')   ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
     $pdf -> Add_Label(To::pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
   }
   $pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');

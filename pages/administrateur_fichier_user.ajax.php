@@ -1881,15 +1881,8 @@ if( $step==52 )
           $login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
         }
         // Construire le password
-        if( (!$is_profil_eleve) || (!$_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI']['ELV']) || (empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date'])) )
-        {
-          $password = fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil']);
-        }
-        else
-        {
-          $password = str_replace('/','',$tab_memo_analyse['ajouter'][$i_fichier]['birth_date']);
-        }
-        // Attention à la date de naissance, définie seulement pour les élèves
+        $password = fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil']);
+        // Attention à la dater de naissaise, définie seulement pour les élèves
         $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : convert_date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
         // Ajouter l'utilisateur
         $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajouter'][$i_fichier]['reference'],$tab_memo_analyse['ajouter'][$i_fichier]['profil'],$tab_memo_analyse['ajouter'][$i_fichier]['nom'],$tab_memo_analyse['ajouter'][$i_fichier]['prenom'],$birth_date,$login,crypter_mdp($password),$tab_memo_analyse['ajouter'][$i_fichier]['classe']);
@@ -1965,7 +1958,7 @@ if( $step==52 )
     // On archive les nouveaux identifiants dans un fichier tableur (csv tabulé)
     $profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : 'personnel' ) ;
     $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
-    FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu_csv) ); // zippé car pas dans dossier CHEMIN_DOSSIER_EXPORT où va lire force_download.php
+    FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu_csv) );
     // On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
     $pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
     $pdf -> AddFont('Arial','' ,'arial.php');

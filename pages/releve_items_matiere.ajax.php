@@ -160,9 +160,10 @@ else
     echo $bulletin_alerte;
     echo'<h2>Bulletin Gepi</h2>';
     echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>';
+    echo'<li><a class="lien_ext" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>';
     echo'</ul>';
   }
 }

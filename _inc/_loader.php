@@ -151,19 +151,6 @@ define( 'SACoche', pathinfo_filename($_SERVER['SCRIPT_NAME']) );
 if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 
 // ============================================================================
-// Type de serveur (LOCAL|DEV|PROD)
-// ============================================================================
-
-// On ne peut pas savoir avec certitude si un serveur est "local" car aucune méthode ne fonctionne à tous les coups :
-// - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
-// - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
-// - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
-$HOST = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : '' ; // Peut ne pas être renseigné (rare : appel cli, requête http bizarre...)
-$test_local = ( ($HOST=='localhost') || ($HOST=='127.0.0.1') || (mb_substr($HOST,-6)=='.local') ) ? TRUE : FALSE ;
-$serveur = ($test_local) ? 'LOCAL' : ( (substr($HOST,-18)=='.sesamath.net:8080') ? 'DEV' : 'PROD' ) ;
-define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
-
-// ============================================================================
 // Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux)
 // ============================================================================
 
@@ -272,28 +259,12 @@ if(DEBUG>3)
   function afficher_infos_debug_FirePHP()
   {
     global $firephp;
-    if(DEBUG_SESSION)
-    {
-      $firephp->dump('SESSION', $_SESSION);
-    }
-    if(DEBUG_POST)
-    {
-      $firephp->dump('POST', $_POST);
-    }
-    if(DEBUG_GET)
-    {
-      $firephp->dump('GET', $_GET);
-    }
-    if(DEBUG_FILES)
-    {
-      $firephp->dump('FILES', $_FILES);
-    }
-    if(DEBUG_COOKIE)
-    {
-      $firephp->dump('COOKIE', $_COOKIE);
-    }
-    if(DEBUG_CONST)
-    {
+    if(DEBUG_SESSION) { $firephp->dump('SESSION', $_SESSION); }
+    if(DEBUG_POST)    { $firephp->dump('POST'   , $_POST); }
+    if(DEBUG_GET)     { $firephp->dump('GET'    , $_GET); }
+    if(DEBUG_FILES)   { $firephp->dump('FILES'  , $_FILES); }
+    if(DEBUG_COOKIE)  { $firephp->dump('COOKIE' , $_COOKIE); }
+    if(DEBUG_CONST)   {
       $tab_constantes = get_defined_constants(TRUE);
       $firephp->dump('CONSTANTES', $tab_constantes['user']);
     }
@@ -304,33 +275,22 @@ if(DEBUG>3)
 // URL de base du serveur
 // ============================================================================
 
-// Code issu de la fonction _getServerUrl() issue de phpCAS/CAS/Client.php
+// Code issu de la fonction _getServerUrl() provenant de phpCAS/CAS/Client.php
 // Les variables HTTP_X_FORWARDED_* sont définies quand un serveur web (ou un proxy) qui récupère la main la passe à un serveur php (qui peut ou pas être un autre serveur web, mais en général pas accessible directement).
+// Concernant HTTP_X_FORWARDED_HOST, il peut contenir plusieurs HOST successifs séparés par des virgules : on explose le tableau et on utilise la première valeur.
 // Daniel privilégie HTTP_HOST (qui provient de la requete HTTP) à SERVER_NAME (qui vient de la conf du serveur) quand les 2 existent, mais phpCAS fait le contraire ; en général c'est pareil, sauf s'il y a des alias sans redirection (ex d'un site qui donne les mêmes pages avec et sans les www), dans ce cas le 1er est l'alias demandé et le 2nd le nom principal configuré du serveur (qui peut être avec ou sans les www, suivant la conf).
-// Il arrive (très rarement) que HTTP_HOST ne soit pas défini (HTTP 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en HTTP 1.0 ; HTTP 1.1 date de 1999, avec un brouillon en 1996).
+// Il arrive (très rarement) que HTTP_HOST ne soit pas défini (HTTP 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en HTTP 1.0 ; HTTP 1.1 date de 1999, avec un brouillon en 1996 ; et puis il y a aussi les appels en mode CLI).
 
 function getServerUrl()
 {
-  if (!empty($_SERVER['HTTP_X_FORWARDED_HOST']))
-  {
-    // explode the host list separated by comma and use the first host
-    $tab_hosts = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
-    return $tab_hosts[0];
-  }
-  else if (!empty($_SERVER['HTTP_X_FORWARDED_SERVER']))
-  {
-    return $_SERVER['HTTP_X_FORWARDED_SERVER'];
-  }
-  else if (!empty($_SERVER['HTTP_HOST']))
-  {
-    return $_SERVER['HTTP_HOST'];
-  }
-  else if (!empty($_SERVER['SERVER_NAME']))
-  {
-    return $_SERVER['SERVER_NAME'];
-  }
-  exit_error( 'HOST indéfini' /*titre*/ , 'SACoche n\'arrive pas à déterminer le nom du serveur hôte !<br />HTTP_X_FORWARDED_HOST, HTTP_HOST, HTTP_X_FORWARDED_SERVER et SERVER_NAME sont tous indéfinis.' /*contenu*/ );
+  if (!empty($_SERVER['HTTP_X_FORWARDED_HOST']))   { return current(explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'])); }
+  if (!empty($_SERVER['HTTP_X_FORWARDED_SERVER'])) { return $_SERVER['HTTP_X_FORWARDED_SERVER']; }
+  if (!empty($_SERVER['HTTP_HOST']))               { return $_SERVER['HTTP_HOST']; }
+  if (!empty($_SERVER['SERVER_NAME']))             { return $_SERVER['SERVER_NAME']; }
+  exit_error( 'HOST indéfini' /*titre*/ , 'SACoche n\'arrive pas à déterminer le nom du serveur hôte !<br />HTTP_HOST, SERVER_NAME, HTTP_X_FORWARDED_HOST et HTTP_X_FORWARDED_SERVER sont tous indéfinis.' /*contenu*/ );
 }
+
+$HOST = getServerUrl();
 
 function getServerProtocole()
 {
@@ -338,7 +298,22 @@ function getServerProtocole()
   return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
-define('URL_BASE',getServerProtocole().getServerUrl());
+define('URL_BASE',getServerProtocole().$HOST);
+
+// ============================================================================
+// Type de serveur (LOCAL|DEV|PROD)
+// ============================================================================
+
+// On ne peut pas savoir avec certitude si un serveur est "local" car aucune méthode ne fonctionne à tous les coups :
+// - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
+// - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
+// - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
+$test_local = ( ($HOST=='localhost') || ($HOST=='127.0.0.1') || (mb_substr($HOST,-6)=='.local') ) ? TRUE : FALSE ;
+$serveur_type = ($test_local) ? 'LOCAL' : ( (substr($HOST,-18)=='.sesamath.net:8080') ? 'DEV' : 'PROD' ) ;
+define('SERVEUR_TYPE',$serveur_type); // PROD | DEV | LOCAL
+
+$is_serveur_sesamath = (substr($HOST,0,20)=='sacoche.sesamath.net') ? TRUE : FALSE ;
+define('IS_SERVEUR_SESAMATH',$is_serveur_sesamath);
 
 // ============================================================================
 // URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)

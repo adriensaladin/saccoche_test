@@ -1576,7 +1576,7 @@ if( $step==51 )
   $tab_users_base['adresse'   ] = array();
   $profil_type = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
   $with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_users_base['sconet_id' ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];

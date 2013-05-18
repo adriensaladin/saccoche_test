@@ -2687,6 +2687,12 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-04-08')
+  {
+    // Cas d'une installation de SACoche à un moment où le numéro de version de la base n'était pas bien renseigné (entre le 22 et le 24 avril).
+    $version_base_structure_actuelle = '2013-04-22';
+  }
+
   if($version_base_structure_actuelle=='2013-04-22')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())

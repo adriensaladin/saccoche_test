@@ -368,9 +368,9 @@ public static function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_i
  */
 public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil_type,$onlynote=FALSE,$first_order_by_date=FALSE)
 {
-  $sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
-  $sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-  $sql_view  = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
+  $sql_debut = ($date_mysql_debut)          ? 'AND saisie_date>=:date_debut '   : '';
+  $sql_fin   = ($date_mysql_fin)            ? 'AND saisie_date<=:date_fin '     : '';
+  $sql_view  = ($user_profil_type=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
   $select_matiere = ($matiere_id>=0) ? $matiere_id.' AS matiere_id ' : 'matiere_id' ;
   $join_matiere   = ($matiere_id<=0) ? 'LEFT JOIN sacoche_matiere USING (matiere_id) ' : '' ;
   $order_matiere  = ($matiere_id<=0) ? 'matiere_ordre ASC, ' : '' ;
@@ -401,7 +401,7 @@ public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item
  */
 public static function DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil_type)
 {
-  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
+  $sql_view  = ($user_profil_type=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
   $DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , ';
   $DB_SQL.= 'matiere_id '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
   $DB_SQL.= 'FROM sacoche_saisie ';

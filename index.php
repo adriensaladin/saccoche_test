@@ -25,6 +25,8 @@
  * 
  */
 
+$tab_messages_erreur = array();
+
 // Fichier appelé pour l'affichage de chaque page.
 // Passage en GET des paramètres pour savoir quelle page charger.
 
@@ -53,13 +55,13 @@ elseif($PAGE!='public_installation')
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
 if(!Session::verif_droit_acces($PAGE))
 {
-  Session::$tab_message_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
+  $tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
   // La page vers laquelle rediriger sera définie après ouverture de la session
 }
 
 // Ouverture de la session et gestion des droits d'accès
 Session::execute();
-if(count(Session::$tab_message_erreur))
+if(count($tab_messages_erreur))
 {
   $PAGE = ($_SESSION['USER_PROFIL_TYPE'] == 'public') ? 'public_accueil' : 'compte_accueil' ;
 }
@@ -127,7 +129,7 @@ if(Session::$_sso_redirect)
 // Page CNIL si message d'information CNIL non validé.
 if(isset($_SESSION['STOP_CNIL']))
 {
-  Session::$tab_message_erreur[] = 'Avant d\'utiliser <em>SACoche</em>, vous devez valider le formulaire ci-dessous.';
+  $tab_messages_erreur[] = 'Avant d\'utiliser <em>SACoche</em>, vous devez valider le formulaire ci-dessous.';
   $PAGE = 'compte_cnil';
 }
 
@@ -136,7 +138,7 @@ ob_start();
 $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 if(!is_file($filename_php))
 {
-  Session::$tab_message_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
+  $tab_messages_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
   $PAGE = ($_SESSION['USER_PROFIL_TYPE']=='public') ? 'public_accueil' : ( (isset($_SESSION['STOP_CNIL'])) ? 'compte_cnil' : 'compte_accueil' ) ;
   $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 }
@@ -232,10 +234,9 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
       echo'<h1>» '.$TITRE.'</h1>'."\r\n";
     }
   }
-  if(count(Session::$tab_message_erreur))
+  if(count($tab_messages_erreur))
   {
-    echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',Session::$tab_message_erreur).'</div>'."\r\n";
-    Session::$tab_message_erreur = array();
+    echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>'."\r\n";
   }
   echo $CONTENU_PAGE;
   echo'<div id="ancre_bas"></div>'."\r\n"; // Il faut un div et pas seulement un span pour le navigateur Safari (sinon href="#ancre_bas" ne fonctionne pas).

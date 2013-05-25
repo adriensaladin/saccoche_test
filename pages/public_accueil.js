@@ -299,10 +299,10 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,10)=='index.php?')
+      if(responseHTML=='ok')
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
-        document.location.href = './'+responseHTML;
+        document.location.href = './index.php?page=compte_accueil&verif_cookie';
       }
       else
       {

@@ -187,11 +187,10 @@ define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
 define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
 
 // Vers des fichiers.
-define('CHEMIN_FICHIER_CONFIG_INSTALL' , CHEMIN_DOSSIER_CONFIG.'constantes.php');
-define('CHEMIN_FICHIER_DEBUG_CONFIG'   , CHEMIN_DOSSIER_TMP.'debug.txt');
-define('CHEMIN_FICHIER_WS_LCS'         , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
-define('CHEMIN_FICHIER_WS_ARGOS'       , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
-define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions.php');
+define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
+define('CHEMIN_FICHIER_DEBUG_CONFIG'  , CHEMIN_DOSSIER_TMP.'debug.txt');
+define('CHEMIN_FICHIER_WS_LCS'        , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
+define('CHEMIN_FICHIER_WS_ARGOS'      , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -313,6 +312,9 @@ $test_local = ( ($HOST=='localhost') || ($HOST=='127.0.0.1') || (mb_substr($HOST
 $serveur_type = ($test_local) ? 'LOCAL' : ( (substr($HOST,-18)=='.sesamath.net:8080') ? 'DEV' : 'PROD' ) ;
 define('SERVEUR_TYPE',$serveur_type); // PROD | DEV | LOCAL
 
+$is_serveur_sesamath = (substr($HOST,0,20)=='sacoche.sesamath.net') ? TRUE : FALSE ;
+define('IS_SERVEUR_SESAMATH',$is_serveur_sesamath);
+
 // ============================================================================
 // URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)
 // ============================================================================
@@ -332,34 +334,32 @@ define('URL_INSTALL_SACOCHE',$url); // la seule constante sans slash final
 define('URL_DIR_SACOCHE',$url.'/'); // avec slash final
 $tab_bad = array( CHEMIN_DOSSIER_SACOCHE , DS );
 $tab_bon = array( URL_DIR_SACOCHE        , '/');
-define('URL_DIR_TMP'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_TMP         ) );
-define('URL_DIR_IMG'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMG         ) );
-define('URL_DIR_DEVOIR'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR      ) );
-define('URL_DIR_DUMP'        , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP        ) );
-define('URL_DIR_EXPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT      ) );
-define('URL_DIR_IMPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMPORT      ) );
-define('URL_DIR_LOGINPASS'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS   ) );
-define('URL_DIR_LOGO'        , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO        ) );
-define('URL_DIR_RSS'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS         ) );
-define('URL_DIR_WEBSERVICES' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_WEBSERVICES ) );
+define('URL_DIR_TMP'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_TMP       ) );
+define('URL_DIR_IMG'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMG       ) );
+define('URL_DIR_DEVOIR'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR    ) );
+define('URL_DIR_DUMP'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP      ) );
+define('URL_DIR_EXPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT    ) );
+define('URL_DIR_IMPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMPORT    ) );
+define('URL_DIR_LOGINPASS', str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS ) );
+define('URL_DIR_LOGO'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO      ) );
+define('URL_DIR_RSS'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS       ) );
 
 // ============================================================================
 // URL externes appelées par l'application
 // ============================================================================
 
-define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');            // URL du projet SACoche (en https depuis le 08/02/2012)
-define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');            // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
-define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');       // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
-define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');           // URL du fichier chargé d'afficher les documentations
-define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL   .'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
-define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');      // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
-define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
-define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_CONVENTION_ENT',SERVEUR_PROJET.'/?fichier=convention_ent'); // URL de la page "Conventions ENT"
-define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide d'un administrateur de SACoche"
-define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"
-define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');            // URL du fichier comportant le flux RSS
+define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');         // URL du projet SACoche (en https depuis le 08/02/2012)
+define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');         // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
+define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');    // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
+define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');        // URL du fichier chargé d'afficher les documentations
+define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL   .'/appel_externe.php');    // URL du fichier chargé de signer un XML à importer dans LPC
+define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');   // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
+define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');  // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
+define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');        // URL de la page "CNIL (données personnelles)"
+define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la page "Guide d'un administrateur de SACoche"
+define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL de la page "Historique des nouveautés"
+define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
 
 // ============================================================================
 // Autres constantes diverses... et parfois importantes !
@@ -368,13 +368,6 @@ define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');            // U
 // test si c'est l'hébergement Sésamath qui est utilisé
 $is_hebergement_sesamath = (mb_strpos(URL_BASE,'https://sacoche.sesamath.net')!==FALSE) ? TRUE : FALSE ;
 define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
-// define('IS_HEBERGEMENT_SESAMATH',TRUE);
-
-// indiquer si une convention Établissement-ENT est requise et à compter de quand
-define('CONVENTION_ENT_REQUISE'      ,FALSE);
-// define('CONVENTION_ENT_REQUISE'      ,TRUE);
-define('CONVENTION_ENT_START_DATE_FR'   ,'01/09/2013');
-define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
 
 // Identifiants particuliers (à ne pas modifier)
 define('ID_DEMO'                   , 9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
@@ -499,7 +492,6 @@ function __autoload($class_name)
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
     'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
 
-    'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
     'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
     'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
     'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,

@@ -98,14 +98,13 @@ if($date_mysql_debut>$date_mysql_fin)
   exit('La date de début est postérieure à la date de fin !');
 }
 
-$tab_precision_retroactif = array
+$tab_precision = array
 (
   'auto' => 'notes antérieures selon référentiels',
   'oui'  => 'avec notes antérieures',
   'non'  => 'sans notes antérieures'
 );
-$precision_socle = $only_socle ? ', restriction au socle' : '' ;
-$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroactif[$retroactif].$precision_socle.').';
+$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, pour la ou les matières ou les items indiqués

@@ -152,15 +152,13 @@ if($besoin_notes)
     exit('La date de début est postérieure à la date de fin !');
   }
 
-  $tab_precision_retroactif = array
+  $tab_precision = array
   (
     'auto' => 'notes antérieures selon référentiels',
     'oui'  => 'avec notes antérieures',
     'non'  => 'sans notes antérieures'
   );
-  $precision_socle = $only_socle ? ', restriction au socle' : '' ;
-  $texte_periode = 'Du '.$date_debut.' au '.$date_fin.'';
-  $texte_precision = '('.$tab_precision_retroactif[$retroactif].$precision_socle.')';
+  $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

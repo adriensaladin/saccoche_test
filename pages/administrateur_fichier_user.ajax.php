@@ -712,7 +712,7 @@ if( $step==20 )
       if(count($tab_elements)>=5)
       {
         $tab_elements = Clean::map_quotes($tab_elements);
-        list($reference,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(5=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(4=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
         if( ($nom!='') && ($prenom!='') )
         {
           $tab_users_fichier['sconet_id' ][] = 0;

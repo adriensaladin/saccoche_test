@@ -33,20 +33,16 @@ $periode_id = (isset($_POST['f_periode'])) ? Clean::entier($_POST['f_periode']) 
 $groupe_id  = (isset($_POST['f_groupe']))  ? Clean::entier($_POST['f_groupe'])  : 0;
 $datas      = (isset($_POST['f_data']))    ? Clean::texte($_POST['f_data'])     : '';
 
-$test_sconet = (mb_strpos($action,'siecle')!==FALSE) ? TRUE : FALSE ;
-$tab_extensions_autorisees = $test_sconet ? array('zip','xml') : array('txt','csv') ;
-$extension_fichier_dest    = $test_sconet ? 'xml'              : 'txt' ;
-$fichier_dest = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
-$fichier_memo = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'_extraction.'.$extension_fichier_dest ;
+$fichier_dest = 'import_siecle'.$_SESSION['BASE'].'_'.session_id().'.xml';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de SIÈCLE
+// Réception et analyse d'un fichier d'import
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import_siecle') && $periode_id )
 {
   // Récupération du fichier (zip ou pas)
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , array('zip','xml') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
   if($result!==TRUE)
   {
     exit('Erreur : '.$result);
@@ -75,99 +71,16 @@ if( ($action=='import_siecle') && $periode_id )
   {
     exit('Erreur : informations manquantes (année scolaire, période...) !');
   }
-  // Récupération des données du fichier
-  $tab_users_fichier = array();
-  if($xml->eleve)
-  {
-    foreach ($xml->eleve as $eleve)
-    {
-      $tab_users_fichier[] = array(
-        Clean::entier($eleve->attributes()->elenoet),
-        Clean::nom(   $eleve->attributes()->nomEleve),
-        Clean::prenom($eleve->attributes()->prenomEleve),
-        Clean::entier($eleve->attributes()->nbAbs),
-        Clean::entier($eleve->attributes()->nbNonJustif),
-        Clean::entier($eleve->attributes()->nbRet)
-      );
-    }
-  }
-  $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
-  if(!$nb_eleves_trouves)
-  {
-    exit('Erreur : aucun élève trouvé dans le fichier !');
-  }
-  // On enregistre
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
   // On affiche la demande de confirmation
   exit('ok'.']¤['.html($date_export).']¤['.html($periode_libelle).']¤['.html($periode_date_debut).']¤['.html($periode_date_fin));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de GEPI
+// Traitement d'un fichier d'import
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='import_gepi') && $periode_id )
+if( ($action=='traitement_siecle') && $periode_id )
 {
-  // Récupération du fichier
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , '' /*filename_in_zip*/ );
-  if($result!==TRUE)
-  {
-    exit('Erreur : '.$result);
-  }
-  // Récupération des données du fichier
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
-  // Aanalyse et maj du contenu de la base
-  $tab_users_fichier = array();
-  foreach ($tab_lignes as $ligne_contenu)
-  {
-    $tab_elements = explode($separateur,$ligne_contenu);
-    $tab_elements = array_slice($tab_elements,0,7);
-    if(count($tab_elements)==7)
-    {
-      $tab_elements = Clean::map_quotes($tab_elements);
-      list($elenoet,$nom,$prenom,$classe,$nb_absence,$nb_non_justifie,$nb_retard) = $tab_elements;
-      $tab_users_fichier[] = array(
-        Clean::entier($elenoet),
-        Clean::nom(   $nom),
-        Clean::prenom($prenom),
-        Clean::entier($nb_absence),
-        Clean::entier($nb_non_justifie),
-        Clean::entier($nb_retard)
-      );
-    }
-  }
-  $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
-  if(!$nb_eleves_trouves)
-  {
-    exit('Erreur : aucun élève trouvé dans le fichier !');
-  }
-  // On enregistre
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
-  // On affiche la demande de confirmation
-  exit('ok'.']¤['.html($nb_eleves_trouves));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement d'un fichier d'import issu de SIÈCLE ou de GEPI
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( in_array($action,array('traitement_import_siecle','traitement_import_gepi')) && $periode_id )
-{
-  // Récupération des données déjà extraites du fichier
-  if(!file_exists(CHEMIN_DOSSIER_IMPORT.$fichier_memo))
-  {
-    exit('Erreur : le fichier '.CHEMIN_DOSSIER_IMPORT.$fichier_memo.' contenant les données à traiter est introuvable !');
-  }
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_memo);
-  $tab_users_fichier = @unserialize($contenu);
-  if($tab_users_fichier===FALSE)
-  {
-    exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
-  }
   // Récupération des données de la base
   $tab_users_base = array();
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_elenoet' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
@@ -175,22 +88,39 @@ if( in_array($action,array('traitement_import_siecle','traitement_import_gepi'))
   {
     $tab_users_base[(int)$DB_ROW['user_sconet_elenoet']] = (int)$DB_ROW['user_id'];
   }
-  // Analyse et maj du contenu de la base
+  // Récupération des données du fichier, analyse et maj du contenu de la base
+  if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest))
+  {
+    exit('Erreur : fichier non retrouvé !');
+  }
   $lignes_ok = '';
   $lignes_ko = '';
-  foreach ($tab_users_fichier as $tab_donnees_eleve)
+  $xml = simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  if($xml->eleve)
   {
-    list($eleve_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_non_justifie,$nb_retard) = $tab_donnees_eleve;
-    if(isset($tab_users_base[$eleve_elenoet]))
+    foreach ($xml->eleve as $eleve)
     {
-      $user_id = $tab_users_base[$eleve_elenoet];
-      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard);
-      $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_non_justifie.'</td><td>'.$nb_retard.'</td></tr>';
+      $eleve_elenoet   = Clean::entier($eleve->attributes()->elenoet);
+      $eleve_nom       = Clean::nom(   $eleve->attributes()->nomEleve);
+      $eleve_prenom    = Clean::prenom($eleve->attributes()->prenomEleve);
+      $nb_absence      = Clean::entier($eleve->attributes()->nbAbs);
+      $nb_non_justifie = Clean::entier($eleve->attributes()->nbNonJustif);
+      $nb_retard       = Clean::entier($eleve->attributes()->nbRet);
+      if(isset($tab_users_base[$eleve_elenoet]))
+      {
+        $user_id = $tab_users_base[$eleve_elenoet];
+        DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard);
+        $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_non_justifie.'</td><td>'.$nb_retard.'</td></tr>';
+      }
+      else
+      {
+        $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="3" class="r">Numéro Sconet ("ELENOET") '.$eleve_elenoet.' non trouvé dans la base.</td></tr>';
+      }
     }
-    else
-    {
-      $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="3" class="r">Numéro Sconet ("ELENOET") '.$eleve_elenoet.' non trouvé dans la base.</td></tr>';
-    }
+  }
+  if( (!$lignes_ok) && (!$lignes_ko) )
+  {
+    exit('Erreur : aucun élève trouvé dans le fichier !');
   }
   // affichage du retour
   exit($lignes_ok.$lignes_ko);

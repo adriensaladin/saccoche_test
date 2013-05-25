@@ -88,7 +88,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_structure_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_departement","connexion_mode","connexion_nom","cas_serveur_host","cas_serveur_port","cas_serveur_root","cas_serveur_url_login","cas_serveur_url_logout","cas_serveur_url_validate","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
+$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","cas_serveur_url_login","cas_serveur_url_logout","cas_serveur_url_validate","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
   ${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -316,55 +316,6 @@ if($connexion_mode=='cas')
     }
   }
   // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
-  // Vérifier la présence d'une convention valide si besoin
-  if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) )
-  {
-    // Vérifier que les paramètres de la base n'ont pas été trafiqués (via une sauvegarde / restauration de la base avec modification intermédiaire) pour passer outre : nom de connexion mis à perso ou modifié etc.
-    $connexion_ref = $connexion_departement.'|'.$connexion_nom;
-    require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
-    if(!isset($tab_connexion_info[$connexion_mode][$connexion_ref]))
-    {
-      exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS sont anormaux (connexion_mode vaut "'.$connexion_mode.'" ; connexion_departement vaut "'.$connexion_departement.'" ; connexion_nom vaut "'.$connexion_nom.'") !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
-    }
-    if($connexion_nom=='perso')
-    {
-      foreach($tab_serveur_cas as $tab_cas_param)
-      {
-        $is_param_defaut_identiques = (phpCAS::getServerLoginURL()==$tab_cas_param['serveur_url_login']) ? TRUE : FALSE ;
-        $is_param_force_identiques  = (phpCAS::getServerLoginURL()=='https://'.$tab_cas_param['serveur_host'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'].'/login') ? TRUE : FALSE ;
-        if( $is_param_defaut_identiques || $is_param_force_identiques )
-        {
-          exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS personnalisés sont ceux d\'un ENT référencé !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
-        }
-      }
-    }
-    else
-    {
-      $tab_info = $tab_connexion_info[$connexion_mode][$connexion_ref];
-      if( ($tab_info['serveur_host']!=$cas_serveur_host) || ($tab_info['serveur_port']!=$cas_serveur_port) || ($tab_info['serveur_root']!=$cas_serveur_root) || ($tab_info['serveur_url_login']!=$cas_serveur_url_login) || ($tab_info['serveur_url_logout']!=$cas_serveur_url_logout) || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate) )
-      {
-        exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
-      }
-    }
-    if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
-    {
-      exit_error( 'Fichier manquant' /*titre*/ , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' /*contenu*/ );
-    }
-    // Normalement les hébergements académiques ne sont pas concernés
-    require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
-    if(in_array($connexion_ref,$tab_connecteurs_hebergement))
-    {
-      exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
-    }
-    // Pas besoin de vérification si convention signée à un plus haut niveau
-    if(!in_array($connexion_ref,$tab_connecteurs_convention))
-    {
-      if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
-      {
-        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'utilisation de ce service sur cet hébergement est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un administrateur doit effectuer les démarches nécessaires depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Vous pourrez trouver toute information utile à ce sujet <a href="'.SERVEUR_CONVENTION_ENT.'">dans la documentation</a>.' /*contenu*/ );
-      }
-    }
-  }
   // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
   $id_ENT = phpCAS::getUser();
   // Récupérer les attributs CAS : SACoche ne récupère aucun attribut, il n'y a pas de récupération de données via le ticket et donc pas de nécessité de convention.

@@ -100,7 +100,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      var fb = $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
       if(mode=='ajouter') { $('#f_nom').focus(); }
     }
 

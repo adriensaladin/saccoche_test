@@ -355,22 +355,25 @@ function compacter($chemin,$methode)
  * => pour savoir si le mode de connexion est SSO ou pas (./pages/public_*.php)
  * => pour l'identification (méthode SessionUser::tester_authentification_utilisateur())
  * => pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp...)
+ * Dans le cas d'une installation de type multi-structures, on peut avoir besoin d'effectuer une requête sur la base du webmestre :
+ * => pour avoir des infos sur le contact référent, ou l'état d'une convention ENT
  * 
- * @param int   $BASE
+ * @param int   $BASE   0 pour celle du webmestre
  * @return void | exit
  */
 function charger_parametres_mysql_supplementaires($BASE)
 {
-  $file_config_base_structure_multi = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
-  if(is_file($file_config_base_structure_multi))
+  $fichier_mysql_config_supplementaire = ($BASE) ? CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php' : CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php' ;
+  $fichier_class_config_supplementaire = ($BASE) ? CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php' : CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_webmestre.php' ;
+  if(is_file($fichier_mysql_config_supplementaire))
   {
     global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
-    require($file_config_base_structure_multi);
-    require(CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php');
+    require($fichier_mysql_config_supplementaire);
+    require($fichier_class_config_supplementaire);
   }
   else
   {
-    exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($file_config_base_structure_multi).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
+    exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($fichier_mysql_config_supplementaire).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
   }
 }
 
@@ -835,13 +838,14 @@ function texte_ligne_naissance($date_fr)
  * Renvoyer le 1er jour de l'année scolaire en cours, au format français JJ/MM/AAAA ou MySQL AAAA-MM-JJ.
  *
  * @param string $format   'mysql'|'french'
+ * @param int    $annee_sup   facultatif, pour les années scolaires suivantes
  * @return string
  */
-function jour_debut_annee_scolaire($format)
+function jour_debut_annee_scolaire($format,$annee_sup=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_sup-1 : date("Y")+$annee_sup ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
@@ -850,13 +854,14 @@ function jour_debut_annee_scolaire($format)
  * En fait, c'est plus exactement le 1er jour de l'année scolaire suivante...
  *
  * @param string $format   'mysql'|'french'
+ * @param int    $annee_sup   facultatif, pour les années scolaires suivantes
  * @return string
  */
-function jour_fin_annee_scolaire($format)
+function jour_fin_annee_scolaire($format,$annee_sup=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y") : date("Y")+1 ;
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_sup : date("Y")+$annee_sup+1 ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 

@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 $action   = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])      : '';
-$BASE     = (isset($_POST['f_base']))     ? Clean::entier($_POST['f_base'])       : 0;
+$BASE     = (isset($_POST['f_base']))     ? Clean::entier($_POST['f_base'])       : 0 ;
 $profil   = (isset($_POST['f_profil']))   ? Clean::texte($_POST['f_profil'])      : '';  // normal | webmestre
 $login    = (isset($_POST['f_login']))    ? Clean::login($_POST['f_login'])       : '';
 $password = (isset($_POST['f_password'])) ? Clean::password($_POST['f_password']) : '';
@@ -102,6 +102,15 @@ if($action=='tester_version')
 
 if( ($action=='initialiser') && ($profil=='webmestre') )
 {
+  if(HEBERGEUR_INSTALLATION=='multi-structures')
+  {
+    // Mettre à jour la base du webmestre si besoin
+    $version_base_webmestre = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
+    if($version_base_webmestre != VERSION_BASE_WEBMESTRE)
+    {
+      DB_WEBMESTRE_MAJ_BASE::DB_maj_base($version_base_webmestre);
+    }
+  }
   exit( afficher_formulaire_identification($profil,'normal') );
 }
 
@@ -165,6 +174,24 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 // Traiter une demande d'identification
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function adresse_redirection_apres_authentification()
+{
+  if(empty($_SESSION['MEMO_GET']))
+  {
+    return 'index.php?page=compte_accueil&verif_cookie';
+  }
+  else
+  {
+    $tab_get = array();
+    foreach($_SESSION['MEMO_GET'] as $key => $val)
+    {
+      $tab_get[] = $key.'='.$val;
+    }
+    unset($_SESSION['MEMO_GET']);
+    return'index.php?'.implode('&',$tab_get);
+  }
+}
+
 // Pour le webmestre d'un serveur
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
@@ -173,6 +200,7 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
   if($auth_resultat=='ok')
   {
     SessionUser::initialiser_webmestre();
+    exit(adresse_redirection_apres_authentification());
   }
   exit($auth_resultat);
 }
@@ -185,6 +213,7 @@ if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password
   if($auth_resultat=='ok')
   {
     SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
+    exit(adresse_redirection_apres_authentification());
   }
   exit($auth_resultat);
 }

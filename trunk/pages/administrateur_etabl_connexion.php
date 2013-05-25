@@ -38,8 +38,22 @@ $tab_connexion_info['cas']['|perso']['serveur_url_login']    = $_SESSION['CAS_SE
 $tab_connexion_info['cas']['|perso']['serveur_url_logout']   = $_SESSION['CAS_SERVEUR']['URL_LOGOUT'];
 $tab_connexion_info['cas']['|perso']['serveur_url_validate'] = $_SESSION['CAS_SERVEUR']['URL_VALIDATE'];
 
+if(IS_HEBERGEMENT_SESAMATH)
+{
+  if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
+  {
+    echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !<p>';
+    return; // Ne pas exécuter la suite de ce fichier inclus.
+  }  
+  require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
+}
+else
+{
+  $tab_connecteurs_hebergement = $tab_connecteurs_convention = array();
+}
+
 // Liste des possibilités
-// Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas)
+// Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas, avec convention ou pas)
 $select_connexions = '';
 $tab_param_js = '';
 foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
@@ -55,7 +69,8 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     switch($connexion_mode)
     {
       case 'cas' :
-        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
+        $convention = ($connexion_nom=='perso') ? 'hors_ent' : ( in_array($connexion_ref,$tab_connecteurs_hebergement) ? 'heberg_acad' : ( in_array($connexion_ref,$tab_connecteurs_convention) ? 'conv_acad' : 'conv_etabl' ) ) ;
+        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
         break;
       case 'shibboleth' :
         $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
@@ -80,9 +95,11 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 
 <script type="text/javascript">
   var tab_param = new Array();<?php echo $tab_param_js ?>
+  var IS_HEBERGEMENT_SESAMATH = <?php echo (int)IS_HEBERGEMENT_SESAMATH ?>;
+  var CONVENTION_ENT_REQUISE  = <?php echo (int)CONVENTION_ENT_REQUISE ?>;
 </script>
 
-<form action="#" method="post"><fieldset>
+<form id="form_mode" action="#" method="post"><fieldset>
   <p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
   <div id="cas_options" class="hide">
     <label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR']['HOST']) ?>" /><br />
@@ -97,7 +114,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     <label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? html($_SESSION['GEPI_RNE']) : html($_SESSION['WEBMESTRE_UAI']) ; ?>" /><br />
     <label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
   </div>
-  <p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label></p>
+  <p><span class="tab"></span><button id="bouton_valider_mode" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg_mode">&nbsp;</label></p>
 </fieldset></form>
 
 <div id="lien_direct" class="hide">
@@ -111,6 +128,134 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 </div>
 
 <div id="info_inacheve" class="hide">
-  <p class="danger"><em>SACoche</em> sait interroger le serveur d'authentification de cet ENT, mais cette passerelle n'est pas finalisée.</p>
+  <p class="danger"><em>SACoche</em> sait interroger le serveur d'authentification de cet ENT, mais ses responsables ne l'ont pas intégré.</p>
   <p class="astuce">Si vous êtes concerné, alors faites remonter votre intérêt pour un tel connecteur auprès des responsables de cet ENT&hellip;</p>
 </div>
+
+<hr />
+<h2>Convention d'accès au service</h2>
+
+<div id="info_hors_sesamath" class="hide">
+  <p class="astuce">Sans objet pour cet hébergement.</p>
+</div>
+
+<div id="info_hors_actualite" class="hide">
+  <p class="astuce">Sans objet car non requis actuellement.</p>
+</div>
+
+<div id="info_hors_ent" class="hide">
+  <p class="astuce">Sans objet pour ce mode d'authentification.</p>
+</div>
+
+<div id="info_heberg_acad" class="hide">
+  <p class="astuce">Sans objet car hébergement académique ou départemental.</p>
+</div>
+
+<div id="info_conv_acad" class="hide">
+  <p><label class="valide">Signée et réglée par le service académique ou départemental (<a href="./index.php?page=compte_accueil">voir en page d'accueil</a>).</label></p>
+</div>
+
+<div id="info_conv_etabl" class="hide">
+  <p class="astuce">La signature et le règlement d'une convention est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.</p>
+  <table id="table_action" class="form hsort">
+    <thead>
+      <tr>
+        <th>Nom du service</th>
+        <th>Période</th>
+        <th>Convention signée</th>
+        <th>Règlement perçu</th>
+        <th>Service activé</th>
+        <th class="nu"><q class="ajouter" title="Ajouter une convention."></q></th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      // Lister les conventions de cet établissement
+      $DB_TAB = array();
+      if( (IS_HEBERGEMENT_SESAMATH) && (HEBERGEUR_INSTALLATION=='multi-structures') )
+      {
+        charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+        $DB_TAB = DB_WEBMESTRE_ADMINISTRATEUR::DB_lister_conventions_structure($_SESSION['BASE']);
+      }
+      if(!empty($DB_TAB))
+      {
+        foreach($DB_TAB as $DB_ROW)
+        {
+          // Formater certains éléments
+          $texte_signature  = ($DB_ROW['convention_signature']===NULL) ? 'Non réceptionnée' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_signature']) ;
+          $texte_paiement   = ($DB_ROW['convention_paiement']===NULL)  ? 'Non réceptionné'  : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']) ;
+          $texte_activation = (!$DB_ROW['convention_activation']) ? 'Non' : ( ( ($DB_ROW['convention_date_debut']>TODAY_MYSQL) || ($DB_ROW['convention_date_fin']<TODAY_MYSQL) ) ? 'Non (hors période)' : 'Oui' ) ;
+          $class_signature  = (substr($texte_signature ,0,3)=='Non') ? 'br' : 'bv' ;
+          $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
+          $class_activation = (substr($texte_activation,0,3)=='Non') ? 'br' : 'bv' ;
+          // Afficher une ligne du tableau
+          echo'<tr id="id_'.$DB_ROW['convention_id'].'">';
+          echo  '<td>'.html($DB_ROW['connexion_nom']).'</td>';
+          echo  '<td>du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'</td>';
+          echo  '<td class="'.$class_signature.'">'.$texte_signature.'</td>';
+          echo  '<td class="'.$class_paiement.'">'.$texte_paiement.'</td>';
+          echo  '<td class="'.$class_activation.'">'.$texte_activation.'</td>';
+          echo  '<td class="nu"><q class="voir_archive" title="Récupérer / Imprimer les documents associés."></q></td>';
+          echo'</tr>';
+        }
+      }
+      else
+      {
+        echo'<tr><td class="nu probleme" colspan="6">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>';
+      }
+      ?>
+    </tbody>
+  </table>
+</div>
+
+<form action="#" method="post" id="form_ajout" class="hide">
+  <h2>Ajouter une convention</h2>
+  <p>
+    <label class="tab" for="f_etablissement_denomination">Établissement :</label><input id="f_etablissement_denomination" name="f_etablissement_denomination" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION'].' ['.$_SESSION['WEBMESTRE_UAI'].']'); ?>" size="60" readonly />
+  </p>
+  <p>
+    <label class="tab" for="f_connexion_texte">Service :</label><input id="f_connexion_texte" name="f_connexion_texte" type="text" value="" size="60" readonly /><br />
+    <span class="tab"></span><span class="astuce">Le service est celui qui a été sélectionné sur cette même page.</span>
+  </p>
+  <p>
+    <label class="tab" for="f_annee">Période :</label><select id="f_annee" name="f_annee">
+      <option value="-1"></option>
+      <option value="0">Année scolaire actuelle : du <?php echo jour_debut_annee_scolaire('french',0).' au '.jour_fin_annee_scolaire('french',0) ?></option>
+      <option value="1">Année scolaire suivante : du <?php echo jour_debut_annee_scolaire('french',1).' au '.jour_fin_annee_scolaire('french',1) ?></option>
+    </select><br />
+    <span class="tab"></span><span class="astuce">Les dates sont basées sur l'année scolaire définie dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span>
+  </p>
+  <p>
+    <label class="tab"></label><button id="bouton_valider_ajout" type="button" class="valider">Valider.</button> <button id="bouton_annuler_ajout" type="button" class="annuler">Annuler.</button><br />
+    <label class="tab"></label><label id="ajax_msg_ajout">&nbsp;</label>
+  </p>
+</form>
+
+<form action="#" method="post" id="form_impression" class="hide">
+  <h2>Récupérer / Imprimer les documents associés</h2>
+  <hr />
+  <h4>Convention à renvoyer</h4>
+  <ul class="puce">
+    <li><a id="fichier_convention" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre convention (format <em>pdf</em>).</span></a></li>
+  </ul>
+  <p>
+    <span class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span><br />
+    <span class="astuce">La convention proposée est datée du jour (<?php echo TODAY_FR ?>).</span>
+  </p>
+  <hr />
+  <h4>Informations pour le règlement</h4>
+  <ul class="puce">
+    <li><a id="fichier_reglement" class="lien_ext" href="<?php echo URL_DIR_WEBSERVICES ?>sesamath_ent_conventions_reglement.pdf"><span class="file file_pdf">Récupérer / Imprimer nos coordonnées bancaires et postales (format <em>pdf</em>).</span></a></li>
+  </ul>
+  <hr />
+  <h4>Facture</h4>
+  <div id="facture_ok" class="hide">
+    <ul class="puce">
+      <li><a id="fichier_facture" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
+    </ul>
+  </div>
+  <div id="facture_ko" class="hide">
+    <span class="astuce">La facture sera disponible dès le règlement réceptionné.</span>
+  </div>
+  <hr />
+</form>

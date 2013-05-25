@@ -60,15 +60,6 @@ class SessionUser
       return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
     }
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    if(HEBERGEUR_INSTALLATION=='multi-structures')
-    {
-      // Mettre à jour la base du webmestre
-      $version_base_webmestre = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
-      if($version_base_webmestre != VERSION_BASE_WEBMESTRE)
-      {
-        DB_WEBMESTRE_MAJ_BASE::DB_maj_base($version_base_webmestre);
-      }
-    }
     return'ok';
   }
 

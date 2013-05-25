@@ -156,7 +156,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
     </tr>
   </thead>
   <tbody>
-    <tr><td class="nu" colspan="10"></td></tr>
+    <tr><td class="nu probleme" colspan="10">Cliquer sur l'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>
   </tbody>
 </table>
 

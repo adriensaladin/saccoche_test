@@ -72,7 +72,7 @@ foreach($DB_TAB as $DB_ROW)
   </thead>
   <tbody>
     <?php
-    // Lister les personnels (professeurs, directeurs, etc.
+    // Lister les personnels (professeurs, directeurs, etc.)
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('professeur','directeur') , $statut , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_reference,user_profil_sigle,user_profil_nom_long_singulier,user_nom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , FALSE /*with_classe*/ );
     if(!empty($DB_TAB))
     {

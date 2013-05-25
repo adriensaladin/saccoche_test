@@ -51,7 +51,7 @@ if(!in_array($extension,array('csv','txt','xml')))
 }
 
 // Cette méthode pour forcer le téléchargement d'un fichier consomme des ressources serveur (par rapport à une banale rerirection).
-// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv ou xml donc on ne veut pas qu'ils s'ouvrent dans le navigateur.
+// Ce n'est donc qu'à utiliser pour de petits fichiers txt ou csv ou xml dont on ne veut pas qu'ils s'ouvrent dans le navigateur.
 // Remarque : il y a aussi la possibilité de les proposer zippés, mais cela complique la démarche de l'utilisateur.
 header('Content-Description: File Transfer');
 header('Content-Disposition: attachment; filename="'.$FICHIER.'"');

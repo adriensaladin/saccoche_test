@@ -172,13 +172,15 @@ public static function DB_lister_classes_parent($parent_id)
  *
  * @param int    $eleve_id
  * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id)
+public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id,$user_profil_type)
 {
+  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT item_id, saisie_note AS note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" AND saisie_visible_date<=NOW() ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_view;
   $DB_SQL.= 'ORDER BY saisie_date ASC ';
   $DB_VAR = array(':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -229,17 +231,19 @@ public static function DB_recuperer_classe_eleve($eleve_id)
  * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
  * @param string $date_debut_mysql
  * @param string $date_fin_mysql
+ * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql)
+public static function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql,$user_profil_type)
 {
+  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
   $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
   $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
-  $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" AND devoir_visible_date<=NOW() ' ;
+  $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC ';
   $DB_VAR = array(':eleve_id'=>$eleve_id);
@@ -275,15 +279,17 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
  *
  * @param int   $devoir_id
  * @param int   $eleve_id
+ * @param string $user_profil_type
  * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$with_REQ)
+public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$user_profil_type,$with_REQ)
 {
+  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
+  $req_view = ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
   $DB_SQL = 'SELECT item_id, saisie_note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id '.$sql_view.$req_view;
   $DB_VAR = array(':devoir_id'=>$devoir_id,':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

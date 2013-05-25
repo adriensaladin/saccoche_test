@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Identité de l'établissement";
 
-$options_mois = '<option value="1">calquée sur l\'année civile</option><option value="2">bascule au 1er février</option><option value="3">bascule au 1er mars</option><option value="4">bascule au 1er avril</option><option value="5">bascule au 1er mai</option><option value="6">bascule au 1er juin</option><option value="7">bascule au 1er juillet</option><option value="8">bascule au 1er août</option><option value="9">bascule au 1er septembre</option><option value="10">bascule au 1er octobre</option><option value="11">bascule au 1er novembre</option><option value="12">bascule au 1er décembre</option>';
+$options_mois = '<option value="1">calquée sur l\'année civile</option><option value="2">bascule au 1er février</option><option value="3">bascule au 1er mars</option><option value="4">bascule au 1er avril</option><option value="5">bascule au 1er mai</option><option value="6">bascule au 1er juin</option><option value="7">bascule au 1er juillet</option><option value="8">bascule au 1er août (par défaut)</option><option value="9">bascule au 1er septembre</option><option value="10">bascule au 1er octobre</option><option value="11">bascule au 1er novembre</option><option value="12">bascule au 1er décembre</option>';
 $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'" selected' , $options_mois );
 
 
@@ -44,11 +44,45 @@ if(!empty($DB_ROW))
   list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   $li_logo = '<li><img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
+
+// Info contact du webmestre si multi-structures
+if(HEBERGEUR_INSTALLATION=='multi-structures')
+{
+  $contact_class_zone = 'show';
+  charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+  $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
+  $contact_nom      = $DB_ROW['structure_contact_nom'];
+  $contact_prenom   = $DB_ROW['structure_contact_prenom'];
+  $contact_courriel = $DB_ROW['structure_contact_courriel'];
+}
+else
+{
+  $contact_class_zone = 'hide';
+  $contact_nom = $contact_prenom = $contact_courriel = '';
+}
+
 ?>
 
 <div id="div_instance">
 
   <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
+
+  <form action="#" method="post" id="zone_contact" class="<?php echo $contact_class_zone ?>">
+    <hr />
+    <h2>Contact référent de l'établissement</h2>
+    <p>
+      <label class="tab" for="f_contact_nom">Nom <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_nom" name="f_contact_nom" size="25" type="text" value="<?php echo html($contact_nom); ?>" readonly /><br />
+      <label class="tab" for="f_contact_prenom">Prénom <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_prenom" name="f_contact_prenom" size="25" type="text" value="<?php echo html($contact_prenom); ?>" readonly /><br />
+      <label class="tab" for="f_contact_courriel">Courriel <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>" readonly /><br />
+    </p>
+    <div class="astuce">Dans le cas d'un serveur <em>SACoche</em> multi-établissements, le webmestre (responsable du serveur) dispose d'un contact référent pour chacun ; celui-ci :</div>
+    <ul class="puce">
+      <li>est aussi le premier administrateur créé (des identifiants lui sont transmis)</li>
+      <li>est destinataire des lettres d'informations que peut envoyer le webmestre</li>
+      <li>reçoit une régénération de mot de passe administrateur demandée au webmestre</li>
+    </ul>
+    <p>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche '.$_SESSION['BASE'],'demander une modification au webmestre'); ?>.</p>
+  </form>
 
   <hr />
 
@@ -59,7 +93,7 @@ if(!empty($DB_ROW))
       <label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
       <label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
     </p>
-    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contacter le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</li></ul>
+    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
   </form>
 
   <hr />

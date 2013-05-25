@@ -231,6 +231,11 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $script .= 'tab_corriges["'.$ref.'"]="'.$DB_ROW['devoir_doc_corrige'].'";';
     }
   }
+  else
+  {
+    echo'<tr><td class="nu probleme" colspan="10">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>';
+  }
+  
   echo'<SCRIPT>'.$script;
   exit();
 }

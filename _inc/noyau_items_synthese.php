@@ -90,13 +90,16 @@ if($date_mysql_debut>$date_mysql_fin)
   exit('La date de début est postérieure à la date de fin !');
 }
 
-$tab_precision = array
+$tab_precision_retroactif = array
 (
-  'auto' => 'notes antérieures selon référentiels',
-  'oui'  => 'avec notes antérieures',
-  'non'  => 'sans notes antérieures'
+  'auto' => 'Notes antérieures selon référentiels',
+  'oui'  => 'Avec notes antérieures',
+  'non'  => 'Sans notes antérieures'
 );
-$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision[$retroactif].').';
+$precision_socle  = $only_socle  ? ', restriction au socle' : '' ;
+$precision_niveau = $only_niveau ? ', restriction au niveau de l\'élève' : '' ;
+$texte_periode = 'Du '.$date_debut.' au '.$date_fin.'.';
+$texte_precision = $tab_precision_retroactif[$retroactif].$precision_socle.$precision_niveau.'.';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
@@ -360,7 +363,7 @@ if( ($make_html) || ($make_graph) )
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
   $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
-  $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
+  $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'<br />'.html($texte_precision).'</h2>';
   $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>' : '<div id="div_graphique"></div>' ;
   $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
@@ -395,7 +398,7 @@ foreach($tab_eleve as $tab)
       if($make_pdf)
       {
         $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_supplementaires;
-        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
+        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
         $releve_PDF->bilan_synthese_entete( $format , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
       }
       // On passe en revue les matières...

@@ -71,7 +71,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   }
   // Lister les évaluations
   $script = '';
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $classe_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
   if(empty($DB_TAB))
   {
     exit('Aucune évaluation trouvée sur la période indiquée !');
@@ -126,7 +126,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   $tab_liste_item = array_keys($DB_TAB_COMP);
   $liste_item_id = implode(',',$tab_liste_item);
   $tab_devoirs = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_result_eleve_items($eleve_id,$liste_item_id);
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_result_eleve_items( $eleve_id , $liste_item_id , $_SESSION['USER_PROFIL_TYPE'] );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_devoirs[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
@@ -145,13 +145,13 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.Html::td_score($score,$methode_tri='score',$pourcent='').'</tr>';
   }
   // récupérer les saisies et les ajouter
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , FALSE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
     if(isset($tab_affich[$DB_ROW['item_id']]))
     {
-      $tab_affich[$DB_ROW['item_id']] = str_replace( '>-<' , '>'.Html::note($DB_ROW['saisie_note'],'','',TRUE /*tri*/).'<' , $tab_affich[$DB_ROW['item_id']] );
+      $tab_affich[$DB_ROW['item_id']] = str_replace( '>-</td><td' , '>'.Html::note($DB_ROW['saisie_note'],'','',TRUE /*tri*/).'</td><td' , $tab_affich[$DB_ROW['item_id']] );
     }
   }
   exit(implode('',$tab_affich));
@@ -182,7 +182,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   $radio_boutons = '<td class="hc">'.implode('</td><td class="hc">',$tab_radio_boutons).'</td>';
   // récupérer les saisies
   $tab_radio = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , FALSE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_radio[$DB_ROW['item_id']] = str_replace( 'value="'.$DB_ROW['saisie_note'].'"' , 'value="'.$DB_ROW['saisie_note'].'" checked' , $radio_boutons );
@@ -248,7 +248,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   $tab_nouveau_modifier = array();
   $tab_nouveau_supprimer = array();
   $tab_demande_supprimer = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $_SESSION['USER_ID'] , TRUE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $_SESSION['USER_ID'] , $_SESSION['USER_PROFIL_TYPE'] , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $item_id = (int)$DB_ROW['item_id'];

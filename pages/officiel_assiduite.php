@@ -77,11 +77,16 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
     <label class="tab" for="f_periode_import">Période :</label><select id="f_periode_import" name="f_periode_import"><?php echo $select_periode ?></select><br />
     <label class="tab" for="f_choix_principal">Origine :</label>
     <select id="f_choix_principal" name="f_choix_principal">
-      <option value="import_siecle">issu de Siècle</option>
+      <option value=""></option>
+      <option value="import_siecle">issu de SIÈCLE</option>
+      <option value="import_gepi">issu de GEPI</option>
     </select>
   </p>
-  <ul class="puce">
-    <li>Indiquer le fichier <em>SIECLE_exportAbsence.xml</em> : <button type="button" id="import_siecle" class="fichier_import">Parcourir...</button><label id="ajax_msg_import">&nbsp;</label></li>
+  <ul class="puce hide" id="puce_import_siecle">
+    <li>Indiquer le fichier <em>SIECLE_exportAbsence.xml</em> : <button type="button" id="import_siecle" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_siecle">&nbsp;</label></li>
+  </ul>
+  <ul class="puce hide" id="puce_import_gepi">
+    <li>Indiquer le fichier <em>extraction_abs_plus_*.csv</em> : <button type="button" id="import_gepi" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_gepi">&nbsp;</label></li>
   </ul>
 </form>
 
@@ -100,7 +105,12 @@ list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_gr
 
 <div id="zone_confirmer" class="hide">
   <h2>Confirmation d'import</h2>
-  <p class="astuce">Ce fichier, généré le <b id="date_export"></b>, comporte les données de la période <b id="periode_libelle"></b>, allant du <b id="periode_date_debut"></b> au <b id="periode_date_fin"></b>.</p>
+  <div class="hide" id="comfirm_import_siecle">
+    <p class="astuce">Ce fichier, généré le <b id="date_export"></b>, comporte les données de la période <b id="periode_libelle"></b>, allant du <b id="periode_date_debut"></b> au <b id="periode_date_fin"></b>.</p>
+  </div>
+  <div class="hide" id="comfirm_import_gepi">
+    <p class="astuce">Ce fichier comporte les données de <b id="eleves_nb"></b> élève(s).</p>
+  </div>
   <p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b id="periode_import"></b> ?</p>
   <form action="#" method="post">
     <p>

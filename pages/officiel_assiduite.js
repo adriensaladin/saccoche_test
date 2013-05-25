@@ -31,16 +31,43 @@ $(document).ready
   {
 
     var id_periode_import = $('#f_periode_import option:selected').val();
+    var f_action = '';
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Réagir au changement de période ou d'origine du fichier
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function afficher_upload()
+    {
+      // Masquer tout
+      $('#puce_import_siecle , #puce_import_gepi').hide(0);
+        // Puis afficher ce qu'il faut
+      if( id_periode_import && f_action )
+      {
+        $('#ajax_msg_'+f_action).removeAttr("class").html('&nbsp;');
+        $('#puce_'+f_action).show(0);
+      }
+    }
 
     $('#f_periode_import').change
     (
       function()
       {
         id_periode_import = $('#f_periode_import option:selected').val();
-        uploader_fichier['_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_siecle['_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_gepi[  '_settings']['data']['f_periode'] = id_periode_import;
+        afficher_upload();
       }
     );
 
+    $("#f_choix_principal").change
+    (
+      function()
+      {
+        f_action = $(this).val();
+        afficher_upload();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Changement de classe
@@ -102,7 +129,8 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-    var uploader_fichier = new AjaxUpload
+    // Attention, la variable f_action n'est pas accessible dans les AjaxUpload
+    var uploader_fichier_siecle = new AjaxUpload
     ('#import_siecle',
       {
         action: 'ajax.php?page='+PAGE,
@@ -115,10 +143,23 @@ $(document).ready
         onComplete: retourner_fichier
       }
     );
+    var uploader_fichier_gepi = new AjaxUpload
+    ('#import_gepi',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
+      }
+    );
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#ajax_msg_import').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_'+f_action).removeAttr("class").html("&nbsp;");
       return true;
     }
 
@@ -126,23 +167,28 @@ $(document).ready
     {
       if (!id_periode_import)
       {
-        $('#ajax_msg_import').removeAttr("class").addClass("erreur").html("Choisir d'abord la période concernée.");
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html("Choisir d'abord la période concernée.");
         return false;
       }
       else if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg_import').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
-      else if ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+      else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
-        $('#ajax_msg_import').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        return false;
+      }
+      else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_import').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
@@ -153,24 +199,33 @@ $(document).ready
       var tab_infos = responseHTML.split(']¤[');
       if(tab_infos[0]!='ok')
       {
-        $('#ajax_msg_import').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#date_export'       ).html(tab_infos[1]);
-        $('#periode_libelle'   ).html(tab_infos[2]);
-        $('#periode_date_debut').html(tab_infos[3]);
-        $('#periode_date_fin'  ).html(tab_infos[4]);
+        $('#comfirm_import_siecle , #comfirm_import_gepi').hide(0);
+        if(f_action=='import_siecle')
+        {
+          $('#date_export'       ).html(tab_infos[1]);
+          $('#periode_libelle'   ).html(tab_infos[2]);
+          $('#periode_date_debut').html(tab_infos[3]);
+          $('#periode_date_fin'  ).html(tab_infos[4]);
+        }
+        else if(f_action=='import_gepi')
+        {
+          $('#eleves_nb').html(tab_infos[1]);
+        }
         $('#periode_import'    ).html($('#f_periode_import option:selected').text());
-        $('#ajax_msg_import').removeAttr("class").html('');
+        $('#ajax_msg_'+f_action).removeAttr("class").html('');
         $('#ajax_msg_confirm').removeAttr("class").html('');
+        $('#comfirm_'+f_action).show(0);
         $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         initialiser_compteur();
       }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Confirmation du traitement du fichier
+    // Confirmation du traitement du fichier issu de SIÈCLE ou de GEPI
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#confirmer_import').click
@@ -184,7 +239,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'traitement_siecle'+'&f_periode='+id_periode_import,
+            data : 'csrf='+CSRF+'&f_action='+'traitement_'+f_action+'&f_periode='+id_periode_import,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

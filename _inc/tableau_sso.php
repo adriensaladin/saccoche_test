@@ -91,7 +91,7 @@ $tab_saml_param['gepi'] = array( 'saml_url'=>$saml_url , 'saml_rne'=>$saml_rne ,
  * Tableau avec les modes d'identification possibles
  */
 $tab_connexion_mode = array();
-$tab_connexion_mode['normal']     = 'Normal';
+$tab_connexion_mode['normal']     = 'Local';
 $tab_connexion_mode['cas']        = 'Serveur CAS';
 $tab_connexion_mode['shibboleth'] = 'Shibboleth';
 $tab_connexion_mode['gepi']       = 'GEPI';
@@ -179,8 +179,9 @@ $tab_connexion_info['gepi']['|saml']               = array( 'txt'=>'S\'authentif
 
 /*
  * Les sous-tableaux ne sont plus utiles.
+ * edit : $tab_serveur_cas est maintenant utilisé
  */
- unset( $tab_csv_format , $tab_serveur_cas , $tab_saml_param );
+ unset( $tab_csv_format , $tab_saml_param );
 
 /*
 

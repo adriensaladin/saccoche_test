@@ -96,6 +96,22 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_geo CHANGE geo_nom geo_nom VARCHAR( 65 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  ' );
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-02-15 => 2013-05-21
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if($version_base_webmestre_actuelle=='2013-02-15')
+  {
+    // Actualisation date de version
+    $version_base_webmestre_actuelle = '2013-05-21';
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table sacoche_convention
+    $reload_sacoche_convention = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.'sacoche_convention.sql');
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes );
+    DB::close(SACOCHE_WEBMESTRE_BD_NAME);
+  }
+
 }
 
 }

@@ -232,7 +232,7 @@ if($action=='importer_csv')
   // Nettoyer des restes d'upload de zip éventuels
   foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
-    if(file_exists(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']))
+    if(is_file(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']))
     {
       unlink(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']);
     }

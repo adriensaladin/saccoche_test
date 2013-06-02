@@ -40,7 +40,7 @@ $(document).ready
 
     function curseur()
     {
-      if($("#f_profil").val()=='webmestre')
+      if($("#f_profil").val()!='normal')
       {
         $('#f_password').focus();
       }
@@ -190,26 +190,18 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=tester_version',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#ajax_version').addClass("alerte").html('Échec de la connexion avec le serveur communautaire !');
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
-            if( (responseHTML.length!=10) && (responseHTML.length!=11) )
+            $('#ajax_version').addClass(responseJSON['class']).html(responseJSON['texte']).after(responseJSON['after']);
+            if(responseJSON['after'])
             {
-              $('#ajax_version').addClass("alerte").html(responseHTML);
-            }
-            else if(responseHTML!=VERSION_PROG)
-            {
-              $('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.').after(' &rarr; <a class="lien_ext" href="'+SERVEUR_NEWS+'">Nouveautés</a>');
               format_liens('#cadre_milieu');
-            }
-            else
-            {
-              $('#ajax_version').addClass("valide").html('Cette version est la dernière disponible.');
             }
           }
         }
@@ -226,15 +218,17 @@ $(document).ready
       {
         rules :
         {
-          f_base     : { required:true },
-          f_login    : { required:true , maxlength:20 },
-          f_password : { required:true , maxlength:20 }
+          f_base       : { required:true },
+          f_partenaire : { required:true },
+          f_login      : { required:true , maxlength:20 },
+          f_password   : { required:true , maxlength:20 }
         },
         messages :
         {
-          f_base     : { required:"établissement manquant" },
-          f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
-          f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
+          f_base       : { required:"établissement manquant" },
+          f_partenaire : { required:"partenariat manquant" },
+          f_login      : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
+          f_password   : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

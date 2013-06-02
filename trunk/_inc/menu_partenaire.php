@@ -26,35 +26,32 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
-
-$password_ancien  = (isset($_POST['f_password0'])) ? Clean::password($_POST['f_password0']) : '' ;
-$password_nouveau = (isset($_POST['f_password1'])) ? Clean::password($_POST['f_password1']) : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour son mdp
+// Menu [partenaire] à mettre en session
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($password_ancien!='') && ($password_nouveau!='') )
-{
-  if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
-  {
-    exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
-  }
-  elseif($_SESSION['USER_PROFIL_TYPE']=='partenaire')
-  {
-    exit( DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
-  }
-  else
-  {
-    exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
-  }
-}
+// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
+
+$tab_menu = array
+(
+  "Informations" => array
+  (
+    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
+    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
+    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'   , 'href' => 'page=compte_info_serveur'     )
+  ),
+  "Paramétrages" => array
+  (
+    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
+    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' )
+  )
+);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// Adaptations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+// RAS !
 
 ?>

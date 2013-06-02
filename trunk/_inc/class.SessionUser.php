@@ -64,6 +64,48 @@ class SessionUser
   }
 
   /**
+   * Tester si les données transmises permettent d'authentifier un partenaire (convention ENT serveur Sésamath).
+   * 
+   * @param int       $partenaire_id
+   * @param string    $password
+   * @return array(string,array)   ('ok',$DB_ROW) ou (message_d_erreur,tableau_vide)
+   */
+  public static function tester_authentification_partenaire($partenaire_id,$password)
+  {
+    // Récupérer les données associées à ce partenaire.
+    $DB_ROW = DB_WEBMESTRE_PUBLIC::DB_recuperer_donnees_partenaire($partenaire_id);
+    // Si id non trouvé...
+    if(empty($DB_ROW))
+    {
+      return array('Partenaire introuvable !',array());
+    }
+    // Si tentatives trop rapprochées...
+    if($DB_ROW['partenaire_tentative_date']!==NULL) // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
+    {
+      if($DB_ROW['delai_tentative_secondes']<3)
+      {
+        DB_WEBMESTRE_PUBLIC::DB_enregistrer_partenaire_date_tentative($DB_ROW['partenaire_id']);
+        return array('Calmez-vous et patientez 10s avant la prochaine tentative !',array());
+      }
+      elseif($DB_ROW['delai_tentative_secondes']<10)
+      {
+        $delai_attente_restant = 10 - $DB_ROW['delai_tentative_secondes'] ;
+        return array('Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.',array());
+      }
+    }
+    // Si mdp incorrect...
+    if($DB_ROW['partenaire_password']!=crypter_mdp($password))
+    {
+      DB_WEBMESTRE_PUBLIC::DB_enregistrer_partenaire_date_tentative($DB_ROW['partenaire_id']);
+      return array('Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.',array());
+    }
+    // Enregistrement d'un cookie sur le poste client servant à retenir le partenariat sélectionné si identification avec succès
+    setcookie( COOKIE_PARTENAIRE /*name*/ , $DB_ROW['partenaire_id'] /*value*/ , time()+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
+    // Si on arrive ici c'est que l'identification s'est bien effectuée !
+    return array('ok',$DB_ROW);
+  }
+
+  /**
    * Tester si les données transmises permettent d'authentifier un utilisateur (sauf webmestre).
    * 
    * En cas de connexion avec les identifiants SACoche, la reconnaissance s'effectue sur le couple login/password.
@@ -136,34 +178,6 @@ class SessionUser
     setcookie( COOKIE_AUTHMODE /*name*/ , $mode_connection /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
     return array('ok',$DB_ROW);
-  }
-
-  /**
-   * Enregistrer en session les informations authentifiant le webmestre.
-   * 
-   * @param void
-   * @return void
-   */
-  public static function initialiser_webmestre()
-  {
-    // Numéro de la base
-    $_SESSION['BASE']                          = 0;
-    // Données associées au profil de l'utilisateur.
-    $_SESSION['USER_PROFIL_SIGLE']             = 'WBM';
-    $_SESSION['USER_PROFIL_TYPE']              = 'webmestre';
-    $_SESSION['USER_PROFIL_NOM_COURT']         = 'webmestre';
-    $_SESSION['USER_PROFIL_NOM_LONG']          = 'responsable du serveur (webmestre)';
-    $_SESSION['USER_MDP_LONGUEUR_MINI']        = 6;
-    $_SESSION['USER_DUREE_INACTIVITE']         = 15;
-    // Données personnelles de l'utilisateur.
-    $_SESSION['USER_ID']                       = 0;
-    $_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
-    $_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
-    $_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
-    // Données associées à l'établissement.
-    $_SESSION['SESAMATH_ID']                   = 0;
-    $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
-    $_SESSION['CONNEXION_MODE']                = 'normal';
   }
 
   /**
@@ -293,8 +307,71 @@ class SessionUser
     SessionUser::adapter_daltonisme() ;
     // Enregistrer en session le CSS personnalisé
     SessionUser::actualiser_style();
+    // Enregistrer en session le menu personnalisé
+    SessionUser::memoriser_menu();
     // Juste pour davantage de lisibilité si besoin de debug...
     ksort($_SESSION);
+  }
+
+  /**
+   * Enregistrer en session les informations authentifiant le webmestre.
+   * 
+   * @param void
+   * @return void
+   */
+  public static function initialiser_webmestre()
+  {
+    // Numéro de la base
+    $_SESSION['BASE']                          = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']             = 'WBM';
+    $_SESSION['USER_PROFIL_TYPE']              = 'webmestre';
+    $_SESSION['USER_PROFIL_NOM_COURT']         = 'webmestre';
+    $_SESSION['USER_PROFIL_NOM_LONG']          = 'responsable du serveur (webmestre)';
+    $_SESSION['USER_MDP_LONGUEUR_MINI']        = 6;
+    $_SESSION['USER_DUREE_INACTIVITE']         = 15;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']                       = 0;
+    $_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
+    $_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
+    $_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+    // Données associées à l'établissement.
+    $_SESSION['SESAMATH_ID']                   = 0;
+    $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
+    $_SESSION['CONNEXION_MODE']                = 'normal';
+    // Enregistrer en session le menu personnalisé
+    SessionUser::memoriser_menu();
+  }
+
+  /**
+   * Enregistrer en session les informations authentifiant un partenaire.
+   * 
+   * @param array   $DB_ROW   ligne issue de la table sacoche_partenaire correspondant à l'utilisateur qui se connecte.
+   * @return void
+   */
+  public static function initialiser_partenaire($DB_ROW)
+  {
+    // Numéro de la base
+    $_SESSION['BASE']                          = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']             = 'ENT';
+    $_SESSION['USER_PROFIL_TYPE']              = 'partenaire';
+    $_SESSION['USER_PROFIL_NOM_COURT']         = 'partenaire';
+    $_SESSION['USER_PROFIL_NOM_LONG']          = 'partenariat conventionné (ENT)';
+    $_SESSION['USER_MDP_LONGUEUR_MINI']        = 6;
+    $_SESSION['USER_DUREE_INACTIVITE']         = 15;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']                       = (int) $DB_ROW['partenaire_id'];
+    $_SESSION['USER_NOM']                      = $DB_ROW['partenaire_nom'];
+    $_SESSION['USER_PRENOM']                   = $DB_ROW['partenaire_prenom'];
+    $_SESSION['USER_DESCR']                    = '[partenaire] '.$DB_ROW['partenaire_prenom'].' '.$DB_ROW['partenaire_nom'];
+    $_SESSION['USER_CONNECTEURS']              = $DB_ROW['partenaire_connecteurs'];
+    // Données associées à l'établissement.
+    $_SESSION['SESAMATH_ID']                   = 0;
+    $_SESSION['ETABLISSEMENT']['DENOMINATION'] = $DB_ROW['partenaire_denomination'];
+    $_SESSION['CONNEXION_MODE']                = 'normal';
+    // Enregistrer en session le menu personnalisé
+    SessionUser::memoriser_menu();
   }
 
   /**
@@ -361,6 +438,28 @@ class SessionUser
     $_SESSION['CSS'] .= '#zone_information .v2 {background:'.$_SESSION['BACKGROUND_V2'].';padding:0 1em;margin-right:1ex}';
     $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=lock] {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */';
     $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;} /* pas background pour ne pas écraser background-color défini avant */';
+  }
+
+  /**
+   * Enregistrer en session le menu selon le profil et éventuellement les droits de l'utilisateur.
+   * 
+   * @param void
+   * @return void
+   */
+  public static function memoriser_menu()
+  {
+    require(CHEMIN_DOSSIER_INCLUDE.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu
+    $_SESSION['MENU'] = '<ul id="menu">';
+    foreach($tab_menu as $menu_titre => $tab_sous_menu)
+    {
+      $_SESSION['MENU'] .= '<li><a class="menu" href="#">'.$menu_titre.'</a><ul>';
+      foreach($tab_sous_menu as $sous_menu_titre => $tab)
+      {
+        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'" href="./index.php?'.$tab['href'].'">'.$sous_menu_titre.'</a></li>';
+      }
+      $_SESSION['MENU'] .= '</ul></li>';
+    }
+    $_SESSION['MENU'] .= '</ul>';
   }
 
 }

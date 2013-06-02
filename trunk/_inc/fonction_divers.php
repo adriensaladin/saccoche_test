@@ -689,7 +689,7 @@ function tester_courriel($courriel)
 function tester_domaine_courriel_valide($mail_adresse)
 {
   $mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
-  return (getmxrr($mail_domaine,$tab_mxhosts)==TRUE) ? TRUE : $mail_domaine ;
+  return ( ( function_exists('getmxrr') && getmxrr($mail_domaine, $tab_mxhosts) ) || (@fsockopen($mail_domaine,25,$errno,$errstr,5)) ) ? TRUE : $mail_domaine ;
 }
 
 /**

@@ -603,7 +603,7 @@ function fermer_session()
         $('#menu').remove();
         if(CONNEXION_USED=='normal')
         {
-          var adresse = (PROFIL_TYPE!='webmestre') ? './index.php' : './index.php?webmestre' ;
+          var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
           $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="'+adresse+'">Se reconnecter&hellip;</a></span>');
         }
         else
@@ -996,7 +996,8 @@ $(document).ready
     (
       function()
       {
-        window.document.location.href='./index.php';
+        var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
+        window.document.location.href = adresse;
       }
     );
 

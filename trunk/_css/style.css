@@ -106,7 +106,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Boutons d'informations (dans #cadre_haut)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_2.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_3.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
 #top_info span.alerte                {background-position: 1px    1px;font-weight:bold;color:#C00}
 #top_info span.connexion             {background-position: 1px  -19px;font-weight:bold}
 #top_info span.favicon               {background-position: 1px  -39px}
@@ -115,8 +115,9 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #top_info span.profil_directeur      {background-position: 1px  -99px}
 #top_info span.profil_eleve          {background-position: 1px -119px}
 #top_info span.profil_parent         {background-position: 1px -139px}
-#top_info span.profil_professeur     {background-position: 1px -159px}
-#top_info span.profil_webmestre      {background-position: 1px -179px}
+#top_info span.profil_partenaire     {background-position: 1px -159px}
+#top_info span.profil_professeur     {background-position: 1px -179px}
+#top_info span.profil_webmestre      {background-position: 1px -199px}
 #top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
 #top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
 #top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
@@ -140,6 +141,8 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 
 #menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_13.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
+#menu a.disabled {color:#99F;cursor:default;}
+#menu a.disabled:hover {background-color:#77F;color:#99F;cursor:default}
 #menu li {float:left}
 #menu li li {float:none}
 #menu li ul {position:absolute;left:-9999em;background:#FFF}
@@ -484,13 +487,6 @@ span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;pa
 span.select_multiple label.check {color:#FFF;background-color:#88F}
 span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
 
-/* Certaines touches KBD */
-kbd.img{background:#EEE url(../_img/sprite_bouton_7.png) 0 0 no-repeat;height:15px}
-kbd.img:hover{background-color:#CCC}
-kbd.annuler   {background-position: 7px  -34px}
-kbd.retourner {background-position: 7px -674px}
-kbd.valider   {background-position: 7px -814px}
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style généraux pour les tableaux                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -680,13 +676,13 @@ table.xdebug-error i {display:inline-block} /* pour éviter une répercussion su
 /* Infobulles                                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.ui-tooltip {position:absolute;z-index:9999;border:1px dotted #66F;background:#FFF;color:#222;font-size:12px;padding:0.25em;opacity:0.95} /* Contenu de l'infobulle ; pas réussi à faire fonctionner font-weight:bold => ajouter en js */
+.ui-tooltip {position:absolute;z-index:9999;border:1px solid #333;border-radius:6px;background:#EEE;color:#222;font-size:12px;padding:0.5em} /* Contenu de l'infobulle ; pas réussi à faire fonctionner font-weight:bold => ajouter en js */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Calque de recherche (uniquement le calendrier en fait)                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#calque{position:absolute;z-index:9999;left:0;top:0;border:1px dotted #66F;background:#EEE;font-size:12px;padding:0.25em;text-align:center}
+#calque{position:absolute;z-index:9999;left:0;top:0;border:1px solid #333;border-radius:6px;background:#EEE;font-size:12px;padding:0.5em;text-align:center}
 #calque h5 {display:block;font-size:120%;color:#33A;letter-spacing:0.1em} /* Titre de calque */
 #calque h6 {margin:0.5em auto;color:#33A;font-size:110%} /* Consigne */
 #calque th,#calque td {text-align:center}
@@ -814,6 +810,24 @@ div.td_souris img.on {background-color:#FF0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .photo {float:left;padding:3px;margin:6px;border:1px dashed #77F;text-align:center;min-height:180px} /* 144+36 */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Certaines touches KBD                                                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+kbd.img{background:#EEE url(../_img/sprite_bouton_7.png) 0 0 no-repeat;height:15px}
+kbd.img:hover{background-color:#CCC}
+kbd.annuler   {background-position: 7px  -34px}
+kbd.retourner {background-position: 7px -674px}
+kbd.valider   {background-position: 7px -814px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Message d'un partenaire conventionné ENT                                                            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#partenaire_logo    {float:left;margin-bottom:1em;padding-right:1em}
+#partenaire_message {float:left;margin-bottom:1em}
+#partenaire_hr      {clear:both}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */

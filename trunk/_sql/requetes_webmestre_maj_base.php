@@ -112,6 +112,22 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     DB::close(SACOCHE_WEBMESTRE_BD_NAME);
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-05-21 => 2013-06-01
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if($version_base_webmestre_actuelle=='2013-05-21')
+  {
+    // Actualisation date de version
+    $version_base_webmestre_actuelle = '2013-06-01';
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table sacoche_partenaire
+    $reload_sacoche_partenaire = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.'sacoche_partenaire.sql');
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes );
+    DB::close(SACOCHE_WEBMESTRE_BD_NAME);
+  }
+
 }
 
 }

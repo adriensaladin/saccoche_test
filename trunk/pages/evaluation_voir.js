@@ -238,8 +238,6 @@ $(document).ready
         var texte_date = objet_tds.eq(0).html();
         var texte_prof = objet_tds.eq(1).html();
         var texte_info = objet_tds.eq(2).html();
-        // Date
-        var date_fr    = texte_date.substring(17,texte_date.length); // garder la date française (enlever la date mysql cachée)
         // Afficher la zone associée après avoir chargé son contenu
         $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -262,7 +260,7 @@ $(document).ready
               }
               else
               {
-                $('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
+                $('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
                 $('#table_voir tbody').html(responseHTML);
                 format_liens('#table_voir');
                 tableau_maj_voir();

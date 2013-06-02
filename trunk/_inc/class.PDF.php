@@ -2636,7 +2636,7 @@ class PDF extends FPDF
   {
     $cases_hauteur_maximum   = 20;
     $this->cases_largeur     = 20; // valeur fixe
-    $this->reference_largeur = $this->page_largeur_moins_marges - (4 * $this->cases_largeur);
+    $this->reference_largeur = $this->page_largeur_moins_marges - (5 * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe
     $this->cases_hauteur     = ($this->page_hauteur_moins_marges - $this->etiquette_hauteur) / $item_nb;
     $this->cases_hauteur     = min($this->cases_hauteur,$cases_hauteur_maximum);
@@ -2648,8 +2648,8 @@ class PDF extends FPDF
 
   public function tableau_devoir_repartition_nominative_initialiser($lignes_nb)
   {
-    $this->cases_largeur     = 35; // valeur fixe
-    $this->reference_largeur = $this->page_largeur_moins_marges - (4 * $this->cases_largeur);
+    $this->cases_largeur     = 40; // valeur fixe
+    $this->reference_largeur = $this->page_largeur_moins_marges - (5 * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe
     $lignes_hauteur_maximum  = 5;
     $this->lignes_hauteur    = ($this->page_hauteur_moins_marges - $this->etiquette_hauteur) / $lignes_nb;
@@ -2683,7 +2683,14 @@ class PDF extends FPDF
       $this->SetXY($this->marge_gauche+$this->reference_largeur , $this->marge_haut);
       foreach($tab_init_quantitatif as $note=>$vide)
       {
-        $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
+        if($note!='X')
+        {
+          $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
+        }
+        else
+        {
+          $this->CellFit( $this->cases_largeur , $this->etiquette_hauteur , To::pdf('Autre') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+        }
       }
       $this->SetXY($this->marge_gauche , $this->marge_haut+$this->etiquette_hauteur);
     }

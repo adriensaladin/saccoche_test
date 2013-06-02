@@ -26,35 +26,41 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
-
-$password_ancien  = (isset($_POST['f_password0'])) ? Clean::password($_POST['f_password0']) : '' ;
-$password_nouveau = (isset($_POST['f_password1'])) ? Clean::password($_POST['f_password1']) : '' ;
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour son mdp
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($password_ancien!='') && ($password_nouveau!='') )
-{
-  if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
-  {
-    exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
-  }
-  elseif($_SESSION['USER_PROFIL_TYPE']=='partenaire')
-  {
-    exit( DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
-  }
-  else
-  {
-    exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-exit('Erreur avec les données transmises !');
-
+$TITRE = "Statistiques d'utilisation (partenariat ENT)";
 ?>
+
+<p class="astuce">
+  Seuls les établissements utilisant le connecteur ENT conventionné sont comptabilisés.
+</p>
+
+<div id="ajax_info" class="hide">
+  <label id="ajax_msg1"></label>
+  <ul class="puce"><li id="ajax_msg2"></li></ul>
+  <span id="ajax_num" class="hide"></span>
+  <span id="ajax_max" class="hide"></span>
+</div>
+
+<form action="#" method="post" id="structures" class="hide">
+  <table class="hsort" id="table_action">
+    <thead>
+      <tr>
+        <th>Géographie</th>
+        <th>Structure</th>
+        <th>connexion ENT</th>
+        <th>professeurs<br />connectés</th>
+        <th>élèves<br />connectés</th>
+        <th>saisies<br />enregistrées</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td class="nu" colspan="6"></td>
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr>
+        <td class="nu" colspan="6"></td>
+      </tr>
+    </tbody>
+  </table>
+</form>

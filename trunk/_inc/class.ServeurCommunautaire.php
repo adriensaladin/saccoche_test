@@ -421,7 +421,7 @@ class ServeurCommunautaire
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return url_get_contents(SERVEUR_LPC_SIGNATURE,$tab_post);
+    return url_get_contents( SERVEUR_LPC_SIGNATURE , $tab_post , 15 /*timeout*/ );
   }
 
   /**

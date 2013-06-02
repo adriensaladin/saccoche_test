@@ -91,7 +91,7 @@ if(!isset($tab_objet_profils[$f_objet]))
   exit('Droit inconnu !');
 }
 
-$tab_profils_transmis  = explode(',',$f_profils);
+$tab_profils_transmis  = ($f_profils) ? explode(',',$f_profils) : array() ;
 $tab_profils_possibles = $tab_objet_profils[$f_objet];
 $tab_profils_inconnus  = array_diff($tab_profils_transmis,$tab_profils_possibles);
 if(count($tab_profils_inconnus))

@@ -182,7 +182,6 @@ define('CHEMIN_DOSSIER_IMPORT'        , CHEMIN_DOSSIER_TMP.'import'.DS);
 define('CHEMIN_DOSSIER_LOGINPASS'     , CHEMIN_DOSSIER_TMP.'login-mdp'.DS);
 define('CHEMIN_DOSSIER_LOGO'          , CHEMIN_DOSSIER_TMP.'logo'.DS);
 define('CHEMIN_DOSSIER_OFFICIEL'      , CHEMIN_DOSSIER_TMP.'officiel'.DS);
-define('CHEMIN_DOSSIER_PARTENARIAT'   , CHEMIN_DOSSIER_TMP.'partenariat'.DS);
 define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
 //      CHEMIN_FICHIER_CONFIG_MYSQL     est défini dans index.php ou ajax.php, en fonction du type d'installation et d'utilisateur connecté
 define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
@@ -341,7 +340,6 @@ define('URL_DIR_EXPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER
 define('URL_DIR_IMPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMPORT      ) );
 define('URL_DIR_LOGINPASS'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS   ) );
 define('URL_DIR_LOGO'        , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO        ) );
-define('URL_DIR_PARTENARIAT' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_PARTENARIAT ) );
 define('URL_DIR_RSS'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS         ) );
 define('URL_DIR_WEBSERVICES' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_WEBSERVICES ) );
 
@@ -386,9 +384,8 @@ define('ID_FAMILLE_MATIERE_USUELLE',   99);
 define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
 
 // cookies
-define('COOKIE_STRUCTURE' ,'SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_AUTHMODE'  ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_PARTENAIRE','SACoche-partenaire');     // nom du cookie servant à retenir le partenaire sélectionné, afin de ne pas à avoir à le sélectionner de nouveau (convention ENT sur serveur Sésamath uniquement).
+define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
+define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php
@@ -504,7 +501,6 @@ function __autoload($class_name)
 
     'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
     'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
-    'DB_WEBMESTRE_PARTENAIRE'     => '_sql'.DS.'requetes_webmestre_partenaire.php' ,
     'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
     'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
     'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php'

@@ -856,9 +856,9 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
-  $tab_dossier = array( 'X'=>'commun/h/' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' );
-  $tab_init_nominatif   = array( 'RR'=>array() , 'R'=>array() , 'V'=>array() , 'VV'=>array() , 'X'=>array() );
-  $tab_init_quantitatif = array( 'RR'=>0 , 'R'=>0 , 'V'=>0 , 'VV'=>0 , 'X'=>0 );
+  $tab_dossier = array( 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' );
+  $tab_init_nominatif   = array('RR'=>array(),'R'=>array(),'V'=>array(),'VV'=>array());
+  $tab_init_quantitatif = array('RR'=>0 ,'R'=>0 ,'V'=>0 ,'VV'=>0 );
   $tab_repartition_nominatif   = array();
   $tab_repartition_quantitatif = array();
   // initialisation
@@ -871,7 +871,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   $affichage_repartition_head = '<th class="nu"></th>';
   foreach($tab_init_quantitatif as $note=>$vide)
   {
-    $affichage_repartition_head .= ($note!='X') ? '<th><img alt="'.$note.'" src="./_img/note/'.$tab_dossier[$note].$note.'.gif" /></th>' : '<th>Autre</th>' ;
+    $affichage_repartition_head .= '<th><img alt="'.$note.'" src="./_img/note/'.$tab_dossier[$note].$note.'.gif" /></th>';
   }
   // ligne suivantes
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , FALSE /*with_REQ*/ );
@@ -880,10 +880,11 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
     if( isset($tab_user_id[$DB_ROW['eleve_id']]) && isset($tab_item_id[$DB_ROW['item_id']]) )
     {
-      $note  = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $DB_ROW['saisie_note'] : 'X' ; // Regrouper ce qui n'est pas RR R V VV
-      $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors RR R V VV
-      $tab_repartition_nominatif[$DB_ROW['item_id']][$note][] = $eleve;
-      $tab_repartition_quantitatif[$DB_ROW['item_id']][$note]++;
+      if(isset($tab_init_quantitatif[$DB_ROW['saisie_note']])) // On ne garde que RR R V VV
+      {
+        $tab_repartition_nominatif[$DB_ROW['item_id']][$DB_ROW['saisie_note']][] = $tab_user_id[$DB_ROW['eleve_id']];
+        $tab_repartition_quantitatif[$DB_ROW['item_id']][$DB_ROW['saisie_note']]++;
+      }
     }
   }
   // assemblage / affichage du tableau avec la répartition quantitative
@@ -931,14 +932,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche+$sacoche_pdf->reference_largeur , $sacoche_pdf->marge_haut);
     foreach($tab_init_quantitatif as $note=>$vide)
     {
-      if($note!='X')
-      {
-        $sacoche_pdf->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
-      }
-      else
-      {
-        $sacoche_pdf->CellFit( $sacoche_pdf->cases_largeur , $sacoche_pdf->etiquette_hauteur , To::pdf('Autre') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-      }
+      $sacoche_pdf->afficher_note_lomer($note,$border=1,$br=0);
     }
     // ligne suivantes : référence item, cases répartition quantitative
     $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
@@ -974,7 +968,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   $tab_couleurs = array( 'oui'=>'couleur' , 'non'=>'monochrome' );
   foreach($tab_couleurs as $couleur => $fichier_couleur)
   {
-    $sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , $couleur );
+    $sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , $couleur );
     // il faut additionner le nombre maxi d'élèves par case de chaque item (sans descendre en dessous de 4 pour avoir la place d'afficher l'intitulé de l'item) afin de prévoir le nb de lignes nécessaires
     $somme = 0;
     foreach($tab_repartition_quantitatif as $item_id => $tab_effectifs)
@@ -1358,7 +1352,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   {
     $chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
     // Il peut être référencé dans une autre évaluation et donc avoir déjà été effacé, ou ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-    if(is_file($chemin_doc))
+    if(file_exists($chemin_doc))
     {
       unlink($chemin_doc);
     }

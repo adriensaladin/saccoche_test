@@ -186,11 +186,34 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
     echo'    <source src="./_audio/bip.mp3" type="audio/mpeg" />'."\r\n";
     echo'    <source src="./_audio/bip.ogg" type="audio/ogg" />'."\r\n";
     echo'  </audio>'."\r\n";
-    echo $_SESSION['MENU']."\r\n"; // Le menu '<ul id="menu">...</ul>
+    // Le menu '<ul id="menu">...</ul>
+    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
+    {
+      require(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL_TYPE'].'_'.HEBERGEUR_INSTALLATION.'.html');
+    }
+    else
+    {
+      $contenu_menu = file_get_contents(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL_TYPE'].'.html');
+      // La présence de certains éléments du menu dépend des choix de l'établissement
+      if(in_array($_SESSION['USER_PROFIL_TYPE'],array('directeur','professeur')))
+      {
+        $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+        for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
+        {
+          if(!in_array($palier_id,$tab_paliers_actifs))
+          {
+            $tab_bad = array(      '<li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li>'     );
+            $tab_bon = array( '<!-- <li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li> -->' );
+            $contenu_menu = str_replace( $tab_bad , $tab_bon , $contenu_menu );
+          }
+        }
+      }
+      echo $contenu_menu;
+    }
     echo'</div>'."\r\n";
     echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'."\r\n";
     echo'<div id="cadre_bas">'."\r\n";
-    echo'  <h1>» '.$TITRE.'</h1>'."\r\n";
+    echo'  <h1>» '.$TITRE.'</h1>';
   }
   else
   {

@@ -154,16 +154,17 @@ class Webmestre
    */
   public static function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$contact_prenom,$admin_login,$admin_password,$url_dir_sacoche)
   {
-    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n\r\n";
-    $texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner l\'établissement, utiliser le lien suivant :'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n\r\n";
+    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+    $texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n\r\n";
     $texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me communiquer ses coordonnées.'."\r\n\r\n";
     $texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
     $texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
     $texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
     $texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
-    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
-    $texte.= 'Cordialement,'."\r\n".WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
+    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
+    $texte.= 'Cordialement'."\r\n";
+    $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
     return $texte;
   }
 
@@ -183,59 +184,16 @@ class Webmestre
    */
   public static function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$url_dir_sacoche)
   {
-    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n\r\n";
+    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
     $texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
     $texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
     $texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
     $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
     $texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
-    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
-    $texte.= 'Cordialement,'."\r\n".WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-    return $texte;
-  }
-
-  /**
-   * Fabriquer le contenu du courriel d'insription envoyé au partenaire ENT conventionné
-   * 
-   * @param string   $denomination
-   * @param string   $nom
-   * @param string   $prenom
-   * @param string   $password
-   * @param string   $url_dir_sacoche
-   * @return string
-   */
-  public static function contenu_courriel_partenaire_ajout($denomination,$nom,$prenom,$password,$url_dir_sacoche)
-  {
-    $texte = 'A l\'attention de '.$prenom.' '.$nom.','."\r\n\r\n";
-    $texte.= 'Dans le cadre de la convention signée, instaurant un partenariat entre "'.$denomination.'" et Sésamath, pour l\'hébergement sur ses serveurs de SACoche avec utilisation d\'un connecteur ENT, vous disposez d\'un compte de gestion.'."\r\n\r\n";
-    $texte.= 'Pour s\'y connecter, utiliser le lien'."\r\n".$url_dir_sacoche.'?partenaire'."\r\n".'sélectionner "'.$denomination.'"'."\r\n".'et saisir ce mot de passe :   '.$password."\r\n\r\n";
-    $texte.= 'Le mot de passe est modifiable depuis votre espace correspondant.'."\r\n\r\n";
-    $texte.= 'Pour modifier l\'identité de la personne référente (nom, prénom ou courriel), il suffit de nous communiquer ses coordonnées.'."\r\n\r\n";
-    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
-    $texte.= 'Cordialement,'."\r\n".WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n".'Responsable SACoche pour Sésamath'."\r\n\r\n";
-    return $texte;
-  }
-
-  /**
-   * Fabriquer le contenu du courriel d'insription envoyé au partenaire ENT conventionné
-   * 
-   * @param string   $denomination
-   * @param string   $nom
-   * @param string   $prenom
-   * @param string   $password
-   * @param string   $url_dir_sacoche
-   * @return string
-   */
-  public static function contenu_courriel_partenaire_nouveau_mdp($denomination,$nom,$prenom,$password,$url_dir_sacoche)
-  {
-    $texte = 'A l\'attention de '.$prenom.' '.$nom.','."\r\n\r\n";
-    $texte.= 'Nous venons de réinitialiser le mot de passe du compte de gestion (partenariat entre "'.$denomination.'" et Sésamath, pour l\'hébergement sur ses serveurs de SACoche avec utilisation d\'un connecteur ENT).'."\r\n\r\n";
-    $texte.= 'Pour se connecter, utiliser le lien'."\r\n".$url_dir_sacoche.'?partenaire'."\r\n".'sélectionner "'.$denomination.'"'."\r\n".'et saisir ce mot de passe :   '.$password."\r\n\r\n";
-    $texte.= 'Le mot de passe est modifiable depuis l\'espace correspondant.'."\r\n\r\n";
-    $texte.= 'Pour modifier l\'identité de la personne référente (nom, prénom ou courriel), il suffit de nous communiquer ses coordonnées.'."\r\n\r\n";
-    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
-    $texte.= 'Cordialement,'."\r\n".WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n".'Responsable SACoche pour Sésamath'."\r\n\r\n";
+    $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
+    $texte.= 'Cordialement'."\r\n";
+    $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
     return $texte;
   }
 

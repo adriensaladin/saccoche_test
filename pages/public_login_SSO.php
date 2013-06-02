@@ -352,30 +352,16 @@ if($connexion_mode=='cas')
     }
     // Normalement les hébergements académiques ne sont pas concernés
     require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
-    if( isset($tab_connecteurs_hebergement[$connexion_ref]) )
+    if(in_array($connexion_ref,$tab_connecteurs_hebergement))
     {
       exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
     }
     // Pas besoin de vérification si convention signée à un plus haut niveau
-    if( !isset($tab_connecteurs_convention[$connexion_ref]) )
+    if(!in_array($connexion_ref,$tab_connecteurs_convention))
     {
       if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
       {
         exit_error( 'Absence de convention valide' /*titre*/ , 'L\'utilisation de ce service sur cet hébergement est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un administrateur doit effectuer les démarches nécessaires depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Vous pourrez trouver toute information utile à ce sujet <a href="'.SERVEUR_CONVENTION_ENT.'">dans la documentation</a>.' /*contenu*/ );
-      }
-    }
-    else
-    {
-      // Cas d'une convention signée par un partenaire ENT => Mettre en session l'affichage de sa communication en page d'accueil.
-      $partenaire_id = DB_WEBMESTRE_PUBLIC::DB_recuperer_id_partenaire_for_connecteur($connexion_ref);
-      $fichier_chemin = 'info_'.$partenaire_id.'.php';
-      if( $partenaire_id && is_file(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin) )
-      {
-        require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
-        $partenaire_logo_url = ($partenaire_logo_actuel_filename) ? URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename : URL_DIR_IMG.'auto.gif' ;
-        $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" class="lien_ext">' : '' ;
-        $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>' : '' ;
-        $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
       }
     }
   }

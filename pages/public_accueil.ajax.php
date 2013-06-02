@@ -27,12 +27,11 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
-$BASE       = (isset($_POST['f_base']))       ? Clean::entier($_POST['f_base'])       : 0 ;
-$profil     = (isset($_POST['f_profil']))     ? Clean::texte($_POST['f_profil'])      : '';  // normal | webmestre | partenaire
-$login      = (isset($_POST['f_login']))      ? Clean::login($_POST['f_login'])       : '';
-$password   = (isset($_POST['f_password']))   ? Clean::password($_POST['f_password']) : '';
-$partenaire = (isset($_POST['f_partenaire'])) ? Clean::entier($_POST['f_partenaire']) : 0 ;
+$action   = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])      : '';
+$BASE     = (isset($_POST['f_base']))     ? Clean::entier($_POST['f_base'])       : 0 ;
+$profil   = (isset($_POST['f_profil']))   ? Clean::texte($_POST['f_profil'])      : '';  // normal | webmestre
+$login    = (isset($_POST['f_login']))    ? Clean::login($_POST['f_login'])       : '';
+$password = (isset($_POST['f_password'])) ? Clean::password($_POST['f_password']) : '';
 
 /*
  * Afficher le formulaire de choix des établissements (installation multi-structures)
@@ -57,7 +56,6 @@ function afficher_nom_etablissement($BASE,$denomination)
 /*
  * Afficher la partie du formulaire spécialement dédiée à l'identification :
  * - pour le webmestre -> seulement la saisie du mot de passe pour le webmestre
- * - pour un partenaire -> un select avec la liste des partenaires et la saisie du mot de passe
  * - si le mode de connexion est normal -> saisie login & mot de passe SACoche
  * - si l'établissement est configuré pour un autre mode de connexion -> au choix [ saisie login & mot de passe SACoche ] ou [ utilisation de l'authentification externe ]
  */
@@ -65,17 +63,8 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 {
   if($profil=='webmestre')
   {
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'."\r\n";
-    echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
-  }
-  elseif($profil=='partenaire')
-  {
-    // Lecture d'un cookie sur le poste client servant à retenir le dernier partenariat sélectionné si identification avec succès
-    $selection = (isset($_COOKIE[COOKIE_PARTENAIRE])) ? Clean::entier($_COOKIE[COOKIE_PARTENAIRE]) : FALSE ;
-    $options_partenaires = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_partenaires_conventionnes() , FALSE /*select_nom*/ , '' /*option_first*/ , $selection , '' /*optgroup*/ );
-    echo'<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'."\r\n";
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
-    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
+    echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
   }
   elseif($mode=='normal')
   {
@@ -102,22 +91,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 
 if($action=='tester_version')
 {
-  $version_last = recuperer_numero_derniere_version();
-  if(!preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#', $version_last))
-  {
-    $tab_retour = array( 'class'=>'alerte' , 'texte'=>$version_last , 'after' => '' );
-  }
-  elseif($version_last==VERSION_PROG)
-  {
-    $tab_retour = array( 'class'=>'valide' , 'texte'=>'Cette version est la dernière disponible.' , 'after' => '' );
-  }
-  else
-  {
-    // Compte approximativement le nombre de mois qui sépare ces 2 versions (sans s'occuper des jours).
-    $class = ( (substr($version_last,0,4)-substr(VERSION_PROG,0,4))*12 - substr($version_last,5,2) + substr(VERSION_PROG,5,2) < 12 ) ? ' class="probleme"' : '' ;
-    $tab_retour = array( 'class'=>'alerte' , 'texte'=>'<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' , 'after' => ' &rarr; <a class="lien_ext" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' );
-  }
-  exit(json_encode($tab_retour));
+  exit( recuperer_numero_derniere_version() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,13 +111,6 @@ if( ($action=='initialiser') && ($profil=='webmestre') )
       DB_WEBMESTRE_MAJ_BASE::DB_maj_base($version_base_webmestre);
     }
   }
-  exit( afficher_formulaire_identification($profil,'normal') );
-}
-
-// Charger le formulaire pour un partenaire
-
-if( ($action=='initialiser') && ($profil=='partenaire') )
-{
   exit( afficher_formulaire_identification($profil,'normal') );
 }
 
@@ -225,19 +192,6 @@ function adresse_redirection_apres_authentification()
   }
 }
 
-// Pour un utilisateur normal, y compris un administrateur
-
-if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
-{
-  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
-  if($auth_resultat=='ok')
-  {
-    SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
-    exit(adresse_redirection_apres_authentification());
-  }
-  exit($auth_resultat);
-}
-
 // Pour le webmestre d'un serveur
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
@@ -251,14 +205,14 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
   exit($auth_resultat);
 }
 
-// Pour un partenaire conventionné (serveur Sésamath uniquement)
+// Pour un utilisateur normal, y compris un administrateur
 
-if( ($action=='identifier') && ($profil=='partenaire') && ($partenaire!=0) && ($password!='') && IS_HEBERGEMENT_SESAMATH && (HEBERGEUR_INSTALLATION=='multi-structures') )
+if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_partenaire($partenaire,$password);
+  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
   if($auth_resultat=='ok')
   {
-    SessionUser::initialiser_partenaire($auth_DB_ROW);
+    SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
     exit(adresse_redirection_apres_authentification());
   }
   exit($auth_resultat);

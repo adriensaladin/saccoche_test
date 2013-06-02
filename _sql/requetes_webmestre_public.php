@@ -106,53 +106,6 @@ public static function DB_recuperer_structure_nom_for_Id($base_id)
 }
 
 /**
- * Récuperer, à partir d'une référence de connexion, l'identifiant d'un partenaire conventionné pour charger sa communication
- *
- * @param string   $connecteur
- * @return int
- */
-public static function DB_recuperer_id_partenaire_for_connecteur($connecteur)
-{
-  $DB_SQL = 'SELECT partenaire_id ';
-  $DB_SQL.= 'FROM sacoche_partenaire ';
-  $DB_SQL.= 'WHERE partenaire_connecteurs LIKE :connecteur_like ';
-  $DB_SQL.= 'LIMIT 1 '; // Au cas où, même s'il ne devrait pas y avoir 2 partenaires pour un même connecteur
-  $DB_VAR = array(':connecteur_like'=>'%,'.$connecteur.',%');
-  return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Récuperer, à partir d'un identifiant, les données d'un partenaire conventionné tentant de se connecter (le mdp est comparé ensuite)
- *
- * @param int   $partenaire_id
- * @return array
- */
-public static function DB_recuperer_donnees_partenaire($partenaire_id)
-{
-  $DB_SQL = 'SELECT sacoche_partenaire.*, ';
-  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),partenaire_tentative_date)) AS delai_tentative_secondes '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
-  $DB_SQL.= 'FROM sacoche_partenaire ';
-  $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id);
-  return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Modifier la date de connexion ou de tentative de connexion d'un partenaire conventionné
- *
- * @param int   $partenaire_id
- * @return void
- */
-public static function DB_enregistrer_partenaire_date_tentative($partenaire_id)
-{
-  $DB_SQL = 'UPDATE sacoche_partenaire ';
-  $DB_SQL.= 'SET partenaire_tentative_date=NOW() ';
-  $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id);
-  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Compter le nombre de structure inscrites (mode multi-structures)
  *
  * @param void

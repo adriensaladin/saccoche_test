@@ -2770,20 +2770,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-05-14')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-06-01';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout d'une ligne à la table sacoche_user_profil
-      if(empty($reload_sacoche_user_profil))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_user_profil VALUES ("ENT", 0, 1, 1, 1, "partenaire" , "sansobjet", "sansobjet", "partenaire" , "partenaires" , "partenariat conventionné (ENT)" , "partenariats conventionnés (ENT)" , "ppp.nnnnnnnn", 6, 0, 15) ' );
-      }
-    }
-  }
-
 }
 
 }

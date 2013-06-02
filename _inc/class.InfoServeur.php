@@ -47,19 +47,12 @@ class InfoServeur
   /**
    * info_base_complement
    *
-   * @param string $type_base
+   * @param void
    * @return string
    */
-  private static function info_base_complement($type_base)
+  private static function info_base_complement()
   {
-    if($type_base=='structure')
-    {
-      return (!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur dépend de chaque structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
-    }
-    if($type_base=='webmestre')
-    {
-      return (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ;
-    }
+    return ($_SESSION['USER_PROFIL_TYPE']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
   }
 
   /**
@@ -85,31 +78,30 @@ class InfoServeur
   {
     switch($sujet)
     {
-      case 'version_php'                    : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.';
-      case 'version_mysql'                  : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.5 est stable depuis octobre 2010.';
-      case 'version_sacoche_prog'           : return 'Dernière version disponible : '.InfoServeur::SACoche_version_dispo();
-      case 'version_sacoche_base_structure' : return InfoServeur::info_base_complement('structure').'Version attendue : '.VERSION_BASE_STRUCTURE;
-      case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre').'Version attendue : '.VERSION_BASE_WEBMESTRE;
-      case 'max_execution_time'             : return 'Par défaut 30 secondes.<br />Une valeur trop faible peut gêner les sauvegardes / restaurations de grosses bases ou des générations de bilans PDF.';
-      case 'max_input_vars'                 : return 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
-      case 'memory_limit'                   : return 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
-      case 'post_max_size'                  : return 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
-      case 'upload_max_filesize'            : return 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
-      case 'max_allowed_packet'             : return 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
-      case 'max_user_connections'           : return 'Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.';
-      case 'group_concat_max_len'           : return 'Par défaut 1024 octets.<br />Une telle valeur devrait suffire.';
-      case 'safe_mode'                      : return 'Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
-      case 'open_basedir'                   : return 'Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
-      case 'ini_set_memory_limit'           : return 'Possibilité d\'augmenter la mémoire allouée au script.';
-      case 'register_globals'               : return 'Enregistrer les variables environnement Get/Post/Cookie/Server comme des variables globales.<br />Par défaut désactivé depuis PHP 4.2.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
-      case 'magic_quotes_gpc'               : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
-      case 'magic_quotes_sybase'            : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Remplace la directive magic_quotes_gpc en cas d\'activation.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
-      case 'session_gc_maxlifetime'         : return 'Durée de vie des données (session) sur le serveur, en nombre de secondes.<br />Par défaut 1440s soit 24min.<br />SACoche permet de régler une conservation de session plus longue.<br />Mais cela ne fonctionnera que si le serveur est configuré pour une durée minimum de 10min.';
-      case 'session_use_trans_sid'          : return 'Par défaut désactivé, ce qui rend le support de l\'identifiant de session transparent.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
-      case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
-      case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
-      case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.';
-      default                               : return '';
+      case 'version_php'                 : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.';
+      case 'version_mysql'               : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.5 est stable depuis octobre 2010.';
+      case 'version_sacoche_prog'        : return 'Dernière version disponible : '.InfoServeur::SACoche_version_dispo();
+      case 'version_sacoche_base'        : return InfoServeur::info_base_complement().'Version attendue : '.VERSION_BASE_STRUCTURE;
+      case 'max_execution_time'          : return 'Par défaut 30 secondes.<br />Une valeur trop faible peut gêner les sauvegardes / restaurations de grosses bases ou des générations de bilans PDF.';
+      case 'max_input_vars'              : return 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
+      case 'memory_limit'                : return 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
+      case 'post_max_size'               : return 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
+      case 'upload_max_filesize'         : return 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
+      case 'max_allowed_packet'          : return 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
+      case 'max_user_connections'        : return 'Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.';
+      case 'group_concat_max_len'        : return 'Par défaut 1024 octets.<br />Une telle valeur devrait suffire.';
+      case 'safe_mode'                   : return 'Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
+      case 'open_basedir'                : return 'Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
+      case 'ini_set_memory_limit'        : return 'Possibilité d\'augmenter la mémoire allouée au script.';
+      case 'register_globals'            : return 'Enregistrer les variables environnement Get/Post/Cookie/Server comme des variables globales.<br />Par défaut désactivé depuis PHP 4.2.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_gpc'            : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_sybase'         : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Remplace la directive magic_quotes_gpc en cas d\'activation.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'session_gc_maxlifetime'      : return 'Durée de vie des données (session) sur le serveur, en nombre de secondes.<br />Par défaut 1440s soit 24min.<br />SACoche permet de régler une conservation de session plus longue.<br />Mais cela ne fonctionnera que si le serveur est configuré pour une durée minimum de 10min.';
+      case 'session_use_trans_sid'       : return 'Par défaut désactivé, ce qui rend le support de l\'identifiant de session transparent.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
+      case 'session_use_only_cookies'    : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
+      case 'zend_ze1_compatibility_mode' : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
+      case 'modules_PHP'                 : return 'Les modules sur fond coloré sont requis par SACoche.';
+      default                            : return '';
     }
   }
 
@@ -225,34 +217,18 @@ class InfoServeur
   }
 
   /**
-   * version_sacoche_base_structure
+   * version_sacoche_base
    * Retourne une chaîne indiquant la version logicielle de la base de données de SACoche.
    * En mode multi-structure, celle-ci est propre à chaque établissement.
    *
    * @param void
    * @return string   AAAA-MM-JJ
    */
-  private static function version_sacoche_base_structure()
+  private static function version_sacoche_base()
   {
-    if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
-    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'='))   return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
-                                                                                return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
-  }
-
-  /**
-   * version_sacoche_base_webmestre
-   * Retourne une chaîne indiquant la version logicielle de la base de données de SACoche.
-   * En mode multi-structure, celle-ci est propre à chaque établissement.
-   *
-   * @param void
-   * @return string   AAAA-MM-JJ
-   */
-  private static function version_sacoche_base_webmestre()
-  {
-    if($_SESSION['USER_PROFIL_TYPE']=='administrateur')           return InfoServeur::cellule_coloree_centree('indisponible','jaune');
-    $version_base = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
-    if(version_compare($version_base,VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert');
-                                                                  return InfoServeur::cellule_coloree_centree($version_base ,'rouge');
+    if($_SESSION['USER_PROFIL_TYPE']=='webmestre')                            return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
+    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
+                                                                              return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
 
   /**
@@ -596,11 +572,10 @@ class InfoServeur
   public static function tableau_versions_logicielles()
   {
     $tab_objets = array(
-      'version_php'                    => 'PHP',
-      'version_mysql'                  => 'MySQL',
-      'version_sacoche_prog'           => 'SACoche fichiers',
-      'version_sacoche_base_structure' => 'SACoche base structure',
-      'version_sacoche_base_webmestre' => 'SACoche base webmestre'
+      'version_php'          => 'PHP',
+      'version_mysql'        => 'MySQL',
+      'version_sacoche_prog' => 'SACoche fichiers',
+      'version_sacoche_base' => 'SACoche base'
     );
     return InfoServeur::tableau_deux_colonnes( 'Versions logicielles' , $tab_objets );
   }

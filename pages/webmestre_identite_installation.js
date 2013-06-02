@@ -260,7 +260,7 @@ $(document).ready
         {
           f_denomination         : { required:true , maxlength:60 },
           f_uai                  : { required:false , uai_format:true , uai_clef:true },
-          f_adresse_site         : { required:false , url:true, maxlength:150 },
+          f_adresse_site         : { required:false , maxlength:150 },
           f_logo                 : { required:false },
           f_cnil_etat            : { required:true },
           f_cnil_numero          : { required:function(){return $('#f_cnil_oui').is(':checked');} , digits:true },
@@ -274,7 +274,7 @@ $(document).ready
         {
           f_denomination         : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
           f_uai                  : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
-          f_adresse_site         : { url:"adresse invalide (http:// manquant ?)", maxlength:"150 caractères maximum" },
+          f_adresse_site         : { maxlength:"150 caractères maximum" },
           f_logo                 : { },
           f_cnil_etat            : { required:"indication CNIL manquante" },
           f_cnil_numero          : { required:"numéro CNIL manquant" , digits:"nombre entier requis" },

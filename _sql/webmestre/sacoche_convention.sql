@@ -13,4 +13,4 @@ CREATE TABLE sacoche_convention (
   UNIQUE KEY (structure_base,connexion_nom,convention_date_debut),
   KEY convention_date_fin (convention_date_fin),
   KEY convention_activation (convention_activation)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT "Pour les conventions ENT établissements (serveur Sésamath).";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

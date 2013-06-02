@@ -158,7 +158,7 @@ if( ($action=='import_gepi') && $periode_id )
 if( in_array($action,array('traitement_import_siecle','traitement_import_gepi')) && $periode_id )
 {
   // Récupération des données déjà extraites du fichier
-  if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_memo))
+  if(!file_exists(CHEMIN_DOSSIER_IMPORT.$fichier_memo))
   {
     exit('Erreur : le fichier '.CHEMIN_DOSSIER_IMPORT.$fichier_memo.' contenant les données à traiter est introuvable !');
   }

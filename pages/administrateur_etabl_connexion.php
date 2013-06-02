@@ -69,7 +69,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     switch($connexion_mode)
     {
       case 'cas' :
-        $convention = ($connexion_nom=='perso') ? 'hors_ent' : ( in_array($connexion_ref,$tab_connecteurs_hebergement) ? 'heberg_acad' : ( in_array($connexion_ref,$tab_connecteurs_convention) ? 'conv_acad' : 'conv_etabl' ) ) ;
+        $convention = ($connexion_nom=='perso') ? 'hors_ent' : ( isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( isset($tab_connecteurs_convention[$connexion_ref]) ? 'conv_acad' : 'conv_etabl' ) ) ;
         $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
         break;
       case 'shibboleth' :

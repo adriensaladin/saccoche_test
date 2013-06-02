@@ -374,19 +374,19 @@ class FileSystem
   {
     if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
     {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
+      $fichier_chemin = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
       $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
       $prefixe = 'STRUCTURE';
     }
     elseif(HEBERGEUR_INSTALLATION=='mono-structure')
     {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php';
+      $fichier_chemin = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php';
       $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
       $prefixe = 'STRUCTURE';
     }
     else // (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
     {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php';
+      $fichier_chemin = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php';
       $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
       $prefixe = 'WEBMESTRE';
     }
@@ -398,7 +398,28 @@ class FileSystem
     $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');  // Nom d\'utilisateur'."\r\n";
     $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');  // Mot de passe'."\r\n";
     $fichier_contenu .= '?>'."\r\n";
-    FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
+    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+  }
+
+  /**
+   * Fabriquer ou mettre à jour le fichier d'un partenaire ENT conventionné pour un message d'accueil avec logo et lien.
+   * 
+   * @param int    $partenaire_id
+   * @param string $partenaire_logo_actuel_filename
+   * @param string $partenaire_adresse_web
+   * @param string $partenaire_message
+   * @return void
+   */
+  public static function fabriquer_fichier_partenaire_message($partenaire_id,$partenaire_logo_actuel_filename,$partenaire_adresse_web,$partenaire_message)
+  {
+    $fichier_chemin = CHEMIN_DOSSIER_PARTENARIAT.'info_'.$_SESSION['USER_ID'].'.php';
+    $fichier_contenu  = '<?php'."\r\n";
+    $fichier_contenu .= '// Informations du partenaire ENT conventionné pour une communication avec logo et lien'."\r\n";
+    $fichier_contenu .= '$partenaire_logo_actuel_filename = "'.html($partenaire_logo_actuel_filename).'";'."\r\n";
+    $fichier_contenu .= '$partenaire_adresse_web          = "'.html($partenaire_adresse_web).'";'."\r\n";
+    $fichier_contenu .= '$partenaire_message              = "'.html($partenaire_message).'";'."\r\n";
+    $fichier_contenu .= '?>'."\r\n";
+    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   }
 
   /**
@@ -438,7 +459,7 @@ class FileSystem
 
   /**
    * Nettoyer les fichiers temporaires
-   * Fonction appeler lors d'une nouvelle connexion d'un utilisateur (pas mis en page d'accueil sinon c'est appelé trop souvent)
+   * Fonction appeler lors d'une nouvelle connexion d'un utilisateur d'un établissement (pas mis en page d'accueil sinon c'est appelé trop souvent)
    * 
    * @param int       $BASE
    * @return void
@@ -450,8 +471,8 @@ class FileSystem
     if(!file_exists($fichier_lock))
     {
       FileSystem::ecrire_fichier($fichier_lock,'');
-      // On verifie que certains sous-dossiers existent : "devoir" n'a été ajouté qu'en mars 2012, "officiel" n'a été ajouté qu'en mai 2012, "cookie" et "rss" étaient oubliés depuis le formulaire Sésamath ("badge" a priori c'est bon)
-      $tab_sous_dossier = array( 'devoir' , 'officiel' , 'cookie'.DS.$BASE , 'devoir'.DS.$BASE , 'officiel'.DS.$BASE , 'rss'.DS.$BASE );
+      // On verifie que certains sous-dossiers existent : "devoir" n'a été ajouté qu'en mars 2012, "officiel" n'a été ajouté qu'en mai 2012, "partenariat" n'a été ajouté qu'en juin 2013, "cookie" et "rss" étaient oubliés depuis le formulaire Sésamath ("badge" a priori c'est bon)
+      $tab_sous_dossier = array( 'devoir' , 'officiel' , 'partenariat' , 'cookie'.DS.$BASE , 'devoir'.DS.$BASE , 'officiel'.DS.$BASE , 'rss'.DS.$BASE );
       foreach($tab_sous_dossier as $sous_dossier)
       {
         $dossier = CHEMIN_DOSSIER_TMP.$sous_dossier;

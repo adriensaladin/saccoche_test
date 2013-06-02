@@ -30,114 +30,51 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour initialiser/actualiser le select f_logo
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function chargement_select_logo()
-    {
-      $('#ajax_logo').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=select_logo',
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_logo').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            if(responseHTML.substring(0,16)!='<option value=""')
-            {
-              $('#ajax_logo').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-            else
-            {
-              $('#ajax_logo').removeAttr("class").html('');
-              $("#f_logo").html(responseHTML);
-            }
-          }
-        }
-      );
-    }
-    chargement_select_logo();
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour initialiser/actualiser le ul listing_logos
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function chargement_ul_logo()
-    {
-      $('#ajax_listing').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=listing_logos',
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_listing').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            if(responseHTML.substring(0,4)!='<li>')
-            {
-              $('#ajax_listing').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-            else
-            {
-              $('#ajax_listing').removeAttr("class").html('');
-              $("#listing_logos").html(responseHTML);
-            }
-          }
-        }
-      );
-    }
-    chargement_ul_logo();
+    // Indiquer le nombre de caractères restant autorisés dans le textarea
+    $('#f_message').keyup
+    (
+      function()
+      {
+        afficher_textarea_reste( $(this) , 500 );
+      }
+    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Appel en ajax pour supprimer un logo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#listing_logos').on
+    $('#f_delete_logo').click
     (
-      'click',
-      'q.supprimer',
       function()
       {
-        memo_li = $(this).parent();
-        logo = $(this).prev().attr('alt');
-        $('#ajax_listing').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $("button").prop('disabled',true);
+        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=delete_logo'+'&f_logo='+logo,
+            data : 'csrf='+CSRF+'&f_action=delete_logo',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_listing').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $("button").prop('disabled',false);
+              $('#ajax_upload').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
-              if(responseHTML!='ok')
+              $("button").prop('disabled',false);
+              if(responseHTML.substring(0,2)!='ok')
               {
-                $('#ajax_listing').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_listing').removeAttr("class").html('');
-                memo_li.remove();
-                chargement_select_logo();
+                initialiser_compteur();
+                $('#ajax_upload').removeAttr("class").html('');
+                $('#image_logo').attr('src',responseHTML.substring(3,responseHTML.length));
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
               }
             }
           }
@@ -150,7 +87,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     new AjaxUpload
-    ('#f_upload',
+    ('#f_upload_logo',
       {
         action: 'ajax.php?page='+PAGE,
         name: 'userfile',
@@ -193,7 +130,7 @@ $(document).ready
 
     function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      if(responseHTML!='ok')
+      if(responseHTML.substring(0,2)!='ok')
       {
         $("button").prop('disabled',false);
         $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -203,47 +140,10 @@ $(document).ready
         initialiser_compteur();
         $("button").prop('disabled',false);
         $('#ajax_upload').removeAttr("class").html('&nbsp;');
-        chargement_select_logo();
-        chargement_ul_logo();
+        $('#image_logo').attr('src',responseHTML.substring(3,responseHTML.length));
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
       }
     }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Gérer les focus et click pour les boutons radio
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#f_cnil_numero').focus
-    (
-      function()
-      {
-        if($('#f_cnil_oui').is(':checked')==false)
-        {
-          $('#f_cnil_oui').prop('checked',true);
-          $("#cnil_dates").show();
-          return false; // important, sinon pb de récursivité
-        }
-      }
-    );
-
-    $('#f_cnil_oui').click
-    (
-      function()
-      {
-        $('#f_cnil_numero').focus();
-        $("#cnil_dates").show();
-      }
-    );
-
-    $('#f_cnil_non').click
-    (
-      function()
-      {
-        $("#cnil_dates").hide();
-        $("#f_cnil_numero").val('');
-        $("#f_cnil_date_engagement").val('');
-        $("#f_cnil_date_recepisse").val('');
-      }
-    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire principal
@@ -258,40 +158,19 @@ $(document).ready
       {
         rules :
         {
-          f_denomination         : { required:true , maxlength:60 },
-          f_uai                  : { required:false , uai_format:true , uai_clef:true },
-          f_adresse_site         : { required:false , url:true, maxlength:150 },
-          f_logo                 : { required:false },
-          f_cnil_etat            : { required:true },
-          f_cnil_numero          : { required:function(){return $('#f_cnil_oui').is(':checked');} , digits:true },
-          f_cnil_date_engagement : { required:function(){return $('#f_cnil_oui').is(':checked');} , dateITA:true },
-          f_cnil_date_recepisse  : { required:function(){return $('#f_cnil_oui').is(':checked');} , dateITA:true },
-          f_nom                  : { required:true , maxlength:20 },
-          f_prenom               : { required:true , maxlength:20 },
-          f_courriel             : { required:true , email:true , maxlength:60 }
+          f_upload_logo : { required:false },
+          f_adresse_web : { required:false , url:true, maxlength:150 },
+          f_message     : { required:false }
         },
         messages :
         {
-          f_denomination         : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
-          f_uai                  : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
-          f_adresse_site         : { url:"adresse invalide (http:// manquant ?)", maxlength:"150 caractères maximum" },
-          f_logo                 : { },
-          f_cnil_etat            : { required:"indication CNIL manquante" },
-          f_cnil_numero          : { required:"numéro CNIL manquant" , digits:"nombre entier requis" },
-          f_cnil_date_engagement : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_cnil_date_recepisse  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_nom                  : { required:"nom manquant" , maxlength:"20 caractères maximum" },
-          f_prenom               : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
-          f_courriel             : { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" }
+          f_upload_logo : { },
+          f_adresse_web : { url:"adresse invalide (http:// manquant ?)", maxlength:"150 caractères maximum" },
+          f_message     : {  }
         },
         errorElement : "label",
         errorClass : "erreur",
-        errorPlacement : function(error,element)
-        {
-          if(element.attr("type")=="radio") {$('#f_cnil_numero').after(error);}
-          else if(element.attr("size")==9){ element.next().after(error); }
-          else { element.after(error); }
-        }
+        errorPlacement : function(error,element) { element.after(error); }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
     );
@@ -345,9 +224,11 @@ $(document).ready
     {
       initialiser_compteur();
       $("button").prop('disabled',false);
-      if(responseHTML=='ok')
+      if(responseHTML.substring(0,2)=='ok')
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
+        $('#resultat').html(responseHTML.substring(3,responseHTML.length));
+        format_liens('#resultat');
       }
       else
       {

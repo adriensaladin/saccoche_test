@@ -30,6 +30,7 @@ ALTER TABLE sacoche_user_profil DISABLE KEYS;
 INSERT INTO sacoche_user_profil VALUES 
 ("OUT", 0, 1, 1, 1, "public"        , "sansobjet", "sansobjet", "non connecté"  , "non connectés"  , "utilisateur non connecté"           , "utilisateurs non connectés"            , "ppp.nnnnnnnn", 6, 0,  0),
 ("WBM", 0, 1, 1, 1, "webmestre"     , "sansobjet", "sansobjet", "webmestre"     , "webmestres"     , "webmestre (responsable du serveur)" , "webmestres (responsables du serveur)"  , "ppp.nnnnnnnn", 6, 0, 15),
+("ENT", 0, 1, 1, 1, "partenaire"    , "sansobjet", "sansobjet", "partenaire"    , "partenaires"    , "partenariat conventionné (ENT)"     , "partenariats conventionnés (ENT)"      , "ppp.nnnnnnnn", 6, 0, 15),
 ("ADM", 1, 1, 1, 1, "administrateur", "sansobjet", "sansobjet", "administrateur", "administrateurs", "administrateur (de l'établissement)", "administrateurs (de l'établissement)"  , "ppp.nnnnnnnn", 6, 0, 30),
 ("ELV", 1, 1, 1, 1, "eleve"         , "config"   , "auto"     , "élève"         , "élèves"         , "élève"                              , "élèves"                                , "ppp.nnnnnnnn", 6, 0, 30),
 ("TUT", 1, 1, 1, 1, "parent"        , "auto"     , "auto"     , "parent"        , "parents"        , "responsable légal (parent, tuteur)" , "responsables légaux (parents, tuteurs)", "ppp.nnnnnnnn", 6, 0, 30),

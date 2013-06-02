@@ -64,6 +64,20 @@ public static function DB_OPT_structures_sacoche()
 }
 
 /**
+ * Retourner un tableau [valeur texte] des partenaires conventionnés (authentification en page d'accueil)
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_OPT_partenaires_conventionnes()
+{
+  $DB_SQL = 'SELECT partenaire_id AS valeur, partenaire_denomination AS texte ';
+  $DB_SQL.= 'FROM sacoche_partenaire ';
+  $DB_SQL.= 'ORDER BY partenaire_denomination ASC';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * Lister les zones géographiques
  *
  * @param void

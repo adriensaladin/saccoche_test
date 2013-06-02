@@ -58,7 +58,7 @@ function load_fichier($nom)
 {
   global $action;
   $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
-  if(!file_exists($fnom))
+  if(!is_file($fnom))
   {
     exit('Erreur : le fichier contenant les données à traiter est introuvable !');
   }
@@ -2436,7 +2436,7 @@ if( $step==71 )
   $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
   // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
   $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
-  if(!file_exists($fnom))
+  if(!is_file($fnom))
   {
     exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
   }

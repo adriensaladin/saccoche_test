@@ -71,7 +71,7 @@ public static function DB_recuperer_statistiques()
   $DB_SQL.= 'FROM sacoche_saisie';
   $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $score_nb = $DB_ROW['nombre'];
-  //  de connexion
+  // info de connexion
   $DB_SQL = 'SELECT parametre_valeur ';
   $DB_SQL.= 'FROM sacoche_parametre ';
   $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';

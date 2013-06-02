@@ -119,7 +119,7 @@ if($f_action=='enregistrer_mode_identification')
         exit('Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !');
       }  
       require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
-      if( in_array($f_connexion_ref,$tab_connecteurs_hebergement) )
+      if( isset($tab_connecteurs_hebergement[$f_connexion_ref]) )
       {
         exit('Paramètres d\'un serveur CAS à utiliser sur l\'hébergement académique dédié !');
       }

@@ -78,13 +78,12 @@ if( ($action=='envoyer') && $num && $max && ($num<$max) )
   for($i=$i_min ; $i<$i_max ; $i++)
   {
     extract($_SESSION['tmp']['infos'][$i]); // $base_id $contact_nom $contact_prenom $contact_courriel
-    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+    $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n\r\n";
     $texte.= $_SESSION['tmp']['contenu']."\r\n\r\n";
+    $texte.= 'Cordialement,'."\r\n".WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
     $texte.= 'Rappel des adresses à utiliser :'."\r\n";
     $texte.= URL_DIR_SACOCHE.'?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
     $texte.= SERVEUR_PROJET.' (site du projet SACoche)'."\r\n\r\n";
-    $texte.= 'Cordialement'."\r\n";
-    $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
     $courriel_bilan = Sesamail::mail( $contact_courriel , $_SESSION['tmp']['titre'] , $texte );
     if(!$courriel_bilan)
     {

@@ -154,7 +154,7 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     $version_base_webmestre_actuelle = '2013-06-09';
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
     // rechargement de la table sacoche_convention si inexistante (bug à la création)
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.'sacoche_partenaire.sql');
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.'sacoche_convention.sql');
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes );
     DB::close(SACOCHE_WEBMESTRE_BD_NAME);
   }

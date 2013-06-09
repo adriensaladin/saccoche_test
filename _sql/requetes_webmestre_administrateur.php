@@ -56,7 +56,7 @@ public static function DB_recuperer_contact_infos($base_id)
  */
 public static function DB_lister_conventions_structure($base_id)
 {
-  $DB_SQL = 'SELECT convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_creation, convention_signature, convention_paiement, convention_activation ';
+  $DB_SQL = 'SELECT convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'WHERE sacoche_base=:base_id ';
   $DB_SQL.= 'ORDER BY convention_date_debut DESC ';
@@ -92,8 +92,8 @@ public static function DB_tester_convention_precise($base_id,$connexion_nom,$con
  */
 public static function DB_ajouter_convention($base_id,$connexion_nom,$convention_date_debut,$convention_date_fin)
 {
-  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation) ';
-  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation)';
+  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_signature,convention_paiement,convention_activation) ';
+  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,:convention_signature,:convention_paiement,:convention_activation)';
   $DB_VAR = array(':base_id'=>$base_id,':connexion_nom'=>$connexion_nom,':convention_date_debut'=>$convention_date_debut,':convention_date_fin'=>$convention_date_fin,':convention_signature'=>NULL,':convention_paiement'=>NULL,':convention_activation'=>0);
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
@@ -107,7 +107,7 @@ public static function DB_ajouter_convention($base_id,$connexion_nom,$convention
  */
 public static function DB_recuperer_convention($convention_id)
 {
-  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_creation, convention_signature, convention_paiement, convention_activation ';
+  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';
   $DB_VAR = array(':convention_id'=>$convention_id);

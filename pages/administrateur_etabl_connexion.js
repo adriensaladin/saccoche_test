@@ -290,7 +290,7 @@ $(document).ready
               else
               {
                 $('#ajax_msg_ajout').removeAttr("class").addClass("valide").html("Convention ajoutée !");
-                $('#table_action tbody tr td[colspan=7]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#table_action tbody tr td[colspan=6]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
                 $('#table_action tbody').prepend(responseHTML);
                 $('#table_action tbody tr:first td:last q.voir_archive').click();
               }
@@ -317,7 +317,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'imprimer_documents'+'&f_convention_id='+f_convention_id,
+            data : 'csrf='+CSRF+'&f_action='+'imprimer_convention'+'&f_convention_id='+f_convention_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -336,6 +336,16 @@ $(document).ready
               {
                 $('#fichier_convention').attr("href",tab_response[1]);
                 $('#fichier_facture'   ).attr("href",tab_response[2]);
+                if(tab_response[2])
+                {
+                  $('#facture_ok').show();
+                  $('#facture_ko').hide();
+                }
+                else
+                {
+                  $('#facture_ok').hide();
+                  $('#facture_ko').show();
+                }
                 $.fancybox( { 'href':'#form_impression' , onStart:function(){$('#form_impression').css("display","block");} , onClosed:function(){$('#form_impression').css("display","none");} , 'centerOnScroll':true } );
               }
             }

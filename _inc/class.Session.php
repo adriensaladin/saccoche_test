@@ -386,7 +386,7 @@ class Session
         {
           // 2.4.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
           // Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).
-          Session::save_request__close__open_new__init( FALSE /*memo_GET*/ ); // FALSE car sinon on peut tourner en boucle (toujours redirigé vers une page qui ne correspond pas au profil utilisé)
+          Session::save_request__close__open_new__init( TRUE /*memo_GET*/ );
           Session::exit_sauf_SSO('Page incompatible avec votre identification actuelle ; veuillez vous (re)-connecter.');
         }
       }

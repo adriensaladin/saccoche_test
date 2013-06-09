@@ -40,20 +40,20 @@ $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ 
 <form action="#" method="post" id="form_select"><fieldset>
   <label class="tab">Profil :</label>
     <?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
-    <label for="f_profil_administrateurs"><input id="f_profil_administrateurs" name="f_profil" type="radio" value="administrateur" /> Administrateurs</label>
+    <input id="f_profil_administrateurs" name="f_profil" type="radio" value="administrateur" /><label for="f_profil_administrateurs"> Administrateurs</label>
     &nbsp;&nbsp;&nbsp;
-    <label for="f_profil_directeurs"><input id="f_profil_directeurs" name="f_profil" type="radio" value="directeur" /> Directeurs</label>
+    <input id="f_profil_directeurs" name="f_profil" type="radio" value="directeur" /><label for="f_profil_directeurs"> Directeurs</label>
     &nbsp;&nbsp;&nbsp;
     <?php endif; ?>
     <?php if(in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))): ?>
-    <label for="f_profil_professeurs"><input id="f_profil_professeurs" name="f_profil" type="radio" value="professeur" /> Professeurs</label>
+    <input id="f_profil_professeurs" name="f_profil" type="radio" value="professeur" /><label for="f_profil_professeurs"> Professeurs</label>
     &nbsp;&nbsp;&nbsp;
-    <label for="f_profil_personnels"><input id="f_profil_personnels" name="f_profil" type="radio" value="personnel" /> Personnels autres</label>
+    <input id="f_profil_personnels" name="f_profil" type="radio" value="personnel" /><label for="f_profil_personnels"> Personnels autres</label>
     &nbsp;&nbsp;&nbsp;
     <?php endif; ?>
-    <label for="f_profil_eleves"><input id="f_profil_eleves" name="f_profil" type="radio" value="eleve" /> Élèves</label>
+    <input id="f_profil_eleves" name="f_profil" type="radio" value="eleve" /><label for="f_profil_eleves"> Élèves</label>
     &nbsp;&nbsp;&nbsp;
-    <label for="f_profil_parents"><input id="f_profil_parents" name="f_profil" type="radio" value="parent" /> Responsables légaux</label><br />
+    <input id="f_profil_parents" name="f_profil" type="radio" value="parent" /><label for="f_profil_parents"> Responsables légaux</label><br />
   <label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?> <label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 

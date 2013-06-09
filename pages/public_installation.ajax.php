@@ -63,7 +63,6 @@ if( $step==1 )
       CHEMIN_DOSSIER_LOGINPASS,
       CHEMIN_DOSSIER_LOGO,
       CHEMIN_DOSSIER_OFFICIEL,
-      CHEMIN_DOSSIER_PARTENARIAT,
       CHEMIN_DOSSIER_RSS
     );
     foreach($tab_dossier as $dossier)

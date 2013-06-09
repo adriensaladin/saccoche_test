@@ -128,22 +128,6 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     DB::close(SACOCHE_WEBMESTRE_BD_NAME);
   }
 
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MAJ 2013-06-01 => 2013-06-08
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  if($version_base_webmestre_actuelle=='2013-06-01')
-  {
-    // Actualisation date de version
-    $version_base_webmestre_actuelle = '2013-06-08';
-    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout d'une colonne à la table sacoche_convention
-    if(empty($reload_sacoche_convention))
-    {
-      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_creation DATE DEFAULT NULL AFTER convention_date_fin ');
-    }
-  }
-
 }
 
 }

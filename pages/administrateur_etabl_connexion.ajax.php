@@ -199,8 +199,7 @@ if( ($f_action=='ajouter_convention') && $f_connexion_mode && $f_connexion_ref &
   echo'<tr id="id_'.$convention_id.'" class="new">';
   echo  '<td>'.html($f_connexion_nom).'</td>';
   echo  '<td>du '.convert_date_mysql_to_french($date_debut_mysql).' au '.convert_date_mysql_to_french($date_fin_mysql).'</td>';
-  echo  '<td>'.TODAY_FR.'</td>';
-  echo  '<td class="br">Non réceptionné</td>';
+  echo  '<td class="br">Non réceptionnée</td>';
   echo  '<td class="br">Non réceptionné</td>';
   echo  '<td class="br">Non</td>';
   echo  '<td class="nu"><q class="voir_archive" title="Récupérer / Imprimer les documents associés."></q></td>';
@@ -212,7 +211,7 @@ if( ($f_action=='ajouter_convention') && $f_connexion_mode && $f_connexion_ref &
 // Imprimer les documents associés à une convention
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($f_action=='imprimer_documents') && $f_convention_id )
+if( ($f_action=='imprimer_convention') && $f_convention_id )
 {
   // Récupération et vérification des infos de la convention
   charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
@@ -225,133 +224,19 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
   {
     exit('Erreur : convention d\'une autre structure !');
   }
-  // Coordonnées de l'établissement
-  $tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
-  if($_SESSION['ETABLISSEMENT']['ADRESSE1'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
-  if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
-  if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
-  if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
-  if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-  if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['COURRIEL']; }
-  // Coordonnées du contact référent
-  $DB_ROW2 = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
-  $tab_etabl_coords[] = '';
-  $tab_etabl_coords[] = 'Contact référent pour SACoche :';
-  $tab_etabl_coords[] = $DB_ROW2['structure_contact_nom'].' '.$DB_ROW2['structure_contact_prenom'];
-  $tab_etabl_coords[] = 'Mel : '.$DB_ROW2['structure_contact_courriel'];
-  // référence du connecteur
-  $connecteur_ref = $_SESSION['BASE'].' . '.$f_convention_id.' . '.$DB_ROW['connexion_nom'];
-  //
   // Imprimer la convention.
-  //
-  $contrat_PDF = new FPDI( NULL /*make_officiel*/ , 'portrait' /*orientation*/ , 15 /*marge_gauche*/ , 15 /*marge_droite*/ , 10 /*marge_haut*/ , 15 /*marge_bas*/ , 'oui' /*couleur*/ , 'non' /*legende*/ , NULL /*filigrane*/ );
-  $contrat_PDF->setSourceFile(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_convention_sacoche_etablissement_contrat.pdf');
-  $hauteur_ligne = 5.5;
-  $marge_bordure = 1;
-  $taille_police = 13;
-  // Boucle pour l'exemplaire à conserver et l'exemplaire à renvoyer
-  for( $numero_exemplaire=0 ; $numero_exemplaire<2 ; $numero_exemplaire++ )
-  {
-    // ajouter une page ; y importer la page 1 ; l'utiliser comme support
-    $contrat_PDF->AddPage();
-    $tplIdx = $contrat_PDF->importPage(1);
-    $contrat_PDF->useTemplate($tplIdx);
-    // établissement
-    $contrat_PDF->SetFont('Arial','',$taille_police);
-    $contrat_PDF->Rect( 120-$marge_bordure , 20-$marge_bordure , 70+2*$marge_bordure , $hauteur_ligne*count($tab_etabl_coords)+2*$marge_bordure , 'D' );
-    $contrat_PDF->SetXY(120,20);
-    foreach($tab_etabl_coords as $ligne)
-    {
-      $contrat_PDF->CellFit( 70 , $hauteur_ligne , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    }
-    // type d'exemplaire
-    $contrat_PDF->SetFont('Arial','B',$taille_police);
-    $contrat_PDF->choisir_couleur_fond('gris_moyen');
-    $contrat_PDF->SetXY(20,65);
-    if($numero_exemplaire==0)
-    {
-      $contrat_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('Exemplaire à retourner à :') , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-      $contrat_PDF->Rect( 20 , 65+$hauteur_ligne , 70 , $hauteur_ligne*3+2*$marge_bordure , 'DF' );
-      $contrat_PDF->SetXY(20+$marge_bordure,65+$hauteur_ligne+$marge_bordure);
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('M. RINDEL Christophe') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('32 Résidence la clé des champs') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('80160 Plachy Buyon') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    }
-    else
-    {
-      $contrat_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('Exemplaire à conserver') , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-    }
-    // référence du connecteur
-    $contrat_PDF->SetXY(40,110);
-    $contrat_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($connecteur_ref) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // connecteur
-    $contrat_PDF->SetXY(93,136.5);
-    $contrat_PDF->CellFit( 100 , $hauteur_ligne , To::pdf('"'.$DB_ROW['connexion_nom'].'"') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // date fin
-    $contrat_PDF->SetXY(90,211);
-    $contrat_PDF->CellFit( 100 , $hauteur_ligne , To::pdf(convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // date création
-    $contrat_PDF->SetXY(121,226.5);
-    $contrat_PDF->CellFit( 80 , $hauteur_ligne , To::pdf(convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    // signature
-    $contrat_PDF->Image( CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_signature.png' , 30 /*x*/ , 247 /*y*/ , 200*0.25 /*largeur*/ , 120*0.25 /*lomer_image_hauteur*/ , 'PNG' );
-    // TODO !
-    // ajouter une page ; y importer la page 2 ; l'utiliser comme support
-    $contrat_PDF->AddPage();
-    $tplIdx = $contrat_PDF->importPage(2);
-    $contrat_PDF->useTemplate($tplIdx);
-  }
-  // On enregistre la sortie PDF
-  $contrat_fichier_nom = 'convention_contrat_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  $contrat_PDF->Output(CHEMIN_DOSSIER_EXPORT.$contrat_fichier_nom.'.pdf','F');
-  //
+  // TODO !
   // Imprimer la facture.
-  //
-  $facture_PDF = new FPDI( NULL /*make_officiel*/ , 'portrait' /*orientation*/ , 15 /*marge_gauche*/ , 15 /*marge_droite*/ , 10 /*marge_haut*/ , 15 /*marge_bas*/ , 'oui' /*couleur*/ , 'non' /*legende*/ , NULL /*filigrane*/ );
-  $facture_PDF->setSourceFile(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_convention_sacoche_etablissement_facture.pdf');
-  // ajouter une page ; y importer la page 1 ; l'utiliser comme support
-  $facture_PDF->AddPage();
-  $tplIdx = $facture_PDF->importPage(1);
-  $facture_PDF->useTemplate($tplIdx);
-  // établissement
-  $facture_PDF->SetFont('Arial','',$taille_police);
-  $facture_PDF->Rect( 120-$marge_bordure , 20-$marge_bordure , 70+2*$marge_bordure , $hauteur_ligne*count($tab_etabl_coords)+2*$marge_bordure , 'D' );
-  $facture_PDF->SetXY(120,20);
-  foreach($tab_etabl_coords as $ligne)
-  {
-    $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-  }
-  // référence du connecteur
-  $facture_PDF->SetFont('Arial','B',$taille_police);
-  $facture_PDF->SetXY(55,120);
-  $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($connecteur_ref) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-  // date de mise en service
-  $texte = ($DB_ROW['convention_signature']!==NULL) ? 'du '.convert_date_mysql_to_french($DB_ROW['convention_signature']) : 'de la réception du contrat' ;
-  $texte.= ' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']);
-  $facture_PDF->SetXY(85,136);
-  $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-  // date de règlement
+  $facture_url = '';
   if($DB_ROW['convention_paiement']!==NULL)
   {
-    $texte = 'Règlement acquitté le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']);
+    // TODO !
+    $url_dossier_facture = URL_DIR_EXPORT.$_SESSION['BASE'].'/';
+    $facture_fichier_nom = 'chemin_fichier_facture.pdf';
+    $facture_url = $url_dossier_facture.$facture_fichier_nom;
   }
-  elseif($DB_ROW['convention_signature']!==NULL)
-  {
-    list($annee,$mois,$jour) = explode('-',$DB_ROW['convention_signature']);
-    $date_plus1mois = date("d/m/Y",mktime(0,0,0,$mois,$jour,$annee));
-    $texte = 'Date limite de règlement : '.$date_plus1mois;
-  }
-  else
-  {
-    $texte = 'Date limite de règlement : 1 mois après la mise en service effective du connecteur';
-  }
-  $facture_PDF->SetXY(27,144);
-  $facture_PDF->CellFit( 165 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-  // On enregistre la sortie PDF
-  $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom.'.pdf','F');
   // Retour des informations.
-  exit('ok'.']¤['.URL_DIR_EXPORT.$contrat_fichier_nom.']¤['.URL_DIR_EXPORT.$facture_fichier_nom);
+  exit('ok'.']¤['.'chemin_fichier_convention.pdf'.']¤['.$facture_url);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

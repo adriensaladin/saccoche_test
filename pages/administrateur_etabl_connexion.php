@@ -156,14 +156,13 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 </div>
 
 <div id="info_conv_etabl" class="hide">
-  <p class="astuce">La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.</p>
+  <p class="astuce">La signature et le règlement d'une convention est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.</p>
   <table id="table_action" class="form hsort">
     <thead>
       <tr>
         <th>Nom du service</th>
         <th>Période</th>
-        <th>Documents générés</th>
-        <th>Contrat signé</th>
+        <th>Convention signée</th>
         <th>Règlement perçu</th>
         <th>Service activé</th>
         <th class="nu"><q class="ajouter" title="Ajouter une convention."></q></th>
@@ -183,8 +182,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
         foreach($DB_TAB as $DB_ROW)
         {
           // Formater certains éléments
-          $texte_signature  = ($DB_ROW['convention_signature']===NULL) ? 'Non réceptionné' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_signature']) ;
-          $texte_paiement   = ($DB_ROW['convention_paiement']===NULL)  ? 'Non réceptionné' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']) ;
+          $texte_signature  = ($DB_ROW['convention_signature']===NULL) ? 'Non réceptionnée' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_signature']) ;
+          $texte_paiement   = ($DB_ROW['convention_paiement']===NULL)  ? 'Non réceptionné'  : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']) ;
           $texte_activation = (!$DB_ROW['convention_activation']) ? 'Non' : ( ( ($DB_ROW['convention_date_debut']>TODAY_MYSQL) || ($DB_ROW['convention_date_fin']<TODAY_MYSQL) ) ? 'Non (hors période)' : 'Oui' ) ;
           $class_signature  = (substr($texte_signature ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
@@ -193,7 +192,6 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           echo'<tr id="id_'.$DB_ROW['convention_id'].'">';
           echo  '<td>'.html($DB_ROW['connexion_nom']).'</td>';
           echo  '<td>du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'</td>';
-          echo  '<td>Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_creation']).'</td>';
           echo  '<td class="'.$class_signature.'">'.$texte_signature.'</td>';
           echo  '<td class="'.$class_paiement.'">'.$texte_paiement.'</td>';
           echo  '<td class="'.$class_activation.'">'.$texte_activation.'</td>';
@@ -203,7 +201,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
       }
       else
       {
-        echo'<tr><td class="nu probleme" colspan="7">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>';
+        echo'<tr><td class="nu probleme" colspan="6">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>';
       }
       ?>
     </tbody>
@@ -235,9 +233,29 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 
 <form action="#" method="post" id="form_impression" class="hide">
   <h2>Récupérer / Imprimer les documents associés</h2>
-  <p class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</p>
+  <hr />
+  <h4>Convention à renvoyer</h4>
   <ul class="puce">
-    <li><a id="fichier_convention" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
-    <li><a id="fichier_facture" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_convention" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre convention (format <em>pdf</em>).</span></a></li>
   </ul>
+  <p>
+    <span class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span><br />
+    <span class="astuce">La convention proposée est datée du jour (<?php echo TODAY_FR ?>).</span>
+  </p>
+  <hr />
+  <h4>Informations pour le règlement</h4>
+  <ul class="puce">
+    <li><a id="fichier_reglement" class="lien_ext" href="<?php echo URL_DIR_WEBSERVICES ?>sesamath_ent_conventions_reglement.pdf"><span class="file file_pdf">Récupérer / Imprimer nos coordonnées bancaires et postales (format <em>pdf</em>).</span></a></li>
+  </ul>
+  <hr />
+  <h4>Facture</h4>
+  <div id="facture_ok" class="hide">
+    <ul class="puce">
+      <li><a id="fichier_facture" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
+    </ul>
+  </div>
+  <div id="facture_ko" class="hide">
+    <span class="astuce">La facture sera disponible dès le règlement réceptionné.</span>
+  </div>
+  <hr />
 </form>

@@ -447,7 +447,7 @@ $(document).ready
         }
         else
         {
-          socle_nom = $("#zone_socle_item input[type=radio]:checked").next('label').text();
+          socle_nom = $("#zone_socle_item input[type=radio]:checked").parent('label').text();
         }
         // L'envoyer dans le formulaire
         $('#f_socle').val(socle_id);

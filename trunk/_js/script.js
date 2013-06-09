@@ -73,6 +73,21 @@ function escapeQuote(unsafe)
 }
 
 /**
+ * Fonction replaceAll() pour remplacer une chaine par une autre à chaque occurence.
+ * @see http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
+ * @see http://javascript.developpez.com/sources/?page=tips#replaceall
+ *
+ * @param find
+ * @param replace
+ * @param str
+ * @return string
+ */
+function replaceAll(find, replace, str)
+{
+  return str.replace(new RegExp(find, 'g'), replace);
+}
+
+/**
  * Fonction pour afficher / masquer les images cliquables (en général dans la dernière colonne du tableau)
  *
  * Remarque : un toogle ne peut être simplement mis en oeuvre à cause des nouvelle images créées...
@@ -1209,8 +1224,7 @@ $(document).ready
       function()
       {
         retour = $(this).attr("href").substring(0,10); // substring() car si l'identifiant de session est passé dans l'URL (session.use-trans-sid à ON) on peut récolter un truc comme "14/08/2012?SACoche-session=507ac2c6e1007ce8d311ab221fb41aeabaf879f79317c" !
-        retour = retour.replace(/\-/g,"/"); // http://javascript.developpez.com/sources/?page=tips#replaceall
-        $("#"+champ).val( retour ).focus();
+        $("#"+champ).val( replaceAll('-','/',retour) ).focus();
         $("#calque").html('&nbsp;').hide();
         return false;
       }

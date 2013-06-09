@@ -31,7 +31,7 @@
 
 /*
  * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
- * http://fr.php.net/manual/fr/function.error-get-last.php#103539
+ * @see http://fr.php.net/manual/fr/function.error-get-last.php#103539
  */
 if(!function_exists('error_get_last'))
 {
@@ -73,6 +73,55 @@ if(!function_exists('array_fill_keys'))
 }
 
 /*
+ * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ * @see http://www.php.net/manual/fr/function.json-encode.php#107968
+ */
+if (!function_exists('json_encode'))
+{
+  function json_encode($data)
+  {
+    switch ($type = gettype($data))
+    {
+      case 'NULL':
+        return 'null';
+      case 'boolean':
+        return ($data ? 'true' : 'false');
+      case 'integer':
+      case 'double':
+      case 'float':
+        return $data;
+      case 'string':
+        return '"' . addslashes($data) . '"';
+      case 'object':
+        $data = get_object_vars($data);
+      case 'array':
+        $output_index_count = 0;
+        $output_indexed = array();
+        $output_associative = array();
+        foreach ($data as $key => $value)
+        {
+          $output_indexed[] = json_encode($value);
+          $output_associative[] = json_encode($key) . ':' . json_encode($value);
+          if ($output_index_count !== NULL && $output_index_count++ !== $key)
+          {
+            $output_index_count = NULL;
+          }
+        }
+        if ($output_index_count !== NULL)
+        {
+          return '[' . implode(',', $output_indexed) . ']';
+        }
+        else
+        {
+          return '{' . implode(',', $output_associative) . '}';
+        }
+      default:
+        return ''; // Not supported
+    }
+  }
+}
+
+/*
  * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, traiter ce cas si besoin.
  */
 function pathinfo_filename($file)
@@ -92,19 +141,20 @@ function pathinfo_filename($file)
 }
 
 // ============================================================================
+// Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
+// ============================================================================
+
+define( 'SACoche', pathinfo_filename($_SERVER['SCRIPT_NAME']) );
+if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
+
+// ============================================================================
 // Config PHP - Versions PHP & MySQL - Modules PHP
 // ============================================================================
 
-// Définir le décalage horaire par défaut de toutes les fonctions date/heure
-// La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; ne pas créer une erreur fatale si PHP 5.0.
-if(function_exists('date_default_timezone_set')) date_default_timezone_set('Europe/Paris'); 
-
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé
-// Présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
-// Cependant, tous les fichiers étant en UTF-8 et le code prévu pour manipuler des données en UTF-8, changer le CHARSET semble assez hasardeux pour ne pas dire risqué...
+// Dès maintenant car utilisé par exit_error().
+// Tous les fichiers étant en UTF-8, et le code prévu pour manipuler des données en UTF-8, changer le CHARSET serait assez hasardeux pour ne pas dire risqué...
 define('CHARSET','utf-8');
-// Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
-mb_internal_encoding(CHARSET);
 
 // Version PHP & MySQL requises et conseillées
 // Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
@@ -125,8 +175,16 @@ $extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mys
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
 if(count($extensions_manquantes))
 {
-  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
+  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'.<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
 }
+
+// Définir le décalage horaire par défaut de toutes les fonctions date/heure
+// La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; on a été stoppé avant si ce n'est pas le cas.
+date_default_timezone_set('Europe/Paris'); 
+
+// Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
+// Requiert le module "mbstring" ; on a été stoppé avant si ce dernier est manquant.
+mb_internal_encoding(CHARSET);
 
 // Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 6.0.0).
 // array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
@@ -142,13 +200,6 @@ if(get_magic_quotes_gpc())
   array_walk_recursive($_POST   ,'tab_stripslashes');
   array_walk_recursive($_REQUEST,'tab_stripslashes');
 }
-
-// ============================================================================
-// Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
-// ============================================================================
-
-define( 'SACoche', pathinfo_filename($_SERVER['SCRIPT_NAME']) );
-if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 
 // ============================================================================
 // Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux)
@@ -386,16 +437,16 @@ define('ID_FAMILLE_MATIERE_USUELLE',   99);
 define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
 
 // cookies
-define('COOKIE_STRUCTURE' ,'SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
+define('COOKIE_STRUCTURE' ,'SACoche-etablissement' ); // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE'  ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_PARTENAIRE','SACoche-partenaire');     // nom du cookie servant à retenir le partenaire sélectionné, afin de ne pas à avoir à le sélectionner de nouveau (convention ENT sur serveur Sésamath uniquement).
+define('COOKIE_PARTENAIRE','SACoche-partenaire'    ); // nom du cookie servant à retenir le partenaire sélectionné, afin de ne pas à avoir à le sélectionner de nouveau (convention ENT sur serveur Sésamath uniquement).
 
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php
 
 // Version des fichiers installés.
 // À comparer avec la dernière version disponible sur le serveur communautaire.
-// Pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
+// Pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10)); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
 define('VERSION_PROG', file_get_contents(CHEMIN_DOSSIER_SACOCHE.'VERSION.txt') );
 

@@ -251,7 +251,7 @@ class InfoServeur
   {
     if($_SESSION['USER_PROFIL_TYPE']=='administrateur')           return InfoServeur::cellule_coloree_centree('indisponible','jaune');
     $version_base = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
-    if(version_compare($version_base,VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert');
+    if(version_compare($version_base,VERSION_BASE_WEBMESTRE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert');
                                                                   return InfoServeur::cellule_coloree_centree($version_base ,'rouge');
   }
 

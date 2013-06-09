@@ -11,7 +11,7 @@ CREATE TABLE sacoche_convention (
   convention_paiement   DATE                                          DEFAULT NULL,
   convention_activation TINYINT(1)   UNSIGNED                NOT NULL DEFAULT 0,
   PRIMARY KEY (convention_id),
-  UNIQUE KEY (sacoche_base,connexion_nom,convention_date_debut),
+  UNIQUE KEY (structure_base,connexion_nom,convention_date_debut),
   KEY convention_date_fin (convention_date_fin),
   KEY convention_activation (convention_activation)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT "Pour les conventions ENT établissements (serveur Sésamath).";

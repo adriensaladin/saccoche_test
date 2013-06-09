@@ -49,6 +49,23 @@ public static function DB_recuperer_structure_by_Id($base_id)
 }
 
 /**
+ * Retourner les informations d'une convention
+ *
+ * @param int convention_id
+ * @return array
+ */
+public static function DB_recuperer_convention_structure_info($convention_id)
+{
+  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation, ';
+  $DB_SQL.= 'structure_contact_nom, structure_contact_prenom, structure_contact_courriel ';
+  $DB_SQL.= 'FROM sacoche_convention ';
+  $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
+  $DB_SQL.= 'WHERE convention_id=:convention_id ';
+  $DB_VAR = array(':convention_id'=>$convention_id);
+  return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Lister les zones géographiques
  *
  * @param void
@@ -106,6 +123,24 @@ public static function DB_lister_partenaires_conventionnes()
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_partenaire ';
   $DB_SQL.= 'ORDER BY partenaire_denomination ASC';
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Lister les conventions des établissements
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_lister_conventions_structures()
+{
+  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation, ';
+  $DB_SQL.= 'structure_uai, structure_localisation, structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel, ';
+  $DB_SQL.= 'geo_ordre, geo_nom ';
+  $DB_SQL.= 'FROM sacoche_convention ';
+  $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
+  $DB_SQL.= 'ORDER BY convention_date_debut DESC, geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
   return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -335,9 +370,42 @@ public static function DB_modifier_partenaire_conventionne_mdp($partenaire_id,$p
 public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 {
   $DB_SQL = 'UPDATE sacoche_geo ';
-  $DB_SQL.= 'SET geo_ordre=:geo_ordre,geo_nom=:geo_nom ';
+  $DB_SQL.= 'SET geo_ordre=:geo_ordre, geo_nom=:geo_nom ';
   $DB_SQL.= 'WHERE geo_id=:geo_id ';
   $DB_VAR = array(':geo_id'=>$geo_id,':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Modifier une date d'une convention
+ *
+ * @param int    convention_id
+ * @param string objet         signature | paiement
+ * @param string date_mysql
+ * @return void
+ */
+public static function DB_modifier_convention_date($convention_id,$objet,$date_mysql)
+{
+  $DB_SQL = 'UPDATE sacoche_convention ';
+  $DB_SQL.= 'SET convention_'.$objet.'=:date_mysql ';
+  $DB_SQL.= 'WHERE convention_id=:convention_id ';
+  $DB_VAR = array(':convention_id'=>$convention_id,':date_mysql'=>$date_mysql);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Modifier l'état d'activation d'une convention
+ *
+ * @param int convention_id
+ * @param int activation_etat
+ * @return void
+ */
+public static function DB_modifier_convention_activation($convention_id,$activation_etat)
+{
+  $DB_SQL = 'UPDATE sacoche_convention ';
+  $DB_SQL.= 'SET convention_activation=:activation_etat ';
+  $DB_SQL.= 'WHERE convention_id=:convention_id ';
+  $DB_VAR = array(':convention_id'=>$convention_id,':activation_etat'=>$activation_etat);
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

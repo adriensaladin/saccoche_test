@@ -16,7 +16,7 @@ Pour simplement assembler ou découper des PDF, PDFMerger (http://pdfmerger.code
 
 <<< Modifs >>>
 
-Dans fpdf_tpl.php, "class FPDF_TPL extends FPDF" remplacé par "class FPDF_TPL extends PDF" pour bénéficier des mathodes ajoutées.
+Dans fpdf_tpl.php, "class FPDF_TPL extends FPDF" remplacé par "class FPDF_TPL extends PDF" pour bénéficier des méthodes ajoutées.
 
 <<< Correctifs >>>
 

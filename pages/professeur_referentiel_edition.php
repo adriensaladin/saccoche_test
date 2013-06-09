@@ -132,7 +132,7 @@ else
       <label class="tab">Socle commun :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
       <span class="tab"></span><button id="choisir_socle_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button" class="annuler">Annuler.</button>
     </p>
-    <ul class="ul_n1 p"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
+    <ul class="ul_n1 p"><li class="li_n3"><label for="socle_0"><input id="socle_0" name="f_socle" type="radio" value="0" /> Hors-socle.</label></li></ul>
     <?php
     // Affichage de la liste des items du socle pour chaque palier
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();

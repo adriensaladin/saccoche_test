@@ -2102,7 +2102,8 @@ public static function DB_maj_base($version_base_structure_actuelle)
       );
       foreach($tab_tables as $table_nom => $table_champ)
       {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'=300 WHERE '.$table_champ.'=397' );
+        // Ignore dans le cas où il s'agirait d'une maj d'une très vieille base et que du coup lors de la MAJ 2012-02-08 => 2012-02-13 on ait déjà récupéré une base de matières correcte.
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$table_champ.'=300 WHERE '.$table_champ.'=397' );
       }
       // ajout d'une famille de matières
       if(empty($reload_sacoche_matiere_famille))
@@ -2781,6 +2782,47 @@ public static function DB_maj_base($version_base_structure_actuelle)
       {
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_user_profil VALUES ("ENT", 0, 1, 1, 1, "partenaire" , "sansobjet", "sansobjet", "partenaire" , "partenaires" , "partenariat conventionné (ENT)" , "partenariats conventionnés (ENT)" , "ppp.nnnnnnnn", 6, 0, 15) ' );
       }
+    }
+  }
+
+  if($version_base_structure_actuelle=='2013-06-01')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-06-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // connecteurs renommés
+      $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+      if($connexion_nom=='ent_02')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_02"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_02_v2')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itslearning_02"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_auvergne')    { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_auvergne"       WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_04')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_04"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_04_v2')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itslearning_04"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='agora06')         { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_agora06"               WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_nice')        { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_nice"                  WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='entmip')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_entmip"              WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_montpellier') { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="esup_montpellier"           WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='liberscol')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="liberscol_dijon"            WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='elie')            { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="logica_elie"                WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_27')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_eure"                  WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='e-college31')     { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_ecollege31"          WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_38')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_isere"                 WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='cybercolleges42') { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_cybercolleges42"     WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='e-lyco')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_elyco"               WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_52')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_52"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_52_v2')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itslearning_52"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='place')           { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_place"                 WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='mirabelle')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_mirabelle"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_lille')       { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_savoirsnumeriques5962" WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_60')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_oise"                  WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_alsace')      { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_alsace"                WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_77')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="logica_ent77"               WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_80')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_somme"                 WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_90')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_90"             WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_92')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_enc92"                 WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='celia')           { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="logica_celia"               WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='lilie')           { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="logica_lilie"               WHERE parametre_nom="connexion_nom" ' ); }
+      if($connexion_nom=='ent_95')          { DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_valdoise"              WHERE parametre_nom="connexion_nom" ' ); }
     }
   }
 

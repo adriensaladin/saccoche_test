@@ -6,6 +6,7 @@ CREATE TABLE sacoche_convention (
   connexion_nom         VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT '""',
   convention_date_debut DATE                                 NOT NULL DEFAULT '0000-00-00',
   convention_date_fin   DATE                                 NOT NULL DEFAULT '0000-00-00',
+  convention_creation   DATE                                          DEFAULT NULL,
   convention_signature  DATE                                          DEFAULT NULL,
   convention_paiement   DATE                                          DEFAULT NULL,
   convention_activation TINYINT(1)   UNSIGNED                NOT NULL DEFAULT 0,

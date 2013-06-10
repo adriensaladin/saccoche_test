@@ -61,8 +61,8 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
         echo  '<td>'.$DB_ROW['selection_item_nom'].'</td>';
         echo  '<td>'.$items_texte.'</td>';
         echo  '<td class="nu">';
-        echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-        echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
+        echo    '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
+        echo    '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
         echo  '</td>';
         echo'</tr>';
         // Pour js

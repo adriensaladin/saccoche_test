@@ -2826,17 +2826,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  if($version_base_structure_actuelle=='2013-06-05')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-06-10';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // correctif nom d'un connecteur erroné
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_alsace" WHERE parametre_nom="connexion_nom" AND parametre_valeur="itop_alsace"' );
-    }
-  }
-
 }
 
 }

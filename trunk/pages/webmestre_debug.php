@@ -41,12 +41,13 @@ $tab_debug = array(
   'GET'     => 'console FirePHP &rarr; valeurs de $_GET',
   'FILES'   => 'console FirePHP &rarr; valeurs de $_FILES',
   'COOKIE'  => 'console FirePHP &rarr; valeurs de $_COOKIE <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>',
+  'SERVER'  => 'console FirePHP &rarr; valeurs de $_SERVER <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>',
   'CONST'   => 'console FirePHP &rarr; valeurs des constantes PHP <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>'
 );
 foreach($tab_debug as $debug_mode => $debug_texte)
 {
   $checked = constant('DEBUG_'.$debug_mode) ? ' checked' : '' ;
-  $lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'<br />';
+  $lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><label for="f_debug_'.$debug_mode.'"><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'</label><br />';
 }
 // Fichiers de logs phpCAS
 $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_LOGS_PHPCAS);

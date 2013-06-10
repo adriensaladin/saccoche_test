@@ -2837,6 +2837,24 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-06-10')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-06-11';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // Il apparait que la table sacoche_image peut manquer sur certaines installations...
+      $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLES FROM '.SACOCHE_STRUCTURE_BD_NAME.' LIKE "sacoche_image"');
+      if(empty($DB_TAB))
+      {
+        $reload_sacoche_image = TRUE;
+        $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_image.sql');
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+        DB::close(SACOCHE_STRUCTURE_BD_NAME);
+      }
+    }
+  }
+
 }
 
 }

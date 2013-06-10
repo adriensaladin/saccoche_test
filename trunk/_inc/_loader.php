@@ -258,7 +258,8 @@ define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_en
  *  32 => valeurs de $_GET           (dans la console Firefox avec FirePHP)
  *  64 => valeurs de $_FILES         (dans la console Firefox avec FirePHP)
  * 128 => valeurs de $_COOKIE        (dans la console Firefox avec FirePHP)
- * 256 => valeurs des constantes PHP (dans la console Firefox avec FirePHP)
+ * 256 => valeurs de $_SERVER        (dans la console Firefox avec FirePHP)
+ * 512 => valeurs des constantes PHP (dans la console Firefox avec FirePHP)
  *
  * On fonctionne comme pour les droits unix wrx, en testant chaque bit en partant de la droite.
  * Pour choisir les infos voulues, il faut mettre en DEBUG la somme des valeurs correspondantes.
@@ -278,7 +279,8 @@ define('DEBUG_POST',    DEBUG &  16 ? TRUE : FALSE );
 define('DEBUG_GET',     DEBUG &  32 ? TRUE : FALSE );
 define('DEBUG_FILES',   DEBUG &  64 ? TRUE : FALSE );
 define('DEBUG_COOKIE',  DEBUG & 128 ? TRUE : FALSE );
-define('DEBUG_CONST',   DEBUG & 256 ? TRUE : FALSE );
+define('DEBUG_SERVER',  DEBUG & 256 ? TRUE : FALSE );
+define('DEBUG_CONST',   DEBUG & 512 ? TRUE : FALSE );
 
 // ============================================================================
 // DEBUG - Fixer le niveau de rapport d'erreurs PHP
@@ -317,6 +319,7 @@ if(DEBUG>3)
     if(DEBUG_GET)     { $firephp->dump('GET'    , $_GET); }
     if(DEBUG_FILES)   { $firephp->dump('FILES'  , $_FILES); }
     if(DEBUG_COOKIE)  { $firephp->dump('COOKIE' , $_COOKIE); }
+    if(DEBUG_SERVER)  { $firephp->dump('SERVER' , $_SERVER); }
     if(DEBUG_CONST)   {
       $tab_constantes = get_defined_constants(TRUE);
       $firephp->dump('CONSTANTES', $tab_constantes['user']);

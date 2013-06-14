@@ -115,10 +115,12 @@ class SessionUser
    * @param int       $BASE
    * @param string    $login
    * @param string    $password
-   * @param string    $mode_connection   'normal' | 'cas' | 'gepi' | 'ldap' (?)
+   * @param string    $mode_connection 'normal' | 'cas' | 'shibboleth' | 'siecle' | 'vecteur_parent' | 'gepi' | 'ldap' (?)
+   * @param string    $parent_nom      facultatif, seulement pour $mode_connection = 'vecteur_parent'
+   * @param string    $parent_prenom   facultatif, seulement pour $mode_connection = 'vecteur_parent'
    * @return array(string,array)   ('ok',$DB_ROW) ou (message_d_erreur,tableau_vide)
    */
-  public static function tester_authentification_utilisateur($BASE,$login,$password,$mode_connection)
+  public static function tester_authentification_utilisateur($BASE,$login,$password,$mode_connection,$parent_nom='',$parent_prenom='')
   {
     // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
     // Sauf pour une connexion à un ENT, car alors il a déjà fallu les charger pour récupérer les paramètres de connexion à l'ENT
@@ -127,16 +129,18 @@ class SessionUser
       charger_parametres_mysql_supplementaires($BASE);
     }
     // Récupérer les données associées à l'utilisateur.
-    $DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur($mode_connection,$login);
+    $DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur($mode_connection,$login,$parent_nom,$parent_prenom);
     // Si login (ou identifiant SSO) non trouvé...
     if(empty($DB_ROW))
     {
       switch($mode_connection)
       {
-        case 'normal'     : $message = 'Nom d\'utilisateur incorrect !'; break;
-        case 'cas'        : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
-        case 'shibboleth' : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
-        case 'gepi'       : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
+        case 'normal'         : $message = 'Nom d\'utilisateur incorrect !'; break;
+        case 'cas'            : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
+        case 'shibboleth'     : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
+        case 'siecle'         : $message = 'Identification réussie mais identifiant Sconet "'    .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant Sconet associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Sconet] la valeur "' .$login.'".'; break;
+        case 'vecteur_parent' : $message = 'Identification réussie mais compte parent introuvable dans SACoche !<br />Le compte SACoche d\'un responsable légal dont le nom est "' .$parent_nom.'", le prénom est "' .$parent_prenom.'", et ayant la charge d\'un enfant dont l\'identifiant Sconet est "' .$login.'", n\'a pas été trouvé.'; break;
+        case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
       }
       return array($message,array());
     }

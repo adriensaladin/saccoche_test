@@ -432,10 +432,15 @@ ProxyPassReverse /sacoche/ https://ent2d.ac-bordeaux.fr/sacoche/
 
 [HTTP_AFFILIATION]
 [HTTP_CTEMAIL]
+[HTTP_DISPLAYNAME]
+[HTTP_ENTAUXENSCATEGODISCIPLINE]
+[HTTP_ENTELEVECLASSES]
 [HTTP_ENTELEVESTRUCTRATTACHID]
 [HTTP_ENTITLEMENT]
 [HTTP_ENTPERSONFONCTIONS]
+[HTTP_ENTPERSONJOINTURE]
 [HTTP_ENTPERSONLOGIN]
+[HTTP_ENTPERSONNOMPATRO]
 [HTTP_EPPN]
 [HTTP_FREDUCODEMEF]
 [HTTP_FREDUVECTEUR]
@@ -459,25 +464,69 @@ ProxyPassReverse /sacoche/ https://ent2d.ac-bordeaux.fr/sacoche/
 [HTTP_UID]
 [HTTP_UNSCOPED_AFFILIATION]
 
+
 */
 
 if($connexion_mode=='shibboleth')
 {
   // Récupération dans les variables serveur de l'identifiant de l'utilisateur authentifié.
-  if( (empty($_SERVER['HTTP_UID'])) || empty($_SERVER['HTTP_SHIB_SESSION_ID']) )
+  if( ( (empty($_SERVER['HTTP_UID'])) || empty($_SERVER['HTTP_SHIB_SESSION_ID']) ) && empty($_SERVER['HTTP_FREDUVECTEUR']) )
   {
     $http_uid             = isset($_SERVER['HTTP_UID'])             ? 'vaut "'.html($_SERVER['HTTP_UID']).'"'             : 'n\'est pas définie' ;
     $http_shib_session_id = isset($_SERVER['HTTP_SHIB_SESSION_ID']) ? 'vaut "'.html($_SERVER['HTTP_SHIB_SESSION_ID']).'"' : 'n\'est pas définie' ;
-    exit_error( 'Incident authentification Shibboleth' /*titre*/ , 'Ce serveur ne semble pas disposer d\'une authentification Shibboleth, ou bien celle ci n\'a pas été mise en &oelig;uvre :<br />- la variable $_SERVER["HTTP_UID"] '.$http_uid.'<br />- la variable $_SERVER["HTTP_SHIB_SESSION_ID"] '.$http_shib_session_id /*contenu*/ );
+    $http_freduvecteur    = isset($_SERVER['HTTP_FREDUVECTEUR'])    ? 'vaut "'.html($_SERVER['HTTP_FREDUVECTEUR']).'"'    : 'n\'est pas définie' ;
+    $contenu = 'Ce serveur ne semble pas disposer d\'une authentification Shibboleth, ou bien celle ci n\'a pas été mise en &oelig;uvre, ou bien la session a été perdue :<br />'
+             . '- la variable $_SERVER["HTTP_UID"] '.$http_uid.'<br />'
+             . '- la variable $_SERVER["HTTP_SHIB_SESSION_ID"] '.$http_shib_session_id.'<br />'
+             . '- la variable $_SERVER["HTTP_FREDUVECTEUR"] '.$http_freduvecteur ;
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $contenu );
   }
-  // A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID arrive en double séparé par un « ; ».
-  $http_uid = explode( ';' , $_SERVER['HTTP_UID'] );
-  $id_ENT = $http_uid[0];
   // Comparer avec les données de la base
-  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'shibboleth' /*mode_connection*/ );
-  if($auth_resultat!='ok')
+  $auth_resultat_shibboleth = $auth_resultat_siecle = $auth_resultat_vecteur = '';
+  // [1] On commence par regarder HTTP_UID, disponible pour tous les profils sauf les parents
+  // A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID peut arriver en double séparé par un « ; ».
+  $tab_http_uid = explode( ';' , $_SERVER['HTTP_UID'] );
+  $id_ENT = $tab_http_uid[0];
+  if($id_ENT)
   {
-    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_resultat /*contenu*/ );
+    list($auth_resultat_shibboleth,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'shibboleth' /*mode_connection*/ );
+  }
+  if($auth_resultat1!='ok')
+  {
+    // [2] Ensuite, on peut regarder HTTP_TSSCONETID ou HTTP_ENTELEVESTRUCTRATTACHID, disponible pour les élèves
+    $eleve_sconet_id = (!empty($_SERVER['HTTP_TSSCONETID'])) ? (int)$_SERVER['HTTP_TSSCONETID'] : ( (!empty($_SERVER['HTTP_ENTELEVESTRUCTRATTACHID'])) ? (int)$_SERVER['HTTP_ENTELEVESTRUCTRATTACHID'] : 0 ) ;
+    if($eleve_sconet_id)
+    {
+      list($auth_resultat_siecle,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $eleve_sconet_id /*login*/ , FALSE /*password*/ , 'siecle' /*mode_connection*/ );
+    }
+    if($auth_resultat_siecle!='ok')
+    {
+      // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on n'a même que ça...
+      // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » (je ne m'embête pas, je prends la première valeur, inutile de tester tous les enfants, les associations doivent avoir été faites dans SAcoche).
+      $fr_edu_vecteur = (!empty($_SERVER['HTTP_FREDUVECTEUR'])) ? $_SERVER['HTTP_FREDUVECTEUR'] : '' ;
+      $tab_vecteur = explode( ';' , $fr_edu_vecteur );
+      $fr_edu_vecteur = $tab_vecteur[0];
+      list( $vecteur_profil , $vecteur_nom , $vecteur_prenom , $vecteur_eleve_id , $vecteur_uai ) = explode('|',$fr_edu_vecteur ) + array(0=>NULL,NULL,NULL,NULL,NULL) ; // http://fr.php.net/manual/fr/function.list.php#103311
+      if( in_array($vecteur_profil,array(3,4)) && ($vecteur_eleve_id) && ($vecteur_eleve_id!=$eleve_sconet_id) ) // cas d'un élève
+      {
+        list($auth_resultat_siecle,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'siecle' /*mode_connection*/ );
+      }
+      elseif( in_array($vecteur_profil,array(1,2)) && ($vecteur_eleve_id) ) // cas d'un parent
+      {
+        if( $vecteur_nom && $vecteur_prenom )
+        {
+          list($auth_resultat_vecteur,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'vecteur_parent' /*mode_connection*/ , $vecteur_nom , $vecteur_prenom );
+        }
+        else
+        {
+          $auth_resultat_vecteur = 'Identification réussie mais vecteur d\'identité parent "' .$fr_edu_vecteur.'" incomplet, ce qui empêche de rechercher le compte SACoche correspondant.';
+        }
+      }
+    }
+  }
+  if( ($auth_resultat_shibboleth!='ok') && ($auth_resultat_siecle!='ok') && ($auth_resultat_vecteur!='ok') )
+  {
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_resultat_shibboleth.$auth_resultat2.$auth_resultat_vecteur );
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);

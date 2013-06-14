@@ -36,18 +36,35 @@ class DB_STRUCTURE_PUBLIC extends DB
 /**
  * Récuperer, à partir d'un identifiant, les données d'un utilisateur tentant de se connecter (le mdp est comparé ensuite)
  *
- * @param string $mode_connection   'normal' | 'cas' | 'shibboleth' | 'gepi' | ...
- * @param string $login
+ * @param string $mode_connection   'normal' | 'cas' | 'shibboleth' | 'siecle' | 'vecteur_parent' | 'gepi' | ...
+ * @param string $user_identifiant
+ * @param string $parent_nom      facultatif, seulement pour $mode_connection = 'vecteur_parent'
+ * @param string $parent_prenom   facultatif, seulement pour $mode_connection = 'vecteur_parent'
  * @return array
  */
-public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
+public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_identifiant,$parent_nom='',$parent_prenom='')
 {
   switch($mode_connection)
   {
-    case 'normal'     : $champ = 'user_login';   break;
-    case 'cas'        : $champ = 'user_id_ent';  break;
-    case 'shibboleth' : $champ = 'user_id_ent';  break;
-    case 'gepi'       : $champ = 'user_id_gepi'; break;
+    case 'normal'         : $champ = 'user_login';     break;
+    case 'cas'            : $champ = 'user_id_ent';    break;
+    case 'shibboleth'     : $champ = 'user_id_ent';    break;
+    case 'siecle'         : $champ = 'user_sconet_id'; break;
+    case 'vecteur_parent' : $champ = 'user_id';        break; // C'est le user_sconet_id de l'élève qui est transmis, mais le user_id du parent trouvé qui est finalement utilisé dans la requête.
+    case 'gepi'           : $champ = 'user_id_gepi';   break;
+  }
+  if($mode_connection=='vecteur_parent')
+  {
+    // On cherche le parent à partir de l'Id Sconet de l'enfant
+    // LIKE utilisé pour la restriction sur nom / prénom afin d'essayer d'éviter des pbs potentiels de prénoms composés ou de noms patronymiques non uniformisés...
+    $DB_SQL = 'SELECT parent.user_id ';
+    $DB_SQL.= 'FROM sacoche_user AS eleve ';
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
+    $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
+    $DB_SQL.= 'WHERE eleve.user_sconet_id=:eleve_sconet_id AND parent.user_nom LIKE :parent_nom_like AND parent.user_prenom LIKE :parent_prenom_like ';
+    $DB_VAR = array( ':eleve_sconet_id'=>$user_identifiant , ':parent_nom_like'=>'%'.$parent_nom.'%' , ':parent_prenom_like'=>'%'.$parent_prenom.'%' );
+    $user_identifiant = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    if(empty($user_identifiant)) return NULL;
   }
   $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, ';
   $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
@@ -57,7 +74,7 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
   $DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
   // LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
-  $DB_VAR = array(':identifiant'=>$login);
+  $DB_VAR = array(':identifiant'=>$user_identifiant);
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

@@ -51,7 +51,7 @@ $select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_clas
     </td>
     <td class="nu" style="width:25em">
       <p>
-        <button id="ajouter" type="button" class="periode_ajouter">Ajouter ces associations.</button><br />
+        <button id="ajouter" type="button" class="periode_ajouter">Ajouter / Modifier ces associations.</button><br />
         du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
         au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
       </p>

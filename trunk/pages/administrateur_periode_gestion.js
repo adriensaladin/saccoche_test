@@ -221,7 +221,10 @@ $(document).ready
       {
         if (!please_wait)
         {
-          $(this).ajaxSubmit(ajaxOptions);
+          if( (mode!='supprimer') || (confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nLes éventuels bilans officiels associés (bulletins...) seront supprimés !\n\nÊtes-vous bien certain de vouloir supprimer cette période ?\nPour modifier les dates, il faut utiliser le menu [Périodes & classes / groupes].")) )
+          {
+            $(this).ajaxSubmit(ajaxOptions);
+          }
           return false;
         }
         else

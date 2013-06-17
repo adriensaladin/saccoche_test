@@ -1183,10 +1183,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
       }
     }
   }
-  // On attaque l'élaboration des sorties HTML, CSV et PDF
-  $sacoche_htm = '<hr /><a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-  $sacoche_htm.= '<a class="lien_ext" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
+  // On attaque l'élaboration des sorties HTML, CSV, TEX et PDF
+  $sacoche_htm = '<hr />';
+  $sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+  $sacoche_htm.= '<a class="lien_ext" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><br />';
+  $sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.tex"><span class="file file_tex">Cartouches &rarr; Récupérer / Manipuler (fichier <em>LaTeX</em> pour connaisseurs).</span></a>';
   $sacoche_csv = '';
+  $sacoche_tex = '';
   $separateur  = ';';
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $item_nb = count($tab_comp_id);
@@ -1206,23 +1209,30 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
         $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$tab_user_nb_req[$user_id].'">'.html($texte_entete).'</th></tr></thead><tbody>';
         $sacoche_csv .= $texte_entete."\r\n";
+        $sacoche_tex .= $texte_entete."\r\n";
         $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=4 );
-        $ligne1_csv = ''; $ligne1_html = '';
-        $ligne2_csv = ''; $ligne2_html = '';
+        $ligne0_tex = ''; 
+        $ligne1_csv = ''; $ligne1_html = ''; $ligne1_tex = ''; 
+        $ligne2_csv = ''; $ligne2_html = ''; $ligne2_tex = ''; 
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
+            list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
             $ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
             $ligne2_html .= '<td class="hc">'.Html::note($note,$date_fr,$description,FALSE).'</td>';
             $ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
             $ligne2_csv .= '"'.$note.'"'.$separateur;
+            $ligne0_tex .= 'c|';
+            $ligne1_tex .= '\begin{tabular}{c}'.To::latex($ref_matiere).'\\\\'.To::latex($ref_suite).'\end{tabular}'.' & ';
+            $ligne2_tex .= ' &';
             $sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $note);
           }
         }
         $sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table>';
         $sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
+        $sacoche_tex .= '\begin{center}'."\r\n".'\begin{tabular}{|'.$ligne0_tex.'}'."\r\n".'\hline'."\r\n".mb_substr($ligne1_tex,0,-2).' \\\\'."\r\n".'\hline'."\r\n".mb_substr($ligne2_tex,0,-1).' \\\\'."\r\n".'\hline'."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
         $sacoche_pdf->cartouche_interligne(4);
       }
     }
@@ -1237,6 +1247,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
         $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="3">'.html($texte_entete).'</th></tr></thead><tbody>';
         $sacoche_csv .= $texte_entete."\r\n";
+        $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
         $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
@@ -1245,17 +1256,21 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($note,$date_fr,$description,FALSE).'</td></tr>';
             $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$note.'"'."\r\n";
+            $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.$note.' \\\\'."\r\n".'\hline'."\r\n";
             $sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $note);
           }
         }
         $sacoche_htm .= '</tbody></table>';
         $sacoche_csv .= "\r\n";
+        $sacoche_tex .= '\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
         $sacoche_pdf->cartouche_interligne(2);
       }
     }
   }
   // On archive le cartouche dans un fichier csv
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
+  // On archive le cartouche dans un fichier tex
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.tex' , $sacoche_tex );
   // On archive le cartouche dans un fichier pdf
   $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
   // Affichage

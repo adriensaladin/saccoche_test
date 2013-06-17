@@ -110,11 +110,21 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
   }
 }
 
+// Puce avertissement mode de synthèse non configuré
+$li = '';
+if($BILAN_TYPE=='bulletin')
+{
+  $li = '<li><span class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'."\r\n";
+  $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
+  $s = ($nb_inconnu>1) ? 's' : '' ;
+  $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>' : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+}
 ?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>
   <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
+  <?php echo $li ?>
 </ul>
 
 <div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
@@ -513,7 +523,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
     <input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" />
     <input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" />
     <input type="hidden" id="f_mode" name="f_mode" value="texte" />
-    <input type="hidden" id="f_parite" name="f_parite" type="" />
+    <input type="hidden" id="f_parite" name="f_parite" value="" />
   </div>
 </form>
 

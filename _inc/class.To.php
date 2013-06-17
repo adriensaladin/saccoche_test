@@ -80,6 +80,19 @@ class To
     return (substr($text,0,3) == "\xEF\xBB\xBF") ? substr($text,3) : $text ; // Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
   }
 
+  /**
+   * Echappe les caractères LaTeX.
+   * 
+   * @param string
+   * @return string
+   */
+  public static function latex($text)
+  {
+    $tab_bad = array( '–' ,  '$' ,  '&' ,  '%' ,  '#' ,  '_' ,  '{' ,  '}' ,  '^' , '\\' );
+    $tab_bon = array( '-' , '\$' , '\&' , '\%' , '\#' , '\_' , '\{' , '\}' , '\^' , '\textbackslash{}' );
+    return str_replace( $tab_bad , $tab_bon , $text );
+  }
+
 }
 
 ?>

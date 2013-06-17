@@ -336,26 +336,6 @@ public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matie
 }
 
 /**
- * recuperer_modes_synthese_inconnu
- *
- * @param void
- * @return string
- */
-public static function DB_recuperer_modes_synthese_inconnu()
-{
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  $DB_SQL = 'SELECT GROUP_CONCAT( CONCAT(matiere_nom," / ",niveau_nom) SEPARATOR "§BR§") AS listing ';
-  $DB_SQL.= 'FROM sacoche_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 ';
-  $DB_SQL.= 'ORDER BY matiere_ordre ASC, niveau_ordre ASC ';
-  $DB_VAR = array(':mode_inconnu'=>'inconnu');
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_date_last_eleves_items
  * Retourner, pour des élèves et les items donnés, la date de la dernière évaluation (pour vérifier qu'il faut bien prendre l'item en compte)
  *

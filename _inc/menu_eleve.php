@@ -99,7 +99,7 @@ if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 }
 
 // Relevé de maîtrise du socle (profils [parent] et [eleve] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
+if(!test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
 {
   $tab_menu["Relevés / Synthèses"]["Relevé de maîtrise du socle"]['class'] .= ' disabled';
 }

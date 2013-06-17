@@ -122,46 +122,33 @@ if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 }
 
 // Choisir la langue étrangère pour le socle commun (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_menu["Validation du socle"]["Choisir la langue étrangère"]['class'] .= ' disabled';
 }
 
 // Valider les items du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_menu["Validation du socle"]["Valider les items du socle"]['class'] .= ' disabled';
 }
 
 // Valider les piliers du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_menu["Validation du socle"]["Valider les compétences du socle"]['class'] .= ' disabled';
 }
 
 // Annuler une compétence validée du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_menu["Validation du socle"]["Annuler une compétence validée"]['class'] .= ' disabled';
-}
-
-// Import / Export des validations (profil [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
-{
-  $tab_menu["Validation du socle"]["Import / Export des validations"]['class'] .= ' disabled';
 }
 
 // Grille d'items d'un référentiel.
 if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
   $tab_menu["Relevés / Synthèses"]["Grille d'items d'un référentiel"]['class'] .= ' disabled';
-}
-
-// Relevé de maîtrise du socle & Synthèse de maîtrise du socle
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
-{
-  $tab_menu["Relevés / Synthèses"]["Relevé de maîtrise du socle"]['class'] .= ' disabled';
-  $tab_menu["Relevés / Synthèses"]["Synthèse de maîtrise du socle"]['class'] .= ' disabled';
 }
 
 // Import des absences / retards sur les bilans officiels (profils [professeur] et [directeur] uniquement).

@@ -157,8 +157,8 @@ $tab_pages_graphiques = array('brevet_fiches','officiel_accueil','releve_bilan_c
 $filename_js_normal = './pages/'.$PAGE.'.js';
 $tab_fichiers_head = array();
 $tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','comm') ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // La minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // la minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
 if(in_array($PAGE,$tab_pages_graphiques)) $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
 if(is_file($filename_js_normal))          $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 

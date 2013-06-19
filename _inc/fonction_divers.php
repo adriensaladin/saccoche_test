@@ -273,7 +273,7 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
     switch($type)
     {
       case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'."\r\n"; break;
-      case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'."\r\n"; break;
+  //  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'."\r\n"; break;
       case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'."\r\n"; break;
     }
   }
@@ -291,7 +291,7 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
  * Attention cependant concernant cette dernière technique : avec les réglages standards d'Apache, ajouter un GET dans l'URL fait que beaucoup de navigateurs ne mettent pas le fichier en cache (donc il est rechargé tout le temps, même si le GET est le même) ; pas de souci si le serveur envoie un header avec une date d'expiration explicite...
  * 
  * @param string $chemin    chemin complet vers le fichier
- * @param string $methode   soit "pack" soit "mini" soit "comm"
+ * @param string $methode   soit "pack" soit "mini"
  * @return string           chemin vers le fichier à prendre en compte (à indiquer dans la page web) ; il sera relatif si non compressé, absolu si compressé
  */
 function compacter($chemin,$methode)
@@ -324,11 +324,6 @@ function compacter($chemin,$methode)
       elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
       {
         $fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
-      }
-      elseif( ($fichier_original_extension=='js') && ($methode=='comm') )
-      {
-        // Retrait des /*! ... */ et /** ... */ ; option de recherche "s" (PCRE_DOTALL) pour inclure les retours à la lignes (@see http://fr.php.net/manual/fr/reference.pcre.pattern.modifiers.php).
-        $fichier_compact_contenu = preg_replace( '#'.'/\*!'.'(.*?)'.'\*/'.'#s' , '' , preg_replace( '#'.'/\*\*'.'(.*?)'.'\*/'.'#s' , '' , $fichier_original_contenu ) );
       }
       elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
       {

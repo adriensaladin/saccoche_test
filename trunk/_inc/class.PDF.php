@@ -3115,7 +3115,7 @@ class PDF extends FPDF
   {
     list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
     $this->SetXY($posx,$posy);
-    $this->afficher_appreciation($largeur,$hauteur, 10 /*taille_police*/ , 5 /*taille_interligne*/ , To::pdf($contenu) );
+    $this->afficher_appreciation($largeur,$hauteur, 10 /*taille_police*/ , 5 /*taille_interligne*/ , $contenu );
   }
 
   public function fiche_brevet_ligne_tag($tag_date_heure_initiales)

@@ -184,7 +184,7 @@ class Webmestre
   public static function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$url_dir_sacoche)
   {
     $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n\r\n";
-    $texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
+    $texte.= 'Je viens de générer un nouveau mot de passe pour '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
     $texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
     $texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
     $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";

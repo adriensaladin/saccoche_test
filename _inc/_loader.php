@@ -403,32 +403,31 @@ define('URL_DIR_WEBSERVICES' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER
 // URL externes appelées par l'application
 // ============================================================================
 
-define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');            // URL du projet SACoche (en https depuis le 08/02/2012)
-define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');            // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
-define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');       // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
-define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');           // URL du fichier chargé d'afficher les documentations
-define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL   .'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
-define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');      // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
-define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
-define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_CONVENTION_ENT',SERVEUR_PROJET.'/?fichier=convention_ent'); // URL de la page "Conventions ENT"
-define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide d'un administrateur de SACoche"
-define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"
-define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');            // URL du fichier comportant le flux RSS
+define('SERVEUR_PROJET'         ,'https://sacoche.sesamath.net');            // URL du projet SACoche (en https depuis le 08/02/2012)
+define('SERVEUR_SSL'            ,'https://sacoche.sesamath.net');            // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
+define('SERVEUR_ASSO'           ,'http://www.sesamath.net');                 // URL du serveur de l'association Sésamath
+define('SERVEUR_COMMUNAUTAIRE'  ,SERVEUR_PROJET.'/appel_externe.php');       // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
+define('SERVEUR_DOCUMENTAIRE'   ,SERVEUR_PROJET.'/appel_doc.php');           // URL du fichier chargé d'afficher les documentations
+define('SERVEUR_LPC_SIGNATURE'  ,SERVEUR_SSL   .'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
+define('SERVEUR_TELECHARGEMENT' ,SERVEUR_PROJET.'/telechargement.php');      // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
+define('SERVEUR_VERSION'        ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
+define('SERVEUR_CNIL'           ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
+define('SERVEUR_CONTACT'        ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide d'un administrateur de SACoche"
+define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"
+define('SERVEUR_RSS'            ,SERVEUR_PROJET.'/_rss/rss.xml');            // URL du fichier comportant le flux RSS
+define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');        // URL de la page expliquant les Conventions ENT
 
 // ============================================================================
 // Autres constantes diverses... et parfois importantes !
 // ============================================================================
 
 // test si c'est l'hébergement Sésamath qui est utilisé
-$is_hebergement_sesamath = (mb_strpos(URL_BASE,'https://sacoche.sesamath.net')!==FALSE) ? TRUE : FALSE ;
+$is_hebergement_sesamath = (mb_strpos(URL_BASE,SERVEUR_PROJET)!==FALSE) ? TRUE : FALSE ;
 define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
-// define('IS_HEBERGEMENT_SESAMATH',TRUE);
 
 // indiquer si une convention Établissement-ENT est requise et à compter de quand
-define('CONVENTION_ENT_REQUISE'      ,FALSE);
-// define('CONVENTION_ENT_REQUISE'      ,TRUE);
+define('CONVENTION_ENT_REQUISE'         ,TRUE);
 define('CONVENTION_ENT_START_DATE_FR'   ,'01/09/2013');
 define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
 

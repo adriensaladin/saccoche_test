@@ -316,8 +316,20 @@ if($connexion_mode=='cas')
     }
   }
   // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
-  // Vérifier la présence d'une convention valide si besoin
-  if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) )
+  // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
+  $id_ENT = phpCAS::getUser();
+  // Récupérer les attributs CAS => SACoche ne récupère aucun attribut, il n'y a pas de récupération de données via le ticket et donc pas de nécessité de convention.
+  // $tab_attributs = phpCAS::getAttributes();
+  // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.
+  unset($_SESSION['phpCAS']);
+  // Comparer avec les données de la base
+  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
+  if($auth_resultat!='ok')
+  {
+    exit_error( 'Incident authentification CAS' /*titre*/ , $auth_resultat /*contenu*/ );
+  }
+  // Vérifier la présence d'une convention valide si besoin, sauf pour les administrateurs qui doivent pouvoir accéder à leur espace pour régulariser la situation (même s'il leur est toujours possible d'utiliser une authentification locale).
+  if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) && ($auth_DB_ROW['user_profil_type']!='administrateur') )
   {
     // Vérifier que les paramètres de la base n'ont pas été trafiqués (via une sauvegarde / restauration de la base avec modification intermédiaire) pour passer outre : nom de connexion mis à perso ou modifié etc.
     $connexion_ref = $connexion_departement.'|'.$connexion_nom;
@@ -361,7 +373,7 @@ if($connexion_mode=='cas')
     {
       if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
       {
-        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'utilisation de ce service sur cet hébergement est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un administrateur doit effectuer les démarches nécessaires depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Vous pourrez trouver toute information utile à ce sujet <a href="'.SERVEUR_CONVENTION_ENT.'">dans la documentation</a>.' /*contenu*/ );
+        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_BLOG_CONVENTION.'" target="_blank">cet article du blog de l\'association Sésamath</a> pour comprendre les raisons de cette procédure.' /*contenu*/ );
       }
     }
     else
@@ -378,18 +390,6 @@ if($connexion_mode=='cas')
         $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
       }
     }
-  }
-  // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
-  $id_ENT = phpCAS::getUser();
-  // Récupérer les attributs CAS : SACoche ne récupère aucun attribut, il n'y a pas de récupération de données via le ticket et donc pas de nécessité de convention.
-  // $tab_attributs = phpCAS::getAttributes();
-  // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.
-  unset($_SESSION['phpCAS']);
-  // Comparer avec les données de la base
-  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
-  if($auth_resultat!='ok')
-  {
-    exit_error( 'Incident authentification CAS' /*titre*/ , $auth_resultat /*contenu*/ );
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);

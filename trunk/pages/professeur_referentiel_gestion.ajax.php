@@ -28,22 +28,24 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action         = (isset($_POST['action']))         ? $_POST['action'] : '';
-$matiere_id     = (isset($_POST['matiere_id']))     ? Clean::entier($_POST['matiere_id'])     : 0;
-$niveau_id      = (isset($_POST['niveau_id']))      ? Clean::entier($_POST['niveau_id'])      : 0;
-$structure_id   = (isset($_POST['structure_id']))   ? Clean::entier($_POST['structure_id'])   : 0;
-$nb_demandes    = (isset($_POST['nb_demandes']))    ? Clean::entier($_POST['nb_demandes'])    : -1;  // Changer le nb de demandes
-$partage        = (isset($_POST['partage']))        ? Clean::texte($_POST['partage'])         : '';  // Changer l'état de partage
-$methode        = (isset($_POST['methode']))        ? Clean::texte($_POST['methode'])         : '';  // Changer le mode de calcul
-$limite         = (isset($_POST['limite']))         ? Clean::entier($_POST['limite'])         : -1;  // Changer le nb d'items pris en compte
-$retroactif     = (isset($_POST['retroactif']))     ? Clean::texte($_POST['retroactif'])      : '';  // Changer le nb d'items pris en compte
-$referentiel_id = (isset($_POST['referentiel_id'])) ? Clean::entier($_POST['referentiel_id']) : -1;  // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
+$action         = (isset($_POST['f_action']))         ? $_POST['f_action']                        : '';
+$matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_matiere_id'])     : 0;
+$niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])      : 0;
+$structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])   : 0;
+$nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])    : -1;  // Changer le nb de demandes
+$partage        = (isset($_POST['f_partage']))        ? Clean::texte($_POST['f_partage'])         : '';  // Changer l'état de partage
+$methode        = (isset($_POST['f_methode']))        ? Clean::texte($_POST['f_methode'])         : '';  // Changer le mode de calcul
+$limite         = (isset($_POST['f_limite']))         ? Clean::entier($_POST['f_limite'])         : -1;  // Changer le nb d'items pris en compte
+$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::texte($_POST['f_retroactif'])      : '';  // Changer le nb d'items pris en compte
+$information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_information'])     : '';
+$referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id']) : -1;  // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
+$ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                           : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier le nb de demandes autorisées pour une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='NbDemandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demandes<10) )
+if( ($action=='modifier_nombre_demandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demandes<10) )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_matiere_nb_demandes($matiere_id,$nb_demandes);
   exit('ok');
@@ -53,7 +55,7 @@ if( ($action=='NbDemandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demande
 // Afficher le formulaire des structures ayant partagées au moins un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='Afficher_structures') // La vérification concernant le nombre de contraintes s'effectue après
+if($action=='afficher_structures_partage')
 {
   exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
 }
@@ -62,7 +64,7 @@ if($action=='Afficher_structures') // La vérification concernant le nombre de c
 // Lister les référentiels partagés trouvés selon les critères retenus (matière / niveau / structure)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='Lister_referentiels') // La vérification concernant le nombre de contraintes s'effectue après
+if($action=='lister_referentiels_communautaires') // La vérification concernant le nombre de contraintes s'effectue après
 {
   exit( ServeurCommunautaire::afficher_liste_referentiels($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$structure_id) );
 }
@@ -71,7 +73,7 @@ if($action=='Lister_referentiels') // La vérification concernant le nombre de c
 // Voir le contenu d'un référentiel partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Voir_referentiel') && $referentiel_id )
+if( ($action=='voir_referentiel_communautaire') && $referentiel_id )
 {
   exit( ServeurCommunautaire::afficher_contenu_referentiel($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id) );
 }
@@ -80,7 +82,6 @@ if( ($action=='Voir_referentiel') && $referentiel_id )
 // Pour les autres cas on doit récupérer le paramètre ids
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$ids = (isset($_POST['ids'])) ? $_POST['ids'] : '';
 if(mb_substr_count($ids,'_')!=3)
 {
   exit('Erreur avec les données transmises !');
@@ -105,7 +106,7 @@ $tab_retroactifs = array('non','oui');
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Voir') && $matiere_id && $niveau_id )
+if( ($action=='voir_referentiel_etablissement') && $matiere_id && $niveau_id )
 {
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
   exit( Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
@@ -115,7 +116,7 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 // Modifier le partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_array($partage,$tab_partages) && ($partage!='hs') )
+if( ($action=='partager') && $matiere_id && $niveau_id && ($perso==0) && in_array($partage,$tab_partages) && ($partage!='hs') )
 {
   if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
   {
@@ -126,12 +127,12 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
   {
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
     $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
-    $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
+    $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML,$information);
   }
   else
   {
     $partage_avant = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiel_partage_etat($matiere_id,$niveau_id);
-    $reponse = ($partage_avant=='oui') ? ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'') : 'ok' ;
+    $reponse = ($partage_avant=='oui') ? ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'',$information) : 'ok' ;
   }
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
@@ -139,7 +140,7 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
     exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
-  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL) );
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
   exit( str_replace('◄DATE►',Html::date(TODAY_MYSQL),$tab_partage[$partage]) );
@@ -149,7 +150,7 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 // Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
+if( ($action=='envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 {
   if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
   {
@@ -158,14 +159,14 @@ if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
   // Envoyer le référentiel vers le serveur de partage
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
-  $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
+  $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML,$information);
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
   {
     exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
-  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL) );
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
 }
@@ -174,7 +175,7 @@ if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 // Supprimer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
+if( ($action=='supprimer') && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
 {
   // S'il était partagé, il faut le retirer du serveur communautaire
   if($partage=='oui')
@@ -183,7 +184,7 @@ if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_
     {
       exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
     }
-    $reponse = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
+    $reponse = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'',$information);
     if($reponse!='ok')
     {
       exit($reponse);
@@ -199,7 +200,7 @@ if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_
 // Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) && in_array($retroactif,$tab_retroactifs) )
+if( ($action=='calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) && in_array($retroactif,$tab_retroactifs) )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
   $texte_retroactif = ($retroactif=='non') ? '(sur la période)' : '(rétroactivement)' ;
@@ -233,7 +234,7 @@ if( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab
 // Ajouter un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Ajouter') && $matiere_id && $niveau_id )
+if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id )
 {
   if( DB_STRUCTURE_REFERENTIEL::DB_tester_referentiel($matiere_id,$niveau_id) )
   {

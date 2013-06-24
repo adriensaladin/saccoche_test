@@ -224,6 +224,17 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu a.trombinoscope         {background-position: 1px -1459px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Icones des navigateurs                                                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.navigo {background:transparent url(../_img/sprite_navigateur_1.png) 0 0 no-repeat;padding-left:20px;padding-top:1px;padding-bottom:1px}
+.navigo_chrome   {background-position: 0    0px}
+.navigo_explorer {background-position: 0  -20px}
+.navigo_firefox  {background-position: 0  -40px}
+.navigo_opera    {background-position: 0  -60px}
+.navigo_safari   {background-position: 0  -80px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des résultats d'une évaluation                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -998,8 +1009,8 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 }
 
 #fancybox-loading div {
-	width: 44px;
-	height: 44px;
+  width: 42px;
+  height: 42px;
 	background: url('../_img/fancybox/fancybox_loading.gif') center center no-repeat;
 }
 

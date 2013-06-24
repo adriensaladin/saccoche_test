@@ -9,6 +9,7 @@ CREATE TABLE sacoche_referentiel (
   referentiel_calcul_limite     TINYINT(3)                                                                   UNSIGNED                NOT NULL DEFAULT 5             COMMENT "Nombre maximum de dernières évaluations prises en comptes (0 pour les prendre toutes). Valeur surclassant la configuration par défaut.",
   referentiel_calcul_retroactif ENUM("non","oui")                                                            COLLATE utf8_unicode_ci NOT NULL DEFAULT "non"         COMMENT "Avec ou sans prise en compte des évaluations antérieures. Valeur surclassant la configuration par défaut.",
   referentiel_mode_synthese     ENUM("inconnu","sans","domaine","theme")                                     COLLATE utf8_unicode_ci NOT NULL DEFAULT "inconnu",
+  referentiel_information       VARCHAR(128)                                                                 COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY ( matiere_id , niveau_id ),
   KEY niveau_id (niveau_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

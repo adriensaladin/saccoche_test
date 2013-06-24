@@ -152,6 +152,7 @@ else
         $script_contenu_tableaux .=    'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
         $script_contenu_tableaux .=     'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
         $script_contenu_tableaux .= 'tab_calcul_retroactif["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_retroactif'].'";';
+        $script_contenu_tableaux .=       'tab_information["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.str_replace('"','\"',$DB_ROW['referentiel_information']).'";';
       }
     }
     // Construction du formulaire select du nombre de demandes
@@ -216,7 +217,10 @@ else
   var tab_calcul_methode    = new Array();
   var tab_calcul_limite     = new Array();
   var tab_calcul_retroactif = new Array();
+  var tab_information       = new Array();
+  // <![CDATA[
   <?php echo $script_contenu_tableaux ?>
+  // ]]>
 </script>
 
 <div id="choisir_referentiel" class="hide">
@@ -275,15 +279,68 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
   <div id="lister_referentiel_communautaire" class="hide">
     <h2>Liste des référentiels trouvés</h2>
     <p>
-      <span class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés&hellip;</span><br />
-      <span class="astuce">Le nombre jouxtant l'étoile indique combien de fois un référentiel a été repris, mais ceci ne présage pas de son intérêt / sa pertinence.</span>
+      <span class="danger">Les référentiels partagés ne sont pas des modèles à suivre ! Ils peuvent être améliorables ou même inadaptés&hellip;</span><br />
+      <span class="astuce">Le nombre de reprises ne présage pas de l'intérêt ni de la pertinence d'un référentiel.</span>
     </p>
-    <ul>
-      <li></li>
-    </ul>
+    <table id="table_action" class="form hsort">
+      <thead>
+        <tr>
+          <th>Matière</th>
+          <th>Niveau</th>
+          <th>Établissement<br />Localisation</th>
+          <th>Établissement<br />Dénomination</th>
+          <th>Info</th>
+          <th>Date MAJ</th>
+          <th>Nombre<br />reprises</th>
+          <th class="nu"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="nu" colspan="8"></td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
+</form>
+
+<?php
+// Fabrication du select f_limite
+$select_limite = '<option value="0">de toutes les notes</option><option value="1">de la dernière note</option>';
+$tab_options = array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
+foreach($tab_options as $val)
+{
+  $select_limite .= '<option value="'.$val.'">des '.$val.' dernières notes</option>';
+}
+?>
+
+<form action="#" method="post" id="form_gestion" class="hide">
+  <h2>Modifier le partage d'un référentiel | Mettre à jour sur le serveur de partage la dernière version d'un référentiel | Modifier le mode de calcul d'un référentiel | Supprimer un référentiel</h2>
+  <p>
+    <label class="tab">Référentiel :</label><em id="referentiel_infos"></em>
+  </p>
+  <div id="gestion_partager">
+    <div id="ligne_partage">
+      <label class="tab" for="f_partage">Partage :</label><select id="f_partage" name="f_partage"><option value="oui">Partagé sur le serveur communautaire.</option><option value="bof">Partage sans intérêt (pas novateur).</option><option value="non">Non partagé avec la communauté.</option></select>
+    </div>
+    <div id="ligne_information">
+      <label class="tab" for="f_information"><img alt="" src="./_img/bulle_aide.png" title="Ce commentaire sera visible dans le resultat d'une recherche de référentiels partagés.<br />Champ facultatif, à utiliser avec parcimonie : complétez-le seulement pour apporter un éclairage particulier." /> Commentaire :</label><input id="f_information" name="f_information" type="text" size="80" maxlength="120" />
+    </div>
+  </div>
+  <div id="gestion_calculer">
+    <label class="tab" for="f_methode">Mode de calcul :</label>
+    <select id="f_methode" name="f_methode"><option value="geometrique">Coefficients &times;2</option><option value="arithmetique">Coefficients +1</option><option value="classique">Moyenne classique</option><option value="bestof1">La meilleure</option><option value="bestof2">Les 2 meilleures</option><option value="bestof3">Les 3 meilleures</option></select><select id="f_limite" name="f_limite"><?php echo $select_limite ?></select><select id="f_retroactif" name="f_retroactif"><option value="non">(sur la période).</option><option value="oui">(rétroactivement).</option></select>
+  </div>
+  <div id="gestion_supprimer">
+    <ul class="puce"><li>Confirmez-vous la suppression de ce référentiel ?</li></ul>
+    <p>
+      <span class="danger">Tous les items et les résultats associés des élèves seront perdus !</span><br />
+      <span class="astuce">En cas de référentiel partagé, il sera aussi retiré du serveur communautaire.</span>
+    </p>
+  </div>
+  <p>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ids" name="f_ids" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+  </p>
 </form>
 
 <p>&nbsp;</p>

@@ -179,9 +179,10 @@ class ServeurCommunautaire
    * @param int       $matiere_id
    * @param int       $niveau_id
    * @param string    $arbreXML       si fourni vide, provoquera l'effacement du référentiel mis en partage
+   * @param string    $information
    * @return string   "ok" ou un message d'erreur
    */
-  public static function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$arbreXML)
+  public static function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$arbreXML,$information)
   {
     $tab_post = array();
     $tab_post['fichier']        = 'referentiel_uploader';
@@ -190,8 +191,9 @@ class ServeurCommunautaire
     $tab_post['matiere_id']     = $matiere_id;
     $tab_post['niveau_id']      = $niveau_id;
     $tab_post['arbreXML']       = $arbreXML;
+    $tab_post['information']    = $information;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-    $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
+    $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières ou référentiels modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
     return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);

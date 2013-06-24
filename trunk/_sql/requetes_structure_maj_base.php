@@ -2855,6 +2855,17 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-06-11')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-06-23';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // ajout d'une colonne à la table sacoche_referentiel
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_information VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ');
+    }
+  }
+
 }
 
 }

@@ -437,7 +437,7 @@ public static function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
  */
 public static function DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id=0 , $niveau_id=0 )
 {
-  $DB_SQL = 'SELECT matiere_id, niveau_id, niveau_nom, referentiel_partage_etat, referentiel_partage_date, referentiel_calcul_methode, referentiel_calcul_limite, referentiel_calcul_retroactif ';
+  $DB_SQL = 'SELECT matiere_id, niveau_id, niveau_nom, referentiel_partage_etat, referentiel_partage_date, referentiel_calcul_methode, referentiel_calcul_limite, referentiel_calcul_retroactif, referentiel_information ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';

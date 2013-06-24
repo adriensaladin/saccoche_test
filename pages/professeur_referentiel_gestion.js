@@ -30,14 +30,20 @@ $(document).ready
   function()
   {
 
-    // Préparation de select utiles
-    var select_partage    = '<select id="f_partage" name="f_partage"><option value="oui">Partagé sur le serveur communautaire.</option><option value="bof">Partage sans intérêt (pas novateur).</option><option value="non">Non partagé avec la communauté.</option></select>';
-    var select_methode    = '<select id="f_methode" name="f_methode"><option value="geometrique">Coefficients &times;2</option><option value="arithmetique">Coefficients +1</option><option value="classique">Moyenne classique</option><option value="bestof1">La meilleure</option><option value="bestof2">Les 2 meilleures</option><option value="bestof3">Les 3 meilleures</option></select>';
-    var select_limite     = '<select id="f_limite" name="f_limite"><option value="0">de toutes les notes</option><option value="1">de la dernière note</option>';
-    var tab_options = new Array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
-    for( i=0 ; i<tab_options.length ; i++ ) { select_limite += '<option value="'+tab_options[i]+'">des '+tab_options[i]+' dernières notes</option>'; }
-    select_limite += '</select>';
-    var select_retroactif = '<select id="f_retroactif" name="f_retroactif"><option value="non">(sur la période).</option><option value="oui">(rétroactivement).</option></select>';
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Initialisation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var mode        = false;
+    var ids         = false;
+    var tab_ids     = new Array();
+    var id_mat_niv  = false;
+
+    // tri du tableau (avec jquery.tablesorter.js).
+    $('#table_action').tablesorter({ headers:{5:{sorter:'date_fr'},7:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,1]] ] ); };
+    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
+    tableau_tri();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Changement de méthode -> desactiver les limites autorisées suivant les cas
@@ -89,7 +95,25 @@ $(document).ready
     $(document).on( 'change', '#f_methode', actualiser_select_limite );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement de nb de demandes autorisées pour une matière -> soumission
+// Changement de partage -> afficher / masquer la ligne d'information
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var actualiser_partage_information = function()
+    {
+      if( $('#f_partage option:selected').val()=='oui' )
+      {
+        $('#ligne_information').show(0);
+      }
+      else
+      {
+        $('#ligne_information').hide(0);
+      }
+    };
+    // Appel de la fonction à chaque changement de méthode
+    $(document).on( 'change', '#f_partage', actualiser_partage_information );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Changement du nombre de demandes autorisées pour une matière -> soumission
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('select[name=f_eleve_demandes]').change
@@ -105,7 +129,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=NbDemandes'+'&matiere_id='+matiere_id+'&nb_demandes='+nb_demandes,
+            data : 'csrf='+CSRF+'&f_action=modifier_nombre_demandes'+'&f_matiere_id='+matiere_id+'&f_nb_demandes='+nb_demandes,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -139,22 +163,18 @@ $(document).ready
       'q.voir',
       function()
       {
-        var ids = $(this).parent().attr('id');
-        afficher_masquer_images_action('hide');
-        var new_label = '<label for="'+ids+'" class="loader">En cours&hellip;</label>';
-        $(this).after(new_label);
+        ids = $(this).parent().attr('id');
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Voir'+'&ids='+ids,
+            data : 'csrf='+CSRF+'&f_action=voir_referentiel_etablissement'+'&f_ids='+ids,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
             },
             success : function(responseHTML)
             {
@@ -167,8 +187,6 @@ $(document).ready
               {
                 $.fancybox( responseHTML.replace('<ul class="ul_m2">','<q class="imprimer_arbre" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
               }
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
             }
           }
         );
@@ -177,257 +195,179 @@ $(document).ready
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Modifier le partage d'un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.partager',
-      function()
-      {
-        afficher_masquer_images_action('hide');
-        var ids   = $(this).parent().attr('id');
-        var tab_ids = ids.split('_');
-        var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
-        var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
-        $(this).after(new_span);
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Mettre à jour sur le serveur de partage la dernière version d'un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.envoyer',
-      function()
-      {
-        var ids = $(this).parent().attr('id');
-        afficher_masquer_images_action('hide');
-        var new_label = '<label for="'+ids+'" class="loader">En cours&hellip;</label>';
-        $(this).after(new_label);
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Envoyer'+'&ids='+ids,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,10)!='<img title')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                $.fancybox( '<label class="valide">Référentiel partagé avec succès !</label>' , {'centerOnScroll':true} );
-                $('#'+ids).prev().prev().html(responseHTML);
-              }
-              $('label[for='+ids+']').remove();
-              afficher_masquer_images_action('show');
-            }
-          }
-        );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Modifier le mode de calcul d'un référentiel
+// Clic sur l'image pour Supprimer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $(document).on
     (
       'click',
-      'q.calculer',
+      'q.partager , q.envoyer , q.calculer , q.supprimer',
       function()
       {
-        afficher_masquer_images_action('hide');
-        var ids   = $(this).parent().attr('id');
-        var tab_ids = ids.split('_');
-        var id_matiere_niveau = tab_ids[1]+'_'+tab_ids[2];
-        var methode    = tab_calcul_methode[id_matiere_niveau];
-        var limite     = tab_calcul_limite[id_matiere_niveau];
-        var retroactif = tab_calcul_retroactif[id_matiere_niveau];
-        var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected')+select_limite.replace('"'+limite+'"','"'+limite+'" selected')+select_retroactif.replace('"'+retroactif+'"','"'+retroactif+'" selected')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
-        $(this).after(new_span);
+        mode       = $(this).attr('class');
+        ids        = $(this).parent().attr('id');
+        tab_ids    = ids.split('_');
+        id_mat_niv = tab_ids[1]+'_'+tab_ids[2];
+        var partage     = tab_partage_etat[     id_mat_niv];
+        var methode     = tab_calcul_methode[   id_mat_niv];
+        var limite      = tab_calcul_limite[    id_mat_niv];
+        var retroactif  = tab_calcul_retroactif[id_mat_niv];
+        var information = tab_information[      id_mat_niv];
+        $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + ' || ' + $(this).parent().prev().prev().prev().html() );
+        $('#f_action').val(mode);
+        $('#f_ids').val(ids);
+        $('#f_partage    option[value='+partage   +']').prop('selected',true);
+        $('#f_methode    option[value='+methode   +']').prop('selected',true);
+        $('#f_limite     option[value='+limite    +']').prop('selected',true);
+        $('#f_retroactif option[value='+retroactif+']').prop('selected',true);
+        $('#f_information').val(information);
         actualiser_select_limite();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Retirer un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.supprimer',
-      function()
-      {
-        afficher_masquer_images_action('hide');
-        var new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
-        $(this).after(new_span);
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Valider la modification du partage d'un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=partager]',
-      function()
-      {
-        var ids = $(this).parent().parent().attr('id');
-        var partage = $('#f_partage').val();
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Partager'+'&ids='+ids+'&partage='+partage,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,10)!='<img title')
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
-              {
-                var tab_ids = ids.split('_');
-                tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]] = partage;
-                $('#'+ids).prev().prev().html(responseHTML);
-                if(partage=='oui')
-                {
-                  $('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
-                }
-                else
-                {
-                  $('#'+ids).children('q.envoyer').attr('class','envoyer_non').attr('title','Un référentiel non partagé ne peut pas être transmis à la collectivité.');
-                }
-                $('#ajax_msg').parent().remove();
-                afficher_masquer_images_action('show');
-              }
-            }
-          }
-        );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Valider la modification du mode de calcul d'un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=calculer]',
-      function()
-      {
-        var ids = $(this).parent().parent().attr('id');
-        var methode    = $('#f_methode').val();
-        var limite     = $('#f_limite').val();
-        var retroactif = $('#f_retroactif').val();
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Calculer'+'&ids='+ids+'&methode='+methode+'&limite='+limite+'&retroactif='+retroactif,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,2)!='ok')
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
-              {
-                var tab_ids = ids.split('_');
-                var id_matiere_niveau = tab_ids[1]+'_'+tab_ids[2];
-                tab_calcul_methode[id_matiere_niveau]    = methode;
-                tab_calcul_limite[id_matiere_niveau]     = limite;
-                tab_calcul_retroactif[id_matiere_niveau] = retroactif;
-                $('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
-                $('#ajax_msg').parent().remove();
-                afficher_masquer_images_action('show');
-              }
-            }
-          }
-        );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Valider la suppression d'un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
-    (
-      'click',
-      'q.valider[lang=retirer]',
-      function()
-      {
-        if(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les items et les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer ce référentiel ?"))
+        $('#ajax_msg_gestion').removeAttr('class').html("");
+        switch (mode)
         {
-          var ids = $(this).parent().parent().attr('id');
-          var tab_ids = ids.split('_');
-          var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
-          $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          case 'partager':
+            $('#form_gestion h2').html("Modifier le partage d'un référentiel");
+            $('#gestion_partager' ).show(0);
+            $('#gestion_calculer' ).hide(0);
+            $('#gestion_supprimer').hide(0);
+            $('#ligne_partage'    ).show(0);
+            actualiser_partage_information();
+            break;
+          case 'envoyer':
+            $('#form_gestion h2').html("Mettre à jour sur le serveur de partage la dernière version d'un référentiel");
+            $('#gestion_partager' ).show(0);
+            $('#gestion_calculer' ).hide(0);
+            $('#gestion_supprimer').hide(0);
+            $('#ligne_partage'    ).hide(0);
+            actualiser_partage_information();
+            break;
+          case 'calculer':
+            $('#form_gestion h2').html("Modifier le mode de calcul d'un référentiel");
+            $('#gestion_partager' ).hide(0);
+            $('#gestion_calculer' ).show(0);
+            $('#gestion_supprimer').hide(0);
+            break;
+          case 'supprimer':
+            $('#form_gestion h2').html("Supprimer un référentiel");
+            $('#gestion_partager' ).hide(0);
+            $('#gestion_calculer' ).hide(0);
+            $('#gestion_supprimer').show(0);
+            break;
+        }
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':780 , 'centerOnScroll':true } );
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Valider la modification du partage d'un référentiel
+// Valider la mise à jour sur le serveur de partage de la dernière version d'un référentiel
+// Valider la modification du mode de calcul d'un référentiel
+// Valider la suppression d'un référentiel
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#form_gestion').on
+    (
+      'click' ,
+      '#bouton_valider' ,
+      function()
+      {
+        if( (mode!='supprimer') || confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les items et les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer ce référentiel ?") )
+        {
+          $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&action=Retirer'+'&ids='+ids+'&partage='+partage,
+              data : 'csrf='+CSRF+'&'+$('#form_gestion').serialize(),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
                 return false;
               },
               success : function(responseHTML)
               {
                 initialiser_compteur();
-                if(responseHTML!='ok')
+                var action = $('#f_action').val();
+                if(action=='partager')
                 {
-                  $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-                }
-                else
-                {
-                  $('#'+ids).parent().remove();
-                  if( $('#mat_'+tab_ids[1]+' tbody tr').length == 1 )
+                  if(responseHTML.substring(0,10)!='<img title')
                   {
-                    $('#mat_'+tab_ids[1]+' tbody').prepend('<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>');
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                    return false;
                   }
-                  afficher_masquer_images_action('show');
+                  else
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                    var partage     = $('#f_partage option:selected').val();
+                    var information = $('#f_information').val();
+                    tab_partage_etat[id_mat_niv] = partage;
+                    tab_information[ id_mat_niv] = information;
+                    $('#'+ids).prev().prev().html(responseHTML);
+                    if(partage=='oui')
+                    {
+                      $('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
+                    }
+                    else
+                    {
+                      $('#'+ids).children('q.envoyer').attr('class','envoyer_non').attr('title','Un référentiel non partagé ne peut pas être transmis à la collectivité.');
+                    }
+                    $.fancybox.close();
+                  }
+                }
+                if(action=='envoyer')
+                {
+                  if(responseHTML.substring(0,10)!='<img title')
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                    return false;
+                  }
+                  else
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                    var information = $('#f_information').val();
+                    tab_information[ id_mat_niv] = information;
+                    $('#'+ids).prev().prev().html(responseHTML);
+                    $.fancybox.close();
+                  }
+                }
+                if(action=='calculer')
+                {
+                  if(responseHTML.substring(0,2)!='ok')
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                    return false;
+                  }
+                  else
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                    tab_calcul_methode[   id_mat_niv] = $('#f_methode option:selected'   ).val();
+                    tab_calcul_limite[    id_mat_niv] = $('#f_limite option:selected'    ).val();
+                    tab_calcul_retroactif[id_mat_niv] = $('#f_retroactif option:selected').val();
+                    $('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
+                    $.fancybox.close();
+                  }
+                }
+                if(action=='supprimer')
+                {
+                  if(responseHTML!='ok')
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                    return false;
+                  }
+                  else
+                  {
+                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                    $('#'+ids).parent().remove();
+                    if( $('#mat_'+tab_ids[1]+' tbody tr').length == 1 )
+                    {
+                      $('#mat_'+tab_ids[1]+' tbody').prepend('<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>');
+                    }
+                    $.fancybox.close();
+                  }
                 }
               }
             }
@@ -435,7 +375,7 @@ $(document).ready
         }
         else
         {
-          $('q.annuler').click();
+          $.fancybox.close();
         }
       }
     );
@@ -450,8 +390,8 @@ $(document).ready
       'q.ajouter',
       function()
       {
-        var ids = $(this).parent().attr('id');
-        var tab_ids = ids.split('_');
+        ids = $(this).parent().attr('id');
+        tab_ids = ids.split('_');
         var matiere_id    = tab_ids[1];
         var matiere_perso = tab_ids[2];
         var matiere_nom = $('#h2_'+matiere_id).html();
@@ -476,7 +416,6 @@ $(document).ready
             }
           }
         );
-        afficher_masquer_images_action('hide');
         $('#div_tableaux').hide();
         $('#choisir_importer').parent().hide();
         $('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
@@ -495,7 +434,6 @@ $(document).ready
         $('#choisir_referentiel').hide();
         $('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
         $('#div_tableaux').show();
-        afficher_masquer_images_action('show');
         return(false);
       }
     );
@@ -513,7 +451,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_structures',
+          data : 'csrf='+CSRF+'&f_action=afficher_structures_partage',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -706,7 +644,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Lister_referentiels'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
+            data : 'csrf='+CSRF+'&f_action=lister_referentiels_communautaires'+'&f_matiere_id='+matiere_id+'&f_niveau_id='+niveau_id+'&f_structure_id='+structure_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -717,7 +655,7 @@ $(document).ready
             success : function(responseHTML)
             {
               $('#rechercher').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<li')
+              if(responseHTML.substring(0,3)!='<tr')
               {
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
@@ -727,8 +665,52 @@ $(document).ready
                 $('#ajax_msg').removeAttr("class").html("&nbsp;");
                 var reg = new RegExp('</q>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
                 responseHTML = responseHTML.replace(reg,'</q><q class="valider" title="Sélectionner ce référentiel.<br />(choix à confirmer de retour à la page principale)"></q>'); // Ajouter les paniers
-                $('#choisir_referentiel_communautaire ul').html(responseHTML);
+                $('#table_action tbody').html(responseHTML);
+                tableau_maj();
+                infobulle();
                 $('#lister_referentiel_communautaire').show("fast");
+              }
+            }
+          }
+        );
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur l'image pour Voir le détail d'un référentiel partagé
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#choisir_referentiel_communautaire').on
+    (
+      'click',
+      'q.voir',
+      function()
+      {
+        var referentiel_id = $(this).parent().attr('id').substr(3);
+        var objet_tds      = $(this).parent().parent().find('td');
+        var description    = objet_tds.eq(0).html() + ' || ' + objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() + ' || ' + objet_tds.eq(3).html();
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=voir_referentiel_communautaire'+'&f_referentiel_id='+referentiel_id,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+              else
+              {
+                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
               }
             }
           }
@@ -747,58 +729,11 @@ $(document).ready
       function()
       {
         var referentiel_id = $(this).parent().attr('id').substr(3);
-        var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
-        var longueur_sup   = $(this).prev().prev().text().length;
-        var description    = description.substring(0,description.length-longueur_sup);
+        var objet_tds      = $(this).parent().parent().find('td');
+        var description    = objet_tds.eq(0).html() + ' || ' + objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() + ' || ' + objet_tds.eq(3).html();
         $('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
         initialiser_compteur();
         $('#rechercher_annuler').click();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Voir le détail d'un référentiel partagé
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#choisir_referentiel_communautaire').on
-    (
-      'click',
-      'q.voir',
-      function()
-      {
-        var referentiel_id = $(this).parent().attr('id').substr(3);
-        var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
-        var longueur_sup   = $(this).prev().text().length;
-        var description    = description.substring(0,description.length-longueur_sup);
-        var new_label = '<label id="temp" class="loader">En cours&hellip;</label>';
-        $(this).next().after(new_label);
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&referentiel_id='+referentiel_id,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              $('label[id=temp]').remove();
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                $.fancybox( '<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
-              }
-              $('label[id=temp]').remove();
-            }
-          }
-        );
       }
     );
 
@@ -842,7 +777,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Ajouter'+'&ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&referentiel_id='+referentiel_id,
+            data : 'csrf='+CSRF+'&f_action=ajouter_referentiel_etablissement'+'&f_ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&f_referentiel_id='+referentiel_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -903,14 +838,13 @@ $(document).ready
 // Clic sur l'image pour Annuler la suppression ou la modification du partage ou la modification du mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $(document).on
+    $('#form_gestion').on
     (
       'click',
-      'q.annuler',
+      '#bouton_annuler',
       function()
       {
-        $(this).parent().remove();
-        afficher_masquer_images_action('show');
+        $.fancybox.close();
       }
     );
 

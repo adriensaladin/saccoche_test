@@ -385,7 +385,7 @@ $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = ($_SESSION['OFFIC
 $nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE'] ) ? 1+6     : 0 ;
 $nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                               ? 0.5+1.5 : 0 ;
 $nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE'] )  ? 0.5+1.5 : 0 ;
-$nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + ($test_affichage_Pourcentage) + ($test_affichage_Validation) : 0 ;
+$nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + (2*$test_affichage_Pourcentage) + ($test_affichage_Validation) : 0 ;
 
 foreach($tab_eleve as $key => $tab)
 {
@@ -465,7 +465,7 @@ if($make_html)
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
   $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>';
   $separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
-  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel ) : '' ;
+  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel , TRUE /*force_nb*/  ) : '' ;
 }
 if($make_pdf)
 {

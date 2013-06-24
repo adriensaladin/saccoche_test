@@ -58,11 +58,25 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
 
 <div id="choisir_referentiel_communautaire" class="hide">
   <h2>Liste des référentiels trouvés</h2>
-    <p>
-      <span class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés&hellip;</span><br />
-      <span class="astuce">Le nombre jouxtant l'étoile indique combien de fois un référentiel a été repris, mais ceci ne présage pas de son intérêt / sa pertinence.</span>
-    </p>
-  <ul>
-    <li></li>
-  </ul>
+  <p>
+    <span class="danger">Les référentiels partagés ne sont pas des modèles à suivre ! Ils peuvent être améliorables ou même inadaptés&hellip;</span><br />
+    <span class="astuce">Le nombre de reprises ne présage pas de l'intérêt ni de la pertinence d'un référentiel.</span>
+  </p>
+  <table id="table_action" class="form hsort">
+    <thead>
+      <tr>
+        <th>Matière</th>
+        <th>Niveau</th>
+        <th>Établissement<br />Localisation</th>
+        <th>Établissement<br />Dénomination</th>
+        <th>Info</th>
+        <th>Date MAJ</th>
+        <th>Nombre<br />reprises</th>
+        <th class="nu"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="nu" colspan="8"></td></tr>
+    </tbody>
+  </table>
 </div>

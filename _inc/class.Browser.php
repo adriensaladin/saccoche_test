@@ -29,7 +29,7 @@
 
 define(  'CHROME_VERSION_MINI_REQUISE'   , 1); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 1 minimum (sortie en 2008).');
 define(  'CHROME_VERSION_MINI_CONSEILLEE', 5);
-define(  'CHROME_VERSION_LAST'           ,27); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_LAST'           ,26); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2008).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4);
@@ -45,7 +45,7 @@ define(  'SAFARI_VERSION_LAST'           , 5); define(  'SAFARI_URL_DOWNLOAD'   
 
 define('EXPLORER_VERSION_MINI_REQUISE'   , 8); define('EXPLORER_TEXTE_MINI_REQUIS'     , 'Version 8 minimum (sortie en 2009) <span class="danger">mais usage déconseillé</span> (surtout avant la version 9).');
 define('EXPLORER_VERSION_MINI_CONSEILLEE', 9);
-define('EXPLORER_VERSION_LAST'           ,10); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home');
+define('EXPLORER_VERSION_LAST'           , 9); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home');
 
 
 
@@ -209,7 +209,7 @@ class Browser
     $tab_chaine = array();
     foreach(Browser::$tab_navigo as $navigo)
     {
-      $tab_chaine[$navigo] = '<a class="lien_ext" href="'.constant(strtoupper($navigo).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo.'">'.ucfirst($navigo).' '.constant(strtoupper($navigo).'_VERSION_LAST').'</span></a>';
+      $tab_chaine[$navigo] = '<a class="lien_ext" href="'.constant(strtoupper($navigo).'_URL_DOWNLOAD').'"><img src="'.URL_DIR_IMG.'navigateur/'.$navigo.'18.gif" alt="'.ucfirst($navigo).'" /> '.ucfirst($navigo).' '.constant(strtoupper($navigo).'_VERSION_LAST').'</a>';
     }
     // Affichage
     return $tab_chaine;

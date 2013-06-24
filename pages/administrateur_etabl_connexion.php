@@ -156,10 +156,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 </div>
 
 <div id="info_conv_etabl" class="hide">
-  <p class="astuce">
-    La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.<br />
-    Veuillez consulter <a href="<?php echo SERVEUR_BLOG_CONVENTION ?>" class="lien_ext">cet article du blog de l'association Sésamath</a> pour comprendre les raisons de cette procédure.
-  </p>
+  <p class="astuce">La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.</p>
   <table id="table_action" class="form hsort">
     <thead>
       <tr>

@@ -340,10 +340,9 @@ class Html
    * @param bool $etat_acquisition
    * @param bool $pourcentage_acquis
    * @param bool $etat_validation
-   * @param bool $force_nb   FALSE par défaut, TRUE pour $etat_acquisition seulement
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel , $force_nb = FALSE  )
+  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel )
   {
     // initialisation variables
     $retour = '';
@@ -387,7 +386,7 @@ class Html
     // légende etat_acquisition
     if($etat_acquisition)
     {
-      $tab_etats = (!$force_nb) ? array('NA'=>'r','VA'=>'o','A'=>'v') : array('NA'=>'','VA'=>'','A'=>'') ;
+      $tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
       $retour .= '<div><b>Etats d\'acquisitions :</b>';
       foreach($tab_etats as $etat => $couleur)
       {

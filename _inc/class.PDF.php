@@ -866,7 +866,7 @@ class PDF extends FPDF
   // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_legende( $type_legende , $ordonnee , $force_nb = FALSE )
+  public function afficher_legende( $type_legende , $ordonnee )
   {
     $espace  = '     ';
     $hauteur = min(4,$this->lignes_hauteur*0.9);
@@ -941,8 +941,7 @@ class PDF extends FPDF
       foreach($tab_etats as $etat)
       {
         $this->Write($hauteur , $espace , '');
-        $couleur_fond = (!$force_nb) ? $this->tab_choix_couleur[$etat] : 'blanc' ;
-        $this->choisir_couleur_fond($couleur_fond);
+        $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
         $this->Cell($case_largeur , $case_hauteur , To::pdf($_SESSION['ACQUIS_TEXTE'][$etat]) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         $this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
       }
@@ -2316,9 +2315,8 @@ class PDF extends FPDF
   {
     if($test_affichage_Pourcentage)
     {
-      $ordonnee = ($test_affichage_Validation) ? $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*3 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*1 ;
-      $this->afficher_legende( 'pourcentage_acquis' /*type_legende*/ , $ordonnee     /*ordonnée*/ );
-      $this->afficher_legende( 'etat_acquisition'   /*type_legende*/ , $this->GetY() /*ordonnée*/ , TRUE /*force_nb*/ );
+      $ordonnee = ($test_affichage_Validation) ? $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*1 ;
+      $this->afficher_legende( 'pourcentage_acquis' /*type_legende*/ , $ordonnee /*ordonnée*/ );
     }
     if($test_affichage_Validation)
     {

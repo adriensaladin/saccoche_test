@@ -31,16 +31,6 @@ $(document).ready
   {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{5:{sorter:'date_fr'},7:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,1]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    tableau_tri();
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -203,9 +193,9 @@ $(document).ready
     (
       function()
       {
-        var matiere_id   = $('#f_matiere').val();
-        var niveau_id    = $('#f_niveau').val();
-        var structure_id = $('#f_structure').val();
+        matiere_id   = $('#f_matiere').val();
+        niveau_id    = $('#f_niveau').val();
+        structure_id = $('#f_structure').val();
         if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
@@ -229,7 +219,7 @@ $(document).ready
             success : function(responseHTML)
             {
               $('#rechercher').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<tr')
+              if(responseHTML.substring(0,3)!='<li')
               {
                 $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
@@ -237,10 +227,7 @@ $(document).ready
               {
                 initialiser_compteur();
                 $('#ajax_msg').removeAttr("class").html("&nbsp;");
-                $('#table_action tbody').html(responseHTML);
-                tableau_maj();
-                infobulle();
-                $('#choisir_referentiel_communautaire').show("fast");
+                $('#choisir_referentiel_communautaire ul').html(responseHTML).parent().show();
               }
             }
           }
@@ -258,10 +245,12 @@ $(document).ready
       'q.voir',
       function()
       {
-        var referentiel_id = $(this).parent().attr('id').substr(3);
-        var objet_tds      = $(this).parent().parent().find('td');
-        var description    = objet_tds.eq(0).html() + ' || ' + objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() + ' || ' + objet_tds.eq(3).html();
-        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+        referentiel_id = $(this).parent().attr('id').substr(3);
+        description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
+        longueur_sup   = $(this).prev().text().length;
+        description    = description.substring(0,description.length-longueur_sup);
+        new_label = '<label id="temp" class="loader">En cours&hellip;</label>';
+        $(this).after(new_label);
         $.ajax
         (
           {
@@ -272,6 +261,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $('label[id=temp]').remove();
             },
             success : function(responseHTML)
             {
@@ -284,6 +274,7 @@ $(document).ready
               {
                 $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
               }
+              $('label[id=temp]').remove();
             }
           }
         );

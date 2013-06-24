@@ -303,7 +303,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
   }
   // On enregistre la sortie PDF
   $contrat_fichier_nom = 'convention_contrat_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  $contrat_PDF->Output(CHEMIN_DOSSIER_EXPORT.$contrat_fichier_nom,'F');
+  $contrat_PDF->Output(CHEMIN_DOSSIER_EXPORT.$contrat_fichier_nom.'.pdf','F');
   //
   // Imprimer la facture.
   //
@@ -349,7 +349,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
   $facture_PDF->CellFit( 165 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // On enregistre la sortie PDF
   $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom,'F');
+  $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom.'.pdf','F');
   // Retour des informations.
   exit('ok'.']¤['.URL_DIR_EXPORT.$contrat_fichier_nom.']¤['.URL_DIR_EXPORT.$facture_fichier_nom);
 }

@@ -218,16 +218,6 @@ $(document).ready
         $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + ' || ' + $(this).parent().prev().prev().prev().html() );
         $('#f_action').val(mode);
         $('#f_ids').val(ids);
-        if( tab_ids[1] <= id_matiere_partagee_max )
-        {
-          $('#f_partage option[value=oui] , #f_partage option[value=bof] , #f_partage option[value=non]').prop('disabled',false);
-          $('#f_partage option[value=hs]').prop('disabled',true);
-        }
-        else
-        {
-          $('#f_partage option[value=oui] , #f_partage option[value=bof] , #f_partage option[value=non]').prop('disabled',true);
-          $('#f_partage option[value=hs]').prop('disabled',false);
-        }
         $('#f_partage    option[value='+partage   +']').prop('selected',true);
         $('#f_methode    option[value='+methode   +']').prop('selected',true);
         $('#f_limite     option[value='+limite    +']').prop('selected',true);

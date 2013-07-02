@@ -214,7 +214,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   // Supprimer le dossier temporaire
   FileSystem::supprimer_dossier($dossier_temp);
   // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.html';
+  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
   $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
   FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   exit('ok');

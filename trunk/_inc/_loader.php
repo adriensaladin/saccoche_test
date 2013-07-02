@@ -425,6 +425,7 @@ define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');        // 
 // test si c'est l'hébergement Sésamath qui est utilisé
 $is_hebergement_sesamath = (mb_strpos(URL_BASE,SERVEUR_PROJET)!==FALSE) ? TRUE : FALSE ;
 define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
+// define('IS_HEBERGEMENT_SESAMATH',TRUE);
 
 // indiquer si une convention Établissement-ENT est requise et à compter de quand
 define('CONVENTION_ENT_REQUISE'         ,TRUE);

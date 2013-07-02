@@ -250,7 +250,7 @@ if($besoin_notes)
   // Détermination de la date de départ
   $retroactif = ($retroactif=='auto') ? $calcul_retroactif : $retroactif ; // Ne peut plus valoir que "oui" ou "non" à présent
   $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] ) ;
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ ) ;
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)

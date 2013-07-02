@@ -64,9 +64,9 @@ else
 </p>
 
 <script type="text/javascript">
-  var url_export_rapport_maj    = "<?php echo URL_DIR_EXPORT.'rapport_maj.html' ?>";
-  var url_export_rapport_verif  = "<?php echo URL_DIR_EXPORT.'rapport_verif.html' ?>";
-  var url_export_rapport_droits = "<?php echo URL_DIR_EXPORT.'rapport_droits.html' ?>";
+  var url_export_rapport_maj    = "<?php echo URL_DIR_EXPORT.'rapport_maj.php' ?>";
+  var url_export_rapport_verif  = "<?php echo URL_DIR_EXPORT.'rapport_verif.php' ?>";
+  var url_export_rapport_droits = "<?php echo URL_DIR_EXPORT.'rapport_droits.php' ?>";
 </script>
 
 <h2>Version de SACoche</h2>

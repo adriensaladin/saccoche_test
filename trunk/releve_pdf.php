@@ -69,7 +69,7 @@ if( (!in_array($bilan_type,$tab_types)) || !$periode_id || !$eleve_id )
 
 if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]))
 {
-  exit_error( 'Accès non autorisé' /*titre*/ , 'Erreur de droit d\'accès ! Veuillez n\'utiliser qu\'un onglet.' /*contenu*/ , '' /*lien*/ );
+  exit_error( 'Accès non autorisé' /*titre*/ , 'Cet appel n\'est valide que pour un utilisateur précis, connecté, et ayant affiché la page listant les archives disponibles.<br />Veuillez ne pas appeler ce lien dans un autre contexte (ni le transmettre à un tiers).' /*contenu*/ , '' /*lien*/ );
 }
 
 $fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id );

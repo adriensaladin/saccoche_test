@@ -1,0 +1,89 @@
+<?php
+/**
+ * @version $Id$
+ * @author Thomas Crespin <thomas.crespin@sesamath.net>
+ * @copyright Thomas Crespin 2010
+ * 
+ * ****************************************************************************************************
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
+ * ****************************************************************************************************
+ * 
+ * Ce fichier est une partie de SACoche.
+ * 
+ * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
+ * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+ * 
+ * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+ * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
+ * 
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
+ * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = "Logo / Lien / Message";
+
+// Récupérer le fichier d'infos du partenaire
+$fichier_chemin = 'info_'.$_SESSION['USER_ID'].'.php';
+if(is_file(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin))
+{
+  require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
+}
+else
+{
+  $partenaire_logo_actuel_filename = $partenaire_adresse_web = $partenaire_message = '' ;
+}
+
+// Récupérer le logo du partenaire (ou pas)
+if($partenaire_logo_actuel_filename)
+{
+  $partenaire_logo_url = URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename;
+  $disabled = '';
+}
+else
+{
+  $partenaire_logo_url = URL_DIR_IMG.'auto.gif';
+  $disabled = ' disabled';
+}
+
+// Mise en session du nom du fichier image (pour le retrouver si enregistrement de nouveaux paramètres sans modification du fichier)
+$_SESSION['TMP']['partenaire_logo_actuel_filename'] = $partenaire_logo_actuel_filename;
+
+// Balises de lien (ou pas)
+if($partenaire_adresse_web)
+{
+  $partenaire_lien_ouvrant = '<a href="'.html($partenaire_adresse_web).'" class="lien_ext">';
+  $partenaire_lien_fermant = '</a>';
+}
+else
+{
+  $partenaire_lien_ouvrant = $partenaire_lien_fermant = '';
+}
+
+?>
+
+<p class="astuce">Dans le cadre de la convention ENT, vous pouvez faire afficher un logo, un lien et un message en page d'accueil des utilisateurs connectés.</p>
+
+<h2>Paramétrages</h2>
+<form action="#" method="post" id="form_gestion"><fieldset>
+  <div><label class="tab" for="f_upload_logo">Logo :</label><img id="image_logo" src="<?php echo html($partenaire_logo_url) ?>" /><button id="f_upload_logo" type="button" class="fichier_import">Parcourir...</button> <button id="f_delete_logo" type="button" class="supprimer"<?php echo $disabled ?>>Supprimer.</button><label id="ajax_upload">&nbsp;</label></div>
+  <div><label class="tab" for="f_adresse_web">Adresse web :</label><input id="f_adresse_web" name="f_adresse_web" size="60" type="text" value="<?php echo html($partenaire_adresse_web) ?>" /></div>
+  <div><label class="tab" for="f_message">Message :</label><textarea name="f_message" id="f_message" rows="4" cols="58"><?php echo html($partenaire_message) ?></textarea><br /><span class="tab"></span><label id="f_message_reste"></label></div>
+  <div><span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="enregistrer" /><button id="f_submit" type="submit" class="parametre">Valider ces réglages.</button><label id="ajax_msg">&nbsp;</label></div>
+</fieldset></form>
+
+<hr />
+
+<h2>Résultat</h2>
+<div id="resultat">
+  <?php echo $partenaire_lien_ouvrant ?>
+    <span id="partenaire_logo"><img src="<?php echo html($partenaire_logo_url) ?>" /></span>
+    <span id="partenaire_message"><?php echo nl2br(html($partenaire_message)) ?></span>
+  <?php echo $partenaire_lien_fermant ?>
+  <hr id="partenaire_hr" />
+</div>

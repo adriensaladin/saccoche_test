@@ -76,9 +76,7 @@ $tab_type  = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_PO
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
-// Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
-/*
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $aff_moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $aff_moyenne_scores     : 0 ;
@@ -92,7 +90,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
   $tab_eleve  = array($_SESSION['USER_ID']);
 }
-*/
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;

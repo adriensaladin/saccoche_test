@@ -64,7 +64,6 @@ $tab_droits_par_page = array
   // Profil professeur
   '_maj_select_eval'                        => $tab_droits_profil_professeur,
   '_maj_select_matieres_prof'               => $tab_droits_profil_professeur,
-  '_maj_select_profs_groupe'                => $tab_droits_profil_professeur,
   'evaluation_demande_professeur'           => $tab_droits_profil_professeur,
   'evaluation_gestion'                      => $tab_droits_profil_professeur,
   'professeur_groupe_besoin'                => $tab_droits_profil_professeur,
@@ -72,7 +71,6 @@ $tab_droits_par_page = array
   'professeur_referentiel_gestion'          => $tab_droits_profil_professeur,
   'professeur_referentiel_edition'          => $tab_droits_profil_professeur,
   'professeur_referentiel_ressources'       => $tab_droits_profil_professeur,
-  'releve_items_professeur'                 => $tab_droits_profil_professeur,
   'releve_items_selection'                  => $tab_droits_profil_professeur,
   // Profil directeur
   '_maj_select_matieres'                    => $tab_droits_profil_directeur,

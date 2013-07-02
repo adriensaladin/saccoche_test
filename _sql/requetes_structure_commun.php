@@ -1286,39 +1286,6 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
 }
 
 /**
- * Retourner un tableau [valeur texte] des profs ayant évalué les élèves d'une classe ou d'un groupe
- *
- * @param string $groupe_type   valeur parmi 'classe' ou 'groupe'
- * @param int    $groupe_id     id de la classe ou du groupe
- * @return array
- */
-public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
-{
-  $DB_SQL = 'SELECT prof.user_id AS valeur, CONCAT(prof.user_nom," ",prof.user_prenom) AS texte ';
-  switch ($groupe_type)
-  {
-    case 'classe' :  // On veut tous les élèves d'une classe (on utilise "eleve_classe_id" de "sacoche_user")
-      $DB_SQL.= 'FROM sacoche_user AS eleve ';
-      $WHERE  = 'WHERE eleve.eleve_classe_id=:classe ';
-      $DB_VAR = array(':classe'=>$groupe_id);
-      break;
-    case 'groupe' :  // On veut tous les élèves d'un groupe (on utilise la jointure de "sacoche_jointure_user_groupe")
-      $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-      $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve USING (user_id) ';
-      $WHERE  = 'WHERE sacoche_jointure_user_groupe.groupe_id=:groupe ';
-      $DB_VAR = array(':groupe'=>$groupe_id);
-      break;
-  }
-  $DB_SQL.= 'LEFT JOIN sacoche_saisie ON eleve.user_id=sacoche_saisie.eleve_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_devoir.prof_id=prof.user_id ';
-  $DB_SQL.= $WHERE.'AND prof.user_id IS NOT NULL ';
-  $DB_SQL.= 'GROUP BY prof.user_id ';
-  $DB_SQL.= 'ORDER BY texte ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Retourner un tableau [valeur texte] des professeurs et directeurs de l'établissement
  * optgroup sert à pouvoir regrouper les options
  *

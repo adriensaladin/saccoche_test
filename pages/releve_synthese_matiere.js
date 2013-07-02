@@ -293,44 +293,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger toutes les matières ou seulement les matières affectées (pour un prof)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var modifier_action = 'ajouter';
-    $("#modifier_matiere").click
-    (
-      function()
-      {
-        $('button').prop('disabled',true);
-        var matiere_id = $("#f_matiere option:selected").val();
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page=_maj_select_matieres_prof',
-            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action+'&f_multiple=0',
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button').prop('disabled',false);
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-              {
-                modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
-                $('#f_matiere').html(responseHTML);
-              }
-              $('button').prop('disabled',false);
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Soumettre le formulaire principal
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

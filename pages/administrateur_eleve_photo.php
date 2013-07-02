@@ -38,7 +38,7 @@ $select_groupe = Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupement
 <div class="danger">Respectez les conditions légales d'utilisation (droit à l'image précisé dans la documentation ci-dessus).</div>
 
 <script type="text/javascript">
-  var url_export_rapport = "<?php echo URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.php' ?>";
+  var url_export_rapport = "<?php echo URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.html' ?>";
 </script>
 
 <hr />

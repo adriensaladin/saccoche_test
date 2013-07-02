@@ -427,7 +427,6 @@ class Session
       '_maj_select_piliers',
       '_maj_select_professeurs',
       '_maj_select_professeurs_directeurs',
-      '_maj_select_profs_groupe',
       'calque_date_calendrier',
       'calque_voir_photo',
       'compte_selection_items',

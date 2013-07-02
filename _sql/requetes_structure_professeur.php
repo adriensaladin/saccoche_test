@@ -345,18 +345,9 @@ public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_group
   $DB_SQL_CLASSE = $sql_select.$sql_from.$sql_join_classe.$sql_join_profil.$sql_where.'AND groupe_id IN ('.$requete_id_classes.')';
   $DB_SQL_GROUPE = $sql_select.$sql_from.$sql_join_groupe.$sql_join_profil.$sql_where.'AND groupe_id IN ('.$requete_id_groupes.')';
   // Union des deux requêtes [http://dev.mysql.com/doc/refman/5.0/fr/union.html]
-  $DB_SQL = '( '.$DB_SQL_GROUPE.' ) UNION ( '.$DB_SQL_CLASSE.' )';
+  $DB_SQL = '( '.$DB_SQL_CLASSE.' ) UNION ( '.$DB_SQL_GROUPE.' )';
   $DB_VAR = array(':user_id'=>$prof_id,':profil_type'=>'eleve',':type1'=>'classe',':type2'=>'groupe');
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  $tab_listing_id = array();
-  foreach($DB_TAB as $DB_ROW)
-  {
-    if($DB_ROW['listing_eleves_id'] !== NULL)
-    {
-      $tab_listing_id[] = $DB_ROW['listing_eleves_id'];
-    }
-  }
-  return implode(',',$tab_listing_id);
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

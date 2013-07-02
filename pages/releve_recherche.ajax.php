@@ -131,7 +131,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     $tab_item[$DB_ROW['item_id']] = array('item_coef'=>$DB_ROW['item_coef'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
   }
   // Un directeur effectuant une recherche sur un grand nombre d'items pour tous les élèves de l'établissement peut provoquer un dépassement de mémoire.
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $compet_liste , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] , TRUE /*onlynote*/ );
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $compet_liste , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];

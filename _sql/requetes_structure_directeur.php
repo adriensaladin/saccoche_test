@@ -35,6 +35,7 @@ class DB_STRUCTURE_DIRECTEUR extends DB
 
 /**
  * compter_saisies_prof_classe
+ * Remarque : on passe par sacoche_devoir pour ne conserver que les évaluations de l'année scolaire en cours
  * Attention, renvoie aussi des lignes avec juste les noms des profs : il est plus rapide de les écarter a posteriori en PHP que d'ajouter un test groupe_nom IS NOT NULL ou de remplacer la jointure par un INNER JOIN car ces deux procédés allongent le temps de réponse MySQL
  *
  * @param void

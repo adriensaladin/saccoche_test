@@ -1354,7 +1354,7 @@ class PDF extends FPDF
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthodes pour la mise en page d'un bilan d'items d'une matiere ou pluridisciplinaire
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere" ou "selection"
+  // bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere" ou "selection" ou "professeur"
   // bilan_item_individuel_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
   // bilan_item_individuel_premiere_page()
   // bilan_item_individuel_rappel_eleve_page()
@@ -1382,7 +1382,7 @@ class PDF extends FPDF
     $this->aff_codes_notation      = TRUE;
     $this->aff_anciennete_notation = $aff_anciennete_notation;
     $this->aff_etat_acquisition    = $aff_etat_acquisition;
-    if( ($this->format=='matiere') || ($this->format=='selection') )
+    if( ($this->format!='multimatiere') )
     {
       // Dans ce cas on met plusieurs élèves par page : on calcule maintenant combien et la hauteur de ligne à prendre
       $hauteur_dispo_par_page   = $this->page_hauteur_moins_marges ;
@@ -1436,7 +1436,7 @@ class PDF extends FPDF
   {
     $this->eleve_nom    = $eleve_nom;
     $this->eleve_prenom = $eleve_prenom;
-    if( ($this->format=='matiere') || ($this->format=='selection') )
+    if( ($this->format!='multimatiere') )
     {
       // La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
       $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
@@ -1546,7 +1546,7 @@ class PDF extends FPDF
       $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
-      if( ($this->format=='matiere') || ($this->format=='selection') )
+      if( ($this->format!='multimatiere') )
       {
         $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
       }
@@ -1648,8 +1648,8 @@ class PDF extends FPDF
   {
     if(!$this->legende_deja_affichee)
     {
-      // Légende : à la suite si 'matiere' ou 'selection' , en bas de page si 'multimatiere',
-      $ordonnee = ( ($this->format=='matiere') || ($this->format=='selection') ) ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$this->legende_nb_lignes*0.9 ;
+      // Légende : à la suite si 'matiere' ou 'selection' ou 'professeur' , en bas de page si 'multimatiere',
+      $ordonnee = ( ($this->format!='multimatiere') ) ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$this->legende_nb_lignes*0.9 ;
       if($this->aff_codes_notation)      { $this->afficher_legende( 'codes_notation'      /*type_legende*/ , $ordonnee     /*ordonnée*/ ); } /*toujours TRUE*/
       if($this->aff_anciennete_notation) { $this->afficher_legende( 'anciennete_notation' /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
       if($this->aff_etat_acquisition)    { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }

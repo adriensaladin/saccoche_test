@@ -31,6 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * Code inclus commun aux pages
  * [./pages/releve_items_matiere.ajax.php]
  * [./pages/releve_items_multimatiere.ajax.php]
+ * [./pages/releve_items_professeur.php]
  * [./pages/releve_items_selection.ajax.php]
  * [./pages/brevet_moyennes.ajax.php]
  * [./_inc/code_officiel_***.php]
@@ -39,8 +40,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
 /*
-$type_individuel   $type_synthese   $type_bulletin
-$format        matiere  selection  multimatiere
+$type_individuel | $type_synthese | $type_bulletin
+$format [ matiere | selection | multimatiere | professeur ]
 */
 
 // Chemins d'enregistrement
@@ -63,7 +64,12 @@ $tab_matiere_for_item = array();  // [item_id] => matiere_id
 
 if( ($make_html) || ($make_pdf) )
 {
-  $tab_titre = array('matiere'=>'d\'items - '.$matiere_nom , 'multimatiere'=>'d\'items pluridisciplinaire' , 'selection'=>'d\'items sélectionnés');
+  $tab_titre = array(
+    'matiere'=>'d\'items - '.$matiere_nom ,
+    'multimatiere'=>'d\'items pluridisciplinaire' ,
+    'professeur'=>'d\'items restreint à '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.' ,
+    'selection'=>'d\'items sélectionnés'
+  );
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;
   $info_ponderation_courte   = ($with_coef) ? 'pondérée' : 'simple' ;
   if(!$aff_coef)  { $texte_coef       = ''; }
@@ -108,7 +114,7 @@ $precision_socle = $only_socle ? ', restriction au socle' : '' ;
 $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroactif[$retroactif].$precision_socle.').';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, pour la ou les matières ou les items indiqués
+// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, pour la ou les matières ou les items indiqués ou le prof indiqué
 // Récupération de la liste des matières travaillées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,6 +134,20 @@ elseif($format=='selection')
   $tab_compet_liste = Clean::map_entier($tab_compet_liste);
   $liste_compet = implode(',',$tab_compet_liste);
   list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
+  // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
+  if(count($tab_matiere)>1)
+  {
+    $matiere_id = 0;
+    $tab_matiere = array( 0 => implode(' - ',$tab_matiere) );
+  }
+  else
+  {
+    list($matiere_id,$matiere_nom) = each($tab_matiere);
+  }
+}
+elseif($format=='professeur')
+{
+  list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur($liste_eleve,$prof_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
   // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
   if(count($tab_matiere)>1)
   {
@@ -183,7 +203,8 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   }
 
   $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE']);
+  $onlyprof = ($format=='professeur') ? $prof_id : FALSE ;
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof );
   foreach($DB_TAB as $DB_ROW)
   {
     if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
@@ -470,7 +491,7 @@ if($type_individuel)
   if($make_pdf)
   {
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-    $lignes_nb = ($format=='matiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
+    $lignes_nb = ($format!='multimatiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
     $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
     $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
     $releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
@@ -509,7 +530,7 @@ if($type_individuel)
             {
               if( ($make_html) || ($make_pdf) )
               {
-                if( ($make_pdf) && ( ($format=='multimatiere') || ($format=='selection') ) )
+                if( ($make_pdf) && ($format!='matiere') )
                 {
                   $item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
                   $releve_PDF->bilan_item_individuel_transdisciplinaire_ligne_matiere( $matiere_nom , $item_matiere_nb+$aff_moyenne_scores+$aff_pourcentage_acquis /*lignes_nb*/ );
@@ -1104,9 +1125,9 @@ if( $type_bulletin && $make_html )
   $bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';
   // On enregistre la sortie HTML et CSV
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.html',$bulletin_html);
-  foreach($tab_bulletin_csv_gepi as $format => $bulletin_csv_gepi_contenu)
+  foreach($tab_bulletin_csv_gepi as $type_donnees => $bulletin_csv_gepi_contenu)
   {
-    FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin_'.$format,$fichier_nom).'.csv',utf8_decode($bulletin_csv_gepi_contenu));
+    FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin_'.$type_donnees,$fichier_nom).'.csv',utf8_decode($bulletin_csv_gepi_contenu));
   }
 }
 

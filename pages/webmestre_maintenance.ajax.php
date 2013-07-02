@@ -76,7 +76,7 @@ if($action=='verif_droits')
     $tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;
   }
   // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_droits.html';
+  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_droits.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
   $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
   FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   exit('ok');
@@ -224,7 +224,7 @@ if($action=='maj_etape4')
   ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
   // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_maj.html';
+  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_maj.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
   $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
   FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
@@ -350,7 +350,7 @@ if($action=='verif_etape4')
     }
   }
   // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_verif.html';
+  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_verif.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
   $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
   FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');

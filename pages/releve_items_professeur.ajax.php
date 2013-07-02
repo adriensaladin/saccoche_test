@@ -41,7 +41,7 @@ if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes') )
 // Autres cas
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$format                 = 'selection';
+$format                 = 'professeur';
 $aff_etat_acquisition   = (isset($_POST['f_etat_acquisition']))   ? 1                                     : 0;
 $aff_moyenne_scores     = (isset($_POST['f_moyenne_scores']))     ? 1                                     : 0;
 $aff_pourcentage_acquis = (isset($_POST['f_pourcentage_acquis'])) ? 1                                     : 0;
@@ -57,6 +57,7 @@ $periode_id             = (isset($_POST['f_periode']))            ? Clean::entie
 $date_debut             = (isset($_POST['f_date_debut']))         ? Clean::texte($_POST['f_date_debut'])  : '';
 $date_fin               = (isset($_POST['f_date_fin']))           ? Clean::texte($_POST['f_date_fin'])    : '';
 $retroactif             = (isset($_POST['f_retroactif']))         ? Clean::texte($_POST['f_retroactif'])  : '';
+$only_socle             = (isset($_POST['f_restriction']))        ? 1                                     : 0;
 $aff_coef               = (isset($_POST['f_coef']))               ? 1                                     : 0;
 $aff_socle              = (isset($_POST['f_socle']))              ? 1                                     : 0;
 $aff_lien               = (isset($_POST['f_lien']))               ? 1                                     : 0;
@@ -69,6 +70,8 @@ $marge_min              = (isset($_POST['f_marge_min']))          ? Clean::entie
 $pages_nb               = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])    : '';
 $cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])   : 0;
 $cases_largeur          = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg']) : 0;
+$prof_id                = (isset($_POST['f_prof']))               ? Clean::entier($_POST['f_prof'])       : 0;
+$prof_nom               = (isset($_POST['f_prof_nom']))           ? Clean::texte($_POST['f_prof_nom'])    : '';
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
@@ -100,12 +103,12 @@ $type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve = implode(',',$tab_eleve);
 
-if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
+if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) || !$prof_id )
 {
   exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('items_selection');
+Form::save_choix('items_professeur');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 

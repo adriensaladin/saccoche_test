@@ -102,7 +102,7 @@ class cURL
    */
   private function setopt_post()
   {
-    if( is_array($this->tab_post) && (strpos($this->url,'.php')!==FALSE) )
+    if( is_array($this->tab_post) && (strpos($this->url,'.zip')===FALSE) && (strpos($this->url,'.xml')===FALSE) && (strpos($this->url,'.txt')===FALSE) )
     {
       curl_setopt($this->handle, CURLOPT_POST,       TRUE);             // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
       curl_setopt($this->handle, CURLOPT_POSTFIELDS, $this->tab_post);  // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 

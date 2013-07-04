@@ -520,6 +520,7 @@ function __autoload($class_name)
     'Browser'                     => '_inc'.DS.'class.Browser.php' ,
     'Clean'                       => '_inc'.DS.'class.Clean.php' ,
     'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
+    'cURL'                        => '_inc'.DS.'class.cURL.php' ,
     'Erreur500'                   => '_inc'.DS.'class.Erreur500.php' ,
     'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
     'Form'                        => '_inc'.DS.'class.Form.php' ,

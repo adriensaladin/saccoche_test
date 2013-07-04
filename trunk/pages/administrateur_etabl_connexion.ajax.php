@@ -154,7 +154,7 @@ if($f_action=='enregistrer_mode_identification')
       exit('Signature (empreinte du certificat) manquante !');
     }
     $gepi_saml_url = (substr($gepi_saml_url,-1)=='/') ? substr($gepi_saml_url,0,-1) : $gepi_saml_url ;
-    $fichier_distant = url_get_contents($gepi_saml_url.'/bandeau.css'); // Le mieux serait d'appeler le fichier du web-services... si un jour il y en a un...
+    $fichier_distant = cURL::get_contents($gepi_saml_url.'/bandeau.css'); // Le mieux serait d'appeler le fichier du web-services... si un jour il y en a un...
     if(substr($fichier_distant,0,6)=='Erreur')
     {
       exit('Adresse de Gepi incorrecte [ '.$fichier_distant.' ]');

@@ -178,28 +178,28 @@ class Browser
   //
   // Chrome
   //
-  // $version_page = url_get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
+  // $version_page = cURL::get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
   // $nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
   // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 6 ;
   //
   // Firefox
   //
-  // $version_page = url_get_contents('http://www.mozilla-europe.org/fr/');
+  // $version_page = cURL::get_contents('http://www.mozilla-europe.org/fr/');
   // $nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
   // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 4 ;
   //
   // Opéra
   //
-  // $version_page = url_get_contents('http://www.opera-fr.com/telechargements/');
+  // $version_page = cURL::get_contents('http://www.opera-fr.com/telechargements/');
   // $nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
   // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 10 ;
   //
   // Safari
   //
-  // $version_page = url_get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
+  // $version_page = cURL::get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
   // $nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
   //
-  // $version_page = url_get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
+  // $version_page = cURL::get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
   // $nb_match = preg_match( '#'.'<td>'.'(.*?)'.' \(derni&egrave;re version\)</td>'.'#' , $version_page , $tab_matches );
   // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 5 ;
   //

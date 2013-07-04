@@ -119,7 +119,7 @@ if($action=='Rechercher_documents')
 Pour uploader une ressource directement sur le serveur communautaire, le fichier "professeur_referentiel_edition.php" devrait l'appeller dans une iframe (le bouton d'upload du formulaire devant se trouver sur ce serveur). Mais :
 - une fois l'upload effectué, pour faire remonter l'info au serveur où est installé SACoche, se pose un souci de cross-domain javascript.
 - il faudrait reproduire côté serveur communautaire tout un environnement (js & css) semblable à celui du serveur d'installation de SACoche
-Finalement, j'ai opté pour le plus simple même si ce n'est pas le plus économe : uploadé sur le serveur SACoche puis transférer vers le serveur communautaire avec url_get_contents().
+Finalement, j'ai opté pour le plus simple même si ce n'est pas le plus économe : uploader sur le serveur SACoche puis transférer vers le serveur communautaire avec cURL::get_contents().
 Ca va qu'une limite de 500Ko est imposée...
 */
 

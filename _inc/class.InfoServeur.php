@@ -58,7 +58,8 @@ class InfoServeur
     }
     if($type_base=='webmestre')
     {
-      return (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ;
+      return (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Sans objet pour une installation de type mono-structure.<br />' : ( (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ) ;
+       ;
     }
   }
 
@@ -249,6 +250,7 @@ class InfoServeur
    */
   private static function version_sacoche_base_webmestre()
   {
+    if(HEBERGEUR_INSTALLATION=='mono-structure')                  return InfoServeur::cellule_coloree_centree('sans objet'  ,'jaune');
     if($_SESSION['USER_PROFIL_TYPE']=='administrateur')           return InfoServeur::cellule_coloree_centree('indisponible','jaune');
     $version_base = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
     if(version_compare($version_base,VERSION_BASE_WEBMESTRE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert');

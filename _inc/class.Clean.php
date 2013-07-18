@@ -200,6 +200,27 @@ class Clean
     return $texte;
   }
 
+  /*
+   * Enlever les guillemets éventuels entourants des champs dans un fichier csv (fonction utilisée avec "array_map()")
+   * 
+   * @param string
+   * @return string
+   */
+  private static function retirer_guillemets($text)
+  {
+    if(mb_strlen($text)>1)
+    {
+      $tab_guillemets = array('"','\'');
+      $premier = mb_substr($text,0,1);
+      $dernier = mb_substr($text,-1);
+      if( ($premier==$dernier) && (in_array($premier,$tab_guillemets)) )
+      {
+        $text = mb_substr($text,1,-1);
+      }
+    }
+    return $text;
+  }
+
   // //////////////////////////////////////////////////
   // Méthodes publiques de bas niveau
   // //////////////////////////////////////////////////
@@ -267,6 +288,11 @@ class Clean
   public static function map_texte($array)
   {
     return array_map( 'trim' , $array );
+  }
+
+  public static function map_quotes($array)
+  {
+    return array_map( 'Clean::retirer_guillemets' , $array );
   }
 
 }

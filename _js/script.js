@@ -429,7 +429,7 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
 {
   var textarea_contenu = textarea_obj.val();
   var textarea_longueur = textarea_contenu.length;
-  if(textarea_longueur > textarea_maxi_length)
+  if(textarea_contenu.length > textarea_maxi_length)
   {
     textarea_obj.val( textarea_contenu.substring(0,textarea_maxi_length) );
     textarea_longueur = textarea_maxi_length;

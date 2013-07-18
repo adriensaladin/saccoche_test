@@ -74,11 +74,12 @@ if($action=='importer_csv')
   );
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
+    $tab_elements = explode($separateur,$ligne_contenu);
     $tab_elements = array_slice($tab_elements,0,8);
     if(count($tab_elements)==8)
     {
       $nb_lignes_trouvees++;
+      $tab_elements = Clean::map_quotes($tab_elements);
       list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
       $import_id        = Clean::entier($import_id);
       $geo_id           = Clean::entier($geo_id);

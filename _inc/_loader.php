@@ -140,38 +140,6 @@ function pathinfo_filename($file)
   }
 }
 
-/*
- * La fonction str_getcsv() n'est disponible que depuis PHP 5.3 ; SACoche exigeant PHP 5.1, la définir si besoin.
- * @see http://us2.php.net/manual/fr/function.str-getcsv.php#111577
- */
-if (!function_exists('str_getcsv'))
-{
-  function str_getcsv($input, $delimiter = ',', $enclosure = '"')
-  {
-
-    if( ! preg_match("/[$enclosure]/", $input) )
-    {
-      return (array)preg_replace(array("/^\\s*/", "/\\s*$/"), '', explode($delimiter, $input));
-    }
-    $token = "##"; $token2 = "::"; //alternate tokens "\034\034", "\035\035", "%%";
-    $t1 = preg_replace(
-      array("/\\\[$enclosure]/", "/$enclosure{2}/", "/[$enclosure]\\s*[$delimiter]\\s*[$enclosure]\\s*/", "/\\s*[$enclosure]\\s*/"),
-      array($token2, $token2, $token, $token),
-      trim(trim(trim($input),$enclosure))
-    );
-    $a = explode($token, $t1);
-    foreach($a as $k=>$v)
-    {
-      if ( preg_match("/^{$delimiter}/", $v) || preg_match("/{$delimiter}$/", $v) )
-      {
-        $a[$k] = trim($v, $delimiter); $a[$k] = preg_replace("/$delimiter/", "$token", $a[$k]);
-      }
-    }
-    $a = explode($token, implode($token, $a));
-    return (array)preg_replace(array("/^\\s/", "/\\s$/", "/$token2/"), array('', '', $enclosure), $a);
-  }
-}
-
 // ============================================================================
 // Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
 // ============================================================================
@@ -296,7 +264,7 @@ define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_en
  * On fonctionne comme pour les droits unix wrx, en testant chaque bit en partant de la droite.
  * Pour choisir les infos voulues, il faut mettre en DEBUG la somme des valeurs correspondantes.
  * Par exemple 7 = 4 + 2 + 1 = requêtes SQL + logs CAS + erreurs PHP
- * La valeur minimale est 0 (pas de debug) et la valeur maximale est 1023.
+ * La valeur minimale est 0 (pas de debug) et la valeur maximale est 511.
  */
 
 // Dans un fichier texte du dossier TMP pour ne pas être dans la distribution ni écrasé par les maj et être accessible en écriture, en particulier par l'espace webmestre.
@@ -386,13 +354,7 @@ function getServerProtocole()
   return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
-function getServerPort()
-{
-  // Rien à indiquer si port 80 (protocole HTTP) ou 443 (protocole HTTPS)
-  return ( !isset($_SERVER['SERVER_PORT']) || in_array($_SERVER['SERVER_PORT'],array(80,443)) ) ? '' : ':'.$_SERVER['SERVER_PORT'] ;
-}
-
-define('URL_BASE',getServerProtocole().$HOST.getServerPort());
+define('URL_BASE',getServerProtocole().$HOST);
 
 // ============================================================================
 // Type de serveur (LOCAL|DEV|PROD)

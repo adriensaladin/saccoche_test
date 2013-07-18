@@ -52,16 +52,11 @@ $tab_menu = array
     "Mot de passe"             => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'          ),
     "Daltonisme"               => array( 'class' => 'compte_daltonisme'   , 'href' => 'page=compte_daltonisme'        ),
     "Messages d'accueil"       => array( 'class' => 'message_accueil'     , 'href' => 'page=compte_message'           ),
+    "Gestion des référentiels" => array( 'class' => 'referentiel_gestion' , 'href' => 'page=professeur_referentiel'   ),
     "Groupes de besoin"        => array( 'class' => 'groupe'              , 'href' => 'page=professeur_groupe_besoin' ),
     "Regroupements d'items"    => array( 'class' => 'item_selection'      , 'href' => 'page=compte_selection_items'   )
   ),
-  "Référentiels (gestion)" => array
-  (
-    "Créer / paramétrer les référentiels"  => array( 'class' => 'referentiel_gestion'    , 'href' => 'page=professeur_referentiel&amp;section=gestion'    ),
-    "Modifier le contenu des référentiels" => array( 'class' => 'referentiel_edition'    , 'href' => 'page=professeur_referentiel&amp;section=edition'    ),
-    "Associer des ressources aux items"    => array( 'class' => 'referentiel_ressources' , 'href' => 'page=professeur_referentiel&amp;section=ressources' )
-  ),
-  "Évaluations" => array
+  "Évaluation des élèves" => array
   (
     "Demandes d'évaluations formulées" => array( 'class' => 'evaluation_demande' , 'href' => 'page=evaluation_demande_professeur'            ),
     "Évaluer une classe ou un groupe"  => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_gestion&amp;section=groupe'    ),
@@ -128,24 +123,6 @@ if( !$_SESSION['SESAMATH_ID'] || !$_SESSION['SESAMATH_KEY'] )
 if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
   $tab_menu["Paramétrages"]["Mot de passe"]['class'] .= ' disabled';
-}
-
-// Créer / paramétrer les référentiels (profil [professeur] uniquement).
-if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_menu["Référentiels (gestion)"]["Créer / paramétrer les référentiels"]['class'] .= ' disabled';
-}
-
-// Modifier le contenu des référentiels (profil [professeur] uniquement).
-if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_menu["Référentiels (gestion)"]["Modifier le contenu des référentiels"]['class'] .= ' disabled';
-}
-
-// Associer des ressources aux items (profil [professeur] uniquement).
-if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_menu["Référentiels (gestion)"]["Associer des ressources aux items"]['class'] .= ' disabled';
 }
 
 // Choisir la langue étrangère pour le socle commun (profils [professeur] et [directeur] uniquement).

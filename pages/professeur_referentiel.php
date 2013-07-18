@@ -26,7 +26,17 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+?>
 
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=ressources">Associer des ressources aux items.</a>
+</div>
+
+<hr />
+
+<?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
@@ -36,6 +46,6 @@ if(is_file($fichier_section))
 }
 else
 {
-  echo'<p><span class="astuce">Choisir une rubrique dans le menu déroulant&hellip;</span></p>';
+  require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.'accueil'.'.php');
 }
 ?>

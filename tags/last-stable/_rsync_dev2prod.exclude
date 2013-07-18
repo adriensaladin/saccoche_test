@@ -1,0 +1,30 @@
+# ATTENTION, ce fichier est SENSIBLE
+# toujours tester un déploiement complet svn => dev (pour déployer celui-ci) 
+# puis dev => prod et vérifier que l'on ne déploie pas (ou écrase) de fichiers non voulus
+
+# Ce fichier contient la liste des fichiers / dossiers
+# qui ne doivent pas être déployés du dev vers la prod
+# (un par ligne)
+# il doit contenir au moins les lignes suivantes
+.svn
+_rsync_dev2prod.exclude
+robots.txt
+_private
+
+# le reste dépend des projets
+
+# ATTENTION, il s'agit de motifs appliqués à la liste des fichiers qui seraient déployés par rsync
+# a/b
+# va exclure tous les dossiers ou fichiers nommés b dont le parent 
+# est nommé a, EN PARTANT DU DOSSIER DE BASE DU DÉPLOIEMENT
+# donc, depuis la racine, trunk/a/b sera exclu, mais depuis trunk/a/, b/toto sera déployé (car pattern a/b/ pas trouvé)
+
+# il est possible d'utiliser des motifs :
+# '.' pour un caractère (sauf /), 
+# '?' pour un caractère (sauf /) ou rien,
+# '*' pour une suite indéterminée de caractères (sauf /)
+
+# pour sacoche on a (en plus de _rsync_dev2prod.exclude) :
+__private
+__tmp
+webservices

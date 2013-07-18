@@ -211,11 +211,10 @@ if($action=='import_loginmdp')
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,4);
     if(count($tab_elements)==4)
     {
-      $tab_elements = Clean::map_quotes($tab_elements);
       list($login,$mdp,$nom,$prenom) = $tab_elements;
       if( ($nom!='') && ($prenom!='') )
       {
@@ -413,10 +412,9 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
   // Récupérer les données du fichier
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>2)
     {
-      $tab_elements = Clean::map_quotes($tab_elements);
       $id_gepi    = $tab_elements[2];
       $nom        = $tab_elements[0];
       $prenom     = $tab_elements[1];
@@ -560,10 +558,9 @@ if($action=='import_ent')
   // Récupérer les données
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>2)
     {
-      $tab_elements = Clean::map_quotes($tab_elements);
       $id_ent    = $tab_elements[ $tab_infos_csv['csv_id_ent'] ];
       $nom       = $tab_elements[ $tab_infos_csv['csv_nom']    ];
       $prenom    = $tab_elements[ $tab_infos_csv['csv_prenom'] ];

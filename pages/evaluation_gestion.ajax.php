@@ -1296,7 +1296,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   // Pas de ligne d'en-tête à supprimer
   // Mémoriser les eleve_id de la 1ère ligne
   $tab_eleve = array();
-  $tab_elements = explode($separateur,$tab_lignes[0]);
+  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   unset($tab_elements[0]);
   foreach ($tab_elements as $num_colonne => $element_contenu)
   {
@@ -1312,7 +1312,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   $scores_autorises = '1234AaDdNnPp';
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $item_id = Clean::entier($tab_elements[0]);
     if($item_id)
     {

@@ -55,7 +55,7 @@ $tab_menu = array
     "Regroupements d'items" => array( 'class' => 'item_selection'    , 'href' => 'page=compte_selection_items'        ),
     "Synthèses / Bilans"    => array( 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' )
   ),
-  "Évaluation des élèves" => array
+  "Évaluations" => array
   (
     "Nombre de saisies"     => array( 'class' => 'statistiques'    , 'href' => 'page=consultation_statistiques' ),
     "Liste des évaluations" => array( 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'           )

@@ -31,6 +31,6 @@ $TITRE = "Résilier l'inscription de l'établissement";
 
 <p class="astuce">Pour transmettre un rôle d'administrateur, il suffit de l'inscrire comme administrateur ou de lui donner vos identifiants.</p>
 
-<p>Pour supprimer complètement l'inscription de cet établissement, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Supprimer inscription SACoche '.$_SESSION['BASE'],'contacter le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</p>
+<p>Pour supprimer complètement l'inscription de cet établissement, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Supprimer inscription SACoche '.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','contacter le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</p>
 
 <p class="danger">Si vous confirmez ce choix, alors toutes les données des élèves, professeurs, compétences, classes, etc. seront complètement effacées !</p>

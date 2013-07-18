@@ -124,11 +124,10 @@ if( ($action=='import_gepi') && $periode_id )
   $tab_users_fichier = array();
   foreach ($tab_lignes as $ligne_contenu)
   {
-    $tab_elements = explode($separateur,$ligne_contenu);
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,7);
     if(count($tab_elements)==7)
     {
-      $tab_elements = Clean::map_quotes($tab_elements);
       list($elenoet,$nom,$prenom,$classe,$nb_absence,$nb_non_justifie,$nb_retard) = $tab_elements;
       $tab_users_fichier[] = array(
         Clean::entier($elenoet),

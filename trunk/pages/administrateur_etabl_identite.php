@@ -81,7 +81,7 @@ else
       <li>est destinataire des lettres d'informations que peut envoyer le webmestre</li>
       <li>reçoit une régénération de mot de passe administrateur demandée au webmestre</li>
     </ul>
-    <p>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche '.$_SESSION['BASE'],'demander une modification au webmestre'); ?>.</p>
+    <p>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</p>
   </form>
 
   <hr />
@@ -93,7 +93,7 @@ else
       <label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
       <label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
     </p>
-    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
+    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
   </form>
 
   <hr />

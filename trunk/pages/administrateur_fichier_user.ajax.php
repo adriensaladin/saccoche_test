@@ -629,12 +629,11 @@ if( $step==20 )
     //
     foreach ($tab_lignes as $ligne_contenu)
     {
-      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = str_getcsv($ligne_contenu,$separateur);
       $tab_elements = array_slice($tab_elements,0,6);
       if(count($tab_elements)>=4)
       {
-        $tab_elements = Clean::map_quotes($tab_elements);
-        list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array(4=>NULL,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array_fill(4,2,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
         $profil = Clean::ref($profil);
         if( ($nom!='') && ($prenom!='') && isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) && in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil],array('professeur','directeur')) )
         {
@@ -707,11 +706,10 @@ if( $step==20 )
     //
     foreach ($tab_lignes as $ligne_contenu)
     {
-      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = str_getcsv($ligne_contenu,$separateur);
       $tab_elements = array_slice($tab_elements,0,6);
       if(count($tab_elements)>=5)
       {
-        $tab_elements = Clean::map_quotes($tab_elements);
         list($reference,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(5=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
         if( ($nom!='') && ($prenom!='') )
         {
@@ -784,12 +782,11 @@ if( $step==20 )
     $tab_adresses_uniques = array();
     foreach ($tab_lignes as $ligne_contenu)
     {
-      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = str_getcsv($ligne_contenu,$separateur);
       $tab_elements = array_slice($tab_elements,0,19);
       if(count($tab_elements)>=11)
       {
-        $tab_elements = Clean::map_quotes($tab_elements);
-        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array(3=>NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(3,16,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
         if( ($nom!='') && ($prenom!='') && ($enfant1!='') )
         {
           // enfants
@@ -837,8 +834,7 @@ if( $step==20 )
     $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
     // Utiliser la 1e ligne pour repérer les colonnes intéressantes
     $tab_numero_colonne = array('nom'=>-100,'prenom'=>-100,'niveau'=>-100,'classe'=>-100);
-    $tab_elements = explode($separateur,$tab_lignes[0]);
-    $tab_elements = Clean::map_quotes($tab_elements);
+    $tab_elements = str_getcsv($tab_lignes[0],$separateur);
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
     {
@@ -884,10 +880,9 @@ if( $step==20 )
     //
     foreach ($tab_lignes as $ligne_contenu)
     {
-      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = str_getcsv($ligne_contenu,$separateur);
       if(count($tab_elements)>$numero_max)
       {
-        $tab_elements = Clean::map_quotes($tab_elements);
         $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
         $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
         $birth_date = $tab_elements[$tab_numero_colonne['birth_date']];
@@ -934,8 +929,7 @@ if( $step==20 )
     $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
     // Utiliser la 1e ligne pour repérer les colonnes intéressantes
     $tab_numero_colonne = array('nom'=>-200,'prenom'=>-200,'adresse'=>-200,'codepostal'=>-200,'commune'=>-200,'pays'=>-200,'enfant_nom'=>array(),'enfant_prenom'=>array());
-    $tab_elements = explode($separateur,$tab_lignes[0]);
-    $tab_elements = Clean::map_quotes($tab_elements);
+    $tab_elements = str_getcsv($tab_lignes[0],$separateur);
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
     {
@@ -973,10 +967,9 @@ if( $step==20 )
     $tab_adresses_uniques = array();
     foreach ($tab_lignes as $ligne_contenu)
     {
-      $tab_elements = explode($separateur,$ligne_contenu);
+      $tab_elements = str_getcsv($ligne_contenu,$separateur);
       if(count($tab_elements)>$numero_max)
       {
-        $tab_elements = Clean::map_quotes($tab_elements);
         $nom        = Clean::nom(    $tab_elements[$tab_numero_colonne['nom']       ]);
         $prenom     = Clean::prenom( $tab_elements[$tab_numero_colonne['prenom']    ]);
         $adresse    = Clean::adresse($tab_elements[$tab_numero_colonne['adresse']   ]);

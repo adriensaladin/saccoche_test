@@ -57,7 +57,7 @@ public static function DB_recuperer_structure_by_Id($base_id)
 public static function DB_recuperer_convention_structure_info($convention_id)
 {
   $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation, ';
-  $DB_SQL.= 'structure_contact_nom, structure_contact_prenom, structure_contact_courriel ';
+  $DB_SQL.= 'structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';

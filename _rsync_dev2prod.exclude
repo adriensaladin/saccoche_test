@@ -7,7 +7,6 @@
 # (un par ligne)
 # il doit contenir au moins les lignes suivantes
 .svn
-_rsync_dev2prod.exclude
 robots.txt
 _private
 

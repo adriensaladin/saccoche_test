@@ -36,12 +36,26 @@ $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' 
 
 // Options du formulaire de profils, et variable en session pour la page ajax associée
 $options = '';
-$_SESSION['TMP'] = array();
+$_SESSION['tmp'] = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_long_singulier' /*listing_champs*/ , TRUE /*only_actif*/ , array('professeur','directeur') /*only_listing_profils_types*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $options .= '<option value="'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_sigle'].' &rarr; '.$DB_ROW['user_profil_nom_long_singulier'].'</option>';
-  $_SESSION['TMP'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
+  $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
+}
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date      = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
+foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
+}
+foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
 }
 ?>
 
@@ -97,12 +111,12 @@ foreach($DB_TAB as $DB_ROW)
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce personnel."></q>';
         echo  '</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="12"></td></tr>';
+      echo'<tr><td class="nu" colspan="12"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -141,10 +155,3 @@ foreach($DB_TAB as $DB_ROW)
     <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
-
-<script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var date_mysql = "<?php echo TODAY_MYSQL ?>";
-  var tab_login_modele = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele) { echo'tab_login_modele["'.$profil_sigle.'"]="'.$login_modele.'";'; } ?>
-  var tab_mdp_longueur_mini = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini) { echo'tab_mdp_longueur_mini["'.$profil_sigle.'"]='.$mdp_longueur_mini.';'; } ?>
-</script>

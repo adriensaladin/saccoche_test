@@ -30,14 +30,17 @@ $TITRE = "Associer des ressources aux items";
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
 // Acces serveur communautaire
 $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';';
 ?>
 
 <ul class="puce">
@@ -53,10 +56,10 @@ $texte_profil = afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOUR
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_niveaux_referentiels_professeur($_SESSION['USER_ID']);
 if(empty($DB_TAB))
 {
-  echo'<ul class="puce">';
-  echo'<li><span class="danger">Aucun référentiel présent parmi les matières qui vous sont rattachées !</span></li>';
-  echo'<li><span class="astuce">Commencer par <a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer ou importer un référentiel</a>.</span></li>';
-  echo'</ul>';
+  echo'<ul class="puce">'.NL;
+  echo  '<li><span class="danger">Aucun référentiel présent parmi les matières qui vous sont rattachées !</span></li>'.NL;
+  echo  '<li><span class="astuce">Commencer par <a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer ou importer un référentiel</a>.</span></li>'.NL;
+  echo'</ul>'.NL;
 }
 else
 {
@@ -70,15 +73,15 @@ else
       $matiere_droit = test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , $DB_ROW['jointure_coord'] /*matiere_coord_or_groupe_pp_connu*/ );
       $icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les ressources de ce référentiel."></q>' : '<q class="modifier_non" title="Droit d\'accès : '.$texte_profil.'."></q>' ;
       $tab_matiere[$DB_ROW['matiere_id']] = array(
-        'matiere_nom' => html($DB_ROW['matiere_nom']) ,
-        'matiere_ref' => Clean::id($DB_ROW['matiere_ref']) ,
-        'matiere_act' => $icone_action
+        'matiere_nom' => html($DB_ROW['matiere_nom']),
+        'matiere_ref' => Clean::id($DB_ROW['matiere_ref']),
+        'matiere_act' => $icone_action,
       );
     }
     $tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td>'.html($DB_ROW['niveau_nom']).'</td><td class="nu" id="td_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'">'.$tab_matiere[$DB_ROW['matiere_id']]['matiere_act'].'</td>';
   }
   // On construit et affiche le tableau résultant
-  $affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+  $affichage = '<table class="vm_nug"><thead>'.NL.'<tr><th>Matière</th><th>Niveau</th><th class="nu"></th></tr>'.NL.'</thead><tbody>'.NL;
   foreach($tab_matiere as $matiere_id => $tab)
   {
     $rowspan = count($tab_colonne[$matiere_id]);
@@ -86,16 +89,16 @@ else
     {
       if($rowspan)
       {
-        $affichage .= '<tr class="tr_'.$tab['matiere_ref'].'"><td rowspan="'.$rowspan.'">'.$tab['matiere_nom'].'</td>'.$cellules.'</tr>'."\r\n";
+        $affichage .= '<tr class="tr_'.$tab['matiere_ref'].'"><td rowspan="'.$rowspan.'">'.$tab['matiere_nom'].'</td>'.$cellules.'</tr>'.NL;
         $rowspan = 0;
       }
       else
       {
-        $affichage .= '<tr class="tr_'.$tab['matiere_ref'].'">'.$cellules.'</tr>'."\r\n";
+        $affichage .= '<tr class="tr_'.$tab['matiere_ref'].'">'.$cellules.'</tr>'.NL;
       }
     }
   }
-  $affichage .= '</tbody></table>'."\r\n";
+  $affichage .= '</tbody></table>'.NL;
   echo $affichage;
 }
 ?>
@@ -132,7 +135,3 @@ else
     <div id="zone_resultat_recherche_ressources"></div>
   </div>
 </div>
-
-<script type="text/javascript">
-  var etablissement_identifie = <?php echo $acces_serveur_communautaire ? 'true' : 'false' ;?>;
-</script>

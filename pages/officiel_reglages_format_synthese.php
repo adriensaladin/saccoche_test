@@ -41,7 +41,7 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_referentiels();
 
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun référentiel enregistré !</p>';
+  echo'<p class="danger">Aucun référentiel enregistré !</p>'.NL;
 }
 else
 {
@@ -67,7 +67,7 @@ else
   {
     $ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
     // Titre + boutons radio + bouton validation
-    echo'<h4>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>';
+    echo'<h4>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>'.NL;
     echo'<ul class="puce"><li>Traitement :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     foreach($tab_choix as $option_valeur => $option_texte)
     {
@@ -75,23 +75,23 @@ else
       echo'<label for="f_'.$ids.'_'.$option_valeur.'"><input type="radio" id="f_'.$ids.'_'.$option_valeur.'" name="f_'.$ids.'" value="'.$option_valeur.'"'.$checked.' /> '.$option_texte.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     }
     echo ($DB_ROW['referentiel_mode_synthese']=='inconnu') ? '<button id="bouton_'.$ids.'" type="button" class="valider" disabled>Valider.</button><label id="label_'.$ids.'" class="erreur">Choix manquant !</label>' : '<button id="bouton_'.$ids.'" type="button" class="valider">Valider.</button><label id="label_'.$ids.'" class="valide">ok</label>' ;
-    echo'</li></ul>';
+    echo'</li></ul>'.NL;
     // Div avec ses domaines
     $class = ($DB_ROW['referentiel_mode_synthese']=='domaine') ? '' : ' class="hide"' ;
-    echo'<div id="domaine_'.$ids.'"'.$class.'>';
+    echo'<div id="domaine_'.$ids.'"'.$class.'>'.NL;
     if(isset($tab_domaines[$ids]))
     {
-      echo'<ul class="ul_n1">'.implode('',$tab_domaines[$ids]).'</ul>';
+      echo'<ul class="ul_n1">'.implode('',$tab_domaines[$ids]).'</ul>'.NL;
     }
-    echo'</div>';
+    echo'</div>'.NL;
     // Div avec ses thèmes
     $class = ($DB_ROW['referentiel_mode_synthese']=='theme') ? '' : ' class="hide"' ;
-    echo'<div id="theme_'.$ids.'"'.$class.'>';
+    echo'<div id="theme_'.$ids.'"'.$class.'>'.NL;
     if(isset($tab_themes[$ids]))
     {
-      echo'<ul class="ul_n1">'.implode('',$tab_themes[$ids]).'</ul>';
+      echo'<ul class="ul_n1">'.implode('',$tab_themes[$ids]).'</ul>'.NL;
     }
-    echo'</div>';
+    echo'</div>'.NL;
   }
 }
 ?>

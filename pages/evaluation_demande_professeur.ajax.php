@@ -132,7 +132,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
     $retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['user_id']]).'</td>';
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
-    $retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score($score,'score',$pourcent='') );
+    $retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
     $retour .= '<td class="label">'.$date.'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
     $retour .= '<td class="label">'.$commentaire.'</td>';
@@ -185,7 +185,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
-  $info = 'Demande en attente ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
@@ -221,7 +221,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
   $date_mysql         = convert_date_french_to_mysql($date);
   $date_visible_mysql = convert_date_french_to_mysql($date_visible);
-  $info = 'Demande en attente ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);

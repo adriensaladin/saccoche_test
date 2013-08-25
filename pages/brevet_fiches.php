@@ -28,12 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? "Fiches brevet" :  "Étape n°5 - Fiches brevet" ;
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var TODAY_FR   = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var USER_ID    = '.$_SESSION['USER_ID'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CODE_TOTAL = '.CODE_BREVET_EPREUVE_TOTAL.';';
+
 // Lister les séries de Brevet en place
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>';
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>' : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>' ;
+  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>'.NL;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 $tab_brevet_series = array();
@@ -48,9 +53,9 @@ if(count($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
-    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !<p>';
+    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !<p>'.NL;
   }
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>' : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a><div>' ;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a><div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -58,8 +63,8 @@ if(count($DB_TAB))
 $listing_classes_concernees = DB_STRUCTURE_BREVET::DB_recuperer_brevet_listing_classes_editables();
 if(!$listing_classes_concernees)
 {
-  echo'<p class="danger">Aucun élève d\'une classe n\'a de notes enregistrées pour les fiches brevet !<p>';
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>' : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°3.</a><div>' ;
+  echo'<p class="danger">Aucun élève d\'une classe n\'a de notes enregistrées pour les fiches brevet !<p>'.NL;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°3.</a><div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 $tab_classes_concernees = explode(',',$listing_classes_concernees);
@@ -81,7 +86,7 @@ $tab_etats = array
   '1vide'     => 'Vide (fermé)',
   '2rubrique' => '<span class="now">Saisies Profs</span>',
   '3synthese' => '<span class="now">Saisie Synthèse</span>',
-  '4complet'  => 'Complet (fermé)'
+  '4complet'  => 'Complet (fermé)',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,11 +128,6 @@ foreach($DB_TAB as $DB_ROW)
 </p>
 <div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
 <hr />
-<script type="text/javascript">
-  var TODAY_FR   = "<?php echo TODAY_FR ?>";
-  var USER_ID    = "<?php echo $_SESSION['USER_ID'] ?>";
-  var CODE_TOTAL = "<?php echo CODE_BREVET_EPREUVE_TOTAL ?>";
-</script>
 
 <?php
 
@@ -242,7 +242,7 @@ else // professeur
 
 if(!count($tab_classe))
 {
-  echo'<p class="danger">Aucune classe ni aucun groupe associé à votre compte n\'est actuellement concerné !</label></p>';
+  echo'<p class="danger">Aucune classe ni aucun groupe associé à votre compte n\'est actuellement concerné !</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -250,7 +250,12 @@ if(!count($tab_classe))
 // Passer en revue les classes et les groupes et afficher ce qu'il faut en focntion de l'état de la fiche brevet (de la classe) et des droits.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_js_disabled = '';
+// Javascript : tableau utilisé pour désactiver des options d'un select.
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_disabled = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"] = new Array();';
+
 $listing_classes_id = implode(',',array_keys($tab_classe));
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
 foreach($tab_classe as $classe_id => $tab_groupes)
@@ -369,29 +374,23 @@ foreach($tab_classe as $classe_id => $tab_groupes)
     $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
     $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
     $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
-    $tab_js_disabled .= 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_examiner.';';
-    $tab_js_disabled .= 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_imprimer.';';
-    $tab_js_disabled .= 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_voir_pdf.';'."\r\n";
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_examiner.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_imprimer.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_voir_pdf.';';
   }
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage d'un tableau js utilisé pour désactiver des options d'un select.
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled["examiner"] = new Array();tab_disabled["imprimer"] = new Array();tab_disabled["voir_pdf"] = new Array();'."\r\n".$tab_js_disabled.'</script>';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du tableau.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-echo'<table id="table_accueil"><thead>';
+echo'<table id="table_accueil"><thead>'.NL;
 foreach($tab_affich as $ligne_id => $tab_colonne)
 {
-  echo '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n";
-  echo (!$ligne_id) ? '</thead><tbody>'."\r\n" : '' ;
+  echo '<tr>'.implode('',$tab_colonne).'</tr>'.NL;
+  echo (!$ligne_id) ? '</thead><tbody>'.NL : '' ;
 }
-echo'</tbody></table>';
+echo'</tbody></table>'.NL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du formulaire pour modifier les états d'accès.
@@ -404,13 +403,11 @@ if($affichage_formulaire_statut)
   {
     $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
   }
-  echo'
-    <form action="#" method="post" id="cadre_statut">
-      <h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>
-      <div>'.implode('<br />',$tab_radio).'</div>
-      <p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
-    </form>
-  ';
+  echo'<form action="#" method="post" id="cadre_statut">'.NL;
+  echo  '<h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>'.NL;
+  echo  '<div>'.implode('<br />',$tab_radio).'</div>'.NL;
+  echo  '<p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>'.NL;
+  echo'</form>'.NL;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -80,14 +80,11 @@ $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_c
 
 $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql = "'.TODAY_MYSQL.'";';
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
-
-<script type="text/javascript">
-  var date_mysql="<?php echo TODAY_MYSQL ?>";
-  <?php echo $tab_groupe_periode_js ?> 
-</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Relevé d'items sélectionnés.</a></span></div>
 

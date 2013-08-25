@@ -50,7 +50,7 @@ $TITRE = "Paliers du socle";
         echo  '<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['palier_id'].'"'.$checked.' /></td>';
         echo  '<td class="label">'.html($DB_ROW['palier_nom']).'</td>';
         echo  '<td class="nu"><q class="voir" id="id_'.$DB_ROW['palier_id'].'" title="Voir le détail de ce palier du socle."></q></td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
       ?>
     </tbody>

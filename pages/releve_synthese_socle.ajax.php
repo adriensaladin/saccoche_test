@@ -248,15 +248,14 @@ $affichage_checkbox = ( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && (SACoch
 $eleves_nb   = count($tab_eleve_id);
 $items_nb    = count($tab_entree_id);
 $piliers_nb  = count($tab_pilier);
-$cellules_nb = $items_nb+1;
+$cellules_nb = $items_nb+$piliers_nb+1;
 $cellules_nb+= ($affichage_checkbox) ? 1 : 0 ;
 $titre_info1 = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
 $titre_info1.= ( ($type=='pourcentage') && ($mode=='manuel') ) ? ' [matières resteintes]' : '' ;
 $titre_info2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($tab_pilier[$pilier_id]['pilier_nom'],0,mb_strpos($tab_pilier[$pilier_id]['pilier_nom'],'–')) ;
-$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_HTML .= $affichage_direct ? '' : '<style type="text/css">thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}  /* classe existante nu non utilisée à cause de son height imposé */</style>';
-$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
-$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
+$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}  /* classe existante nu non utilisée à cause de son height imposé */</style>'.NL;
+$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>'.NL;
+$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>'.NL;
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 $releve_PDF = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
 $releve_PDF->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
@@ -271,7 +270,7 @@ foreach($tab_pilier as $tab)
   $texte = ($pilier_nb_entrees>10) ? 'Compétence ' : 'Comp. ' ;
   $releve_HTML_head .= '<th class="nu2"></th><th colspan="'.$pilier_nb_entrees.'" title="'.html(html($pilier_nom)).'">'.$texte.$pilier_ref.'</th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
 }
-$releve_HTML_head .= '</tr><tr>';
+$releve_HTML_head .= '</tr>'.NL.'<tr>';
 foreach($tab_socle as $tab)
 {
   $releve_HTML_head .= '<th class="nu2"></th>';
@@ -280,7 +279,7 @@ foreach($tab_socle as $tab)
     $releve_HTML_head .= '<th class="info" title="'.html(html($socle_nom)).'"></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
   }
 }
-$releve_HTML_head .= '</tr>';
+$releve_HTML_head .= '</tr>'.NL;
 $releve_PDF->releve_synthese_socle_entete($tab_pilier);
 // - - - - - - - - - -
 // Lignes suivantes
@@ -292,7 +291,7 @@ foreach($tab_eleve as $tab)
   extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
   $drapeau_langue = count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
   $image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
-  $releve_HTML_body .= '<tr><td class="nu2" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>';
+  $releve_HTML_body .= '<tr><td class="nu2" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>'.NL;
   if($type=='pourcentage')
   {
     // - - - - -
@@ -309,7 +308,7 @@ foreach($tab_eleve as $tab)
         $releve_HTML_body .= Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , FALSE /*detail*/ , FALSE /*largeur*/ );
       }
     }
-    $releve_HTML_body .= '</tr>';
+    $releve_HTML_body .= '</tr>'.NL;
     $releve_PDF->releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle,$drapeau_langue);
   }
   if($type=='validation')
@@ -326,7 +325,7 @@ foreach($tab_eleve as $tab)
       $releve_HTML_body .= '<td class="nu2"></td>';
       $releve_HTML_body .= Html::td_validation( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , FALSE /*detail*/ , FALSE /*etat_pilier*/ , $pilier_nb_entrees /*colspan*/ );
     }
-    $releve_HTML_body .= '</tr><tr>';
+    $releve_HTML_body .= '</tr>'.NL.'<tr>';
     // - - - - -
     // Indication des items validés
     // - - - - -
@@ -339,13 +338,13 @@ foreach($tab_eleve as $tab)
         $releve_HTML_body .= Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , FALSE /*detail*/ , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
       }
     }
-    $releve_HTML_body .= '</tr>';
+    $releve_HTML_body .= '</tr>'.NL;
     $releve_PDF->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue);
   }
 }
-$releve_HTML .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
-$releve_HTML .= '<table class="bilan"><thead>'.$releve_HTML_head.'</thead><tbody>'.$releve_HTML_body.'</tbody></table>';
-$releve_HTML .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
+$releve_HTML .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
+$releve_HTML .= '<table class="bilan"><thead>'.NL.$releve_HTML_head.'</thead><tbody>'.NL.$releve_HTML_body.'</tbody></table>'.NL;
+$releve_HTML .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('simplifié').'</form>'.NL : '';
 $releve_HTML .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ , FALSE /*make_officiel*/ );
 $releve_PDF->releve_synthese_socle_legende($type);
 
@@ -357,18 +356,18 @@ $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)
 {
-  echo'<hr />';
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-  echo'</ul>';
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
   echo $releve_HTML;
 }
 else
 {
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-  echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
-  echo'</ul>';
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
 }
 
 ?>

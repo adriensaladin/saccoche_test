@@ -27,9 +27,23 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les administrateurs";
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
+foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
+}
+foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
+}
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_administrateurs">DOC : Gestion des administrateurs</a></span></p>
+
+<hr />
 
 <table id="table_action" class="form hsort">
   <thead>
@@ -63,12 +77,12 @@ $TITRE = "Gérer les administrateurs";
         echo    '<q class="modifier" title="Modifier cet administrateur."></q>';
         echo    ($DB_ROW['user_id']!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
         echo  '</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="7"></td></tr>'; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
+      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
     }
     ?>
   </tbody>
@@ -97,8 +111,3 @@ $TITRE = "Gérer les administrateurs";
     <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
-
-<script type="text/javascript">
-  var tab_login_modele = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele) { echo'tab_login_modele["'.$profil_sigle.'"]="'.$login_modele.'";'; } ?>
-  var tab_mdp_longueur_mini = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini) { echo'tab_mdp_longueur_mini["'.$profil_sigle.'"]='.$mdp_longueur_mini.';'; } ?>
-</script>

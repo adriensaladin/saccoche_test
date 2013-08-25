@@ -48,9 +48,9 @@ if((!$num)||(!$max))
   foreach($DB_TAB as $DB_ROW)
   {
     $_SESSION['tmp']['infos'][] = array(
-      'base_id'   => $DB_ROW['sacoche_base'] ,
-      'structure' => $DB_ROW['structure_uai'].' '.$DB_ROW['structure_denomination'] ,
-      'geo'       => $DB_ROW['geo_nom']
+      'base_id'   => $DB_ROW['sacoche_base'],
+      'structure' => $DB_ROW['structure_uai'].' '.$DB_ROW['structure_denomination'],
+      'geo'       => $DB_ROW['geo_nom'],
     );
   }
   // Retour

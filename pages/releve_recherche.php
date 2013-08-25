@@ -118,7 +118,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   }
   else
   {
-    echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>';
+    echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>'.NL;
   }
   ?>
   <p><span class="tab"></span><button id="valider_socle_item" type="button" class="valider">Valider le choix effectué</button>&nbsp;&nbsp;&nbsp;<button id="annuler_socle_item" type="button" class="annuler">Annuler / Retour</button></p>

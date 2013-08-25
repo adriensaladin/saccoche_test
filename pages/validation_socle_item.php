@@ -30,8 +30,8 @@ $TITRE = "Valider les items du socle";
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VALIDATION_ENTREE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
@@ -68,12 +68,11 @@ $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 $select_palier  = Form::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id'] /*selection*/ ,              '' /*optgroup*/);
 $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , $of_g /*option_first*/ , FALSE                         /*selection*/ , 'regroupements' /*optgroup*/);
 $select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , FALSE /*option_first*/ , TRUE                          /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
-?>
 
-<script type="text/javascript">
-  var seuil_R = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>");
-  var seuil_V = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>");
-</script>
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var seuil_R = parseInt("'.$_SESSION['CALCUL_SEUIL']['R'].'",10);';
+$GLOBALS['HEAD']['js']['inline'][] = 'var seuil_V = parseInt("'.$_SESSION['CALCUL_SEUIL']['V'].'",10);';
+?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>

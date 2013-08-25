@@ -36,7 +36,7 @@ $TITRE = "Log des actions sensibles";
 $fichier_log_contenu = SACocheLog::lire();
 if($fichier_log_contenu===NULL)
 {
-  echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>';
+  echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>'.NL;
 }
 else
 {
@@ -59,10 +59,10 @@ else
   $fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
   // Afficher tout ça
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
-  echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
-  echo'</ul>';
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a class="lien_ext" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>'.NL;
+  echo  '<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>'.NL;
+  echo'</ul>'.NL;
   echo $table_log_extrait;
 }
 ?>

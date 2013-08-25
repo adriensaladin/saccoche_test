@@ -74,7 +74,7 @@ $tab_actions = array
 (
   'imprimer_donnees_eleves_epreuves'  => 'Appréciations par épreuve pour chaque élève',
   'imprimer_donnees_eleves_syntheses' => 'Avis de synthèse pour chaque élève',
-  'imprimer_donnees_eleves_moyennes'  => 'Tableau des notes pour chaque élève'
+  'imprimer_donnees_eleves_moyennes'  => 'Tableau des notes pour chaque élève',
 );
 
 if( isset($tab_actions[$action]) )

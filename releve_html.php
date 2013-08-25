@@ -53,34 +53,30 @@ else
 $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
-// Extraire le css personnalisé pour le déplacer dans le head
+// Extraire le css perso de la session <style type="text/css">...</style> pour le déplacer dans le head
 $position_css = mb_strpos($CONTENU_PAGE,'</style>');
 if($position_css)
 {
-  $CSS_PERSO    = mb_substr($CONTENU_PAGE,0,$position_css+8);
-  $CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
-}
-else
-{
-  $CSS_PERSO    = NULL;
+  $GLOBALS['HEAD']['css']['inline'][] = mb_substr($CONTENU_PAGE,23,$position_css-23);
+  $CONTENU_PAGE                       = mb_substr($CONTENU_PAGE,$position_css+8);
 }
 
 // Titre du navigateur
-$TITRE_NAVIGATEUR = 'SACoche - Relevé HTML';
+$GLOBALS['HEAD']['title'] = 'SACoche - Relevé HTML';
 
 // Fichiers à inclure
-$tab_fichiers_head = array();
-$tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','comm') ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // La minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
+$GLOBALS['HEAD']['css']['file'][] = compacter('./_css/style.css','mini');
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/jquery-librairies.js','comm'); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/script.js','pack'); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./pages/releve_html.js','pack');
 
-// Affichage de l'en-tête
-declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
+// Ultimes constantes javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE = "public_anti_maj_clock";';
+
+// Affichage
+afficher_page_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ );
+echo  '<body>'.NL;
+echo    $CONTENU_PAGE.NL;
+echo  '</body>'.NL;
+echo'</html>'.NL;
 ?>
-<body>
-  <?php echo $CONTENU_PAGE; ?>
-  <script type="text/javascript">
-    var PAGE='public_anti_maj_clock';
-  </script>
-</body>
-</html>

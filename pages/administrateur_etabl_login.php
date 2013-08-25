@@ -62,16 +62,16 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
   <?php
   foreach($DB_TAB as $DB_ROW)
   {
-    echo'<p>';
-    echo'  <label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />';
-    echo'  <label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />';
+    echo'<p>'.NL;
+    echo  '<label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />'.NL;
+    echo  '<label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />'.NL;
     if($DB_ROW['user_profil_sigle']=='ELV')
     {
       $checked = ($DB_ROW['user_profil_mdp_date_naissance']) ? ' checked' : '' ;
-      echo'  <label class="tab"></label><label for="f_birth_'.$DB_ROW['user_profil_sigle'].'"><input type="checkbox" id="f_birth_'.$DB_ROW['user_profil_sigle'].'" name="f_birth_'.$DB_ROW['user_profil_sigle'].'"'.$checked.'> Prendre la date de naissance comme mot de passe (format JJMMAAAA).</label><br />';
+      echo  '<label class="tab"></label><label for="f_birth_'.$DB_ROW['user_profil_sigle'].'"><input type="checkbox" id="f_birth_'.$DB_ROW['user_profil_sigle'].'" name="f_birth_'.$DB_ROW['user_profil_sigle'].'"'.$checked.'> Prendre la date de naissance comme mot de passe (format JJMMAAAA).</label><br />'.NL;
     }
-    echo'  <label class="tab"></label><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>';
-    echo'</p>';
+    echo  '<label class="tab"></label><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>'.NL;
+    echo'</p>'.NL;
   }
   ?>
 </form>

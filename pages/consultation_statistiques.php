@@ -55,14 +55,14 @@ $TITRE = "Nombre de saisies";
           echo  '<td>'.html($DB_ROW['professeur']).'</td>';
           echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
           echo  '<td class="hc">'.$DB_ROW['nombre'].'</td>';
-          echo'</tr>';
+          echo'</tr>'.NL;
           $nb_lignes++;
         }
       }
     }
     if(!$nb_lignes)
     {
-      echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>';
+      echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>'.NL;
     }
     ?>
   </tbody>

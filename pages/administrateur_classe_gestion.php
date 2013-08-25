@@ -28,7 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les classes";
 
-$tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_niveau_ordre = new Array();';
+
 $select_niveau = '<option value=""></option>';
 
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
@@ -37,7 +39,7 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    $tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
   }
 }
 else
@@ -45,6 +47,10 @@ else
   $select_niveau .= '<option value="" disabled>Aucun niveau de classe n\'est choisi pour l\'établissement !</option>';
 }
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span></p>
@@ -77,12 +83,12 @@ else
         echo    '<q class="modifier" title="Modifier cette classe."></q>';
         echo    '<q class="supprimer" title="Supprimer cette classe."></q>';
         echo  '</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="4"></td></tr>';
+      echo'<tr><td class="nu" colspan="4"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -105,10 +111,3 @@ else
     <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
-
-<script type="text/javascript">
-  // <![CDATA[
-  var select_niveau="<?php echo str_replace('"','\"',$select_niveau); ?>";
-  // ]]>
-  <?php echo $tab_niveau_ordre_js ?>
-</script>

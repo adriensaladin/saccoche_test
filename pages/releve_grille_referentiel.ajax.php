@@ -156,7 +156,7 @@ if($besoin_notes)
   (
     'auto' => 'notes antérieures selon référentiels',
     'oui'  => 'avec notes antérieures',
-    'non'  => 'sans notes antérieures'
+    'non'  => 'sans notes antérieures',
   );
   $precision_socle = $only_socle ? ', restriction au socle' : '' ;
   $texte_periode = 'Du '.$date_debut.' au '.$date_fin.'';
@@ -462,15 +462,15 @@ if( $type_generique || $type_individuel )
   $colspan = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
   $msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
   $msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
-  $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-  $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
-  $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>';
+  $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
+  $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>'.NL;
+  $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>'.NL;
   $legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ) : '' ;
   $legende_nb_lignes = 1 + ($retroactif!='non') + ($colonne_bilan=='oui') ;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
   $releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$legende_nb_lignes,$colonne_bilan,$colonne_vide);
-  $separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
+  $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
 
   // Pour chaque élève...
   foreach($tab_eleve as $tab)
@@ -478,15 +478,15 @@ if( $type_generique || $type_individuel )
     extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
     // On met le document au nom de l'élève, ou on établit un document générique
     $releve_PDF->grille_referentiel_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
-    $releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : $separation.'<h2>Grille générique</h2>' ;
-    $releve_HTML_individuel .= '<table class="bilan">';
+    $releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>'.NL : $separation.'<h2>Grille générique</h2>'.NL ;
+    $releve_HTML_individuel .= '<table class="bilan">'.NL;
     // Pour chaque domaine...
     if(count($tab_domaine))
     {
       foreach($tab_domaine as $domaine_id => $tab)
       {
         extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes
-        $releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
+        $releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'.NL;
         $releve_PDF->grille_referentiel_domaine($domaine_nom,$domaine_nb_lignes);
         // Pour chaque thème...
         if(isset($tab_theme[$domaine_id]))
@@ -494,7 +494,7 @@ if( $type_generique || $type_individuel )
           foreach($tab_theme[$domaine_id] as $theme_id => $tab)
           {
             extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes
-            $releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
+            $releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'.NL;
             $releve_PDF->grille_referentiel_theme($theme_ref,$theme_nom,$theme_nb_lignes);
             // Pour chaque item...
             if(isset($tab_item[$theme_id]))
@@ -558,14 +558,14 @@ if( $type_generique || $type_individuel )
                   $releve_HTML_individuel .= Html::td_score($score,'score');
                   $releve_PDF->afficher_score_bilan($score,$br=1);
                 }
-                $releve_HTML_individuel .= '</tr>'."\r\n";
+                $releve_HTML_individuel .= '</tr>'.NL;
               }
             }
           }
         }
       }
     }
-    $releve_HTML_individuel .= '</table>';
+    $releve_HTML_individuel .= '</table>'.NL;
     if($legende=='oui')
     {
       $releve_PDF->grille_referentiel_legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ );
@@ -587,9 +587,9 @@ if($type_synthese)
   $msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
   $msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
   $matiere_et_niveau = $matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode ;
-  $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-  $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre.'</h1>';
-  $releve_HTML_synthese .= '<h2>'.html($matiere_et_niveau).'</h2>';
+  $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
+  $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre.'</h1>'.NL;
+  $releve_HTML_synthese .= '<h2>'.html($matiere_et_niveau).'</h2>'.NL;
   // Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
   // On définit l'orientation la plus adaptée
   $orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_tri_objet=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_tri_objet=='item') ) ) ? 'portrait' : 'landscape' ;
@@ -623,7 +623,7 @@ if($type_synthese)
   $releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ * ]'  , 1 , 0 , 'C' , TRUE , '');
   $releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ ** ]' , 1 , 1 , 'C' , TRUE , '');
   $checkbox_vide = ($affichage_checkbox) ? '<th class="nu">&nbsp;</th>' : '' ;
-  $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'."\r\n";
+  $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'.NL;
   // lignes suivantes
   $releve_HTML_table_body = '';
   if($tableau_tri_objet=='eleve')
@@ -638,13 +638,14 @@ if($type_synthese)
       {
         $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
         $releve_PDF->afficher_score_bilan($score,$br=0);
-        $releve_HTML_table_body .= Html::td_score($score,$tableau_tri_mode);
+        $checkbox_val = ($affichage_checkbox) ? $eleve_id.'x'.$item_id : '' ;
+        $releve_HTML_table_body .= Html::td_score($score,$tableau_tri_mode,'',$checkbox_val);
       }
       $valeur1 = (isset($tab_moyenne_scores_eleve[$eleve_id])) ? $tab_moyenne_scores_eleve[$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$eleve_id])) ? $tab_pourcentage_acquis_eleve[$eleve_id] : FALSE ;
       $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,FALSE,TRUE);
       $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
-      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'."\r\n";
+      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
     }
   }
   else
@@ -659,16 +660,17 @@ if($type_synthese)
         $eleve_id = $tab['eleve_id'];
         $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
         $releve_PDF->afficher_score_bilan($score,$br=0);
-        $releve_HTML_table_body .= Html::td_score($score,$tableau_tri_mode);
+        $checkbox_val = ($affichage_checkbox) ? $eleve_id.'x'.$item_id : '' ;
+        $releve_HTML_table_body .= Html::td_score($score,$tableau_tri_mode,'',$checkbox_val);
       }
       $valeur1 = $tab_moyenne_scores_item[$item_id];
       $valeur2 = $tab_pourcentage_acquis_item[$item_id];
       $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,FALSE,TRUE);
       $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
-      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'."\r\n";
+      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
     }
   }
-  $releve_HTML_table_body = '<tbody>'.$releve_HTML_table_body.'</tbody>'."\r\n";
+  $releve_HTML_table_body = '<tbody>'.NL.$releve_HTML_table_body.'</tbody>'.NL;
   // dernière ligne (doublée)
   $memo_y = $releve_PDF->GetY()+2;
   $releve_PDF->SetY( $memo_y );
@@ -709,18 +711,18 @@ if($type_synthese)
   $colspan = ($tableau_tri_objet=='eleve') ? $item_nb+4 : $eleve_nb+4 ;
   $colspan+= ($affichage_checkbox) ? 1 : 0 ;
   $releve_PDF->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
-  $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>';
-  $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$checkbox_vide.'</tr>';
-  $checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>' : '' ;
-  $releve_HTML_table_foot = '<tfoot><tr><td class="nu" colspan="'.$colspan.'" style="font-size:0;height:9px">&nbsp;</td></tr>'.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$checkbox.'</tfoot>'."\r\n";
+  $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL;
+  $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$checkbox_vide.'</tr>'.NL;
+  $checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL : '' ;
+  $releve_HTML_table_foot = '<tfoot>'.NL.'<tr><td class="nu" colspan="'.$colspan.'" style="font-size:0;height:9px">&nbsp;</td></tr>'.NL.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$checkbox.'</tfoot>'.NL;
   // pour la sortie HTML, on peut placer les tableaux de synthèse au début
   $num_hide = ($tableau_tri_objet=='eleve') ? $item_nb+1 : $eleve_nb+1 ;
   $num_hide_add = ($affichage_checkbox) ? ','.($num_hide+3).':{sorter:false}' : '' ;
-  $releve_HTML_synthese .= '<hr /><h2>SYNTHESE (selon l\'objet et le mode de tri choisis)</h2>';
-  $releve_HTML_synthese .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
-  $releve_HTML_synthese .= '<table id="table_s" class="bilan_synthese vsort">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>';
-  $releve_HTML_synthese .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
-  $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
+  $releve_HTML_synthese .= '<hr />'.NL.'<h2>SYNTHESE (selon l\'objet et le mode de tri choisis)</h2>'.NL;
+  $releve_HTML_synthese .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
+  $releve_HTML_synthese .= '<table id="table_s" class="bilan_synthese vsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
+  $releve_HTML_synthese .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('complet').'</form>'.NL : '';
+  $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'.NL; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
   // On enregistre les sorties HTML et PDF
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.html',$releve_HTML_synthese);
   $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.pdf','F');
@@ -732,30 +734,30 @@ if($type_synthese)
 
 if($affichage_direct)
 {
-  echo'<hr />';
-  echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-  echo'</ul>';
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
   echo $releve_HTML_individuel;
 }
 else
 {
   if($type_synthese)
   {
-    echo'<h2>Synthèse collective</h2>';
-    echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-    echo'</ul>';
+    echo'<h2>Synthèse collective</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
   }
   if( $type_generique || $type_individuel )
   {
     $h2 = ($type_individuel) ? 'Relevé individuel' : 'Relevé générique' ;
-    echo'<h2>'.$h2.'</h2>';
-    echo'<ul class="puce">';
-    echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-    echo'<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-    echo'</ul>';
+    echo'<h2>'.$h2.'</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
   }
 }
 

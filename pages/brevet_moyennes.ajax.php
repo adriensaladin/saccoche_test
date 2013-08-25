@@ -62,7 +62,7 @@ foreach($DB_TAB_epreuves as $DB_ROW)
     'epreuve_code_speciaux'   =>       $DB_ROW['brevet_epreuve_code_speciaux'],
     'epreuve_choix_recherche' => (bool)$DB_ROW['brevet_epreuve_choix_recherche'],
     'epreuve_choix_moyenne'   => (bool)$DB_ROW['brevet_epreuve_choix_moyenne'],
-    'epreuve_choix_matieres'  =>       $DB_ROW['brevet_epreuve_choix_matieres']
+    'epreuve_choix_matieres'  =>       $DB_ROW['brevet_epreuve_choix_matieres'],
   );
 }
 
@@ -89,7 +89,7 @@ if($action=='proposer')
     'AB' => 'AB (absent)',
     'DI' => 'DI (dispensé)',
     'VA' => 'VA (validé)',
-    'NV' => 'NV (non validé)'
+    'NV' => 'NV (non validé)',
   );
   $optgroup_notes_chiffrees = '<optgroup label="Notes chiffrées">';
   for( $note=0 ; $note<=20 ; $note+=0.5 )

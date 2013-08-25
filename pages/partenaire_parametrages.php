@@ -52,7 +52,7 @@ else
 }
 
 // Mise en session du nom du fichier image (pour le retrouver si enregistrement de nouveaux paramètres sans modification du fichier)
-$_SESSION['TMP']['partenaire_logo_actuel_filename'] = $partenaire_logo_actuel_filename;
+$_SESSION['tmp']['partenaire_logo_actuel_filename'] = $partenaire_logo_actuel_filename;
 
 // Balises de lien (ou pas)
 if($partenaire_adresse_web)

@@ -61,10 +61,7 @@ $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_coule
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
 ?>
 
-<ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_socle">DOC : Synthèse de maîtrise du socle.</a></span></li>
-</ul>
-
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_socle">DOC : Synthèse de maîtrise du socle.</a></span></div>
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>

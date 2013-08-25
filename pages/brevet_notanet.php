@@ -45,8 +45,8 @@ $msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>';
-  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>';
+  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>'.NL;
+  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 $tab_brevet_series = array();
@@ -61,9 +61,9 @@ if(count($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
-    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !<p>';
+    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !<p>'.NL;
   }
-  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a><div>';
+  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a><div>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -100,8 +100,8 @@ foreach($DB_TAB as $DB_ROW)
 }
 if(!$nb_eleves)
 {
-  echo'<p class="danger">Aucun élève n\'a de notes enregistrées pour le Brevet !<p>';
-  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=moyennes">Effectuer l\'étape n°3.</a><div>';
+  echo'<p class="danger">Aucun élève n\'a de notes enregistrées pour le Brevet !<p>'.NL;
+  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=moyennes">Effectuer l\'étape n°3.</a><div>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

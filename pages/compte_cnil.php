@@ -43,7 +43,6 @@ else
 }
 ?>
 
-<hr />
 <p class="astuce">
   Veuillez prendre connaissance des <a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">informations CNIL relatives à l'application <em>SACoche</em></a>.
 </p>

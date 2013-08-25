@@ -30,8 +30,8 @@ $TITRE = "Relevé de maîtrise du socle";
 
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des professeurs et directeurs :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des professeurs et directeurs :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
@@ -108,13 +108,13 @@ $select_matiere   = Form::afficher_select($tab_matieres               , 'f_matie
 $select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , 'f_marge_min' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min'] /*selection*/ ,              '' /*optgroup*/);
 $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_couleur'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']   /*selection*/ ,              '' /*optgroup*/);
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
 ?>
 
-<script type="text/javascript">
-  var is_multiple = <?php echo $is_select_multiple ?>;
-</script>
-
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></p>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></div>
+<hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
   <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />

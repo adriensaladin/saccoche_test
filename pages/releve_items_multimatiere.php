@@ -103,15 +103,13 @@ $select_legende     = Form::afficher_select(Form::$tab_select_legende     , 'f_l
 $select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , 'f_cases_nb'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']      /*selection*/ ,              '' /*optgroup*/);
 $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_cases_larg'  /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur'] /*selection*/ ,              '' /*optgroup*/);
 
-// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
-?>
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql  = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
 
-<script type="text/javascript">
-  var date_mysql  = "<?php echo TODAY_MYSQL ?>";
-  var is_multiple = <?php echo $is_select_multiple ?>;
-  <?php echo $tab_groupe_periode_js ?> 
-</script>
+// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_multimatiere">DOC : Relevé d'items pluridisciplinaire.</a></span></div>
 <div class="astuce">Un administrateur ou un directeur doit régler l'ordre d'affichage des matières (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_ordre_matieres">DOC</a></span>).</div>

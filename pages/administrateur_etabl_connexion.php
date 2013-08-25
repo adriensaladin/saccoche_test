@@ -42,7 +42,7 @@ if(IS_HEBERGEMENT_SESAMATH)
 {
   if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
   {
-    echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !<p>';
+    echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !<p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }  
   require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
@@ -52,14 +52,18 @@ else
   $tab_connecteurs_hebergement = $tab_connecteurs_convention = array();
 }
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var IS_HEBERGEMENT_SESAMATH = '.(int)IS_HEBERGEMENT_SESAMATH.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CONVENTION_ENT_REQUISE  = '.(int)CONVENTION_ENT_REQUISE.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_param = new Array();';
+
 // Liste des possibilités
 // Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas, avec convention ou pas)
 $select_connexions = '';
-$tab_param_js = '';
 foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 {
   $select_connexions .= '<optgroup label="'.html($mode_texte).'">';
-  $tab_param_js .= 'tab_param["'.$connexion_mode.'"] = new Array();';
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"] = new Array();';
   foreach($tab_connexion_info[$connexion_mode] as $connexion_ref => $tab_info)
   {
     $selected = ( ($connexion_mode==$_SESSION['CONNEXION_MODE']) && ($connexion_ref==$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']) ) ? ' selected' : '' ;
@@ -70,13 +74,13 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     {
       case 'cas' :
         $convention = ($connexion_nom=='perso') ? 'hors_ent' : ( isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( isset($tab_connecteurs_convention[$connexion_ref]) ? 'conv_acad' : 'conv_etabl' ) ) ;
-        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
         break;
       case 'shibboleth' :
-        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
         break;
       case 'gepi' :
-        $tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
         break;
     }
   }
@@ -86,18 +90,11 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 // Modèle d'url SSO
 $get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
 $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
-
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification">DOC : Mode d'identification &amp; intégration aux ENT</a></span></div>
 
 <hr />
-
-<script type="text/javascript">
-  var tab_param = new Array();<?php echo $tab_param_js ?>
-  var IS_HEBERGEMENT_SESAMATH = <?php echo (int)IS_HEBERGEMENT_SESAMATH ?>;
-  var CONVENTION_ENT_REQUISE  = <?php echo (int)CONVENTION_ENT_REQUISE ?>;
-</script>
 
 <form id="form_mode" action="#" method="post"><fieldset>
   <p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
@@ -201,12 +198,12 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           echo  '<td class="'.$class_paiement.'">'.$texte_paiement.'</td>';
           echo  '<td class="'.$class_activation.'">'.$texte_activation.'</td>';
           echo  '<td class="nu"><q class="voir_archive" title="Récupérer / Imprimer les documents associés."></q></td>';
-          echo'</tr>';
+          echo'</tr>'.NL;
         }
       }
       else
       {
-        echo'<tr><td class="nu probleme" colspan="7">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>';
+        echo'<tr><td class="nu probleme" colspan="7">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>'.NL;
       }
       ?>
     </tbody>

@@ -30,11 +30,14 @@ $TITRE = "Changer son mot de passe";
 
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var MDP_LONGUEUR_MINI = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';';
 ?>
 
 <p><span class="astuce">Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</span></p>
@@ -48,7 +51,3 @@ if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','
 <hr />
 <p><span class="astuce">Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.</span></p>
 <div id="robustesse">indicateur de robustesse : <span>0</span> / 12</div>
-
-<script type="text/javascript">
-  var mdp_longueur_mini=<?php echo $_SESSION['USER_MDP_LONGUEUR_MINI'] ?>;
-</script>

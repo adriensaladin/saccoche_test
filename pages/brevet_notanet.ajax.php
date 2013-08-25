@@ -78,7 +78,6 @@ if(count($DB_TAB))
 
 $csv_contenu    = '';
 $csv_separateur = '|';
-$csv_eof        = "\r\n";
 
 foreach($tab_eleves as $eleve_id => $user_reference)
 {
@@ -87,7 +86,7 @@ foreach($tab_eleves as $eleve_id => $user_reference)
     $csv_code = ($epreuve_code!=CODE_BREVET_EPREUVE_TOTAL) ? (string)$epreuve_code : 'TOT' ;
     $format   = ($epreuve_code!=CODE_BREVET_EPREUVE_TOTAL) ? "%05.2f" : "%06.2f" ;
     $csv_note = is_numeric($points) ? sprintf($format,$points) : (string)$points ;
-    $csv_contenu .= $user_reference.$csv_separateur.$csv_code.$csv_separateur.$csv_note.$csv_separateur.$csv_eof;
+    $csv_contenu .= $user_reference.$csv_separateur.$csv_code.$csv_separateur.$csv_note.$csv_separateur.NL;
   }
 }
 

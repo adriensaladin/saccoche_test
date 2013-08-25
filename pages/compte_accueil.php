@@ -157,7 +157,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire')))
       $tab_accueil['messages'][$DB_ROW['message_id']] = array(
         'titre'   => 'Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')',
         'message' => nl2br(html($DB_ROW['message_contenu'])),
-        'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE)
+        'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
     }
   }
@@ -224,12 +224,6 @@ if($astuce_nombre)
 // Affichage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Alerte si navigateur trop ancien
-echo Browser::afficher_navigateurs_alertes();
-
-// Alerte si pas de javascript activé
-echo'<noscript><hr /><div class="probleme">Pour utiliser <em>SACoche</em> il est nécessaire d\'activer JavaScript dans votre navigateur.</div></noscript>'."\r\n";
-
 $tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'demandes'=>'Demandes d\'évaluations' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
 
 foreach($tab_accueil as $type => $contenu)
@@ -247,7 +241,7 @@ foreach($tab_accueil as $type => $contenu)
     {
       $class_moins = $class_plus = $toggle_moins = $toggle_plus = '' ;
     }
-    echo'<hr />'.$toggle_plus.'<div id="'.$type.'_moins" class="p '.$type.'64'.$class_moins.'">'.str_replace('<TG>',$toggle_moins,$contenu).'</div>'."\r\n";
+    echo $toggle_plus.'<div id="'.$type.'_moins" class="p '.$type.'64'.$class_moins.'">'.str_replace('<TG>',$toggle_moins,$contenu).'</div>'.NL.'<hr />'.NL;
   }
   elseif( is_array($contenu) && count($contenu) ) // Seul 'messages' actuellement
   {
@@ -257,12 +251,10 @@ foreach($tab_accueil as $type => $contenu)
       $class_plus  = (!$tab_donnees_rubrique['visible']) ? '' : ' hide' ;
       $toggle_moins = '<a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_moins.gif" alt="" title="Masquer" /></a>';
       $toggle_plus  = '<div id="'.$type.$message_id.'_plus" class="rien64'.$class_plus.'"><span class="fluo"><a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir" /> '.$tab_donnees_rubrique['titre'].'</a></span></div>';
-      echo'<hr />'.$toggle_plus.'<div id="'.$type.$message_id.'_moins" class="p '.$type.'64'.$class_moins.'">'.'<p><span class="b fluo">'.$toggle_moins.' '.$tab_donnees_rubrique['titre'].'</span></p>'.'<p>'.$tab_donnees_rubrique['message'].'</p>'.'</div>'."\r\n";
+      echo $toggle_plus.'<div id="'.$type.$message_id.'_moins" class="p '.$type.'64'.$class_moins.'">'.'<p><span class="b fluo">'.$toggle_moins.' '.$tab_donnees_rubrique['titre'].'</span></p>'.'<p>'.$tab_donnees_rubrique['message'].'</p>'.'</div>'.NL.'<hr />'.NL;
     }
   }
 }
-
-echo'<hr />'."\r\n";
 
 // Affichage communication si convention signée par un partenaire ENT
 if(isset($_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION']))

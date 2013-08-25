@@ -31,7 +31,7 @@ $TITRE = "Gestion des établissements";
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -44,6 +44,14 @@ $select_f_geo    = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zone
 $select_f_geo_id = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , 'f_geo_id' /*select_nom*/ , '' /*option_first*/ , $geo_id /*selection*/ , '' /*optgroup*/);
 $selected = ($geo_id===0) ? ' selected' : '' ;
 $select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""></option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var geo_defaut = '.$geo_id.';';
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var options_geo = "'.str_replace('"','\"',$select_f_geo).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></span></p>
@@ -51,15 +59,6 @@ $select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""
 <form action="./index.php?page=webmestre_structure_gestion" method="post" id="form_prechoix">
   <div><label class="tab" for="f_groupe">Zone géographique :</label><?php echo $select_f_geo_id ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>
 </form>
-
-<script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var date_mysql = "<?php echo TODAY_MYSQL ?>";
-  var geo_defaut = "<?php echo $geo_id ?>";
-  // <![CDATA[
-  var options_geo="<?php echo str_replace('"','\"',$select_f_geo); ?>";
-  // ]]>
-</script>
 
 <?php
 if(empty($_POST['f_afficher']))
@@ -105,7 +104,7 @@ if(empty($_POST['f_afficher']))
       echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
       echo    '<q class="supprimer" title="Supprimer cet établissement."></q>';
       echo  '</td>';
-      echo'</tr>';
+      echo'</tr>'.NL;
     }
     ?>
   </tbody>

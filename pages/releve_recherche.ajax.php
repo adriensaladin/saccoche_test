@@ -276,7 +276,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
       {
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-        $tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_score( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
+        $tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_score( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , '' /*pourcent*/ ).'</tr>';
       }
     }
     elseif($is_matiere_items_bilanPA)
@@ -371,12 +371,12 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 
 $nb_resultats = count($tab_tr);
 $checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></td>' : '' ;
-$releve_html  = '<hr />';
-$releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
-$releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';
-$releve_html .= ($nb_resultats) ? implode('',$tab_tr) : '<tr><td colspan="2">aucun résultat</td></tr>' ;
-$releve_html .= '</tbody></table>';
-$releve_html .= ($affichage_checkbox && $nb_resultats) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p>' : '' ;
+$releve_html  = '<hr />'.NL;
+$releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
+$releve_html .= '<table class="bilan"><thead>'.NL.'<tr>'.$checkbox.'<th>Élève</th><th>État</th></tr>'.NL.'</thead><tbody>'.NL;
+$releve_html .= ($nb_resultats) ? implode(NL,$tab_tr).NL : '<tr><td colspan="2">aucun résultat</td></tr>'.NL ;
+$releve_html .= '</tbody></table>'.NL;
+$releve_html .= ($affichage_checkbox && $nb_resultats) ? Html::afficher_formulaire_synthese_exploitation('simplifié') : '' ;
 $releve_html .= ($affichage_checkbox) ? '</form>' : '' ;
 exit($releve_html);
 

@@ -32,8 +32,6 @@ $TITRE = "Mot de passe administrateur";
 $select_admin = Form::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , 'f_admin' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 ?>
 
-<hr />
-
 <form action="#" method="post"><fieldset>
   <label class="tab" for="f_admin">Administrateur :</label><?php echo $select_admin ?><br />
   <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Générer un nouveau mot de passe.</button><label id="ajax_msg">&nbsp;</label><br />

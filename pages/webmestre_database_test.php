@@ -31,9 +31,13 @@ $TITRE = "Test des droits MySQL";
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
+
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.g{color:#333}';
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.v{color:#080}';
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.r{color:#A00}';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__droits_mysql">DOC : Droits MySQL requis (multi-structures)</a></span></p>
@@ -43,12 +47,6 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 </form>
 
 <hr />
-
-<style type="text/css">
-  pre.g{color:#333}
-  pre.v{color:#080}
-  pre.r{color:#A00}
-</style>
 
 <?php
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
@@ -60,142 +58,142 @@ if(isset($_POST['lancer_test']))
   define('SACOCHE_STRUCTURE_BD_USER','sac_user_0');
   define('SACOCHE_STRUCTURE_BD_PASS','sac_pass_0');
 
-  echo'<h2>1.1 Paramètres de connexion du webmestre</h2>';
-  echo'<pre class="g">BD_HOST : '.SACOCHE_WEBMESTRE_BD_HOST.'</pre>';
-  echo'<pre class="g">BD_PORT : '.SACOCHE_WEBMESTRE_BD_PORT.'</pre>';
-  echo'<pre class="g">BD_NAME : '.SACOCHE_WEBMESTRE_BD_NAME.'</pre>';
-  echo'<pre class="g">BD_USER : '.SACOCHE_WEBMESTRE_BD_USER.'</pre>';
-  echo'<pre class="g">BD_PASS : '.'--masqué--'.'</pre>';
+  echo'<h2>1.1 Paramètres de connexion du webmestre</h2>'.NL;
+  echo'<pre class="g">BD_HOST : '.SACOCHE_WEBMESTRE_BD_HOST.'</pre>'.NL;
+  echo'<pre class="g">BD_PORT : '.SACOCHE_WEBMESTRE_BD_PORT.'</pre>'.NL;
+  echo'<pre class="g">BD_NAME : '.SACOCHE_WEBMESTRE_BD_NAME.'</pre>'.NL;
+  echo'<pre class="g">BD_USER : '.SACOCHE_WEBMESTRE_BD_USER.'</pre>'.NL;
+  echo'<pre class="g">BD_PASS : '.'--masqué--'.'</pre>'.NL;
 
-  echo'<h2>1.2 Paramètres de connexion établissement</h2>';
-  echo'<pre class="g">BD_HOST : '.SACOCHE_STRUCTURE_BD_HOST.'</pre>';
-  echo'<pre class="g">BD_PORT : '.SACOCHE_STRUCTURE_BD_PORT.'</pre>';
-  echo'<pre class="g">BD_NAME : '.SACOCHE_STRUCTURE_BD_NAME.' (pour ce test uniquement)</pre>';
-  echo'<pre class="g">BD_USER : '.SACOCHE_STRUCTURE_BD_USER.' (pour ce test uniquement)</pre>';
-  echo'<pre class="g">BD_PASS : '.SACOCHE_STRUCTURE_BD_PASS.' (pour ce test uniquement)</pre>';
+  echo'<h2>1.2 Paramètres de connexion établissement</h2>'.NL;
+  echo'<pre class="g">BD_HOST : '.SACOCHE_STRUCTURE_BD_HOST.'</pre>'.NL;
+  echo'<pre class="g">BD_PORT : '.SACOCHE_STRUCTURE_BD_PORT.'</pre>'.NL;
+  echo'<pre class="g">BD_NAME : '.SACOCHE_STRUCTURE_BD_NAME.' (pour ce test uniquement)</pre>'.NL;
+  echo'<pre class="g">BD_USER : '.SACOCHE_STRUCTURE_BD_USER.' (pour ce test uniquement)</pre>'.NL;
+  echo'<pre class="g">BD_PASS : '.SACOCHE_STRUCTURE_BD_PASS.' (pour ce test uniquement)</pre>'.NL;
 
-  echo'<hr />';
+  echo'<hr />'.NL;
 
-  echo'<h2>2.1 Se connecter à mysql comme webmestre</h2>';
-  echo'<pre class="g">mysql_connect('.SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT.','.SACOCHE_WEBMESTRE_BD_USER.','.'--masqué--'.')</pre>';
+  echo'<h2>2.1 Se connecter à mysql comme webmestre</h2>'.NL;
+  echo'<pre class="g">mysql_connect('.SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT.','.SACOCHE_WEBMESTRE_BD_USER.','.'--masqué--'.')</pre>'.NL;
   $BDlink = mysql_connect(SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT,SACOCHE_WEBMESTRE_BD_USER,SACOCHE_WEBMESTRE_BD_PASS);
-  echo ($BDlink) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDlink) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>2.2 Voir les droits du webmestre</h2>';
+  echo'<h2>2.2 Voir les droits du webmestre</h2>'.NL;
   $query = 'SHOW GRANTS FOR CURRENT_USER()';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
   $affichage = ($BDres) ? mysql_fetch_row($BDres) : mysql_error();
-  echo ($BDres) ? '<pre class="v">'.str_replace(', ','<br />',$affichage[0]).'</pre>' : '<pre class="r">'.$affichage.'</pre>';
+  echo ($BDres) ? '<pre class="v">'.str_replace(', ','<br />',$affichage[0]).'</pre>'.NL : '<pre class="r">'.$affichage.'</pre>'.NL;
 
-  echo'<h2>2.3 Créer une base "sac_base_0"</h2>';
+  echo'<h2>2.3 Créer une base "sac_base_0"</h2>'.NL;
   $query = 'CREATE DATABASE '.SACOCHE_STRUCTURE_BD_NAME;
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>2.4 Créer un user "sac_user_0" sur localhost et sur % ()</h2>';
+  echo'<h2>2.4 Créer un user "sac_user_0" sur localhost et sur % ()</h2>'.NL;
   $query = 'CREATE USER '.SACOCHE_STRUCTURE_BD_USER.'@"localhost" IDENTIFIED BY "'.SACOCHE_STRUCTURE_BD_PASS.'"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
   $query = 'CREATE USER '.SACOCHE_STRUCTURE_BD_USER.'@"%" IDENTIFIED BY "'.SACOCHE_STRUCTURE_BD_PASS.'"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>2.5 Attribuer des droits à ce user</h2>';
+  echo'<h2>2.5 Attribuer des droits à ce user</h2>'.NL;
   $query = 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.SACOCHE_STRUCTURE_BD_NAME.'.* TO '.SACOCHE_STRUCTURE_BD_USER.'@"localhost"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
   $query = 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.SACOCHE_STRUCTURE_BD_NAME.'.* TO '.SACOCHE_STRUCTURE_BD_USER.'@"%"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>2.6 Vérifier les droits du user : base mysql.user</h2>';
+  echo'<h2>2.6 Vérifier les droits du user : base mysql.user</h2>'.NL;
   $query = 'SELECT host, user, Select_priv FROM mysql.user WHERE user="'.SACOCHE_STRUCTURE_BD_USER.'"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo'<pre class="v">';while($row=mysql_fetch_row($BDres)){print_r($row);}echo'</pre>';
+  echo'<pre class="v">';while($row=mysql_fetch_row($BDres)){print_r($row);}echo'</pre>'.NL;
 
-  echo'<h2>2.7 Vérifier les droits du user : base mysql.db</h2>';
+  echo'<h2>2.7 Vérifier les droits du user : base mysql.db</h2>'.NL;
   $query = 'SELECT host, user, Select_priv FROM mysql.db WHERE user="'.SACOCHE_STRUCTURE_BD_USER.'"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo'<pre class="v">';while($row=mysql_fetch_row($BDres)){print_r($row);}echo'</pre>';
+  echo'<pre class="v">';while($row=mysql_fetch_row($BDres)){print_r($row);}echo'</pre>'.NL;
 
-  echo'<h2>2.8 Fermer la connexion webmestre</h2>';
-  echo'<pre class="g">mysql_close()</pre>';
+  echo'<h2>2.8 Fermer la connexion webmestre</h2>'.NL;
+  echo'<pre class="g">mysql_close()</pre>'.NL;
   $BDres = mysql_close($BDlink);
   $affichage = var_export($BDres,TRUE);
-  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
+  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>'.NL : '<pre class="r">'.$affichage.'</pre>'.NL;
 
-  echo('<hr />');
+  echo'<hr />'.NL;
 
-  echo'<h2>3.1 Se connecter à mysql avec le user "sac_user_0"</h2>';
-  echo'<pre class="g">mysql_connect('.SACOCHE_STRUCTURE_BD_HOST.':'.SACOCHE_STRUCTURE_BD_PORT.','.SACOCHE_STRUCTURE_BD_USER.','.SACOCHE_STRUCTURE_BD_PASS.')</pre>';
+  echo'<h2>3.1 Se connecter à mysql avec le user "sac_user_0"</h2>'.NL;
+  echo'<pre class="g">mysql_connect('.SACOCHE_STRUCTURE_BD_HOST.':'.SACOCHE_STRUCTURE_BD_PORT.','.SACOCHE_STRUCTURE_BD_USER.','.SACOCHE_STRUCTURE_BD_PASS.')</pre>'.NL;
   $BDlink = mysql_connect(SACOCHE_STRUCTURE_BD_HOST.':'.SACOCHE_STRUCTURE_BD_PORT,SACOCHE_STRUCTURE_BD_USER,SACOCHE_STRUCTURE_BD_PASS);
-  echo ($BDlink) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDlink) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>3.2 Sélectionner la base "sac_base_0" avec le user "sac_user_0"</h2>';
-  echo'<pre class="g">mysql_select_db()</pre>';
+  echo'<h2>3.2 Sélectionner la base "sac_base_0" avec le user "sac_user_0"</h2>'.NL;
+  echo'<pre class="g">mysql_select_db()</pre>'.NL;
   $BDres = mysql_select_db(SACOCHE_STRUCTURE_BD_NAME,$BDlink);
-  echo ($BDlink) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDlink) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>3.3 Créer une table dans la base "sac_base_0" avec le user "sac_user_0"</h2>';
+  echo'<h2>3.3 Créer une table dans la base "sac_base_0" avec le user "sac_user_0"</h2>'.NL;
   $query = 'CREATE TABLE IF NOT EXISTS sacoche_test (test_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY (test_id) )';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>3.4 Fermer la connexion sac_user_0</h2>';
-  echo'<pre class="g">mysql_close()</pre>';
+  echo'<h2>3.4 Fermer la connexion sac_user_0</h2>'.NL;
+  echo'<pre class="g">mysql_close()</pre>'.NL;
   $BDres = mysql_close($BDlink);
   $affichage = var_export($BDres,TRUE);
-  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
+  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>'.NL : '<pre class="r">'.$affichage.'</pre>'.NL;
 
-  echo('<hr />');
+  echo'<hr />'.NL;
 
-  echo'<h2>4.1 Se connecter à mysql comme webmestre</h2>';
-  echo'<pre class="g">mysql_connect('.SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT.','.SACOCHE_WEBMESTRE_BD_USER.','.'--masqué--'.')</pre>';
+  echo'<h2>4.1 Se connecter à mysql comme webmestre</h2>'.NL;
+  echo'<pre class="g">mysql_connect('.SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT.','.SACOCHE_WEBMESTRE_BD_USER.','.'--masqué--'.')</pre>'.NL;
   $BDlink = mysql_connect(SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT,SACOCHE_WEBMESTRE_BD_USER,SACOCHE_WEBMESTRE_BD_PASS);
-  echo ($BDlink) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDlink) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>4.2 Supprimer la base "sac_base_0"</h2>';
+  echo'<h2>4.2 Supprimer la base "sac_base_0"</h2>'.NL;
   $query = 'DROP DATABASE '.SACOCHE_STRUCTURE_BD_NAME;
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>4.3 Retirer les droits de "sac_user_0"</h2>';
+  echo'<h2>4.3 Retirer les droits de "sac_user_0"</h2>'.NL;
   $query = 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.SACOCHE_STRUCTURE_BD_USER.'@"localhost"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
   $query = 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.SACOCHE_STRUCTURE_BD_USER.'@"%"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>4.4 Supprimer le user "sac_user_0"</h2>';
+  echo'<h2>4.4 Supprimer le user "sac_user_0"</h2>'.NL;
   $query = 'DROP USER '.SACOCHE_STRUCTURE_BD_USER.'@"localhost"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
   $query = 'DROP USER '.SACOCHE_STRUCTURE_BD_USER.'@"%"';
-  echo'<pre class="g">'.$query.'</pre>';
+  echo'<pre class="g">'.$query.'</pre>'.NL;
   $BDres = mysql_query($query);
-  echo ($BDres) ? '<pre class="v">OK</pre>' : '<pre class="r">'.mysql_error().'</pre>';
+  echo ($BDres) ? '<pre class="v">OK</pre>'.NL : '<pre class="r">'.mysql_error().'</pre>'.NL;
 
-  echo'<h2>4.5 Fermer la connexion webmestre</h2>';
-  echo'<pre class="g">mysql_close()</pre>';
+  echo'<h2>4.5 Fermer la connexion webmestre</h2>'.NL;
+  echo'<pre class="g">mysql_close()</pre>'.NL;
   $BDres = mysql_close($BDlink);
   $affichage = var_export($BDres,TRUE);
-  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
+  echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>'.NL : '<pre class="r">'.$affichage.'</pre>'.NL;
 
-  echo('<hr />');
+  echo'<hr />'.NL;
 
 }
 

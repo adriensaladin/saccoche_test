@@ -31,7 +31,7 @@ $TITRE = "Résilier l'inscription de l'établissement";
 // Page réservée aux installations mono-structure ; le menu webmestre d'une installation multi-structures ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-  echo'<p class="astuce">L\'installation étant de type multi-structures, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type multi-structures, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>

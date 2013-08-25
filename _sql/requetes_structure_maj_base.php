@@ -2098,7 +2098,7 @@ public static function DB_maj_base($version_base_structure_actuelle)
         'sacoche_demande'               => 'matiere_id',
         'sacoche_referentiel'           => 'matiere_id',
         'sacoche_referentiel_domaine'   => 'matiere_id',
-        'sacoche_officiel_saisie'       => 'rubrique_id'
+        'sacoche_officiel_saisie'       => 'rubrique_id',
       );
       foreach($tab_tables as $table_nom => $table_champ)
       {
@@ -2250,7 +2250,7 @@ public static function DB_maj_base($version_base_structure_actuelle)
         'celia' => '93',
         'lilie' => '93',
         'ent_95' => '95',
-        'ent_reunion' => '974'
+        'ent_reunion' => '974',
       );
       if(isset($tab_correspondance[$connexion_nom]))
       {

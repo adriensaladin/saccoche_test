@@ -129,45 +129,45 @@ if( ($action=='Voir') && $matiere_id )
   $images_item .= '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
   $images_item .= '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
   $images_item .= '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
-  echo'<ul class="ul_m1">'."\r\n";
+  echo'<ul class="ul_m1">'.NL;
   if(count($tab_niveau))
   {
     foreach($tab_niveau as $niveau_id => $niveau_nom)
     {
-      echo'  <li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau."\r\n";
-      echo'    <ul class="ul_n1">'."\r\n";
+      echo  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL;
+      echo    '<ul class="ul_n1">'.NL;
       if(isset($tab_domaine[$niveau_id]))
       {
         foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
         {
-          echo'      <li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine."\r\n";
-          echo'        <ul class="ul_n2">'."\r\n";
+          echo      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine.NL;
+          echo        '<ul class="ul_n2">'.NL;
           if(isset($tab_theme[$niveau_id][$domaine_id]))
           {
             foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
             {
-              echo'          <li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme."\r\n";
-              echo'            <ul class="ul_n3">'."\r\n";
+              echo          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme.NL;
+              echo            '<ul class="ul_n3">'.NL;
               if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
               {
                 foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
                 {
-                  echo'              <li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'."\r\n";
+                  echo              '<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'.NL;
                 }
               }
-              echo'            </ul>'."\r\n";
-              echo'          </li>'."\r\n";
+              echo            '</ul>'.NL;
+              echo          '</li>'.NL;
             }
           }
-          echo'        </ul>'."\r\n";
-          echo'      </li>'."\r\n";
+          echo        '</ul>'.NL;
+          echo      '</li>'.NL;
         }
       }
-      echo'    </ul>'."\r\n";
-      echo'  </li>'."\r\n";
+      echo    '</ul>'.NL;
+      echo  '</li>'.NL;
     }
   }
-  echo'</ul>'."\r\n";
+  echo'</ul>'.NL;
   exit();
 }
 

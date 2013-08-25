@@ -41,10 +41,10 @@ class SessionUser
   public static function tester_authentification_webmestre($password)
   {
     // Si tentatives trop rapprochées...
-    $delai_tentative_secondes = time() - WEBMESTRE_ERREUR_DATE ;
+    $delai_tentative_secondes = $_SERVER['REQUEST_TIME'] - WEBMESTRE_ERREUR_DATE ;
     if($delai_tentative_secondes<3)
     {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>time()) );
+      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
       return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
     }
     elseif($delai_tentative_secondes<10)
@@ -56,7 +56,7 @@ class SessionUser
     $password_crypte = crypter_mdp($password);
     if($password_crypte!=WEBMESTRE_PASSWORD_MD5)
     {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>time()) );
+      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
       return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
     }
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
@@ -100,7 +100,7 @@ class SessionUser
       return array('Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.',array());
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le partenariat sélectionné si identification avec succès
-    setcookie( COOKIE_PARTENAIRE /*name*/ , $DB_ROW['partenaire_id'] /*value*/ , time()+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
+    setcookie( COOKIE_PARTENAIRE /*name*/ , $DB_ROW['partenaire_id'] /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
     return array('ok',$DB_ROW);
   }
@@ -177,7 +177,7 @@ class SessionUser
       DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-    setcookie( COOKIE_STRUCTURE /*name*/ , $BASE /*value*/ , time()+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
+    setcookie( COOKIE_STRUCTURE /*name*/ , $BASE /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
     setcookie( COOKIE_AUTHMODE /*name*/ , $mode_connection /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
@@ -267,20 +267,70 @@ class SessionUser
     // Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
     $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
     $tab_type_entier  = array(
-      'SESAMATH_ID','MOIS_BASCULE_ANNEE_SCOLAIRE','DROIT_ELEVE_DEMANDES',
-      'CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE',
+      'SESAMATH_ID',
+      'MOIS_BASCULE_ANNEE_SCOLAIRE',
+      'DROIT_ELEVE_DEMANDES',
+      'CALCUL_VALEUR_RR',
+      'CALCUL_VALEUR_R',
+      'CALCUL_VALEUR_V',
+      'CALCUL_VALEUR_VV',
+      'CALCUL_SEUIL_R',
+      'CALCUL_SEUIL_V',
+      'CALCUL_LIMITE',
       'CAS_SERVEUR_PORT',
-      'ENVELOPPE_HORIZONTAL_GAUCHE','ENVELOPPE_HORIZONTAL_MILIEU','ENVELOPPE_HORIZONTAL_DROITE',
-      'ENVELOPPE_VERTICAL_HAUT','ENVELOPPE_VERTICAL_MILIEU','ENVELOPPE_VERTICAL_BAS',
-      'OFFICIEL_MARGE_GAUCHE','OFFICIEL_MARGE_DROITE','OFFICIEL_MARGE_HAUT','OFFICIEL_MARGE_BAS',
-      'OFFICIEL_RELEVE_ONLY_SOCLE','OFFICIEL_RELEVE_APPRECIATION_RUBRIQUE','OFFICIEL_RELEVE_APPRECIATION_GENERALE','OFFICIEL_RELEVE_ASSIDUITE','OFFICIEL_RELEVE_ETAT_ACQUISITION','OFFICIEL_RELEVE_MOYENNE_SCORES','OFFICIEL_RELEVE_POURCENTAGE_ACQUIS','OFFICIEL_RELEVE_CONVERSION_SUR_20','OFFICIEL_RELEVE_CASES_NB','OFFICIEL_RELEVE_AFF_COEF','OFFICIEL_RELEVE_AFF_SOCLE','OFFICIEL_RELEVE_AFF_DOMAINE','OFFICIEL_RELEVE_AFF_THEME',
-      'OFFICIEL_BULLETIN_ONLY_SOCLE','OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE','OFFICIEL_BULLETIN_APPRECIATION_GENERALE','OFFICIEL_BULLETIN_ASSIDUITE','BULLETIN_BARRE_ACQUISITIONS','OFFICIEL_BULLETIN_ACQUIS_TEXTE_NOMBRE','OFFICIEL_BULLETIN_ACQUIS_TEXTE_CODE','OFFICIEL_BULLETIN_MOYENNE_SCORES','OFFICIEL_BULLETIN_CONVERSION_SUR_20','OFFICIEL_BULLETIN_MOYENNE_CLASSE','OFFICIEL_BULLETIN_MOYENNE_GENERALE','OFFICIEL_BULLETIN_FUSION_NIVEAUX',
-      'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE','OFFICIEL_SOCLE_APPRECIATION_GENERALE','OFFICIEL_SOCLE_ONLY_PRESENCE','OFFICIEL_SOCLE_POURCENTAGE_ACQUIS','OFFICIEL_SOCLE_ETAT_VALIDATION'
+      'ENVELOPPE_HORIZONTAL_GAUCHE',
+      'ENVELOPPE_HORIZONTAL_MILIEU',
+      'ENVELOPPE_HORIZONTAL_DROITE',
+      'ENVELOPPE_VERTICAL_HAUT',
+      'ENVELOPPE_VERTICAL_MILIEU',
+      'ENVELOPPE_VERTICAL_BAS',
+      'OFFICIEL_BULLETIN_ONLY_SOCLE',
+      'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE',
+      'OFFICIEL_BULLETIN_APPRECIATION_GENERALE',
+      'OFFICIEL_BULLETIN_ASSIDUITE',
+      'OFFICIEL_BULLETIN_BARRE_ACQUISITIONS',
+      'OFFICIEL_BULLETIN_ACQUIS_TEXTE_NOMBRE',
+      'OFFICIEL_BULLETIN_ACQUIS_TEXTE_CODE',
+      'OFFICIEL_BULLETIN_MOYENNE_SCORES',
+      'OFFICIEL_BULLETIN_CONVERSION_SUR_20',
+      'OFFICIEL_BULLETIN_MOYENNE_CLASSE',
+      'OFFICIEL_BULLETIN_MOYENNE_GENERALE',
+      'OFFICIEL_BULLETIN_FUSION_NIVEAUX',
+      'OFFICIEL_MARGE_GAUCHE',
+      'OFFICIEL_MARGE_DROITE',
+      'OFFICIEL_MARGE_HAUT',
+      'OFFICIEL_MARGE_BAS',
+      'OFFICIEL_RELEVE_ONLY_SOCLE',
+      'OFFICIEL_RELEVE_APPRECIATION_RUBRIQUE',
+      'OFFICIEL_RELEVE_APPRECIATION_GENERALE',
+      'OFFICIEL_RELEVE_ASSIDUITE',
+      'OFFICIEL_RELEVE_ETAT_ACQUISITION',
+      'OFFICIEL_RELEVE_MOYENNE_SCORES',
+      'OFFICIEL_RELEVE_POURCENTAGE_ACQUIS',
+      'OFFICIEL_RELEVE_CONVERSION_SUR_20',
+      'OFFICIEL_RELEVE_CASES_NB',
+      'OFFICIEL_RELEVE_AFF_COEF',
+      'OFFICIEL_RELEVE_AFF_SOCLE',
+      'OFFICIEL_RELEVE_AFF_DOMAINE',
+      'OFFICIEL_RELEVE_AFF_THEME',
+      'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE',
+      'OFFICIEL_SOCLE_APPRECIATION_GENERALE',
+      'OFFICIEL_SOCLE_ONLY_PRESENCE',
+      'OFFICIEL_SOCLE_POURCENTAGE_ACQUIS',
+      'OFFICIEL_SOCLE_ETAT_VALIDATION',
     );
     $tab_type_tableau = array(
-      'CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE',
-      'ETABLISSEMENT','ENVELOPPE','OFFICIEL',
-      'CAS_SERVEUR'
+      'CSS_BACKGROUND-COLOR',
+      'CALCUL_VALEUR',
+      'CALCUL_SEUIL',
+      'NOTE_TEXTE',
+      'NOTE_LEGENDE',
+      'ACQUIS_TEXTE',
+      'ACQUIS_LEGENDE',
+      'ETABLISSEMENT',
+      'ENVELOPPE',
+      'OFFICIEL',
+      'CAS_SERVEUR',
     );
     foreach($DB_TAB as $DB_ROW)
     {
@@ -409,39 +459,39 @@ class SessionUser
   {
     $_SESSION['CSS']  = '';
     // codes de notation
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/RR.gif) no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/RR.gif) no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/R.gif)  no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/R.gif)  no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/V.gif)  no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/V.gif)  no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/VV.gif) no-repeat center center;}';
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/VV.gif) no-repeat center center;}';
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/RR.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/RR.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/R.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/R.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/V.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/V.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/VV.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/VV.gif) no-repeat center center;}'.NL;
     // couleurs des états d'acquisition
-    $_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['BACKGROUND_NA'].'}';
-    $_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['BACKGROUND_VA'].'}';
-    $_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['BACKGROUND_A'].'}';
+    $_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['BACKGROUND_NA'].'}'.NL;
+    $_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['BACKGROUND_VA'].'}'.NL;
+    $_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['BACKGROUND_A'].'}'.NL;
     // couleurs des états de validation
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-    $_SESSION['CSS'] .= 'th.v0 , td.v0 , span.v0 {background:'.$_SESSION['BACKGROUND_V0'].'}';
-    $_SESSION['CSS'] .= 'th.v1 , td.v1 , span.v1 {background:'.$_SESSION['BACKGROUND_V1'].'}';
-    $_SESSION['CSS'] .= 'th.v2 , td.v2 , span.v2 {background:'.$_SESSION['BACKGROUND_V2'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation td.v0 {color:'.$_SESSION['BACKGROUND_V0'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation td.v1 {color:'.$_SESSION['BACKGROUND_V1'].'}';
-    $_SESSION['CSS'] .= '#tableau_validation td.v2 {color:'.$_SESSION['BACKGROUND_V2'].'}';
-    $_SESSION['CSS'] .= '#zone_information .v0 {background:'.$_SESSION['BACKGROUND_V0'].';padding:0 1em;margin-right:1ex}';
-    $_SESSION['CSS'] .= '#zone_information .v1 {background:'.$_SESSION['BACKGROUND_V1'].';padding:0 1em;margin-right:1ex}';
-    $_SESSION['CSS'] .= '#zone_information .v2 {background:'.$_SESSION['BACKGROUND_V2'].';padding:0 1em;margin-right:1ex}';
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=lock] {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */';
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;} /* pas background pour ne pas écraser background-color défini avant */';
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.down0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.down1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.down2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.left0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.left1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.left2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
+    $_SESSION['CSS'] .= 'th.v0 , td.v0 , span.v0 {background:'.$_SESSION['BACKGROUND_V0'].'}'.NL;
+    $_SESSION['CSS'] .= 'th.v1 , td.v1 , span.v1 {background:'.$_SESSION['BACKGROUND_V1'].'}'.NL;
+    $_SESSION['CSS'] .= 'th.v2 , td.v2 , span.v2 {background:'.$_SESSION['BACKGROUND_V2'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation td.v0 {color:'.$_SESSION['BACKGROUND_V0'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation td.v1 {color:'.$_SESSION['BACKGROUND_V1'].'}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation td.v2 {color:'.$_SESSION['BACKGROUND_V2'].'}'.NL;
+    $_SESSION['CSS'] .= '#zone_information .v0 {background:'.$_SESSION['BACKGROUND_V0'].';padding:0 1em;margin-right:1ex}'.NL;
+    $_SESSION['CSS'] .= '#zone_information .v1 {background:'.$_SESSION['BACKGROUND_V1'].';padding:0 1em;margin-right:1ex}'.NL;
+    $_SESSION['CSS'] .= '#zone_information .v2 {background:'.$_SESSION['BACKGROUND_V2'].';padding:0 1em;margin-right:1ex}'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=lock] {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;} /* pas background pour ne pas écraser background-color défini avant */'.NL;
   }
 
   /**
@@ -453,17 +503,17 @@ class SessionUser
   public static function memoriser_menu()
   {
     require(CHEMIN_DOSSIER_INCLUDE.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu
-    $_SESSION['MENU'] = '<ul id="menu">';
+    $_SESSION['MENU'] = '<ul id="menu">'.NL;
     foreach($tab_menu as $menu_titre => $tab_sous_menu)
     {
-      $_SESSION['MENU'] .= '<li><a class="menu" href="#">'.$menu_titre.'</a><ul>';
+      $_SESSION['MENU'] .= '<li><a class="menu" href="#">'.$menu_titre.'</a><ul>'.NL;
       foreach($tab_sous_menu as $sous_menu_titre => $tab)
       {
-        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'" href="./index.php?'.$tab['href'].'">'.$sous_menu_titre.'</a></li>';
+        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'" href="./index.php?'.$tab['href'].'">'.$sous_menu_titre.'</a></li>'.NL;
       }
-      $_SESSION['MENU'] .= '</ul></li>';
+      $_SESSION['MENU'] .= '</ul></li>'.NL;
     }
-    $_SESSION['MENU'] .= '</ul>';
+    $_SESSION['MENU'] .= '</ul>'.NL;
   }
 
 }

@@ -166,7 +166,7 @@ public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_et
     ':calcul_limite'     => $_SESSION['CALCUL_LIMITE'],
     ':calcul_retroactif' => $_SESSION['CALCUL_RETROACTIF'],
     ':mode_synthese'     => 'inconnu',
-    ':information'       => ''
+    ':information'       => '',
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

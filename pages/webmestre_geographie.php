@@ -31,7 +31,7 @@ $TITRE = "Zones géographiques";
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
+  echo'<p class="astuce">L\'installation étant de type mono-structure, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
@@ -68,12 +68,12 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
         // La zone d'id 1 ne peut être supprimée, c'est la zone par défaut.
         echo ($DB_ROW['geo_id']!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
         echo  '</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="4"></td></tr>';
+      echo'<tr><td class="nu" colspan="4"></td></tr>'.NL;
     }
     ?>
   </tbody>

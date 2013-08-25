@@ -51,7 +51,7 @@ if( ($action=='calculer') && $nb_bases )
       'base_id'                => $DB_ROW['sacoche_base'] ,
       'structure_denomination' => $DB_ROW['structure_denomination'] ,
       'contact'                => $DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'] ,
-      'inscription_date'       => $DB_ROW['structure_inscription_date']
+      'inscription_date'       => $DB_ROW['structure_inscription_date'] ,
     );
   }
   // Retour

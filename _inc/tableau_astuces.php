@@ -61,7 +61,7 @@ $tab_astuces = array(
     $astuce_panneau_affichage,
     $astuce_socle_choisir_langue,
     $astuce_faq_b2i,
-    $astuce_authentification_ent
+    $astuce_authentification_ent,
   ),
   'directeur' => array(
     $astuce_previsualisation_bulletin,
@@ -73,7 +73,7 @@ $tab_astuces = array(
     $astuce_memorisation_selection_items,
     $astuce_dates_periodes,
     $astuce_date_connexion,
-    $astuce_faq_b2i
+    $astuce_faq_b2i,
   ),
   'professeur' => array(
     $astuce_evaluation_taux_remplissage,
@@ -90,7 +90,7 @@ $tab_astuces = array(
     $astuce_dates_periodes,
     $astuce_date_connexion,
     $astuce_devoir_ordonner_items,
-    $astuce_faq_b2i
+    $astuce_faq_b2i,
   )
 );
 

@@ -37,7 +37,7 @@ class InfoServeur
   private static $tab_style = array(
     'vert' =>'bv' ,
     'jaune'=>'bj' ,
-    'rouge'=>'br'
+    'rouge'=>'br' ,
   );
 
   // //////////////////////////////////////////////////
@@ -602,7 +602,7 @@ class InfoServeur
       'version_mysql'                  => 'MySQL',
       'version_sacoche_prog'           => 'SACoche fichiers',
       'version_sacoche_base_structure' => 'SACoche base structure',
-      'version_sacoche_base_webmestre' => 'SACoche base webmestre'
+      'version_sacoche_base_webmestre' => 'SACoche base webmestre',
     );
     return InfoServeur::tableau_deux_colonnes( 'Versions logicielles' , $tab_objets );
   }
@@ -614,7 +614,7 @@ class InfoServeur
       'max_input_vars'      => 'max input vars',
       'memory_limit'        => 'memory limit',
       'post_max_size'       => 'post max size',
-      'upload_max_filesize' => 'upload max filesize'
+      'upload_max_filesize' => 'upload max filesize',
     );
     return InfoServeur::tableau_deux_colonnes( 'Réglage des limitations PHP' , $tab_objets );
   }
@@ -624,7 +624,7 @@ class InfoServeur
     $tab_objets = array(
       'max_allowed_packet'   => 'max allowed packet',
       'max_user_connections' => 'max user connections',
-      'group_concat_max_len' => 'group concat max len'
+      'group_concat_max_len' => 'group concat max len',
     );
     return InfoServeur::tableau_deux_colonnes( 'Réglage des limitations MySQL' , $tab_objets );
   }
@@ -641,7 +641,7 @@ class InfoServeur
       'session_gc_maxlifetime'      => 'session.gc_maxlifetime',
       'session_use_trans_sid'       => 'session.use_trans_sid',
       'session_use_only_cookies'    => 'session.use_only_cookies',
-      'zend_ze1_compatibility_mode' => 'zend.ze1_compatibility_mode'
+      'zend_ze1_compatibility_mode' => 'zend.ze1_compatibility_mode',
     );
     return InfoServeur::tableau_deux_colonnes( 'Configuration de PHP' , $tab_objets );
   }
@@ -699,7 +699,7 @@ class InfoServeur
       'FreeType Support' => 'Support FreeType', // Requis pour imagettftext()
       $jpeg.' Support'   => 'Support JPEG',
       'PNG Support'      => 'Support PNG',
-      'GIF Read Support' => 'Support GIF' // "GIF Create Support" non testé car on n'écrit que des jpg (photos) et des png (étiquettes) de toutes façons.
+      'GIF Read Support' => 'Support GIF', // "GIF Create Support" non testé car on n'écrit que des jpg (photos) et des png (étiquettes) de toutes façons.
     );
     $tab_gd_options = gd_info(); // http://fr.php.net/manual/fr/function.gd-info.php
     $tab_tr = array();

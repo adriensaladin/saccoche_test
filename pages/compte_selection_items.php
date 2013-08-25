@@ -29,6 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer ses regroupements d'items";
 
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_items = new Array();';
 ?>
 
 <ul class="puce">
@@ -47,7 +50,6 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
   </thead>
   <tbody>
     <?php
-    $tab_listing_js = '';
     $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_selection_items($_SESSION['USER_ID']);
     if(!empty($DB_TAB))
     {
@@ -64,23 +66,18 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
         echo    '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
         echo    '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
         echo  '</td>';
-        echo'</tr>';
-        // Pour js
-        $tab_listing_js .= 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";';
+        echo'</tr>'.NL;
+        // Javascript
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";';
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="3"></td></tr>';
+      echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
     }
     ?>
   </tbody>
 </table>
-
-<script type="text/javascript">
-  var tab_items = new Array();
-  <?php echo $tab_listing_js ?>
-</script>
 
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Ajouter | Modifier un regroupements d'items</h2>

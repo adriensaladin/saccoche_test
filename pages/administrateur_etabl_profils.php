@@ -57,7 +57,7 @@ $TITRE = "Choix des profils utilisateurs";
         echo  '<td class="label">'.$txt_obligatoire.'</td>';
         echo  '<td class="label">'.$tab_txt_groupes[$DB_ROW['user_profil_join_groupes']].'</td>';
         echo  '<td class="label">'.$tab_txt_matieres[$DB_ROW['user_profil_join_matieres']].'</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
       ?>
     </tbody>

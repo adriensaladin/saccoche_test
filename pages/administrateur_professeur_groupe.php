@@ -49,7 +49,7 @@ $tab_lignes_profs     = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun groupe trouvé !</p>';
+  echo'<p class="danger">Aucun groupe trouvé !</p>'.NL;
 }
 else
 {
@@ -80,7 +80,7 @@ else
   }
   if(!count($tab_profs))
   {
-    echo'<p class="danger">Aucun compte professeur trouvé !</p>';
+    echo'<p class="danger">Aucun compte professeur trouvé !</p>'.NL;
   }
   else
   {
@@ -106,15 +106,15 @@ else
     }
 
     // Affichage du tableau principal
-    echo'<table id="autocheckbox">';
-    echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>';
+    echo'<table id="autocheckbox">'.NL;
+    echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>'.NL;
     unset($tab_principal[0]);
-    echo'<tbody>';
+    echo'<tbody>'.NL;
     foreach($tab_principal as $groupe_id => $tab_colonnes)
     {
-      echo'<tr id="tr_'.$groupe_id.'">'.implode($tab_colonnes).'</tr>';
+      echo'<tr id="tr_'.$groupe_id.'">'.implode($tab_colonnes).'</tr>'.NL;
     }
-    echo'</tbody></table>';
+    echo'</tbody></table>'.NL;
 
     // Assemblage du tableau des profs par groupe
     $TH = array();
@@ -136,14 +136,14 @@ else
     }
 
     // Affichage du tableau des profs par groupe
-    echo'<hr /><h2>Bilan des professeurs par groupe</h2>';
+    echo'<hr /><h2>Bilan des professeurs par groupe</h2>'.NL;
     foreach($tab_lignes_groupes as $niveau_id => $tab_groupe)
     {
-      echo'<table class="affectation">';
-      echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-      echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-      echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-      echo'</table>';
+      echo'<table class="affectation">'.NL;
+      echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
+      echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
+      echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
+      echo'</table>'.NL;
     }
 
     // Assemblage du tableau des groupes par prof
@@ -166,14 +166,14 @@ else
     }
 
     // Affichage du tableau des groupes par prof
-    echo'<hr /><h2>Bilan des groupes par professeur</h2>';
+    echo'<hr /><h2>Bilan des groupes par professeur</h2>'.NL;
     foreach($tab_lignes_profs as $ligne_id => $tab_user)
     {
-      echo'<table class="affectation">';
-      echo'<thead><tr>'.$TH[$ligne_id].'</tr></thead>';
-      echo'<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>';
-      echo'<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>';
-      echo'</table>';
+      echo'<table class="affectation">'.NL;
+      echo  '<thead><tr>'.$TH[$ligne_id].'</tr></thead>'.NL;
+      echo  '<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>'.NL;
+      echo  '<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>'.NL;
+      echo'</table>'.NL;
     }
 
   }

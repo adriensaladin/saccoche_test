@@ -39,13 +39,11 @@ foreach($DB_TAB as $DB_ROW)
   $matieres_options .= '<option value="'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'</option>' ;
 }
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';';
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_matieres">DOC : Matières</a></span></div>
-
-<script type="text/javascript">
-  var id_matiere_partagee_max = "<?php echo ID_MATIERE_PARTAGEE_MAX ?>";
-</script>
 
 <div id="zone_partage">
   <hr />
@@ -73,12 +71,12 @@ foreach($DB_TAB as $DB_ROW)
           echo  '<td class="nu">';
           echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
           echo  '</td>';
-          echo'</tr>';
+          echo'</tr>'.NL;
         }
       }
       else
       {
-        echo'<tr><td class="nu" colspan="3"></td></tr>';
+        echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
       }
       ?>
     </tbody>
@@ -112,12 +110,12 @@ foreach($DB_TAB as $DB_ROW)
           echo    '<q class="modifier" title="Modifier cette matière."></q>';
           echo    '<q class="supprimer" title="Supprimer cette matière."></q>';
           echo  '</td>';
-          echo'</tr>';
+          echo'</tr>'.NL;
         }
       }
       else
       {
-        echo'<tr><td class="nu" colspan="3"></td></tr>';
+        echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
       }
       ?>
     </tbody>

@@ -49,6 +49,7 @@ $tab_droits_par_page = array
 (
   // Tous profils
   'fermer_session'                          => $tab_droits_profil_tous, // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
+  'webservices'                             => $tab_droits_profil_tous,
   // Profils identifiés
   'calque_date_calendrier'                  => $tab_droits_profil_identifie,
   'conserver_session_active'                => $tab_droits_profil_identifie,
@@ -201,7 +202,7 @@ $tab_droits_par_page = array
   'consultation_referentiel_interne'        => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'partenaire'=>0 ),
   'releve_pdf'                              => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'partenaire'=>0 ),
   // Attention à ce dernier cas ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
-  'public_login_SSO'                        => array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'partenaire'=>0 )
+  'public_login_SSO'                        => array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'partenaire'=>0 ),
 );
 
 ?>

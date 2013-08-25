@@ -27,7 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Maintenance &amp; mise à jour";
+?>
 
+<?php
 // Initialisation de l'état de l'accès
 $blocage_msg = LockAcces::tester_blocage('webmestre',0);
 if($blocage_msg!==NULL)
@@ -38,7 +40,6 @@ else
 {
   $label_acces = '<label class="valide">Application accessible.</label>';
 }
-
 // Pas de bouton maj automatique si LCS ou serveur Sésamath
 if(IS_HEBERGEMENT_SESAMATH)
 {
@@ -55,12 +56,6 @@ else
   $disabled = '';
   $label_maj = '<label id="ajax_maj">&nbsp;</label>';
 }
-
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_droits = "'.URL_DIR_EXPORT.'rapport_droits.php";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_maj    = "'.URL_DIR_EXPORT.'rapport_maj.php";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_file_appli = "'.URL_DIR_EXPORT.'rapport_verif_file_appli.php";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_dir_etabl  = "'.URL_DIR_EXPORT.'rapport_verif_dir_etabl.php";';
 ?>
 
 <p>
@@ -68,7 +63,11 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_dir_etabl  = 
   <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__verrouillage">DOC : Verrouillage de l'application</a></span>
 </p>
 
-<hr />
+<script type="text/javascript">
+  var url_export_rapport_maj    = "<?php echo URL_DIR_EXPORT.'rapport_maj.php' ?>";
+  var url_export_rapport_verif  = "<?php echo URL_DIR_EXPORT.'rapport_verif.php' ?>";
+  var url_export_rapport_droits = "<?php echo URL_DIR_EXPORT.'rapport_droits.php' ?>";
+</script>
 
 <h2>Version de SACoche</h2>
 
@@ -88,23 +87,11 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_dir_etabl  = 
 
 <hr />
 
-<h2>Vérification des fichiers de l'application en place</h2>
+<h2>Vérification des fichiers en place</h2>
 
-<form action="#" method="post" id="form_verif_file_appli"><fieldset>
-  <span class="tab"></span><button id="bouton_verif_file_appli" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif_file_appli">&nbsp;</label>
+<form action="#" method="post" id="form_verif"><fieldset>
+  <span class="tab"></span><button id="bouton_verif" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif">&nbsp;</label>
 </fieldset></form>
-
-<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
-
-<hr />
-
-<h2>Vérification des dossiers additionnels par établissement</h2>
-
-<form action="#" method="post" id="form_verif_dir_etabl"><fieldset>
-  <span class="tab"></span><button id="bouton_verif_dir_etabl" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif_dir_etabl">&nbsp;</label>
-</fieldset></form>
-
-<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>
 
 <hr />
 

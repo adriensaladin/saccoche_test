@@ -132,17 +132,14 @@ class Session
    * Ouvrir une session existante
    * 
    * @param void
-   * @return void
+   * @return bool
    */
   private static function open_old()
   {
     Session::param();
     $ID = $_COOKIE[SESSION_NOM];
     session_id($ID);
-    if( !session_start() )
-    {
-      exit_error( 'Ouverture de session' /*titre*/ , 'La session n\'a pu être démarrée.<br />Le disque dur du serveur hébergeant SACoche serait-il plein ?' /*contenu*/ );
-    }
+    return session_start();
   }
 
   /*
@@ -171,11 +168,6 @@ class Session
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']           = 0;
     $_SESSION['CONNEXION_MODE']        = 'normal';
-    // Informations navigateur.
-    // Détecter si usage d'un appareil mobile (tablette, téléphone...).
-    $_SESSION['BROWSER'] = Browser::caracteristiques_navigateur();
-    $Mobile_Detect = new Mobile_Detect();
-    $_SESSION['BROWSER']['mobile'] = $Mobile_Detect->isMobile();
   }
 
   /*
@@ -233,12 +225,12 @@ class Session
    * @param bool   $memo_GET   Pour réinjecter les paramètres après authentification SACoche (pour une authentification SSO, c'est déjà automatique)
    * @return void
    */
-  private static function close__open_new__init($memo_GET)
+  private static function save_request__close__open_new__init($memo_GET)
   {
     Session::close();
     Session::open_new();
     Session::init();
-    $_SESSION['MEMO_GET'] = ( $memo_GET && !empty($_GET) ) ? $_GET : NULL ;
+    $_SESSION['MEMO_GET'] = ($memo_GET) ? $_GET : NULL ;
   }
 
   // //////////////////////////////////////////////////
@@ -298,7 +290,7 @@ class Session
     // Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
     $_SESSION = array();
     session_unset();
-    setcookie( session_name() /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+    setcookie( session_name() /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     session_destroy();
   }
 
@@ -311,15 +303,25 @@ class Session
    */
   public static function execute()
   {
+    
     if(!isset($_COOKIE[SESSION_NOM]))
     {
       // 1. Aucune session transmise
-      Session::open_new();
-      Session::init();
+      Session::open_new(); Session::init();
       if(!Session::$tab_droits_page['public'])
       {
-        // 1.1. Demande d'accès à une page réservée (donc besoin d'identification) : session perdue / expirée, ou demande d'accès direct (lien profond) -> redirection pour une nouvelle identification
-        Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible ; veuillez vous (re)-connecter.'); // Si SSO au prochain coup on ne passera plus par là.
+        // 1.1. Demande d'accès à une page réservée, donc besoin d'identification
+        if(isset($_GET['verif_cookie']))
+        {
+          // 1.1.1. En fait l'utilisateur vient déjà de s'identifier : c'est donc anormal, le cookie de session n'a pas été trouvé car le navigateur client n'enregistre pas les cookies
+          exit_error( 'Problème de cookies' /*titre*/ , 'Session non retrouvée !<br />Configurez votre navigateur pour qu\'il accepte les cookies.' /*contenu*/ );
+        }
+        else
+        {
+          // 1.1.2. Session perdue ou expirée, ou demande d'accès direct (lien profond) : redirection pour une nouvelle identification
+          Session::save_request__close__open_new__init( TRUE /*memo_GET*/ );
+          Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible ; veuillez vous (re)-connecter.'); // Si SSO au prochain coup on ne passera plus par là.
+        }
       }
       else
       {
@@ -336,19 +338,19 @@ class Session
         if(!Session::$tab_droits_page['public'])
         {
           // 2.1.1. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
-          Session::close__open_new__init( TRUE /*memo_GET*/ );
+          Session::save_request__close__open_new__init( TRUE /*memo_GET*/ );
           Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible ; veuillez vous (re)-connecter'); // On peut initialiser la session avant car si SSO au prochain coup on ne passera plus par là.
         }
         else
         {
           // 2.1.2. Session perdue ou expirée et page publique : création d'une nouvelle session, pas de message d'alerte pour indiquer que la session est perdue
-          Session::close__open_new__init( TRUE /*memo_GET*/ );
+          Session::save_request__close__open_new__init( FALSE /*memo_GET*/ );
         }
       }
       elseif($_SESSION['SESSION_KEY'] != Session::session_key())
       {
         // 2.2. Session retrouvée, mais louche car IP ou navigateur modifié (tentative de piratage ? c'est cependant difficile de récupérer le cookie d'un tiers, voire impossible avec les autres protections dont SACoche bénéficie).
-        Session::close__open_new__init( TRUE /*memo_GET*/ );
+        Session::save_request__close__open_new__init( TRUE /*memo_GET*/ );
         Session::exit_sauf_SSO('Session incompatible avec votre connexion (modification d\'adresse IP ou de navigateur) ; veuillez vous (re)-connecter');
       }
       elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
@@ -377,14 +379,14 @@ class Session
           // A un moment il fallait tester que ce n'était pas un appel ajax, pour éviter une déconnexion si appel au calendrier qui était dans l'espace public, mais ce n'est plus le cas...
           // Par contre il faut conserver la session de SimpleSAMLphp pour laisser à l'utilisateur le choix de se déconnecter ou non de son SSO.
           $SimpleSAMLphp_SESSION = ( ($_SESSION['CONNEXION_MODE']=='gepi') && (isset($_SESSION['SimpleSAMLphp_SESSION'])) ) ? $_SESSION['SimpleSAMLphp_SESSION'] : FALSE ; // isset() pour le cas où l'admin vient de cocher le mode Gepi mais c'est connecté sans juste avant
-          Session::close__open_new__init( FALSE /*memo_GET*/ );
+          Session::save_request__close__open_new__init( FALSE /*memo_GET*/ );
           if($SimpleSAMLphp_SESSION) { $_SESSION['SimpleSAMLphp_SESSION'] = $SimpleSAMLphp_SESSION; }
         }
         elseif(!Session::$tab_droits_page['public']) // (forcément)
         {
           // 2.4.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
           // Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).
-          Session::close__open_new__init( FALSE /*memo_GET*/ ); // FALSE car sinon on peut tourner en boucle (toujours redirigé vers une page qui ne correspond pas au profil utilisé)
+          Session::save_request__close__open_new__init( FALSE /*memo_GET*/ ); // FALSE car sinon on peut tourner en boucle (toujours redirigé vers une page qui ne correspond pas au profil utilisé)
           Session::exit_sauf_SSO('Page incompatible avec votre identification actuelle ; veuillez vous (re)-connecter.');
         }
       }
@@ -438,8 +440,7 @@ class Session
       'public_login_SSO', 
       'public_logout_SSO',
       'releve',
-      'releve_pdf',
-      'webservices',
+      'releve_pdf'
     );
     return (in_array($page,$tab_sans_verif_csrf)) ? FALSE : TRUE ;
   }

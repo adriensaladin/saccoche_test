@@ -125,12 +125,12 @@ elseif($levenshtein) // (forcément)
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cette adresse."></q>';
         echo  '</td>';
-        echo'</tr>'.NL;
+        echo'</tr>';
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="7"></td></tr>';
     }
     ?>
   </tbody>

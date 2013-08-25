@@ -31,16 +31,15 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
-// Paramètres transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
-$FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : '' ; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
-$DOSSIER = (isset($_GET['auth']))    ? CHEMIN_DOSSIER_LOGINPASS : CHEMIN_DOSSIER_EXPORT ;
+// Paramètre transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
+$FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : ''; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
 
-// Vérification de la cohérence des paramètres transmis et de l'existence du fichier concerné
+// Vérification de la cohérence du paramètre transmis et de l'existence du fichier concerné
 if(!$FICHIER)
 {
   exit_error( 'Paramètre manquant' /*titre*/ , 'Page appelée sans indiquer le nom du fichier à récupérer.' /*contenu*/ , '' /*lien*/ );
 }
-$fichier_chemin = $DOSSIER.$FICHIER;
+$fichier_chemin = CHEMIN_DOSSIER_EXPORT.$FICHIER;
 if(!is_file($fichier_chemin))
 {
   exit_error( 'Document manquant' /*titre*/ , 'Les fichiers sont conservés sur le serveur pendant une durée limitée !' /*contenu*/ , '' /*lien*/ );

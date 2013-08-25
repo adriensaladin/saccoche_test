@@ -234,87 +234,55 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
 /**
  * Affichage déclaration + section head du document
  * 
- * Utilise aussi le tableau $GLOBALS['HEAD'] avec les clefs suivantes :
- * ['title'] - ['css']['file'][] - ['css_ie']['file'][] - ['css']['inline'][] - ['js']['file'][] - ['js']['inline'][]
- * 
  * @param bool   $is_meta_robots  affichage ou non des balises meta pour les robots
  * @param bool   $is_favicon      affichage ou non du favicon
  * @param bool   $is_rss          affichage ou non du flux RSS associé
+ * @param array  $tab_fichiers    tableau [i] => array( css | css_ie | js , chemin_fichier )
+ * @param string $titre_page      titre de la page
+ * @param string $css_additionnel css complémentaire (facultatif)
  * @return void
  */
-function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
+function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichiers , $titre_page , $css_additionnel=FALSE )
 {
   header('Content-Type: text/html; charset='.CHARSET);
-  echo'<!DOCTYPE html>'.NL;
-  echo'<html>'.NL;
-  echo  '<head>'.NL;
-  echo    '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
+  echo'<!DOCTYPE html>'."\r\n";
+  echo'<html>'."\r\n";
+  echo'<head>'."\r\n";
+  echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'."\r\n";
   if($is_meta_robots)
   {
-    echo    '<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />'.NL;
-    echo    '<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />'.NL;
-    echo    '<meta name="author" content="Thomas Crespin pour Sésamath" />'.NL;
-    echo    '<meta name="robots" content="index,follow" />'.NL;
+    echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />'."\r\n";
+    echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />'."\r\n";
+    echo'<meta name="author" content="Thomas Crespin pour Sésamath" />'."\r\n";
+    echo'<meta name="robots" content="index,follow" />'."\r\n";
   }
   if($is_favicon)
   {
-    echo    '<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./favicon.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />'.NL;
-    echo    '<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />'.NL;
+    echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />'."\r\n";
+    echo'<link rel="icon" type="image/png" href="./favicon.png" />'."\r\n";
+    echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />'."\r\n";
+    echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />'."\r\n";
   }
   if($is_rss)
   {
-    echo    '<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />'.NL;
+    echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />'."\r\n";
   }
-  // Titre
-  $title = !empty($GLOBALS['HEAD']['title']) ? $GLOBALS['HEAD']['title'] : 'SACoche' ;
-  echo    '<title>'.$title.'</title>'.NL;
-  // CSS fichiers
-  if(!empty($GLOBALS['HEAD']['css']['file']))
+  foreach($tab_fichiers as $tab_infos)
   {
-    foreach($GLOBALS['HEAD']['css']['file'] as $css_file)
+    list( $type , $url ) = $tab_infos;
+    switch($type)
     {
-      echo    '<link rel="stylesheet" type="text/css" href="'.$css_file.'" />'.NL;
+      case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'."\r\n"; break;
+      case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'."\r\n"; break;
+      case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'."\r\n"; break;
     }
   }
-  // CSS fichiers IE (non utilisé)
-  if(!empty($GLOBALS['HEAD']['css_ie']['file']))
+  if($css_additionnel)
   {
-    foreach($GLOBALS['HEAD']['css_ie']['file'] as $css_ie_file)
-    {
-      echo    '<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$css_ie_file.'" /><![endif]-->'.NL;
-    }
+    echo $css_additionnel."\r\n"; // style complémentaire déjà dans <style type="text/css">...</style>
   }
-  // CSS inline (personnalisations)
-  if(!empty($GLOBALS['HEAD']['css']['inline']))
-  {
-    echo    '<style type="text/css">'.NL;
-    foreach($GLOBALS['HEAD']['css']['inline'] as $css_inline)
-    {
-      echo      $css_inline.NL;
-    }
-    echo    '</style>'.NL;
-  }
-  // JS fichiers
-  if(!empty($GLOBALS['HEAD']['js']['file']))
-  {
-    foreach($GLOBALS['HEAD']['js']['file'] as $js_file)
-    {
-      echo    '<script type="text/javascript" charset="'.CHARSET.'" src="'.$js_file.'"></script>'.NL;
-    }
-  }
-  // JS inline (données dynamiques, telles des constantes supplémentaires)
-  if(!empty($GLOBALS['HEAD']['js']['inline']))
-  {
-    echo    '<script type="text/javascript">'.NL;
-    foreach($GLOBALS['HEAD']['js']['inline'] as $js_inline)
-    {
-      echo      $js_inline.NL;
-    }
-    echo    '</script>'.NL;
-  }
-  echo  '</head>'.NL;
+  echo'<title>'.$titre_page.'</title>'."\r\n";
+  echo'</head>'."\r\n";
 }
 
 /**
@@ -902,7 +870,7 @@ function afficher_profils_droit_specifique($listing_droits_sigles,$format)
   {
     $tab_profils[] = 'aucun !';
   }
-  return ($format=='li') ? '<ul class="puce">'.NL.'<li>'.implode('</li>'.NL.'<li>',$tab_profils).'</li>'.NL.'</ul>'.NL : implode('<br />',$tab_profils) ;
+  return ($format=='li') ? '<ul class="puce"><li>'.implode('</li><li>',$tab_profils).'</li></ul>' : implode('<br />',$tab_profils) ;
 }
 
 ?>

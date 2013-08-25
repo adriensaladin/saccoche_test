@@ -120,7 +120,7 @@ if($action=='afficher')
   {
     $tab_vignettes[$DB_ROW['user_id']] = array(
       'identite' => html($DB_ROW['user_nom']).'<br />'.html($DB_ROW['user_prenom']),
-      'image'    => '<q id="q_'.$DB_ROW['user_id'].'" class="ajouter" title="Ajouter une photo."></q><img width="1" height="1" src="./_img/auto.gif" alt="" />',
+      'image'    => '<q id="q_'.$DB_ROW['user_id'].'" class="ajouter" title="Ajouter une photo."></q><img width="1" height="1" src="./_img/auto.gif" alt="" />'
     );
   }
   // On récupère les photos
@@ -213,8 +213,10 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   }
   // Supprimer le dossier temporaire
   FileSystem::supprimer_dossier($dossier_temp);
-  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
-  FileSystem::fabriquer_fichier_rapport( 'rapport_zip_photos_'.$_SESSION['BASE'].'.php' , $thead , $tbody );
+  // Enregistrement du rapport
+  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
+  $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
+  FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   exit('ok');
 }
 

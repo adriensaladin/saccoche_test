@@ -47,9 +47,15 @@ img {vertical-align:middle}
 .legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px;white-space:nowrap}
 /* td img {vertical-align:baseline} */
 /* label img {vertical-align:text-top} */
-a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:75%;font-weight:normal;font-variant:normal;letter-spacing:0}
+h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
+h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
+h1.logo{text-align:center}
+h1.logo a{margin:auto 1em}
+/* h3 réservé pour l'infobulle */
+h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
+a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
-hr {display:block;height:1px;margin:1ex 0;border-top:1px dotted #66F;}
+hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#666}
@@ -72,9 +78,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* page accueil (identification) */
-#cadre_milieu {width:736px;margin:15px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
-#titre_logo{text-align:center}
-#titre_logo a{margin:auto 1em}
+#cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
 
 /* zone identifiée */
 #cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
@@ -90,22 +94,13 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu     {position:absolute;bottom:-2px;left:3px;right:0}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Titres                                                                                              */
+/* Titres de la page d'authentification                                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* h1 = titre de la page (puce personnalisée à la page d'authentification) */
-h1{display:block;font-size:115%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.15em;margin:1ex 2em;background:transparent url(../_img/sprite_titre_1.png) 0 0 no-repeat;padding-left:26px;line-height:16px}
-#cadre_milieu h1.hebergement    {background-position: 0  -20px}
-#cadre_milieu h1.identification {background-position: 0  -40px}
-#cadre_milieu h1.informations   {background-position: 0  -60px}
-
-/* h2 = titre d'une partie (souvent précédé d'un <hr />) */
-h2{display:block;font-size:105%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;background:transparent url(../_img/sprite_titre_1.png) 0 -80px no-repeat;padding-left:16px;line-height:14px}
-
-/* h3 = réservé pour l'infobulle */
-
-/* h4 = paragraphe dans une partie */
-h4{display:block;font-size:100%;text-align:left;font-weight:bold;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 4px;background:transparent url(../_img/sprite_titre_1.png) 0 -96px no-repeat;padding-left:14px;line-height:13px}
+#cadre_milieu h2 {background:transparent url(../_img/sprite_accueil_1.png) 0 0 no-repeat;padding-left:24px}
+#cadre_milieu h2.hebergement    {background-position: 0    0px}
+#cadre_milieu h2.identification {background-position: 0  -20px}
+#cadre_milieu h2.informations   {background-position: 0  -40px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Boutons d'informations (dans #cadre_haut)                                                           */
@@ -333,7 +328,7 @@ span.voir       {background-position: 0  -80px}
 *.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px;padding-top:1px}
 *.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
 *.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
-*.probleme {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
+*.probleme {background:#FF3;color:#C00;font-weight:bold}
 
 a.cocher_tout {padding-left:19px;background:transparent url(../_img/check/cocher_tout.png) no-repeat top left}
 a.cocher_rien {padding-left:19px;background:transparent url(../_img/check/cocher_rien.png) no-repeat top left}

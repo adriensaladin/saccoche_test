@@ -29,11 +29,11 @@
 
 define(  'CHROME_VERSION_MINI_REQUISE'   , 1); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 1 minimum (sortie en 2008).');
 define(  'CHROME_VERSION_MINI_CONSEILLEE', 5);
-define(  'CHROME_VERSION_LAST'           ,28); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_LAST'           ,27); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2008).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4);
-define( 'FIREFOX_VERSION_LAST'           ,23); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,21); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   , 9); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 9 minimum (sortie en 2006).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11);
@@ -52,13 +52,7 @@ define('EXPLORER_VERSION_LAST'           ,10); define('EXPLORER_URL_DOWNLOAD'   
 class Browser
 {
 
-  public static $tab_navigo = array(
-    'chrome'   => 'Chrome' ,
-    'firefox'  => 'Firefox' ,
-    'opera'    => 'Opéra' ,
-    'safari'   => 'Safari' ,
-    'explorer' => 'Internet Explorer'
-  );
+  public static $tab_navigo = array( 'chrome' , 'firefox' , 'opera' , 'safari' , 'explorer' );
 
   // //////////////////////////////////////////////////
   // Méthode privée (interne)
@@ -73,66 +67,66 @@ class Browser
    * 
    * Fonction originale réécrite et modifiée pour SACoche par Thomas Crespin.
    * @param string   $UserAgent   facultatif
-   * @return array                array( 'modele' , 'version' );
+   * @return array                array( 'nav_modele' , 'nav_version' );
    */
   private static function css_selector($UserAgent=NULL)
   {
-    $tab_retour = array( 'modele'=>'' , 'version'=>0 , 'environnement'=>'' );
+    $tab_retour = array( 'nav_modele'=>'' , 'nav_version'=>0 , 'environnement'=>'' );
     // Variable à analyser
     $UserAgent = ($UserAgent) ? strtolower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
     // Détection du navigateur et si possible de sa version
     if( (!preg_match('#opera|webtv#', $UserAgent)) && (strstr($UserAgent,'msie')) )
     {
-      $tab_retour['modele']  = 'explorer';
-      $tab_retour['version'] = (preg_match('#msie\s([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'explorer';
+      $tab_retour['nav_version'] = (preg_match('#msie\s([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'firefox'))
     {
-      $tab_retour['modele']  = 'firefox';
-      $tab_retour['version'] = (preg_match('#firefox/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'firefox';
+      $tab_retour['nav_version'] = (preg_match('#firefox/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'iceweasel'))
     {
-      $tab_retour['modele']  = 'firefox';
-      $tab_retour['version'] = (preg_match('#iceweasel/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'firefox';
+      $tab_retour['nav_version'] = (preg_match('#iceweasel/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'icecat'))
     {
-      $tab_retour['modele']  = 'firefox';
-      $tab_retour['version'] = (preg_match('#icecat/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'firefox';
+      $tab_retour['nav_version'] = (preg_match('#icecat/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'gecko/'))
     {
-      $tab_retour['modele']  = 'gecko';
+      $tab_retour['nav_modele']  = 'gecko';
     }
     elseif(strstr($UserAgent,'opera'))
     {
-      $tab_retour['modele']  = 'opera';
-      $tab_retour['version'] = (preg_match('#opera(\s|\/)([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[2] : 0 ;
-      $tab_retour['version'] = (preg_match('#version/([0-9]+\.?[0-9]*)#', $UserAgent, $array)) ? $array[1] : $tab_retour['version'] ;
+      $tab_retour['nav_modele']  = 'opera';
+      $tab_retour['nav_version'] = (preg_match('#opera(\s|\/)([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[2] : 0 ;
+      $tab_retour['nav_version'] = (preg_match('#version/([0-9]+\.?[0-9]*)#', $UserAgent, $array)) ? $array[1] : $tab_retour['nav_version'] ;
     }
     elseif(strstr($UserAgent,'konqueror'))
     {
-      $tab_retour['modele']  = 'konqueror';
+      $tab_retour['nav_modele']  = 'konqueror';
     }
     elseif(strstr($UserAgent,'chrome'))
     {
-      $tab_retour['modele']  = 'chrome';
-      $tab_retour['version'] = (preg_match('#chrome/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'chrome';
+      $tab_retour['nav_version'] = (preg_match('#chrome/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
 
     }
     elseif(strstr($UserAgent,'iron'))
     {
-      $tab_retour['modele']  = 'chrome';
+      $tab_retour['nav_modele']  = 'chrome';
     }
     elseif(strstr($UserAgent,'applewebkit/'))
     {
-      $tab_retour['modele']  = 'safari';
-      $tab_retour['version'] = (preg_match('#version\/([0-9]+\.?[0-9]*)#', $UserAgent, $array)) ? (int)$array[1] : 0 ;
+      $tab_retour['nav_modele']  = 'safari';
+      $tab_retour['nav_version'] = (preg_match('#version\/([0-9]+\.?[0-9]*)#', $UserAgent, $array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'mozilla'))
     {
-      $tab_retour['modele']  = 'gecko';
+      $tab_retour['nav_modele']  = 'gecko';
     }
     // Détection de l'environnement
     /*
@@ -213,42 +207,40 @@ class Browser
   public static function afficher_navigateurs_modernes()
   {
     $tab_chaine = array();
-    foreach(Browser::$tab_navigo as $navigo_ref => $navigo_name)
+    foreach(Browser::$tab_navigo as $navigo)
     {
-      $tab_chaine[$navigo_ref] = '<a class="lien_ext" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>';
+      $tab_chaine[$navigo] = '<a class="lien_ext" href="'.constant(strtoupper($navigo).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo.'">'.ucfirst($navigo).' '.constant(strtoupper($navigo).'_VERSION_LAST').'</span></a>';
     }
     // Affichage
     return $tab_chaine;
   }
 
-  /*
-   * Méthode pour renvoyer les infos concernant le navigateur utilisé.
-   * 
-   * @param void
-   * @return array   array( 'modele'=>... , 'version'=>... , 'alerte'=>... )
-   */
-  public static function caracteristiques_navigateur()
+  public static function afficher_navigateurs_alertes()
   {
-    $tab_return = Browser::css_selector(); // array( 'modele' , 'version' );
-    $alerte = '';
-    foreach(Browser::$tab_navigo as $navigo_ref => $navigo_name)
+    $tab_infos = Browser::css_selector(); // array( 'nav_modele' , 'nav_version' );
+    $alertes = '';
+    $alerte_ancien = '<div class="astuce">Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.</div>';
+    if($tab_infos['nav_modele']=='explorer')
     {
-      if($tab_return['modele']==$navigo_ref)
-      {
-        $version_mini_requise    = constant(strtoupper($navigo_ref).'_VERSION_MINI_REQUISE');
-        $version_mini_conseillee = constant(strtoupper($navigo_ref).'_VERSION_MINI_CONSEILLEE');
-        if($tab_return['version']<$version_mini_requise)
-        {
-          $alerte = 'Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! '.$navigo_name.' est utilisable à partir de sa version '.$version_mini_requise.'.';
-        }
-        elseif($tab_return['version']<$version_mini_conseillee)
-        {
-          $alerte = ($navigo_ref!='explorer') ? 'Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.' : 'Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.' ;
-        }
-      }
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 8.</div>';
+      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= '<div class="probleme">Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.</div>';
     }
-    $tab_return['alerte'] = ($alerte) ? $alerte.'<br />Installez '.implode(' ou ',Browser::afficher_navigateurs_modernes()).'.' : NULL ;
-    return $tab_return;
+    elseif($tab_infos['nav_modele']=='firefox')
+    {
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Firefox est utilisable à partir de sa version 3.</div>';
+      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
+    }
+    elseif($tab_infos['nav_modele']=='opera')
+    {
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Opéra est utilisable à partir de sa version 9.</div>';
+      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
+    }
+    elseif($tab_infos['nav_modele']=='safari')
+    {
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Safari est utilisable à partir de sa version 3.</div>';
+      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
+    }
+    return ($alertes) ? '<hr />'.$alertes.'<div class="astuce">Installez '.implode(' ou ',Browser::afficher_navigateurs_modernes()).'.</div>' : '' ;
   }
 
 }

@@ -58,12 +58,12 @@ $TITRE = "Gérer les périodes";
         echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
         echo    '<q class="supprimer" title="Supprimer cette période."></q>';
         echo  '</td>';
-        echo'</tr>'.NL;
+        echo'</tr>';
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="3"></td></tr>';
     }
     ?>
   </tbody>

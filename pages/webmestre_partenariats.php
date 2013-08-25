@@ -31,7 +31,7 @@ $TITRE = "Gérer les partenaires ENT conventionnés";
 // Page réservée aux installations multi-structures sur le serveur Sésamath ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
 {
-  echo'<p class="astuce">L\'installation étant de type mono-structure ou non hébergée par Sésamath, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>'.NL;
+  echo'<p class="astuce">L\'installation étant de type mono-structure ou non hébergée par Sésamath, cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>';
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
@@ -69,12 +69,12 @@ if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
         echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp pour ce partenaire."></q>';
         echo    '<q class="supprimer" title="Retirer ce partenaire."></q>';
         echo  '</td>';
-        echo'</tr>'.NL;
+        echo'</tr>';
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="7"></td></tr>';
     }
     ?>
   </tbody>

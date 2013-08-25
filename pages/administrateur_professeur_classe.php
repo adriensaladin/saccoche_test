@@ -47,7 +47,7 @@ $tab_lignes_profs     = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucune classe trouvée !</p>'.NL;
+  echo'<p class="danger">Aucune classe trouvée !</p>';
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -78,7 +78,7 @@ if(!empty($DB_TAB))
 }
 if(!count($tab_profs))
 {
-  echo'<p class="danger">Aucun compte professeur trouvé !</p>'.NL;
+  echo'<p class="danger">Aucun compte professeur trouvé !</p>';
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -105,18 +105,18 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Début du formulaire
-echo'<form action="#" method="post">'.NL;
+echo'<form action="#" method="post">';
 
 // Affichage du tableau principal
-echo'<table id="autocheckbox">'.NL;
-echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>'.NL;
+echo'<table id="autocheckbox">';
+echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>';
 unset($tab_principal[0]);
 echo'<tbody>';
 foreach($tab_principal as $classe_id => $tab_colonnes)
 {
-  echo'<tr id="tr_'.$classe_id.'">'.implode($tab_colonnes).'</tr>'.NL;
+  echo'<tr id="tr_'.$classe_id.'">'.implode($tab_colonnes).'</tr>';
 }
-echo'</tbody></table>'.NL;
+echo'</tbody></table>';
 
 // Assemblage du tableau des profs par classe
 $TH = array();
@@ -138,15 +138,15 @@ foreach($tab_lignes_classes as $niveau_id => $tab_classe)
 }
 
 // Affichage du tableau des profs par classe
-echo'<hr /><h2>Bilan des professeurs par classe</h2>'.NL;
-echo'<div class="astuce">Cocher les professeurs principaux.</div>'.NL;
+echo'<hr /><h2>Bilan des professeurs par classe</h2>';
+echo'<div class="astuce">Cocher les professeurs principaux.</div>';
 foreach($tab_lignes_classes as $niveau_id => $tab_classe)
 {
-  echo'<table class="affectation">'.NL;
-  echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
-  echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
-  echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
-  echo'</table>'.NL;
+  echo'<table class="affectation">';
+  echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
+  echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
+  echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
+  echo'</table>';
 }
 
 // Assemblage du tableau des classes par prof
@@ -169,18 +169,18 @@ foreach($tab_lignes_profs as $ligne_id => $tab_user)
 }
 
 // Affichage du tableau des classes par prof
-echo'<hr /><h2>Bilan des classes par professeur</h2>'.NL;
-echo'<div class="astuce">Cocher les professeurs principaux.</div>'.NL;
+echo'<hr /><h2>Bilan des classes par professeur</h2>';
+echo'<div class="astuce">Cocher les professeurs principaux.</div>';
 foreach($tab_lignes_profs as $ligne_id => $tab_user)
 {
-  echo'<table class="affectation">'.NL;
-  echo  '<thead><tr>'.$TH[$ligne_id].'</tr></thead>'.NL;
-  echo  '<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>'.NL;
-  echo  '<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>'.NL;
-  echo'</table>'.NL;
+  echo'<table class="affectation">';
+  echo'<thead><tr>'.$TH[$ligne_id].'</tr></thead>';
+  echo'<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>';
+  echo'<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>';
+  echo'</table>';
 }
 
 // Fin du formulaire
-echo'</form>'.NL;
+echo'</form>';
 
 ?>

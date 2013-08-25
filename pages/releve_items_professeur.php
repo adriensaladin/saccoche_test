@@ -81,13 +81,16 @@ $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_c
 
 $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var user_id         = '.$_SESSION['USER_ID'].';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var user_nom_prenom = "'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'";';
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
 ?>
+
+<script type="text/javascript">
+  var date_mysql = "<?php echo TODAY_MYSQL ?>";
+  var user_id = <?php echo $_SESSION['USER_ID'] ?>;
+  var user_nom_prenom = "<?php echo html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']); ?>";
+  <?php echo $tab_groupe_periode_js ?> 
+</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_professeur">DOC : Relevé d'items d'un enseignant.</a></span></div>
 <div><span class="danger">Ce relevé est contraire au travail d'équipe et présente des inconvénients &rarr; à utiliser en connaissance de cause&hellip;</span></div>

@@ -45,7 +45,7 @@ $tab_menu = array
     "Référentiels partagés"      => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
     "Date de dernière connexion" => array( 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     "Export de données"          => array( 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
-    "Trombinoscope"              => array( 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
+    "Trombinoscope"              => array( 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       )
   ),
   "Paramétrages" => array
   (
@@ -53,12 +53,12 @@ $tab_menu = array
     "Daltonisme"            => array( 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme'             ),
     "Messages d'accueil"    => array( 'class' => 'message_accueil'   , 'href' => 'page=compte_message'                ),
     "Regroupements d'items" => array( 'class' => 'item_selection'    , 'href' => 'page=compte_selection_items'        ),
-    "Synthèses / Bilans"    => array( 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
+    "Synthèses / Bilans"    => array( 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' )
   ),
   "Évaluations" => array
   (
     "Nombre de saisies"     => array( 'class' => 'statistiques'    , 'href' => 'page=consultation_statistiques' ),
-    "Liste des évaluations" => array( 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'           ),
+    "Liste des évaluations" => array( 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'           )
   ),
   "Validation du socle" => array
   (
@@ -66,7 +66,7 @@ $tab_menu = array
     "Valider les items du socle"       => array( 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'           ),
     "Valider les compétences du socle" => array( 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'         ),
     "Annuler une compétence validée"   => array( 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
-    "Import / Export des validations"  => array( 'class' => 'socle_fichier' , 'href' => 'page=validation_socle&amp;section=fichier'        ),
+    "Import / Export des validations"  => array( 'class' => 'socle_fichier' , 'href' => 'page=validation_socle&amp;section=fichier'        )
   ),
   "Relevés / Synthèses" => array
   (
@@ -79,7 +79,7 @@ $tab_menu = array
     "Synthèse d'une matière"            => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
     "Synthèse pluridisciplinaire"       => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
     "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),
-    "Synthèse de maîtrise du socle"     => array( 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        ),
+    "Synthèse de maîtrise du socle"     => array( 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        )
   ),
   "Bilans officiels" => array
   (
@@ -89,8 +89,8 @@ $tab_menu = array
     "Maîtrise du palier 1"        => array( 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
     "Maîtrise du palier 2"        => array( 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
     "Maîtrise du palier 3"        => array( 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
-    "Notanet &amp; Fiches brevet" => array( 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=accueil'            ),
-  ),
+    "Notanet &amp; Fiches brevet" => array( 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=accueil'            )
+  )
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

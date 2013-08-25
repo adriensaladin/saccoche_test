@@ -754,7 +754,7 @@ public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$
     ':devoir_partage'      => $listing_id_profs,
     ':devoir_doc_sujet'    => $doc_sujet,
     ':devoir_doc_corrige'  => $doc_corrige,
-    ':devoir_fini'         => 0,
+    ':devoir_fini'         => 0
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -805,7 +805,7 @@ public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,
     ':item_date'         => $item_date_mysql,
     ':item_note'         => $item_note,
     ':item_info'         => $item_info,
-    ':item_date_visible' => $item_date_visible_mysql,
+    ':item_date_visible' => $item_date_visible_mysql
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -912,7 +912,7 @@ public static function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,
     ':autoeval_date'      => $date_autoeval_mysql,
     ':devoir_partage'     => $listing_id_profs,
     ':devoir_id'          => $devoir_id,
-    ':prof_id'            => $prof_id,
+    ':prof_id'            => $prof_id
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // sacoche_saisie (maj)

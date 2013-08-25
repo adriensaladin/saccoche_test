@@ -393,8 +393,12 @@ if($connexion_mode=='cas')
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
-  // Pas de redirection (passage possible d'infos en POST à conserver), on peut laisser le code se poursuivre.
-  return; // Ne pas exécuter la suite de ce fichier inclus.
+  // Redirection vers la page demandée en cas de succès.
+  // En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
+  // Rediriger le navigateur.
+  header('Status: 307 Temporary Redirect', TRUE, 307);
+  header('Location: '.URL_BASE.$_SERVER['REQUEST_URI'].'&verif_cookie');
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -526,8 +530,10 @@ if($connexion_mode=='shibboleth')
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
-  // Pas de redirection (passage possible d'infos en POST à conserver), on peut laisser le code se poursuivre.
-  return; // Ne pas exécuter la suite de ce fichier inclus.
+  // Redirection vers la page demandée en cas de succès, avec transmission de &verif_cookie
+  header('Status: 307 Temporary Redirect', TRUE, 307);
+  header('Location: '.URL_BASE.$_SERVER['REQUEST_URI'].'&verif_cookie');
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -544,7 +550,7 @@ if($connexion_mode=='gepi')
     'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
     'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
     'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
-    'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL,
+    'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
   );
   // Initialiser la classe
   $auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
@@ -571,8 +577,7 @@ if($connexion_mode=='gepi')
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
-  // Pas de redirection (passage possible d'infos en POST à conserver), on peut laisser le code se poursuivre.
-  return; // Ne pas exécuter la suite de ce fichier inclus.
+  // Pas de redirection car passage possible d'infos en POST à conserver ; tant pis pour la vérification du cookie...
 }
 
 ?>

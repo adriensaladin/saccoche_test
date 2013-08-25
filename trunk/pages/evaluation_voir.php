@@ -27,9 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Liste des évaluations";
-?>
 
-<?php
 // Fabrication des éléments select du formulaire
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
@@ -65,12 +63,11 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_g /*option_first*/ , $sel_g /*selection*/ , 'regroupements' /*optgroup*/ );
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
-?>
 
-<script type="text/javascript">
-  var tab_dates = new Array();
-  var aff_nom_eleve = <?php echo $js_aff_nom_eleve ?>;
-</script>
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_dates = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';';
+?>
 
 <form action="#" method="post" id="form"><fieldset>
   <div class="<?php echo $class_form_groupe ?>">

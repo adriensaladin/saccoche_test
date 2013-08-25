@@ -339,5 +339,29 @@ $(document).ready
       }
     }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Préparer une évaluation | Constituer un groupe de besoin
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#bilan').on
+    (
+      'click',
+      'button.ajouter',
+      function()
+      {
+        if( $('#form_synthese input[name=id_user\\[\\]]:checked').length )
+        {
+          $('#check_msg').removeAttr('class').html('');
+          $('#form_synthese').attr( 'action' , './index.php?page='+$(this).attr('name') );
+          $('#form_synthese').submit();
+        }
+        else
+        {
+          $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun élève coché !');
+          return false;
+        }
+      }
+    );
+
   }
 );

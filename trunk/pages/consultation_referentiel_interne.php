@@ -30,8 +30,8 @@ $TITRE = "Référentiels en place (dans l'établissement)";
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
 {
-  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
@@ -56,15 +56,15 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*
 $nb_matieres = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 if(!$nb_matieres)
 {
-  echo'<p><span class="danger">Aucune matière associée à l\'établissement !</span></p>';
+  echo'<p><span class="danger">Aucune matière associée à l\'établissement !</span></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_matiere[$DB_ROW['matiere_id']] = array(
-    'nom'         => html($DB_ROW['matiere_nom']) ,
-    'nb_demandes' => $DB_ROW['matiere_nb_demandes']
+    'nom'         => html($DB_ROW['matiere_nom']),
+    'nb_demandes' => $DB_ROW['matiere_nb_demandes'],
   );
 }
 
@@ -73,11 +73,11 @@ $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_speci
 $nb_niveaux = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 if(!$nb_niveaux)
 {
-  echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+  echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
+echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>'.NL;
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
@@ -130,7 +130,7 @@ if(!empty($DB_TAB))
 }
 
 // On construit et affiche le tableau résultant
-$affichage = '<table id="table_action" class="vm_nug"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+$affichage = '<table id="table_action" class="vm_nug"><thead>'.NL.'<tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu"></th></tr>'.NL.'</thead><tbody>'.NL;
 $infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 foreach($tab_matiere as $matiere_id => $tab)
 {
@@ -138,7 +138,7 @@ foreach($tab_matiere as $matiere_id => $tab)
   $matiere_nom   = $tab['nom'];
   $matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
   $matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="br hc">Aucun.' ;
-  $affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
+  $affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'.NL;
   $affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
   $affichage_suite = FALSE;
   if(isset($tab_colonne[$matiere_id]))
@@ -154,16 +154,16 @@ foreach($tab_matiere as $matiere_id => $tab)
       }
       else
       {
-        $affichage_suite .= '<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'."\r\n";
+        $affichage_suite .= '<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'.NL;
       }
     }
-    $affichage .= '</tr>'."\r\n".$affichage_suite;
+    $affichage .= '</tr>'.NL.$affichage_suite;
   }
   else
   {
-    $affichage .= '<td class="br hc">---</td>'.'<td class="br hc">---</td><td class="br hc">---</td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
+    $affichage .= '<td class="br hc">---</td>'.'<td class="br hc">---</td><td class="br hc">---</td>'.'<td class="nu"></td>'.'</tr>'.NL;
   }
 }
-$affichage .= '</tbody></table>'."\r\n";
+$affichage .= '</tbody></table>'.NL;
 echo $affichage;
 ?>

@@ -910,7 +910,7 @@ public static function DB_OPT_niveaux_famille($niveau_famille_id)
     6 => 'OR niveau_id IN(4,204,205,206) ',
     7 => 'OR niveau_id IN(4,204,205,206) ',
     8 => 'OR niveau_id IN(4,204,205,206) ',
-    9 => ''
+    9 => '',
   );
   $DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_niveau ';

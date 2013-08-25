@@ -460,11 +460,11 @@ if($make_html)
 {
   $bouton_print_appr = ($make_officiel)                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'       : '' ;
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-  $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
-  $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
-  $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>';
-  $separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
+  $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
+  $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>'.NL;
+  $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>'.NL;
+  $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>'.NL;
+  $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel , TRUE /*force_nb*/  ) : '' ;
 }
 if($make_pdf)
@@ -499,9 +499,9 @@ foreach($tab_eleve as $tab)
     {
       if(!$make_officiel)
       {
-        $releve_HTML .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
+        $releve_HTML .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>'.NL : '<hr />'.NL.'<h2>Attestation générique</h2>'.NL ;
       }
-      $releve_HTML .= '<table class="bilan">';
+      $releve_HTML .= '<table class="bilan">'.NL;
     }
     // Pour chaque pilier...
     if(count($tab_pilier))
@@ -519,7 +519,7 @@ foreach($tab_eleve as $tab)
               $case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
               $case_valid = $test_affichage_Validation ? Html::td_validation( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
               $image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
-              $releve_HTML .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
+              $releve_HTML .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'.NL;
             }
             if($make_pdf)
             {
@@ -537,7 +537,7 @@ foreach($tab_eleve as $tab)
                   {
                     $case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
                     $case_valid = '<th class="nu"></th>' ;
-                    $releve_HTML .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
+                    $releve_HTML .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'.NL;
                   }
                   if($make_pdf)
                   {
@@ -572,7 +572,7 @@ foreach($tab_eleve as $tab)
                           }
                           $case_score = $test_affichage_Pourcentage ? Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
                           $case_valid = $test_affichage_Validation ? Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
-                          $releve_HTML .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
+                          $releve_HTML .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'.NL;
                         }
                       }
                     }
@@ -600,7 +600,7 @@ foreach($tab_eleve as $tab)
                   $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
                   $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
                 }
-                $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'."\r\n";
+                $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'.NL;
               }
               // État de maîtrise du socle - Appréciations intermédiaires (HTML)
               if(isset($tab_saisie[$eleve_id][$pilier_id]))
@@ -618,20 +618,20 @@ foreach($tab_eleve as $tab)
                     if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                     if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
                   }
-                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
+                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'.NL;
                 }
               }
               if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
               {
                 if(!isset($tab_saisie[$eleve_id][$pilier_id][$_SESSION['USER_ID']]))
                 {
-                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td>'.$case_valid.'</tr>'."\r\n";
+                  $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td>'.$case_valid.'</tr>'.NL;
                 }
               }
             }
             if($make_html)
             {
-              $releve_HTML .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
+              $releve_HTML .= '<tr><td colspan="4" class="nu"></td></tr>'.NL;
             }
           }
           // Examen de présence des appréciations intermédiaires
@@ -653,7 +653,7 @@ foreach($tab_eleve as $tab)
         {
           $case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
           $case_valid = $test_affichage_Validation  ? '<th class="nu"></th>' : '' ;
-          $releve_HTML .= '<tr>'.$case_score.'<th colspan="2">Synthèse générale</th>'.$case_valid.'</tr>'."\r\n";
+          $releve_HTML .= '<tr>'.$case_score.'<th colspan="2">Synthèse générale</th>'.$case_valid.'</tr>'.NL;
           // État de maîtrise du socle - Info saisies périodes antérieures
           if(isset($tab_saisie_avant[$eleve_id][0]))
           {
@@ -670,7 +670,7 @@ foreach($tab_eleve as $tab)
               $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
               $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
             }
-            $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'."\r\n";
+            $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'.NL;
           }
           // État de maîtrise du socle - Appréciation générale
           if($is_appreciation_generale_enregistree)
@@ -686,11 +686,11 @@ foreach($tab_eleve as $tab)
               if($prof_id_appreciation_generale!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
               if($droit_corriger_appreciation)                         { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
             }
-            $releve_HTML .= '<tr id="appr_0_'.$prof_id_appreciation_generale.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
+            $releve_HTML .= '<tr id="appr_0_'.$prof_id_appreciation_generale.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'.NL;
           }
           elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
           {
-            $releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td>'.$case_valid.'</tr>'."\r\n";
+            $releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td>'.$case_valid.'</tr>'.NL;
           }
         }
       }
@@ -722,7 +722,7 @@ foreach($tab_eleve as $tab)
     }
     if($make_html)
     {
-      $releve_HTML .= '</table>';
+      $releve_HTML .= '</table>'.NL;
     }
     // État de maîtrise du socle - Absences et retard
     if( ($make_officiel) && ($affichage_assiduite) )
@@ -730,7 +730,7 @@ foreach($tab_eleve as $tab)
       $texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
       if($make_html)
       {
-        $releve_HTML .= '<div class="i">'.$texte_assiduite.'</div>'."\r\n";
+        $releve_HTML .= '<div class="i">'.$texte_assiduite.'</div>'.NL;
       }
       elseif($make_action=='imprimer')
       {
@@ -740,7 +740,7 @@ foreach($tab_eleve as $tab)
     // État de maîtrise du socle - Date de naissance
     if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
     {
-      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'."\r\n";
+      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
     }
     // État de maîtrise du socle - Ligne additionnelle
     if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )

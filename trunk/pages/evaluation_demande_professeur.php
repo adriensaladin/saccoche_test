@@ -45,12 +45,11 @@ else
 
 // Dates par défaut
 $date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
-?>
 
-<script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var input_autoeval="<?php echo $date_autoeval ?>";
-</script>
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date     = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_autoeval = "'.$date_autoeval.'";';
+?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>

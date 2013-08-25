@@ -37,6 +37,20 @@ $groupe_id   = Clean::entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
 $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , 'f_groupes' /*select_nom*/ ,    '' /*option_first*/ , $groupe /*selection*/ , 'regroupements' /*optgroup*/);
 $select_f_statuts = Form::afficher_select(Form::$tab_select_statut                          , 'f_statut'  /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ ,              '' /*optgroup*/);
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date      = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
+foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
+}
+foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
+{
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
+}
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
@@ -47,13 +61,6 @@ $select_f_statuts = Form::afficher_select(Form::$tab_select_statut              
 </form>
 
 <hr />
-
-<script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var date_mysql = "<?php echo TODAY_MYSQL ?>";
-  var tab_login_modele = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele) { echo'tab_login_modele["'.$profil_sigle.'"]="'.$login_modele.'";'; } ?>
-  var tab_mdp_longueur_mini = new Array(); <?php foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini) { echo'tab_mdp_longueur_mini["'.$profil_sigle.'"]='.$mdp_longueur_mini.';'; } ?>
-</script>
 
 <?php
 if(empty($_POST['f_afficher']))
@@ -115,12 +122,12 @@ if(empty($_POST['f_afficher']))
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cet élève."></q>';
         echo  '</td>';
-        echo'</tr>';
+        echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="13"></td></tr>';
+      echo'<tr><td class="nu" colspan="13"></td></tr>'.NL;
     }
     ?>
   </tbody>

@@ -47,7 +47,7 @@ $tab_lignes_profs      = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucune matière trouvée !</p>';
+  echo'<p class="danger">Aucune matière trouvée !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -65,7 +65,7 @@ foreach($DB_TAB as $DB_ROW)
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , 1 /*only_actuels*/ , 'user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun compte personnel trouvé !</p>';
+  echo'<p class="danger">Aucun compte personnel trouvé !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -103,18 +103,18 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Début du formulaire
-echo'<form action="#" method="post">';
+echo'<form action="#" method="post">'.NL;
 
 // Affichage du tableau principal
-echo'<table id="autocheckbox">';
-echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>';
+echo'<table id="autocheckbox">'.NL;
+echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>'.NL;
 unset($tab_principal[0]);
-echo'<tbody>';
+echo'<tbody>'.NL;
 foreach($tab_principal as $matiere_id => $tab_colonnes)
 {
-  echo'<tr id="tr_'.$matiere_id.'">'.implode($tab_colonnes).'</tr>';
+  echo'<tr id="tr_'.$matiere_id.'">'.implode($tab_colonnes).'</tr>'.NL;
 }
-echo'</tbody></table>';
+echo'</tbody></table>'.NL;
 
 // Assemblage du tableau des personnels par matière
 $TH = array();
@@ -136,15 +136,15 @@ foreach($tab_lignes_matieres as $niveau_id => $tab_matiere)
 }
 
 // Affichage du tableau des personnels par matière
-echo'<hr /><h2>Bilan des personnels par matière</h2>';
-echo'<div class="astuce">Cocher les personnels coordonnateurs.</div>';
+echo'<hr /><h2>Bilan des personnels par matière</h2>'.NL;
+echo'<div class="astuce">Cocher les personnels coordonnateurs.</div>'.NL;
 foreach($tab_lignes_matieres as $niveau_id => $tab_matiere)
 {
-  echo'<table class="affectation">';
-  echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-  echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-  echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-  echo'</table>';
+  echo'<table class="affectation">'.NL;
+  echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
+  echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
+  echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
+  echo'</table>'.NL;
 }
 
 // Assemblage du tableau des matières par personnel
@@ -167,18 +167,18 @@ foreach($tab_lignes_profs as $ligne_id => $tab_user)
 }
 
 // Affichage du tableau des matières par personnel
-echo'<hr /><h2>Bilan des matières par personnel</h2>';
-echo'<div class="astuce">Cocher les personnels coordonnateurs.</div>';
+echo'<hr /><h2>Bilan des matières par personnel</h2>'.NL;
+echo'<div class="astuce">Cocher les personnels coordonnateurs.</div>'.NL;
 foreach($tab_lignes_profs as $ligne_id => $tab_user)
 {
-  echo'<table class="affectation">';
-  echo'<thead><tr>'.$TH[$ligne_id].'</tr></thead>';
-  echo'<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>';
-  echo'<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>';
-  echo'</table>';
+  echo'<table class="affectation">'.NL;
+  echo  '<thead><tr>'.$TH[$ligne_id].'</tr></thead>'.NL;
+  echo  '<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>'.NL;
+  echo  '<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>'.NL;
+  echo'</table>'.NL;
 }
 
 // Fin du formulaire
-echo'</form>';
+echo'</form>'.NL;
 
 ?>

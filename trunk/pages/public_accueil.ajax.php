@@ -40,9 +40,9 @@ $partenaire = (isset($_POST['f_partenaire'])) ? Clean::entier($_POST['f_partenai
 function afficher_formulaire_etablissement($BASE,$profil)
 {
   $options_structures = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , FALSE /*select_nom*/ , FALSE /*option_first*/ , $BASE /*selection*/ , 'zones_geo' /*optgroup*/ );
-  echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" class="t9">'.$options_structures.'</select><br />'."\r\n";
-  echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
-  echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
+  echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" class="t9">'.$options_structures.'</select><br />'.NL;
+  echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+  echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'.NL;
 }
 
 /*
@@ -51,7 +51,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 function afficher_nom_etablissement($BASE,$denomination)
 {
   $changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? ' - <a id="f_changer" href="#">changer</a>' : '' ;
-  echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
+  echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'.NL;
 }
 
 /*
@@ -65,34 +65,34 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 {
   if($profil=='webmestre')
   {
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'."\r\n";
-    echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
+    echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   }
   elseif($profil=='partenaire')
   {
     // Lecture d'un cookie sur le poste client servant à retenir le dernier partenariat sélectionné si identification avec succès
     $selection = (isset($_COOKIE[COOKIE_PARTENAIRE])) ? Clean::entier($_COOKIE[COOKIE_PARTENAIRE]) : FALSE ;
     $options_partenaires = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_partenaires_conventionnes() , FALSE /*select_nom*/ , '' /*option_first*/ , $selection , '' /*optgroup*/ );
-    echo'<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'."\r\n";
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
-    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+    echo'<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'.NL;
+    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   }
   elseif($mode=='normal')
   {
-    echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
-    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+    echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
+    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   }
   else
   {
     echo'<label class="tab">Mode de connexion :</label>';
     echo  '<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
-    echo  '<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'."\r\n";
-    echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
-    echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
-    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
-    echo'</fieldset>'."\r\n";
-    echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+    echo  '<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'.NL;
+    echo'<fieldset id="fieldset_normal" class="hide">'.NL;
+    echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
+    echo'</fieldset>'.NL;
+    echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   }
 }
 
@@ -182,8 +182,8 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
   if($structure_denomination===NULL)
   {
     // Sans doute un établissement supprimé, mais le cookie est encore là
-    setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '' /*path*/ ); // précédente version...
-    setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+    setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '' /*path*/ ); // précédente version...
+    setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     exit('Erreur : établissement non trouvé dans la base d\'administration !');
   }
   afficher_nom_etablissement($BASE,$structure_denomination);
@@ -209,20 +209,17 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 
 function adresse_redirection_apres_authentification()
 {
-  if(empty($_SESSION['MEMO_GET']))
+  if( empty($_SESSION['MEMO_GET']) || !isset($_SESSION['MEMO_GET']['page']) )
   {
-    return 'index.php?page=compte_accueil&verif_cookie';
+    $_SESSION['MEMO_GET']['page'] = 'compte_accueil';
   }
-  else
+  $tab_get = array();
+  foreach($_SESSION['MEMO_GET'] as $key => $val)
   {
-    $tab_get = array();
-    foreach($_SESSION['MEMO_GET'] as $key => $val)
-    {
-      $tab_get[] = $key.'='.$val;
-    }
-    unset($_SESSION['MEMO_GET']);
-    return'index.php?'.implode('&',$tab_get);
+    $tab_get[] = $key.'='.urlencode($val);
   }
+  unset($_SESSION['MEMO_GET']);
+  return URL_DIR_SACOCHE.'index.php?'.implode('&',$tab_get);
 }
 
 // Pour un utilisateur normal, y compris un administrateur

@@ -78,11 +78,10 @@ class Webmestre
     DB_STRUCTURE_WEBMESTRE::DB_supprimer_tables_structure();
     // Supprimer le fichier de connexion
     unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php');
-    // Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-    $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
-    foreach($tab_sous_dossier as $sous_dossier)
+    // Supprimer les dossiers de fichiers temporaires par établissement
+    foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
     {
-      FileSystem::supprimer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0');
+      FileSystem::supprimer_dossier($dossier.'0');
     }
     // Supprimer les éventuels fichiers de blocage
     LockAcces::supprimer_fichiers_blocage(0);
@@ -107,11 +106,10 @@ class Webmestre
     unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
     // Retirer l'enregistrement d'une structure dans la base du webmestre
     DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
-    // Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-    $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
-    foreach($tab_sous_dossier as $sous_dossier)
+    // Supprimer les dossiers de fichiers temporaires par établissement
+    foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
     {
-      FileSystem::supprimer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$BASE);
+      FileSystem::supprimer_dossier($dossier.$BASE);
     }
     // Supprimer les éventuels fichiers de blocage
     LockAcces::supprimer_fichiers_blocage($BASE);

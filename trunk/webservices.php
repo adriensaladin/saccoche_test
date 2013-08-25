@@ -25,7 +25,7 @@
  * 
  */
 
-// Fichier appelé par un service externe, pour l'instant juste utilisé en test sur Bordeaux.
+// Fichier appelé par un service externe
 // Une clef est transmise ; elle est comparée avec celle stockée dans un fichier du dossier /webservices/ donc non visible dans les sources / le svn.
 // Passage en POST des paramètres.
 
@@ -40,9 +40,35 @@ $WS_qui  = (isset($_POST['qui']))  ? Clean::texte($_POST['qui']) : ( (isset($_GE
 $WS_cle  = (isset($_POST['cle']))  ? Clean::texte($_POST['cle']) : '';
 $WS_uai  = (isset($_POST['uai']))  ? Clean::uai($_POST['uai'])   : '';
 $WS_uid  = (isset($_POST['uid']))  ? Clean::texte($_POST['uid']) : '';
-$WS_data = (isset($_POST['data'])) ? $_POST['data']             : ''; // tableau sérializé
+$WS_data = (isset($_POST['data'])) ? $_POST['data']              : ''; // tableau sérializé
 
-// On ne vérifie que le 1er paramètre (le service web prendra éventuellement en charge la suite).
+/**
+ * Cas d'un service externe récupérant les données d'un user authentifié sur SACoche.
+ * C'est un webservice un peu particulier qui ne requiert pas d'autre fichier de code dans CHEMIN_DOSSIER_WEBSERVICES.
+ * Il y a en revanche quelques lignes de code associées dans le fichier /index.php
+ */
+if($WS_qui=='AutoMaths')
+{
+  // Attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
+  $WS_cle = str_replace(array('.','/','\\'),'',$WS_cle);
+  if(!$WS_cle)
+  {
+    exit('Erreur : clef non transmise !');
+  }
+  $fichier = CHEMIN_DOSSIER_LOGINPASS.$WS_cle.'.txt';
+  if(!is_file($fichier))
+  {
+    exit('Erreur : absence de données associées à cette clef !');
+  }
+  $infos_user = file_get_contents($fichier);
+  unlink($fichier);
+  exit($infos_user);
+}
+
+/**
+ * Place aux autres webservices à présent (pour l'instant seulement deux, qui se truovent sur le serveur de Bordeaux).
+ * On ne vérifie dans un premier temps que le 1er paramètre (le service web prendra éventuellement en charge la suite).
+ */
 $tab_ws = array('argos_parent','argos_ajout');
 if(!in_array($WS_qui,$tab_ws))
 {
@@ -53,7 +79,6 @@ if(!is_file($fichier))
 {
   exit('Erreur : le service web "'.$WS_qui.'" n\'est pas disponible sur cette installation !');
 }
-// Place au service web à présent.
 require($fichier);
 
 ?>

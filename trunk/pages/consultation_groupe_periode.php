@@ -92,20 +92,24 @@ if(!empty($DB_TAB))
     }
 
     // Affichage du tableau résultant
-    echo'<table>';
-    echo'<thead><tr><td class="nu"></td>'.implode('',$tab_periode).'</tr></thead>';
-    echo'<tbody><tr>'.implode('</tr>'."\r\n".'<tr>',$tab_groupe).'</tr></tbody>';
-    echo'</table>';
+    echo'<table>'.NL;
+    echo  '<thead>'.NL;
+    echo    '<tr><td class="nu"></td>'.implode('',$tab_periode).'</tr>'.NL;
+    echo  '</thead>'.NL;
+    echo  '<tbody>'.NL;
+    echo    '<tr>'.implode('</tr>'.NL.'<tr>',$tab_groupe).'</tr>'.NL;
+    echo  '</tbody>'.NL;
+    echo'</table>'.NL;
 
   }
   else
   {
-    echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>';
+    echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>'.NL;
   }
 }
 else
 {
-  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>';
+  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>'.NL;
 }
 
 ?>

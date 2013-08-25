@@ -31,13 +31,6 @@ $(document).ready
   function()
   {
 
-    // Ajout alerte si usage frame / iframe
-    if(top.frames.length!=0)
-    {
-      $('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
-      format_liens('#cadre_milieu');
-    }
-
     function curseur()
     {
       if($("#f_profil").val()!='normal')
@@ -293,10 +286,10 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,10)=='index.php?')
+      if(responseHTML.substring(0,4)=='http')
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
-        document.location.href = './'+responseHTML;
+        document.location.href = responseHTML;
       }
       else
       {

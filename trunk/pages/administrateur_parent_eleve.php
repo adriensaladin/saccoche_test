@@ -27,13 +27,15 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Parents &amp; élèves";
-?>
 
-<?php
 // Fabrication des éléments select du formulaire
 $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 $select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var select_parent = "'.str_replace('"','\"',$select_f_parents).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
@@ -44,17 +46,8 @@ $select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_et
   <fieldset id="fieldset_eleves">
     <label class="tab" for="f_groupe">Élève :</label><?php echo $select_f_groupes ?> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
   </fieldset>
-
   <hr />
-
   <fieldset id="fieldset_parents">
   </fieldset>
   <p id="p_valider" class="hide"><span class="tab"></span><button id="Enregistrer" type="button" class="valider">Enregistrer les modifications</button><label id="ajax_msg2">&nbsp;</label></p>
-
 </form>
-
-<script type="text/javascript">
-  // <![CDATA[
-  var select_parent="<?php echo str_replace('"','\"',$select_f_parents); ?>";
-  // ]]>
-</script>

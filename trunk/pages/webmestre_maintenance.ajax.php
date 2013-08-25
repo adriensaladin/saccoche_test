@@ -55,11 +55,12 @@ if($action=='bloquer')
 
 if($action=='verif_droits')
 {
+  $_SESSION['tmp'] = array();
   // Récupérer l'arborescence
   $dossier_install = '.';
-  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , TRUE /*with_first_dir*/ );
   // Pour l'affichage du retour
-  $thead = '<tr><td colspan="2">Vérification des droits en écriture du '.date('d/m/Y H:i:s').'</td></tr>';
+  $thead = '<tr><td colspan="2">Vérification des droits en écriture - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody = '';
   // Dossiers
   ksort($_SESSION['tmp']['dossier']);
@@ -75,12 +76,77 @@ if($action=='verif_droits')
     $fichier = '.'.$fichier;
     $tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;
   }
-  // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_droits.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
-  $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
-  FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
+  FileSystem::fabriquer_fichier_rapport( 'rapport_droits.php' , $thead , $tbody );
   exit('ok');
+}
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Vérification des dossiers additionnels par établissement
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='verif_dir_etabl')
+{
+  // Récupérer les ids des structures
+  $tab_bases = array();
+  $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id();
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_bases[$DB_ROW['sacoche_base']] = $DB_ROW['sacoche_base'];
+    }
+  }
+  // Récupérer les dossiers additionnels par établissement
+  $tab_dossiers = array();
+  unset($_SESSION['tmp']);
+  foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)
+  {
+    FileSystem::analyser_dossier( $dossier_dir , strlen($dossier_dir) , 'avant' , FALSE /*with_first_dir*/ );
+    ksort($_SESSION['tmp']['dossier']);
+    $tab_dossiers[$dossier_dir] = $_SESSION['tmp']['dossier'];
+    unset($_SESSION['tmp']);
+  }
+  // Pour l'affichage du retour
+  $thead = '<tr><td colspan="2">Vérification des dossiers additionnels par établissement - '.date('d/m/Y H:i:s').'</td></tr>';
+  $tbody_ok = '';
+  $tbody_pb = '';
+  // On parcourt les dossiers devant exister : ok ou création.
+  foreach($tab_bases as $base_id)
+  {
+    foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)
+    {
+      if(isset($tab_dossiers[$dossier_dir][$base_id]))
+      {
+        $tbody_ok .= '<tr class="v"><td>Dossier présent</td><td>'.$dossier_key.$base_id.'</td></tr>';
+        unset($tab_dossiers[$dossier_dir][$base_id]);
+      }
+      else
+      {
+        FileSystem::creer_dossier($dossier_dir.$base_id);
+        FileSystem::ecrire_fichier($dossier_dir.$base_id.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+        $tbody_pb .= '<tr class="r"><td>Dossier manquant (&rarr; ajouté)</td><td>'.$dossier_key.$base_id.'</td></tr>';
+      }
+    }
+  }
+  // Il reste éventuellement les dossiers en trop.
+  foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)
+  {
+    if(count($tab_dossiers[$dossier_dir]))
+    {
+      foreach($tab_dossiers[$dossier_dir] as $base_id => $tab)
+      {
+        if(isset($tab_dossiers[$dossier_dir][$base_id]))
+        {
+          FileSystem::supprimer_dossier($dossier_dir.$base_id);
+          $tbody_pb .= '<tr class="r"><td>Dossier en trop (&rarr; supprimé)</td><td>'.$dossier_key.$base_id.'</td></tr>';
+        }
+      }
+    }
+  }
+  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
+  FileSystem::fabriquer_fichier_rapport( 'rapport_verif_dir_etabl.php' , $thead , $tbody_pb.$tbody_ok );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,8 +203,8 @@ if($action=='maj_etape2')
 if($action=='maj_etape3')
 {
   $_SESSION['tmp'] = array();
-  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
-  FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' );
+  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
+  FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ );
   exit(']¤['.'ok'.']¤['."Analyse et répercussion des modifications&hellip;");
 }
 
@@ -147,7 +213,7 @@ if($action=='maj_etape3')
 //
 if($action=='maj_etape4')
 {
-  $thead = '<tr><td colspan="2">Mise à jour automatique du '.date('d/m/Y H:i:s').'</td></tr>';
+  $thead = '<tr><td colspan="2">Mise à jour automatique - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody = '';
   // Bloquer l'application
   ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
@@ -223,10 +289,8 @@ if($action=='maj_etape4')
   // Débloquer l'application
   ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
-  // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_maj.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
-  $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
-  FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
+  FileSystem::fabriquer_fichier_rapport( 'rapport_maj.php' , $thead , $tbody );
   exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }
 
@@ -241,7 +305,7 @@ if($action=='maj_etape5')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Vérification des fichiers
+// Vérification des fichiers de l'application en place
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_import  = CHEMIN_DOSSIER_IMPORT.'verification.zip';
@@ -251,7 +315,7 @@ $dossier_install = '.'.DS;
 //
 // 1. Récupération de l'archive <em>ZIP</em>...
 //
-if($action=='verif_etape1')
+if($action=='verif_file_appli_etape1')
 {
   $tab_post = array();
   $tab_post['verification'] = 1;
@@ -268,7 +332,7 @@ if($action=='verif_etape1')
 //
 // 2. Décompression de l'archive...
 //
-if($action=='verif_etape2')
+if($action=='verif_file_appli_etape2')
 {
   if(is_dir($dossier_dezip))
   {
@@ -286,20 +350,20 @@ if($action=='verif_etape2')
 //
 // 3. Analyse des fichiers et recensement des dossiers... (après initialisation de la session temporaire)
 //
-if($action=='verif_etape3')
+if($action=='verif_file_appli_etape3')
 {
   $_SESSION['tmp'] = array();
-  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
-  FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE );
+  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
+  FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ , FALSE );
   exit(']¤['.'ok'.']¤['."Comparaison des données&hellip;");
 }
 
 //
 // 4. Comparaison des données...
 //
-if($action=='verif_etape4')
+if($action=='verif_file_appli_etape4')
 {
-  $thead = '<tr><td colspan="2">Vérification du '.date('d/m/Y H:i:s').'</td></tr>';
+  $thead = '<tr><td colspan="2">Vérification es fichiers de l\'application en place - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody_ok = '';
   $tbody_pb = '';
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
@@ -349,17 +413,15 @@ if($action=='verif_etape4')
       $tbody_pb .= '<tr class="r"><td>Fichier en trop</td><td>'.$fichier.'</td></tr>';
     }
   }
-  // Enregistrement du rapport
-  $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_verif.php'; // extension PHP et non HTML pour éviter des pb de mise en cache
-  $fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
-  FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
-  exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
+  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
+  FileSystem::fabriquer_fichier_rapport( 'rapport_verif_file_appli.php' , $thead , $tbody_pb.$tbody_ok );
+  exit(']¤['.'ok'.']¤['.'Rapport des différences trouvées et nettoyage&hellip;');
 }
 
 //
 // 5. Nettoyage...
 //
-if($action=='verif_etape5')
+if($action=='verif_file_appli_etape5')
 {
   unset($_SESSION['tmp']);
   FileSystem::supprimer_dossier($dossier_dezip);

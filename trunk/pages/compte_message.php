@@ -27,9 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Messages d'accueil";
-?>
 
-<?php
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
@@ -37,6 +35,11 @@ $select_profil = '<option value=""></option>';
 $select_profil.= ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<option value="administrateur">Administrateurs</option>' : '' ;
 $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))) ? '<option value="directeur">Directeurs</option>' : '' ;
 $select_profil.= '<option value="professeur">Professeurs</option><option value="personnel">Personnels autres</option><option value="eleve">Élèves</option><option value="parent">Responsables légaux</option>';
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date = '.TODAY_FR.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_destinataires = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_msg_contenus  = new Array();';
 ?>
 
 <ul class="puce">
@@ -57,11 +60,11 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
   </thead>
   <tbody>
     <?php
-    $script = '';
     // Lister les messages dont le user est l'auteur
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_auteur($_SESSION['USER_ID']);
     if(!empty($DB_TAB))
     {
+      $GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
       foreach($DB_TAB as $DB_ROW)
       {
         // Afficher une ligne du tableau
@@ -80,28 +83,20 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
         echo    '<q class="modifier" title="Modifier ce message."></q>';
         echo    '<q class="supprimer" title="Supprimer ce message."></q>';
         echo  '</td>';
-        echo'</tr>';
-        // Pour js
-        $script .= 'tab_destinataires['.$DB_ROW['message_id'].']="'.$destinataires_liste.'";';
-        $script .= 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";';
+        echo'</tr>'.NL;
+        // Javascript
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_destinataires['.$DB_ROW['message_id'].']="'.$destinataires_liste.'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";';
       }
+      $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
     }
     else
     {
-      echo'<tr><td class="nu" colspan="5"></td></tr>';
+      echo'<tr><td class="nu" colspan="5"></td></tr>'.NL;
     }
     ?>
   </tbody>
 </table>
-
-<script type="text/javascript">
-  var input_date = "<?php echo TODAY_FR ?>";
-  var tab_destinataires = new Array();
-  var tab_msg_contenus  = new Array();
-  // <![CDATA[
-  <?php echo $script ?>
-  // ]]>
-</script>
 
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Ajouter | Modifier un message d'accueil</h2>

@@ -102,7 +102,7 @@ foreach($tab_brevet_serie as $serie_ref)
         'epreuve_point_sup_10'    => (bool)$DB_ROW['brevet_epreuve_point_sup_10'],
         'epreuve_note_comptee'    => (bool)$DB_ROW['brevet_epreuve_note_comptee'],
         'epreuve_coefficient'     =>  (int)$DB_ROW['brevet_epreuve_coefficient'],
-        'epreuve_choix_matieres'  =>       $DB_ROW['brevet_epreuve_choix_matieres']
+        'epreuve_choix_matieres'  =>       $DB_ROW['brevet_epreuve_choix_matieres'],
       );
   }
 }
@@ -150,7 +150,7 @@ if( ($make_html) || ($make_graph) )
 {
   $bouton_print_appr = (!$make_graph)                       ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $releve_HTML  = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>' : '<div id="div_graphique"></div>' ;
+  $releve_HTML  = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '<div id="div_graphique"></div>'.NL ;
   $width_col1 = 100 ;
   $width_col2 = 900 - $width_col1;
 }
@@ -301,9 +301,9 @@ foreach($tab_eleve as $tab)
           {
             $note           = is_numeric($note)           ? sprintf("%04.1f",$note)           : $note ;
             $moyenne_classe = is_numeric($moyenne_classe) ? sprintf("%04.1f",$moyenne_classe) : $moyenne_classe ;
-            $releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
-            $releve_HTML .= '<tr><th colspan="2">'.html($epreuve_nom).' [ '.html(implode(' ; ',$tab_matieres_utilisees)).' ]</th></tr>';
-            $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'."\r\n";
+            $releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>'.NL;
+            $releve_HTML .= '<tr><th colspan="2">'.html($epreuve_nom).' [ '.html(implode(' ; ',$tab_matieres_utilisees)).' ]</th></tr>'.NL;
+            $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
             if($appreciation)
             {
               $actions = '';
@@ -316,16 +316,16 @@ foreach($tab_eleve as $tab)
                 if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                 if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
               }
-              $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+              $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
             }
             if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
             {
               if(!$appreciation)
               {
-                $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation.</button></div></td></tr>'."\r\n";
+                $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation.</button></div></td></tr>'.NL;
               }
             }
-            $releve_HTML .= '</tbody></table>';
+            $releve_HTML .= '</tbody></table>'.NL;
           }
           if($make_pdf)
           {
@@ -367,9 +367,9 @@ foreach($tab_eleve as $tab)
       {
         $note           = is_numeric($note)           ? sprintf("%05.1f",$note)           : $note ;
         $moyenne_classe = is_numeric($moyenne_classe) ? sprintf("%05.1f",$moyenne_classe) : $moyenne_classe ;
-        $releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'."\r\n";
-        $releve_HTML .= '<tr><th style="width:'.$width_col1.'px">Total des points</th><th style="width:'.$width_col2.'px">Avis de synthèse (conseil de classe / chef d\'établissement)</th></tr>'."\r\n";
-        $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'."\r\n";
+        $releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'.NL;
+        $releve_HTML .= '<tr><th style="width:'.$width_col1.'px">Total des points</th><th style="width:'.$width_col2.'px">Avis de synthèse (conseil de classe / chef d\'établissement)</th></tr>'.NL;
+        $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
         if($appreciation)
         {
           $actions = '';
@@ -383,13 +383,13 @@ foreach($tab_eleve as $tab)
             if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
           }
           $txt_avis_conseil_classe = ($avis_conseil_classe=='F') ? 'Avis favorable' : 'Doit faire ses preuves' ;
-          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div><div id="avis_conseil_classe" class="b">'.html($txt_avis_conseil_classe).'</div></td></tr>'."\r\n";
+          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div><div id="avis_conseil_classe" class="b">'.html($txt_avis_conseil_classe).'</div></td></tr>'.NL;
         }
         elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
         {
-          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button></div></td></tr>'."\r\n";
+          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button></div></td></tr>'.NL;
         }
-        $releve_HTML .= '</tbody></table>'."\r\n";
+        $releve_HTML .= '</tbody></table>'.NL;
       }
     }
     if($make_pdf)
@@ -406,7 +406,7 @@ foreach($tab_eleve as $tab)
     // Fiche brevet - Date de naissance
     if( ($date_naissance) && ( ($make_html) || ($make_graph) ) )
     {
-      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'."\r\n";
+      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
     }
     // Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
     if($make_action=='imprimer')

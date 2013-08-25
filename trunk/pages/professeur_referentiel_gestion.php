@@ -30,14 +30,12 @@ $TITRE = "Créer / paramétrer les référentiels";
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-?>
 
-<?php
 // Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
 $texte_retroactif = ($_SESSION['CALCUL_RETROACTIF']=='non') ? '(sur la période)' : '(rétroactivement)' ;
 if($_SESSION['CALCUL_LIMITE']==1)  // si une seule saisie prise en compte
@@ -63,6 +61,18 @@ elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))  // si 
   $nb_best = (int)substr($_SESSION['CALCUL_METHODE'],-1);
   $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières '.$texte_retroactif.'.';
 }
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_methode          = "'.$_SESSION['CALCUL_METHODE'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_limite           = "'.$_SESSION['CALCUL_LIMITE'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_retroactif       = "'.$_SESSION['CALCUL_RETROACTIF'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_texte            = "'.$calcul_texte.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var id_matiere_partagee_max = '.ID_MATIERE_PARTAGEE_MAX.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_partage_etat      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_methode    = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_limite     = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_retroactif = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_information       = new Array();';
 ?>
 
 <form action="#" method="post" id="form_instance">
@@ -75,7 +85,6 @@ elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))  // si 
 <div id="div_tableaux">
 
 <?php
-$script_contenu_tableaux = '';
 // Séparé en plusieurs requêtes sinon on ne s'en sort pas (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();
@@ -96,9 +105,9 @@ else
   foreach($DB_TAB_MATIERES as $DB_ROW)
   {
     $tab_matiere[$DB_ROW['matiere_id']] = array(
-      'nom'         => html($DB_ROW['matiere_nom']) ,
-      'nb_demandes' => $DB_ROW['matiere_nb_demandes'] ,
-      'coord'       => $DB_ROW['jointure_coord']
+      'nom'         => html($DB_ROW['matiere_nom']),
+      'nb_demandes' => $DB_ROW['matiere_nb_demandes'],
+      'coord'       => $DB_ROW['jointure_coord'],
     );
   }
   // On récupère la liste des niveaux utilisés par l'établissement, que l'on conserve pour un formulaire
@@ -120,6 +129,7 @@ else
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
     if(!empty($DB_TAB))
     {
+      $GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
       foreach($DB_TAB as $DB_ROW)
       {
         // Définition de $methode_calcul_texte
@@ -148,12 +158,13 @@ else
           $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières '.$texte_retroactif.'.';
         }
         $tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
-        $script_contenu_tableaux .=      'tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_partage_etat'].'";';
-        $script_contenu_tableaux .=    'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
-        $script_contenu_tableaux .=     'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
-        $script_contenu_tableaux .= 'tab_calcul_retroactif["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_retroactif'].'";';
-        $script_contenu_tableaux .=       'tab_information["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.str_replace('"','\"',$DB_ROW['referentiel_information']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = '     tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_partage_etat'].'";';
+        $GLOBALS['HEAD']['js']['inline'][] = '   tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_methode'].'";';
+        $GLOBALS['HEAD']['js']['inline'][] = '    tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_limite'].'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_calcul_retroactif["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_retroactif'].'";';
+        $GLOBALS['HEAD']['js']['inline'][] = '      tab_information["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.str_replace('"','\"',$DB_ROW['referentiel_information']).'";';
       }
+      $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
     }
     // Construction du formulaire select du nombre de demandes
     $select_demandes = '<select name="f_eleve_demandes" class="t9">';
@@ -173,8 +184,8 @@ else
       $matiere_perso  = ($matiere_id>ID_MATIERE_PARTAGEE_MAX) ? 1 : 0 ;
       $matiere_droit  = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
       $matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
-      echo'<hr /><h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>';
-      echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead><tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr></thead><tbody>'."\r\n";
+      echo'<hr /><h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>'.NL;
+      echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead>'.NL.'<tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr>'.NL.'</thead><tbody>'.NL;
       if(isset($tab_colonne[$matiere_id]))
       {
         foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
@@ -190,39 +201,23 @@ else
           {
             $colonnes = $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q><q class="envoyer_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q><q class="calculer_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q><q class="supprimer_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q></td>' ;
           }
-          echo'<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'."\r\n";
+          echo'<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'.NL;
         }
       }
       else
       {
-        echo'<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>'."\r\n";
+        echo'<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>'.NL;
       }
       $matiere_nombre = str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) ;
       $matiere_nombre = ( ($matiere_droit) && (isset($tab_colonne[$matiere_id])) ) ? $matiere_nombre : str_replace('<select','<select disabled',$matiere_nombre) ;
-      echo'<tr><td colspan="4" class="nu">'.$matiere_nombre.$infobulle.$label.'</td>'.'</tr>'."\r\n";
-      echo'</tbody></table>'."\r\n";
+      echo'<tr><td colspan="4" class="nu">'.$matiere_nombre.$infobulle.$label.'</td>'.'</tr>'.NL;
+      echo'</tbody></table>'.NL;
     }
   }
 }
 ?>
 
 </div>
-
-<script type="text/javascript">
-  var calcul_methode    = "<?php echo $_SESSION['CALCUL_METHODE'] ?>";
-  var calcul_limite     = "<?php echo $_SESSION['CALCUL_LIMITE'] ?>";
-  var calcul_retroactif = "<?php echo $_SESSION['CALCUL_RETROACTIF'] ?>";
-  var calcul_texte      = "<?php echo $calcul_texte ?>";
-  var id_matiere_partagee_max = <?php echo ID_MATIERE_PARTAGEE_MAX ?>;
-  var tab_partage_etat      = new Array();
-  var tab_calcul_methode    = new Array();
-  var tab_calcul_limite     = new Array();
-  var tab_calcul_retroactif = new Array();
-  var tab_information       = new Array();
-  // <![CDATA[
-  <?php echo $script_contenu_tableaux ?>
-  // ]]>
-</script>
 
 <div id="choisir_referentiel" class="hide">
   <hr />
@@ -232,7 +227,7 @@ else
   if($nb_matieres && $nb_niveaux);
   {
     $select_niveau = Form::afficher_select($DB_TAB_NIVEAUX , 'f_niveau_create' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
-    echo'<label class="tab" for="f_niveau_create">Niveau :</label>'.$select_niveau.'<label id="ajax_msg_choisir">&nbsp;</label>';
+    echo'<label class="tab" for="f_niveau_create">Niveau :</label>'.$select_niveau.'<label id="ajax_msg_choisir">&nbsp;</label>'.NL;
   }
   ?>
   </p>
@@ -240,12 +235,12 @@ else
   <?php
   if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
   {
-    echo'<p><label class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l\'identité de l\'établissement</a></span>).</label></p>';
+    echo'<p><label class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l\'identité de l\'établissement</a></span>).</label></p>'.NL;
   }
   else
   {
-    echo'<p><button id="choisir_rechercher" type="button" class="rechercher">Rechercher parmi les référentiels partagés sur le serveur communautaire.</button></p>';
-    echo'<p><button id="choisir_importer" type="button" value="id_x" class="valider">Démarrer avec ce référentiel : <b id="reporter"></b></button></p>';
+    echo'<p><button id="choisir_rechercher" type="button" class="rechercher">Rechercher parmi les référentiels partagés sur le serveur communautaire.</button></p>'.NL;
+    echo'<p><button id="choisir_importer" type="button" value="id_x" class="valider">Démarrer avec ce référentiel : <b id="reporter"></b></button></p>'.NL;
   }
   ?>
   <p><button id="choisir_annuler" type="button" class="annuler">Annuler la création d'un référentiel.</button></p>

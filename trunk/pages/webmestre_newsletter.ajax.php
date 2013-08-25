@@ -58,7 +58,7 @@ if( ($action=='envoyer') && $titre && $contenu && $nb_bases )
       'base_id'          => $DB_ROW['contact_id'] ,
       'contact_nom'      => $DB_ROW['contact_nom'] ,
       'contact_prenom'   => $DB_ROW['contact_prenom'] ,
-      'contact_courriel' => $DB_ROW['contact_courriel']
+      'contact_courriel' => $DB_ROW['contact_courriel'] ,
     );
   }
   // Retour

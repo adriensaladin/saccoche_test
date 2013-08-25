@@ -89,12 +89,11 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   // Créer la base de données de la structure
   // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
   $base_id = Webmestre::ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
-  // Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-  $tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
-  foreach($tab_sous_dossier as $sous_dossier)
+  // Créer les dossiers de fichiers temporaires par établissement
+  foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
   {
-    FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-    FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+    FileSystem::creer_dossier($dossier.$base_id);
+    FileSystem::ecrire_fichier_index($dossier.$base_id);
   }
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
   charger_parametres_mysql_supplementaires($base_id);

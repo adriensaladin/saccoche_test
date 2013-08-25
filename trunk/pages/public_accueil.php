@@ -28,23 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
 
-// Alerte si navigateur trop ancien
-echo Browser::afficher_navigateurs_alertes();
-
-// Alerte si pas de javascript activé
-echo'<noscript><hr /><div class="probleme">Pour utiliser <em>SACoche</em> il est nécessaire d\'activer JavaScript dans votre navigateur.</div></noscript>';
-
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )
 {
-  echo'<hr />';
-  echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier !<br />Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
+  echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier !<br />Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>'.NL.'<hr />'.NL;
 }
 
 // Supprimer le cookie avec le mode d'identification, servant à une reconnexion SSO, devenu inutile puisque déconnecté à présent.
 if(isset($_COOKIE[COOKIE_AUTHMODE]))
 {
-  setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+  setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
 }
 
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations.
@@ -66,28 +59,26 @@ $partenaire_possible = ( IS_HEBERGEMENT_SESAMATH && (HEBERGEUR_INSTALLATION=='mu
 if(isset($_GET['webmestre']))
 {
   $profil = 'webmestre';
-  $h2_identification = '<span style="color:#C00">Accès webmestre</span>';
+  $h1_identification = '<span style="color:#C00">Accès webmestre</span>';
   $liens_autres_profils = '<a class="anti_h2" href="index.php">profils établissement</a>';
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
 }
 elseif( isset($_GET['partenaire']) && $partenaire_possible )
 {
   $profil = 'partenaire';
-  $h2_identification = '<span style="color:#C00">Accès partenaire</span>';
+  $h1_identification = '<span style="color:#C00">Accès partenaire</span>';
   $liens_autres_profils = '<a class="anti_h2" href="index.php">profils établissement</a><a class="anti_h2" href="index.php?webmestre">accès webmestre</a>';
 }
 else
 {
   $profil = 'normal';
-  $h2_identification = 'Identification';
+  $h1_identification = 'Identification';
   $liens_autres_profils = '<a class="anti_h2" href="index.php?webmestre">accès webmestre</a>';
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
 }
 ?>
 
-<hr />
-
-<h2 class="identification"><?php echo $h2_identification ?><?php echo $liens_autres_profils ?></h2>
+<h1 class="identification"><?php echo $h1_identification ?><?php echo $liens_autres_profils ?></h1>
 <form id="form_auth" action="#" method="post"><fieldset>
   <input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
   <input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
@@ -96,7 +87,7 @@ else
 
 <hr />
 
-<h2 class="hebergement">Hébergement</h2>
+<h1 class="hebergement">Hébergement</h1>
 <ul class="puce">
   <li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
   <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
@@ -105,7 +96,7 @@ else
 
 <hr />
 
-<h2 class="informations">Informations</h2>
+<h1 class="informations">Informations</h1>
 <ul class="puce">
   <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a class="lien_ext" href="<?php echo SERVEUR_ASSO ?>"><em>Sésamath</em></a>.</li>
   <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>

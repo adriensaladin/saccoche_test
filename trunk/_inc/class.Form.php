@@ -37,108 +37,108 @@ class Form
 
   public static $tab_select_tri_objet = array(
     array('valeur'=>'eleve' , 'texte'=>'élèves en lignes (triés pour un item donné)') ,
-    array('valeur'=>'item'  , 'texte'=>'items en lignes (triés pour un élève donné)')
+    array('valeur'=>'item'  , 'texte'=>'items en lignes (triés pour un élève donné)') ,
   );
 
   public static $tab_select_tri_mode = array(
     array('valeur'=>'score' , 'texte'=>'tri par score d\'acquisition (pour un tri unique)') ,
-    array('valeur'=>'etat'  , 'texte'=>'tri par état d\'acquisition (pour un tri multiple)')
+    array('valeur'=>'etat'  , 'texte'=>'tri par état d\'acquisition (pour un tri multiple)') ,
   );
 
   public static $tab_select_orientation = array(
     array('valeur'=>'portrait'  , 'texte'=>'Portrait (vertical)') ,
-    array('valeur'=>'landscape' , 'texte'=>'Paysage (horizontal)')
+    array('valeur'=>'landscape' , 'texte'=>'Paysage (horizontal)') ,
   );
 
   public static $tab_select_marge_min = array(
-    array('valeur'=>5  , 'texte'=>'marges de 5 mm') ,
-    array('valeur'=>6  , 'texte'=>'marges de 6 mm') ,
-    array('valeur'=>7  , 'texte'=>'marges de 7 mm') ,
-    array('valeur'=>8  , 'texte'=>'marges de 8 mm') ,
-    array('valeur'=>9  , 'texte'=>'marges de 9 mm') ,
+    array('valeur'=>5  , 'texte'=>'marges de 5 mm')  ,
+    array('valeur'=>6  , 'texte'=>'marges de 6 mm')  ,
+    array('valeur'=>7  , 'texte'=>'marges de 7 mm')  ,
+    array('valeur'=>8  , 'texte'=>'marges de 8 mm')  ,
+    array('valeur'=>9  , 'texte'=>'marges de 9 mm')  ,
     array('valeur'=>10 , 'texte'=>'marges de 10 mm') ,
     array('valeur'=>11 , 'texte'=>'marges de 11 mm') ,
     array('valeur'=>12 , 'texte'=>'marges de 12 mm') ,
     array('valeur'=>13 , 'texte'=>'marges de 13 mm') ,
     array('valeur'=>14 , 'texte'=>'marges de 14 mm') ,
-    array('valeur'=>15 , 'texte'=>'marges de 15 mm')
+    array('valeur'=>15 , 'texte'=>'marges de 15 mm') ,
   );
 
   public static $tab_select_pages_nb = array(
     array('valeur'=>'optimise' , 'texte'=>'nombre de pages optimisé') ,
-    array('valeur'=>'augmente' , 'texte'=>'nombre de pages augmenté')
+    array('valeur'=>'augmente' , 'texte'=>'nombre de pages augmenté') ,
   );
 
   public static $tab_select_couleur = array(
     array('valeur'=>'oui' , 'texte'=>'en couleurs') ,
-    array('valeur'=>'non' , 'texte'=>'en niveaux de gris')
+    array('valeur'=>'non' , 'texte'=>'en niveaux de gris') ,
   );
 
   public static $tab_select_legende = array(
     array('valeur'=>'oui' , 'texte'=>'avec légende') ,
-    array('valeur'=>'non' , 'texte'=>'sans légende')
+    array('valeur'=>'non' , 'texte'=>'sans légende') ,
   );
 
   public static $tab_select_cases_nb = array(
-    array('valeur'=>1  , 'texte'=>'1 case') ,
-    array('valeur'=>2  , 'texte'=>'2 cases') ,
-    array('valeur'=>3  , 'texte'=>'3 cases') ,
-    array('valeur'=>4  , 'texte'=>'4 cases') ,
-    array('valeur'=>5  , 'texte'=>'5 cases') ,
-    array('valeur'=>6  , 'texte'=>'6 cases') ,
-    array('valeur'=>7  , 'texte'=>'7 cases') ,
-    array('valeur'=>8  , 'texte'=>'8 cases') ,
-    array('valeur'=>9  , 'texte'=>'9 cases') ,
+    array('valeur'=>1  , 'texte'=> '1 case')  ,
+    array('valeur'=>2  , 'texte'=> '2 cases') ,
+    array('valeur'=>3  , 'texte'=> '3 cases') ,
+    array('valeur'=>4  , 'texte'=> '4 cases') ,
+    array('valeur'=>5  , 'texte'=> '5 cases') ,
+    array('valeur'=>6  , 'texte'=> '6 cases') ,
+    array('valeur'=>7  , 'texte'=> '7 cases') ,
+    array('valeur'=>8  , 'texte'=> '8 cases') ,
+    array('valeur'=>9  , 'texte'=> '9 cases') ,
     array('valeur'=>10 , 'texte'=>'10 cases') ,
     array('valeur'=>11 , 'texte'=>'11 cases') ,
     array('valeur'=>12 , 'texte'=>'12 cases') ,
     array('valeur'=>13 , 'texte'=>'13 cases') ,
     array('valeur'=>14 , 'texte'=>'14 cases') ,
-    array('valeur'=>15 , 'texte'=>'15 cases')
+    array('valeur'=>15 , 'texte'=>'15 cases') ,
   );
 
   public static $tab_select_cases_size = array(
-    array('valeur'=>5  , 'texte'=>'5 mm') ,
-    array('valeur'=>6  , 'texte'=>'6 mm') ,
-    array('valeur'=>7  , 'texte'=>'7 mm') ,
-    array('valeur'=>8  , 'texte'=>'8 mm') ,
-    array('valeur'=>9  , 'texte'=>'9 mm') ,
+    array('valeur'=>5  , 'texte'=> '5 mm') ,
+    array('valeur'=>6  , 'texte'=> '6 mm') ,
+    array('valeur'=>7  , 'texte'=> '7 mm') ,
+    array('valeur'=>8  , 'texte'=> '8 mm') ,
+    array('valeur'=>9  , 'texte'=> '9 mm') ,
     array('valeur'=>10 , 'texte'=>'10 mm') ,
     array('valeur'=>11 , 'texte'=>'11 mm') ,
     array('valeur'=>12 , 'texte'=>'12 mm') ,
     array('valeur'=>13 , 'texte'=>'13 mm') ,
     array('valeur'=>14 , 'texte'=>'14 mm') ,
-    array('valeur'=>15 , 'texte'=>'15 mm')
+    array('valeur'=>15 , 'texte'=>'15 mm') ,
   );
 
   public static $tab_select_remplissage = array(
     array('valeur'=>'vide'  , 'texte'=>'sans les dernières notes') ,
-    array('valeur'=>'plein' , 'texte'=>'avec les dernières notes')
+    array('valeur'=>'plein' , 'texte'=>'avec les dernières notes') ,
   );
 
   public static $tab_select_colonne_bilan = array(
     array('valeur'=>'non' , 'texte'=>'sans colonne bilan') ,
-    array('valeur'=>'oui' , 'texte'=>'avec colonne bilan')
+    array('valeur'=>'oui' , 'texte'=>'avec colonne bilan') ,
   );
 
   public static $tab_select_colonne_vide = array(
-    array('valeur'=>0   , 'texte'=>'sans colonne supplémentaire') ,
+    array('valeur'=>0   , 'texte'=>'sans colonne supplémentaire')  ,
     array('valeur'=>30  , 'texte'=>'avec une colonne vide de 1cm') ,
     array('valeur'=>30  , 'texte'=>'avec une colonne vide de 3cm') ,
     array('valeur'=>50  , 'texte'=>'avec une colonne vide de 5cm') ,
     array('valeur'=>70  , 'texte'=>'avec une colonne vide de 7cm') ,
-    array('valeur'=>90  , 'texte'=>'avec une colonne vide de 9cm')
+    array('valeur'=>90  , 'texte'=>'avec une colonne vide de 9cm') ,
   );
 
   public static $tab_select_cart_contenu = array(
     array('valeur'=>'SANS_nom_SANS_result' , 'texte'=>'cartouche SANS les noms d\'élèves et SANS les résultats') ,
     array('valeur'=>'AVEC_nom_SANS_result' , 'texte'=>'cartouche AVEC les noms d\'élèves mais SANS les résultats') ,
-    array('valeur'=>'AVEC_nom_AVEC_result' , 'texte'=>'cartouche AVEC les noms d\'élèves et AVEC les résultats (si saisis)')
+    array('valeur'=>'AVEC_nom_AVEC_result' , 'texte'=>'cartouche AVEC les noms d\'élèves et AVEC les résultats (si saisis)') ,
   );
 
   public static $tab_select_cart_detail = array(
     array('valeur'=>'complet' , 'texte'=>'cartouche avec la dénomination complète de chaque item') ,
-    array('valeur'=>'minimal' , 'texte'=>'cartouche minimal avec uniquement les références des items')
+    array('valeur'=>'minimal' , 'texte'=>'cartouche minimal avec uniquement les références des items') ,
   );
 
   public static $tab_select_recherche_objet = array(
@@ -146,12 +146,12 @@ class Form
     array('valeur'=>'matiere_items_bilanPA'   , 'optgroup'=>1 , 'texte'=>'pourcentage d\'items acquis') ,
     array('valeur'=>'socle_item_pourcentage'  , 'optgroup'=>2 , 'texte'=>'pourcentage d\'items disciplinaires acquis') ,
     array('valeur'=>'socle_item_validation'   , 'optgroup'=>2 , 'texte'=>'état de validation') ,
-    array('valeur'=>'socle_pilier_validation' , 'optgroup'=>3 , 'texte'=>'état de validation')
+    array('valeur'=>'socle_pilier_validation' , 'optgroup'=>3 , 'texte'=>'état de validation') ,
   );
 
   public static $tab_select_statut = array(
     array('valeur'=>1 , 'texte'=>'comptes actuels (date de sortie sans objet ou ultérieure)') ,
-    array('valeur'=>0 , 'texte'=>'comptes anciens (date de sortie présente et antérieure)')
+    array('valeur'=>0 , 'texte'=>'comptes anciens (date de sortie présente et antérieure)') ,
   );
 
   public static $tab_select_appreciation = array(
@@ -160,7 +160,7 @@ class Form
     array('valeur'=>200 , 'texte'=>'Oui → 200 caractères maximum (court)') ,
     array('valeur'=>300 , 'texte'=>'Oui → 300 caractères maximum (moyen)') ,
     array('valeur'=>400 , 'texte'=>'Oui → 400 caractères maximum (long)') ,
-    array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (très long)')
+    array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (très long)') ,
   );
 
   public static $tab_select_optgroup = array(
@@ -173,7 +173,7 @@ class Form
     // complété à partir de la base si besoin (contenu dynamique)
     'zones_geo'         => array( ), 
     'continents'        => array( ),
-    'paliers'           => array( )
+    'paliers'           => array( ),
   );
 
   public static $tab_select_option_first = array(
@@ -189,7 +189,7 @@ class Form
     'tous_domaines'         => array( 0 , 'Tous les domaines' ),
     // complété à partir de la base si besoin (car indice variable)
     'matieres_famille'      => array( ), 
-    'niveaux_famille'       => array( )
+    'niveaux_famille'       => array( ),
   );
 
   // //////////////////////////////////////////////////
@@ -270,7 +270,7 @@ class Form
       'aff_socle_PA'           => 1 ,
       'aff_socle_EV'           => 1 ,
       'type'                   => '' ,
-      'mode'                   => 'auto'
+      'mode'                   => 'auto' ,
     );
   }
 
@@ -488,15 +488,13 @@ class Form
   /**
    * Fabrication de tableau javascript de jointures à partir des groupes
    * 
-   * @param array     $tab_groupes               tableau des données [i] => [valeur texte optgroup]
-   * @param bool      $return_jointure_periode   renvoyer ou non "tab_groupe_periode" pour les jointures groupes/périodes
-   * @param bool      $return_jointure_niveau    renvoyer ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
-   * @return array                               ( $tab_groupe_periode_js , $tab_groupe_niveau_js )
+   * @param array     $tab_groupes          tableau des données [i] => [valeur texte optgroup]
+   * @param bool      $tab_groupe_periode   charger ou non "tab_groupe_periode" pour les jointures groupes/périodes
+   * @param bool      $tab_groupe_niveau    charger ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
+   * @return void     complète $GLOBALS['HEAD']['js']['inline'][]
    */
-  public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$return_jointure_periode,$return_jointure_niveau)
+  public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$tab_groupe_periode,$tab_groupe_niveau)
   {
-    $tab_groupe_periode_js = '';
-    $tab_groupe_niveau_js  = '';
     if(is_array($tab_groupes))
     {
       // On liste les ids des classes et groupes
@@ -511,10 +509,10 @@ class Form
       if(count($tab_id_classe_groupe))
       {
         $listing_groupe_id = implode(',',$tab_id_classe_groupe);
-        // Fabrication du tableau js $tab_groupe_periode_js de jointures groupes/périodes
-        if($return_jointure_periode)
+        // Charger le tableau js $tab_groupe_periode de jointures groupes/périodes
+        if($tab_groupe_periode)
         {
-          $tab_groupe_periode_js .= 'var tab_groupe_periode = new Array();';
+          $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_periode = new Array();';
           $tab_memo_groupes = array();
           $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
@@ -522,62 +520,23 @@ class Form
             if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
             {
               $tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
-              $tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+              $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
             }
-            $tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+            $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
           }
         }
-        // Fabrication du tableau js $tab_groupe_periode_js de jointures groupes/périodes
-        if($return_jointure_niveau)
+        // Charger le tableau js $tab_groupe_niveau de jointures groupes/périodes
+        if($tab_groupe_niveau)
         {
-          $tab_groupe_niveau_js .= 'var tab_groupe_niveau = new Array();';
+          $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_niveau = new Array();';
           $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
           {
-            $tab_groupe_niveau_js  .= 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
+            $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
           }
         }
       }
     }
-    return array( $tab_groupe_periode_js , $tab_groupe_niveau_js );
-  }
-
-  /**
-   * Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-   * 
-   * @param array             $tab_groupes   tableau des données [i] => [valeur texte optgroup]
-   * @return string
-   */
-  public static function fabriquer_tab_groupe_niveau_js($tab_groupes)
-  {
-    $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
-    if(is_array($tab_groupes))
-    {
-      $tab_id_classe_groupe = array();
-      foreach($tab_groupes as $tab_groupe_infos)
-      {
-        if( !isset($tab_groupe_infos['optgroup']) || ($tab_groupe_infos['optgroup']!='besoin') )
-        {
-          $tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
-        }
-      }
-      if(count($tab_id_classe_groupe))
-      {
-        $tab_memo_groupes = array();
-        $listing_groupe_id = implode(',',$tab_id_classe_groupe);
-        $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
-        foreach($DB_TAB as $DB_ROW)
-        {
-          if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
-          {
-            $tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
-            $tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
-          }
-          $tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
-        }
-      }
-    }
-    return $tab_groupe_periode_js;
   }
 
 }

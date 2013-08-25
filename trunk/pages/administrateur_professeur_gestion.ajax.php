@@ -139,7 +139,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
   echo  '<td class="label">'.html($id_gepi).'</td>';
   echo  '<td class="label">'.html($sconet_id).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
-  echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($_SESSION['TMP'][$profil])).'" /></td>';
+  echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le login généré !" /></td>';
@@ -230,7 +230,7 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
   echo'<td class="label">'.html($id_gepi).'</td>';
   echo'<td class="label">'.html($sconet_id).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
-  echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($_SESSION['TMP'][$profil])).'" /></td>';
+  echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';

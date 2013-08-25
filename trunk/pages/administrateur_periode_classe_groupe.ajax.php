@@ -79,7 +79,7 @@ elseif($action=='retirer')
 // Affichage du bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-echo'<hr />';
+echo'<hr />'.NL;
 $tab_groupe    = array();
 $tab_periode   = array();
 $tab_jointure  = array();
@@ -155,9 +155,13 @@ foreach($tab_groupe as $groupe_id => $groupe_text)
   $tab_groupe[$groupe_id] .= '<td>'.$tab_graphique[$groupe_id].'</td>';
 }
 // Affichage du tableau résultant
-echo'<table>';
-echo'<thead><tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr></thead>';
-echo'<tbody><tr>'.implode('</tr>'."\r\n".'<tr>',$tab_groupe).'</tr></tbody>';
-echo'</table><p>&nbsp;</p>';
+echo'<table>'.NL;
+echo  '<thead>'.NL;
+echo    '<tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr>'.NL;
+echo  '</thead>'.NL;
+echo  '<tbody>'.NL;
+echo    '<tr>'.implode('</tr>'.NL.'<tr>',$tab_groupe).'</tr>'.NL;
+echo  '</tbody>'.NL;
+echo'</table><p>&nbsp;</p>'.NL;
 
 ?>

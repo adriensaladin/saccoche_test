@@ -34,6 +34,11 @@ $tab_groupe_proprio = array();
 $tab_groupe_associe = array();
 $tab_niveau_groupe  = array();
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_eleves       = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_profs        = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_niveau_ordre = new Array();';
+
 // Lister les groupes de besoin auxquels le prof est rattaché, propriétaire ou pas.
 
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_besoins($_SESSION['USER_ID']);
@@ -46,7 +51,7 @@ foreach($DB_TAB as $DB_ROW)
       'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
       'nom'        => html($DB_ROW['groupe_nom']) ,
       'eleve'      => array() ,
-      'professeur' => array()
+      'professeur' => array() ,
     );
   }
   else
@@ -56,7 +61,7 @@ foreach($DB_TAB as $DB_ROW)
     (
       'nom'        => html($DB_ROW['groupe_nom']) ,
       'eleve'      => '' ,
-      'professeur' => ''
+      'professeur' => '' ,
     );
   }
 }
@@ -83,21 +88,24 @@ if( !empty($DB_TAB) )
 // Eléments javascript concernant les niveaux : select_niveau & tab_niveau_ordre_js
 
 $select_niveau = '<option value=""></option>';
-$tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
-
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 if(!empty($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    $tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
   }
 }
 else
 {
   $select_niveau .= '<option value="" disabled>Aucun niveau de classe n\'est choisi pour l\'établissement !</option>';
 }
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
@@ -107,9 +115,9 @@ $tab_users = array_filter($tab_users,'positif');
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
 $reception_todo = ($nb_users) ? 'true' : 'false' ;
-$script_reception = 'var reception_todo = '.$reception_todo.';';
-$script_reception.= 'var reception_users_texte = "'.$txt_users.'";';
-$script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_todo        = '.$reception_todo.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_texte = "'.$txt_users.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_liste = "'.implode('_',$tab_users).'";';
 
 ?>
 
@@ -132,7 +140,6 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
   </thead>
   <tbody>
     <?php
-    $tab_listing_js = '';
     if(count($tab_groupe_proprio))
     {
       foreach($tab_groupe_proprio as $groupe_id => $tab_td)
@@ -151,15 +158,15 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
         echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
         echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
         echo  '</td>';
-        echo'</tr>';
-        // Pour js
-        $tab_listing_js .= 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";';
-        $tab_listing_js .= 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";';
+        echo'</tr>'.NL;
+        // Javascript
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";';
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="5"></td></tr>';
+      echo'<tr><td class="nu" colspan="5"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -192,29 +199,18 @@ if( count($tab_groupe_associe) )
   // Affichage du tableau
   foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
   {
-    echo'<table class="affectation">';
-    echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
-    echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-    echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-    echo'</table>';
+    echo'<table class="affectation">'.NL;
+    echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
+    echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
+    echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
+    echo'</table>'.NL;
   }
 }
 else
 {
-  echo'<ul class="puce"><li>Aucun groupe trouvé.</li></ul>';
+  echo'<ul class="puce"><li>Aucun groupe trouvé.</li></ul>'.NL;
 }
 ?>
-
-<script type="text/javascript">
-  <?php echo $script_reception ?>
-  var tab_eleves = new Array();
-  var tab_profs  = new Array();
-  <?php echo $tab_listing_js ?>
-  // <![CDATA[
-  var select_niveau="<?php echo str_replace('"','\"',$select_niveau); ?>";
-  // ]]>
-  <?php echo $tab_niveau_ordre_js ?>
-</script>
 
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Ajouter | Modifier un groupe de besoin</h2>

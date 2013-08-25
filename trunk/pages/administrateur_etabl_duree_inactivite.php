@@ -55,13 +55,12 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
 <h2>Affiner selon les profils</h2>
 
 <form action="#" method="post">
-
-  <?php
-  foreach($DB_TAB as $DB_ROW)
-  {
-    echo'<p><label class="tab" for="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label><select id="f_delai_'.$DB_ROW['user_profil_sigle'].'" name="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_duree_inactivite'].'"','value="'.$DB_ROW['user_profil_duree_inactivite'].'" selected',$options).'</select> <button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label></p>';
-  }
-  ?>
+<?php
+foreach($DB_TAB as $DB_ROW)
+{
+  echo'<p><label class="tab" for="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label><select id="f_delai_'.$DB_ROW['user_profil_sigle'].'" name="f_delai_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_duree_inactivite'].'"','value="'.$DB_ROW['user_profil_duree_inactivite'].'" selected',$options).'</select> <button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label></p>'.NL;
+}
+?>
 </form>
 
 <hr />

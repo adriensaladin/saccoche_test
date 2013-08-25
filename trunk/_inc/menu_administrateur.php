@@ -42,7 +42,7 @@ $tab_menu = array
     "Date de dernière connexion"  => array( 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     "Export de données"           => array( 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     "Log des actions sensibles"   => array( 'class' => 'log_actions'      , 'href' => 'page=administrateur_log_actions'       ),
-    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'     , 'href' => 'page=compte_info_serveur'              )
+    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'     , 'href' => 'page=compte_info_serveur'              ),
   ),
   "Paramétrages établissement" => array
   (
@@ -52,7 +52,7 @@ $tab_menu = array
     "Matières"                             => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
     "Paliers du socle"                     => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
     "Notation : codes, couleurs, légendes" => array( 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_codes_couleurs'     ),
-    "Algorithme de calcul"                 => array( 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' )
+    "Algorithme de calcul"                 => array( 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' ),
   ),
   "Paramétrages utilisateurs" => array
   (
@@ -60,7 +60,7 @@ $tab_menu = array
     "Réglage des autorisations"            => array( 'class' => 'etabl_autorisations' , 'href' => 'page=administrateur_autorisations'          ),
     "Format des identifiants de connexion" => array( 'class' => 'etabl_login'         , 'href' => 'page=administrateur_etabl_login'            ),
     "Délai avant déconnexion"              => array( 'class' => 'etabl_duree'         , 'href' => 'page=administrateur_etabl_duree_inactivite' ),
-    "Changer mon mot de passe"             => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'                       )
+    "Changer mon mot de passe"             => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'                       ),
   ),
   "Administration générale" => array
   (
@@ -71,7 +71,7 @@ $tab_menu = array
     "Import / Export des validations"      => array( 'class' => 'socle_fichier'   , 'href' => 'page=validation_socle_fichier'           ),
     "Messages d'accueil"                   => array( 'class' => 'message_accueil' , 'href' => 'page=compte_message'                     ),
     "Blocage des connexions"               => array( 'class' => 'blocage'         , 'href' => 'page=administrateur_blocage'             ),
-    "Résilier l'inscription"               => array( 'class' => 'resilier'        , 'href' => 'page=administrateur_resilier'            )
+    "Résilier l'inscription"               => array( 'class' => 'resilier'        , 'href' => 'page=administrateur_resilier'            ),
   ),
   "Gestion courante" => array
   (
@@ -83,8 +83,8 @@ $tab_menu = array
     "Élèves"                      => array( 'class' => 'eleve'             , 'href' => 'page=administrateur_eleve'          ),
     "Parents"                     => array( 'class' => 'parent'            , 'href' => 'page=administrateur_parent'         ),
     "Professeurs / Personnels"    => array( 'class' => 'professeur'        , 'href' => 'page=administrateur_professeur'     ),
-    "Administrateurs"             => array( 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' )
-  )
+    "Administrateurs"             => array( 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' ),
+  ),
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

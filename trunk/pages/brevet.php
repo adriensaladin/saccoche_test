@@ -47,11 +47,11 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 }
 if($SECTION=='accueil')
 {
-  echo'<p>';
-  echo'  <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__notanet_fiches_brevet">DOC : Notanet &amp; Fiches brevet</a></span><br />';
-  echo'  <span class="astuce">Effectuer dans l\'ordre les étapes ci-dessus&hellip;</span>';
-  echo'</p>';
-  echo'<hr />';
+  echo'<p>'.NL;
+  echo  '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__notanet_fiches_brevet">DOC : Notanet &amp; Fiches brevet</a></span><br />'.NL;
+  echo  '<span class="astuce">Effectuer dans l\'ordre les étapes ci-dessus&hellip;</span>'.NL;
+  echo'</p>'.NL;
+  echo'<hr />'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -64,7 +64,7 @@ if(is_file($fichier_section))
 }
 else
 {
-  echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>';
+  echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>

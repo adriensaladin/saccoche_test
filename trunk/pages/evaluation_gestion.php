@@ -27,29 +27,47 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-// Détecter si usage d'un appareil mobile (tablette, téléphone...) auquel cas on propose un mode de saisie des acquisitions adapté.
-$MobileDetect = new MobileDetect();
-$isMobile = $MobileDetect->isMobile();
-
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
-$tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
-$tab_items = Clean::map_entier($tab_items);
-$tab_items = array_filter($tab_items,'positif');
-$nb_items  = count($tab_items);
-$txt_items = ($nb_items) ? ( ($nb_items>1) ? $nb_items.' items' : $nb_items.' item' ) : 'aucun' ;
-$tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
-$tab_users = Clean::map_entier($tab_users);
-$tab_users = array_filter($tab_users,'positif');
+
+$tab_reqs = ( isset($_POST['id_req']) && is_array($_POST['id_req']) ) ? $_POST['id_req'] : array() ;
+if(!empty($tab_reqs))
+{
+  // réception de user x item
+  $tab_users = array() ;
+  $tab_items = array() ;
+  $_SESSION['TMP']['req_user_item'] = array();
+  foreach($tab_reqs as $req)
+  {
+    list($user,$item) = explode('x',$req);
+    $user = Clean::entier($user);
+    $item = Clean::entier($item);
+    if( $user && $item )
+    {
+      $tab_users[$user] = $user;
+      $tab_items[$item] = $item;
+      $_SESSION['TMP']['req_user_item'][] = $user.'x'.$item;
+    }
+  }
+}
+else
+{
+  unset($_SESSION['TMP']['req_user_item']);
+  // réception d'élèves
+  $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
+  $tab_users = Clean::map_entier($tab_users);
+  $tab_users = array_filter($tab_users,'positif');
+  // réception d'items
+  $tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
+  $tab_items = Clean::map_entier($tab_items);
+  $tab_items = array_filter($tab_items,'positif');
+}
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
+$nb_items  = count($tab_items);
+$txt_items = ($nb_items) ? ( ($nb_items>1) ? $nb_items.' items' : $nb_items.' item' ) : 'aucun' ;
 $reception_todo = ($nb_items || $nb_users) ? 'true' : 'false' ;
-$script_reception = 'var reception_todo = '.$reception_todo.';';
-$script_reception.= 'var reception_items_texte = "'.$txt_items.'";';
-$script_reception.= 'var reception_users_texte = "'.$txt_users.'";';
-$script_reception.= 'var reception_items_liste = "'.implode('_',$tab_items).'";';
-$script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";';
 
 // $TYPE vaut "groupe" ou "selection"
 $TYPE = ($nb_items || $nb_users)                    ? 'selection' : $SECTION ;
@@ -57,13 +75,34 @@ $TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
 
 $TITRE = ($TYPE=='groupe') ? "Évaluer une classe ou un groupe" : "Évaluer des élèves sélectionnés" ;
 
+// Dates par défaut
+$date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var TYPE           = "'.$TYPE.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var url_export     = "'.URL_DIR_EXPORT.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date     = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql     = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_autoeval = "'.$date_autoeval.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var isMobile       = '.(int)$_SESSION['BROWSER']['mobile'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_items      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_profs      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_eleves     = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_sujets     = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_corriges   = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_niveau     = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe     = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_todo = '.$reception_todo.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_items_texte = "'.$txt_items.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_texte = "'.$txt_users.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_items_liste = "'.implode('_',$tab_items).'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_liste = "'.implode('_',$tab_users).'";';
+
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 // Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
 $select_eleve   = '';
 $select_periode = '';
-$tab_niveau_js  = 'var tab_niveau = new Array();';
-$tab_groupe_js  = 'var tab_groupe = new Array();';
 
 if($TYPE=='groupe')
 {
@@ -75,8 +114,8 @@ if($TYPE=='groupe')
   {
     $groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
     $tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
-    $tab_niveau_js .= 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
-    $tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
   }
   foreach($tab_options as $type => $contenu)
   {
@@ -91,33 +130,17 @@ if($TYPE=='groupe')
   $select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 }
 
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var select_groupe = "'.str_replace('"','\"','<option value=""></option>'.$select_eleve).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 ?>
-
-<script type="text/javascript">
-  var TYPE="<?php echo $TYPE ?>";
-  // <![CDATA[
-  var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
-  // ]]>
-  var url_export = "<?php echo URL_DIR_EXPORT ?>";
-  var input_date = "<?php echo TODAY_FR ?>";
-  var date_mysql = "<?php echo TODAY_MYSQL ?>";
-  var input_autoeval = "<?php echo date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))) ?>"; // J + 1 semaine
-  var isMobile = <?php echo (int)$isMobile; ?>;
-  var tab_items    = new Array();
-  var tab_profs    = new Array();
-  var tab_eleves   = new Array();
-  var tab_sujets   = new Array();
-  var tab_corriges = new Array();
-  <?php echo $script_reception ?>
-  <?php echo $tab_niveau_js ?> 
-  <?php echo $tab_groupe_js ?> 
-  <?php echo $tab_groupe_periode_js ?> 
-</script>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>

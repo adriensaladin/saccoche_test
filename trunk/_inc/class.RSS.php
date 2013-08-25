@@ -61,7 +61,7 @@ class RSS
     $fichier_contenu.='  <link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
     $fichier_contenu.='  <description>Demandes d\'évaluations.</description>'."\r\n";
     $fichier_contenu.='  <language>fr-FR</language>'."\r\n";
-    $fichier_contenu.='  <lastBuildDate>'.date("r",time()).'</lastBuildDate>'."\r\n";
+    $fichier_contenu.='  <lastBuildDate>'.date("r",$_SERVER['REQUEST_TIME']).'</lastBuildDate>'."\r\n";
     $fichier_contenu.='  <docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
     $fichier_contenu.='  <image>'."\r\n";
     $fichier_contenu.='    <url>'.SERVEUR_PROJET.'/_img/logo_rss.png</url>'."\r\n";
@@ -116,7 +116,7 @@ class RSS
       RSS::creer_fichier($fichier_chemin);
     }
     // Ajouter l'article
-    $date = date("r",time());
+    $date = date("r",$_SERVER['REQUEST_TIME']);
     $fichier_contenu = file_get_contents($fichier_chemin);
     $article ='  <item>'."\r\n";
     $article.='    <title>'.html($titre).'</title>'."\r\n";

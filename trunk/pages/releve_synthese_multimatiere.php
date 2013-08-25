@@ -85,24 +85,21 @@ $select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , 'f_marge
 $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_couleur'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']   /*selection*/ ,              '' /*optgroup*/);
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql  = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
+
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 // Fabrication du tableau javascript "tab_groupe_niveau" pour les jointures groupes/niveaux
-list( $tab_groupe_periode_js , $tab_groupe_niveau_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , TRUE /*return_jointure_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , TRUE /*tab_groupe_niveau*/ );
 ?>
-
-<script type="text/javascript">
-  var date_mysql  = "<?php echo TODAY_MYSQL ?>";
-  var is_multiple = <?php echo $is_select_multiple ?>;
-  <?php echo $tab_groupe_periode_js ?> 
-  <?php echo $tab_groupe_niveau_js ?> 
-</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_multimatiere">DOC : Synthèse pluridisciplinaire.</a></span></div>
 <div class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</div>
 <?php
 $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 $s = ($nb_inconnu>1) ? 's' : '' ;
-echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
+echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
 ?>
 
 <hr />

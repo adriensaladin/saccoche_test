@@ -30,8 +30,8 @@ $TITRE = "Choisir la langue étrangère pour le socle commun";
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_AFFECTER_LANGUE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }

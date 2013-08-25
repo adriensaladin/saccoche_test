@@ -30,8 +30,8 @@ $TITRE = "Grille d'items d'un référentiel";
 
 if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
-  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
@@ -139,19 +139,19 @@ else
 {
   $class_form_periode='hide';
 }
+$is_periode_requise = ($class_form_periode=='show') ? 'true' : 'false' ;
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple     = '.$is_select_multiple.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var periode_requise = '.$is_periode_requise.';';
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
 
-<script type="text/javascript">
-  var date_mysql      = "<?php echo TODAY_MYSQL ?>";
-  var periode_requise = <?php echo ($class_form_periode=='show') ? 'true' : 'false' ?>;
-  var is_multiple     = <?php echo $is_select_multiple ?>;
-  <?php echo $tab_groupe_periode_js ?> 
-</script>
-
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></div>
+<hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
   <p class="<?php echo $class_form_type ?>">

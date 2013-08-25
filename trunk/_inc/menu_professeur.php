@@ -45,7 +45,7 @@ $tab_menu = array
     "Référentiels partagés"      => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
     "Date de dernière connexion" => array( 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     "Export de données"          => array( 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
-    "Trombinoscope"              => array( 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       )
+    "Trombinoscope"              => array( 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
   ),
   "Paramétrages" => array
   (
@@ -53,27 +53,27 @@ $tab_menu = array
     "Daltonisme"               => array( 'class' => 'compte_daltonisme'   , 'href' => 'page=compte_daltonisme'        ),
     "Messages d'accueil"       => array( 'class' => 'message_accueil'     , 'href' => 'page=compte_message'           ),
     "Groupes de besoin"        => array( 'class' => 'groupe'              , 'href' => 'page=professeur_groupe_besoin' ),
-    "Regroupements d'items"    => array( 'class' => 'item_selection'      , 'href' => 'page=compte_selection_items'   )
+    "Regroupements d'items"    => array( 'class' => 'item_selection'      , 'href' => 'page=compte_selection_items'   ),
   ),
   "Référentiels (gestion)" => array
   (
     "Créer / paramétrer les référentiels"  => array( 'class' => 'referentiel_gestion'    , 'href' => 'page=professeur_referentiel&amp;section=gestion'    ),
     "Modifier le contenu des référentiels" => array( 'class' => 'referentiel_edition'    , 'href' => 'page=professeur_referentiel&amp;section=edition'    ),
-    "Associer des ressources aux items"    => array( 'class' => 'referentiel_ressources' , 'href' => 'page=professeur_referentiel&amp;section=ressources' )
+    "Associer des ressources aux items"    => array( 'class' => 'referentiel_ressources' , 'href' => 'page=professeur_referentiel&amp;section=ressources' ),
   ),
   "Évaluations" => array
   (
     "Demandes d'évaluations formulées" => array( 'class' => 'evaluation_demande' , 'href' => 'page=evaluation_demande_professeur'            ),
     "Évaluer une classe ou un groupe"  => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_gestion&amp;section=groupe'    ),
     "Évaluer des élèves sélectionnés"  => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_gestion&amp;section=selection' ),
-    "Liste des évaluations"            => array( 'class' => 'evaluation_voir'    , 'href' => 'page=evaluation_voir'                          )
+    "Liste des évaluations"            => array( 'class' => 'evaluation_voir'    , 'href' => 'page=evaluation_voir'                          ),
   ),
   "Validation du socle" => array
   (
     "Choisir la langue étrangère"     => array( 'class' => 'socle_langue'  , 'href' => 'page=administrateur_eleve_langue'                 ),
     "Valider les items du socle"        => array( 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'         ),
     "Valider les compétences du socle"  => array( 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'       ),
-    "Annuler une compétence validée"  => array( 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' )
+    "Annuler une compétence validée"  => array( 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
   ),
   "Relevés / Synthèses" => array
   (
@@ -88,7 +88,7 @@ $tab_menu = array
     "Synthèse d'une matière"            => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
     "Synthèse pluridisciplinaire"       => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
     "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),
-    "Synthèse de maîtrise du socle"     => array( 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        )
+    "Synthèse de maîtrise du socle"     => array( 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        ),
   ),
   "Bilans officiels" => array
   (
@@ -98,8 +98,8 @@ $tab_menu = array
     "Maîtrise du palier 1" => array( 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
     "Maîtrise du palier 2" => array( 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
     "Maîtrise du palier 3" => array( 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
-    "Fiches brevet"        => array( 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=fiches'             )
-  )
+    "Fiches brevet"        => array( 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=fiches'             ),
+  ),
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

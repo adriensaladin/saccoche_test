@@ -33,7 +33,7 @@ $TITRE = "Notation : codes, couleurs, légendes";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
 
 $dossier = './_img/note/';
-$tab_notes_txt_js = 'var tab_notes_txt = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_notes_txt = new Array();';
 
 $simulation_lignes = array('','','','','');
 foreach($tab_notes_txt as $note_nom => $tab_note_texte)
@@ -46,11 +46,11 @@ foreach($tab_notes_txt as $note_nom => $tab_note_texte)
     $simulation_lignes[2] .=   '<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
     $simulation_lignes[3] .=   '<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
     $simulation_lignes[4] .=   '<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
-    $tab_notes_txt_js .= 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
-    $tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
-    $tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
-    $tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["V"]="'.$tab_note_texte['V'].'";';
-    $tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["VV"]="'.$tab_note_texte['VV'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["V"]="'.$tab_note_texte['V'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["VV"]="'.$tab_note_texte['VV'].'";';
   }
 }
 
@@ -80,10 +80,6 @@ foreach($tab_acquis as $acquis => $class)
 }
 
 ?>
-
-<script type="text/javascript">
-  <?php echo $tab_notes_txt_js ?>
-</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Notation : codes, couleurs, légendes</a></span></div>
 

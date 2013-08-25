@@ -59,7 +59,7 @@ if(is_file($fichier_section))
 }
 else
 {
-  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>';
-  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>';
+  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
+  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>'.NL;
 }
 ?>

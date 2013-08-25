@@ -30,8 +30,8 @@ $TITRE = "Algorithme de calcul";
 
 if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME']))
 {
-  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }

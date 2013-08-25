@@ -49,7 +49,7 @@ if($action=='modifier_debug')
     'FILES'   =>  64,
     'COOKIE'  => 128,
     'SERVER'  => 256,
-    'CONST'   => 512
+    'CONST'   => 512,
   );
   foreach($tab_debug as $debug_mode => $debug_val)
   {

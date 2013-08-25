@@ -35,8 +35,6 @@ $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN:
 $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 ?>
 
-<hr />
-
 <form action="#" method="post" id="form_select"><fieldset>
   <label class="tab">Profil :</label>
     <?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>

@@ -42,12 +42,12 @@ $tab_debug = array(
   'FILES'   => 'console FirePHP &rarr; valeurs de $_FILES',
   'COOKIE'  => 'console FirePHP &rarr; valeurs de $_COOKIE <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>',
   'SERVER'  => 'console FirePHP &rarr; valeurs de $_SERVER <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>',
-  'CONST'   => 'console FirePHP &rarr; valeurs des constantes PHP <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>'
+  'CONST'   => 'console FirePHP &rarr; valeurs des constantes PHP <span class="danger">diminue la sécurité en rendant accessible certaines informations</span>',
 );
 foreach($tab_debug as $debug_mode => $debug_texte)
 {
   $checked = constant('DEBUG_'.$debug_mode) ? ' checked' : '' ;
-  $lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><label for="f_debug_'.$debug_mode.'"><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'</label><br />';
+  $lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><label for="f_debug_'.$debug_mode.'"><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'</label><br />'.NL;
 }
 // Fichiers de logs phpCAS
 $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_LOGS_PHPCAS);
@@ -67,14 +67,12 @@ foreach($tab_files as $file)
       $id_etabl = $tab[1];
       $etabl = 'pour la base n°'.$id_etabl;
     }
-    $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(CHEMIN_LOGS_PHPCAS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>';
+    $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(CHEMIN_LOGS_PHPCAS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>'.NL;
   }
   ksort($tab_fichiers);
 }
-$listing_fichiers = count($tab_fichiers) ? implode('',$tab_fichiers) : '<li>Pas de fichier trouvé.</li>' ;
+$listing_fichiers = count($tab_fichiers) ? implode('',$tab_fichiers) : '<li>Pas de fichier trouvé.</li>'.NL ;
 ?>
-
-<hr />
 
 <h2>Paramétrage du débogueur</h2>
 

@@ -108,10 +108,6 @@ $tab_profs  = array_filter($tab_profs,'positif');
 // Liste des notes transmises
 $tab_notes  = (isset($_POST['f_notes'])) ? explode(',',$_POST['f_notes']) : array() ;
 
-// Détecter si usage d'un appareil mobile (tablette, téléphone...) auquel cas on propose un tableau de saisi condensé.
-$MobileDetect = new MobileDetect();
-$isMobile = $MobileDetect->isMobile();
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +276,25 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
       exit('Erreur : absent de la liste des professeurs !');
     }
   }
+  // En cas de duplication d'une évaluation comportant un fichier d'énoncé ou de corrigé, il faut aussi en dupliquer ces documents sous un autre nom.
+  // Sinon, lors de la suppression de l'un des devoirs, l'autre perd ses documents associés.
+  // On ne peut pas intégrer dans le nouveau nom l'id du nouveau devoir car il n'est pas encore connu, mais on peut en modifier le timestamp.
+  if($action=='dupliquer')
+  {
+    $tab_doc_objet = array( 'sujet' , 'corrige' );
+    foreach($tab_doc_objet as $objet)
+    {
+      $masque_recherche = '#^'.str_replace('.','\.',$url_dossier_devoir).'devoir_([0-9]+)_('.$objet.')_([0-9]+)\.([a-z]{2,4})$#' ;
+      $url_actuelle = ${'doc_'.$objet};
+      if(preg_match( $masque_recherche , $url_actuelle ))
+      {
+        $masque_remplacement = $url_dossier_devoir.'devoir_$1_$2_'.time().'.$4';
+        $url_nouvelle = preg_replace( $masque_recherche , $masque_remplacement , $url_actuelle );
+        copy ( str_replace(URL_DIR_DEVOIR,CHEMIN_DOSSIER_DEVOIR,$url_actuelle) , str_replace(URL_DIR_DEVOIR,CHEMIN_DOSSIER_DEVOIR,$url_nouvelle) );
+        ${'doc_'.$objet} = $url_nouvelle;
+      }
+    }
+  }
   if($type=='selection')
   {
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
@@ -294,16 +309,27 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
+  // Insérer les scores 'REQ' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
+  if(!empty($_SESSION['TMP']['req_user_item']))
+  {
+    $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+    foreach($_SESSION['TMP']['req_user_item'] as $req)
+    {
+      list($eleve_id,$item_id) = explode('x',$req);
+      DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id2,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
+    }
+    unset($_SESSION['TMP']['req_user_item']);
+  }
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
   $ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
-  $cs = ($nb_items>1) ? 's' : '';
-  $us = ($nb_eleves>1)      ? 's' : '';
+  $cs = ($nb_items>1)  ? 's' : '';
+  $us = ($nb_eleves>1) ? 's' : '';
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = '0/'.$nb_saisies_possibles ;
@@ -404,7 +430,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   $cs = ($nb_items>1)  ? 's' : '';
   $us = ($nb_eleves>1) ? 's' : '';
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
@@ -523,7 +549,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     exit('Aucun élève n\'est associé à cette évaluation !');
   }
   $separateur = ';';
-  $check_largeur = $isMobile ? ' checked' : '' ;
+  $check_largeur = ($_SESSION['BROWSER']['mobile']) ? ' checked' : '' ;
   $tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
@@ -542,7 +568,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $csv_ligne_eleve_nom = $separateur;
   $csv_ligne_eleve_id  = $separateur;
   $csv_nb_colonnes = 1;
-  $br = $isMobile ? '' : '&amp;br' ;
+  $br = ($_SESSION['BROWSER']['mobile']) ? '' : '&amp;br' ;
   foreach($DB_TAB_USER as $DB_ROW)
   {
     $tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).$br.'" /></th>';
@@ -619,7 +645,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   //
   // c'est fini ; affichage du retour
   //
-  $tbody_class = $isMobile ? 'v' : 'h' ;
+  $tbody_class = ($_SESSION['BROWSER']['mobile']) ? 'v' : 'h' ;
   foreach($tab_affich as $comp_id => $tab_user)
   {
     if(!$comp_id)
@@ -1350,7 +1376,7 @@ if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array(
 
 if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) )
 {
-  $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
+  $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
   $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -1372,7 +1398,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   if(mb_strpos($doc_url,$url_dossier_devoir)===0)
   {
     $chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
-    // Il peut être référencé dans une autre évaluation et donc avoir déjà été effacé, ou ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
+    // Il peut ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
     if(is_file($chemin_doc))
     {
       unlink($chemin_doc);

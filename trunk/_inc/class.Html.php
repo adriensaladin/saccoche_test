@@ -310,24 +310,26 @@ class Html
    * @param int|FALSE $score
    * @param string    $methode_tri    'score' | 'etat'
    * @param string    $pourcent       '%' | ''
+   * @param string    $checkbox_val   pour un éventuel checkbox
    * @param bool      $make_officiel  TRUE pour un bulletin
    * @return string
    */
-  public static function td_score( $score , $methode_tri , $pourcent='' , $make_officiel=FALSE )
+  public static function td_score( $score , $methode_tri , $pourcent='' , $checkbox_val=''  , $make_officiel=FALSE )
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
     $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
+    $checkbox = ($checkbox_val) ? ' <input type="checkbox" name="id_req[]" value="'.$checkbox_val.'" />' : '' ;
    if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
-      return '<td class="hc">'.$affichage.'</td>';
+      return '<td class="hc">'.$affichage.$checkbox.'</td>';
     }
     elseif($score<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
     elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
     else                                          {$etat = 'o';}
     $affichage = ($afficher_score) ? $score.$pourcent : '' ;
     $tri = ($methode_tri=='score') ? sprintf("%03u",$score) : Html::$tab_tri_etat[$etat] ;  // le sprintf et le tab_tri_etat servent pour le tri du tableau
-    return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$affichage.'</td>';
+    return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$affichage.$checkbox.'</td>';
   }
 
   /**
@@ -356,16 +358,16 @@ class Html
       {
         $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" />'.html($_SESSION['NOTE_LEGENDE'][$note]);
       }
-      $retour .= '</div>';
+      $retour .= '</div>'.NL;
     }
     // légende ancienneté notation
     if($anciennete_notation)
     {
       $retour .= '<div><b>Ancienneté des notes :</b>';
-      $retour .= '<span class="cadre">Sur la période.</span>';
-      $retour .= '<span class="cadre prev_date">Début d\'année scolaire.</span>';
-      $retour .= '<span class="cadre prev_year">Année scolaire précédente.</span>';
-      $retour .= '</div>';
+      $retour .=   '<span class="cadre">Sur la période.</span>';
+      $retour .=   '<span class="cadre prev_date">Début d\'année scolaire.</span>';
+      $retour .=   '<span class="cadre prev_year">Année scolaire précédente.</span>';
+      $retour .= '</div>'.NL;
     }
     // légende scores bilan
     if($score_bilan)
@@ -382,7 +384,7 @@ class Html
       {
         $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
       }
-      $retour .= '</div>';
+      $retour .= '</div>'.NL;
     }
     // légende etat_acquisition
     if($etat_acquisition)
@@ -393,7 +395,7 @@ class Html
       {
         $retour .= '<span class="cadre '.$couleur.'">'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
       }
-      $retour .= '</div>';
+      $retour .= '</div>'.NL;
     }
     // légende pourcentage_acquis
     if($pourcentage_acquis)
@@ -405,7 +407,7 @@ class Html
       {
         $retour .= '<span class="cadre '.$couleur.'">'.$texte.'</span>';
       }
-      $retour .= '</div>';
+      $retour .= '</div>'.NL;
     }
     // légende etat_validation
     if($etat_validation)
@@ -417,10 +419,10 @@ class Html
       {
         $retour .= '<span class="cadre v'.$couleur.'">'.$texte.'</span>';
       }
-      $retour .= '</div>';
+      $retour .= '</div>'.NL;
     }
     // retour
-    return ($retour) ? '<h4>Légende</h4><div class="legende">'.$retour.'</div>' : '' ;
+    return ($retour) ? '<h4>Légende</h4>'.NL.'<div class="legende">'.NL.$retour.'</div>'.NL : '' ;
   }
 
   /**
@@ -599,56 +601,56 @@ class Html
     // Affichage de l'arborescence
     $span_avant = ($dynamique) ? '<span>' : '' ;
     $span_apres = ($dynamique) ? '</span>' : '' ;
-    $retour  = '<ul class="ul_m1">'."\r\n";
+    $retour  = '<ul class="ul_m1">'.NL;
     if(count($tab_matiere))
     {
       foreach($tab_matiere as $matiere_id => $matiere_texte)
       {
-        $retour .= '<li class="li_m1">'.$span_avant.html($matiere_texte).$span_apres."\r\n";
-        $retour .= '<ul class="ul_m2">'."\r\n";
+        $retour .= '<li class="li_m1">'.$span_avant.html($matiere_texte).$span_apres.NL;
+        $retour .= '<ul class="ul_m2">'.NL;
         if(isset($tab_niveau[$matiere_id]))
         {
           foreach($tab_niveau[$matiere_id] as $niveau_id => $niveau_texte)
           {
-            $retour .= '<li class="li_m2">'.$span_avant.html($niveau_texte).$span_apres."\r\n";
-            $retour .= '<ul class="ul_n1">'."\r\n";
+            $retour .= '<li class="li_m2">'.$span_avant.html($niveau_texte).$span_apres.NL;
+            $retour .= '<ul class="ul_n1">'.NL;
             if(isset($tab_domaine[$matiere_id][$niveau_id]))
             {
               foreach($tab_domaine[$matiere_id][$niveau_id] as $domaine_id => $domaine_texte)
               {
-                $retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres.$input_all."\r\n";
-                $retour .= '<ul class="ul_n2">'."\r\n";
+                $retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres.$input_all.NL;
+                $retour .= '<ul class="ul_n2">'.NL;
                 if(isset($tab_theme[$matiere_id][$niveau_id][$domaine_id]))
                 {
                   foreach($tab_theme[$matiere_id][$niveau_id][$domaine_id] as $theme_id => $theme_texte)
                   {
-                    $retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres.$input_all."\r\n";
-                    $retour .= '<ul class="ul_n3">'."\r\n";
+                    $retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres.$input_all.NL;
+                    $retour .= '<ul class="ul_n3">'.NL;
                     if(isset($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
                     {
                       foreach($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id] as $item_id => $item_texte)
                       {
                         $id = ($aff_id_li=='n3') ? ' id="n3_'.$item_id.'"' : '' ;
-                        $retour .= '<li class="li_n3"'.$id.'>'.$item_texte.'</li>'."\r\n";
+                        $retour .= '<li class="li_n3"'.$id.'>'.$item_texte.'</li>'.NL;
                       }
                     }
-                    $retour .= '</ul>'."\r\n";
-                    $retour .= '</li>'."\r\n";
+                    $retour .= '</ul>'.NL;
+                    $retour .= '</li>'.NL;
                   }
                 }
-                $retour .= '</ul>'."\r\n";
-                $retour .= '</li>'."\r\n";
+                $retour .= '</ul>'.NL;
+                $retour .= '</li>'.NL;
               }
             }
-            $retour .= '</ul>'."\r\n";
-            $retour .= '</li>'."\r\n";
+            $retour .= '</ul>'.NL;
+            $retour .= '</li>'.NL;
           }
         }
-        $retour .= '</ul>'."\r\n";
-        $retour .= '</li>'."\r\n";
+        $retour .= '</ul>'.NL;
+        $retour .= '</li>'.NL;
       }
     }
-    $retour .= '</ul>'."\r\n";
+    $retour .= '</ul>'.NL;
     return $retour;
   }
 
@@ -710,50 +712,80 @@ class Html
     // Affichage de l'arborescence
     $span_avant = ($dynamique) ? '<span>' : '' ;
     $span_apres = ($dynamique) ? '</span>' : '' ;
-    $retour = '<ul class="ul_m1">'."\r\n";
+    $retour = '<ul class="ul_m1">'.NL;
     if(count($tab_palier))
     {
       foreach($tab_palier as $palier_id => $palier_texte)
       {
-        $retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.html($palier_texte).$span_apres."\r\n";
-        $retour .= '<ul class="ul_n1">'."\r\n";
+        $retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.html($palier_texte).$span_apres.NL;
+        $retour .= '<ul class="ul_n1">'.NL;
         if(isset($tab_pilier[$palier_id]))
         {
           foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_texte)
           {
             $aff_id = ($ids) ? ' id="P'.$pilier_id.'"' : '' ;
-            $retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.html($pilier_texte).$span_apres."\r\n";
-            $retour .= '<ul class="ul_n2">'."\r\n";
+            $retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.html($pilier_texte).$span_apres.NL;
+            $retour .= '<ul class="ul_n2">'.NL;
             if(isset($tab_section[$palier_id][$pilier_id]))
             {
               foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_texte)
               {
                 $aff_id = ($ids) ? ' id="S'.$section_id.'"' : '' ;
-                $retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.html($section_texte).$span_apres."\r\n";
-                $retour .= '<ul class="ul_n3">'."\r\n";
+                $retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.html($section_texte).$span_apres.NL;
+                $retour .= '<ul class="ul_n3">'.NL;
                 if(isset($tab_entree[$palier_id][$pilier_id][$section_id]))
                 {
                   foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $entree_id => $entree_texte)
                   {
                     $aff_id = ($ids) ? ' id="E'.$entree_id.'"' : '' ;
-                    $retour .= '<li class="li_n3"'.$aff_id.'>'.$entree_texte.'</li>'."\r\n";
+                    $retour .= '<li class="li_n3"'.$aff_id.'>'.$entree_texte.'</li>'.NL;
                     
                   }
                 }
-                $retour .= '</ul>'."\r\n";
-                $retour .= '</li>'."\r\n";
+                $retour .= '</ul>'.NL;
+                $retour .= '</li>'.NL;
               }
             }
-            $retour .= '</ul>'."\r\n";
-            $retour .= '</li>'."\r\n";
+            $retour .= '</ul>'.NL;
+            $retour .= '</li>'.NL;
           }
         }
-        $retour .= '</ul>'."\r\n";
-        $retour .= '</li>'."\r\n";
+        $retour .= '</ul>'.NL;
+        $retour .= '</li>'.NL;
       }
     }
-    $retour .= '</ul>'."\r\n";
+    $retour .= '</ul>'.NL;
     return $retour;
+  }
+
+  /**
+   * Retourner un formulaire à insérer sur un bilan pour enchaîner sur la création d'un groupe de besoin ou d'une évaluation.
+   * 
+   * @param string $format   'complet' | 'simplifié'
+   * @return string
+   */
+  public static function afficher_formulaire_synthese_exploitation($format)
+  {
+    return ($format=='complet') ?
+    '<p>'.
+      '<label class="tab" for="f_action">Action :</label>'.
+      '<select id="f_action" name="f_action">'.
+        '<option value=""></option>'.
+        '<option value="evaluer_items_perso">Évaluer des élèves sur des items personnalisés</option>'.
+        '<option value="evaluer_items_commun">Évaluer des élèves sur des items communs</option>'.
+        '<option value="constituer_groupe_besoin">Constituer un groupe de besoin</option>'.
+      '</select><br />'.
+      '<span id="span_submit" class="hide">'.
+        '<span class="tab"></span>Cocher les cases adéquates puis <button type="button" id="f_submit" class="parametre">accéder au formulaire</button>'.
+        '<label id="check_msg"></label>'.
+      '</span>'.
+    '</p>'.NL : 
+    '<p>'.
+      '<label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label>'.
+      '<button type="button" class="ajouter" name="evaluation_gestion">Préparer une évaluation.</button> '.
+      '<button type="button" class="ajouter" name="professeur_groupe_besoin">Constituer un groupe de besoin.</button> '.
+      '<label id="check_msg"></label>'.
+    '</p>'.NL ;
   }
 
 }

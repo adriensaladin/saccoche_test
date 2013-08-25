@@ -34,7 +34,7 @@ $tab_types = array
   'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre'=>'Bulletin scolaire'     , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
   'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 1'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
   'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 2'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 3'  , 'modif_rubrique'=>'les appréciations par compétence' )
+  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 3'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
 );
 
 $TITRE = $tab_types[$BILAN_TYPE]['titre'];
@@ -57,7 +57,7 @@ $tab_etats = array
   '1vide'     => 'Vide (fermé)',
   '2rubrique' => '<span class="now">Saisies Profs</span>',
   '3synthese' => '<span class="now">Saisie Synthèse</span>',
-  '4complet'  => 'Complet (fermé)'
+  '4complet'  => 'Complet (fermé)',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,11 +114,22 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 $li = '';
 if($BILAN_TYPE=='bulletin')
 {
-  $li = '<li><span class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'."\r\n";
+  $li = '<li><span class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'.NL;
   $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
   $s = ($nb_inconnu>1) ? 's' : '' ;
-  $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>' : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+  $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>'.NL : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>'.NL ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
 }
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var USER_ID           = '.$_SESSION['USER_ID'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var TODAY_FR          = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BILAN_TYPE        = "'.$BILAN_TYPE.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var APP_RUBRIQUE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var APP_GENERALE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CONVERSION_SUR_20 = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_NA     = "'.$_SESSION['BACKGROUND_NA'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_VA     = "'.$_SESSION['BACKGROUND_VA'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_A      = "'.$_SESSION['BACKGROUND_A'].'";';
 ?>
 
 <ul class="puce">
@@ -129,22 +140,9 @@ if($BILAN_TYPE=='bulletin')
 
 <div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
 
-<script type="text/javascript">
-  var TODAY_FR   = "<?php echo TODAY_FR ?>";
-  var BILAN_TYPE = "<?php echo $BILAN_TYPE ?>";
-  var APP_RUBRIQUE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'] ?>;
-  var APP_GENERALE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] ?>;
-  var CONVERSION_SUR_20 = <?php echo $_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'] ?>;
-  var BACKGROUND_NA = "<?php echo $_SESSION['BACKGROUND_NA'] ?>";
-  var BACKGROUND_VA = "<?php echo $_SESSION['BACKGROUND_VA'] ?>";
-  var BACKGROUND_A  = "<?php echo $_SESSION['BACKGROUND_A'] ?>";
-  var USER_ID = "<?php echo $_SESSION['USER_ID'] ?>";
-</script>
-
 <hr />
 
 <?php
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des classes de l'établissement.
 // Utile pour les profils administrateurs / directeurs, et requis concernant les professeurs pour une recherche s'il est affecté à des groupes.
@@ -245,7 +243,7 @@ else // professeur
 
 if(!count($tab_classe))
 {
-  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>';
+  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -257,7 +255,7 @@ if(!count($tab_classe))
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
 if(empty($DB_TAB))
 {
-  echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>';
+  echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -280,7 +278,12 @@ foreach($DB_TAB as $DB_ROW)
 // Pour les groupes, on prend les dates de classes dont les élèves sont issus.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_js_disabled = '';
+// Javascript : tableau utilisé pour désactiver des options d'un select.
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_disabled = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"] = new Array();';
+
 $listing_classes_id = implode(',',array_keys($tab_classe));
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
 foreach($DB_TAB as $DB_ROW)
@@ -412,29 +415,23 @@ foreach($DB_TAB as $DB_ROW)
     $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
     $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
     $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
-    $tab_js_disabled .= 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';';
-    $tab_js_disabled .= 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';';
-    $tab_js_disabled .= 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';'."\r\n";
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';';
   }
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage d'un tableau js utilisé pour désactiver des options d'un select.
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled["examiner"] = new Array();tab_disabled["imprimer"] = new Array();tab_disabled["voir_pdf"] = new Array();'."\r\n".$tab_js_disabled.'</script>';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du tableau.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-echo'<table id="table_accueil"><thead>';
+echo'<table id="table_accueil"><thead>'.NL;
 foreach($tab_affich as $ligne_id => $tab_colonne)
 {
-  echo ( ($ligne_id!='check') || ($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
-  echo ($ligne_id=='title') ? '</thead><tbody>'."\r\n" : '' ;
+  echo ( ($ligne_id!='check') || ($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'.NL : '' ;
+  echo ($ligne_id=='title') ? '</thead><tbody>'.NL : '' ;
 }
-echo'</tbody></table>';
+echo'</tbody></table>'.NL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du formulaire pour modifier les états d'accès.

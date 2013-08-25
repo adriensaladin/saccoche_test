@@ -30,8 +30,8 @@ $TITRE = "Modifier le contenu des référentiels";
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>';
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
@@ -52,10 +52,10 @@ $texte_profil = afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFEREN
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_niveaux_referentiels_professeur($_SESSION['USER_ID']);
 if(empty($DB_TAB))
 {
-  echo'<ul class="puce">';
-  echo'<li><span class="danger">Aucun référentiel présent parmi les matières qui vous sont rattachées !</span></li>';
-  echo'<li><span class="astuce">Commencer par <a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer ou importer un référentiel</a>.</span></li>';
-  echo'</ul>';
+  echo'<ul class="puce">'.NL;
+  echo'<li><span class="danger">Aucun référentiel présent parmi les matières qui vous sont rattachées !</span></li>'.NL;
+  echo'<li><span class="astuce">Commencer par <a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer ou importer un référentiel</a>.</span></li>'.NL;
+  echo'</ul>'.NL;
 }
 else
 {
@@ -84,38 +84,38 @@ else
     }
   }
   // On construit et affiche le tableau résultant
-  echo'<h2>Éditer les référentiels en détail</h2>';
-  echo'<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau(x)</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+  echo'<h2>Éditer les référentiels en détail</h2>'.NL;
+  echo'<table class="vm_nug"><thead>'.NL.'<tr><th>Matière</th><th>Niveau(x)</th><th class="nu"></th></tr>'.NL.'</thead><tbody>'.NL;
   foreach($tab_matiere as $matiere_id => $tab)
   {
     $x = ($tab_matiere[$matiere_id]['niveau_nb'])>1 ? 'x' : '';
-    echo'<tr><td>'.$tab['matiere_nom'].'</td><td>'.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'</td>'.$tab['matiere_col'].'</tr>'."\r\n";
+    echo'<tr><td>'.$tab['matiere_nom'].'</td><td>'.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'</td>'.$tab['matiere_col'].'</tr>'.NL;
   }
-  echo'</tbody></table>'."\r\n";
-  echo'<hr /><h2>Manipulations complémentaires</h2>'."\r\n";
+  echo'</tbody></table>'.NL;
+  echo'<hr /><h2>Manipulations complémentaires</h2>'.NL;
   if(count($tab_matiere_droit))
   {
-    echo'<script type="text/javascript">var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";</script>';
-    echo'<p>'."\r\n";
-    echo'<select id="select_action_groupe_choix" name="select_action_groupe"><option value=""></option><option value="modifier_coefficient">Modifier tous les coefficients des items</option><option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option><option value="deplacer_domaine">Déplacer tout le domaine</option><option value="deplacer_theme">Déplacer tout le thème</option></select>'."\r\n";
-    echo'<select id="select_action_groupe_modifier_objet" name="select_action_groupe_modifier_objet" class="hide"><option value=""></option><option value="referentiel">du référentiel</option><option value="domaine">du domaine</option><option value="theme">du thème</option></select>'."\r\n";
-    echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"><option value=""></option></select>'."\r\n";
-    echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide"><option value=""></option><option value="0">à 0</option><option value="1">à 1</option><option value="2">à 2</option><option value="3">à 3</option><option value="4">à 4</option><option value="5">à 5</option><option value="6">à 6</option><option value="7">à 7</option><option value="8">à 8</option><option value="9">à 9</option><option value="10">à 10</option><option value="11">à 11</option><option value="12">à 12</option><option value="13">à 13</option><option value="14">à 14</option><option value="15">à 15</option><option value="16">à 16</option><option value="17">à 17</option><option value="18">à 18</option><option value="19">à 19</option><option value="20">à 20</option></select>'."\r\n";
-    echo'<select id="select_action_groupe_modifier_cart" name="select_action_groupe_modifier_cart" class="hide"><option value=""></option><option value="1">à "oui"</option><option value="0">à "non"</option></select>'."\r\n";
-    echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"><option value=""></option></select>'."\r\n";
-    echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide"><option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option><option value="deplacer_theme">vers le domaine (d\'une autre matière)</option></select>'."\r\n";
-    echo'<select id="select_action_groupe_deplacer_id_final" name="select_action_groupe_deplacer_id_final" class="hide"><option value=""></option></select>'."\r\n";
-    echo'</p>'."\r\n";
+    $GLOBALS['HEAD']['js']['inline'][] = 'var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";';
+    echo'<p>'.NL;
+    echo'<select id="select_action_groupe_choix" name="select_action_groupe"><option value=""></option><option value="modifier_coefficient">Modifier tous les coefficients des items</option><option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option><option value="deplacer_domaine">Déplacer tout le domaine</option><option value="deplacer_theme">Déplacer tout le thème</option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_objet" name="select_action_groupe_modifier_objet" class="hide"><option value=""></option><option value="referentiel">du référentiel</option><option value="domaine">du domaine</option><option value="theme">du thème</option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"><option value=""></option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide"><option value=""></option><option value="0">à 0</option><option value="1">à 1</option><option value="2">à 2</option><option value="3">à 3</option><option value="4">à 4</option><option value="5">à 5</option><option value="6">à 6</option><option value="7">à 7</option><option value="8">à 8</option><option value="9">à 9</option><option value="10">à 10</option><option value="11">à 11</option><option value="12">à 12</option><option value="13">à 13</option><option value="14">à 14</option><option value="15">à 15</option><option value="16">à 16</option><option value="17">à 17</option><option value="18">à 18</option><option value="19">à 19</option><option value="20">à 20</option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_cart" name="select_action_groupe_modifier_cart" class="hide"><option value=""></option><option value="1">à "oui"</option><option value="0">à "non"</option></select>'.NL;
+    echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"><option value=""></option></select>'.NL;
+    echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide"><option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option><option value="deplacer_theme">vers le domaine (d\'une autre matière)</option></select>'.NL;
+    echo'<select id="select_action_groupe_deplacer_id_final" name="select_action_groupe_deplacer_id_final" class="hide"><option value=""></option></select>'.NL;
+    echo'</p>'.NL;
     echo'<p><span class="tab"></span><button id="bouton_valider_groupe" type="button" class="valider" disabled>Valider cette action</button><label id="ajax_msg_groupe">&nbsp;</label></p>';
-    echo'<p id="groupe_modifier_avertissement" class="hide">'."\r\n";
+    echo'<p id="groupe_modifier_avertissement" class="hide">'.NL;
     echo'<span class="danger">Cette opération n\'est pas anodine, utilisez-là en période creuse et après avoir demandé à un administrateur de sauvegarder la base.</span><br />';
     echo'<span class="astuce">Un administrateur a aussi la possibilité de convertir tous les référentiels d\'une matière vers une nouvelle matière (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_matieres#toggle_deplacer_referentiels">DOC.</a></span>).</span>';
-    echo'</p>'."\r\n";
+    echo'</p>'.NL;
   }
   else
   {
-    echo'<script type="text/javascript">var listing_id_matieres_autorisees = "";</script>';
-    echo'<p class="astuce">Droit d\'accès :<br />'.$texte_profil.'.</p>';
+    $GLOBALS['HEAD']['js']['inline'][] = 'var listing_id_matieres_autorisees = "";';
+    echo'<p class="astuce">Droit d\'accès :<br />'.$texte_profil.'.</p>'.NL;
   }
 }
 ?>
@@ -142,7 +142,7 @@ else
     }
     else
     {
-      echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>';
+      echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>'.NL;
     }
     ?>
   </form>

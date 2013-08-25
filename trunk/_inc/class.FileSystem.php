@@ -33,11 +33,47 @@ class FileSystem
   // Nom du fichier uploadé enregistré
   public static $file_saved_name = '';
 
+  // Tableau avec les dossiers à créer lors de l'installation à la racine
+  public static $tab_dossier_racine = array(
+    '__private/' => CHEMIN_DOSSIER_PRIVATE,
+    '__tmp/'     => CHEMIN_DOSSIER_TMP,
+  );
+
+  // Tableau avec les dossiers à créer lors de l'installation dans le répertoire __private
+  public static $tab_dossier_private = array(
+    '__private/config/' => CHEMIN_DOSSIER_CONFIG,
+    '__private/log/'    => CHEMIN_DOSSIER_LOG,
+    '__private/mysql/'  => CHEMIN_DOSSIER_MYSQL,
+  );
+
+  // Tableau avec les dossiers à créer lors de l'installation dans le répertoire __tmp
+  public static $tab_dossier_tmp = array(
+    '__tmp/badge/'       => CHEMIN_DOSSIER_BADGE,
+    '__tmp/cookie/'      => CHEMIN_DOSSIER_COOKIE,
+    '__tmp/devoir/'      => CHEMIN_DOSSIER_DEVOIR,
+    '__tmp/dump-base/'   => CHEMIN_DOSSIER_DUMP,
+    '__tmp/export/'      => CHEMIN_DOSSIER_EXPORT,
+    '__tmp/import/'      => CHEMIN_DOSSIER_IMPORT,
+    '__tmp/login-mdp/'   => CHEMIN_DOSSIER_LOGINPASS,
+    '__tmp/logo/'        => CHEMIN_DOSSIER_LOGO,
+    '__tmp/officiel/'    => CHEMIN_DOSSIER_OFFICIEL,
+    '__tmp/partenariat/' => CHEMIN_DOSSIER_PARTENARIAT,
+    '__tmp/rss/'         => CHEMIN_DOSSIER_RSS,
+  );
+
+  // Tableau avec les dossiers devant contenir un sous-répertoire par structure
+  public static $tab_dossier_tmp_structure = array(
+    '__tmp/badge/'       => CHEMIN_DOSSIER_BADGE,    // vignettes verticales
+    '__tmp/cookie/'      => CHEMIN_DOSSIER_COOKIE,   // cookies des choix de formulaires
+    '__tmp/devoir/'      => CHEMIN_DOSSIER_DEVOIR,   // sujets et corrigés de devoirs
+    '__tmp/officiel/'    => CHEMIN_DOSSIER_OFFICIEL, // archives des bilans officiels
+    '__tmp/rss/'         => CHEMIN_DOSSIER_RSS,      // flux RSS des demandes
+  );
+
   // //////////////////////////////////////////////////
   // Tableau avec les messages d'erreurs correspondants aux codes renvoyés par la librairie ZipArchive
   // http://fr.php.net/manual/fr/zip.constants.php#83827
   // //////////////////////////////////////////////////
-
   public static $tab_zip_error = array(
      0 =>  "0 | OK | pas d'erreur",
      1 =>  "1 | MULTIDISK | multi-volumes non supporté",
@@ -62,7 +98,7 @@ class FileSystem
     20 => "20 | INTERNAL | erreur interne",
     21 => "21 | INCONS | archive incohérente",
     22 => "22 | REMOVE | fichier impossible à supprimer",
-    23 => "23 | DELETED | entrée supprimée"
+    23 => "23 | DELETED | entrée supprimée",
   );
 
   // //////////////////////////////////////////////////
@@ -151,7 +187,7 @@ class FileSystem
     // Le dossier existe-t-il déjà ?
     if(is_dir($dossier))
     {
-      $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; déjà en place.</label><br />'."\r\n";
+      $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; déjà en place.</label><br />'.NL;
       return TRUE;
     }
     @umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
@@ -159,19 +195,19 @@ class FileSystem
     // Le dossier a-t-il bien été créé ?
     if(!$test)
     {
-      $affichage .= '<label for="rien" class="erreur">Échec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
+      $affichage .= '<label for="rien" class="erreur">Échec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'.NL;
       return FALSE;
     }
-    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; créé.</label><br />'."\r\n";
+    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; créé.</label><br />'.NL;
     // Le dossier est-il accessible en écriture ?
     $test = is_writable($dossier);
     if(!$test)
     {
-      $affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'."\r\n";
+      $affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'.NL;
       return FALSE;
     }
     // Si on arrive là, c'est bon...
-    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; accessible en écriture.</label><br />'."\r\n";
+    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; accessible en écriture.</label><br />'.NL;
     return TRUE;
   }
 
@@ -226,11 +262,12 @@ class FileSystem
    * 
    * @param string   $dossier
    * @param int      $longueur_prefixe   longueur de $dossier lors du premier appel
-   * @param string   $indice   "avant" ou "apres"
-   * @param bool     $calc_md5   TRUE par défaut, FALSE si le fichier est son MD5
+   * @param string   $indice             "avant" ou "apres"
+   * @param string   $with_first_dir     retourner ou non le dossier du premier appel
+   * @param bool     $calc_md5           TRUE par défaut, FALSE si le fichier est son MD5
    * @return void
    */
-  public static function analyser_dossier($dossier,$longueur_prefixe,$indice,$calc_md5=TRUE)
+  public static function analyser_dossier($dossier,$longueur_prefixe,$indice,$with_first_dir=FALSE,$calc_md5=TRUE)
   {
     $tab_contenu = FileSystem::lister_contenu_dossier_sources_publiques($dossier);
     $ds = (substr($dossier,-1)==DS) ? '' : DS ;
@@ -239,14 +276,18 @@ class FileSystem
       $chemin_contenu = $dossier.$ds.$contenu;
       if(is_dir($chemin_contenu))
       {
-        FileSystem::analyser_dossier($chemin_contenu,$longueur_prefixe,$indice,$calc_md5);
+        FileSystem::analyser_dossier($chemin_contenu,$longueur_prefixe,$indice,$with_first_dir,$calc_md5);
       }
       else
       {
         $_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? FileSystem::fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
       }
     }
-    $_SESSION['tmp']['dossier'][substr($dossier,$longueur_prefixe)][$indice] = TRUE;
+    $chemin_dossier = (string)substr($dossier,$longueur_prefixe);
+    if( $with_first_dir || $chemin_dossier!=='' )
+    {
+      $_SESSION['tmp']['dossier'][$chemin_dossier][$indice] = TRUE;
+    }
   }
 
   /**
@@ -285,13 +326,14 @@ class FileSystem
   /**
    * Ecrire un fichier "index.htm" vide dans un dossier pour éviter le lsitage du répertoire.
    * 
-   * @param string   $dossier_chemin   Chemin jusqu'au dossier, SANS le séparateur final.
+   * @param string   $dossier_chemin   Chemin jusqu'au dossier
    * @param bool     $obligatoire      Facultatif, TRUE par défaut.
    * @return bool
    */
   public static function ecrire_fichier_index($dossier_chemin,$obligatoire=TRUE)
   {
-    $fichier_chemin  = $dossier_chemin.DS.'index.htm';
+    $ds = (substr($dossier_chemin,-1)==DS) ? '' : DS ;
+    $fichier_chemin  = $dossier_chemin.ds.'index.htm';
     $fichier_contenu = 'Circulez, il n\'y a rien à voir par ici !';
     if($obligatoire) return FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
     else return FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
@@ -329,10 +371,10 @@ class FileSystem
       'SERVEUR_PROXY_AUTH_PASS',
       'FICHIER_TAILLE_MAX',
       'FICHIER_DUREE_CONSERVATION',
-      'CHEMIN_LOGS_PHPCAS'
+      'CHEMIN_LOGS_PHPCAS',
     );
-    $fichier_contenu = '<?php'."\r\n";
-    $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
+    $fichier_contenu = '<?php'.NL;
+    $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'.NL;
     foreach($tab_constantes_requises as $constante_nom)
     {
       if(isset($tab_constantes_modifiees[$constante_nom]))
@@ -354,9 +396,9 @@ class FileSystem
       $espaces = str_repeat(' ',26-strlen($constante_nom));
       $quote = '\'';
       // var_export() permet d'échapper \ ' et inclus des ' autour.
-      $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'."\r\n";
+      $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'.NL;
     }
-    $fichier_contenu.= '?>'."\r\n";
+    $fichier_contenu.= '?>'.NL;
     FileSystem::ecrire_fichier(CHEMIN_FICHIER_CONFIG_INSTALL,$fichier_contenu);
   }
 
@@ -390,14 +432,45 @@ class FileSystem
       $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
       $prefixe = 'WEBMESTRE';
     }
-    $fichier_contenu  = '<?php'."\r\n";
-    $fichier_contenu .= '// '.$fichier_descriptif."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_HOST\',\''.$BD_host.'\');  // Nom d\'hôte / serveur'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PORT\',\''.$BD_port.'\');  // Port de connexion'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_NAME\',\''.$BD_name.'\');  // Nom de la base'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');  // Nom d\'utilisateur'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');  // Mot de passe'."\r\n";
-    $fichier_contenu .= '?>'."\r\n";
+    $fichier_contenu  = '<?php'.NL;
+    $fichier_contenu .= '// '.$fichier_descriptif.NL;
+    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_HOST\',\''.$BD_host.'\');  // Nom d\'hôte / serveur'.NL;
+    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PORT\',\''.$BD_port.'\');  // Port de connexion'.NL;
+    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_NAME\',\''.$BD_name.'\');  // Nom de la base'.NL;
+    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');  // Nom d\'utilisateur'.NL;
+    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');  // Mot de passe'.NL;
+    $fichier_contenu .= '?>'.NL;
+    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+  }
+
+  /**
+   * Enregistrer un fichier de rapport d'une action qui est ensuite affiché dans une fancybax au retour d'un appel ajax
+   * 
+   * @param string $fichier_nom
+   * @param string $thead
+   * @param string $tbody
+   * @return void
+   */
+  public static function fabriquer_fichier_rapport($fichier_nom,$thead,$tbody)
+  {
+    $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.$fichier_nom;
+    $fichier_contenu = '<!DOCTYPE html>'.NL;
+    $fichier_contenu.= '<html>'.NL;
+    $fichier_contenu.=   '<head>'.NL;
+    $fichier_contenu.=     '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.NL;
+    $fichier_contenu.=     '<style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style>'.NL;
+    $fichier_contenu.=   '</head>'.NL;
+    $fichier_contenu.=   '<body>'.NL;
+    $fichier_contenu.=     '<table>'.NL;
+    $fichier_contenu.=       '<thead>'.NL;
+    $fichier_contenu.=         $thead.NL;
+    $fichier_contenu.=       '</thead>'.NL;
+    $fichier_contenu.=       '<tbody>'.NL;
+    $fichier_contenu.=         $tbody.NL;
+    $fichier_contenu.=       '</tbody>'.NL;
+    $fichier_contenu.=     '</table>'.NL;
+    $fichier_contenu.=   '</body>'.NL;
+    $fichier_contenu.= '</html>'.NL;
     FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
   }
 
@@ -413,13 +486,39 @@ class FileSystem
   public static function fabriquer_fichier_partenaire_message($partenaire_id,$partenaire_logo_actuel_filename,$partenaire_adresse_web,$partenaire_message)
   {
     $fichier_chemin = CHEMIN_DOSSIER_PARTENARIAT.'info_'.$_SESSION['USER_ID'].'.php';
-    $fichier_contenu  = '<?php'."\r\n";
-    $fichier_contenu .= '// Informations du partenaire ENT conventionné pour une communication avec logo et lien'."\r\n";
-    $fichier_contenu .= '$partenaire_logo_actuel_filename = "'.html($partenaire_logo_actuel_filename).'";'."\r\n";
-    $fichier_contenu .= '$partenaire_adresse_web          = "'.html($partenaire_adresse_web).'";'."\r\n";
-    $fichier_contenu .= '$partenaire_message              = "'.html($partenaire_message).'";'."\r\n";
-    $fichier_contenu .= '?>'."\r\n";
+    $fichier_contenu  = '<?php'.NL;
+    $fichier_contenu .= '// Informations du partenaire ENT conventionné pour une communication avec logo et lien'.NL;
+    $fichier_contenu .= '$partenaire_logo_actuel_filename = "'.html($partenaire_logo_actuel_filename).'";'.NL;
+    $fichier_contenu .= '$partenaire_adresse_web          = "'.html($partenaire_adresse_web).'";'.NL;
+    $fichier_contenu .= '$partenaire_message              = "'.html($partenaire_message).'";'.NL;
+    $fichier_contenu .= '?>'.NL;
     FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+  }
+
+  /**
+   * Enregistrer un fichier temporaire contenant des infos sur l'utilisateur pour une application tierce utilisant l'authentification de SACoche.
+   * 
+   * @param void
+   * @return string $clef   nom du fichier sans extension
+   */
+  public static function fabriquer_fichier_user_infos_for_appli_externe()
+  {
+    $tableau_retour_infos_user = array(
+      'user_id'           => $_SESSION['USER_ID'],
+      'user_profil_sigle' => $_SESSION['USER_PROFIL_SIGLE'],
+      'user_profil_type'  => $_SESSION['USER_PROFIL_TYPE'],
+      'user_nom'          => $_SESSION['USER_NOM'],
+      'user_prenom'       => $_SESSION['USER_PRENOM'],
+      'user_sconet_id'    => $_SESSION['USER_SCONET_ID'],
+      'user_id_ent'       => $_SESSION['USER_ID_ENT'],
+      'groupe_id'         => $_SESSION['ELEVE_CLASSE_ID'],
+      'groupe_nom'        => $_SESSION['ELEVE_CLASSE_NOM'],
+    );
+    $clef = uniqid().md5('grain_de_poivre'.mt_rand());
+    $fichier_chemin = CHEMIN_DOSSIER_LOGINPASS.$clef.'.txt';
+    $fichier_contenu = serialize($tableau_retour_infos_user);
+    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+    return $clef;
   }
 
   /**
@@ -434,7 +533,7 @@ class FileSystem
   {
     if(is_dir($dossier))
     {
-      $date_limite = time() - $nb_minutes*60;
+      $date_limite = $_SERVER['REQUEST_TIME'] - $nb_minutes*60;
       $tab_contenu = FileSystem::lister_contenu_dossier($dossier);
       $ds = (substr($dossier,-1)==DS) ? '' : DS ;
       foreach($tab_contenu as $contenu)
@@ -471,17 +570,26 @@ class FileSystem
     if(!file_exists($fichier_lock))
     {
       FileSystem::ecrire_fichier($fichier_lock,'');
-      // On verifie que certains sous-dossiers existent : "devoir" n'a été ajouté qu'en mars 2012, "officiel" n'a été ajouté qu'en mai 2012, "partenariat" n'a été ajouté qu'en juin 2013, "cookie" et "rss" étaient oubliés depuis le formulaire Sésamath ("badge" a priori c'est bon)
-      $tab_sous_dossier = array( 'devoir' , 'officiel' , 'partenariat' , 'cookie'.DS.$BASE , 'devoir'.DS.$BASE , 'officiel'.DS.$BASE , 'rss'.DS.$BASE );
+      // On verifie que certains sous-dossiers existent :
+      $tab_sous_dossier = array(
+        CHEMIN_DOSSIER_DEVOIR ,          // n'a été ajouté qu'en mars 2012,
+        CHEMIN_DOSSIER_DEVOIR.DS.$BASE ,
+        CHEMIN_DOSSIER_OFFICIEL ,        // n'a été ajouté qu'en mai 2012,
+        CHEMIN_DOSSIER_OFFICIEL.DS.$BASE ,
+        CHEMIN_DOSSIER_PARTENARIAT ,     // n'a été ajouté qu'en juin 2013,
+        CHEMIN_DOSSIER_COOKIE.DS.$BASE , // a à un moment été oublié depuis le formulaire Sésamath
+        CHEMIN_DOSSIER_RSS.DS.$BASE ,    // a à un moment été oublié depuis le formulaire Sésamath
+        CHEMIN_DOSSIER_BADGE.DS.$BASE ,  // a été effacé pour certaines structures en août 2013
+      );
       foreach($tab_sous_dossier as $sous_dossier)
       {
-        $dossier = CHEMIN_DOSSIER_TMP.$sous_dossier;
-        if(!is_dir($dossier))
+        if(!is_dir($sous_dossier))
         {
-          FileSystem::creer_dossier($dossier);
-          FileSystem::ecrire_fichier($dossier.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+          FileSystem::creer_dossier($sous_dossier);
+          FileSystem::ecrire_fichier($sous_dossier.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
         }
       }
+      $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 36 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
@@ -491,16 +599,13 @@ class FileSystem
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
-      if(defined('FICHIER_DUREE_CONSERVATION')) // Une fois tout a été supprimé sans raison claire : nettoyage simultané avec une mise à jour ?
-      {
-        FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
-      }
+      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
       unlink($fichier_lock);
     }
     // Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
     else
     {
-      if( time() - filemtime($fichier_lock) > 30 )
+      if( $_SERVER['REQUEST_TIME'] - filemtime($fichier_lock) > 30 )
       {
         unlink($fichier_lock);
       }

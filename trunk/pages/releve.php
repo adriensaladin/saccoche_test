@@ -39,6 +39,6 @@ if(is_file($fichier_section))
 }
 else
 {
-  echo'<p><span class="astuce">Choisir une rubrique dans le menu déroulant&hellip;</span></p>';
+  echo'<p><span class="astuce">Choisir une rubrique dans le menu déroulant&hellip;</span></p>'.NL;
 }
 ?>

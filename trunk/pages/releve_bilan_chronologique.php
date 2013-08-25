@@ -32,14 +32,14 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']) )
   {
-    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux états d\'acquisitions&hellip;<div>';
+    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux états d\'acquisitions&hellip;<div>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
   if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']) && !test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) )
   {
-    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>';
-    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux moyennes des scores ni aux pourcentages d\'items acquis&hellip;<div>';
+    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux moyennes des scores ni aux pourcentages d\'items acquis&hellip;<div>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
 }
@@ -118,14 +118,11 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
 $select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE   /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
 $select_periode = Form::afficher_select($tab_periodes , 'f_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE  /*selection*/ ,              '' /*optgroup*/);
 
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql = "'.TODAY_MYSQL.'";';
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-list( $tab_groupe_periode_js ) = Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*return_jointure_periode*/ , FALSE /*return_jointure_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
-
-<script type="text/javascript">
-  var date_mysql="<?php echo TODAY_MYSQL ?>";
-  <?php echo $tab_groupe_periode_js ?> 
-</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__bilan_chronologique">DOC : Bilan chronologique.</a></span></div>
 

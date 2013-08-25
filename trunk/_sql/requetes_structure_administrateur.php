@@ -182,7 +182,7 @@ public static function DB_lister_niveaux_famille($niveau_famille_id)
     8 => 'OR niveau_id IN(4,204,205,206) ',
     9 => '',
    10 => '',
-   11 => 'OR niveau_id IN(4,204,205,206) '
+   11 => 'OR niveau_id IN(4,204,205,206) ',
   );
   $DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom, niveau_actif ';
   $DB_SQL.= 'FROM sacoche_niveau ';
@@ -1781,7 +1781,7 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
   $nb_pbs = 0;
   $tab_tables = array(
     'sacoche_referentiel'=>'matiere_id',
-    'sacoche_referentiel_domaine'=>'matiere_id'
+    'sacoche_referentiel_domaine'=>'matiere_id',
   );
   foreach($tab_tables as $table_nom => $table_champ)
   {
@@ -1797,7 +1797,7 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
     'sacoche_demande'=>'matiere_id',
     'sacoche_referentiel'=>'matiere_id',
     'sacoche_referentiel_domaine'=>'matiere_id',
-    'sacoche_officiel_saisie'=>'rubrique_id'
+    'sacoche_officiel_saisie'=>'rubrique_id',
   );
   foreach($tab_tables as $table_nom => $table_champ)
   {

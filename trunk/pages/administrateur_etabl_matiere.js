@@ -57,7 +57,7 @@ $(document).ready
       $('#f_ref').val(ref);
       $('#f_nom').val(nom);
       // pour finir
-      var matiere_type = (id>id_matiere_partagee_max) ? 'spécifique' : 'partagée' ;
+      var matiere_type = (id>ID_MATIERE_PARTAGEE_MAX) ? 'spécifique' : 'partagée' ;
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une matière "+matiere_type);
       if(mode!='supprimer')
       {

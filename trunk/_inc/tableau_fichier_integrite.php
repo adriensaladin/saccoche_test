@@ -36,7 +36,7 @@ $tab_fichier_integrite = array(
   'pages/validation_socle_pilier.ajax.php',
   'index.php',
   'ajax.php',
-  'VERSION.txt'
+  'VERSION.txt',
 );
 
 ?>

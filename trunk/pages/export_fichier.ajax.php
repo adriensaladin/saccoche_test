@@ -49,7 +49,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'SACOCHE_ID'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'GROUPE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
   // Récupérer les élèves de la classe ou du groupe
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_login,user_nom,user_prenom' );
   if(!empty($DB_TAB))
@@ -57,18 +57,18 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
     foreach($DB_TAB as $DB_ROW)
     {
       $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$groupe_nom."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($groupe_nom).'</td></tr>'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($groupe_nom).'</td></tr>'.NL;
     }
   }
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html .= '</tbody></table>'."\r\n";
+  $export_html .= '</tbody></table>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -85,7 +85,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   // ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'COEF'.$separateur.'DEMANDE_EVAL'.$separateur.'LIEN'.$separateur.'SOCLE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead>'.NL'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr>'.NL.'</thead><tbody>'.NL;
 
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ );
   if(!empty($DB_TAB))
@@ -95,17 +95,17 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
       $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
       $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
       $export_csv .= $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.$DB_ROW['item_coef'].$separateur.$demande_eval.$separateur.'"'.$DB_ROW['item_lien'].'"'.$separateur.'"'.$DB_ROW['entree_nom'].'"'."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td><td>'.html($DB_ROW['item_coef']).'</td><td>'.html($demande_eval).'</td><td>'.html($DB_ROW['item_lien']).'</td><td>'.html($DB_ROW['entree_nom']).'</td></tr>'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td><td>'.html($DB_ROW['item_coef']).'</td><td>'.html($demande_eval).'</td><td>'.html($DB_ROW['item_lien']).'</td><td>'.html($DB_ROW['entree_nom']).'</td></tr>'.NL;
     }
   }
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html .= '</tbody></table>'."\r\n";
+  $export_html .= '</tbody></table>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -122,7 +122,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   // ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'MATIERE'.$separateur.'NIVEAU'.$separateur.'DOMAINE'.$separateur.'THEME'.$separateur.'ITEM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<div id="zone_matieres_items" class="arbre_dynamique p">';
+  $export_html = '<div id="zone_matieres_items" class="arbre_dynamique p">'.NL;
 
   $tab_niveau  = array();
   $tab_domaine = array();
@@ -157,59 +157,59 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
     }
   }
   $export_csv .= $DB_ROW['matiere_ref'].' - '.$matiere_nom."\r\n";
-  $export_html .= '<ul class="ul_m1">'."\r\n";
-  $export_html .= '  <li class="li_m1"><span>'.html($DB_ROW['matiere_ref'].' - '.$matiere_nom).'</span>'."\r\n";
-  $export_html .= '    <ul class="ul_m2">'."\r\n";
+  $export_html .= '<ul class="ul_m1">'.NL;
+  $export_html .=   '<li class="li_m1"><span>'.html($DB_ROW['matiere_ref'].' - '.$matiere_nom).'</span>'.NL;
+  $export_html .=     '<ul class="ul_m2">'.NL;
   foreach($tab_niveau as $niveau_id => $niveau_nom)
   {
     $export_csv .= $separateur.$niveau_nom."\r\n";
-    $export_html .= '      <li class="li_m2"><span>'.html($niveau_nom).'</span>'."\r\n";
-    $export_html .= '        <ul class="ul_n1">'."\r\n";
+    $export_html .=       '<li class="li_m2"><span>'.html($niveau_nom).'</span>'.NL;
+    $export_html .=         '<ul class="ul_n1">'.NL;
     if(isset($tab_domaine[$niveau_id]))
     {
       foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
       {
         $export_csv .= $separateur.$separateur.$domaine_nom."\r\n";
-        $export_html .= '          <li class="li_n1"><span>'.html($domaine_nom).'</span>'."\r\n";
-        $export_html .= '            <ul class="ul_n2">'."\r\n";
+        $export_html .=           '<li class="li_n1"><span>'.html($domaine_nom).'</span>'.NL;
+        $export_html .=             '<ul class="ul_n2">'.NL;
         if(isset($tab_theme[$niveau_id][$domaine_id]))
         {
           foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
           {
             $export_csv .= $separateur.$separateur.$separateur.$theme_nom."\r\n";
-            $export_html .= '              <li class="li_n2"><span>'.html($theme_nom).'</span>'."\r\n";
-            $export_html .= '                <ul class="ul_n3">'."\r\n";
+            $export_html .=               '<li class="li_n2"><span>'.html($theme_nom).'</span>'.NL;
+            $export_html .=                 '<ul class="ul_n3">'.NL;
             if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
             {
               foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
               {
                 $export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_nom.'"'."\r\n";
-                $export_html .= '                  <li class="li_n3">'.html($item_nom).'</li>'."\r\n";
+                $export_html .=                   '<li class="li_n3">'.html($item_nom).'</li>'.NL;
               }
             }
-            $export_html .= '                </ul>'."\r\n";
-            $export_html .= '              </li>'."\r\n";
+            $export_html .=                 '</ul>'.NL;
+            $export_html .=               '</li>'.NL;
           }
         }
-        $export_html .= '            </ul>'."\r\n";
-        $export_html .= '          </li>'."\r\n";
+        $export_html .=             '</ul>'.NL;
+        $export_html .=           '</li>'.NL;
       }
     }
-    $export_html .= '        </ul>'."\r\n";
-    $export_html .= '      </li>'."\r\n";
+    $export_html .=         '</ul>'.NL;
+    $export_html .=       '</li>'.NL;
   }
-  $export_html .= '    </ul>'."\r\n";
-  $export_html .= '  </li>'."\r\n";
-  $export_html .= '</ul>'."\r\n";
+  $export_html .=     '</ul>'.NL;
+  $export_html .=   '</li>'.NL;
+  $export_html .= '</ul>'.NL;
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html.= '</div>';
+  $export_html.= '</div>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -225,7 +225,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   $separateur = ';';
   $export_csv  = 'PALIER'.$separateur.'PILIER'.$separateur.'SECTION'.$separateur.'ITEM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<div id="zone_paliers" class="arbre_dynamique p">';
+  $export_html = '<div id="zone_paliers" class="arbre_dynamique p">'.NL;
 
   $tab_pilier  = array();
   $tab_section = array();
@@ -253,48 +253,48 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
     }
   }
   $export_csv .= $palier_nom."\r\n";
-  $export_html .= '<ul class="ul_m1">'."\r\n";
-  $export_html .= '  <li class="li_m1"><span>'.html($palier_nom).'</span>'."\r\n";
-  $export_html .= '    <ul class="ul_n1">'."\r\n";
+  $export_html .= '<ul class="ul_m1">'.NL;
+  $export_html .=   '<li class="li_m1"><span>'.html($palier_nom).'</span>'.NL;
+  $export_html .=     '<ul class="ul_n1">'.NL;
   foreach($tab_pilier as $pilier_id => $pilier_nom)
   {
     $export_csv .= $separateur.$pilier_nom."\r\n";
-    $export_html .= '      <li class="li_n1"><span>'.html($pilier_nom).'</span>'."\r\n";
-    $export_html .= '        <ul class="ul_n2">'."\r\n";
+    $export_html .=       '<li class="li_n1"><span>'.html($pilier_nom).'</span>'.NL;
+    $export_html .=         '<ul class="ul_n2">'.NL;
     if(isset($tab_section[$pilier_id]))
     {
       foreach($tab_section[$pilier_id] as $section_id => $section_nom)
       {
         $export_csv .= $separateur.$separateur.$section_nom."\r\n";
-        $export_html .= '          <li class="li_n2"><span>'.html($section_nom).'</span>'."\r\n";
-        $export_html .= '            <ul class="ul_n3">'."\r\n";
+        $export_html .=           '<li class="li_n2"><span>'.html($section_nom).'</span>'.NL;
+        $export_html .=             '<ul class="ul_n3">'.NL;
         if(isset($tab_entree[$pilier_id][$section_id]))
         {
           foreach($tab_entree[$pilier_id][$section_id] as $entree_id => $socle_nom)
           {
             $export_csv .= $separateur.$separateur.$separateur.'"'.$socle_nom.'"'."\r\n";
-            $export_html .= '              <li class="li_n3">'.html($socle_nom).'</li>'."\r\n";
+            $export_html .=               '<li class="li_n3">'.html($socle_nom).'</li>'.NL;
           }
         }
-        $export_html .= '            </ul>'."\r\n";
-        $export_html .= '          </li>'."\r\n";
+        $export_html .=             '</ul>'.NL;
+        $export_html .=           '</li>'.NL;
       }
     }
-    $export_html .= '        </ul>'."\r\n";
-    $export_html .= '      </li>'."\r\n";
+    $export_html .=         '</ul>'.NL;
+    $export_html .=       '</li>'.NL;
   }
-  $export_html .= '    </ul>'."\r\n";
-  $export_html .= '  </li>'."\r\n";
-  $export_html .= '</ul>'."\r\n";
+  $export_html .=     '</ul>'.NL;
+  $export_html .=   '</li>'.NL;
+  $export_html .= '</ul>'.NL;
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html.= '</div>';
+  $export_html.= '</div>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -310,7 +310,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $separateur = ';';
   $export_csv  = 'PALIER SOCLE'.$separateur.'PILIER SOCLE'.$separateur.'SECTION SOCLE'.$separateur.'ITEM SOCLE'.$separateur.'ITEM MATIERE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<div id="zone_paliers" class="arbre_dynamique p">';
+  $export_html = '<div id="zone_paliers" class="arbre_dynamique p">'.NL;
 
   // Récupération des données du socle
   $tab_pilier  = array();
@@ -349,64 +349,64 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
   // Elaboration de la sortie
   $export_csv .= $palier_nom."\r\n";
-  $export_html .= '<ul class="ul_m1">'."\r\n";
-  $export_html .= '  <li class="li_m1"><span>'.html($palier_nom).'</span>'."\r\n";
-  $export_html .= '    <ul class="ul_n1">'."\r\n";
+  $export_html .= '<ul class="ul_m1">'.NL;
+  $export_html .=   '<li class="li_m1"><span>'.html($palier_nom).'</span>'.NL;
+  $export_html .=     '<ul class="ul_n1">'.NL;
   foreach($tab_pilier as $pilier_id => $pilier_nom)
   {
     $export_csv .= $separateur.$pilier_nom."\r\n";
-    $export_html .= '      <li class="li_n1"><span>'.html($pilier_nom).'</span>'."\r\n";
-    $export_html .= '        <ul class="ul_n2">'."\r\n";
+    $export_html .=       '<li class="li_n1"><span>'.html($pilier_nom).'</span>'.NL;
+    $export_html .=         '<ul class="ul_n2">'.NL;
     if(isset($tab_section[$pilier_id]))
     {
       foreach($tab_section[$pilier_id] as $section_id => $section_nom)
       {
         $export_csv .= $separateur.$separateur.$section_nom."\r\n";
-        $export_html .= '          <li class="li_n2"><span>'.html($section_nom).'</span>'."\r\n";
-        $export_html .= '            <ul class="ul_n3">'."\r\n";
+        $export_html .=           '<li class="li_n2"><span>'.html($section_nom).'</span>'.NL;
+        $export_html .=             '<ul class="ul_n3">'.NL;
         if(isset($tab_socle[$pilier_id][$section_id]))
         {
           foreach($tab_socle[$pilier_id][$section_id] as $socle_id => $socle_nom)
           {
             $export_csv .= $separateur.$separateur.$separateur.'"'.$socle_nom.'"'."\r\n";
-            $export_html .= '              <li class="li_n3"><span>'.html($socle_nom).'</span>'."\r\n";
+            $export_html .=               '<li class="li_n3"><span>'.html($socle_nom).'</span>'.NL;
             if(isset($tab_jointure[$socle_id]))
             {
-              $export_html .= '                <ul class="ul_m2">'."\r\n";
+              $export_html .=                 '<ul class="ul_m2">'.NL;
               foreach($tab_jointure[$socle_id] as $item_descriptif)
               {
                 $export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_descriptif.'"'."\r\n";
-                $export_html .= '                  <li class="li_m2">'.html($item_descriptif).'</li>'."\r\n";
+                $export_html .=                   '<li class="li_m2">'.html($item_descriptif).'</li>'.NL;
               }
-              $export_html .= '                </ul>'."\r\n";
+              $export_html .=                 '</ul>'.NL;
             }
             else
             {
               $export_csv .= $separateur.$separateur.$separateur.$separateur.'"AUCUN ITEM ASSOCIÉ"'."\r\n";
-              $export_html .= '                  <br /><label class="alerte"><span style="background-color:#EE7">Aucun item associé.</span></label>'."\r\n";
+              $export_html .=                   '<br /><label class="alerte"><span style="background-color:#EE7">Aucun item associé.</span></label>'.NL;
             }
-            $export_html .= '              </li>'."\r\n";
+            $export_html .=               '</li>'.NL;
           }
         }
-        $export_html .= '            </ul>'."\r\n";
-        $export_html .= '          </li>'."\r\n";
+        $export_html .=             '</ul>'.NL;
+        $export_html .=           '</li>'.NL;
       }
     }
-    $export_html .= '        </ul>'."\r\n";
-    $export_html .= '      </li>'."\r\n";
+    $export_html .=         '</ul>'.NL;
+    $export_html .=       '</li>'.NL;
   }
-  $export_html .= '    </ul>'."\r\n";
-  $export_html .= '  </li>'."\r\n";
-  $export_html .= '</ul>'."\r\n";
+  $export_html .=     '</ul>'.NL;
+  $export_html .=   '</li>'.NL;
+  $export_html .= '</ul>'.NL;
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html.= '</div>';
+  $export_html.= '</div>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -422,7 +422,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'CLASSE_REF'.$separateur.'CLASSE_NOM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Classe Ref.</th><th>Classe Nom</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Classe Ref.</th><th>Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer la liste des classes
   $tab_groupe = array();
@@ -438,18 +438,18 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     foreach($DB_TAB as $DB_ROW)
     {
       $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td></tr>'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td></tr>'.NL;
     }
   }
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html .= '</tbody></table>'."\r\n";
+  $export_html .= '</tbody></table>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }
@@ -465,7 +465,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'ENFANT_ID'.$separateur.'ENFANT_NOM'.$separateur.'ENFANT_PRENOM'.$separateur.'ENFANT_CLASSE_REF'.$separateur.'ENFANT_CLASSE_NOM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Enfant Id.</th><th>Enfant Nom</th><th>Enfant Prénom</th><th>Enfant Classe Ref.</th><th>Enfant Classe Nom</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Enfant Id.</th><th>Enfant Nom</th><th>Enfant Prénom</th><th>Enfant Classe Ref.</th><th>Enfant Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer la liste des classes
   $tab_groupe = array();
@@ -481,15 +481,15 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
     foreach($DB_TAB as $DB_ROW)
     {
       $export_csv  .= $DB_ROW['parent_id'].$separateur.$DB_ROW['parent_id_ent'].$separateur.$DB_ROW['parent_id_gepi'].$separateur.$DB_ROW['parent_sconet_id'].$separateur.$DB_ROW['parent_sconet_elenoet'].$separateur.$DB_ROW['parent_reference'].$separateur.$DB_ROW['parent_login'].$separateur.$DB_ROW['parent_nom'].$separateur.$DB_ROW['parent_prenom'].$separateur.$DB_ROW['enfant_id'].$separateur.$DB_ROW['enfant_nom'].$separateur.$DB_ROW['enfant_prenom'].$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['nom']."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['parent_id'].'</td><td>'.html($DB_ROW['parent_id_ent']).'</td><td>'.html($DB_ROW['parent_id_gepi']).'</td><td>'.$DB_ROW['parent_sconet_id'].'</td><td>'.$DB_ROW['parent_sconet_elenoet'].'</td><td>'.html($DB_ROW['parent_reference']).'</td><td>'.html($DB_ROW['parent_login']).'</td><td>'.html($DB_ROW['parent_nom']).'</td><td>'.html($DB_ROW['parent_prenom']).'</td><td>'.$DB_ROW['enfant_id'].'</td><td>'.html($DB_ROW['enfant_nom']).'</td><td>'.html($DB_ROW['enfant_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['nom']).'</td></tr>'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['parent_id'].'</td><td>'.html($DB_ROW['parent_id_ent']).'</td><td>'.html($DB_ROW['parent_id_gepi']).'</td><td>'.$DB_ROW['parent_sconet_id'].'</td><td>'.$DB_ROW['parent_sconet_elenoet'].'</td><td>'.html($DB_ROW['parent_reference']).'</td><td>'.html($DB_ROW['parent_login']).'</td><td>'.html($DB_ROW['parent_nom']).'</td><td>'.html($DB_ROW['parent_prenom']).'</td><td>'.$DB_ROW['enfant_id'].'</td><td>'.html($DB_ROW['enfant_nom']).'</td><td>'.html($DB_ROW['enfant_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['nom']).'</td></tr>'.NL;
     }
   }
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-parents_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html .= '</tbody></table>'."\r\n";
+  $export_html .= '</tbody></table>'.NL;
 
   // Affichage
   echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
@@ -508,7 +508,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead><tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Profil</th></tr></thead><tbody>'."\r\n";
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Profil</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer les données des professeurs et des personnels
   $tab_profil = array('professeur','personnel');
@@ -520,19 +520,19 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
       foreach($DB_TAB as $DB_ROW)
       {
         $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$DB_ROW['user_profil_sigle']."\r\n";
-        $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.$DB_ROW['user_profil_sigle'].'</td></tr>'."\r\n";
+        $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.$DB_ROW['user_profil_sigle'].'</td></tr>'.NL;
       }
     }
   }
 
-  // Finalisation de l'export CSV (archivage dans un fichier zippé)
+  // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-professeurs_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
-  $export_html .= '</tbody></table>'."\r\n";
+  $export_html .= '</tbody></table>'.NL;
 
   // Affichage
-  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>';
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   echo $export_html;
   exit();
 }

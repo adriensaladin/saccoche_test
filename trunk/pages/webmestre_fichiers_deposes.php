@@ -34,7 +34,7 @@ $tab_select_taille_max = array(
    500=>'500 Ko',
   1000=>'1 Mo',
   2000=>'2 Mo',
-  5000=>'5 Mo'
+  5000=>'5 Mo',
 );
 
 $select_taille_max = '';
@@ -51,7 +51,7 @@ $tab_select_duree_conservation = array(
    9=>'9 mois',
   12=>'1 an',
   24=>'2 ans',
-  36=>'3 ans'
+  36=>'3 ans',
 );
 
 $select_duree_conservation = '';

@@ -151,7 +151,7 @@ if($connexion_mode=='gepi')
     'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
     'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
     'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
-    'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
+    'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL,
   );
   // Initialiser la classe
   $auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');

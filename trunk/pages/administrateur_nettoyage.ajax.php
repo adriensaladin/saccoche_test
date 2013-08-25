@@ -45,10 +45,10 @@ if($action=='numeroter')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
+  echo'<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>';
+  echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>'.NL;
   exit();
 }
 
@@ -65,10 +65,10 @@ if($action=='nettoyer')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
+  echo'<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  echo'<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>';
+  echo'<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>'.NL;
   exit();
 }
 
@@ -119,16 +119,16 @@ if($action=='purger')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
-  echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
-  echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>';
-  echo'<li><label class="valide">Bilans officiels supprimés.</label></li>';
-  echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>';
-  echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
-  echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>';
+  echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>'.NL;
+  echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL;
+  echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL;
+  echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>'.NL;
+  echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  echo'<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>';
+  echo'<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>'.NL;
   exit();
 }
 
@@ -147,11 +147,11 @@ if($action=='supprimer')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>';
-  echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>';
+  echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  echo'<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>';
+  echo'<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>'.NL;
   exit();
 }
 
@@ -165,7 +165,7 @@ if($action=='effacer')
   // Afficher le retour
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  echo'<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>';
+  echo'<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>'.NL;
   exit();
 }
 

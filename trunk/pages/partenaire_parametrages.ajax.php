@@ -68,8 +68,8 @@ if($action=='upload_logo')
     exit('Erreur : le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.', maximum autorisé 400 sur 200).');
   }
   // On ne met pas encore à jour le logo : on place pour l'instant l'adresse de l'image en session (comme marqueur) en attendant confirmation.
-  $_SESSION['TMP']['partenaire_logo_new_filename'] = FileSystem::$file_saved_name;
-  $_SESSION['TMP']['partenaire_logo_new_file_ext'] = $tab_extension_types[$image_type];
+  $_SESSION['tmp']['partenaire_logo_new_filename'] = FileSystem::$file_saved_name;
+  $_SESSION['tmp']['partenaire_logo_new_file_ext'] = $tab_extension_types[$image_type];
   // Retour
   exit('ok-'.URL_DIR_IMPORT.FileSystem::$file_saved_name);
 }
@@ -81,7 +81,7 @@ if($action=='upload_logo')
 if($action=='delete_logo')
 {
   // On ne supprime pas encore le logo : on place pour l'instant l'adresse de l'image vide en session (comme marqueur) en attendant confirmation.
-  $_SESSION['TMP']['partenaire_logo_new_filename'] = '';
+  $_SESSION['tmp']['partenaire_logo_new_filename'] = '';
   // Retour
   exit('ok-'.URL_DIR_IMG.'auto.gif');
 }
@@ -93,34 +93,34 @@ if($action=='delete_logo')
 if($action=='enregistrer')
 {
   // Pour le logo, ... 
-  if(!isset($_SESSION['TMP']['partenaire_logo_new_filename']))
+  if(!isset($_SESSION['tmp']['partenaire_logo_new_filename']))
   {
     // soit on conserve le précédent (éventuellement rien),
   }
-  elseif($_SESSION['TMP']['partenaire_logo_new_filename']=='')
+  elseif($_SESSION['tmp']['partenaire_logo_new_filename']=='')
   {
     // soit on le supprime,
-    if(is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename']))
+    if(is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']))
     {
-      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename']);
+      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']);
     }
-    $_SESSION['TMP']['partenaire_logo_actuel_filename'] = '';
+    $_SESSION['tmp']['partenaire_logo_actuel_filename'] = '';
   }
-  elseif(is_file(CHEMIN_DOSSIER_IMPORT.$_SESSION['TMP']['partenaire_logo_new_filename']))
+  elseif(is_file(CHEMIN_DOSSIER_IMPORT.$_SESSION['tmp']['partenaire_logo_new_filename']))
   {
     // soit on prend le nouveau, auquel cas il faut aussi le déplacer dans CHEMIN_DOSSIER_PARTENARIAT, et éventuellement supprimer l'ancien
-    if( ($_SESSION['TMP']['partenaire_logo_actuel_filename']) && (is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename'])) )
+    if( ($_SESSION['tmp']['partenaire_logo_actuel_filename']) && (is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'])) )
     {
-      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename']);
+      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']);
     }
-    $_SESSION['TMP']['partenaire_logo_actuel_filename'] = 'logo_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$_SESSION['TMP']['partenaire_logo_new_file_ext'];
-    copy( CHEMIN_DOSSIER_IMPORT.$_SESSION['TMP']['partenaire_logo_new_filename'] , CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename'] );
+    $_SESSION['tmp']['partenaire_logo_actuel_filename'] = 'logo_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$_SESSION['tmp']['partenaire_logo_new_file_ext'];
+    copy( CHEMIN_DOSSIER_IMPORT.$_SESSION['tmp']['partenaire_logo_new_filename'] , CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] );
   }
-  unset( $_SESSION['TMP']['partenaire_logo_new_filename'] , $_SESSION['TMP']['partenaire_logo_new_file_ext'] );
+  unset( $_SESSION['tmp']['partenaire_logo_new_filename'] , $_SESSION['tmp']['partenaire_logo_new_file_ext'] );
   // On fabrique le fichier avec les infos et on l'enregistre
-  FileSystem::fabriquer_fichier_partenaire_message( $_SESSION['USER_ID'] , $_SESSION['TMP']['partenaire_logo_actuel_filename'] , $adresse_web , $message );
+  FileSystem::fabriquer_fichier_partenaire_message( $_SESSION['USER_ID'] , $_SESSION['tmp']['partenaire_logo_actuel_filename'] , $adresse_web , $message );
   // Retour
-  $partenaire_logo_url = ($_SESSION['TMP']['partenaire_logo_actuel_filename']) ? URL_DIR_PARTENARIAT.$_SESSION['TMP']['partenaire_logo_actuel_filename'] : URL_DIR_IMG.'auto.gif' ;
+  $partenaire_logo_url = ($_SESSION['tmp']['partenaire_logo_actuel_filename']) ? URL_DIR_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] : URL_DIR_IMG.'auto.gif' ;
   $partenaire_lien_ouvrant = ($adresse_web) ? '<a href="'.html($adresse_web).'" class="lien_ext">' : '' ;
   $partenaire_lien_fermant = ($adresse_web) ? '</a>' : '' ;
   exit('ok-'.$partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />');

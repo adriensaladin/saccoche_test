@@ -148,7 +148,7 @@ class LockAcces
     {
       // Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.
       // Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).
-      if( time() - filemtime(LockAcces::chemin_fichier_blocage('automate',$BASE)) < 5*60 )
+      if( $_SERVER['REQUEST_TIME'] - filemtime(LockAcces::chemin_fichier_blocage('automate',$BASE)) < 5*60 )
       {
         exit_error( 'Blocage automatique' /*titre*/ , html('Blocage automatique - '.$blocage_msg) /*contenu*/ );
       }

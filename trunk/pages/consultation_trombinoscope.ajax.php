@@ -59,7 +59,7 @@ foreach($DB_TAB as $DB_ROW)
     'img_width'   => $img_width,
     'img_height'  => $img_height,
     'img_src'     => '',
-    'img_title'   => TRUE
+    'img_title'   => TRUE,
   );
 }
 // On récupère les photos

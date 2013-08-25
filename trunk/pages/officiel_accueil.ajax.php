@@ -48,7 +48,7 @@ $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : ''
     'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
     'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
     'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-    'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
+    'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
   );
 
 if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer') ) )
@@ -86,7 +86,7 @@ $tab_actions = array
   'imprimer_donnees_eleves_collegues' => 'Appréciations des collègues pour chaque élève',
   'imprimer_donnees_classe_collegues' => 'Appréciations des collègues sur le groupe classe',
   'imprimer_donnees_eleves_syntheses' => 'Appréciations de synthèse générale pour chaque élève',
-  'imprimer_donnees_eleves_moyennes'  => 'Tableau des moyennes pour chaque élève'
+  'imprimer_donnees_eleves_moyennes'  => 'Tableau des moyennes pour chaque élève',
 );
 
 if( isset($tab_actions[$action]) )

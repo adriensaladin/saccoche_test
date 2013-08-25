@@ -41,17 +41,17 @@ $tab_menu = array
     "Données personnelles"  => array( 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
     "Algorithme de calcul"  => array( 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
     "Dates des périodes"    => array( 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    "Référentiels en place" => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' )
+    "Référentiels en place" => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
   ),
   "Paramétrages" => array
   (
     "Mot de passe" => array( 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
-    "Daltonisme"   => array( 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' )
+    "Daltonisme"   => array( 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
   ),
   "Évaluations" => array
   (
     "Liste des évaluations"            => array( 'class' => 'evaluation_voir'    , 'href' => 'page=evaluation_voir'          ),
-    "Demandes d'évaluations formulées" => array( 'class' => 'evaluation_demande' , 'href' => 'page=evaluation_demande_eleve' )
+    "Demandes d'évaluations formulées" => array( 'class' => 'evaluation_demande' , 'href' => 'page=evaluation_demande_eleve' ),
   ),
   "Relevés / Synthèses" => array
   (
@@ -62,12 +62,12 @@ $tab_menu = array
  // Penser aussi aux restrictions d'accès
     "Synthèse d'une matière"            => array( 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
     "Synthèse pluridisciplinaire"       => array( 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
-    "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'                 )
+    "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'                 ),
   ),
   "Bilans officiels" => array
   (
-    "Archives consultables" => array( 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_voir_archive' )
-  )
+    "Archives consultables" => array( 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_voir_archive' ),
+  ),
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

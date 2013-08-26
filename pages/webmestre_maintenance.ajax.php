@@ -88,14 +88,24 @@ if($action=='verif_droits')
 if($action=='verif_dir_etabl')
 {
   // Récupérer les ids des structures
-  $tab_bases = array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() );
+  $tab_bases = array();
+  $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id();
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_bases[$DB_ROW['sacoche_base']] = $DB_ROW['sacoche_base'];
+    }
+  }
   // Récupérer les dossiers additionnels par établissement
   $tab_dossiers = array();
+  unset($_SESSION['tmp']);
   foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)
   {
-    $tab_dossiers[$dossier_dir] = array_fill_keys ( FileSystem::lister_contenu_dossier($dossier_dir) , TRUE );
-    unset($tab_dossiers[$dossier_dir]['index.htm']);
-    ksort($tab_dossiers[$dossier_dir],SORT_NATURAL);
+    FileSystem::analyser_dossier( $dossier_dir , strlen($dossier_dir) , 'avant' , FALSE /*with_first_dir*/ );
+    ksort($_SESSION['tmp']['dossier']);
+    $tab_dossiers[$dossier_dir] = $_SESSION['tmp']['dossier'];
+    unset($_SESSION['tmp']);
   }
   // Pour l'affichage du retour
   $thead = '<tr><td colspan="2">Vérification des dossiers additionnels par établissement - '.date('d/m/Y H:i:s').'</td></tr>';
@@ -353,7 +363,7 @@ if($action=='verif_file_appli_etape3')
 //
 if($action=='verif_file_appli_etape4')
 {
-  $thead = '<tr><td colspan="2">Vérification des fichiers de l\'application en place - '.date('d/m/Y H:i:s').'</td></tr>';
+  $thead = '<tr><td colspan="2">Vérification es fichiers de l\'application en place - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody_ok = '';
   $tbody_pb = '';
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.

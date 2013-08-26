@@ -168,7 +168,7 @@ if($connexion_mode=='cas')
       // class
       if (isset($trace['class']))
       {
-        $str_traces .= $trace['class'].' :->: ';
+        $str_traces .= $trace['class'].' -> ';
         unset($trace['class']);
       }
 
@@ -229,24 +229,24 @@ if($connexion_mode=='cas')
       {
         if ( ($trace['type']!='') && ($trace['type']!='->') )
         {
-          $str_traces .= "\n\t\t".'type : '.$trace['type']."\n";
+          $str_traces .=  ' type : '.$trace['type'];
         }
         unset($trace['file']);
       }
       // si jamais il reste des trucs...
       if (count($trace))
       {
-        $str_traces .= ' et il reste les infos :'."\n\t\t";
+        $str_traces .= ' et il reste les infos :';
         foreach ($trace as $key => $value)
         {
-          $str_traces .= "\t\t".$key.' : ';
+          $str_traces .= " ".$key.' : ';
           if (is_scalar($value))
           {
-            $str_traces .= $value."\n";
+            $str_traces .= $value.' ; ';
           }
           else
           {
-            $str_traces .= print_r($value, TRUE)."\n";
+            $str_traces .= print_r($value, TRUE).' ; ';
           }
         }
       }

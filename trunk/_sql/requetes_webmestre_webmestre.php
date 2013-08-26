@@ -90,7 +90,7 @@ public static function DB_lister_structures_id()
   $DB_SQL = 'SELECT sacoche_base ';
   $DB_SQL.= 'FROM sacoche_structure ';
   $DB_SQL.= 'ORDER BY sacoche_base ASC ';
-  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+  return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL, TRUE);
 }
 
 /**

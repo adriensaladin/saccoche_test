@@ -321,9 +321,6 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
   {
     $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
-  // date création
-  $facture_PDF->SetXY(14,75);
-  $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('À Plachy Buyon, le '.convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // référence du connecteur
   $facture_PDF->SetFont('Arial','B',$taille_police);
   $facture_PDF->SetXY(55,120);

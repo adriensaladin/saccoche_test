@@ -2025,7 +2025,7 @@ if( $step==53 )
   echo'<p><label class="alerte">Voici les identifiants des nouveaux inscrits :</label></p>'.NL;
   echo'<ul class="puce">'.NL;
   echo  '<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$archive.'.pdf"><span class="file file_pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</span></a></li>'.NL;
-  echo  '<li><a class="lien_ext" href="./force_download.php?auth&amp;fichier='.$archive.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
   echo'</ul>'.NL;
   echo'<p class="danger">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>'.NL;
   switch($action)

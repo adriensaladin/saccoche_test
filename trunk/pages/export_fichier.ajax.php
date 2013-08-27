@@ -85,7 +85,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   // ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
   $export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'COEF'.$separateur.'DEMANDE_EVAL'.$separateur.'LIEN'.$separateur.'SOCLE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr>'.NL.'</thead><tbody>'.NL;
 
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ );
   if(!empty($DB_TAB))

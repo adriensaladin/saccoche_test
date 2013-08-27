@@ -94,18 +94,18 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* h1 = titre de la page (puce personnalisée à la page d'authentification) */
-h1{display:block;font-size:115%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.15em;margin:1ex 2em;background:transparent url(../_img/sprite_titre_1.png) 0 0 no-repeat;padding-left:26px;line-height:16px}
+h1{display:block;white-space:nowrap;font-size:115%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.1em;margin:1ex 2em;background:transparent url(../_img/sprite_titre_1.png) 0 0 no-repeat;padding-left:26px;line-height:16px}
 #cadre_milieu h1.hebergement    {background-position: 0  -20px}
 #cadre_milieu h1.identification {background-position: 0  -40px}
 #cadre_milieu h1.informations   {background-position: 0  -60px}
 
 /* h2 = titre d'une partie (souvent précédé d'un <hr />) */
-h2{display:block;font-size:105%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;background:transparent url(../_img/sprite_titre_1.png) 0 -80px no-repeat;padding-left:16px;line-height:14px}
+h2{display:block;white-space:nowrap;font-size:105%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.05em;margin:1ex auto 1ex 1em;background:transparent url(../_img/sprite_titre_1.png) 0 -80px no-repeat;padding-left:16px;line-height:14px}
 
 /* h3 = réservé pour l'infobulle */
 
 /* h4 = paragraphe dans une partie */
-h4{display:block;font-size:100%;text-align:left;font-weight:bold;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 4px;background:transparent url(../_img/sprite_titre_1.png) 0 -96px no-repeat;padding-left:14px;line-height:13px}
+h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:bold;color:#227;margin:1ex auto 1ex 4px;background:transparent url(../_img/sprite_titre_1.png) 0 -96px no-repeat;padding-left:14px;line-height:13px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Boutons d'informations (dans #cadre_haut)                                                           */

@@ -41,13 +41,40 @@ define(   'OPERA_VERSION_LAST'           ,12); define(   'OPERA_URL_DOWNLOAD'   
 
 define(  'SAFARI_VERSION_MINI_REQUISE'   , 3); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2007).');
 define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5);
-define(  'SAFARI_VERSION_LAST'           , 5); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ?
+define(  'SAFARI_VERSION_LAST'           , 6); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ?
 
 define('EXPLORER_VERSION_MINI_REQUISE'   , 8); define('EXPLORER_TEXTE_MINI_REQUIS'     , 'Version 8 minimum (sortie en 2009) <span class="danger">mais usage déconseillé</span> (surtout avant la version 9).');
 define('EXPLORER_VERSION_MINI_CONSEILLEE', 9);
 define('EXPLORER_VERSION_LAST'           ,10); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home');
 
-
+//
+// Chrome
+//
+// $version_page = cURL::get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
+// $nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
+// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 6 ;
+//
+// Firefox
+//
+// $version_page = cURL::get_contents('http://www.mozilla-europe.org/fr/');
+// $nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
+// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 4 ;
+//
+// Opéra
+//
+// $version_page = cURL::get_contents('http://www.opera-fr.com/telechargements/');
+// $nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
+// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 10 ;
+//
+// Safari
+//
+// $version_page = cURL::get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
+// $nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
+//
+// $version_page = cURL::get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
+// $nb_match = preg_match( '#'.'<td>'.'(.*?)'.' \(derni&egrave;re version\)</td>'.'#' , $version_page , $tab_matches );
+// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 5 ;
+//
 
 class Browser
 {
@@ -71,13 +98,16 @@ class Browser
    * License: http://creativecommons.org/licenses/by/2.5/
    * Credits: This is a php port from Rafael Lima's original Javascript CSS Browser Selector: http://rafael.adm.br/css_browser_selector
    * 
+   * Autre solution intéressante mais lourde :
+   * https://github.com/GaretJax/phpbrowscap (http://tempdownloads.browserscap.com/)
+   *
    * Fonction originale réécrite et modifiée pour SACoche par Thomas Crespin.
    * @param string   $UserAgent   facultatif
    * @return array                array( 'modele' , 'version' );
    */
   private static function css_selector($UserAgent=NULL)
   {
-    $tab_retour = array( 'modele'=>'' , 'version'=>0 , 'environnement'=>'' );
+    $tab_retour = array( 'modele'=>'' , 'version'=>0 );
     // Variable à analyser
     $UserAgent = ($UserAgent) ? strtolower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
     // Détection du navigateur et si possible de sa version
@@ -134,45 +164,6 @@ class Browser
     {
       $tab_retour['modele']  = 'gecko';
     }
-    // Détection de l'environnement
-    /*
-    if(strstr($UserAgent,'j2me'))
-    {
-      $tab_retour['environnement'] = 'mobile';
-    }
-    elseif(strstr($UserAgent,'iphone'))
-    {
-      $tab_retour['environnement'] = 'iphone';
-    }
-    elseif(strstr($UserAgent,'ipod'))
-    {
-      $tab_retour['environnement'] = 'ipod';
-    }
-    elseif(strstr($UserAgent,'mac'))
-    {
-      $tab_retour['environnement'] = 'mac';
-    }
-    elseif(strstr($UserAgent,'darwin'))
-    {
-      $tab_retour['environnement'] = 'mac';
-    }
-    elseif(strstr($UserAgent,'webtv'))
-    {
-      $tab_retour['environnement'] = 'webtv';
-    }
-    elseif(strstr($UserAgent,'win'))
-    {
-      $tab_retour['environnement'] = 'win';
-    }
-    elseif(strstr($UserAgent,'freebsd'))
-    {
-      $tab_retour['environnement'] = 'freebsd';
-    }
-    elseif( (strstr($UserAgent, 'x11')) || (strstr($UserAgent, 'linux')) )
-    {
-      $tab_retour['environnement'] = 'linux';
-    }
-    */
     // Envoi du résultat
     return $tab_retour;
   }
@@ -180,35 +171,6 @@ class Browser
   // //////////////////////////////////////////////////
   // Méthodes publiques
   // //////////////////////////////////////////////////
-
-  //
-  // Chrome
-  //
-  // $version_page = cURL::get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
-  // $nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
-  // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 6 ;
-  //
-  // Firefox
-  //
-  // $version_page = cURL::get_contents('http://www.mozilla-europe.org/fr/');
-  // $nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
-  // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 4 ;
-  //
-  // Opéra
-  //
-  // $version_page = cURL::get_contents('http://www.opera-fr.com/telechargements/');
-  // $nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
-  // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 10 ;
-  //
-  // Safari
-  //
-  // $version_page = cURL::get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
-  // $nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
-  //
-  // $version_page = cURL::get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
-  // $nb_match = preg_match( '#'.'<td>'.'(.*?)'.' \(derni&egrave;re version\)</td>'.'#' , $version_page , $tab_matches );
-  // $version_numero = ($nb_match) ? (float)$tab_matches[1] : 5 ;
-  //
 
   public static function afficher_navigateurs_modernes()
   {
@@ -243,7 +205,7 @@ class Browser
         }
         elseif($tab_return['version']<$version_mini_conseillee)
         {
-          $alerte = ($navigo_ref!='explorer') ? 'Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.' : 'Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.' ;
+          $alerte = ($navigo_ref=='explorer') ? 'Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.' : 'Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.' ;
         }
       }
     }

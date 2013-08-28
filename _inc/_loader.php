@@ -389,8 +389,8 @@ function getServerProtocole()
 
 function getServerPort()
 {
-  // Rien à indiquer si port 80 (protocole HTTP) ou 443 (protocole HTTPS)
-  return ( !isset($_SERVER['SERVER_PORT']) || in_array($_SERVER['SERVER_PORT'],array(80,443)) ) ? '' : ':'.$_SERVER['SERVER_PORT'] ;
+  // Rien à indiquer si port 80 (protocole HTTP) ou 443 (protocole HTTPS) ou port déjà indiqué dans le HOST (pas normal, mais c'est arrivé...)
+  return ( !isset($_SERVER['SERVER_PORT']) || in_array($_SERVER['SERVER_PORT'],array(80,443)) || strpos($HOST,':') ) ? '' : ':'.$_SERVER['SERVER_PORT'] ;
 }
 
 define('URL_BASE',getServerProtocole().$HOST.getServerPort());

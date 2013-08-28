@@ -128,17 +128,8 @@ if($action=='verif_dir_etabl')
       {
         if(isset($tab_dossiers[$dossier_dir][$base_id]))
         {
-          if(is_dir($dossier_dir.$base_id))
-          {
-            FileSystem::supprimer_dossier($dossier_dir.$base_id);
-            $tbody_pb .= '<tr class="r"><td>Dossier en trop (&rarr; supprimé)</td><td>'.$dossier_key.$base_id.'</td></tr>';
-          }
-          // Normalement, ne devrait pas, mais suite à un bug, des fichiers se sont retrouvés créés...
-          if(is_file($dossier_dir.$base_id))
-          {
-            unlink($dossier_dir.$base_id);
-            $tbody_pb .= '<tr class="r"><td>Fichier en trop (&rarr; supprimé)</td><td>'.$dossier_key.$base_id.'</td></tr>';
-          }
+          FileSystem::supprimer_dossier($dossier_dir.$base_id);
+          $tbody_pb .= '<tr class="r"><td>Dossier en trop (&rarr; supprimé)</td><td>'.$dossier_key.$base_id.'</td></tr>';
         }
       }
     }

@@ -333,7 +333,7 @@ class FileSystem
   public static function ecrire_fichier_index($dossier_chemin,$obligatoire=TRUE)
   {
     $ds = (substr($dossier_chemin,-1)==DS) ? '' : DS ;
-    $fichier_chemin  = $dossier_chemin.ds.'index.htm';
+    $fichier_chemin  = $dossier_chemin.$ds.'index.htm';
     $fichier_contenu = 'Circulez, il n\'y a rien à voir par ici !';
     if($obligatoire) return FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
     else return FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
@@ -572,21 +572,18 @@ class FileSystem
       FileSystem::ecrire_fichier($fichier_lock,'');
       // On verifie que certains sous-dossiers existent :
       $tab_sous_dossier = array(
-        CHEMIN_DOSSIER_DEVOIR ,          // n'a été ajouté qu'en mars 2012,
-        CHEMIN_DOSSIER_DEVOIR.DS.$BASE ,
-        CHEMIN_DOSSIER_OFFICIEL ,        // n'a été ajouté qu'en mai 2012,
-        CHEMIN_DOSSIER_OFFICIEL.DS.$BASE ,
-        CHEMIN_DOSSIER_PARTENARIAT ,     // n'a été ajouté qu'en juin 2013,
-        CHEMIN_DOSSIER_COOKIE.DS.$BASE , // a à un moment été oublié depuis le formulaire Sésamath
-        CHEMIN_DOSSIER_RSS.DS.$BASE ,    // a à un moment été oublié depuis le formulaire Sésamath
-        CHEMIN_DOSSIER_BADGE.DS.$BASE ,  // a été effacé pour certaines structures en août 2013
+        CHEMIN_DOSSIER_DEVOIR ,       // n'a été ajouté qu'en mars 2012,
+        CHEMIN_DOSSIER_DEVOIR.$BASE.DS ,
+        CHEMIN_DOSSIER_OFFICIEL ,     // n'a été ajouté qu'en mai 2012,
+        CHEMIN_DOSSIER_OFFICIEL.$BASE.DS ,
+        CHEMIN_DOSSIER_PARTENARIAT ,  // n'a été ajouté qu'en juin 2013,
       );
       foreach($tab_sous_dossier as $sous_dossier)
       {
         if(!is_dir($sous_dossier))
         {
           FileSystem::creer_dossier($sous_dossier);
-          FileSystem::ecrire_fichier($sous_dossier.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+          FileSystem::ecrire_fichier($sous_dossier.'index.htm','Circulez, il n\'y a rien à voir par ici !');
         }
       }
       $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 36 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?

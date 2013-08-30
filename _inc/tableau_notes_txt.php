@@ -35,7 +35,6 @@ $tab_notes_txt['Courbet']    = array( 'RR'=>'NA' , 'R'=>'ECA' , 'V'=>'A'  , 'VV'
 $tab_notes_txt['Deutsch']    = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'B'  );
 $tab_notes_txt['Europe']     = array( 'RR'=>'D'  , 'R'=>'C'   , 'V'=>'B'  , 'VV'=>'A'  );
 $tab_notes_txt['Indonesie']  = array( 'RR'=>'D'  , 'R'=>'C'   , 'V'=>'B'  , 'VV'=>'A'  );
-$tab_notes_txt['JeanZay']    = array( 'RR'=>'CNA', 'R'=>'CIA' , 'V'=>'CVA', 'VV'=>'CA' );
 $tab_notes_txt['Leon']       = array( 'RR'=>'N'  , 'R'=>'R'   , 'V'=>'O'  , 'VV'=>'V'  );
 $tab_notes_txt['Lomer']      = array( 'RR'=>'RR' , 'R'=>'R'   , 'V'=>'V'  , 'VV'=>'VV' );
 $tab_notes_txt['Luys']       = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'B'  );

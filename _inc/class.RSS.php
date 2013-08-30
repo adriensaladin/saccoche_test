@@ -50,13 +50,12 @@ class RSS
    * Créer un fichier RSS d'un prof vierge (pour recueillir les demandes d'évaluations des élèves).
    * 
    * @param string   $fichier_chemin
-   * @param string   $fichier_url
    * @return void
    */
-  private static function creer_fichier($fichier_chemin,$fichier_url)
+  private static function creer_fichier($fichier_chemin)
   {
     $fichier_contenu ='<?xml version="1.0" encoding="utf-8"?>'."\r\n";
-    $fichier_contenu.='<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'."\r\n";
+    $fichier_contenu.='<rss version="2.0">'."\r\n";
     $fichier_contenu.='<channel>'."\r\n\r\n";
     $fichier_contenu.='  <title>SACoche</title>'."\r\n";
     $fichier_contenu.='  <link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
@@ -64,11 +63,10 @@ class RSS
     $fichier_contenu.='  <language>fr-FR</language>'."\r\n";
     $fichier_contenu.='  <lastBuildDate>'.date("r",$_SERVER['REQUEST_TIME']).'</lastBuildDate>'."\r\n";
     $fichier_contenu.='  <docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
-    $fichier_contenu.='  <atom:link href="'.$fichier_url.'" rel="self" type="application/rss+xml" />'."\r\n";
     $fichier_contenu.='  <image>'."\r\n";
     $fichier_contenu.='    <url>'.SERVEUR_PROJET.'/_img/logo_rss.png</url>'."\r\n";
     $fichier_contenu.='    <title>SACoche</title>'."\r\n";
-    $fichier_contenu.='    <link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
+    $fichier_contenu.='    <link>'.SERVEUR_PROJET.'</link>'."\r\n";
     $fichier_contenu.='    <width>144</width>'."\r\n";
     $fichier_contenu.='    <height>45</height>'."\r\n";
     $fichier_contenu.='    <description></description>'."\r\n";
@@ -92,13 +90,12 @@ class RSS
   {
     $fichier_nom    = RSS::nom_fichier_prof($prof_id);
     $fichier_chemin = CHEMIN_DOSSIER_RSS.$_SESSION['BASE'].DS.$fichier_nom;
-    $fichier_url    = URL_DIR_RSS.$_SESSION['BASE'].'/'.$fichier_nom;
     // S'il n'existe pas, en créer un vierge.
     if(!file_exists($fichier_chemin))
     {
-      RSS::creer_fichier($fichier_chemin,$fichier_url);
+      RSS::creer_fichier($fichier_chemin);
     }
-    return $fichier_url;
+    return URL_DIR_RSS.$_SESSION['BASE'].'/'.$fichier_nom;
   }
 
   /**
@@ -112,13 +109,11 @@ class RSS
    */
   public static function modifier_fichier_prof($prof_id,$titre,$texte,$guid)
   {
-    $fichier_nom    = RSS::nom_fichier_prof($prof_id);
-    $fichier_chemin = CHEMIN_DOSSIER_RSS.$_SESSION['BASE'].DS.$fichier_nom;
-    $fichier_url    = URL_DIR_RSS.$_SESSION['BASE'].'/'.$fichier_nom;
+    $fichier_chemin = CHEMIN_DOSSIER_RSS.$_SESSION['BASE'].DS.RSS::nom_fichier_prof($prof_id);
     // S'il n'existe pas, en créer un vierge.
     if(!file_exists($fichier_chemin))
     {
-      RSS::creer_fichier($fichier_chemin,$fichier_url);
+      RSS::creer_fichier($fichier_chemin);
     }
     // Ajouter l'article
     $date = date("r",$_SERVER['REQUEST_TIME']);

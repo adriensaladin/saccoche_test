@@ -389,7 +389,7 @@ function getServerProtocole()
 
 function getServerPort()
 {
-  // Rien à indiquer si port 80 (protocole standard HTTP) ou 443 (protocole standard HTTPS) ou port déjà indiqué dans le HOST (les navigateurs indiquent le port dans le header Host de la requete http quand il est non standard comme la norme http1/1 le préconise http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.23 mais le serveur web ne le file généralement pas à PHP dans HTTP_HOST)
+  // Rien à indiquer si port 80 (protocole HTTP) ou 443 (protocole HTTPS) ou port déjà indiqué dans le HOST (pas normal, mais c'est arrivé...)
   return ( !isset($_SERVER['SERVER_PORT']) || in_array($_SERVER['SERVER_PORT'],array(80,443)) || strpos($HOST,':') ) ? '' : ':'.$_SERVER['SERVER_PORT'] ;
 }
 

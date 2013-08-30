@@ -168,7 +168,7 @@ if($connexion_mode=='cas')
       // class
       if (isset($trace['class']))
       {
-        $str_traces .= $trace['class'].' -> ';
+        $str_traces .= $trace['class'].' :->: ';
         unset($trace['class']);
       }
 
@@ -373,7 +373,7 @@ if($connexion_mode=='cas')
     {
       if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
       {
-        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_BLOG_CONVENTION.'" target="_blank">cet article du blog de l\'association Sésamath</a> pour comprendre les raisons de cette procédure.' /*contenu*/ );
+        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un courriel informatif a été envoyé à tous les contacts SACoche des établissements en juin 2013.<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_BLOG_CONVENTION.'" target="_blank">cet article du blog de l\'association Sésamath</a> pour davantage d\explications.' /*contenu*/ );
       }
     }
     else

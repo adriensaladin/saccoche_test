@@ -296,6 +296,14 @@ function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
     }
     echo    '</style>'.NL;
   }
+  // JS fichiers
+  if(!empty($GLOBALS['HEAD']['js']['file']))
+  {
+    foreach($GLOBALS['HEAD']['js']['file'] as $js_file)
+    {
+      echo    '<script type="text/javascript" charset="'.CHARSET.'" src="'.$js_file.'"></script>'.NL;
+    }
+  }
   // JS inline (données dynamiques, telles des constantes supplémentaires)
   if(!empty($GLOBALS['HEAD']['js']['inline']))
   {
@@ -305,14 +313,6 @@ function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
       echo      $js_inline.NL;
     }
     echo    '</script>'.NL;
-  }
-  // JS fichiers
-  if(!empty($GLOBALS['HEAD']['js']['file']))
-  {
-    foreach($GLOBALS['HEAD']['js']['file'] as $js_file)
-    {
-      echo    '<script type="text/javascript" charset="'.CHARSET.'" src="'.$js_file.'"></script>'.NL;
-    }
   }
   echo  '</head>'.NL;
 }
@@ -814,20 +814,6 @@ function annee_session_brevet()
   {
     return $annee_actuelle+1;
   }
-}
-
-/**
- * Tester si on est dans la période de rentrée
- *
- * @param void
- * @return bool
- */
-function test_periode_rentree()
-{
-  $mois_actuel    = date('n');
-  $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] ; // par défaut août
-  $mois_rentree   = ($mois_bascule<12) ? $mois_bascule+1 : 1 ; // par défaut septembre
-  return ($mois_actuel==$mois_bascule) || ($mois_actuel==$mois_rentree) ;
 }
 
 /**

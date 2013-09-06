@@ -452,8 +452,7 @@ define('SERVEUR_TELECHARGEMENT' ,SERVEUR_PROJET.'/telechargement.php');      // 
 define('SERVEUR_VERSION'        ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_CNIL'           ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
 define('SERVEUR_CONTACT'        ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide de démarrage (administrateur de SACoche)"
-define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?fichier=guide_rentree');  // URL de la page "Guide de changement d'année (administrateur de SACoche)"
+define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide d'un administrateur de SACoche"
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"
 define('SERVEUR_RSS'            ,SERVEUR_PROJET.'/_rss/rss.xml');            // URL du fichier comportant le flux RSS
 define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');        // URL de la page expliquant les Conventions ENT

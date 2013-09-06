@@ -171,17 +171,11 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     </thead>
     <tbody>
       <?php
-      // Récupérer les coordonnées du contact référent
       // Lister les conventions de cet établissement
-      $contact_nom = $contact_prenom = $contact_courriel = '' ;
       $DB_TAB = array();
       if( (IS_HEBERGEMENT_SESAMATH) && (HEBERGEUR_INSTALLATION=='multi-structures') )
       {
         charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
-        $DB_ROW2 = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
-        $contact_nom      = $DB_ROW2['structure_contact_nom'];
-        $contact_prenom   = $DB_ROW2['structure_contact_prenom'];
-        $contact_courriel = $DB_ROW2['structure_contact_courriel'];
         $DB_TAB = DB_WEBMESTRE_ADMINISTRATEUR::DB_lister_conventions_structure($_SESSION['BASE']);
       }
       if(!empty($DB_TAB))
@@ -214,10 +208,6 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
       ?>
     </tbody>
   </table>
-  <p class="astuce">
-    Les documents sont établis au nom de <b><?php echo html($contact_nom.' '.$contact_prenom); ?></b>, contact référent de l'établissement pour <em>SACoche</em>, qui recevra des informations sur l'avancement du dossier à son adresse <b><?php echo html($contact_courriel) ?></b>.<br />
-    Pour communiquer les coordonnées d'un nouveau contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span>
-  </p>
 </div>
 
 <form action="#" method="post" id="form_ajout" class="hide">

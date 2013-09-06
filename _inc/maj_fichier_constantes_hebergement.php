@@ -44,7 +44,7 @@ if(!defined('CNIL_NUMERO'))
 // A compter du 14/03/2012, ajout de paramètres dans le fichier de constantes pour les fichiers associés aux devoirs. [TODO] peut être retiré dans un an environ
 if(!defined('FICHIER_DUREE_CONSERVATION'))
 {
-  $tab_constantes_manquantes += array('FICHIER_TAILLE_MAX'=>500,'FICHIER_DUREE_CONSERVATION'=>12);
+  $tab_constantes_manquantes += array('CNIL_NUMERO'=>HEBERGEUR_CNIL,'CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'');
 }
 
 // A compter du 18/10/2012, ajout de paramètre dans le fichier de constantes pour le chemin des logs phpCAS. [TODO] peut être retiré dans un an environ

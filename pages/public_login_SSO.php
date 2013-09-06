@@ -357,37 +357,37 @@ if($connexion_mode=='cas')
       {
         exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
       }
-      if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
+    }
+    if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
+    {
+      exit_error( 'Fichier manquant' /*titre*/ , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' /*contenu*/ );
+    }
+    // Normalement les hébergements académiques ne sont pas concernés
+    require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
+    if( isset($tab_connecteurs_hebergement[$connexion_ref]) )
+    {
+      exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
+    }
+    // Pas besoin de vérification si convention signée à un plus haut niveau
+    if( !isset($tab_connecteurs_convention[$connexion_ref]) )
+    {
+      if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
       {
-        exit_error( 'Fichier manquant' /*titre*/ , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' /*contenu*/ );
+        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un courriel informatif a été envoyé à tous les contacts SACoche des établissements en juin 2013.<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_BLOG_CONVENTION.'" target="_blank">cet article du blog de l\'association Sésamath</a> pour davantage d\explications.' /*contenu*/ );
       }
-      // Normalement les hébergements académiques ne sont pas concernés
-      require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
-      if( isset($tab_connecteurs_hebergement[$connexion_ref]) )
+    }
+    else
+    {
+      // Cas d'une convention signée par un partenaire ENT => Mettre en session l'affichage de sa communication en page d'accueil.
+      $partenaire_id = DB_WEBMESTRE_PUBLIC::DB_recuperer_id_partenaire_for_connecteur($connexion_ref);
+      $fichier_chemin = 'info_'.$partenaire_id.'.php';
+      if( $partenaire_id && is_file(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin) )
       {
-        exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
-      }
-      // Pas besoin de vérification si convention signée à un plus haut niveau
-      if( isset($tab_connecteurs_convention[$connexion_ref]) )
-      {
-        // Cas d'une convention signée par un partenaire ENT => Mettre en session l'affichage de sa communication en page d'accueil.
-        $partenaire_id = DB_WEBMESTRE_PUBLIC::DB_recuperer_id_partenaire_for_connecteur($connexion_ref);
-        $fichier_chemin = 'info_'.$partenaire_id.'.php';
-        if( $partenaire_id && is_file(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin) )
-        {
-          require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
-          $partenaire_logo_url = ($partenaire_logo_actuel_filename) ? URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename : URL_DIR_IMG.'auto.gif' ;
-          $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" class="lien_ext">' : '' ;
-          $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>' : '' ;
-          $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
-        }
-      }
-      else
-      {
-        if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
-        {
-          exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un courriel informatif a été envoyé à tous les contacts SACoche des établissements en juin 2013.<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_BLOG_CONVENTION.'" target="_blank">cet article du blog de l\'association Sésamath</a> pour davantage d\explications.' /*contenu*/ );
-        }
+        require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
+        $partenaire_logo_url = ($partenaire_logo_actuel_filename) ? URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename : URL_DIR_IMG.'auto.gif' ;
+        $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" class="lien_ext">' : '' ;
+        $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>' : '' ;
+        $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
       }
     }
   }

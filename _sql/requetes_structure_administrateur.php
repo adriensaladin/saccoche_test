@@ -578,13 +578,15 @@ public static function DB_lister_users($profil_type,$statut,$liste_champs,$with_
  * @param string   $debut_nom         premières lettres du nom
  * @param string   $debut_prenom      premières lettres du prénom
  * @param string   $liste_parent_id   liste des id de parents
+ * @param bool     $order_enfant      pour forcer un tri par enfant
  * @return array
  */
-public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='')
+public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='',$order_enfant=FALSE)
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
+  $order_enfant = ($order_enfant) ? 'eleve.user_nom ASC, ' : '' ;
   $DB_SQL = 'SELECT ' ;
   $DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
   $DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR "§BR§") AS enfants_liste, ';
@@ -599,15 +601,13 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
   {
     $DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;
     $DB_SQL.= ($debut_prenom) ? 'AND parent.user_prenom LIKE :prenom ' : '' ;
-    $order = 'parent.user_nom ASC, parent.user_prenom ASC ';
   }
   else
   {
     $DB_SQL.= 'AND parent.user_id IN('.$liste_parent_id.') ';
-    $order = 'eleve.user_nom ASC, parent.user_nom ASC ';
   }
   $DB_SQL.= 'GROUP BY parent.user_id ';
-  $DB_SQL.= 'ORDER BY '.$order;
+  $DB_SQL.= 'ORDER BY '.$order_enfant.'parent.user_nom ASC, parent.user_prenom ASC ';
   $DB_VAR = array(':nom'=>$debut_nom.'%',':prenom'=>$debut_prenom.'%');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -628,6 +628,21 @@ public static function lister_parents_adresses_par_enfant()
   $DB_SQL.= 'LEFT JOIN sacoche_parent_adresse USING (parent_id) ';
   $DB_SQL.= 'WHERE enfant_profil.user_profil_type="eleve" AND enfant.user_sortie_date>NOW() AND parent_profil.user_profil_type="parent" AND parent.user_sortie_date>NOW() ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE);
+}
+
+/**
+ * lister_parents_homonymes
+ *
+ * @return array
+ */
+public static function lister_parents_homonymes()
+{
+  $DB_SQL = 'SELECT user_nom, user_prenom, CONVERT( GROUP_CONCAT(user_id SEPARATOR ",") , CHAR) AS identifiants , COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING(user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_profil_type="parent" AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'GROUP BY user_nom,user_prenom HAVING nombre>1 ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

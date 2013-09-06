@@ -495,6 +495,8 @@ class Form
    */
   public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$tab_groupe_periode,$tab_groupe_niveau)
   {
+    $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_periode = new Array();';
+    $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_niveau  = new Array();';
     if(is_array($tab_groupes))
     {
       // On liste les ids des classes et groupes
@@ -512,7 +514,6 @@ class Form
         // Charger le tableau js $tab_groupe_periode de jointures groupes/périodes
         if($tab_groupe_periode)
         {
-          $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_periode = new Array();';
           $tab_memo_groupes = array();
           $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
@@ -528,7 +529,6 @@ class Form
         // Charger le tableau js $tab_groupe_niveau de jointures groupes/périodes
         if($tab_groupe_niveau)
         {
-          $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_niveau = new Array();';
           $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
           {

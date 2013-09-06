@@ -92,7 +92,7 @@ if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
       <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="50" maxlength="63" />
     </p>
     <p>
-      <label class="tab" for="f_connecteurs">Connecteurs <img alt="" src="./_img/bulle_aide.png" title="Valeurs à prendre dans le fichier tableau_sso.php.<br />Valeurs à séparer, faire précéder et terminer par des points-virgules." /> :</label><input id="f_connecteurs" name="f_connecteurs" type="text" value="" size="50" maxlength="255" />
+      <label class="tab" for="f_connecteurs">Connecteurs <img alt="" src="./_img/bulle_aide.png" title="Valeurs à prendre dans le fichier tableau_sso.php.<br />Valeurs à séparer, faire précéder et terminer par des virgules." /> :</label><input id="f_connecteurs" name="f_connecteurs" type="text" value="" size="50" maxlength="255" />
     </p>
   </div>
   <p id="gestion_delete">

@@ -39,7 +39,12 @@ $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_n
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet#toggle_responsables_doublons_adresses">DOC : Import d'utilisateurs depuis Siècle / STS-Web - Doublons d'adresses responsables</a></span></li>
+</ul>
+
+<hr />
 
 <form action="./index.php?page=administrateur_parent&amp;section=adresse" method="post" id="form_recherche">
   <div class="ti"><button id="f_nomprenom" name="f_nomprenom" type="submit" class="rechercher">Rechercher</button> des responsables dont le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> et/ou le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" />.</div>
@@ -89,7 +94,10 @@ elseif($levenshtein) // (forcément)
         }
       }
     }
-    $DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id) ) : array() ;
+    $DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id), TRUE /*order_enfant*/ ) : array() ;
+    // Préparation de l'export CSV
+    $separateur = ';';
+    $export_csv = 'NOM PRENOM'.$separateur.'ADRESSE L1'.$separateur.'ADRESSE L2'.$separateur.'ADRESSE L3'.$separateur.'ADRESSE L4'.$separateur.'ADRESSE CP'.$separateur.'ADRESSE COMMUNE'.$separateur.'ADRESSE PAYS'.$separateur.'RESPONSABILITES'."\r\n\r\n";
   }
 }
 
@@ -126,6 +134,11 @@ elseif($levenshtein) // (forcément)
         echo    '<q class="modifier" title="Modifier cette adresse."></q>';
         echo  '</td>';
         echo'</tr>'.NL;
+        // Export CSV
+        if($levenshtein)
+        {
+          $export_csv .= $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].$separateur.$DB_ROW['adresse_ligne1'].$separateur.$DB_ROW['adresse_ligne2'].$separateur.$DB_ROW['adresse_ligne3'].$separateur.$DB_ROW['adresse_ligne4'].$separateur.$DB_ROW['adresse_postal_code'].$separateur.$DB_ROW['adresse_postal_libelle'].$separateur.$DB_ROW['adresse_pays_nom'].$separateur.str_replace('§BR§',$separateur,$DB_ROW['enfants_liste'])."\r\n";
+        }
       }
     }
     else
@@ -135,6 +148,16 @@ elseif($levenshtein) // (forcément)
     ?>
   </tbody>
 </table>
+
+<?php
+if( $levenshtein && !empty($DB_TAB) )
+{
+  // Finalisation de l'export CSV (archivage dans un fichier)
+  $fnom = 'extraction_ressemblances_adresses_'.fabriquer_fin_nom_fichier__date_et_alea();
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
+  echo'<p><ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+}
+?>
 
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Modifier une adresse</h2>

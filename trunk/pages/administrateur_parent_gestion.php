@@ -33,6 +33,7 @@ $TITRE = "Gérer les parents";
 $statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_statut'])       : 1  ;
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
+$find_doublon = (isset($_POST['f_doublon']))      ? TRUE                                    : FALSE ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
 $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 
@@ -51,11 +52,17 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
 }
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet#toggle_responsables_doublons_comptes">DOC : Import d'utilisateurs depuis Siècle / STS-Web - Doublons de comptes responsables</a></span></li>
+</ul>
+
+<hr />
 
 <form action="./index.php?page=administrateur_parent&amp;section=gestion" method="post" id="form_prechoix">
   <div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <input type="hidden" id="f_afficher" name="f_afficher" value="1" /><button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
   <div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?></div>
+  <p class="ti"><button id="f_doublon" name="f_doublon" type="submit" class="rechercher">Rechercher</button> des responsables homonymes susceptibles d'être des comptes en double.</p>
 </form>
 
 <hr />
@@ -73,6 +80,29 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
 foreach($DB_TAB as $DB_ROW)
 {
   $options .= '<option value="'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_sigle'].' &rarr; '.$DB_ROW['user_profil_nom_long_singulier'].'</option>';
+}
+
+// Lister les parents, par nom / prénom ou recherche d'homonymies
+if(!$find_doublon)
+{
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( FALSE /*with_adresse*/ , $statut , $debut_nom , $debut_prenom );
+}
+elseif($find_doublon) // (forcément)
+{
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::lister_parents_homonymes();
+  if(!empty($DB_TAB))
+  {
+    $tab_parents_id = array();
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_parents_id = array_merge( $tab_parents_id , explode(',',$DB_ROW['identifiants']) );
+    }
+    $DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( FALSE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id) ) : array() ;
+    // Préparation de l'export CSV
+    $separateur = ';';
+    // ajout du préfixe 'ENT_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
+    $export_csv = 'ENT_ID'.$separateur.'SCONET_ID'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'RESPONSABILITES'."\r\n\r\n";
+  }
 }
 ?>
 
@@ -96,8 +126,6 @@ foreach($DB_TAB as $DB_ROW)
   </thead>
   <tbody>
     <?php
-    // Lister les parents
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( FALSE /*with_adresse*/ , $statut , $debut_nom , $debut_prenom );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -123,6 +151,11 @@ foreach($DB_TAB as $DB_ROW)
         echo    '<q class="modifier" title="Modifier ce parent."></q>';
         echo  '</td>';
         echo'</tr>'.NL;
+        // Export CSV
+        if($find_doublon)
+        {
+          $export_csv .= $DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.str_replace('§BR§',$separateur,$DB_ROW['enfants_liste'])."\r\n";
+        }
       }
     }
     else
@@ -132,6 +165,16 @@ foreach($DB_TAB as $DB_ROW)
     ?>
   </tbody>
 </table>
+
+<?php
+if( $find_doublon && !empty($DB_TAB) )
+{
+  // Finalisation de l'export CSV (archivage dans un fichier)
+  $fnom = 'extraction_doublons_responsables_'.fabriquer_fin_nom_fichier__date_et_alea();
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
+  echo'<p><ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+}
+?>
 
 <div id="zone_actions" style="margin-left:3em">
   <div class="p"><span class="u">Pour les utilisateurs cochés :</span> <input id="listing_ids" name="listing_ids" type="hidden" value="" /><label id="ajax_msg_actions">&nbsp;</label></div>

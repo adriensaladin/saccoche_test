@@ -45,6 +45,7 @@ if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $alerte_novice = FALSE ;
+  $info_rentree  = FALSE ;
   if(!DB_STRUCTURE_ADMINISTRATEUR::compter_matieres_etabl())
   {
     $tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
@@ -62,11 +63,13 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   }
   if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())
   {
-    $tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non archivée !<br />&nbsp;<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+    $tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non archivée ! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+    $info_rentree  = TRUE ;
   }
   if($alerte_novice)
   {
-    $tab_accueil['alert'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    // volontairement pas en pop-up mais dans un nouvel onglet
+    $tab_accueil['alert'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
 }
 
@@ -121,7 +124,13 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   if(!$tab_accueil['alert'])
   {
-    $tab_accueil['user'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de SACoche.</a></span></p>';
+    // volontairement pas en pop-up mais dans un nouvel onglet
+    $tab_accueil['user'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+  }
+  if( $info_rentree || test_periode_rentree() )
+  {
+    // volontairement pas en pop-up mais dans un nouvel onglet
+    $tab_accueil['user'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
 }
 // infos adresse de connexion
@@ -224,7 +233,7 @@ if($astuce_nombre)
 // Affichage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'demandes'=>'Demandes d\'évaluations' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
+$tab_msg_rubrique_masquee = array( 'user'=>'Informations d\'accueil' , 'demandes'=>'Demandes d\'évaluations' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
 
 foreach($tab_accueil as $type => $contenu)
 {

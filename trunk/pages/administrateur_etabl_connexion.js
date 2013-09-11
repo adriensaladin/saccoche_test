@@ -61,13 +61,14 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher / masquer le formulaire CAS
 // Afficher / masquer le formulaire GEPI
+// Afficher / masquer le formulaire Domaine préfixe
 // Afficher / masquer l'adresse de connexion directe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function actualiser_formulaire()
     {
       // on masque
-      $('#cas_options , #gepi_options , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
+      $('#cas_options , #gepi_options ,#cas_domaine , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
       if(!IS_HEBERGEMENT_SESAMATH)
       {
         $('#info_hors_sesamath').show();
@@ -86,13 +87,19 @@ $(document).ready
         var valeur = tab_param[connexion_mode][connexion_ref];
         var tab_infos = valeur.split(']¤[');
         var type_convention = tab_infos[0];
-        var is_operationnel = tab_infos[1];
-        $('#cas_serveur_host').val( tab_infos[2] );
-        $('#cas_serveur_port').val( tab_infos[3] );
-        $('#cas_serveur_root').val( tab_infos[4] );
-        $('#cas_serveur_url_login').val(    tab_infos[5] );
-        $('#cas_serveur_url_logout').val(   tab_infos[6] );
-        $('#cas_serveur_url_validate').val( tab_infos[7] );
+        var is_domaine_edit = tab_infos[1];
+        var is_operationnel = tab_infos[2];
+        var host_subdomain  = tab_infos[3];
+        var host_domain     = tab_infos[4];
+        var serveur_host    = (host_subdomain!='') ? host_subdomain+'.'+host_domain : host_domain ;
+        $('#cas_serveur_host').val( serveur_host );
+        $('#cas_serveur_port').val( tab_infos[5] );
+        $('#cas_serveur_root').val( tab_infos[6] );
+        $('#cas_serveur_url_login'   ).val( tab_infos[7] );
+        $('#cas_serveur_url_logout'  ).val( tab_infos[8] );
+        $('#cas_serveur_url_validate').val( tab_infos[9] );
+        $('#serveur_host_subdomain').val( host_subdomain );
+        $('#serveur_host_domain'   ).val( host_domain );
         if(IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE)
         {
           $('#info_'+type_convention).show();
@@ -100,6 +107,10 @@ $(document).ready
         if(connexion_ref=='|perso')
         {
           $('#cas_options').show();
+        }
+        if(is_domaine_edit=='oui')
+        {
+          $('#cas_domaine').show();
         }
         if(is_operationnel=='1')
         {
@@ -138,8 +149,8 @@ $(document).ready
         }
         var valeur = tab_param[connexion_mode][connexion_ref];
         var tab_infos = valeur.split(']¤[');
-        $('#gepi_saml_url').val(    tab_infos[0] );
-        $('#gepi_saml_rne').val(    tab_infos[1] );
+        $('#gepi_saml_url'   ).val( tab_infos[0] );
+        $('#gepi_saml_rne'   ).val( tab_infos[1] );
         $('#gepi_saml_certif').val( tab_infos[2] );
         $("#bouton_valider_mode").prop('disabled',false);
         $('#gepi_options').show();

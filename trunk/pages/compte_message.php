@@ -37,7 +37,7 @@ $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur',
 $select_profil.= '<option value="professeur">Professeurs</option><option value="personnel">Personnels autres</option><option value="eleve">Élèves</option><option value="parent">Responsables légaux</option>';
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var input_date = '.TODAY_FR.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date = "'.TODAY_FR.'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_destinataires = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_msg_contenus  = new Array();';
 ?>

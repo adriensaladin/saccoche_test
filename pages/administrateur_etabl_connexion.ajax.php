@@ -39,8 +39,6 @@ $cas_serveur_root         = (isset($_POST['cas_serveur_root']))         ? Clean:
 $cas_serveur_url_login    = (isset($_POST['cas_serveur_url_login']))    ? Clean::texte($_POST['cas_serveur_url_login'])    : '';
 $cas_serveur_url_logout   = (isset($_POST['cas_serveur_url_logout']))   ? Clean::texte($_POST['cas_serveur_url_logout'])   : '';
 $cas_serveur_url_validate = (isset($_POST['cas_serveur_url_validate'])) ? Clean::texte($_POST['cas_serveur_url_validate']) : '';
-$serveur_host_subdomain   = (isset($_POST['serveur_host_subdomain']))   ? Clean::texte($_POST['serveur_host_subdomain'])   : '';
-$serveur_host_domain      = (isset($_POST['serveur_host_domain']))      ? Clean::texte($_POST['serveur_host_domain'])      : '';
 $gepi_saml_url            = (isset($_POST['gepi_saml_url']))            ? Clean::texte($_POST['gepi_saml_url'])            : '';
 $gepi_saml_rne            = (isset($_POST['gepi_saml_rne']))            ? Clean::uai($_POST['gepi_saml_rne'])              : '';
 $gepi_saml_certif         = (isset($_POST['gepi_saml_certif']))         ? Clean::texte($_POST['gepi_saml_certif'])         : '';
@@ -59,11 +57,6 @@ if($f_action=='enregistrer_mode_identification')
     exit('Erreur avec les données transmises !');
   }
 
-  if( ($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]['serveur_host_subdomain']=='*') && !$serveur_host_subdomain )
-  {
-    exit('Sous-domaine manquant !');
-  }
-
   list($f_connexion_departement,$f_connexion_nom) = explode('|',$f_connexion_ref);
 
   if( ($f_connexion_mode=='normal') || ($f_connexion_mode=='shibboleth') )
@@ -78,8 +71,6 @@ if($f_action=='enregistrer_mode_identification')
 
   if($f_connexion_mode=='cas')
   {
-    // Soit le host est saisi manuellement, soit il faut le recomposer si sous-domaine saisi (dans la situation majoritaire où il n'y a pas de sous-domaine variable, le résultat est le même)
-    $cas_serveur_host = ($f_connexion_nom=='perso') ? $cas_serveur_host : ( ($serveur_host_subdomain!='') ? ( (substr($serveur_host_subdomain,-1)!='.') ? $serveur_host_subdomain.'.'.$serveur_host_domain : $serveur_host_subdomain.$serveur_host_domain ) : $serveur_host_domain ) ;
     // Vérifier les paramètres CAS en reprenant le code de phpCAS
     if ( empty($cas_serveur_host) || !preg_match('/[\.\d\-abcdefghijklmnopqrstuvwxyz]*/',$cas_serveur_host) )
     {
@@ -107,19 +98,16 @@ if($f_action=='enregistrer_mode_identification')
     {
       exit('Syntaxe URL validate incorrecte !');
     }
-    // Ne pas dupliquer en paramétrage CAS-perso un paramétrage CAS-ENT existant (utiliser la connexion CAS officielle)
+    // Ne pas dupliquer en paramétrage CAS-perso un paramétrage CAS-ENT existant (utiliser la connexion CAS officielle, pour laquelle une convention peut être requise)
     if($f_connexion_nom=='perso')
     {
-      foreach($tab_serveur_cas as $cas_nom => $tab_cas_param)
+      foreach($tab_serveur_cas as $tab_cas_param)
       {
-        if($cas_nom)
+        $is_param_defaut_identiques = ( ($cas_serveur_host==$tab_cas_param['serveur_host']) && ($cas_serveur_port==$tab_cas_param['serveur_port']) && ($cas_serveur_root==$tab_cas_param['serveur_root']) ) ? TRUE : FALSE ;
+        $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || ($cas_serveur_url_login=='https://'.$tab_cas_param['serveur_host'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'].'/login') ) ) ? TRUE : FALSE ;
+        if( $is_param_defaut_identiques || $is_param_force_identiques )
         {
-          $is_param_defaut_identiques = ( (strpos($cas_serveur_host,$tab_cas_param['serveur_host_domain'])!==FALSE) && ($cas_serveur_port==$tab_cas_param['serveur_port']) && ($cas_serveur_root==$tab_cas_param['serveur_root']) ) ? TRUE : FALSE ;
-          $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || (strpos($cas_serveur_url_login,$tab_cas_param['serveur_host_domain'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'])!==FALSE) ) ) ? TRUE : FALSE ;
-          if( $is_param_defaut_identiques || $is_param_force_identiques )
-          {
-            exit('Paramètres d\'un ENT référencé : sélectionnez-le !');
-          }
+          exit('Paramètres d\'un ENT référencé : sélectionnez-le !');
         }
       }
     }

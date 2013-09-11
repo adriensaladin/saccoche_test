@@ -160,20 +160,12 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire')))
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_destinataire($_SESSION['USER_ID']);
   if(!empty($DB_TAB))
   {
-    // En attendant un éventuel textarea enrichi pour la saisie des messages (mais est-ce que ça ne risquerait pas de faire une page d'accueil folklorique ?), une petite fonction pour fabriquer des liens...
-    // Format attendu : [desciptif|adresse|target]
-    function make_lien($texte)
-    {
-      $masque_recherche = '#\[([^\|]+)\|([^\|]+)\|([^\|]*)\]#' ;
-      $masque_remplacement = '<a href="$2" target="$3">$1</a>';
-      return str_replace( array('target="_blank"','target=""') , array('class="lien_ext"','') , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
-    }
     foreach($DB_TAB as $key => $DB_ROW)
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages'][$DB_ROW['message_id']] = array(
         'titre'   => 'Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')',
-        'message' => make_lien(nl2br(html($DB_ROW['message_contenu']))),
+        'message' => nl2br(html($DB_ROW['message_contenu'])),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
     }

@@ -338,22 +338,17 @@ if($connexion_mode=='cas')
     {
       exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS sont anormaux (connexion_mode vaut "'.$connexion_mode.'" ; connexion_departement vaut "'.$connexion_departement.'" ; connexion_nom vaut "'.$connexion_nom.'") !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
     }
-    // TEST À SUPPRIMER RENTRÉE 2013 QUAND LES CAS PERSO SERONT AUSSI CONCERNÉS - PRENDRA AUSSI EN COMPTE LES CAS À SOUS-DOMAINE VARIABLE, CE QUI N'EST PAS TESTÉ ACTUELLEMENT
     if($connexion_nom=='perso')
     {
-      // RETIRÉ DURANT LA SESSION 2013-2014 POUR NE PAS POSER PB AUX ÉTABLISSEMENTS AUXQUEL CELA N'A PAS ÉTÉ ANNONCÉ
-      // foreach($tab_serveur_cas as $cas_nom => $tab_cas_param)
-      // {
-        // if($cas_nom)
-        // {
-          // $is_param_defaut_identiques = ( (strpos($cas_serveur_host,$tab_cas_param['serveur_host_domain'])!==FALSE) && ($cas_serveur_port==$tab_cas_param['serveur_port']) && ($cas_serveur_root==$tab_cas_param['serveur_root']) ) ? TRUE : FALSE ;
-          // $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || (strpos($cas_serveur_url_login,$tab_cas_param['serveur_host_domain'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'])!==FALSE) ) ) ? TRUE : FALSE ;
-          // if( $is_param_defaut_identiques || $is_param_force_identiques )
-          // {
-            // exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS personnalisés sont ceux d\'un ENT référencé !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
-          // }
-        // }
-      // }
+      foreach($tab_serveur_cas as $tab_cas_param)
+      {
+        $is_param_defaut_identiques = (phpCAS::getServerLoginURL()==$tab_cas_param['serveur_url_login']) ? TRUE : FALSE ;
+        $is_param_force_identiques  = (phpCAS::getServerLoginURL()=='https://'.$tab_cas_param['serveur_host'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'].'/login') ? TRUE : FALSE ;
+        if( $is_param_defaut_identiques || $is_param_force_identiques )
+        {
+          exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS personnalisés sont ceux d\'un ENT référencé !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
+        }
+      }
     }
     else
     {

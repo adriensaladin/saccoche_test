@@ -162,7 +162,6 @@ if (!function_exists('str_getcsv'))
     $a = explode($token, $t1);
     foreach($a as $k=>$v)
     {
-      $v = str_replace( $delimiter.$delimiter , $delimiter.' '.$delimiter , $v ); // Patch perso sinon les colonnes vides disparaissent
       if ( preg_match("/^{$delimiter}/", $v) || preg_match("/{$delimiter}$/", $v) )
       {
         $a[$k] = trim($v, $delimiter); $a[$k] = preg_replace("/$delimiter/", "$token", $a[$k]);
@@ -390,7 +389,6 @@ function getServerProtocole()
 
 function getServerPort()
 {
-  global $HOST;
   // Rien à indiquer si port 80 (protocole standard HTTP) ou 443 (protocole standard HTTPS) ou port déjà indiqué dans le HOST (les navigateurs indiquent le port dans le header Host de la requete http quand il est non standard comme la norme http1/1 le préconise http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.23 mais le serveur web ne le file généralement pas à PHP dans HTTP_HOST)
   return ( !isset($_SERVER['SERVER_PORT']) || in_array($_SERVER['SERVER_PORT'],array(80,443)) || strpos($HOST,':') ) ? '' : ':'.$_SERVER['SERVER_PORT'] ;
 }

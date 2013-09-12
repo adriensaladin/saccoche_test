@@ -358,7 +358,7 @@ if($connexion_mode=='cas')
     else
     {
       $tab_info = $tab_connexion_info[$connexion_mode][$connexion_ref];
-      if( (strpos($cas_serveur_host,$tab_info['serveur_host_domain'])===FALSE) || ($tab_info['serveur_port']!=$cas_serveur_port) || ($tab_info['serveur_root']!=$cas_serveur_root) || ($tab_info['serveur_url_login']!=$cas_serveur_url_login) || ($tab_info['serveur_url_logout']!=$cas_serveur_url_logout) || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate) )
+      if( ($tab_info['serveur_host']!=$cas_serveur_host) || ($tab_info['serveur_port']!=$cas_serveur_port) || ($tab_info['serveur_root']!=$cas_serveur_root) || ($tab_info['serveur_url_login']!=$cas_serveur_url_login) || ($tab_info['serveur_url_logout']!=$cas_serveur_url_logout) || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate) )
       {
         exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
       }

@@ -79,7 +79,7 @@ if($action=='supprimer')
       SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
     }
   }
-  $retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;
+  $retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte coché n\'est supprimable ! Il faut d\'abord les retirer pour leur affecter une date de sortie...' ;
   exit($retour);
 }
 

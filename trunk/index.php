@@ -31,6 +31,15 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
+// Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+if(isset($_GET['memoget']))
+{
+  setcookie( COOKIE_MEMOGET /*name*/ , $_GET['memoget'] /*value*/ , $_SERVER['REQUEST_TIME']+36000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60 */
+  header('Status: 307 Temporary Redirect', TRUE, 307);
+  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.urldecode($_GET['memoget']));
+  exit();
+}
+
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
     if(isset($_GET['page']))  { $PAGE = $_GET['page']; }
 elseif(isset($_POST['page'])) { $PAGE = $_POST['page']; }
@@ -128,6 +137,12 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 if(Session::$_sso_redirect)
 {
   require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
+  // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+  if(isset($_COOKIE[COOKIE_MEMOGET]))
+  {
+    setcookie( COOKIE_MEMOGET /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+  }
+
 }
 
 // Authentification pour le compte d'une application tierce

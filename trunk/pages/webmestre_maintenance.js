@@ -81,7 +81,7 @@ $(document).ready
     maj_label_versions();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire principal
+    // Verrouillage de l'application
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
@@ -165,6 +165,140 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
     }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Droits du système de fichiers - Choix UMASK
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#bouton_umask').click
+    (
+      function()
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_umask').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        var umask = $('#select_umask option:selected').val();
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=choix_umask'+'&f_umask='+umask,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_umask').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                var tab_chmod = new Array();
+                tab_chmod['000'] = '777 / 666';
+                tab_chmod['002'] = '775 / 664';
+                tab_chmod['022'] = '755 / 644';
+                $(info_chmod).html(tab_chmod[umask]);
+                $('#ajax_umask').removeAttr("class").addClass("valide").html('Choix enregistré !');
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_umask').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Droits du système de fichiers - Appliquer CHMOD
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#bouton_chmod').click
+    (
+      function()
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_chmod').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=appliquer_chmod',
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_chmod').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                $('#ajax_chmod').removeAttr("class").addClass("valide").html('Procédure terminée !');
+                $.fancybox( { 'href':url_export_rapport_chmod , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_chmod').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Vérification des droits en écriture
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#bouton_droit').click
+    (
+      function()
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_droit').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=verif_droits',
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_droit').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if(responseHTML=='ok')
+              {
+                $('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
+                $.fancybox( { 'href':url_export_rapport_droits , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Mise à jour automatique des fichiers
@@ -292,49 +426,6 @@ $(document).ready
         etape_numero = 0 ;
         $('button').prop('disabled',true);
         verif_file_appli_etape("Récupération de l'archive <em>zip</em>&hellip;");
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Vérification des droits en écriture
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#bouton_droit').click
-    (
-      function()
-      {
-        $('button').prop('disabled',true);
-        $('#ajax_droit').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=verif_droits',
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button').prop('disabled',false);
-              $('#ajax_droit').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              $('button').prop('disabled',false);
-              if(responseHTML=='ok')
-              {
-                $('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
-                $.fancybox( { 'href':url_export_rapport_droits , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-                initialiser_compteur();
-              }
-              else
-              {
-                $('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              return false;
-            }
-          }
-        );
       }
     );
 

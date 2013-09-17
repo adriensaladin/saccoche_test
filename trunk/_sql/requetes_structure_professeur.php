@@ -433,7 +433,7 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
-  $DB_SQL = 'SELECT sacoche_devoir.*, CONCAT(user_nom," ",user_prenom) AS proprietaire, ';
+  $DB_SQL = 'SELECT sacoche_devoir.*, CONCAT(prof.user_nom," ",prof.user_prenom) AS proprietaire, ';
   $DB_SQL.= 'GROUP_CONCAT(DISTINCT sacoche_jointure_devoir_item.item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT sacoche_jointure_devoir_item.item_id) AS items_nombre, ';
   if(!$groupe_id)
   {
@@ -446,12 +446,15 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
   if(!$groupe_id)
   {
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+    $DB_SQL.= 'LEFT JOIN sacoche_user AS eleves ON sacoche_jointure_user_groupe.user_id=eleves.user_id ';
   }
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_devoir.prof_id=prof.user_id ';
   $DB_SQL.= 'WHERE ( sacoche_devoir.prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
   $DB_SQL.= ($groupe_id!=0) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
   $DB_SQL.= ($groupe_id>0)  ? 'AND groupe_id='.$groupe_id.' ' : '' ;
-  $DB_SQL.= ($groupe_id==0) ? 'AND sacoche_jointure_user_groupe.user_id!=:prof_id ' : '' ; // Sinon le prof (aussi rattaché au groupe du devoir) est compté parmi la liste des élèves.
+
+  $DB_SQL.= ($groupe_id==0) ? 'AND eleves.user_profil_sigle="ELV" ' : '' ; // Sinon les prof (aussi rattachés au groupe du devoir) sont comptés parmi la liste des élèves.
+
   $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
   $DB_SQL.= 'GROUP BY sacoche_devoir.devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';

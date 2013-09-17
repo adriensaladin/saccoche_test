@@ -52,6 +52,18 @@ $TITRE = "Connexion SSO";
  * URL profonde multi-structure spéciale : http://adresse.com/?page=...&sso&uai=...
  */
 
+// Récupération de paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+if(isset($_COOKIE[COOKIE_MEMOGET]))
+{
+  $chaine_get = urldecode($_COOKIE[COOKIE_MEMOGET]);
+  $tab_get = explode('&',$chaine_get);
+  foreach($tab_get as $get)
+  {
+    list($get_name,$get_value) = explode('=',$get);
+    $_GET[$get_name] = $get_value;
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations.
 // Un UAI ou un id de base doit être transmis, même s'il est toléré de le retrouver dans un cookie.

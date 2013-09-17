@@ -29,11 +29,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action            = (isset($_POST['f_action']))            ? Clean::texte($_POST['f_action'])            : '';
-$proxy_used        = (isset($_POST['f_proxy_used']))        ? 'oui'                                      : '';
+$proxy_used        = (isset($_POST['f_proxy_used']))        ? 'oui'                                       : '';
 $proxy_name        = (isset($_POST['f_proxy_name']))        ? Clean::texte($_POST['f_proxy_name'])        : '';
 $proxy_port        = (isset($_POST['f_proxy_port']))        ? Clean::entier($_POST['f_proxy_port'])       : 0;
 $proxy_type        = (isset($_POST['f_proxy_type']))        ? Clean::texte($_POST['f_proxy_type'])        : '';
-$proxy_auth_used   = (isset($_POST['f_proxy_auth_used']))   ? 'oui'                                      : '';
+$proxy_auth_used   = (isset($_POST['f_proxy_auth_used']))   ? 'oui'                                       : '';
 $proxy_auth_method = (isset($_POST['f_proxy_auth_method'])) ? Clean::texte($_POST['f_proxy_auth_method']) : '';
 $proxy_auth_user   = (isset($_POST['f_proxy_auth_user']))   ? Clean::texte($_POST['f_proxy_auth_user'])   : '';
 $proxy_auth_pass   = (isset($_POST['f_proxy_auth_pass']))   ? Clean::texte($_POST['f_proxy_auth_pass'])   : '';
@@ -53,7 +53,16 @@ if($action=='tester')
 // Enregistrer des nouveaux réglages
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-FileSystem::fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>$proxy_used,'SERVEUR_PROXY_NAME'=>$proxy_name,'SERVEUR_PROXY_PORT'=>$proxy_port,'SERVEUR_PROXY_TYPE'=>$proxy_type,'SERVEUR_PROXY_AUTH_USED'=>$proxy_auth_used,'SERVEUR_PROXY_AUTH_METHOD'=>$proxy_auth_method,'SERVEUR_PROXY_AUTH_USER'=>$proxy_auth_user,'SERVEUR_PROXY_AUTH_PASS'=>$proxy_auth_pass) );
+FileSystem::fabriquer_fichier_hebergeur_info( array(
+  'SERVEUR_PROXY_USED'        => $proxy_used,
+  'SERVEUR_PROXY_NAME'        => $proxy_name,
+  'SERVEUR_PROXY_PORT'        => $proxy_port,
+  'SERVEUR_PROXY_TYPE'        => $proxy_type,
+  'SERVEUR_PROXY_AUTH_USED'   => $proxy_auth_used,
+  'SERVEUR_PROXY_AUTH_METHOD' => $proxy_auth_method,
+  'SERVEUR_PROXY_AUTH_USER'   => $proxy_auth_user,
+  'SERVEUR_PROXY_AUTH_PASS'   => $proxy_auth_pass,
+) );
 exit('ok');
 
 ?>

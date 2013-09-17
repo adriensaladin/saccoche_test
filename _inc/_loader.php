@@ -485,6 +485,7 @@ define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
 define('COOKIE_STRUCTURE' ,'SACoche-etablissement' ); // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE'  ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_PARTENAIRE','SACoche-partenaire'    ); // nom du cookie servant à retenir le partenaire sélectionné, afin de ne pas à avoir à le sélectionner de nouveau (convention ENT sur serveur Sésamath uniquement).
+define('COOKIE_MEMOGET'   ,'SACoche-memoget'       ); // nom du cookie servant à retenir des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd...
 
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php

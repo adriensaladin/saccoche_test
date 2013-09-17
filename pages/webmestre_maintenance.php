@@ -56,7 +56,27 @@ else
   $label_maj = '<label id="ajax_maj">&nbsp;</label>';
 }
 
+// Select umask
+$tab_umask = array(
+  '000' => '777 pour les dossiers ; 666 pour les fichiers',
+  '002' => '775 pour les dossiers ; 664 pour les fichiers',
+  '022' => '755 pour les dossiers ; 644 pour les fichiers',
+);
+$options_umask = '';
+foreach($tab_umask as $option_val => $option_txt)
+{
+  $selected = ($option_val==SYSTEME_UMASK) ? ' selected' : '' ;
+  $options_umask .= '<option value="'.$option_val.'"'.$selected.'>'.$option_txt.'</option>';
+}
+// Tableau chmod
+$tab_chmod = array(
+  '000' => '777 / 666',
+  '002' => '775 / 664',
+  '022' => '755 / 644',
+);
+
 // Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_chmod  = "'.URL_DIR_EXPORT.'rapport_chmod.php";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_droits = "'.URL_DIR_EXPORT.'rapport_droits.php";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_maj    = "'.URL_DIR_EXPORT.'rapport_maj.php";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_file_appli = "'.URL_DIR_EXPORT.'rapport_verif_file_appli.php";';
@@ -76,6 +96,15 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport_verif_dir_etabl  = 
   <li>Version actuellement installée : <label id="ajax_version_installee"><?php echo VERSION_PROG ?></label></li>
   <li>Dernière version disponible : <span id="ajax_version_disponible" class="astuce"><?php echo recuperer_numero_derniere_version() ?></span></li>
 </ul>
+
+<hr />
+
+<h2>Droits du système de fichiers</h2>
+
+<form action="#" method="post" id="form_chmod"><fieldset>
+  <label class="tab">Nouveaux fichiers :</label><select id="select_umask" name="select_umask"><?php echo $options_umask ?></select> <button id="bouton_umask" type="button" class="parametre">Enregistrer ce choix.</button><label id="ajax_umask">&nbsp;</label><br />
+  <label class="tab">Fichiers actuels :</label><button id="bouton_chmod" type="button" class="parametre">Appliquer les droits <span id="info_chmod"><?php echo $tab_chmod[SYSTEME_UMASK] ?></span> à toute l'arborescence de l'application.</button><label id="ajax_chmod">&nbsp;</label>
+</fieldset></form>
 
 <hr />
 

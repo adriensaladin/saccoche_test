@@ -420,9 +420,9 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'CLASSE_REF'.$separateur.'CLASSE_NOM'."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'DATE_NAISSANCE'.$separateur.'CLASSE_REF'.$separateur.'CLASSE_NOM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Classe Ref.</th><th>Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Date Naiss.</th><th>Classe Ref.</th><th>Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer la liste des classes
   $tab_groupe = array();
@@ -432,13 +432,14 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des élèves
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,eleve_classe_id' );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,eleve_classe_id' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']."\r\n";
-      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td></tr>'.NL;
+      $date_fr = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
+      $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$date_fr.$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.$date_fr.'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td></tr>'.NL;
     }
   }
 

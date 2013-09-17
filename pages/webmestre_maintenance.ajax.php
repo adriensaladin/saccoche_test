@@ -28,9 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '' ;
-$motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '' ;
-$umask  = (isset($_POST['f_umask']))  ? Clean::texte($_POST['f_umask'])  : '' ;
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Bloquer ou débloquer l'application
@@ -48,59 +47,6 @@ if($action=='bloquer')
   ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0',$motif);
   exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Droits du système de fichiers - Choix UMASK
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='choix_umask')
-{
-  $tab_chmod = array(
-    '000' => '777 / 666',
-    '002' => '775 / 664',
-    '022' => '755 / 644',
-  );
-  if(!isset($tab_chmod[$umask]))
-  {
-    exit('Valeur transmise inattendue ('.$umask.') !');
-  }
-  FileSystem::fabriquer_fichier_hebergeur_info( array('SYSTEME_UMASK'=>$umask) );
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Droits du système de fichiers - Appliquer CHMOD
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='appliquer_chmod')
-{
-  $_SESSION['tmp'] = array();
-  // Récupérer l'arborescence
-  $dossier_install = '.';
-  FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , TRUE /*with_first_dir*/ );
-  // Pour l'affichage du retour
-  $thead = '<tr><td colspan="2">Modification des droits du système de fichiers - '.date('d/m/Y H:i:s').'</td></tr>';
-  $tbody = '';
-  // Dossiers
-  $mode_dossier = octdec( 777 - SYSTEME_UMASK ); // On ne peut pas passer une variable en octal et chmod() accepte le format décimal (c'est juste que c'est moins lisible).
-  ksort($_SESSION['tmp']['dossier']);
-  foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
-  {
-    $dossier = ($dossier) ? '.'.$dossier : '.'.DS ;
-    $tbody .= (@chmod($dossier,$mode_dossier)) ? '<tr><td class="v">Droits appliqués au dossier</td><td>'.$dossier.'</td></tr>' : '<tr><td class="r">Permission insuffisante sur ce dossier pour en modifier les droits</td><td>'.$dossier.'</td></tr>' ;
-  }
-  // Fichiers
-  $mode_fichier = octdec( 666 - SYSTEME_UMASK ); // On ne peut pas passer une variable en octal et chmod() accepte le format décimal (c'est juste que c'est moins lisible).
-  ksort($_SESSION['tmp']['fichier']);
-  foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
-  {
-    $fichier = '.'.$fichier;
-    $tbody .= (@chmod($fichier,$mode_fichier)) ? '<tr><td class="v">Droits appliqués au fichier</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Permission insuffisante sur ce fichier pour en modifier les droits</td><td>'.$fichier.'</td></tr>' ;
-  }
-  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
-  FileSystem::fabriquer_fichier_rapport( 'rapport_chmod.php' , $thead , $tbody );
-  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

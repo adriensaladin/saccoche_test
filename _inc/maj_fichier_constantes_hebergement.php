@@ -55,12 +55,6 @@ if(!defined('CHEMIN_LOGS_PHPCAS'))
   if(is_file($ancien_fichier)) unlink($ancien_fichier);
 }
 
-// A compter du 17/10/2012, ajout de paramètre dans le fichier de constantes pour fixer un niveau de restriction de droits d'accès (CHMOD). [TODO] peut être retiré dans un an environ
-if(!defined('SYSTEME_UMASK'))
-{
-  $tab_constantes_manquantes += array('SYSTEME_UMASK'=>'000');
-}
-
 // Application patch si besoin
 if(count($tab_constantes_manquantes))
 {

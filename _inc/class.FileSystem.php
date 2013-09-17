@@ -106,18 +106,6 @@ class FileSystem
   // //////////////////////////////////////////////////
 
   /**
-   * Retourne le umask, qui peut ne pas être défini si procédure d'installation en cours ou fichier de constantes non encore MAJ.
-   * 
-   * @param string   $dossier
-   * @return array
-   */
-  private static function systeme_umask()
-  {
-    $masque = defined('SYSTEME_UMASK') ? SYSTEME_UMASK : '000' ;
-    return 0 . $masque; // Espace obligatoire sinon PHP essaye de construire un nombre décimal.
-  }
-
-  /**
    * Liste les noms des fichiers contenus dans un dossier, sans le contenu temporaire ou personnel.
    * 
    * @param string   $dossier
@@ -202,7 +190,7 @@ class FileSystem
       $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; déjà en place.</label><br />'.NL;
       return TRUE;
     }
-    @umask(FileSystem::systeme_umask());
+    @umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
     $test = @mkdir($dossier);
     // Le dossier a-t-il bien été créé ?
     if(!$test)
@@ -312,7 +300,7 @@ class FileSystem
    */
   public static function ecrire_fichier($fichier_chemin,$fichier_contenu,$file_append=0)
   {
-    @umask(FileSystem::systeme_umask());
+    @umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
     $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
     if($test_ecriture===FALSE)
     {
@@ -330,7 +318,7 @@ class FileSystem
    */
   public static function ecrire_fichier_si_possible($fichier_chemin,$fichier_contenu)
   {
-    @umask(FileSystem::systeme_umask());
+    @umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
     $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu);
     return ($test_ecriture===FALSE) ? FALSE : TRUE ;
   }
@@ -384,7 +372,6 @@ class FileSystem
       'FICHIER_TAILLE_MAX',
       'FICHIER_DUREE_CONSERVATION',
       'CHEMIN_LOGS_PHPCAS',
-      'SYSTEME_UMASK',
     );
     $fichier_contenu = '<?php'.NL;
     $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'.NL;

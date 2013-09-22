@@ -42,15 +42,16 @@ $tab_menu = array
   ),
   "Administration du site" => array
   (
-    "Mot de passe du webmestre"     => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'                 ),
-    "Identité de l'installation"    => array( 'class' => 'serveur_identite'    , 'href' => 'page=webmestre_identite_installation' ),
-    "Fichiers déposés"              => array( 'class' => 'serveur_fichiers'    , 'href' => 'page=webmestre_fichiers_deposes'      ),
-    "Zones géographiques"           => array( 'class' => 'serveur_geographie'  , 'href' => 'page=webmestre_geographie'            ), // multi-structures uniquement
-    "Partenaires ENT conventionnés" => array( 'class' => 'administrateur'      , 'href' => 'page=webmestre_partenariats'          ), // multi-structures et serveur Sésamath uniquement
-    "Configuration d'un proxy"      => array( 'class' => 'serveur_proxy'       , 'href' => 'page=webmestre_configuration_proxy'   ),
-    "Test des droits MySQL"         => array( 'class' => 'serveur_database'    , 'href' => 'page=webmestre_database_test'         ), // multi-structures uniquement
-    "Maintenance &amp; mise à jour" => array( 'class' => 'serveur_maintenance' , 'href' => 'page=webmestre_maintenance'           ),
-    "Débogueur"                     => array( 'class' => 'serveur_debug'       , 'href' => 'page=webmestre_debug'                 ),
+    "Mot de passe du webmestre"      => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'                    ),
+    "Identité de l'installation"     => array( 'class' => 'serveur_identite'    , 'href' => 'page=webmestre_identite_installation'    ),
+    "Fichiers déposés"               => array( 'class' => 'serveur_fichiers'    , 'href' => 'page=webmestre_fichiers_deposes'         ),
+    "Zones géographiques"            => array( 'class' => 'serveur_geographie'  , 'href' => 'page=webmestre_geographie'               ), // multi-structures uniquement
+    "Partenaires ENT conventionnés"  => array( 'class' => 'administrateur'      , 'href' => 'page=webmestre_partenariats'             ), // multi-structures et serveur Sésamath uniquement
+    "Configuration d'un proxy"       => array( 'class' => 'serveur_proxy'       , 'href' => 'page=webmestre_configuration_proxy'      ),
+    "Test des droits MySQL"          => array( 'class' => 'serveur_database'    , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    "Droits du système de fichiers"  => array( 'class' => 'serveur_erreur'      , 'href' => 'page=webmestre_configuration_filesystem' ),
+    "Maintenance &amp; mise à jour"  => array( 'class' => 'serveur_maintenance' , 'href' => 'page=webmestre_maintenance'              ),
+    "Débogueur"                      => array( 'class' => 'serveur_debug'       , 'href' => 'page=webmestre_debug'                    ),
   ),
   "Gestion des inscriptions" => array
   ( // multi-structures uniquement

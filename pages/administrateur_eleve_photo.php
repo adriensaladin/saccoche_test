@@ -30,8 +30,6 @@ $TITRE = "Photos des élèves";
 
 // Fabrication des éléments select du formulaire
 $select_groupe = Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ , FALSE /*tout*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var url_export_rapport = "'.URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.php";';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__photos_eleves">DOC : Photos des élèves</a></span></p>

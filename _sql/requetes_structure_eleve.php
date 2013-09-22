@@ -181,7 +181,7 @@ public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id,$us
   $DB_SQL = 'SELECT item_id, saisie_note AS note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_view;
-  $DB_SQL.= 'ORDER BY saisie_date ASC ';
+  $DB_SQL.= 'ORDER BY saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   $DB_VAR = array(':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

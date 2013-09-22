@@ -213,9 +213,11 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   }
   // Supprimer le dossier temporaire
   FileSystem::supprimer_dossier($dossier_temp);
-  // Enregistrement du rapport ; extension PHP et non HTML pour éviter des pb de mise en cache.
-  FileSystem::fabriquer_fichier_rapport( 'rapport_zip_photos_'.$_SESSION['BASE'].'.php' , $thead , $tbody );
-  exit('ok');
+  // Enregistrement du rapport
+  $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
+  // Javascript
+  FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
+  exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

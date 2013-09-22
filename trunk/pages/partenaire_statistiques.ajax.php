@@ -54,7 +54,7 @@ if((!$num)||(!$max))
     );
   }
   // Retour
-  $max = $nb_bases + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
+  $max = count($DB_TAB) + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
   exit('ok-'.$max);
 }
 
@@ -69,7 +69,7 @@ if( $num && $max && ($num<$max) )
   // Récupérer une série de stats
   charger_parametres_mysql_supplementaires($base_id);
   list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
-  if( mb_strpos( '|'.$connexion_nom.',' , $_SESSION['USER_CONNECTEURS'] ) !== FALSE )
+  if( mb_strpos( $_SESSION['USER_CONNECTEURS'] , '|'.$connexion_nom.',' ) !== FALSE )
   {
     // maj les totaux
     $_SESSION['tmp']['totaux']['prof_use']  += $prof_use;

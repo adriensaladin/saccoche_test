@@ -464,7 +464,9 @@ public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item
   $DB_SQL.= $join_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$where_prof.'AND niveau_actif=1 AND saisie_note!="REQ" '.$sql_debut.$sql_fin.$sql_view;
-  $DB_SQL.= (!$first_order_by_date) ? 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC' : 'ORDER BY saisie_date ASC,'.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC' ;
+  $DB_SQL.= (!$first_order_by_date)
+            ? 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '
+            : 'ORDER BY saisie_date ASC, devoir_id ASC,'.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   $DB_VAR = array(':prof_id'=>$onlyprof,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -491,7 +493,7 @@ public static function DB_lister_result_eleves_palier_sans_infos_items($liste_el
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_entree_id.') AND niveau_actif=1 AND saisie_note!="REQ" '.$sql_view;
-  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

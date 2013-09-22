@@ -277,7 +277,7 @@ define('CHEMIN_FICHIER_CONFIG_INSTALL' , CHEMIN_DOSSIER_CONFIG.'constantes.php')
 define('CHEMIN_FICHIER_DEBUG_CONFIG'   , CHEMIN_DOSSIER_TMP.'debug.txt');
 define('CHEMIN_FICHIER_WS_LCS'         , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_ARGOS'       , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
-define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_hebergements_conventions.php');
+define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -454,7 +454,6 @@ define('SERVEUR_TELECHARGEMENT' ,SERVEUR_PROJET.'/telechargement.php');      // 
 define('SERVEUR_VERSION'        ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_CNIL'           ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
 define('SERVEUR_CONTACT'        ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_CARTE_ENT'      ,SERVEUR_PROJET.'/?fichier=ent');            // URL de la page "Avec quels ENT SACoche est-il interconnecté ?"
 define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide de démarrage (administrateur de SACoche)"
 define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?fichier=guide_rentree');  // URL de la page "Guide de changement d'année (administrateur de SACoche)"
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"

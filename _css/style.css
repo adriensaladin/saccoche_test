@@ -144,7 +144,7 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_15.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_14.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu a.disabled {color:#99F;cursor:default;}
 #menu a.disabled:hover {background-color:#77F;color:#99F;cursor:default}
@@ -213,23 +213,22 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.rss                   {background-position: 1px -1139px}
 #menu a.serveur_database      {background-position: 1px -1159px}
 #menu a.serveur_debug         {background-position: 1px -1179px}
-#menu a.serveur_erreur        {background-position: 1px -1199px}
-#menu a.serveur_fichiers      {background-position: 1px -1219px}
-#menu a.serveur_geographie    {background-position: 1px -1239px}
-#menu a.serveur_identite      {background-position: 1px -1259px}
-#menu a.serveur_info          {background-position: 1px -1279px}
-#menu a.serveur_maintenance   {background-position: 1px -1299px}
-#menu a.serveur_proxy         {background-position: 1px -1319px}
-#menu a.socle_annuler         {background-position: 1px -1339px}
-#menu a.socle_fichier         {background-position: 1px -1359px}
-#menu a.socle_item            {background-position: 1px -1379px}
-#menu a.socle_langue          {background-position: 1px -1399px}
-#menu a.socle_pilier          {background-position: 1px -1419px}
-#menu a.statistiques          {background-position: 1px -1439px}
-#menu a.structure_ajout_csv   {background-position: 1px -1459px}
-#menu a.structure_gestion     {background-position: 1px -1479px}
-#menu a.structure_transfert   {background-position: 1px -1499px}
-#menu a.trombinoscope         {background-position: 1px -1519px}
+#menu a.serveur_fichiers      {background-position: 1px -1199px}
+#menu a.serveur_geographie    {background-position: 1px -1219px}
+#menu a.serveur_identite      {background-position: 1px -1239px}
+#menu a.serveur_info          {background-position: 1px -1259px}
+#menu a.serveur_maintenance   {background-position: 1px -1279px}
+#menu a.serveur_proxy         {background-position: 1px -1299px}
+#menu a.socle_annuler         {background-position: 1px -1319px}
+#menu a.socle_fichier         {background-position: 1px -1339px}
+#menu a.socle_item            {background-position: 1px -1359px}
+#menu a.socle_langue          {background-position: 1px -1379px}
+#menu a.socle_pilier          {background-position: 1px -1399px}
+#menu a.statistiques          {background-position: 1px -1419px}
+#menu a.structure_ajout_csv   {background-position: 1px -1439px}
+#menu a.structure_gestion     {background-position: 1px -1459px}
+#menu a.structure_transfert   {background-position: 1px -1479px}
+#menu a.trombinoscope         {background-position: 1px -1499px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */

@@ -126,7 +126,6 @@ $tab_droits_par_page = array
   'administrateur_professeur_principal'     => $tab_droits_profil_administrateur,
   'administrateur_resilier'                 => $tab_droits_profil_administrateur,
   // Profil webmestre
-  'webmestre_configuration_filesystem'      => $tab_droits_profil_webmestre,
   'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre,
   'webmestre_database_test'                 => $tab_droits_profil_webmestre,
   'webmestre_debug'                         => $tab_droits_profil_webmestre,

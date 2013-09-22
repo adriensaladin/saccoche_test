@@ -179,16 +179,14 @@ $(document).ready
     function retourner_fichier_zip(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
       $("button").prop('disabled',false);
-      var tab_infos = responseHTML.split(']¤[');
-      if( (tab_infos.length!=2) || (tab_infos[0]!='') )
+      if(responseHTML!='ok')
       {
-        $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-        return false;
+        $('#ajax_msg_zip').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
         $('#ajax_msg_zip').removeAttr("class").addClass("valide").html('Demande traitée !');
-        $.fancybox( { 'href':tab_infos[1] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+        $.fancybox( { 'href':url_export_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         initialiser_compteur();
         maj_affichage();
       }

@@ -197,8 +197,8 @@ class Session
    */
   private static function exit_sauf_SSO($message)
   {
-    $test_get =    ( (isset($_GET['sso'])) && ( (isset($_GET['base'])) || (isset($_GET['id'])) || (isset($_GET['uai'])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) )                   ? TRUE : FALSE ;
-    $test_cookie = ( ( (isset($_COOKIE[COOKIE_STRUCTURE])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') ) ? TRUE : FALSE ;
+    $test_get =    ( isset($_GET['sso']) && ( isset($_GET['base']) || isset($_GET['id']) || isset($_GET['uai']) || isset($_COOKIE[COOKIE_MEMOGET])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ? TRUE : FALSE ;
+    $test_cookie = ( ( isset($_COOKIE[COOKIE_STRUCTURE]) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && isset($_COOKIE[COOKIE_AUTHMODE]) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )             ? TRUE : FALSE ;
     // si html
     if(SACoche=='index')
     {

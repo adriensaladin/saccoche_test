@@ -35,8 +35,9 @@ require('./_inc/_loader.php');
 if(isset($_GET['memoget']))
 {
   setcookie( COOKIE_MEMOGET /*name*/ , $_GET['memoget'] /*value*/ , $_SERVER['REQUEST_TIME']+36000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60 */
+  $param_sans_redir = mb_substr( $_GET['memoget'] , 0 , mb_strpos($_GET['memoget'],'%26url_redirection') ) ; // J'ai déjà eu un msg d'erreur car il n'aime pas les chaines trop longues + Pas la peine d'encombrer avec le paramètre de redirection qui sera retrouvé dans le cookie de toutes façons
   header('Status: 307 Temporary Redirect', TRUE, 307);
-  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.urldecode($_GET['memoget']));
+  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.urldecode($param_sans_redir));
   exit();
 }
 

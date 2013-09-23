@@ -1013,7 +1013,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=indiquer_eleves_deja'+'&f_description='+encodeURIComponent($('#f_description').val())+'&f_date_debut='+encodeURIComponent(f_date_debut),
+            data : 'csrf='+CSRF+'&f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1656,7 +1656,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#saisir_ref").val()+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_fini='+$("#saisir_fini").val()+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_description").val()),
+              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#saisir_ref").val()+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_fini='+$("#saisir_fini").val()+'&f_notes='+f_notes+'&f_description='+$("#saisir_description").val(),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -2055,7 +2055,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+encodeURIComponent(url),
+            data : 'csrf='+CSRF+'&f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -2118,7 +2118,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+encodeURIComponent(url),
+              data : 'csrf='+CSRF+'&f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {

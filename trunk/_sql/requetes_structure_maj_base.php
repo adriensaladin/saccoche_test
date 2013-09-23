@@ -2866,6 +2866,17 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  if($version_base_structure_actuelle=='2013-06-23')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-09-23';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // L'ENT Place prend la place de Mirabelle sur le 57
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_place" WHERE parametre_nom="connexion_nom" AND parametre_valeur="itop_mirabelle"' );
+    }
+  }
+
 }
 
 }

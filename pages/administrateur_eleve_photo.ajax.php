@@ -53,7 +53,7 @@ function photo_file_to_base($user_id,$fichier_chemin)
   $tab_infos = @getimagesize($fichier_chemin);
   if($tab_infos==FALSE)
   {
-    FileSystem::supprimer_fichier($fichier_chemin);
+    unlink($fichier_chemin);
     return'le fichier image ne semble pas valide';
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
@@ -61,18 +61,18 @@ function photo_file_to_base($user_id,$fichier_chemin)
   // vérifier le type 
   if(!isset($tab_extension_types[$image_type]))
   {
-    FileSystem::supprimer_fichier($fichier_chemin);
+    unlink($fichier_chemin);
     return'le fichier transmis n\'est pas un fichier image';
   }
   // vérifier les dimensions
   if( ($image_largeur>1024) || ($image_hauteur>1024) )
   {
-    FileSystem::supprimer_fichier($fichier_chemin);
+    unlink($fichier_chemin);
     return'le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.')';
   }
   if( ($image_largeur==0) && ($image_hauteur==0) )
   {
-    FileSystem::supprimer_fichier($fichier_chemin);
+    unlink($fichier_chemin);
     return'le fichier transmis a des dimensions indéterminables';
   }
   // C'est bon, on continue
@@ -93,8 +93,8 @@ function photo_file_to_base($user_id,$fichier_chemin)
   $image_contenu_base_64 = base64_encode(file_get_contents($fichier_chemin_vignette)) ;
   DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'photo' , $image_contenu_base_64 , 'jpeg' , $largeur_new , $hauteur_new );
   // effacer les fichiers images
-  FileSystem::supprimer_fichier($fichier_chemin);
-  FileSystem::supprimer_fichier($fichier_chemin_vignette);
+  unlink($fichier_chemin);
+  unlink($fichier_chemin_vignette);
   // retour des informations
   return array( $image_contenu_base_64 , $largeur_new , $hauteur_new );
 }
@@ -165,7 +165,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   FileSystem::creer_ou_vider_dossier($dossier_temp);
   // Dezipper dans le dossier temporaire
   $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $dossier_temp , FALSE /*use_ZipArchive*/ );
-  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.

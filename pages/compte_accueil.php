@@ -122,43 +122,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
 }
 elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
-  // Indication connexions SSO existantes si non choisies
-  $uai_departement = (int)substr($_SESSION['WEBMESTRE_UAI'],0,3);
-  if( $uai_departement && ($_SESSION['CONNEXION_MODE']=='normal') )
-  {
-    require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
-    $tab_memo_ent_possible = array();
-    foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
-    {
-      foreach($tab_connexion_info[$connexion_mode] as $connexion_ref => $tab_infos)
-      {
-        list($departement,$connexion_nom) = explode('|',$connexion_ref);
-        if( ($uai_departement==$departement) && $tab_infos['etat'] )
-        {
-          $tab_memo_ent_possible[$connexion_ref] = $connexion_nom;
-        }
-      }
-    }
-    $nb_ent_possibles = count($tab_memo_ent_possible);
-    if($nb_ent_possibles)
-    {
-      $mot_ent = ($nb_ent_possibles>1) ? 'des ENT' : 'de l\'ENT' ;
-      $texte_ent_possibles = 'Sur votre département <em>SACoche</em> peut utiliser l\'authentification '.$mot_ent.' <b>'.implode(' - ',$tab_memo_ent_possible).'</b> &rarr; <a href="./index.php?page=administrateur_etabl_connexion">Gestion du mode d\'identification.</a>';
-      if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT) )
-      {
-        require(CHEMIN_FICHIER_WS_SESAMATH_ENT);
-        foreach($tab_memo_ent_possible as $connexion_ref => $connexion_nom)
-        {
-          list($departement,$connexion_nom) = explode('|',$connexion_ref);
-          if(isset($tab_connecteurs_convention[$connexion_ref]))
-          {
-            $texte_ent_possibles .= '<br /><a class="lien_ext" href="'.SERVEUR_CARTE_ENT.'">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
-          }
-        }
-      }
-      $tab_accueil['user'] .= '<p class="astuce">'.$texte_ent_possibles.'</p>';
-    }
-  }
   if(!$tab_accueil['alert'])
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
@@ -215,7 +178,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire')))
       );
     }
   }
-  if( (!count($tab_accueil['messages'])) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') )
+  elseif($_SESSION['USER_PROFIL_TYPE']!='administrateur')
   {
     $tab_accueil['ecolo'] = '<p class="b"><TG> Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
   }

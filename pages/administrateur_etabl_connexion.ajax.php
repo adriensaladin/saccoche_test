@@ -59,7 +59,7 @@ if($f_action=='enregistrer_mode_identification')
     exit('Erreur avec les données transmises !');
   }
 
-  if( ($f_connexion_mode=='cas') && ($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]['serveur_host_subdomain']=='*') && !$serveur_host_subdomain )
+  if( ($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]['serveur_host_subdomain']=='*') && !$serveur_host_subdomain )
   {
     exit('Sous-domaine manquant !');
   }

@@ -34,13 +34,10 @@ require('./_inc/_loader.php');
 // Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
 if(isset($_GET['memoget']))
 {
-  $memoget = urldecode($_GET['memoget']);
-  setcookie( COOKIE_MEMOGET /*name*/ , $memoget /*value*/ , $_SERVER['REQUEST_TIME']+36000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60 */
-  $is_param_redir = mb_strpos($memoget,'&url_redirection');
-  $param_length = ($is_param_redir) ? $is_param_redir : NULL ;
-  $param_sans_redir = mb_substr( $memoget , 0 , $param_length ) ; // J'ai déjà eu un msg d'erreur car il n'aime pas les chaines trop longues + Pas la peine d'encombrer avec le paramètre de redirection qui sera retrouvé dans le cookie de toutes façons
+  setcookie( COOKIE_MEMOGET /*name*/ , $_GET['memoget'] /*value*/ , $_SERVER['REQUEST_TIME']+36000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60 */
+  $param_sans_redir = mb_substr( $_GET['memoget'] , 0 , mb_strpos($_GET['memoget'],'%26url_redirection') ) ; // J'ai déjà eu un msg d'erreur car il n'aime pas les chaines trop longues + Pas la peine d'encombrer avec le paramètre de redirection qui sera retrouvé dans le cookie de toutes façons
   header('Status: 307 Temporary Redirect', TRUE, 307);
-  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.$param_sans_redir);
+  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.urldecode($param_sans_redir));
   exit();
 }
 
@@ -152,16 +149,16 @@ if(Session::$_sso_redirect)
 // Authentification pour le compte d'une application tierce
 if(isset($_GET['url_redirection']))
 {
-  $url_redirection = urldecode($_GET['url_redirection']);
   if($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
   {
     // User non connecté -> Retenir la demande en attendant qu'il se connecte
-    $_SESSION['MEMO_GET']['url_redirection'] = $url_redirection;
+    $_SESSION['MEMO_GET']['url_redirection'] = $_GET['url_redirection'];
   }
   else
   {
     // User connecté -> Redirection vers l'application, avec une clef (ticket) pour attester du login et permettre de récupérer ses infos
     $clef = FileSystem::fabriquer_fichier_user_infos_for_appli_externe();
+    $url_redirection = $_GET['url_redirection'];
     unset($_SESSION['MEMO_GET']);
     $separateur = (strpos($url_redirection,'?')===FALSE) ? '?' : '&' ;
     header('Status: 307 Temporary Redirect', TRUE, 307);

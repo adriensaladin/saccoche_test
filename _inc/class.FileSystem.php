@@ -142,7 +142,7 @@ class FileSystem
       $ds = (substr($dossier,-1)==DS) ? '' : DS ;
       foreach($tab_fichier as $fichier_nom)
       {
-        FileSystem::supprimer_fichier($dossier.$ds.$fichier_nom);
+        unlink($dossier.$ds.$fichier_nom);
       }
     }
   }
@@ -242,21 +242,6 @@ class FileSystem
   }
 
   /**
-   * Supprimer un fichier, éventuellement après avoir testé son existence.
-   * 
-   * @param string   $fichier
-   * @param bool     $verif_exist
-   * @return void
-   */
-  public static function supprimer_fichier( $fichier , $verif_exist=FALSE )
-  {
-    if( (!$verif_exist) || is_file($fichier) )
-    {
-      unlink($fichier);
-    }
-  }
-
-  /**
    * Supprimer un dossier, après avoir effacé récursivement son contenu.
    * 
    * @param string   $dossier
@@ -277,7 +262,7 @@ class FileSystem
         }
         else
         {
-          FileSystem::supprimer_fichier($chemin_contenu);
+          unlink($chemin_contenu);
         }
       }
       rmdir($dossier);
@@ -573,7 +558,7 @@ class FileSystem
         {
           if(is_file($chemin_contenu))
           {
-            FileSystem::supprimer_fichier($chemin_contenu);
+            unlink($chemin_contenu);
           }
           else if( is_dir($chemin_contenu) && $with_sous_dossiers )
           {
@@ -625,14 +610,14 @@ class FileSystem
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
       FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
-      FileSystem::supprimer_fichier($fichier_lock);
+      unlink($fichier_lock);
     }
     // Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
     else
     {
       if( $_SERVER['REQUEST_TIME'] - filemtime($fichier_lock) > 30 )
       {
-        FileSystem::supprimer_fichier($fichier_lock);
+        unlink($fichier_lock);
       }
     }
   }

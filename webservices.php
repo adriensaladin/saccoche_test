@@ -61,7 +61,7 @@ if($WS_qui=='AutoMaths')
     exit('Erreur : absence de données associées à cette clef !');
   }
   $infos_user = file_get_contents($fichier);
-  FileSystem::supprimer_fichier($fichier);
+  unlink($fichier);
   exit($infos_user);
 }
 

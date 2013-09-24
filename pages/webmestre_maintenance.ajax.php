@@ -104,7 +104,7 @@ if($action=='verif_dir_etabl')
           // Normalement, ne devrait pas, mais suite à un bug, des fichiers se sont retrouvés créés...
           if(is_file($dossier_dir.$base_id))
           {
-            FileSystem::supprimer_fichier($dossier_dir.$base_id);
+            unlink($dossier_dir.$base_id);
             $tbody_pb .= '<tr class="r"><td>Fichier en trop (&rarr; supprimé)</td><td>'.$dossier_key.$base_id.'</td></tr>';
           }
         }
@@ -247,7 +247,10 @@ if($action=='maj_etape4')
     elseif(!isset($tab['apres'])) // (forcément)
     {
       // Fichier à supprimer
-      FileSystem::supprimer_fichier($dossier_install.$fichier , TRUE /*verif_exist*/ );
+      if(is_file($dossier_install.$fichier))
+      {
+        unlink($dossier_install.$fichier);
+      }
       $tbody .= '<tr><td class="r">Fichier supprimé</td><td>'.$fichier.'</td></tr>';
     }
   }

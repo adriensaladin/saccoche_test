@@ -2753,12 +2753,13 @@ if( $step==82 )
 
 if( $step==90 )
 {
-  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-  unlink(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt');
-  unlink(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt');
-  unlink(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt');
-  unlink(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt');
-  unlink(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt');
+  // Il est arrivé que ces fichiers n'existent plus (bizarre...) d'où le test d'existence.
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest                                                                 , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'         , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'       , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'       , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt'  , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt' , TRUE /*verif_exist*/ );
   echo'<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>'.NL;
   echo'<p class="li"><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();

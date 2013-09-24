@@ -50,7 +50,7 @@ if($action=='upload_logo')
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
-    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
     exit('Erreur : le fichier image ne semble pas valide !');
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
@@ -58,13 +58,13 @@ if($action=='upload_logo')
   // vérifier le type 
   if(!isset($tab_extension_types[$image_type]))
   {
-    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
     exit('Erreur : le fichier transmis n\'est pas un fichier image !');
   }
   // vérifier les dimensions
   if( ($image_largeur>400) || ($image_hauteur>200) )
   {
-    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
     exit('Erreur : le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.', maximum autorisé 400 sur 200).');
   }
   // On ne met pas encore à jour le logo : on place pour l'instant l'adresse de l'image en session (comme marqueur) en attendant confirmation.
@@ -100,18 +100,15 @@ if($action=='enregistrer')
   elseif($_SESSION['tmp']['partenaire_logo_new_filename']=='')
   {
     // soit on le supprime,
-    if(is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']))
-    {
-      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']);
-    }
+    FileSystem::supprimer_fichier( CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] , TRUE /*verif_exist*/ );
     $_SESSION['tmp']['partenaire_logo_actuel_filename'] = '';
   }
   elseif(is_file(CHEMIN_DOSSIER_IMPORT.$_SESSION['tmp']['partenaire_logo_new_filename']))
   {
     // soit on prend le nouveau, auquel cas il faut aussi le déplacer dans CHEMIN_DOSSIER_PARTENARIAT, et éventuellement supprimer l'ancien
-    if( ($_SESSION['tmp']['partenaire_logo_actuel_filename']) && (is_file(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'])) )
+    if($_SESSION['tmp']['partenaire_logo_actuel_filename'])
     {
-      unlink(CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename']);
+      FileSystem::supprimer_fichier( CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] , TRUE /*verif_exist*/ );
     }
     $_SESSION['tmp']['partenaire_logo_actuel_filename'] = 'logo_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$_SESSION['tmp']['partenaire_logo_new_file_ext'];
     copy( CHEMIN_DOSSIER_IMPORT.$_SESSION['tmp']['partenaire_logo_new_filename'] , CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] );

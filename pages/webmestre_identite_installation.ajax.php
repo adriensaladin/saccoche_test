@@ -98,7 +98,7 @@ if($action=='upload_logo')
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
-    unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
     exit('Erreur : le fichier image ne semble pas valide !');
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
@@ -106,7 +106,7 @@ if($action=='upload_logo')
   // vérifier le type 
   if(!isset($tab_extension_types[$image_type]))
   {
-    unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
     exit('Erreur : le fichier transmis n\'est pas un fichier image !');
   }
   exit('ok');
@@ -118,7 +118,7 @@ if($action=='upload_logo')
 
 if( ($action=='delete_logo') && $logo )
 {
-  unlink(CHEMIN_DOSSIER_LOGO.$logo);
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_LOGO.$logo , TRUE /*verif_exist*/ );
   // Si on supprime l'image actuellement utilisée, alors la retirer du fichier
   if($logo==HEBERGEUR_LOGO)
   {

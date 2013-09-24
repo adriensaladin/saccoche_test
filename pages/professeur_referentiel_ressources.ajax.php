@@ -132,7 +132,7 @@ if($action=='Uploader_document')
   }
   $fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
   $reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
-  unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   exit($reponse);
 }
 

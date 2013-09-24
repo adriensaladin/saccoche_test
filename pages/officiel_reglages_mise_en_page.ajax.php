@@ -109,7 +109,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
-    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
     exit('Erreur : le fichier image ne semble pas valide !');
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
@@ -117,7 +117,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   // vérifier le type 
   if(!isset($tab_extension_types[$image_type]))
   {
-    unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
     exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
   }
   $image_format = $tab_extension_types[$image_type];

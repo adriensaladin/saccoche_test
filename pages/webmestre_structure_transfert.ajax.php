@@ -214,7 +214,7 @@ if($action=='importer_csv')
       }
     }
   }
-  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
+  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   if(!$nb_lignes_trouvees)
   {
     exit('Erreur : aucune ligne du fichier ne semble correcte !');
@@ -231,10 +231,7 @@ if($action=='importer_csv')
   // Nettoyer des restes d'upload de zip éventuels
   foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
-    if(is_file(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']))
-    {
-      unlink(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']);
-    }
+    FileSystem::supprimer_fichier( CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom'] , TRUE /*verif_exist*/ );
   }
   exit(']¤['.$info_lignes_trouvees);
 }
@@ -260,7 +257,7 @@ if($action=='importer_zip')
   {
     exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
   }
-  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
+  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
   // Vérifier le contenu : noms des fichiers
   $tab_fichier = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_DUMP);
   $nb_fichiers_introuvables = 0;
@@ -348,7 +345,7 @@ elseif( ($action=='importer') && $num && $max && ($num==$max) )
   // Supprimer les fichiers zip des bases
   foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
-    unlink(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']);
+    FileSystem::supprimer_fichier( CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom'] , TRUE /*verif_exist*/ );
   }
   // Game over
   unset($_SESSION['datetime'],$_SESSION['alea'],$_SESSION['tab_info']);

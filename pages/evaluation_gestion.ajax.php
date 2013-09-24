@@ -1399,10 +1399,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   {
     $chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
     // Il peut ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-    if(is_file($chemin_doc))
-    {
-      unlink($chemin_doc);
-    }
+    FileSystem::supprimer_fichier( $chemin_doc , TRUE /*verif_exist*/ );
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');

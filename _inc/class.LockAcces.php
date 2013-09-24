@@ -72,7 +72,7 @@ class LockAcces
    */
   public static function debloquer_application($profil_demandeur,$base_id)
   {
-    @unlink( LockAcces::chemin_fichier_blocage($profil_demandeur,$base_id) );
+    FileSystem::supprimer_fichier( LockAcces::chemin_fichier_blocage($profil_demandeur,$base_id) , TRUE /*verif_exist*/ );
     // Log de l'action
     SACocheLog::ajouter('Déblocage de l\'accès à l\'application.');
   }
@@ -85,9 +85,9 @@ class LockAcces
    */
   public static function supprimer_fichiers_blocage($base_id)
   {
-    @unlink( LockAcces::chemin_fichier_blocage('webmestre',$base_id) );
-    @unlink( LockAcces::chemin_fichier_blocage('administrateur',$base_id) );
-    @unlink( LockAcces::chemin_fichier_blocage('automate',$base_id) );
+    FileSystem::supprimer_fichier( LockAcces::chemin_fichier_blocage('webmestre'     ,$base_id) , TRUE /*verif_exist*/ );
+    FileSystem::supprimer_fichier( LockAcces::chemin_fichier_blocage('administrateur',$base_id) , TRUE /*verif_exist*/ );
+    FileSystem::supprimer_fichier( LockAcces::chemin_fichier_blocage('automate'      ,$base_id) , TRUE /*verif_exist*/ );
   }
 
   /**

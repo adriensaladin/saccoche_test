@@ -77,7 +77,7 @@ class Webmestre
     // Supprimer les tables de la base
     DB_STRUCTURE_WEBMESTRE::DB_supprimer_tables_structure();
     // Supprimer le fichier de connexion
-    unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php');
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php');
     // Supprimer les dossiers de fichiers temporaires par établissement
     foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
     {
@@ -103,7 +103,7 @@ class Webmestre
     // Supprimer la base de données d'une structure, et son utilisateur MySQL une fois défait de ses droits.
     DB_WEBMESTRE_WEBMESTRE::DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user);
     // Supprimer le fichier de connexion
-    unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
     // Retirer l'enregistrement d'une structure dans la base du webmestre
     DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
     // Supprimer les dossiers de fichiers temporaires par établissement

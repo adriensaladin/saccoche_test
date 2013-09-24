@@ -52,7 +52,7 @@ if(!defined('CHEMIN_LOGS_PHPCAS'))
 {
   $tab_constantes_manquantes += array('CHEMIN_LOGS_PHPCAS'=>CHEMIN_DOSSIER_TMP);
   $ancien_fichier = CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt';
-  if(is_file($ancien_fichier)) unlink($ancien_fichier);
+  FileSystem::supprimer_fichier( $ancien_fichier , TRUE /*verif_exist*/ );
 }
 
 // A compter du 17/10/2012, ajout de paramètre dans le fichier de constantes pour fixer un niveau de restriction de droits d'accès (CHMOD). [TODO] peut être retiré dans un an environ

@@ -130,7 +130,7 @@ if($action=='importer_csv')
       }
     }
   }
-  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
+  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   if(!$nb_lignes_trouvees)
   {
     exit('Erreur : aucune ligne du fichier ne semble correcte !');

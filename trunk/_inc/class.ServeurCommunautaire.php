@@ -239,7 +239,7 @@ class ServeurCommunautaire
     // On lance le test
     $test_XML_valide = ServeurCommunautaire::analyser_XML($fichier_adresse);
     // On efface le fichier temporaire
-    unlink($fichier_adresse);
+    FileSystem::supprimer_fichier($fichier_adresse);
     return $test_XML_valide;
   }
 

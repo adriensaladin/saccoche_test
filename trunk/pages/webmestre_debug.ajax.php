@@ -61,7 +61,7 @@ if($action=='modifier_debug')
   }
   else
   {
-    unlink(CHEMIN_FICHIER_DEBUG_CONFIG);
+    FileSystem::supprimer_fichier( CHEMIN_FICHIER_DEBUG_CONFIG , TRUE /*verif_exist*/ );
   }
   exit('ok');
 }
@@ -84,7 +84,7 @@ if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
     exit('Droits en écriture dans ce dossier insuffisants !');
   }
   // ok
-  unlink($chemin_logs.'debugcas_test_ecriture.txt');
+  FileSystem::supprimer_fichier($chemin_logs.'debugcas_test_ecriture.txt');
   FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
   exit('ok');
 }
@@ -95,7 +95,7 @@ if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 
 if( ($action=='supprimer') && $fichier_logs )
 {
-  unlink(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt');
+  FileSystem::supprimer_fichier( CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
   exit('ok');
 }
 

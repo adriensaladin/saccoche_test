@@ -94,7 +94,7 @@ if($action=='uploader')
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
     exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
   }
-  unlink(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
+  FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
   // Vérifier le contenu : noms des fichiers
   $fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp);
   if(!$fichier_taille_maximale)

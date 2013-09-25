@@ -40,7 +40,7 @@ $tab_csv_format['kosmos']      = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , '
 $tab_csv_format['liberscol']   = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['logica']      = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    );
 $tab_csv_format['pentila']     = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>5 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['toutatice']   = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['toutatice']   = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
 
 /*
 * Sous-tableau avec les différents paramétrages de serveurs CAS

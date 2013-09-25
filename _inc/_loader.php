@@ -713,24 +713,6 @@ function exit_error( $titre , $contenu , $lien='accueil' )
 }
 
 /*
- * Rediriger le navigateur.
- * 
- * @param string $adresse   URL de la page vers laquelle rediriger
- * @return void
- */
-function exit_redirection($adresse)
-{
-  // Qqs header ajoutés par précaution car même si la redirection est indiquée comme étant temporaire, il semblent que certains navigateurs buguent en la mettant en cache.
-  header('Pragma: no-cache');
-  header('Cache-Control: must-revalidate, post-check=0, pre-check=0'); // IE n'aime pas "no-store" ni "no-cache".
-  header('Expires: 0');
-  // Cette fois-ci on y va
-  header('Status: 307 Temporary Redirect', TRUE, 307);
-  header('Location: '.$adresse);
-  exit();
-}
-
-/*
  * Pour retenir les données qui seront à afficher dans la section <head></head> de la page.
  */
 $GLOBALS['HEAD'] = array();

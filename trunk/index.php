@@ -39,9 +39,17 @@ if(isset($_GET['memoget']))
   $is_param_redir = mb_strpos($memoget,'&url_redirection');
   $param_length = ($is_param_redir) ? $is_param_redir : NULL ;
   $param_sans_redir = mb_substr( $memoget , 0 , $param_length ) ; // J'ai déjà eu un msg d'erreur car il n'aime pas les chaines trop longues + Pas la peine d'encombrer avec le paramètre de redirection qui sera retrouvé dans le cookie de toutes façons
-  header('Status: 307 Temporary Redirect', TRUE, 307);
-  header('Location: '.URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.$param_sans_redir);
-  exit();
+  exit_redirection(URL_BASE.$_SERVER['SCRIPT_NAME'].'?'.$param_sans_redir);
+}
+// Récupération de paramètres multiples transmis en GET et mémorisés temporairement dans un cookie (pour le cas où le service d'authentification externe en perd).
+if(isset($_COOKIE[COOKIE_MEMOGET]))
+{
+  $tab_get = explode('&',$_COOKIE[COOKIE_MEMOGET]);
+  foreach($tab_get as $get)
+  {
+    list($get_name,$get_value) = explode('=',$get);
+    $_GET[$get_name] = ($get_value) ? $get_value : TRUE ;
+  }
 }
 
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
@@ -141,14 +149,13 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 if(Session::$_sso_redirect)
 {
   require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
-  // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
-  if(isset($_COOKIE[COOKIE_MEMOGET]))
-  {
-    setcookie( COOKIE_MEMOGET /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
-  }
-
 }
 
+// Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+if(isset($_COOKIE[COOKIE_MEMOGET]))
+{
+  setcookie( COOKIE_MEMOGET /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+}
 // Authentification pour le compte d'une application tierce
 if(isset($_GET['url_redirection']))
 {
@@ -164,9 +171,7 @@ if(isset($_GET['url_redirection']))
     $clef = FileSystem::fabriquer_fichier_user_infos_for_appli_externe();
     unset($_SESSION['MEMO_GET']);
     $separateur = (strpos($url_redirection,'?')===FALSE) ? '?' : '&' ;
-    header('Status: 307 Temporary Redirect', TRUE, 307);
-    header('Location: '.$url_redirection.$separateur.'clef='.$clef);
-    exit();
+    exit_redirection($url_redirection.$separateur.'clef='.$clef);
   }
 }
 

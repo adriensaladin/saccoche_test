@@ -30,10 +30,9 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 
 $action = (isset($_POST['action']))   ? $_POST['action']   : '';
 $profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
-// Normalement c'est un tableau qui est transmis, mais au cas où...
+// Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_user = (isset($_POST['f_user'])) ? ( (is_array($_POST['f_user'])) ? $_POST['f_user'] : explode(',',$_POST['f_user']) ) : array() ;
 $tab_user = array_filter( Clean::map_entier($tab_user) , 'positif' );
-
 $tab_profils = array('eleves','parents','professeurs','directeurs');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -348,7 +348,7 @@ public static function DB_lister_users_cibles($listing_user_id,$listing_champs,$
     $DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
     $DB_SQL.= 'LEFT JOIN sacoche_groupe ON enfant.eleve_classe_id=sacoche_groupe.groupe_id ';
     $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-    $DB_SQL.= 'WHERE parent.user_id IN('.$listing_user_id.') ';
+    $DB_SQL.= 'WHERE parent.user_id IN('.$listing_user_id.') AND enfant.user_sortie_date>NOW() ';
     $DB_SQL.= 'GROUP BY parent.user_id ' ;
     $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, enfant.user_nom ASC, enfant.user_prenom ASC';
   }
@@ -596,7 +596,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
   $DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
-  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND parent.'.$test_date_sortie.' ';
+  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND parent.'.$test_date_sortie.' AND eleve.user_sortie_date>NOW() ';
   if(!$liste_parent_id)
   {
     $DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;

@@ -1637,7 +1637,7 @@ $(document).ready
         {
           $('button').prop('disabled',true);
           $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          // Grouper les saisies dans une variable unique afin d'éviter tout problème dû à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
+          // Grouper les saisies dans une variable unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
           var f_notes = new Array();
           $("#table_saisir tbody input").each
           (

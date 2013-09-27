@@ -375,7 +375,7 @@ $(document).ready
         {
           $('#zone_eval_saisir button').prop('disabled',true);
           $('#msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          // On ne risque pas de problème dû à une limitation du module "suhosin" pour un seul élève (nb champs envoyés = nb items + 1).
+          // On ne risque pas de problème dû à une limitation du module "suhosin" ou à "max input vars" pour un seul élève (nb champs envoyés = nb items + 1).
           $.ajax
           (
             {

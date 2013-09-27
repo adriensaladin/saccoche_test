@@ -205,7 +205,8 @@ $(document).ready
       function()
       {
         var action = $(this).attr('id');
-        if( !$('#f_profil option:selected').val() )
+        var profil = $('#f_profil option:selected').val();
+        if( !profil )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
           return(false);
@@ -217,12 +218,21 @@ $(document).ready
         }
         $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
+        var tab_user = new Array();
+        $("#f_user input:checked").each
+        (
+          function()
+          {
+            tab_user.push($(this).val());
+          }
+        );
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action+'&'+$("#form_select").serialize(),
+            data : 'csrf='+CSRF+'&action='+action+'&f_profil='+profil+'&f_user='+tab_user,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

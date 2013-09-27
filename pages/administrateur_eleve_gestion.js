@@ -385,6 +385,7 @@ $(document).ready
     (
       function()
       {
+        // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
         var listing_id = new Array(); $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {

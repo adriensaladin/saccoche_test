@@ -114,19 +114,29 @@ $(document).ready
     (
       function()
       {
-        if( !$("#f_eleve input:checked").length || !$("#f_serie option:selected").val() )
+        var f_serie = $('#f_serie option:selected').val();
+        if( !$("#f_eleve input:checked").length || !f_serie )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
           return(false);
         }
         $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
+        var tab_eleve = new Array();
+        $("#f_eleve input:checked").each
+        (
+          function()
+          {
+            tab_eleve.push($(this).val());
+          }
+        );
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE+'&action=associer',
-            data : 'csrf='+CSRF+'&'+$('#form_select').serialize(),
+            data : 'csrf='+CSRF+'&f_serie='+f_serie+'&f_eleve='+tab_eleve,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

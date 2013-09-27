@@ -56,7 +56,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
 $select_palier  = Form::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']  /*selection*/ ,              '' /*optgroup*/ );
 
 $select_type = ($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-             ? '<option value="listing_eleves">listes des élèves par classe</option><option value="listing_matiere">listes des items par matière</option><option value="arbre_matiere">arborescence des items par matière</option><option value="arbre_socle">arborescence des items du socle</option><option value="jointure_socle_matiere">liens socle &amp; matières</option>'
+             ? '<option value="listing_eleves">listes des élèves par classe / groupe</option><option value="listing_matiere">listes des items par matière</option><option value="arbre_matiere">arborescence des items par matière</option><option value="arbre_socle">arborescence des items du socle</option><option value="jointure_socle_matiere">liens socle &amp; matières</option>'
              : '<option value="infos_eleves">informations élèves</option><option value="infos_parents">informations responsables légaux</option><option value="infos_professeurs">informations professeurs et personnels</option>'
              ;
 ?>

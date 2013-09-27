@@ -30,7 +30,7 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 
 $action = (isset($_GET['action']))   ? $_GET['action']                 : '';
 $serie  = (isset($_POST['f_serie'])) ? Clean::texte($_POST['f_serie']) : '' ;
-// Normalement c'est un tableau qui est transmis, mais au cas où...
+// Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 

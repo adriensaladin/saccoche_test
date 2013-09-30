@@ -114,7 +114,7 @@ class FileSystem
   private static function systeme_umask()
   {
     $masque = defined('SYSTEME_UMASK') ? SYSTEME_UMASK : '000' ;
-    return 0 . $masque; // Espace obligatoire sinon PHP essaye de construire un nombre décimal.
+    return octdec($masque); // On ne peut pas passer une variable en octal et umask() accepte le format décimal (c'est juste que c'est moins lisible).
   }
 
   /**

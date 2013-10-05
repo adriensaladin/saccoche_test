@@ -171,7 +171,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   }
 }
 // infos adresse de connexion
-if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire')))
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
 {
   $tab_accueil['user'] .= '<div>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.URL_DIR_SACOCHE.'?'.$_SESSION['USER_PROFIL_TYPE'].'</b></div>';
 }
@@ -192,7 +192,7 @@ else
 // Panneau d'informations ou message écolo
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire')))
+if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
 {
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_destinataire($_SESSION['USER_ID']);
   if(!empty($DB_TAB))

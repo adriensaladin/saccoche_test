@@ -123,6 +123,7 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #top_info span.profil_partenaire     {background-position: 1px -159px}
 #top_info span.profil_professeur     {background-position: 1px -179px}
 #top_info span.profil_webmestre      {background-position: 1px -199px}
+#top_info span.profil_developpeur    {background-position: 1px -199px}
 #top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
 #top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
 #top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
@@ -576,8 +577,14 @@ table.scor_eval tbody.h td input.ABS  {background:#FFF url(../_img/note/commun/h
 table.scor_eval tbody.v td input.ABS  {background:#FFF url(../_img/note/commun/v/ABS.gif)  no-repeat center center;}
 table.scor_eval tbody.h td input.DISP {background:#FFF url(../_img/note/commun/h/DISP.gif) no-repeat center center;}
 table.scor_eval tbody.v td input.DISP {background:#FFF url(../_img/note/commun/v/DISP.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NE   {background:#FFF url(../_img/note/commun/h/NE.gif)   no-repeat center center;}
+table.scor_eval tbody.v td input.NE   {background:#FFF url(../_img/note/commun/v/NE.gif)   no-repeat center center;}
+table.scor_eval tbody.h td input.NF   {background:#FFF url(../_img/note/commun/h/NF.gif)   no-repeat center center;}
+table.scor_eval tbody.v td input.NF   {background:#FFF url(../_img/note/commun/v/NF.gif)   no-repeat center center;}
 table.scor_eval tbody.h td input.NN   {background:#FFF url(../_img/note/commun/h/NN.gif)   no-repeat center center;}
 table.scor_eval tbody.v td input.NN   {background:#FFF url(../_img/note/commun/v/NN.gif)   no-repeat center center;}
+table.scor_eval tbody.h td input.NR   {background:#FFF url(../_img/note/commun/h/NR.gif)   no-repeat center center;}
+table.scor_eval tbody.v td input.NR   {background:#FFF url(../_img/note/commun/v/NR.gif)   no-repeat center center;}
 table.scor_eval tbody.h td input.X    {background:#FFF url(../_img/note/commun/h/X.gif)    no-repeat center center;}
 table.scor_eval tbody.v td input.X    {background:#FFF url(../_img/note/commun/v/X.gif)    no-repeat center center;}
 table.scor_eval tbody.h td input.REQ  {background:#FFF url(../_img/note/commun/h/REQ.gif)  no-repeat center center;}

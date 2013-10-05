@@ -556,7 +556,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $tab_affich[0][0] = '<td>';
   $tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
   $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; N ; P ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
   $tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="arrow_continue_rigth">par item</span></label></span><br />';
   $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
   $tab_affich[0][0].= '</p><p>';
@@ -615,7 +615,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   }
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
-  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
+  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D E R N P R'."\r\n";
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   //
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -739,7 +739,20 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     }
   }
   // ajouter le contenu
-  $tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'commun/h/' );
+  $tab_dossier = array(
+    ''     => '' ,
+    'RR'   => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'R'    => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'V'    => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'VV'   => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'ABS'  => 'commun/h/' ,
+    'DISP' => 'commun/h/' ,
+    'NE'   => 'commun/h/' ,
+    'NF'   => 'commun/h/' ,
+    'NN'   => 'commun/h/' ,
+    'NR'   => 'commun/h/' ,
+    'REQ'  => 'commun/h/' ,
+  );
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -751,7 +764,20 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     }
   }
   // assemblage du csv
-  $tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'DISP'=>'D' , 'NN'=>'N' , 'REQ'=>'P' );
+  $tab_conversion = array(
+    ''     => ' ' ,
+    'RR'   => '1' ,
+    'R'    => '2' ,
+    'V'    => '3' ,
+    'VV'   => '4' ,
+    'ABS'  => 'A' ,
+    'DISP' => 'D' ,
+    'NE'   => 'E' ,
+    'NF'   => 'F' ,
+    'NN'   => 'N' ,
+    'NR'   => 'R' ,
+    'REQ'  => 'P' ,
+  );
   foreach($tab_comp_id as $comp_id=>$val_comp)
   {
     $export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
@@ -764,7 +790,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
   $export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
   // Enregistrer le csv
   $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
-  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D N P'."\r\n";
+  $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D E F N P R'."\r\n";
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
   // pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -882,9 +908,27 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
-  $tab_dossier = array( 'X'=>'commun/h/' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' );
-  $tab_init_nominatif   = array( 'RR'=>array() , 'R'=>array() , 'V'=>array() , 'VV'=>array() , 'X'=>array() );
-  $tab_init_quantitatif = array( 'RR'=>0 , 'R'=>0 , 'V'=>0 , 'VV'=>0 , 'X'=>0 );
+  $tab_dossier = array(
+    'X'  => 'commun/h/' ,
+    'RR' => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'R'  => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'V'  => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+    'VV' => $_SESSION['NOTE_DOSSIER'].'/h/' ,
+  );
+  $tab_init_nominatif   = array(
+    'RR' => array() ,
+    'R'  => array() ,
+    'V'  => array() ,
+    'VV' => array() ,
+    'X'  => array() ,
+  );
+  $tab_init_quantitatif = array(
+    'RR' => 0 ,
+    'R'  => 0 ,
+    'V'  => 0 ,
+    'VV' => 0 ,
+    'X'  => 0 ,
+  );
   $tab_repartition_nominatif   = array();
   $tab_repartition_quantitatif = array();
   // initialisation

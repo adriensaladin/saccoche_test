@@ -2547,6 +2547,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-01-18 => 2013-01-28
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-01-18')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2562,6 +2566,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-01-28 => 2013-01-31
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-01-28')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2575,6 +2583,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_corriger_appreciation"    , "DIR" )' );
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-01-31 => 2013-02-04
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if($version_base_structure_actuelle=='2013-01-31')
   {
@@ -2596,6 +2608,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-02-04 => 2013-02-22
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-02-04')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2612,6 +2628,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_email VARCHAR(63) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER user_naissance_date ' );
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-02-22 => 2013-03-20
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if($version_base_structure_actuelle=='2013-02-22')
   {
@@ -2639,6 +2659,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
       }
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-03-20 => 2013-04-22
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if($version_base_structure_actuelle=='2013-03-20')
   {
@@ -2694,6 +2718,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     $version_base_structure_actuelle = '2013-04-22';
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-04-22 => 2013-04-29
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-04-22')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2724,6 +2752,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-04-29 => 2013-05-05
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-04-29')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2741,6 +2773,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-05-05 => 2013-05-12
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-05-05')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2757,6 +2793,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-05-12 => 2013-05-14
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-05-12')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2771,6 +2811,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-05-14 => 2013-06-01
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-05-14')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2784,6 +2828,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
       }
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-01 => 2013-06-05
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if($version_base_structure_actuelle=='2013-06-01')
   {
@@ -2826,6 +2874,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-05 => 2013-06-10
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-06-05')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2836,6 +2888,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="scolastance_alsace" WHERE parametre_nom="connexion_nom" AND parametre_valeur="itop_alsace"' );
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-10 => 2013-06-11
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if($version_base_structure_actuelle=='2013-06-10')
   {
@@ -2855,6 +2911,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-11 => 2013-06-23
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-06-11')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2866,6 +2926,10 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-23 => 2013-09-23
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   if($version_base_structure_actuelle=='2013-06-23')
   {
     if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
@@ -2874,6 +2938,23 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
       // L'ENT Place prend la place de Mirabelle sur le 57
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="itop_place" WHERE parametre_nom="connexion_nom" AND parametre_valeur="itop_mirabelle"' );
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-09-23 => 2013-10-05
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  if($version_base_structure_actuelle=='2013-09-23')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-10-05';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // modification d'un champ afin de pouvoir repérer les demandes d'évaluations en attente de saisie
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note ENUM( "VV", "V", "R", "RR", "ABS", "DISP", "NE", "NF", "NN", "NR", "REQ" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
+      // ajout de paramètre
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_etat_acquisition_avec_evaluation" , "" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }
   }
 

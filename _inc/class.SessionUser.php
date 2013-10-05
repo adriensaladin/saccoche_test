@@ -64,6 +64,38 @@ class SessionUser
   }
 
   /**
+   * Tester si mdp d'un développeur SACoche transmis convient.
+   * On réutilise des éléments de la connexion webmestre.
+   * 
+   * @param string    $password
+   * @return string   'ok' ou un message d'erreur
+   */
+  public static function tester_authentification_developpeur($password)
+  {
+    // Si tentatives trop rapprochées...
+    $delai_tentative_secondes = $_SERVER['REQUEST_TIME'] - WEBMESTRE_ERREUR_DATE ;
+    if($delai_tentative_secondes<3)
+    {
+      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
+      return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
+    }
+    elseif($delai_tentative_secondes<10)
+    {
+      $delai_attente_restant = 10-$delai_tentative_secondes ;
+      return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
+    }
+    // Si mdp incorrect...
+    $password_crypte = crypter_mdp($password);
+    if($password_crypte!='aea4611f9630f77039558bbecc843375')
+    {
+      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
+      return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
+    }
+    // Si on arrive ici c'est que l'identification s'est bien effectuée !
+    return'ok';
+  }
+
+  /**
    * Tester si les données transmises permettent d'authentifier un partenaire (convention ENT serveur Sésamath).
    * 
    * @param int       $partenaire_id
@@ -392,6 +424,36 @@ class SessionUser
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;
     $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
+    $_SESSION['CONNEXION_MODE']                = 'normal';
+    // Enregistrer en session le menu personnalisé
+    SessionUser::memoriser_menu();
+  }
+
+  /**
+   * Enregistrer en session les informations authentifiant un développeur.
+   * 
+   * @param void
+   * @return void
+   */
+  public static function initialiser_developpeur()
+  {
+    // Numéro de la base
+    $_SESSION['BASE']                          = 0;
+    // Données associées au profil de l'utilisateur.
+    $_SESSION['USER_PROFIL_SIGLE']             = 'DVL';
+    $_SESSION['USER_PROFIL_TYPE']              = 'developpeur';
+    $_SESSION['USER_PROFIL_NOM_COURT']         = 'devel';
+    $_SESSION['USER_PROFIL_NOM_LONG']          = 'développeur SACoche';
+    $_SESSION['USER_MDP_LONGUEUR_MINI']        = 6;
+    $_SESSION['USER_DUREE_INACTIVITE']         = 15;
+    // Données personnelles de l'utilisateur.
+    $_SESSION['USER_ID']                       = 0;
+    $_SESSION['USER_NOM']                      = 'SACoche';
+    $_SESSION['USER_PRENOM']                   = 'développeur';
+    $_SESSION['USER_DESCR']                    = '[devel] développeur SACoche';
+    // Données associées à l'établissement.
+    $_SESSION['SESAMATH_ID']                   = 0;
+    $_SESSION['ETABLISSEMENT']['DENOMINATION'] = HEBERGEUR_INSTALLATION;
     $_SESSION['CONNEXION_MODE']                = 'normal';
     // Enregistrer en session le menu personnalisé
     SessionUser::memoriser_menu();

@@ -1295,7 +1295,7 @@ $(document).ready
     {
       var findme = '.'+touche_code+'.';
       var endroit_report_note = 'cellule';
-      if('.8.46.49.50.51.52.65.68.78.80.97.98.99.100.'.indexOf(findme)!=-1)
+      if('.8.46.49.50.51.52.65.68.69.70.78.80.82.97.98.99.100.'.indexOf(findme)!=-1)
       {
         // Une touche d'item a été pressée
         switch (touche_code)
@@ -1313,8 +1313,10 @@ $(document).ready
           case  65: var note = 'ABS';  break; // A
           case  68: var note = 'DISP'; break; // D
           case  78: var note = 'NN';   break; // N
+          case  69: var note = 'NE';   break; // E
+          case  70: var note = 'NF';   break; // F
+          case  82: var note = 'NR';   break; // R
           case  80: var note = 'REQ';  break; // P
-          // case  69: var note = 'NE';   break; // E
         }
         endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
@@ -1933,6 +1935,9 @@ $(document).ready
                   case 'A': champ.val('ABS' ).removeAttr("class").addClass('ABS' ); break;
                   case 'D': champ.val('DISP').removeAttr("class").addClass('DISP'); break;
                   case 'N': champ.val('NN'  ).removeAttr("class").addClass('NN'  ); break;
+                  case 'E': champ.val('NE'  ).removeAttr("class").addClass('NE'  ); break;
+                  case 'F': champ.val('NF'  ).removeAttr("class").addClass('NF'  ); break;
+                  case 'R': champ.val('NR'  ).removeAttr("class").addClass('NR'  ); break;
                   case 'P': champ.val('REQ' ).removeAttr("class").addClass('REQ' ); break;
                 }
                 champ.parent().css("background-color","#F6D");

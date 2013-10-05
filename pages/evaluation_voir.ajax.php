@@ -122,10 +122,12 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   {
     exit('Ce devoir n\'est associé à aucun item !');
   }
-  // Si l'élève peut formuler des demandes d'évaluations, on doit calculer le score (du coup, on choisit d'afficher le score pour tout le monde).
   $tab_liste_item = array_keys($DB_TAB_COMP);
   $liste_item_id = implode(',',$tab_liste_item);
+  // Si l'élève peut formuler des demandes d'évaluations, on doit calculer le score.
+  // Du coup, on choisit de récupérer les notes et de calculer les scores pour tout le monde.
   $tab_devoirs = array();
+  $tab_scores  = array();
   $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_result_eleve_items( $eleve_id , $liste_item_id , $_SESSION['USER_PROFIL_TYPE'] );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -140,21 +142,30 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-    $score = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
-    $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-    $tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ).'</tr>';
+    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
+    $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+    $tab_affich[$item_id] = '<td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td>';
   }
   // récupérer les saisies et les ajouter
+  $tab_notes = array();
   $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
-    if(isset($tab_affich[$DB_ROW['item_id']]))
+    $tab_notes[$DB_ROW['item_id']] = $DB_ROW['saisie_note'];
+  }
+  foreach($tab_liste_item as $item_id)
+  {
+    $tab_affich[$item_id] .= (isset($tab_notes[$item_id])) ? '<td class="hc">'.Html::note($tab_notes[$item_id],'','',TRUE /*tri*/).'</td>' : '<td class="hc">-</td>' ;
+  }
+  // ajouter les états d'acquisition
+  if(test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))
+  {
+    foreach($tab_liste_item as $item_id)
     {
-      $tab_affich[$DB_ROW['item_id']] = str_replace( '>-</td><td' , '>'.Html::note($DB_ROW['saisie_note'],'','',TRUE /*tri*/).'</td><td' , $tab_affich[$DB_ROW['item_id']] );
+      $tab_affich[$item_id] .= Html::td_score( $tab_scores[$item_id] , 'score' /*methode_tri*/ , '' /*pourcent*/ );
     }
   }
-  exit(implode('',$tab_affich));
+  exit('<tr>'.implode('</tr><tr>',$tab_affich).'</tr>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

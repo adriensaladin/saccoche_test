@@ -91,8 +91,9 @@ $tab_droits  = array
   "Score d'un item &amp; état d'acquisition" => array
   (
     'tous',
-    array( 'droit_voir_score_bilan' , "voir les scores des items (bilans)"     , 'tous' ),
-    array( 'droit_voir_algorithme'  , "voir et simuler l'algorithme de calcul" , 'tous' ),
+    array( 'droit_voir_algorithme'                       , "voir et simuler l'algorithme de calcul" , 'tous' ),
+    array( 'droit_voir_score_bilan'                      , "voir les scores des items (bilans)"     , 'tous' ),
+    array( 'droit_voir_etat_acquisition_avec_evaluation' , "afficher l'état d'acquisition avec le résultat d'une évaluation" , 'tous' ),
   ),
   "Socle &rarr; Choix de la langue" => array
   (

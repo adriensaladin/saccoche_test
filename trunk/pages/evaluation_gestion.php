@@ -353,11 +353,10 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f
     <tbody><tr><td></td></tr></tbody>
   </table>
   <div id="td_souris_container"><div class="td_souris">
-    <img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /><br />
-    <img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
-    <img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /><img alt="NN" src="./_img/note/commun/h/NN.gif" /><br />
-    <img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X" src="./_img/note/commun/h/X.gif" /><br />
-    <img alt="REQ" src="./_img/note/commun/h/REQ.gif" />
+    <img alt="NN" src="./_img/note/commun/h/NN.gif" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS"  src="./_img/note/commun/h/ABS.gif"  /><br />
+    <img alt="NE" src="./_img/note/commun/h/NE.gif" /><img alt="R"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif"  /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
+    <img alt="NF" src="./_img/note/commun/h/NF.gif" /><img alt="V"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif"  /><img alt="REQ"  src="./_img/note/commun/h/REQ.gif"  /><br />
+    <img alt="NR" src="./_img/note/commun/h/NR.gif" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X"    src="./_img/note/commun/h/X.gif"    /><br />
   </div></div>
   <p class="ti">Note à reporter dans &hellip;
     <label for="f_report_cellule">[ <input type="radio" id="f_report_cellule" name="f_endroit_report_note" value="cellule" checked /> la cellule ]</label>
@@ -416,6 +415,7 @@ $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f
 <div id="cadre_tactile">
   <div><kbd id="kbd_37"><img alt="Gauche" src="./_img/fleche/fleche_g1.gif" /></kbd><kbd id="kbd_39"><img alt="Droite" src="./_img/fleche/fleche_d1.gif" /></kbd><kbd id="kbd_38"><img alt="Haut" src="./_img/fleche/fleche_h1.gif" /></kbd><kbd id="kbd_40"><img alt="Bas" src="./_img/fleche/fleche_b1.gif" /></kbd></div>
   <div><kbd id="kbd_97"><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /></kbd><kbd id="kbd_98"><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /></kbd><kbd id="kbd_99"><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /></kbd><kbd id="kbd_100"><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /></kbd></div>
-  <div><kbd id="kbd_65"><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /></kbd><kbd id="kbd_68"><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /></kbd><kbd id="kbd_78"><img alt="NN" src="./_img/note/commun/h/NN.gif" /></kbd><kbd id="kbd_46"><img alt="X" src="./_img/note/commun/h/X.gif" /></kbd></div>
-  <div><kbd id="kbd_80"><img alt="ABS" src="./_img/note/commun/h/REQ.gif" /></kbd><kbd style="visibility:hidden"></kbd><kbd id="kbd_13" class="img valider"></kbd><kbd id="kbd_27" class="img retourner"></kbd></div>
+  <div><kbd id="kbd_78"><img alt="NN" src="./_img/note/commun/h/NN.gif" /></kbd><kbd id="kbd_69"><img alt="NN" src="./_img/note/commun/h/NE.gif" /></kbd><kbd id="kbd_70"><img alt="NN" src="./_img/note/commun/h/NF.gif" /></kbd><kbd id="kbd_82"><img alt="NN" src="./_img/note/commun/h/NR.gif" /></kbd></div>
+  <div><kbd id="kbd_65"><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /></kbd><kbd id="kbd_68"><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /></kbd><kbd id="kbd_80"><img alt="ABS" src="./_img/note/commun/h/REQ.gif" /></kbd><kbd id="kbd_46"><img alt="X" src="./_img/note/commun/h/X.gif" /></kbd></div>
+  <div><kbd style="visibility:hidden"></kbd><kbd id="kbd_13" class="img valider"></kbd><kbd id="kbd_27" class="img retourner"></kbd><kbd style="visibility:hidden"></kbd></div>
 </div>

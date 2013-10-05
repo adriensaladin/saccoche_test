@@ -235,7 +235,7 @@ if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password
   exit($auth_resultat);
 }
 
-// Pour le webmestre d'un serveur
+// Pour le webmestre d'un serveur ou  éventuellement un développeur
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
@@ -244,6 +244,15 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
   {
     SessionUser::initialiser_webmestre();
     exit(adresse_redirection_apres_authentification());
+  }
+  else
+  {
+    $auth_resultat = SessionUser::tester_authentification_developpeur($password);
+    if($auth_resultat=='ok')
+    {
+      SessionUser::initialiser_developpeur();
+      exit(adresse_redirection_apres_authentification());
+    }
   }
   exit($auth_resultat);
 }

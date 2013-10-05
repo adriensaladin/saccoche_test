@@ -64,6 +64,19 @@ $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ 
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 
+if(test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))
+{
+  $score_texte    = '<th>Score<br />cumulé</th>';
+  $score_legende  = TRUE;
+  $colonne_nombre = 4;
+}
+else
+{
+  $score_texte    = '';
+  $score_legende  = FALSE;
+  $colonne_nombre = 3;
+}
+
 // Javascript
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_dates = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';';
@@ -109,14 +122,14 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';
         <th>Ref.</th>
         <th>Nom de l'item</th>
         <th>Note à<br />ce devoir</th>
-        <th>Score<br />cumulé</th>
+        <?php echo $score_texte ?>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="4"></td></tr>
+      <tr><td class="nu" colspan="<?php echo $colonne_nombre ?>"></td></tr>
     </tbody>
   </table>
-  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ); ?>
+  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ); ?>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">

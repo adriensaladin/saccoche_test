@@ -72,6 +72,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "droit_validation_entree"                       , "DIR,ENS,DOC,EDU" ),
 ( "droit_validation_pilier"                       , "DIR,ENS,ONLY_PP" ),
 ( "droit_voir_algorithme"                         , "DIR,ENS,DOC,EDU,TUT,ELV" ),
+( "droit_voir_etat_acquisition_avec_evaluation"   , "" ),
 ( "droit_voir_grilles_items"                      , "DIR,ENS,DOC,EDU,TUT,ELV" ),
 ( "droit_voir_referentiels"                       , "DIR,ENS,DOC,EDU,TUT,ELV" ),
 ( "droit_voir_score_bilan"                        , "DIR,ENS,DOC,EDU,TUT,ELV" ),

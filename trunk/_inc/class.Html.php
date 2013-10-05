@@ -33,8 +33,8 @@ class Html
   // //////////////////////////////////////////////////
 
   // sert pour le tri d'un tableau de notes Lomer
-  // correspond à $tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP','REQ','-',''));
-  private static $tab_tri_note = array('RR'=>0,'R'=>1,'V'=>2,'VV'=>3,'ABS'=>4,'NN'=>5,'DISP'=>6,'REQ'=>7,'-'=>8,''=>9);
+  // correspond à $tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NE','NF','NN','NR','DISP','REQ','-',''));
+  private static $tab_tri_note = array('RR'=>0,'R'=>1,'V'=>2,'VV'=>3,'ABS'=>4,'NE'=>5,'NF'=>6,'NN'=>7,'NR'=>8,'DISP'=>9,'REQ'=>10,'-'=>11,''=>12);
 
   // sert pour le tri du tableau de scores bilans dans le cas d'un tri par état d'acquisition
   // correspond à $tab_tri_note = array_flip(array('r','o','v'));

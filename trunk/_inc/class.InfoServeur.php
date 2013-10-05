@@ -54,11 +54,11 @@ class InfoServeur
   {
     if($type_base=='structure')
     {
-      return (!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur dépend de chaque structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
+      return (!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur dépend de chaque structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
     }
     if($type_base=='webmestre')
     {
-      return (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Sans objet pour une installation de type mono-structure.<br />' : ( (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ) ;
+      return (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Sans objet pour une installation de type mono-structure.<br />' : ( (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ) ;
        ;
     }
   }
@@ -235,9 +235,9 @@ class InfoServeur
    */
   private static function version_sacoche_base_structure()
   {
-    if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','partenaire'))) return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
-    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'='))   return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
-                                                                                return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
+    if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
+    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'='))                 return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
+                                                                                              return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
 
   /**

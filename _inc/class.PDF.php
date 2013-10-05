@@ -662,11 +662,8 @@ class PDF extends FPDF
         break;
       case 'ABS' :
       case 'DISP' :
-      case 'NE' :
-      case 'NF' :
       case 'NN' :
-      case 'NR' :
-        $tab_texte = array('ABS'=>'Abs.','DISP'=>'Disp.','NE'=>'N.E.','NF'=>'N.F.','NN'=>'N.N.','NR'=>'N.R.');
+        $tab_texte = array('ABS'=>'Abs.','DISP'=>'Disp.','NN'=>'N.N.');
         $this->cMargin /= 2;
         $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         $this->cMargin *= 2;

@@ -498,7 +498,7 @@ public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
 
 /**
  * lister_dates_saisies_items
- * Retourner les dates de saisies de notes pour des items donnés (on ne restreint pas aux élèves au compte actif à cause des sortants du niveau le plus élevé).
+ * Retourner les dates de saisies de notes pour des items donnés (en restreignant aux élèves au compte actif).
  *
  * @param string   $liste_item_id   id des items séparés par des virgules
  * @return array
@@ -507,7 +507,8 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
 {
   $DB_SQL = 'SELECT item_id , saisie_date AS date ';
   $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
+  $DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') AND user_sortie_date>NOW() ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

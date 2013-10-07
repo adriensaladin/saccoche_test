@@ -763,15 +763,15 @@ function texte_ligne_naissance($date_fr)
 /**
  * Renvoyer le 1er jour de l'année scolaire en cours, au format français JJ/MM/AAAA ou MySQL AAAA-MM-JJ.
  *
- * @param string $format   'mysql'|'french'
- * @param int    $annee_sup   facultatif, pour les années scolaires suivantes
+ * @param string $format           'mysql'|'french'
+ * @param int    $annee_decalage   facultatif, pour les années scolaires précédentes ou suivantes
  * @return string
  */
-function jour_debut_annee_scolaire($format,$annee_sup=0)
+function jour_debut_annee_scolaire($format,$annee_decalage=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_sup-1 : date("Y")+$annee_sup ;
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_decalage-1 : date("Y")+$annee_decalage ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
@@ -779,15 +779,15 @@ function jour_debut_annee_scolaire($format,$annee_sup=0)
  * Renvoyer le dernier jour de l'année scolaire en cours, au format français JJ/MM/AAAA ou MySQL AAAA-MM-JJ.
  * En fait, c'est plus exactement le 1er jour de l'année scolaire suivante...
  *
- * @param string $format   'mysql'|'french'
- * @param int    $annee_sup   facultatif, pour les années scolaires suivantes
+ * @param string $format           'mysql'|'french'
+ * @param int    $annee_decalage   facultatif, pour les années scolaires précédentes ou suivantes
  * @return string
  */
-function jour_fin_annee_scolaire($format,$annee_sup=0)
+function jour_fin_annee_scolaire($format,$annee_decalage=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_sup : date("Y")+$annee_sup+1 ;
+  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_decalage : date("Y")+$annee_decalage+1 ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 

@@ -111,6 +111,87 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Export CSV des items d'une matière avec leur nombre d'utilisation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
+{
+  Form::save_choix('export_fichier');
+  // Préparation de l'export CSV
+  $separateur = ';';
+  $export_csv_entete  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'TOTAL';
+  $tab_export_csv  = array();
+  // Préparation de l'export HTML
+  $export_html_entete = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Notes<br />Total</th>';
+  $tab_export_html = array();
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ );
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
+      $tab_export_csv[$DB_ROW['item_id']]  = $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"';
+      $tab_export_html[$DB_ROW['item_id']] = '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td>';
+    }
+  }
+
+  // On compte maintenant le nombre de saisies par item et par année scolaire.
+  $tab_count = array();
+  if(!empty($DB_TAB))
+  {
+    $tab_item = array_keys($tab_export_csv);
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_dates_saisies_items( implode(',',$tab_item) );
+    if(!empty($DB_TAB))
+    {
+      $annee_decalage = 0;
+      do
+      {
+        $export_csv_entete  .= ($annee_decalage) ? $separateur.'ANNEE -'.$annee_decalage : $separateur.'ANNEE' ;
+        $export_html_entete .= ($annee_decalage) ? '<th>Notes<br />Année &minus;'.$annee_decalage.'</th>' : '<th>Notes<br />Année</th>' ;
+        foreach($tab_item as $item_id)
+        {
+          $tab_count[$item_id][$annee_decalage] = 0;
+        }
+        $date_min = jour_debut_annee_scolaire('mysql',-$annee_decalage);
+        foreach($DB_TAB as $key => $DB_ROW)
+        {
+          if( $date_min <= $DB_ROW['date'] )
+          {
+            $tab_count[$DB_ROW['item_id']][$annee_decalage]++;
+            unset($DB_TAB[$key]);
+          }
+        }
+        $annee_decalage++;
+      }
+      while( count($DB_TAB) && ($annee_decalage<10) );
+      // On ajoute tout ça aux sorties
+      foreach($tab_item as $item_id)
+      {
+        $total = array_sum($tab_count[$item_id]);
+        $tab_export_csv[$item_id]  .= $separateur.$total;
+        $tab_export_html[$item_id] .= '<td>'.$total.'</td>';
+        for( $annee=0 ; $annee<$annee_decalage ; $annee++ )
+        {
+          $nombre = $tab_count[$item_id][$annee];
+          $tab_export_csv[$item_id]  .= $separateur.$nombre;
+          $tab_export_html[$item_id] .= '<td>'.$nombre.'</td>';
+        }
+      }
+    }
+  }
+  // Finalisation de l'export CSV (archivage dans un fichier)
+  $export_csv  = $export_csv_entete."\r\n\r\n".implode( "\r\n" , $tab_export_csv );
+  $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
+  // Finalisation de l'export HTML
+  $export_html = $export_html_entete.NL.'</thead><tbody>'.NL.implode( NL , $tab_export_html ).NL.'</tbody></table>'.NL;
+  // Affichage
+  echo'<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  echo $export_html;
+  exit();
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Export CSV de l'arborescence des items d'une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

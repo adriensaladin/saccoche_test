@@ -886,7 +886,7 @@ if( $step==20 )
       {
         $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
         $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
-        $birth_date = $tab_elements[$tab_numero_colonne['birth_date']];
+        $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? convert_date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
         $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
         $classe     = $tab_elements[$tab_numero_colonne['classe']];
         if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe!='') )
@@ -942,8 +942,8 @@ if( $step==20 )
         case 'CP responsable'        : $tab_numero_colonne['codepostal']      = $numero; $numero_max = max($numero_max,$numero); break; // normalement 5
         case 'Commune responsable'   : $tab_numero_colonne['commune']         = $numero; $numero_max = max($numero_max,$numero); break; // normalement 6
         case 'Pays'                  : $tab_numero_colonne['pays']            = $numero; $numero_max = max($numero_max,$numero); break; // normalement 7
-        case 'Nom de famille enfant' : $tab_numero_colonne['enfant_nom'][]    = $numero; $numero_max = max($numero_max,$numero); break; // normalement 14 18 22 ...
-        case 'Prénom enfant'         : $tab_numero_colonne['enfant_prenom'][] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15 19 23 ...
+        case 'Nom de famille enfant' : $tab_numero_colonne['enfant_nom'][]    = $numero;                                         break; // normalement 14 18 22 ...
+        case 'Prénom enfant'         : $tab_numero_colonne['enfant_prenom'][] = $numero;                                         break; // normalement 15 19 23 ...
       }
     }
     $nb_enfants_maxi = min( count($tab_numero_colonne['enfant_nom']) , count($tab_numero_colonne['enfant_prenom']) );
@@ -951,6 +951,7 @@ if( $step==20 )
     {
       exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
     }
+    $numero_max = max( $numero_max , $tab_numero_colonne['enfant_nom'][0] , $tab_numero_colonne['enfant_prenom'][0] );
     unset($tab_lignes[0]); // Supprimer la 1e ligne
     // L'import ne contient aucun id parent ni enfant.
     // On récupère la liste des noms prénoms des élèves actuels pour comparer au contenu du fichier.
@@ -982,6 +983,10 @@ if( $step==20 )
           $tab_enfants = array();
           for( $num_enfant=0 ; $num_enfant<$nb_enfants_maxi ; $num_enfant++ )
           {
+            if ( !isset($tab_elements[$tab_numero_colonne['enfant_nom'][$num_enfant]]) || !isset($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]) )
+            {
+              break;
+            }
             $enfant_nom    = Clean::nom(   $tab_elements[$tab_numero_colonne['enfant_nom'   ][$num_enfant]]);
             $enfant_prenom = Clean::prenom($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]);
             $enfant_id     = array_search( $enfant_nom.' '.$enfant_prenom , $tab_eleves_actuels );

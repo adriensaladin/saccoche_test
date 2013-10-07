@@ -45,10 +45,10 @@ $(document).ready
       function()
       {
         var type = $(this).val();
-        if( (type=='listing_eleves') || (type.substring(0,6)=='infos_') ) {requis='groupe';  $('#div_groupe').slideDown();}  else {$('#div_groupe').slideUp();}
-        if( (type=='listing_matiere') || (type=='arbre_matiere') )        {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
-        if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )   {requis='palier';  $('#div_palier').slideDown();}  else {$('#div_palier').slideUp();}
-        if(type=='')                                                      {requis='';        $('#p_submit').hide(0);}        else {$('#p_submit').show(0);}
+        if( (type=='listing_eleves') || (type.substring(0,6)=='infos_') )                          {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
+        if( (type=='listing_matiere') || (type=='item_matiere_usage') || (type=='arbre_matiere') ) {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
+        if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )                            {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
+        if(type=='')                                                                               {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
         $('#bilan').html("&nbsp;");
       }
     );

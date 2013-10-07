@@ -55,10 +55,21 @@ $select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom
 $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,    '' /*option_first*/ , FALSE                          /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_palier  = Form::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']  /*selection*/ ,              '' /*optgroup*/ );
 
-$select_type = ($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-             ? '<option value="listing_eleves">listes des élèves par classe / groupe</option><option value="listing_matiere">listes des items par matière</option><option value="arbre_matiere">arborescence des items par matière</option><option value="arbre_socle">arborescence des items du socle</option><option value="jointure_socle_matiere">liens socle &amp; matières</option>'
-             : '<option value="infos_eleves">informations élèves</option><option value="infos_parents">informations responsables légaux</option><option value="infos_professeurs">informations professeurs et personnels</option>'
-             ;
+if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
+{
+  $select_type = '<option value="listing_eleves">listes des élèves par classe / groupe</option>'
+                .'<option value="listing_matiere">listes des items par matière</option>'
+                .'<option value="item_matiere_usage">utilisation des items par matière</option>'
+                .'<option value="arbre_matiere">arborescence des items par matière</option>'
+                .'<option value="arbre_socle">arborescence des items du socle</option>'
+                .'<option value="jointure_socle_matiere">liens socle &amp; matières</option>';
+}
+else
+{
+  $select_type = '<option value="infos_eleves">informations élèves</option>'
+                .'<option value="infos_parents">informations responsables légaux</option>'
+                .'<option value="infos_professeurs">informations professeurs et personnels</option>';
+}
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></span></div>

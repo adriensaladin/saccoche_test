@@ -499,17 +499,15 @@ public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
 /**
  * lister_dates_saisies_items
  * Retourner les dates de saisies de notes pour des items donnés (on ne restreint pas aux élèves au compte actif à cause des sortants du niveau le plus élevé).
- * Groupement par date car une évaluation couvre des saisies d'un même item pour plusieurs élèves => ça fait 30 fois moins de lignes retournées et on évite des erreurs 500 pour dépassement de mémoire.
  *
  * @param string   $liste_item_id   id des items séparés par des virgules
  * @return array
  */
 public static function DB_lister_dates_saisies_items($liste_item_id)
 {
-  $DB_SQL = 'SELECT item_id , saisie_date AS date , COUNT(saisie_note) AS nombre ';
+  $DB_SQL = 'SELECT item_id , saisie_date AS date ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
-  $DB_SQL.= 'GROUP BY item_id , saisie_date ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

@@ -157,7 +157,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
         {
           if( $date_min <= $DB_ROW['date'] )
           {
-            $tab_count[$DB_ROW['item_id']][$annee_decalage]++;
+            $tab_count[$DB_ROW['item_id']][$annee_decalage] += $DB_ROW['nombre'];
             unset($DB_TAB[$key]);
           }
         }

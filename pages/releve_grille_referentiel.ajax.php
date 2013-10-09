@@ -51,7 +51,7 @@ $orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f
 $couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])       : '';
 $legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])       : '';
 $marge_min         = (isset($_POST['f_marge_min']))     ? Clean::texte($_POST['f_marge_min'])     : '';
-$cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])     : -1;
+$cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])     : 0;
 $cases_largeur     = (isset($_POST['f_cases_larg']))    ? Clean::entier($_POST['f_cases_larg'])   : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
@@ -95,7 +95,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
 
-if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || ($cases_nb<0) || !$cases_largeur || !count($tab_type) )
+if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || !$cases_nb || !$cases_largeur || !count($tab_type) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -459,8 +459,7 @@ if( $type_generique || $type_individuel )
   $texte_lien_avant = '';
   $texte_lien_apres = '';
   // Les variables $releve_HTML_individuel et $releve_PDF vont contenir les sorties
-  $colspan_nb = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
-  $colspan_th = ($colspan_nb) ? '<th colspan="'.$colspan_nb.'" class="nu"></th>' : '' ;
+  $colspan = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
   $msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
   $msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
   $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
@@ -470,7 +469,7 @@ if( $type_generique || $type_individuel )
   $legende_nb_lignes = 1 + ($retroactif!='non') + ($colonne_bilan=='oui') ;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
-  $releve_PDF->grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $legende_nb_lignes , $colonne_bilan , $colonne_vide );
+  $releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$legende_nb_lignes,$colonne_bilan,$colonne_vide);
   $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
 
   // Pour chaque élève...
@@ -478,7 +477,7 @@ if( $type_generique || $type_individuel )
   {
     extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
     // On met le document au nom de l'élève, ou on établit un document générique
-    $releve_PDF->grille_referentiel_entete( $matiere_nom , $niveau_nom , $eleve_id , $eleve_nom , $eleve_prenom );
+    $releve_PDF->grille_referentiel_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
     $releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>'.NL : $separation.'<h2>Grille générique</h2>'.NL ;
     $releve_HTML_individuel .= '<table class="bilan">'.NL;
     // Pour chaque domaine...
@@ -487,16 +486,16 @@ if( $type_generique || $type_individuel )
       foreach($tab_domaine as $domaine_id => $tab)
       {
         extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes
-        $releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th>'.$colspan_th.'</tr>'.NL;
-        $releve_PDF->grille_referentiel_domaine( $domaine_nom , $domaine_nb_lignes );
+        $releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'.NL;
+        $releve_PDF->grille_referentiel_domaine($domaine_nom,$domaine_nb_lignes);
         // Pour chaque thème...
         if(isset($tab_theme[$domaine_id]))
         {
           foreach($tab_theme[$domaine_id] as $theme_id => $tab)
           {
             extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes
-            $releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th>'.$colspan_th.'</tr>'.NL;
-            $releve_PDF->grille_referentiel_theme( $theme_ref , $theme_nom , $theme_nb_lignes );
+            $releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'.NL;
+            $releve_PDF->grille_referentiel_theme($theme_ref,$theme_nom,$theme_nb_lignes);
             // Pour chaque item...
             if(isset($tab_item[$theme_id]))
             {
@@ -519,48 +518,45 @@ if( $type_generique || $type_individuel )
                 $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
                 $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
                 $releve_HTML_individuel .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
-                $releve_PDF->grille_referentiel_item( $item_ref , $texte_coef.$texte_socle.$item_nom , $colspan_nb );
+                $releve_PDF->grille_referentiel_item($item_ref,$texte_coef.$texte_socle.$item_nom);
                 // Pour chaque case...
-                if($colspan_nb)
+                for($i=0;$i<$cases_nb;$i++)
                 {
-                  for($i=0;$i<$cases_nb;$i++)
+                  if($remplissage=='plein')
                   {
-                    if($remplissage=='plein')
+                    if(isset($tab_eval[$eleve_id][$item_id][$i]))
                     {
-                      if(isset($tab_eval[$eleve_id][$item_id][$i]))
-                      {
-                        extract($tab_eval[$eleve_id][$item_id][$i]);  // $note $date $info
-                      }
-                      else
-                      {
-                        $note = '-'; $date = ''; $info = '';
-                      }
-                      $pdf_bg = ''; $td_class = '';
-                      if( $date && ($date<$jour_debut_annee_scolaire) )
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
-                      }
-                      elseif( $date && ($date<$date_mysql_debut) )
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
-                      }
-                      $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
-                      $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan) /*br*/ , $pdf_bg );
+                      extract($tab_eval[$eleve_id][$item_id][$i]);  // $note $date $info
                     }
                     else
                     {
-                      $releve_HTML_individuel .= '<td>&nbsp;</td>';
-                      $releve_PDF->Cell( $cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan) , 'C' , TRUE , '' );
+                      $note = '-'; $date = ''; $info = '';
                     }
+                    $pdf_bg = ''; $td_class = '';
+                    if( $date && ($date<$jour_debut_annee_scolaire) )
+                    {
+                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
+                      $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+                    }
+                    elseif( $date && ($date<$date_mysql_debut) )
+                    {
+                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
+                      $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
+                    }
+                    $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
+                    $releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$colspan),$pdf_bg);
                   }
-                  // Case bilan
-                  if($colonne_bilan=='oui')
+                  else
                   {
-                    $releve_HTML_individuel .= Html::td_score($score,'score');
-                    $releve_PDF->afficher_score_bilan( $score , 1 /*br*/ );
+                    $releve_HTML_individuel .= '<td>&nbsp;</td>';
+                    $releve_PDF->Cell($cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan) , 'C' , TRUE , '');
                   }
+                }
+                // Case bilan
+                if($colonne_bilan=='oui')
+                {
+                  $releve_HTML_individuel .= Html::td_score($score,'score');
+                  $releve_PDF->afficher_score_bilan($score,$br=1);
                 }
                 $releve_HTML_individuel .= '</tr>'.NL;
               }

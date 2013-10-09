@@ -57,6 +57,7 @@ $periode_id             = (isset($_POST['f_periode']))            ? Clean::entie
 $date_debut             = (isset($_POST['f_date_debut']))         ? Clean::texte($_POST['f_date_debut'])  : '';
 $date_fin               = (isset($_POST['f_date_fin']))           ? Clean::texte($_POST['f_date_fin'])    : '';
 $retroactif             = (isset($_POST['f_retroactif']))         ? Clean::texte($_POST['f_retroactif'])  : '';
+$only_socle             = 0;
 $aff_coef               = (isset($_POST['f_coef']))               ? 1                                     : 0;
 $aff_socle              = (isset($_POST['f_socle']))              ? 1                                     : 0;
 $aff_lien               = (isset($_POST['f_lien']))               ? 1                                     : 0;
@@ -67,7 +68,7 @@ $couleur                = (isset($_POST['f_couleur']))            ? Clean::texte
 $legende                = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])     : '';
 $marge_min              = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])  : 0;
 $pages_nb               = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])    : '';
-$cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])   : 0;
+$cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])   : -1;
 $cases_largeur          = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg']) : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
@@ -100,7 +101,7 @@ $type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve = implode(',',$tab_eleve);
 
-if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
+if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {
   exit('Erreur avec les données transmises !');
 }

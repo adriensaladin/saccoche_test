@@ -153,9 +153,14 @@ $(document).ready
       function()
       {
         var objet = $(this).attr('id').substring(15);
-        if( (objet=='socle') && (!$('#f_socle_pourcentage_acquis').is(':checked')) && (!$('#f_socle_etat_validation').is(':checked')) )
+        if( (objet=='releve') && (!$('#f_'+objet+'_etat_acquisition').is(':checked')) && ($('#f_'+objet+'_cases_nb option:selected').val()==0) )
         {
-          $('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Cocher au moins une indication à faire figurer sur le bilan !");
+          $('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Choisir au moins une indication à faire figurer sur le bilan !");
+          return false;
+        }
+        if( (objet=='socle') && (!$('#f_'+objet+'_pourcentage_acquis').is(':checked')) && (!$('#f_'+objet+'_etat_validation').is(':checked')) )
+        {
+          $('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Choisir au moins une indication à faire figurer sur le bilan !");
           return false;
         }
         if( ($('#f_'+objet+'_check_supplementaire').is(':checked')) && (!$('#f_'+objet+'_ligne_supplementaire').val()) )

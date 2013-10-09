@@ -53,7 +53,7 @@ $couleur                = (isset($_POST['f_couleur']))            ? Clean::texte
 $legende                = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])     : '';
 $marge_min              = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])  : 0;
 $pages_nb               = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])    : '';
-$cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])   : 0;
+$cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])   : -1;
 $cases_largeur          = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg']) : 0;
 
 // Normalement c'est un tableau qui est transmis, mais au cas où...
@@ -82,7 +82,7 @@ $type_bulletin   = 0;
 
 $liste_eleve = implode(',',$tab_eleve);
 
-if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
+if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {
   exit('Erreur avec les données transmises !');
 }

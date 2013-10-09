@@ -456,6 +456,11 @@ $(document).ready
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      if( ($('#f_type_individuel').is(':checked')) && (!$('#f_etat_acquisition').is(':checked')) && ($('#f_cases_nb option:selected').val()==0) )
+      {
+        $('#ajax_msg').removeAttr("class").addClass("erreur").html("Choisir au moins une indication à faire figurer sur le relevé individuel !");
+        return false;
+      }
       var readytogo = validation.form();
       if(readytogo)
       {

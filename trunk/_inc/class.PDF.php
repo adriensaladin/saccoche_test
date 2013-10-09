@@ -1770,11 +1770,12 @@ class PDF extends FPDF
     $this->SetFont('Arial' , '' , $this->taille_police);
   }
 
-  public function grille_referentiel_item( $item_ref , $item_texte )
+  public function grille_referentiel_item( $item_ref , $item_texte , $colspan_nb )
   {
+    $br = ($colspan_nb) ? 0 : 1 ;
     $this->choisir_couleur_fond('gris_clair');
-    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($item_ref)   , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE  /*remplissage*/ );
-    $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($item_ref)   , 1 /*bordure*/ ,   0 /*br*/ , 'C' /*alignement*/ , TRUE  /*remplissage*/ );
+    $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , $br /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->choisir_couleur_fond('blanc');
   }
 

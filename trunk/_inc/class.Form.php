@@ -51,11 +51,11 @@ class Form
   );
 
   public static $tab_select_marge_min = array(
-    array('valeur'=>5  , 'texte'=>'marges de 5 mm')  ,
-    array('valeur'=>6  , 'texte'=>'marges de 6 mm')  ,
-    array('valeur'=>7  , 'texte'=>'marges de 7 mm')  ,
-    array('valeur'=>8  , 'texte'=>'marges de 8 mm')  ,
-    array('valeur'=>9  , 'texte'=>'marges de 9 mm')  ,
+    array('valeur'=> 5 , 'texte'=>'marges de 5 mm')  ,
+    array('valeur'=> 6 , 'texte'=>'marges de 6 mm')  ,
+    array('valeur'=> 7 , 'texte'=>'marges de 7 mm')  ,
+    array('valeur'=> 8 , 'texte'=>'marges de 8 mm')  ,
+    array('valeur'=> 9 , 'texte'=>'marges de 9 mm')  ,
     array('valeur'=>10 , 'texte'=>'marges de 10 mm') ,
     array('valeur'=>11 , 'texte'=>'marges de 11 mm') ,
     array('valeur'=>12 , 'texte'=>'marges de 12 mm') ,
@@ -80,15 +80,16 @@ class Form
   );
 
   public static $tab_select_cases_nb = array(
-    array('valeur'=>1  , 'texte'=> '1 case')  ,
-    array('valeur'=>2  , 'texte'=> '2 cases') ,
-    array('valeur'=>3  , 'texte'=> '3 cases') ,
-    array('valeur'=>4  , 'texte'=> '4 cases') ,
-    array('valeur'=>5  , 'texte'=> '5 cases') ,
-    array('valeur'=>6  , 'texte'=> '6 cases') ,
-    array('valeur'=>7  , 'texte'=> '7 cases') ,
-    array('valeur'=>8  , 'texte'=> '8 cases') ,
-    array('valeur'=>9  , 'texte'=> '9 cases') ,
+    array('valeur'=> 0 , 'texte'=> '0 case')  ,
+    array('valeur'=> 1 , 'texte'=> '1 case')  ,
+    array('valeur'=> 2 , 'texte'=> '2 cases') ,
+    array('valeur'=> 3 , 'texte'=> '3 cases') ,
+    array('valeur'=> 4 , 'texte'=> '4 cases') ,
+    array('valeur'=> 5 , 'texte'=> '5 cases') ,
+    array('valeur'=> 6 , 'texte'=> '6 cases') ,
+    array('valeur'=> 7 , 'texte'=> '7 cases') ,
+    array('valeur'=> 8 , 'texte'=> '8 cases') ,
+    array('valeur'=> 9 , 'texte'=> '9 cases') ,
     array('valeur'=>10 , 'texte'=>'10 cases') ,
     array('valeur'=>11 , 'texte'=>'11 cases') ,
     array('valeur'=>12 , 'texte'=>'12 cases') ,
@@ -98,11 +99,11 @@ class Form
   );
 
   public static $tab_select_cases_size = array(
-    array('valeur'=>5  , 'texte'=> '5 mm') ,
-    array('valeur'=>6  , 'texte'=> '6 mm') ,
-    array('valeur'=>7  , 'texte'=> '7 mm') ,
-    array('valeur'=>8  , 'texte'=> '8 mm') ,
-    array('valeur'=>9  , 'texte'=> '9 mm') ,
+    array('valeur'=> 5 , 'texte'=> '5 mm') ,
+    array('valeur'=> 6 , 'texte'=> '6 mm') ,
+    array('valeur'=> 7 , 'texte'=> '7 mm') ,
+    array('valeur'=> 8 , 'texte'=> '8 mm') ,
+    array('valeur'=> 9 , 'texte'=> '9 mm') ,
     array('valeur'=>10 , 'texte'=>'10 mm') ,
     array('valeur'=>11 , 'texte'=>'11 mm') ,
     array('valeur'=>12 , 'texte'=>'12 mm') ,
@@ -122,7 +123,7 @@ class Form
   );
 
   public static $tab_select_colonne_vide = array(
-    array('valeur'=>0   , 'texte'=>'sans colonne supplémentaire')  ,
+    array('valeur'=> 0  , 'texte'=>'sans colonne supplémentaire')  ,
     array('valeur'=>30  , 'texte'=>'avec une colonne vide de 1cm') ,
     array('valeur'=>30  , 'texte'=>'avec une colonne vide de 3cm') ,
     array('valeur'=>50  , 'texte'=>'avec une colonne vide de 5cm') ,
@@ -155,7 +156,7 @@ class Form
   );
 
   public static $tab_select_appreciation = array(
-    array('valeur'=>0   , 'texte'=>'Non → pas de saisie d\'appréciation') ,
+    array('valeur'=>  0 , 'texte'=>'Non → pas de saisie d\'appréciation') ,
     array('valeur'=>100 , 'texte'=>'Oui → 100 caractères maximum (très court)') ,
     array('valeur'=>200 , 'texte'=>'Oui → 200 caractères maximum (court)') ,
     array('valeur'=>300 , 'texte'=>'Oui → 300 caractères maximum (moyen)') ,

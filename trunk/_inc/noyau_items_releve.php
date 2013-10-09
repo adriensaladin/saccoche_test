@@ -540,9 +540,12 @@ if($type_individuel)
                   $releve_HTML_individuel .= '<h3>'.html($matiere_nom).'</h3>'.NL;
                   // On passe au tableau
                   $releve_HTML_table_head = '<thead><tr><th>Ref.</th><th>Nom de l\'item</th>';
-                  for($num_case=0;$num_case<$cases_nb;$num_case++)
+                  if($cases_nb)
                   {
-                    $releve_HTML_table_head .= '<th></th>';  // Pas de colspan sinon pb avec le tri
+                    for($num_case=0;$num_case<$cases_nb;$num_case++)
+                    {
+                      $releve_HTML_table_head .= '<th></th>';  // Pas de colspan sinon pb avec le tri
+                    }
                   }
                   $releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
                   $releve_HTML_table_head .= '</tr></thead>'.NL;
@@ -578,16 +581,42 @@ if($type_individuel)
                   // cases d'évaluations
                   $devoirs_nb = count($tab_devoirs);
                   // on passe en revue les cases disponibles et on remplit en fonction des évaluations disponibles
-                  $decalage = $devoirs_nb - $cases_nb;
-                  for($i=0;$i<$cases_nb;$i++)
+                  if($cases_nb)
                   {
-                    // on doit remplir une case
-                    if($decalage<0)
+                    $decalage = $devoirs_nb - $cases_nb;
+                    for($i=0;$i<$cases_nb;$i++)
                     {
-                      // il y a moins d'évaluations que de cases à remplir : on met un score dispo ou une case blanche si plus de score dispo
-                      if($i<$devoirs_nb)
+                      // on doit remplir une case
+                      if($decalage<0)
                       {
-                        extract($tab_devoirs[$i]);  // $note $date $info
+                        // il y a moins d'évaluations que de cases à remplir : on met un score dispo ou une case blanche si plus de score dispo
+                        if($i<$devoirs_nb)
+                        {
+                          extract($tab_devoirs[$i]);  // $note $date $info
+                          $pdf_bg = ''; $td_class = '';
+                          if($date<$jour_debut_annee_scolaire)
+                          {
+                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
+                            $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+                          }
+                          elseif($date<$date_mysql_debut)
+                          {
+                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
+                            $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
+                          }
+                          if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                          if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
+                        }
+                        else
+                        {
+                          if($make_html) { $releve_HTML_table_body .= '<td>&nbsp;</td>'; }
+                          if($make_pdf)  { $releve_PDF->afficher_note_lomer($note='',$border=1,$br=0); }
+                        }
+                      }
+                      // il y a plus d'évaluations que de cases à remplir : on ne prend que les dernières (décalage d'indice)
+                      else
+                      {
+                        extract($tab_devoirs[$i+$decalage]);  // $note $date $info
                         $pdf_bg = ''; $td_class = '';
                         if($date<$jour_debut_annee_scolaire)
                         {
@@ -602,29 +631,6 @@ if($type_individuel)
                         if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
                         if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
                       }
-                      else
-                      {
-                        if($make_html) { $releve_HTML_table_body .= '<td>&nbsp;</td>'; }
-                        if($make_pdf)  { $releve_PDF->afficher_note_lomer($note='',$border=1,$br=0); }
-                      }
-                    }
-                    // il y a plus d'évaluations que de cases à remplir : on ne prend que les dernières (décalage d'indice)
-                    else
-                    {
-                      extract($tab_devoirs[$i+$decalage]);  // $note $date $info
-                      $pdf_bg = ''; $td_class = '';
-                      if($date<$jour_debut_annee_scolaire)
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
-                      }
-                      elseif($date<$date_mysql_debut)
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
-                      }
-                      if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
-                      if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
                     }
                   }
                   // affichage du bilan de l'item
@@ -836,7 +842,7 @@ if($type_individuel)
         // Relevé de notes - Date de naissance
         if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
         {
-          $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
+          $releve_HTML_individuel .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
         }
         // Relevé de notes - Ligne additionnelle
         if( ($make_action=='imprimer') && ($nb_lignes_supplementaires) )

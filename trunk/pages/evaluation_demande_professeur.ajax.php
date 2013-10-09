@@ -96,9 +96,12 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   $tab_groupes = array();
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_eleves[ $DB_ROW['valeur']] = $DB_ROW['texte'];
-    $tab_autres[ $DB_ROW['valeur']] = $DB_ROW['texte'];
-    $tab_groupes[$DB_ROW['valeur']] = ($selection_groupe) ? $groupe_nom : $DB_ROW['optgroup'] ;
+    if( ($selection_groupe) || !isset($tab_eleves[ $DB_ROW['valeur']]) ) // Un élève peut être une classe + un groupe associé au prof ; dans ce cas on ne garde que la 1e entrée (la classe)
+    {
+      $tab_eleves[ $DB_ROW['valeur']] = $DB_ROW['texte'];
+      $tab_autres[ $DB_ROW['valeur']] = $DB_ROW['texte'];
+      $tab_groupes[$DB_ROW['valeur']] = ($selection_groupe) ? $groupe_nom : $DB_ROW['optgroup'] ;
+    }
   }
   $listing_user_id = implode(',', array_keys($tab_eleves) );
   // Lister les demandes (et les messages associés)

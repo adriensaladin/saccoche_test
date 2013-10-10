@@ -547,12 +547,12 @@ if( $type_generique || $type_individuel )
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                       }
                       $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
-                      $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan_nb) /*br*/ , $pdf_bg );
+                      $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan) /*br*/ , $pdf_bg );
                     }
                     else
                     {
                       $releve_HTML_individuel .= '<td>&nbsp;</td>';
-                      $releve_PDF->Cell( $cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan_nb) , 'C' , TRUE , '' );
+                      $releve_PDF->Cell( $cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan) , 'C' , TRUE , '' );
                     }
                   }
                   // Case bilan

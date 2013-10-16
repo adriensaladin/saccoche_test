@@ -90,7 +90,7 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4compl
   exit('Bilan interdit d\'accès pour cette action !');
 }
 
-if( ( ($eleve_id) || ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) && ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) ) )
+if( ( ($eleve_id) || ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') ) && ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) ) )
 {
   $is_bouton_test_impression = TRUE;
 }

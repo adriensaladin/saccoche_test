@@ -165,7 +165,11 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
       $tab_affich[$item_id] .= Html::td_score( $tab_scores[$item_id] , 'score' /*methode_tri*/ , '' /*pourcent*/ );
     }
   }
-  exit('<tr>'.implode('</tr><tr>',$tab_affich).'</tr>');
+  // la légende, qui peut être personnalisée (codes ABS, NN, etc.)
+  $score_legende  = (test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
+  $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ );
+  // retour des infos
+  exit('<tr>'.implode('</tr><tr>',$tab_affich).'</tr>'.$legende);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

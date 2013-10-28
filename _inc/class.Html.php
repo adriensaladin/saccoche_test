@@ -43,6 +43,10 @@ class Html
   // sert pour indiquer la classe css d'un état d'acquisition
   private static $tab_couleur = array('NA'=>'r','VA'=>'o','A'=>'v');
 
+  // sert pour indiquer la légende des notes spéciales
+  private static $tab_legende_notes_speciales_texte  = array('ABS'=>'Absent','DISP'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
+  public  static $tab_legende_notes_speciales_nombre = array('ABS'=>0       ,'DISP'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
+
   // //////////////////////////////////////////////////
   // Méthodes privées (internes)
   // //////////////////////////////////////////////////
@@ -298,6 +302,7 @@ class Html
    */
   public static function note( $note , $date , $info , $tri=FALSE )
   {
+    if(isset(Html::$tab_legende_notes_speciales_nombre[$note])) Html::$tab_legende_notes_speciales_nombre[$note]++;
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
     $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
     $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
@@ -333,6 +338,17 @@ class Html
   }
 
   /**
+   * Initialiser la légende des codes de notation spéciaux
+   *
+   * @param void
+   * @return void
+   */
+  public static function legende_initialiser()
+  {
+    Html::$tab_legende_notes_speciales_nombre = array_fill_keys( array_keys(Html::$tab_legende_notes_speciales_nombre) , 0 );
+  }
+
+  /**
    * Afficher la légende pour une sortie HTML.
    *
    * Normalement au moins un des paramètres est passé à TRUE.
@@ -353,17 +369,25 @@ class Html
     if($codes_notation)
     {
       $tab_notes = array('RR','R','V','VV');
-      $retour .= '<div><b>Notes aux évaluations :</b>';
+      $retour .= '<div><b>Codes d\'évaluation :</b>';
       foreach($tab_notes as $note)
       {
         $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" />'.html($_SESSION['NOTE_LEGENDE'][$note]);
       }
+      foreach(Html::$tab_legende_notes_speciales_nombre as $note => $nombre)
+      {
+        if($nombre)
+        {
+          $retour .= '<img alt="'.$note.'" src="./_img/note/commun/h/'.$note.'.gif" />'.html(Html::$tab_legende_notes_speciales_texte[$note]);
+        }
+      }
+      Html::legende_initialiser();
       $retour .= '</div>'.NL;
     }
     // légende ancienneté notation
     if($anciennete_notation)
     {
-      $retour .= '<div><b>Ancienneté des notes :</b>';
+      $retour .= '<div><b>Ancienneté :</b>';
       $retour .=   '<span class="cadre">Sur la période.</span>';
       $retour .=   '<span class="cadre prev_date">Début d\'année scolaire.</span>';
       $retour .=   '<span class="cadre prev_year">Année scolaire précédente.</span>';
@@ -379,7 +403,7 @@ class Html
       $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
       $seuil_VA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']!=$_SESSION['CALCUL_SEUIL']['V']) ) ? $_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] : '' ;
       $tab_seuils = array( 'NA'=>$seuil_NA, 'VA'=>$seuil_VA, 'A'=>$seuil_A );
-      $retour .= '<div><b>Etats d\'acquisitions :</b>';
+      $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach($tab_etats as $etat => $couleur)
       {
         $retour .= '<span class="cadre '.$couleur.'">'.html($tab_seuils[$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);
@@ -390,7 +414,7 @@ class Html
     if($etat_acquisition)
     {
       $tab_etats = (!$force_nb) ? array('NA'=>'r','VA'=>'o','A'=>'v') : array('NA'=>'','VA'=>'','A'=>'') ;
-      $retour .= '<div><b>Etats d\'acquisitions :</b>';
+      $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach($tab_etats as $etat => $couleur)
       {
         $retour .= '<span class="cadre '.$couleur.'">'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'</span>'.html($_SESSION['ACQUIS_LEGENDE'][$etat]);

@@ -261,7 +261,20 @@ $(document).ready
               else
               {
                 $('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
-                $('#table_voir tbody').html(responseHTML);
+                // séparer lignes de résultat et légende
+                var position_legende = responseHTML.lastIndexOf('<h4>');
+                if(position_legende==-1)
+                {
+                  var html_tableau = responseHTML;
+                  var html_legende = '';
+                }
+                else
+                {
+                  var html_tableau = responseHTML.substring(0,position_legende);
+                  var html_legende = responseHTML.substring(position_legende);
+                }
+                $('#table_voir tbody').html(html_tableau);
+                $('#report_legende'  ).html(html_legende);
                 format_liens('#table_voir');
                 tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );

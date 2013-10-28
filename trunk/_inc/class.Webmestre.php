@@ -118,7 +118,7 @@ class Webmestre
   }
 
   /**
-   * Enregister le (nouveau) mot de passe du webmestre.
+   * Enregistrer le (nouveau) mot de passe du webmestre.
    * 
    * @param string $password_ancien
    * @param string $password_nouveau

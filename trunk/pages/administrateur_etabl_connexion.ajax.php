@@ -307,7 +307,6 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
     $contrat_PDF->CellFit( 80 , $hauteur_ligne , To::pdf(convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // signature
     $contrat_PDF->Image( CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_signature.png' , 30 /*x*/ , 247 /*y*/ , 200*0.25 /*largeur*/ , 120*0.25 /*lomer_image_hauteur*/ , 'PNG' );
-    // TODO !
     // ajouter une page ; y importer la page 2 ; l'utiliser comme support
     $contrat_PDF->AddPage();
     $tplIdx = $contrat_PDF->importPage(2);
@@ -338,30 +337,38 @@ if( ($f_action=='imprimer_documents') && $f_convention_id )
   $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('À Plachy Buyon, le '.convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // référence du connecteur
   $facture_PDF->SetFont('Arial','B',$taille_police);
-  $facture_PDF->SetXY(55,120);
-  $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($connecteur_ref) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+  $facture_PDF->SetXY(17,123);
+  $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($connecteur_ref) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+  // période du connecteur
+  $facture_PDF->SetFont('Arial','B',$taille_police);
+  $facture_PDF->SetXY(17,129);
+  $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf('du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin'])) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   // date de mise en service
-  $texte = ($DB_ROW['convention_signature']!==NULL) ? 'du '.convert_date_mysql_to_french($DB_ROW['convention_signature']) : 'de la réception du contrat' ;
-  $texte.= ' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']);
-  $facture_PDF->SetXY(85,136);
+  $connecteur_date_debut_mise_en_service = ($DB_ROW['convention_signature']!==NULL) ? max($DB_ROW['convention_date_debut'],$DB_ROW['convention_signature']) : $DB_ROW['convention_date_debut'] ;
+  $texte = ($DB_ROW['convention_signature']!==NULL) ? 'du '.convert_date_mysql_to_french($connecteur_date_debut_mise_en_service) : 'de la réception du contrat' ;
+  $texte.= ' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'.';
+  $facture_PDF->SetXY(78,151);
   $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // date de règlement
   if($DB_ROW['convention_paiement']!==NULL)
   {
-    $texte = 'Règlement acquitté le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']);
+    $texte = 'Règlement acquitté le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']).'.';
   }
   elseif($DB_ROW['convention_signature']!==NULL)
   {
     list($annee,$mois,$jour) = explode('-',$DB_ROW['convention_signature']);
-    $date_plus1mois = date("d/m/Y",mktime(0,0,0,$mois,$jour,$annee));
-    $texte = 'Date limite de règlement : '.$date_plus1mois;
+    $timeunix_signature_plus2mois = mktime(0,0,0,$mois+2,$jour,$annee);
+    list($annee,$mois,$jour) = explode('-',$DB_ROW['convention_date_debut']);
+    $timeunix_anneescolaire_plus3mois = mktime(0,0,0,$mois+3,$jour,$annee);
+    $date_limite = date("d/m/Y", max($timeunix_signature_plus2mois,$timeunix_anneescolaire_plus3mois) );
+    $texte = 'Date limite de règlement : '.$date_limite.'.';
   }
   else
   {
-    $texte = 'Date limite de règlement : 1 mois après la mise en service effective du connecteur';
+    $texte = 'Date limite de règlement : 2 mois après la mise en service effective du connecteur.';
   }
-  $facture_PDF->SetXY(27,144);
-  $facture_PDF->CellFit( 165 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+  $facture_PDF->SetXY(20,159);
+  $facture_PDF->CellFit( 180 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // On enregistre la sortie PDF
   $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
   $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom,'F');

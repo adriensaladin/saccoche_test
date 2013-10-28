@@ -486,7 +486,6 @@ if($type_individuel)
     $releve_HTML_individuel .= ($bouton_print_appr || $bouton_print_test) ? '<div class="ti">'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '' ;
     $bilan_colspan = $cases_nb + 2 ;
     $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />'.NL : '' ;
-    $legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
   }
   if($make_pdf)
   {
@@ -852,7 +851,7 @@ if($type_individuel)
         // Relevé de notes - Légende
         if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
         {
-          if($make_html) { $releve_HTML_individuel .= $legende_html; }
+          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
           if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
         }
         // Indiquer a posteriori le nombre de pages par élève

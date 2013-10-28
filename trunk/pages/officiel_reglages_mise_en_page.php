@@ -130,7 +130,7 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
     <label class="tab" for="f_tampon_signature">Tampon / Signature :</label><select id="f_tampon_signature" name="f_tampon_signature"><?php echo $options_tampon_signature; ?></select>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_mise_en_page" type="button" class="parametre">Enregister.</button><label id="ajax_msg_mise_en_page">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider_mise_en_page" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_mise_en_page">&nbsp;</label>
   </p>
 </form>
 

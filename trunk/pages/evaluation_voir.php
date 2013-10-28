@@ -67,13 +67,11 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button i
 if(test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))
 {
   $score_texte    = '<th>Score<br />cumulé</th>';
-  $score_legende  = TRUE;
   $colonne_nombre = 4;
 }
 else
 {
   $score_texte    = '';
-  $score_legende  = FALSE;
   $colonne_nombre = 3;
 }
 
@@ -129,7 +127,8 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';
       <tr><td class="nu" colspan="<?php echo $colonne_nombre ?>"></td></tr>
     </tbody>
   </table>
-  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ); ?>
+  <div id="report_legende">
+  </div>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">

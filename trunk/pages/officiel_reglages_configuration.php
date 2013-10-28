@@ -116,7 +116,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Impression :</label><?php echo $select_releve_couleur ?> <?php echo $select_releve_legende ?>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_releve" type="button" class="parametre">Enregister.</button><label id="ajax_msg_releve">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider_releve" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_releve">&nbsp;</label>
   </p>
 </form>
 
@@ -150,7 +150,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Impression :</label><?php echo $select_bulletin_couleur ?> <?php echo $select_bulletin_legende ?>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_bulletin" type="button" class="parametre">Enregister.</button><label id="ajax_msg_bulletin">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider_bulletin" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_bulletin">&nbsp;</label>
   </p>
 </form>
 
@@ -169,7 +169,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Impression :</label><?php echo $select_socle_couleur ?> <?php echo $select_socle_legende ?>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_socle" type="button" class="parametre">Enregister.</button><label id="ajax_msg_socle">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider_socle" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_socle">&nbsp;</label>
   </p>
 </form>
 

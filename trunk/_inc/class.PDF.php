@@ -474,6 +474,9 @@ class PDF extends FPDF
   private $page_nombre_alias      = '{|}'; // Pas celui de FPDF ($this->AliasNbPages) car géré différemment (plusieurs élèves par fichier) ; court car occupation en largeur prise en compte.
   private $page_numero_first      = 1;
   private $page_nombre_alignement = '';
+  // Définition de qqs variables supplémentaires
+  private $tab_legende_notes_speciales_texte  = array('ABS'=>'Absent','DISP'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
+  private $tab_legende_notes_speciales_nombre = array('ABS'=>0       ,'DISP'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
@@ -666,6 +669,7 @@ class PDF extends FPDF
       case 'NF' :
       case 'NN' :
       case 'NR' :
+        $this->tab_legende_notes_speciales_nombre[$note]++;
         $tab_texte = array('ABS'=>'Abs.','DISP'=>'Disp.','NE'=>'N.E.','NF'=>'N.F.','NN'=>'N.N.','NR'=>'N.R.');
         $this->cMargin /= 2;
         $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
@@ -865,6 +869,17 @@ class PDF extends FPDF
     $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_personnalise) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
+  /**
+   * Initialiser la légende des codes de notation spéciaux
+   *
+   * @param void
+   * @return void
+   */
+  public function legende_initialiser()
+  {
+    $this->tab_legende_notes_speciales_nombre = array_fill_keys( array_keys($this->tab_legende_notes_speciales_nombre) , 0 );
+  }
+
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -872,6 +887,7 @@ class PDF extends FPDF
   public function afficher_legende( $type_legende , $ordonnee , $force_nb = FALSE )
   {
     $espace  = '     ';
+    $espace_mini  = '   ';
     $hauteur = min(4,$this->lignes_hauteur*0.9);
     $size    = ceil($hauteur * 1.6);
     $this->SetXY($this->marge_gauche , $ordonnee);
@@ -880,22 +896,54 @@ class PDF extends FPDF
     // Afficher la légende des codes de notation
     if($type_legende=='codes_notation')
     {
+      // Le texte des codes de notation étant personnalisable, il peut falloir condenser en largeur...
+      $texte = 'Codes d\'évaluation :'.$espace.$_SESSION['NOTE_LEGENDE']['RR'].$espace.$_SESSION['NOTE_LEGENDE']['R'].$espace.$_SESSION['NOTE_LEGENDE']['V'].$espace.$_SESSION['NOTE_LEGENDE']['VV'];
+      $boites_nb = 4;
+      foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
+      {
+        if($nombre)
+        {
+          $texte .= $espace.$this->tab_legende_notes_speciales_texte[$note];
+          $boites_nb++;
+        }
+      }
+      $largeur_dispo_pour_texte = $this->page_largeur_moins_marges - $boites_nb*$this->lomer_espace_largeur;
+
+      $largeur_texte = $this->GetStringWidth($texte);
+      $ratio = min( 1 , $largeur_dispo_pour_texte / $largeur_texte );
+      // On y va maintenant
+
       $this->SetFont('Arial' , 'B' , $size);
-      $this->Write($hauteur , To::pdf('Notes aux évaluations :') , '');
+      $this->Write($hauteur , To::pdf('Codes d\'évaluation :') , '');
       $this->SetFont('Arial' , '' , $size);
       $memo_lomer_espace_largeur = $this->lomer_espace_largeur;
       $memo_lomer_espace_hauteur = $this->lomer_espace_hauteur;
       $memo_taille_police = $this->taille_police;
       $this->taille_police = $size; // On est obligé de le changer provisoirement car, si impression N&B, afficher_note_lomer() l'utilise
       $this->calculer_dimensions_images($case_largeur,$case_hauteur);
-      $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('RR', 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['RR']) , '');
-      $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('R' , 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['R'])  , '');
-      $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('V' , 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['V'])  , '');
-      $this->Write($hauteur , $espace , '');
-      $this->afficher_note_lomer('VV', 1 /*border*/ , 0 /*br*/ ); $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE']['VV']) , '');
+      $tab_codes_normaux = array(0=>'RR','R','V','VV');
+      foreach($tab_codes_normaux as $code)
+      {
+        $texte = $_SESSION['NOTE_LEGENDE'][$code];
+        $largeur = $this->GetStringWidth($texte)*$ratio*1.1;
+        $this->Write($hauteur , $espace_mini , '');
+        $this->afficher_note_lomer($code, 1 /*border*/ , 0 /*br*/ );
+        $this->CellFit( $largeur , $hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+        // $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE'][$code]) , '');
+      }
+      foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
+      {
+        if($nombre)
+        {
+          $texte = $this->tab_legende_notes_speciales_texte[$note];
+          $largeur = $this->GetStringWidth($texte)*$ratio*1.1;
+          $this->Write($hauteur , $espace_mini , '');
+          $this->afficher_note_lomer($note, 1 /*border*/ , 0 /*br*/ );
+          $this->CellFit( $largeur , $hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+          // $this->Write($hauteur , To::pdf($this->tab_legende_notes_speciales_texte[$note]) , '');
+        }
+      }
+      $this->legende_initialiser();
       $this->calculer_dimensions_images($memo_lomer_espace_largeur,$memo_lomer_espace_hauteur);
       $this->taille_police = $memo_taille_police;
     }
@@ -903,7 +951,7 @@ class PDF extends FPDF
     if($type_legende=='anciennete_notation')
     {
       $this->SetFont('Arial' , 'B' , $size);
-      $this->Write($hauteur , To::pdf('Ancienneté des notes :') , '');
+      $this->Write($hauteur , To::pdf('Ancienneté :') , '');
       $this->SetFont('Arial' , '' , $size);
       $tab_etats = array('blanc'=>'Sur la période.','gris_moyen'=>'Début d\'année scolaire.','gris_fonce'=>'Année scolaire précédente.');
       foreach($tab_etats as $couleur => $texte)
@@ -920,7 +968,7 @@ class PDF extends FPDF
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
       $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
       $this->SetFont('Arial' , 'B' , $size);
-      $this->Write($hauteur , To::pdf('Etats d\'acquisitions :') , '');
+      $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
       $seuil_NA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']>0)   ) ? '0 à '.($_SESSION['CALCUL_SEUIL']['R']-1)   : '' ;
       $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
@@ -938,7 +986,7 @@ class PDF extends FPDF
     if($type_legende=='etat_acquisition')
     {
       $this->SetFont('Arial' , 'B' , $size);
-      $this->Write($hauteur , To::pdf('Etats d\'acquisitions :') , '');
+      $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
       $tab_etats = array('NA','VA','A');
       foreach($tab_etats as $etat)

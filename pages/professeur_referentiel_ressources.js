@@ -225,9 +225,10 @@ $(document).ready
               {
                 lien_image  = (item_lien=='') ? 'non' : 'oui' ;
                 lien_title  = (item_lien=='') ? 'Absence de ressource.' : escapeHtml(item_lien) ;
+                retour_msg  = (item_lien=='') ? 'Lien retiré.' : 'Lien enregistré.' ;
                 $('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 tab_ressources[item_id] = (item_lien=='') ? '' : lien_title ;
-                $('#n3_'+item_id).children('label').removeAttr("class").addClass("valide").html('Lien enregistré.');
+                $('#n3_'+item_id).children('label').removeAttr("class").addClass("valide").html(retour_msg);
               }
               else
               {

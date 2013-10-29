@@ -30,7 +30,7 @@
 // ============================================================================
 
 /*
- * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  * @see http://fr.php.net/manual/fr/function.error-get-last.php#103539
  */
 if(!function_exists('error_get_last'))
@@ -62,7 +62,7 @@ if(!function_exists('error_get_last'))
 }
 
 /*
- * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  */
 if(!function_exists('array_fill_keys'))
 {
@@ -73,8 +73,9 @@ if(!function_exists('array_fill_keys'))
 }
 
 /*
- * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
- * @see http://www.php.net/manual/fr/function.json-encode.php#107968
+ * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
+ * @see http://fr.php.net/manual/fr/function.json-encode.php#107968
+ * @see http://fr.php.net/manual/fr/function.json-encode.php#113219
  */
 if (!function_exists('json_encode'))
 {
@@ -122,7 +123,7 @@ if (!function_exists('json_encode'))
 }
 
 /*
- * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, traiter ce cas si besoin.
+ * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, traiter ce cas si besoin.
  */
 function pathinfo_filename($file)
 {
@@ -141,7 +142,7 @@ function pathinfo_filename($file)
 }
 
 /*
- * La fonction str_getcsv() n'est disponible que depuis PHP 5.3 ; SACoche exigeant PHP 5.1, la définir si besoin.
+ * La fonction str_getcsv() n'est disponible que depuis PHP 5.3 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  * @see http://us2.php.net/manual/fr/function.str-getcsv.php#111577
  */
 if (!function_exists('str_getcsv'))

@@ -154,7 +154,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     $xml.= '</lpc>'."\r\n";
     // Pour LPC, ajouter la signature via un appel au serveur sécurisé
     $xml = utf8_decode($xml);
-    $xml = ServeurCommunautaire::signer_exportLPC($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$xml); // fonction sur le modèle de envoyer_arborescence_XML()
+    $xml = ServeurCommunautaire::signer_exportLPC( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $xml ); // fonction sur le modèle de envoyer_arborescence_XML()
     if(substr($xml,0,5)!='<?xml')
     {
       exit(html($xml));

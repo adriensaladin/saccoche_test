@@ -57,7 +57,7 @@ if( ($action=='modifier_nombre_demandes') && $matiere_id && ($nb_demandes!=-1) &
 
 if($action=='afficher_structures_partage')
 {
-  exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
+  exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ if($action=='afficher_structures_partage')
 
 if($action=='lister_referentiels_communautaires') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  exit( ServeurCommunautaire::afficher_liste_referentiels($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$structure_id) );
+  exit( ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ if($action=='lister_referentiels_communautaires') // La vérification concernant
 
 if( ($action=='voir_referentiel_communautaire') && $referentiel_id )
 {
-  exit( ServeurCommunautaire::afficher_contenu_referentiel($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id) );
+  exit( ServeurCommunautaire::afficher_contenu_referentiel( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,12 +127,12 @@ if( ($action=='partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
   {
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
     $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
-    $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML,$information);
+    $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   }
   else
   {
     $partage_avant = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiel_partage_etat($matiere_id,$niveau_id);
-    $reponse = ($partage_avant=='oui') ? ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'',$information) : 'ok' ;
+    $reponse = ($partage_avant=='oui') ? ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , '' , $information ) : 'ok' ;
   }
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
@@ -159,7 +159,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && ($perso==0) )
   // Envoyer le référentiel vers le serveur de partage
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
-  $reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML,$information);
+  $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
   {
@@ -184,7 +184,7 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && in_array($partage,$ta
     {
       exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
     }
-    $reponse = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'',$information);
+    $reponse = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , '' , $information );
     if($reponse!='ok')
     {
       exit($reponse);
@@ -255,7 +255,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
       exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
     }
     // Récupérer le référentiel
-    $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id);
+    $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id );
     if(mb_substr($arbreXML,0,6)=='Erreur')
     {
       exit($arbreXML);

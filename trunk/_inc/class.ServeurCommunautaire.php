@@ -455,7 +455,7 @@ class ServeurCommunautaire
    * @param string    $sesamath_key
    * @param int       $item_id
    * @param string    $item_nom
-   * @param string    $objet   { page_create | page_update }
+   * @param string    $objet   { page_create | page_update | page_delete }
    * @param string    $page_serialize   tableau sérializé
    * @return string   adresse html ou un message d'erreur
    */

@@ -52,12 +52,17 @@ if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Renommer un domaine / un thème / un item
+// Enregistrer une adresse associée à un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Enregistrer_lien') && $item_id )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($item_id,$item_lien);
+  // Si le lien est vide, effacer l'éventuelle page de liens associée enregistrée sur le serveur communautaire.
+  if(!$item_lien)
+  {
+    ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , '' , 'page_delete' , '' );
+  }
   exit('ok');
 }
 
@@ -67,7 +72,7 @@ if( ($action=='Enregistrer_lien') && $item_id )
 
 if( ($action=='Charger_ressources') && $item_id )
 {
-  exit( ServeurCommunautaire::afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_lien) );
+  exit( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_lien ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +95,7 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
       $tab_elements[] = $ressource;
     }
   }
-  exit( ServeurCommunautaire::fabriquer_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_nom,$objet,serialize($tab_elements)) );
+  exit( ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_nom , $objet , serialize($tab_elements) ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +104,7 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
 
 if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 {
-  exit( ServeurCommunautaire::rechercher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
+  exit( ServeurCommunautaire::rechercher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $findme ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +113,7 @@ if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 
 if($action=='Rechercher_documents')
 {
-  exit( ServeurCommunautaire::rechercher_documents($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
+  exit( ServeurCommunautaire::rechercher_documents( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

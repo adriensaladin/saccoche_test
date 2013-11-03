@@ -247,6 +247,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
   echo      $_SESSION['MENU'];
   echo      '<!-- menu fin -->'.NL;
   echo      '<audio id="audio_bip" preload="none" class="hide">'.NL;
+  // On pourrait bien sur laisser le navigateur se débrouiller et prendre le format qui lui convient, il me semble que dans ce cas j'avais noté des avertissements dans Firebug.
   if(!in_array( $_SESSION['BROWSER']['modele'] , array('firefox','opera') ))
   {
     echo        '<source src="./_audio/bip.mp3" type="audio/mpeg" />'.NL;

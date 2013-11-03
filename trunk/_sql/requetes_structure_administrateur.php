@@ -596,7 +596,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
   $DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
-  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND parent.'.$test_date_sortie.' AND eleve.user_sortie_date>NOW() ';
+  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND parent.'.$test_date_sortie.' AND ( eleve.user_sortie_date>NOW() || eleve.user_id IS NULL ) '; // Ce dernier test sert à pouvoir récupérer quand même les parents rattachés à aucun enfant.
   if(!$liste_parent_id)
   {
     $DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;

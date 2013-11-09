@@ -25,26 +25,30 @@
  * 
  */
 
-// Tableau avec les équivalents textes par défaut des symboles colorés utilisés pour la notation
+// Tableau avec le nom et les équivalents textes par défaut des symboles colorés utilisés pour la notation
+// L'indice principal est le nom du dossier qui contient les images ainsi que la valeur enregistrée en base de données
 
-$tab_notes_txt['Albert']      = array( 'RR' =>'R'  , 'R' =>'O'   , 'V' =>'V'  , 'VV' =>'VV' );
-$tab_notes_txt['Alienor']     = array( 'RR' =>'NA' , 'R' =>'VA'  , 'V' =>'A'  , 'VV' =>'E'  );
-$tab_notes_txt['Aubrac']      = array( 'RR' =>'J'  , 'R' =>'V'   , 'V' =>'B'  , 'VV' =>'N'  );
-$tab_notes_txt['Blaye']       = array( 'RR' =>'NA' , 'R' =>'VA'  , 'V' =>'AR' , 'VV' =>'A'  );
-$tab_notes_txt['CitesUnies']  = array( 'RR' =>'Rou', 'R' =>'Ora' , 'V' =>'Ver', 'VV' =>'Dor');
-$tab_notes_txt['Courbet']     = array( 'RR' =>'NA' , 'R' =>'ECA' , 'V' =>'A'  , 'VV' =>'M'  );
-$tab_notes_txt['Deutsch']     = array( 'RR' =>'R'  , 'R' =>'O'   , 'V' =>'V'  , 'VV' =>'B'  );
-$tab_notes_txt['Europe']      = array( 'RR' =>'D'  , 'R' =>'C'   , 'V' =>'B'  , 'VV' =>'A'  );
-$tab_notes_txt['Indonesie']   = array( 'RR' =>'D'  , 'R' =>'C'   , 'V' =>'B'  , 'VV' =>'A'  );
-$tab_notes_txt['JeanZay']     = array( 'RR' =>'CNA', 'R' =>'CIA' , 'V' =>'CVA', 'VV' =>'CA' );
-$tab_notes_txt['Leon']        = array( 'RR' =>'N'  , 'R' =>'R'   , 'V' =>'O'  , 'VV' =>'V'  );
-$tab_notes_txt['Lomer']       = array( 'RR' =>'RR' , 'R' =>'R'   , 'V' =>'V'  , 'VV' =>'VV' );
-$tab_notes_txt['LomerBiseau'] = array( 'RR' =>'RR' , 'R' =>'R'   , 'V' =>'V'  , 'VV' =>'VV' );
-$tab_notes_txt['Luys']        = array( 'RR' =>'R'  , 'R' =>'O'   , 'V' =>'V'  , 'VV' =>'B'  );
-$tab_notes_txt['Mistral']     = array( 'RR' =>'SA' , 'R' =>'NA'  , 'V' =>'EC' , 'VV' =>'A'  );
-$tab_notes_txt['Reval']       = array( 'RR' =>'NA' , 'R' =>'EVA' , 'V' =>'AR' , 'VV' =>'A'  );
-$tab_notes_txt['Salengro']    = array( 'RR' =>'R'  , 'R' =>'O'   , 'V' =>'B'  , 'VV' =>'V'  );
-$tab_notes_txt['Verne']       = array( 'RR' =>'NA' , 'R' =>'ECA' , 'V' =>'AR' , 'VV' =>'A'  );
-$tab_notes_txt['Voltaire']    = array( 'RR' =>'NA' , 'R' =>'ECA' , 'V' =>'A'  , 'VV' =>'M'  );
-
+$tab_notes_info = array
+(
+  'Albert'      => array( 'nom'=>'Albert'      , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'V'  , 'VV' =>'VV' ),
+  'Alienor'     => array( 'nom'=>'Aliénor'     , 'RR' =>'NA' , 'R' =>'VA' , 'V' =>'A'  , 'VV' =>'E'  ),
+  'Aubrac'      => array( 'nom'=>'Aubrac'      , 'RR' =>'J'  , 'R' =>'V'  , 'V' =>'B'  , 'VV' =>'N'  ),
+  'Blaye'       => array( 'nom'=>'Blaye'       , 'RR' =>'NA' , 'R' =>'VA' , 'V' =>'AR' , 'VV' =>'A'  ),
+  'CitesUnies'  => array( 'nom'=>'Cités Unies' , 'RR' =>'Rou', 'R' =>'Ora', 'V' =>'Ver', 'VV' =>'Dor'),
+  'Courbet'     => array( 'nom'=>'Courbet'     , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'A'  , 'VV' =>'M'  ),
+  'Deutsch'     => array( 'nom'=>'Deutsch'     , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'V'  , 'VV' =>'B'  ),
+  'Europe'      => array( 'nom'=>'Europe'      , 'RR' =>'D'  , 'R' =>'C'  , 'V' =>'B'  , 'VV' =>'A'  ),
+  'Indonesie'   => array( 'nom'=>'Indonésie'   , 'RR' =>'D'  , 'R' =>'C'  , 'V' =>'B'  , 'VV' =>'A'  ),
+  'JeanZay'     => array( 'nom'=>'Jean Zay'    , 'RR' =>'CNA', 'R' =>'CIA', 'V' =>'CVA', 'VV' =>'CA' ),
+  'Koeberle'    => array( 'nom'=>'Koeberlé'    , 'RR' =>'NA' , 'R' =>'CA' , 'V' =>'RF' , 'VV' =>'Ex' ),
+  'Leon'        => array( 'nom'=>'Léon'        , 'RR' =>'N'  , 'R' =>'R'  , 'V' =>'O'  , 'VV' =>'V'  ),
+  'Lomer'       => array( 'nom'=>'Lomer'       , 'RR' =>'RR' , 'R' =>'R'  , 'V' =>'V'  , 'VV' =>'VV' ),
+  'LomerBiseau' => array( 'nom'=>'Lomer Biseau', 'RR' =>'RR' , 'R' =>'R'  , 'V' =>'V'  , 'VV' =>'VV' ),
+  'Luys'        => array( 'nom'=>'Luys'        , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'V'  , 'VV' =>'B'  ),
+  'Mistral'     => array( 'nom'=>'Mistral'     , 'RR' =>'SA' , 'R' =>'NA' , 'V' =>'EC' , 'VV' =>'A'  ),
+  'Reval'       => array( 'nom'=>'Reval'       , 'RR' =>'NA' , 'R' =>'EVA', 'V' =>'AR' , 'VV' =>'A'  ),
+  'Salengro'    => array( 'nom'=>'Salengro'    , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'B'  , 'VV' =>'V'  ),
+  'Verne'       => array( 'nom'=>'Verne'       , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'AR' , 'VV' =>'A'  ),
+  'Voltaire'    => array( 'nom'=>'Voltaire'    , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'A'  , 'VV' =>'M'  ),
+);
 ?>

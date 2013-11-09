@@ -36,21 +36,21 @@ $dossier = './_img/note/';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_notes_txt = new Array();';
 
 $simulation_lignes = array('','','','','');
-foreach($tab_notes_txt as $note_nom => $tab_note_texte)
+foreach($tab_notes_info as $note_code => $tab_note_info)
 {
-  if(is_dir($dossier.$note_nom))
+  if(is_dir($dossier.$note_code))
   {
-    $checked = ($note_nom==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked' : '' ;
-    $simulation_lignes[0] .=   '<td style="width:5em"><label for="dossier_'.$note_nom.'">'.$note_nom.'</label><br /><input type="radio" id="dossier_'.$note_nom.'" name="note_image_style" value="'.$note_nom.'"'.$checked.' /></td>';
-    $simulation_lignes[1] .=   '<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/h/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
-    $simulation_lignes[2] .=   '<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
-    $simulation_lignes[3] .=   '<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
-    $simulation_lignes[4] .=   '<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["V"]="'.$tab_note_texte['V'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_nom.'"]["VV"]="'.$tab_note_texte['VV'].'";';
+    $checked = ($note_code==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked' : '' ;
+    $simulation_lignes[0] .=   '<td style="width:5em"><label for="dossier_'.$note_code.'">'.html($tab_note_info['nom']).'</label><br /><input type="radio" id="dossier_'.$note_code.'" name="note_image_style" value="'.$note_code.'"'.$checked.' /></td>';
+    $simulation_lignes[1] .=   '<td><img alt="'.$tab_note_info['RR'].'" src="'.$dossier.$note_code.'/h/RR.gif" /><br />'.$tab_note_info['RR'].'</td>';
+    $simulation_lignes[2] .=   '<td><img alt="'.$tab_note_info['R' ].'" src="'.$dossier.$note_code.'/h/R.gif"  /><br />'.$tab_note_info['R' ].'</td>';
+    $simulation_lignes[3] .=   '<td><img alt="'.$tab_note_info['V' ].'" src="'.$dossier.$note_code.'/h/V.gif"  /><br />'.$tab_note_info['V' ].'</td>';
+    $simulation_lignes[4] .=   '<td><img alt="'.$tab_note_info['VV'].'" src="'.$dossier.$note_code.'/h/VV.gif" /><br />'.$tab_note_info['VV'].'</td>';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.html($note_code).'"] = new Array();';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["RR"]="'.$tab_note_info['RR'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["R"]="'.$tab_note_info['R'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["V"]="'.$tab_note_info['V'].'";';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["VV"]="'.$tab_note_info['VV'].'";';
   }
 }
 

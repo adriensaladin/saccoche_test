@@ -744,7 +744,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
     if(!in_array($DB_ROW['user_profil_type'],array('eleve','professeur')))
     {
       // Contenu de SACoche à ignorer : utilisateur non cherché car non présent dans le LCS
-      $lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil absent '.$DB_ROW['user_profil_nom_court_singulier'].' du LCS</td></tr>'.NL;
+      $lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil '.$DB_ROW['user_profil_nom_court_singulier'].' absent du LCS</td></tr>'.NL;
     }
     elseif( ($DB_ROW['user_profil_type']=='eleve') && (!$DB_ROW['user_sconet_elenoet']) )
     {
@@ -807,7 +807,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
   echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
   echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
   echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche non trouvés dans le LCS.</th></tr>'.NL;
+  echo    '<tr><th colspan="2">Utilisateurs de SACoche non récupérés dans le LCS.</th></tr>'.NL;
   echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>'.NL;
   echo  '</tbody>'.NL;
   echo'</table>'.NL;

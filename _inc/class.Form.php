@@ -157,11 +157,14 @@ class Form
 
   public static $tab_select_appreciation = array(
     array('valeur'=>  0 , 'texte'=>'Non → pas de saisie d\'appréciation') ,
-    array('valeur'=>100 , 'texte'=>'Oui → 100 caractères maximum (très court)') ,
-    array('valeur'=>200 , 'texte'=>'Oui → 200 caractères maximum (court)') ,
-    array('valeur'=>300 , 'texte'=>'Oui → 300 caractères maximum (moyen)') ,
-    array('valeur'=>400 , 'texte'=>'Oui → 400 caractères maximum (long)') ,
-    array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (très long)') ,
+    array('valeur'=>100 , 'texte'=>'Oui → 100 caractères maximum (super court)') ,
+    array('valeur'=>200 , 'texte'=>'Oui → 200 caractères maximum (très court)') ,
+    array('valeur'=>300 , 'texte'=>'Oui → 300 caractères maximum (court)') ,
+    array('valeur'=>400 , 'texte'=>'Oui → 400 caractères maximum (moyen)') ,
+    array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (long)') ,
+    array('valeur'=>600 , 'texte'=>'Oui → 600 caractères maximum (très long)') ,
+    array('valeur'=>700 , 'texte'=>'Oui → 700 caractères maximum (super long)') ,
+    array('valeur'=>800 , 'texte'=>'Oui → 800 caractères maximum (trop long…)') ,
   );
 
   public static $tab_select_optgroup = array(

@@ -83,7 +83,8 @@ $tab_menu = array
     "Relevé d'items sélectionnés"       => array( 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items_selection'       ),
     "Relevé d'items pluridisciplinaire" => array( 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items_multimatiere'    ),
     "Relevé d'items d'un enseignant"    => array( 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items_professeur'      ),
-    "Bilan chronologique"               => array( 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
+   // "Bilan chronologique"               => array( 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
+   // Penser aussi aux restrictions d'accès
     "Synthèse d'une matière"            => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
     "Synthèse pluridisciplinaire"       => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
     "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),

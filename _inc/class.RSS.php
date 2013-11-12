@@ -137,11 +137,11 @@ class RSS
     $pbad = '#<lastBuildDate>(.*?)</lastBuildDate>#';
     $pbon = '<lastBuildDate>'.$date.'</lastBuildDate>';
     $fichier_contenu = preg_replace($pbad,$pbon,$fichier_contenu);
-    // Couper si le fichier est long (on le ramène à 100Ko) ; ça laisse encore environ 250 entrées dans le flux.
+    // Couper si le fichier est long (on le ramène à 100Ko)
     if(mb_strlen($fichier_contenu)>120000)
     {
       $pos = mb_strpos($fichier_contenu,'</item>',100000);
-      $fichier_contenu = mb_substr($fichier_contenu,0,$pos).'</item>'."\r\n\r\n".'</channel>'."\r\n".'</rss>'."\r\n";
+      $fichier_contenu = mb_substr($fichier_contenu,0,$pos).'</item>'."\r\n\r\n".'</channel>'."\r\n";
     }
     // Enregistrer
     FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);

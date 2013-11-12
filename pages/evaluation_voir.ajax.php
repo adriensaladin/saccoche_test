@@ -318,7 +318,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   // Ajout aux flux RSS des profs concernés
   $titre = 'Autoévaluation effectuée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'"';
-  $guid  = 'autoeval_'.$devoir_id.'_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME']; // obligé d'ajouter un time pour unicité au cas où un élève valide 2x l'autoévaluation
+  $guid  = 'autoeval_'.$devoir_id.'-'.$_SESSION['USER_ID'];
   foreach($tab_profs_rss as $prof_id)
   {
     RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);

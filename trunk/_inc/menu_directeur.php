@@ -74,8 +74,7 @@ $tab_menu = array
     "Grille d'items d'un référentiel"   => array( 'class' => 'releve_grille'         , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
     "Relevé d'items d'une matière"      => array( 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items_matiere'         ),
     "Relevé d'items pluridisciplinaire" => array( 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items_multimatiere'    ),
- // "Bilan chronologique"               => array( 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
- // Penser aussi aux restrictions d'accès
+    "Bilan chronologique"               => array( 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
     "Synthèse d'une matière"            => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
     "Synthèse pluridisciplinaire"       => array( 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
     "Relevé de maîtrise du socle"       => array( 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),

@@ -391,7 +391,7 @@ $tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => 'Année s
 
 // Tag date heure initiales
 
-$tag_date_heure_initiales = date('d/m/Y H:i').' '.$_SESSION['USER_PRENOM']{0}.'.'.$_SESSION['USER_NOM']{0}.'.';
+$tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation de variables supplémentaires

@@ -34,7 +34,7 @@ if(IS_HEBERGEMENT_SESAMATH)
 {
   if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
   {
-    echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !<p>'.NL;
+    echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !</p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }  
   require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
@@ -236,7 +236,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   </table>
   <p class="astuce">
     Les documents sont établis au nom de <b><?php echo html($contact_nom.' '.$contact_prenom); ?></b>, contact référent de l'établissement pour <em>SACoche</em>, qui recevra des informations sur l'avancement du dossier à son adresse <b><?php echo html($contact_courriel) ?></b>.<br />
-    Pour communiquer les coordonnées d'un nouveau contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span>
+    Pour communiquer les coordonnées d'un nouveau contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.
   </p>
 </div>
 

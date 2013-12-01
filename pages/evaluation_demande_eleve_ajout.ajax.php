@@ -76,7 +76,7 @@ $score = ($score!=-1) ? $score : NULL ;
 $demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$score,$statut='eleve',$message);
 
 // Ajout aux flux RSS des profs concernés
-$titre = 'Demande ajoutée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+$titre = 'Demande ajoutée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
 $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
 $texte.= ($message) ? ' avec ce message : '."\r\n".$message : '' ;
 $guid  = 'demande_'.$demande_id.'_add';

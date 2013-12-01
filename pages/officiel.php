@@ -89,7 +89,7 @@ else
     if(!in_array($palier,$tab_paliers_actifs))
     {
       $liste_paliers_actifs = ($_SESSION['LISTE_PALIERS_ACTIFS']) ? ( (count($tab_paliers_actifs)==1) ? 'palier '.$_SESSION['LISTE_PALIERS_ACTIFS'].' activé' : 'paliers '.str_replace(',',' et ',$_SESSION['LISTE_PALIERS_ACTIFS']).' activés' ) : 'aucun' ;
-      echo'<p class="danger">Le palier '.$palier.' n\'a pas été activé par les administrateurs ('.$liste_paliers_actifs.').<div>'.NL;
+      echo'<p class="danger">Le palier '.$palier.' n\'a pas été activé par les administrateurs ('.$liste_paliers_actifs.').</p>'.NL;
       return; // Ne pas exécuter la suite de ce fichier inclus.
     }
   }

@@ -41,7 +41,7 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
 
 <form action="#" method="post">
   <p>
-    <label class="tab" for="f_famille_matiere">Famille de matières :</label><?php echo $select_famille_matiere ?><label id="ajax_maj_matiere"">&nbsp;</label><br />
+    <label class="tab" for="f_famille_matiere">Famille de matières :</label><?php echo $select_famille_matiere ?><label id="ajax_maj_matiere">&nbsp;</label><br />
     <label class="tab" for="f_matiere">Matières :</label><select id="f_matiere" name="f_matiere"><option value="0">Toutes les matières</option></select>
   </p>
   <p>

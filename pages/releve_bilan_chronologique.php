@@ -32,14 +32,14 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']) )
   {
-    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
-    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux états d\'acquisitions&hellip;<div>'.NL;
+    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux états d\'acquisitions&hellip;</div>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
   if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']) && !test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) )
   {
-    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
-    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux moyennes des scores ni aux pourcentages d\'items acquis&hellip;<div>'.NL;
+    echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+    echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux moyennes des scores ni aux pourcentages d\'items acquis&hellip;</div>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
 }

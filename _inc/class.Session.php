@@ -190,15 +190,18 @@ class Session
   }
 
   /*
-   * Rediriger vers l'authentification SSO si détecté, si AJAX, renvoyer juste un message, si HTML message d'erreur mis en session qui provoquera un retour en page d'accueil.
+   * Rediriger vers l'authentification SSO si détecté.
+   * 
+   * Si HTML : message d'erreur mis en session qui provoquera un retour en page d'accueil.
+   * Si AJAX : sortir de suite avec un message d'erreur.
    * 
    * @param string $message
    * @return void
    */
   private static function exit_sauf_SSO($message)
   {
-    $test_get =    ( isset($_GET['sso']) && ( isset($_GET['base']) || isset($_GET['id']) || isset($_GET['uai']) || isset($_COOKIE[COOKIE_MEMOGET])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ? TRUE : FALSE ;
-    $test_cookie = ( ( isset($_COOKIE[COOKIE_STRUCTURE]) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && isset($_COOKIE[COOKIE_AUTHMODE]) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )             ? TRUE : FALSE ;
+    $test_get =    ( isset($_GET['sso']) && ( isset($_GET['base']) || isset($_GET['id']) || isset($_GET['uai']) || isset($_COOKIE[COOKIE_MEMOGET]) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ) ? TRUE : FALSE ;
+    $test_cookie = ( ( isset($_COOKIE[COOKIE_STRUCTURE]) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && isset($_COOKIE[COOKIE_AUTHMODE]) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )              ? TRUE : FALSE ;
     // si html
     if(SACoche=='index')
     {
@@ -210,20 +213,14 @@ class Session
       else
       {
         // accès direct à une page réservée, onglets incompatibles ouverts, inactivité, disque plein, chemin invalide, ...
-        Session::$tab_message_erreur[] = $message;
+        Session::$tab_message_erreur[] = $message.' Veuillez vous (re)-connecter.';
       }
     }
     // si ajax
     else
     {
-      if( $test_get || $test_cookie )
-      {
-        Session::$tab_message_erreur[] = 'Session perdue / expirée (onglets incompatibles ouverts ?). Veuillez actualiser la page.';
-      }
-       else
-      {
-        Session::$tab_message_erreur[] = 'Session perdue / expirée (onglets incompatibles ouverts ?). Veuillez vous (re)-connecter.';
-      }
+      $conseil = ( $test_get || $test_cookie ) ? ' Veuillez actualiser la page.' : ' Veuillez vous (re)-connecter.' ;
+      exit_error( 'Session perdue / expirée' /*titre*/ , $message.$conseil /*contenu*/ );
     }
   }
 
@@ -319,7 +316,7 @@ class Session
       if(!Session::$tab_droits_page['public'])
       {
         // 1.1. Demande d'accès à une page réservée (donc besoin d'identification) : session perdue / expirée, ou demande d'accès direct (lien profond) -> redirection pour une nouvelle identification
-        Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible ; veuillez vous (re)-connecter.'); // Si SSO au prochain coup on ne passera plus par là.
+        Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible.'); // Si SSO au prochain coup on ne passera plus par là.
       }
       else
       {
@@ -337,7 +334,7 @@ class Session
         {
           // 2.1.1. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
           Session::close__open_new__init( TRUE /*memo_GET*/ );
-          Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible ; veuillez vous (re)-connecter'); // On peut initialiser la session avant car si SSO au prochain coup on ne passera plus par là.
+          Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible.'); // On peut initialiser la session avant car si SSO au prochain coup on ne passera plus par là.
         }
         else
         {
@@ -349,7 +346,7 @@ class Session
       {
         // 2.2. Session retrouvée, mais louche car IP ou navigateur modifié (tentative de piratage ? c'est cependant difficile de récupérer le cookie d'un tiers, voire impossible avec les autres protections dont SACoche bénéficie).
         Session::close__open_new__init( TRUE /*memo_GET*/ );
-        Session::exit_sauf_SSO('Session incompatible avec votre connexion (modification d\'adresse IP ou de navigateur) ; veuillez vous (re)-connecter');
+        Session::exit_sauf_SSO('Appel anormal (modification d\'adresse IP ou de navigateur).');
       }
       elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
       {
@@ -357,7 +354,7 @@ class Session
         if(!Session::$tab_droits_page['public'])
         {
           // 2.3.1. Espace non identifié => Espace identifié : redirection pour identification
-          Session::exit_sauf_SSO('Demande d\'accès à une page réservée ; veuillez vous connecter.'); // Pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
+          Session::exit_sauf_SSO('Authentification manquante ou perdue (onglets incompatibles ouverts ?).'); // Pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
         }
         else
         {
@@ -385,7 +382,7 @@ class Session
           // 2.4.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
           // Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).
           Session::close__open_new__init( FALSE /*memo_GET*/ ); // FALSE car sinon on peut tourner en boucle (toujours redirigé vers une page qui ne correspond pas au profil utilisé)
-          Session::exit_sauf_SSO('Page incompatible avec votre identification actuelle ; veuillez vous (re)-connecter.');
+          Session::exit_sauf_SSO('Appel incompatible avec votre identification actuelle.');
         }
       }
     }
@@ -462,7 +459,7 @@ class Session
   {
     if(Session::page_avec_jeton_CSRF($page))
     {
-      Session::$_CSRF_value = uniqid(); // sera écrit dans la page pour javascript l'envoie
+      Session::$_CSRF_value = uniqid(); // sera écrit dans la page pour que javascript l'envoie
       $_SESSION['CSRF'][Session::$_CSRF_value.'.'.$page] = TRUE;
     }
   }
@@ -470,7 +467,7 @@ class Session
   /**
    * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
    * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concernée au 10/2012).
-   * On utilise REQUEST car c'est tranmis en POST si Ajax maison mais en GET si utilisation de jquery.form.js.
+   * On utilise REQUEST car c'est tranmis en POST si ajax maison mais en GET si utilisation de jquery.form.js.
    * La session doit être ouverte.
    *
    * @param string $page

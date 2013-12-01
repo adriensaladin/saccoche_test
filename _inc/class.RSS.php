@@ -121,7 +121,7 @@ class RSS
       RSS::creer_fichier($fichier_chemin,$fichier_url);
     }
     // Ajouter l'article
-    $date = date("r",$_SERVER['REQUEST_TIME']);
+    $date = date('r',$_SERVER['REQUEST_TIME']);
     $fichier_contenu = file_get_contents($fichier_chemin);
     $article ='  <item>'."\r\n";
     $article.='    <title>'.html($titre).'</title>'."\r\n";

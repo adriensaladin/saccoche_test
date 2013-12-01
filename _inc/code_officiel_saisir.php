@@ -122,7 +122,7 @@ if($ACTION=='enregistrer_appr')
     DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , 0 /*rubrique_id*/ , 0 /*prof_id*/ , $saisie_type );
   }
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type , NULL , $appreciation );
-  $prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+  $prof_info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>');
 }
@@ -147,7 +147,7 @@ if($ACTION=='enregistrer_note')
     exit('Erreur avec les données transmises !');
   }
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
-  $appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+  $appreciation = 'Moyenne figée reportée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
   $action = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button> <button type="button" class="supprimer">Supprimer sans recalculer</button>' ;
@@ -180,7 +180,7 @@ if($ACTION=='supprimer_note')
     exit('Erreur avec les données transmises !');
   }
   $note = NULL;
-  $appreciation = 'Moyenne effacée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+  $appreciation = 'Moyenne effacée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
   exit('<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>');
 }

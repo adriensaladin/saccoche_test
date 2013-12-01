@@ -45,6 +45,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "droit_fiche_brevet_voir_archive"               , "DIR,ENS,DOC,EDU" ),
 ( "droit_gerer_referentiel"                       , "ENS,DOC,EDU,ONLY_COORD" ),
 ( "droit_gerer_ressource"                         , "ENS,DOC,EDU" ),
+( "droit_modifier_email"                          , "DIR,ENS,DOC,EDU,TUT,ELV" ),
 ( "droit_modifier_mdp"                            , "DIR,ENS,DOC,EDU,TUT,ELV" ),
 ( "droit_officiel_bulletin_appreciation_generale" , "DIR,ENS,ONLY_PP" ),
 ( "droit_officiel_bulletin_corriger_appreciation" , "DIR" ),

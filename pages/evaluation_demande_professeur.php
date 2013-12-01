@@ -44,7 +44,7 @@ else
 }
 
 // Dates par défaut
-$date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
+$date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
 // Javascript
 $GLOBALS['HEAD']['js']['inline'][] = 'var input_date     = "'.TODAY_FR.'";';
@@ -99,12 +99,12 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
       <tr><td class="nu" colspan="10"></td></tr>
     </tbody>
   </table>
-  <p>
-    <ul class="puce">
-      <li><a id="voir_messages" href="#"><span class="file file_htm">Voir tous les messages à la fois.</span></a></li>
-      <li><a id="export_fichier" href=""><span class="file file_txt">Récupérer / Manipuler les informations (fichier <em>csv</em> pour tableur).</span></a></li>
-    </ul>
-  </p>
+  <hr />
+  <ul class="puce">
+    <li><a id="voir_messages" href="#"><span class="file file_htm">Voir tous les messages à la fois.</span></a></li>
+    <li><a id="export_fichier" href=""><span class="file file_txt">Récupérer / Manipuler les informations (fichier <em>csv</em> pour tableur).</span></a></li>
+  </ul>
+  <hr />
   <div id="zone_actions" class="hide">
     <h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
     <fieldset>

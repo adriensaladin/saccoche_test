@@ -400,6 +400,8 @@ class FileSystem
       'FICHIER_DUREE_CONSERVATION',
       'CHEMIN_LOGS_PHPCAS',
       'SYSTEME_UMASK',
+      'CONTACT_MODIFICATION_USER',
+      'CONTACT_MODIFICATION_MAIL',
     );
     $fichier_contenu = '<?php'.NL;
     $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'.NL;

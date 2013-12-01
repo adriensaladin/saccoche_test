@@ -84,7 +84,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     // Afficher une ligne du tableau
     echo'<tr>';
     echo  '<td>'.html($date_affich).'</td>';
-    echo  '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).'</td>';
+    echo  '<td>'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']{0}.'.').'</td>';
     echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
     echo  '<td>'.$image_sujet.$image_corrige.'</td>';
     echo  '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
@@ -298,14 +298,14 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
     exit('Aucune modification détectée !');
   }
   // L'information associée à la note comporte le nom de l'évaluation + celui de l'élève (c'est une information statique, conservée sur plusieurs années)
-  $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  $info = $devoir_description.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
   foreach($tab_nouveau_ajouter as $item_id => $note)
   {
     DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($devoir_prof_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$devoir_date_mysql,$note,$info,$date_visible_mysql);
   }
   foreach($tab_nouveau_modifier as $item_id => $note)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($devoir_prof_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$note,$info);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($_SESSION['USER_ID'],$devoir_id,$item_id,$note,$info);
   }
   foreach($tab_nouveau_supprimer as $item_id)
   {
@@ -316,7 +316,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
     DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($_SESSION['USER_ID'],$item_id);
   }
   // Ajout aux flux RSS des profs concernés
-  $titre = 'Autoévaluation effectuée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
+  $titre = 'Autoévaluation effectuée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'"';
   $guid  = 'autoeval_'.$devoir_id.'_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME']; // obligé d'ajouter un time pour unicité au cas où un élève valide 2x l'autoévaluation
   foreach($tab_profs_rss as $prof_id)

@@ -2170,6 +2170,7 @@ $(document).ready
         var txt_i    = obj_lien.children('i').text();
         var fini     = (txt_i=='terminé') ? 'oui' : 'non' ;
         var ref      = obj_lien.parent().next().attr('id').substring(7); // "devoir_" + ref
+        // obj_bouton.prop('disabled',true);
         $.ajax
         (
           {
@@ -2180,6 +2181,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              // obj_bouton.prop('disabled',false).prop('checked',check_old);
               return false;
             },
             success : function(responseHTML)
@@ -2188,6 +2190,7 @@ $(document).ready
               if(responseHTML!='ok')
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                // obj_bouton.prop('disabled',false).prop('checked',check_old);
               }
               else
               {

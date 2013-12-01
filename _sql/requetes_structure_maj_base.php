@@ -1258,7 +1258,7 @@ public static function DB_maj_base($version_base_structure_actuelle)
       $DB_SQL = 'UPDATE sacoche_saisie SET saisie_info=:saisie_info WHERE prof_id=:prof_id AND eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id';
       foreach($DB_TAB as $DB_ROW)
       {
-        $saisie_info = $DB_ROW['devoir_info'].' ('.afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE).')';
+        $saisie_info = $DB_ROW['devoir_info'].' ('.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']{0}.'.)';
         $DB_VAR = array(':prof_id'=>$DB_ROW['prof_id'],':eleve_id'=>$DB_ROW['eleve_id'],':devoir_id'=>$DB_ROW['devoir_id'],':item_id'=>$DB_ROW['item_id'],':saisie_info'=>$saisie_info);
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
       }
@@ -2706,8 +2706,9 @@ public static function DB_maj_base($version_base_structure_actuelle)
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="casshib/shib/toutatice" WHERE parametre_nom="cas_serveur_root" ' );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="https://www.toutatice.fr/casshib/shib/666666/serviceValidate" WHERE parametre_nom="cas_serveur_url_validate" ' );
       }
-      // retirer une ligne qui ne correspond à rien
+      // réordonner un peu la table sacoche_parametre et retirer une ligne qui ne correspond à rien
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="annee_utilisation_numero" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom ' );
     }
   }
 
@@ -2767,6 +2768,8 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_impression_pdf"        , "DIR" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_modifier_statut"       , "DIR" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_fiche_brevet_voir_archive"          , "DIR,ENS,DOC,EDU" )' );
+      // réordonner la table sacoche_parametre
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }
   }
 
@@ -2951,21 +2954,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note ENUM( "VV", "V", "R", "RR", "ABS", "DISP", "NE", "NF", "NN", "NR", "REQ" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
       // ajout de paramètre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_etat_acquisition_avec_evaluation" , "" )' );
-    }
-  }
-
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MAJ 2013-10-05 => 2013-11-28
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  if($version_base_structure_actuelle=='2013-10-05')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-11-28';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de paramètres
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_modifier_email" , "DIR,ENS,DOC,EDU,TUT,ELV" )' );
-      // réordonner la table sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }
   }

@@ -120,13 +120,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
     $tab_accueil['user'] .= '<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>';
   }
 }
-elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
-{
-  if(!$_SESSION['ELEVE_CLASSE_ID'])
-  {
-    $tab_accueil['user'] .= '<p class="danger">Vous n\'êtes pas affecté(e) dans une classe !<br />Afin de pouvoir consulter vos résultats, un administrateur doit renseigner votre classe.</p>';
-  }
-}
 elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   // Indication connexions SSO existantes si non choisies
@@ -216,7 +209,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages'][$DB_ROW['message_id']] = array(
-        'titre'   => 'Communication ('.html(afficher_identite_initiale($DB_ROW['user_prenom'],TRUE,$DB_ROW['user_nom'],FALSE)).')',
+        'titre'   => 'Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')',
         'message' => make_lien(nl2br(html($DB_ROW['message_contenu']))),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );

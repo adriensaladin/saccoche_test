@@ -54,10 +54,10 @@ $affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 $tab_etats = array
 (
   '0absence'  => 'indéfini',
-  '1vide'     => '<span class="step1">Vide (fermé)</span>',
-  '2rubrique' => '<span class="step2">Saisies Profs</span>',
-  '3synthese' => '<span class="step3">Saisie Synthèse</span>',
-  '4complet'  => '<span class="step4">Complet (fermé)</span>',
+  '1vide'     => 'Vide (fermé)',
+  '2rubrique' => '<span class="now">Saisies Profs</span>',
+  '3synthese' => '<span class="now">Saisie Synthèse</span>',
+  '4complet'  => 'Complet (fermé)',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -582,7 +582,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire pour signaler ou corriger une faute dans une appréciation.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-$date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
+$date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")));
 ?>
 
 <form action="#" method="post" id="zone_signaler_corriger" class="hide" onsubmit="return false">

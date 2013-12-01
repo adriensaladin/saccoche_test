@@ -249,7 +249,7 @@ $annee_session_brevet = annee_session_brevet();
 
 // Tag date heure initiales
 
-$tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
+$tag_date_heure_initiales = date('d/m/Y H:i').' '.$_SESSION['USER_PRENOM']{0}.'.'.$_SESSION['USER_NOM']{0}.'.';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation de variables supplémentaires

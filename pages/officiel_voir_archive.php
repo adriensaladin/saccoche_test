@@ -48,8 +48,8 @@ foreach($tab_types as $BILAN_TYPE => $tab)
 
 if(!$droit_voir_archives_pdf)
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
-  echo'<p class="astuce">Profils autorisés (par les administrateurs) :</p>'.NL;
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
+  echo'<p class="astuce">Profils autorisés (par les administrateurs) :<p>'.NL;
   foreach($tab_types as $BILAN_TYPE => $tab)
   {
     $titre = ($BILAN_TYPE!='palier1') ? $tab['titre'] : 'Maîtrise du socle' ;

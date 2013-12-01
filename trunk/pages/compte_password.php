@@ -30,8 +30,8 @@ $TITRE = "Changer son mot de passe";
 
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !<p>'.NL;
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }

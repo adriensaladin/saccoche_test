@@ -771,7 +771,7 @@ function jour_debut_annee_scolaire($format,$annee_decalage=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_decalage-1 : date("Y")+$annee_decalage ;
+  $annee = (date('n')<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date('Y')+$annee_decalage-1 : date('Y')+$annee_decalage ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
@@ -787,7 +787,7 @@ function jour_fin_annee_scolaire($format,$annee_decalage=0)
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
-  $annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")+$annee_decalage : date("Y")+$annee_decalage+1 ;
+  $annee = (date('n')<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date('Y')+$annee_decalage : date('Y')+$annee_decalage+1 ;
   return ($format=='mysql') ? $annee.'-'.$mois.'-'.$jour : $jour.'/'.$mois.'/'.$annee ;
 }
 
@@ -917,6 +917,22 @@ function afficher_profils_droit_specifique($listing_droits_sigles,$format)
     $tab_profils[] = 'aucun !';
   }
   return ($format=='li') ? '<ul class="puce">'.NL.'<li>'.implode('</li>'.NL.'<li>',$tab_profils).'</li>'.NL.'</ul>'.NL : implode('<br />',$tab_profils) ;
+}
+
+/**
+ * Afficher un nom suivi d'un prénom (ou le contraire) dont l'un ou les deux sont éventuellement remplacés par leur initiale
+ *
+ * @param string $partie1
+ * @param bool   $is_initiale1
+ * @param string $partie2
+ * @param bool   $is_initiale2
+ * @return string
+ */
+function afficher_identite_initiale( $partie1 , $is_initiale1 , $partie2 , $is_initiale2 )
+{
+  $partie1 = ( $is_initiale1 && strlen($partie1) ) ? $partie1{0}.'.' : $partie1 ;
+  $partie2 = ( $is_initiale2 && strlen($partie2) ) ? $partie2{0}.'.' : $partie2 ;
+  return trim($partie1.' '.$partie2);
 }
 
 ?>

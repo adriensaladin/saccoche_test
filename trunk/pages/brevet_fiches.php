@@ -37,8 +37,8 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var CODE_TOTAL = '.CODE_BREVET_EPREUVE_TOT
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>'.NL;
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>'.NL ;
+  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !</p>'.NL;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.</div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a></div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 $tab_brevet_series = array();
@@ -53,9 +53,9 @@ if(count($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
-    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !<p>'.NL;
+    echo'<p class="danger">'.html($DB_ROW['brevet_serie_nom']).' &rarr; non configurée !</p>'.NL;
   }
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a><div>'.NL ;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.</div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=epreuves">Effectuer l\'étape n°2</a> ou <a href="./index.php?page=brevet&amp;section=series">Rectifier l\'étape n°1.</a></div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -63,8 +63,8 @@ if(count($DB_TAB))
 $listing_classes_concernees = DB_STRUCTURE_BREVET::DB_recuperer_brevet_listing_classes_editables();
 if(!$listing_classes_concernees)
 {
-  echo'<p class="danger">Aucun élève d\'une classe n\'a de notes enregistrées pour les fiches brevet !<p>'.NL;
-  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.<div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°3.</a><div>'.NL ;
+  echo'<p class="danger">Aucun élève d\'une classe n\'a de notes enregistrées pour les fiches brevet !</p>'.NL;
+  echo ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<div class="astuce">Un administrateur ou directeur doit effectuer les étapes préliminaires.</div>'.NL : '<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°3.</a></div>'.NL ;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 $tab_classes_concernees = explode(',',$listing_classes_concernees);

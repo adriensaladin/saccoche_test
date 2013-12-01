@@ -158,7 +158,7 @@ if($make_pdf)
 {
   $releve_PDF = new FPDI( TRUE /*make_officiel*/ , 'portrait' /*orientation*/ , 16 /*marge_gauche*/ , 16 /*marge_droite*/ , 16 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ , 'oui' /*legende*/ , !empty($is_test_impression) /*filigrane*/ );
   // Tag date heure initiales
-  $tag_date_heure_initiales = date('d/m/Y H:i').' '.$_SESSION['USER_PRENOM']{0}.'.'.$_SESSION['USER_NOM']{0}.'.';
+  $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Quelques valeurs de positionnement ...
   $pdf_coords_session       = array( 'G'=>array(111,18,15,4) , 'P'=>array(103,18,15,4) );
   $pdf_coords_academie      = array(30,29.5,38,3);

@@ -30,8 +30,8 @@ $TITRE = "Référentiels en place (dans l'établissement)";
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
 {
-  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>'.NL;
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !</p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }

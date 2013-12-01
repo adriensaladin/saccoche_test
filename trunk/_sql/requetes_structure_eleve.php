@@ -341,7 +341,7 @@ public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_i
  */
 public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_score,$demande_statut,$message)
 {
-  $demande_messages = ($message) ? $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.'."\r\n".$message : '' ;
+  $demande_messages = ($message) ? afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
   $DB_SQL = 'INSERT INTO sacoche_demande(user_id,matiere_id,item_id,demande_date,demande_score,demande_statut,demande_messages) ';
   $DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:item_id,NOW(),:demande_score,:demande_statut,:demande_messages)';
   $DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id,':demande_score'=>$demande_score,':demande_statut'=>$demande_statut,':demande_messages'=>$demande_messages);

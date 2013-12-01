@@ -312,7 +312,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   // Insérer les scores 'REQ' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
   if(!empty($_SESSION['TMP']['req_user_item']))
   {
-    $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+    $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
     foreach($_SESSION['TMP']['req_user_item'] as $req)
     {
       list($eleve_id,$item_id) = explode('x',$req);
@@ -1130,8 +1130,16 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
       {
         if($tab_post[$key]=='X')
         {
-          // valeur de la base à supprimer
-          $tab_nouveau_supprimer[$key] = $key;
+          // valeur de la base à supprimer... sauf en cas d'évaluation partagée :
+          // en effet, dans ce cas, plusieurs collègues peuvent co-saisir en même temps,
+          // il est plus prudent de ne pas écraser des notes qui viendraient d'être enregistrées par des collègues,
+          // quitte à se passer de la possibilité de retirer une note saisie par un collègue,
+          // dans ce cas il faut d'abord la modifier (la modification restant possible) pour s'attribuer la paternité de la saisie, avant de la supprimer.
+          // (mais bon, on touche là à une situation rarissime..)
+          if( $DB_ROW['prof_id']==$_SESSION['USER_ID'])
+          {
+            $tab_nouveau_supprimer[$key] = $key;
+          }
         }
         else
         {
@@ -1157,7 +1165,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
   $date_mysql         = convert_date_french_to_mysql($date_fr);
   $date_visible_mysql = ($date_visible=='identique') ? $date_mysql : convert_date_french_to_mysql($date_visible);
-  $info = $description.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_nouveau_ajouter as $key => $note)
   {
     list($item_id,$eleve_id) = explode('x',$key);
@@ -1166,7 +1174,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   foreach($tab_nouveau_modifier as $key => $note)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$note,$info);
   }
   foreach($tab_nouveau_supprimer as $key => $key)
   {

@@ -99,7 +99,7 @@ if($ACTION=='enregistrer_appr')
   }
   $avis_et_appreciation = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? $appreciation : $avis_conseil.'|'.$appreciation ;
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , $_SESSION['USER_ID'] , $avis_et_appreciation);
-  $prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+  $prof_info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   $txt_avis_conseil_classe = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? '' : ( ($avis_conseil=='F') ? '<div id="avis_conseil_classe" class="b">Avis favorable</div>' : '<div id="avis_conseil_classe" class="b">Doit faire ses preuves</div>' ) ;
   exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>'.$txt_avis_conseil_classe);

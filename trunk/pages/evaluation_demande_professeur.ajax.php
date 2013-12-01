@@ -45,6 +45,8 @@ $devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_dev
 $suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])         : '';
 $message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])       : '' ;
 
+$score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])          : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+
 $tab_demande_id = array();
 $tab_user_id    = array();
 $tab_item_id    = array();
@@ -74,6 +76,9 @@ $tab_qui   = array('groupe','select');
 $tab_suite = array('changer','retirer');
 
 list($devoir_id,$devoir_groupe_id) = (substr_count($devoir_ids,'_')==1) ? explode('_',$devoir_ids) : array(0,0);
+
+$tab_td_score_bad = array( '<td class="hc'       ,                                                                                         '</td>' );
+$tab_td_score_bon = array( '<td class="hd label' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste de demandes
@@ -119,7 +124,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   {
     unset($tab_autres[$DB_ROW['user_id']]);
     $tab_demandes[] = $DB_ROW['demande_id'];
-    $score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
+    $score  = ($DB_ROW['demande_score']!==NULL) ? $DB_ROW['demande_score'] : FALSE ;
     $date   = convert_date_mysql_to_french($DB_ROW['demande_date']);
     $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
@@ -135,7 +140,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
     $retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['user_id']]).'</td>';
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
-    $retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
+    $retour .= str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
     $retour .= '<td class="label">'.$date.'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
     $retour .= '<td class="label">'.$commentaire.'</td>';
@@ -188,7 +193,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
-  $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
@@ -198,7 +203,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   $listing_demande_id = implode(',',$tab_demande_id);
   if($suite=='changer')
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_demandes_statut($listing_demande_id,'prof',$message);
   }
   else
   {
@@ -224,7 +229,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
   $date_mysql         = convert_date_french_to_mysql($date);
   $date_visible_mysql = convert_date_french_to_mysql($date_visible);
-  $info = 'À saisir ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
@@ -234,7 +239,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   $listing_demande_id = implode(',',$tab_demande_id);
   if($suite=='changer')
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_demandes_statut($listing_demande_id,'prof',$message);
   }
   else
   {
@@ -250,7 +255,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
 if( ($action=='changer') && $nb_demandes )
 {
   $listing_demande_id = implode(',',$tab_demande_id);
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_demandes_statut($listing_demande_id,'prof',$message);
   exit('ok');
 }
 
@@ -263,6 +268,29 @@ if( ($action=='retirer') && $nb_demandes )
   $listing_demande_id = implode(',',$tab_demande_id);
   DB_STRUCTURE_PROFESSEUR::DB_supprimer_demandes_devoir($listing_demande_id);
   exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Actualiser un score
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='actualiser_score') && ($nb_demandes==1) && ($nb_users==1) && ($nb_items==1) && ($score>-2) )
+{
+  $tab_devoirs = array();
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_result_eleve_item( $tab_user_id[0] , $tab_item_id[0] );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_devoirs[] = array('note'=>$DB_ROW['note']);
+  }
+  $score_new = (count($tab_devoirs)) ? calculer_score($tab_devoirs,$DB_ROW['calcul_methode'],$DB_ROW['calcul_limite']) : FALSE ;
+  if( ( ($score==-1) && ($score_new!==FALSE) ) || ( ($score>-1) && ($score_new!==$score) ) )
+  {
+    // maj score
+    $score_new_bdd = ($score_new!=-1) ? $score_new : NULL ;
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_demande_score( $tab_demande_id[0] , $score_new_bdd );
+  }
+  $score_retour = str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
+  exit($score_retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

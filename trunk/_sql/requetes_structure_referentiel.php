@@ -512,7 +512,7 @@ public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_d
  */
 public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
@@ -543,7 +543,7 @@ public static function DB_supprimer_referentiel_domaine($domaine_id)
   $DB_SQL.= 'WHERE domaine_id=:domaine_id';
   $DB_VAR = array(':domaine_id'=>$domaine_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyer le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
 }
 
 /**
@@ -563,7 +563,7 @@ public static function DB_supprimer_referentiel_theme($theme_id)
   $DB_SQL.= 'WHERE theme_id=:theme_id';
   $DB_VAR = array(':theme_id'=>$theme_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyer le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
 }
 
 /**
@@ -588,7 +588,7 @@ public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
   $DB_SQL.= 'WHERE item_id=:item_id';
   $DB_VAR = array(':item_id'=>$item_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyer le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
 }
 
 /**

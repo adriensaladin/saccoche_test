@@ -319,7 +319,15 @@ if($connexion_mode=='cas')
   // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
   $id_ENT = phpCAS::getUser();
   // Récupérer les attributs CAS => SACoche ne récupère aucun attribut, il n'y a pas de récupération de données via le ticket et donc pas de nécessité de convention.
-  // $tab_attributs = phpCAS::getAttributes();
+  if( IS_HEBERGEMENT_SESAMATH && (SERVEUR_TYPE=='DEV') )
+  {
+    // Test temporaire pour Rennes
+    $tab_attributs = phpCAS::getAttributes();
+    echo'<pre>';
+    var_dump($tab_attributs);
+    echo'</pre>';
+    exit();
+  }
   // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.
   unset($_SESSION['phpCAS']);
   // Comparer avec les données de la base
@@ -329,7 +337,7 @@ if($connexion_mode=='cas')
     exit_error( 'Incident authentification CAS' /*titre*/ , $auth_resultat /*contenu*/ );
   }
   // Vérifier la présence d'une convention valide si besoin, sauf pour les administrateurs qui doivent pouvoir accéder à leur espace pour régulariser la situation (même s'il leur est toujours possible d'utiliser une authentification locale).
-  if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) && ($auth_DB_ROW['user_profil_type']!='administrateur') )
+  if( IS_HEBERGEMENT_SESAMATH && (SERVEUR_TYPE=='PROD') && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) && ($auth_DB_ROW['user_profil_type']!='administrateur') )
   {
     // Vérifier que les paramètres de la base n'ont pas été trafiqués (via une sauvegarde / restauration de la base avec modification intermédiaire) pour passer outre : nom de connexion mis à perso ou modifié etc.
     $connexion_ref = $connexion_departement.'|'.$connexion_nom;
@@ -482,9 +490,9 @@ if($connexion_mode=='shibboleth')
              . '- la variable $_SERVER["HTTP_FREDUVECTEUR"] '.$http_freduvecteur ;
     exit_error( 'Incident authentification Shibboleth' /*titre*/ , $contenu );
   }
-  // Comparer avec les données de la base
+  // Comparer avec les données de la base.
   $auth_resultat_shibboleth = $auth_resultat_siecle = $auth_resultat_vecteur = '';
-  // [1] On commence par regarder HTTP_UID, disponible pour tous les profils sauf les parents
+  // [1] On commence par regarder HTTP_UID, disponible pour tous les profils sauf les parents.
   // A cause du chainage réalisé depuis Shibboleth entre différents IDP pour compléter les attributs exportés, l'UID peut arriver en double séparé par un « ; ».
   $tab_http_uid = explode( ';' , $_SERVER['HTTP_UID'] );
   $id_ENT = $tab_http_uid[0];
@@ -494,7 +502,7 @@ if($connexion_mode=='shibboleth')
   }
   if($auth_resultat1!='ok')
   {
-    // [2] Ensuite, on peut regarder HTTP_TSSCONETID ou HTTP_ENTELEVESTRUCTRATTACHID, disponible pour les élèves
+    // [2] Ensuite, on peut regarder HTTP_TSSCONETID ou HTTP_ENTELEVESTRUCTRATTACHID, disponible pour les élèves.
     $eleve_sconet_id = (!empty($_SERVER['HTTP_TSSCONETID'])) ? (int)$_SERVER['HTTP_TSSCONETID'] : ( (!empty($_SERVER['HTTP_ENTELEVESTRUCTRATTACHID'])) ? (int)$_SERVER['HTTP_ENTELEVESTRUCTRATTACHID'] : 0 ) ;
     if($eleve_sconet_id)
     {
@@ -502,8 +510,8 @@ if($connexion_mode=='shibboleth')
     }
     if($auth_resultat_siecle!='ok')
     {
-      // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on n'a même que ça...
-      // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » (je ne m'embête pas, je prends la première valeur, inutile de tester tous les enfants, les associations doivent avoir été faites dans SAcoche).
+      // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on n'a même que ça...).
+      // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » (je ne m'embête pas, je prends la première valeur, inutile de tester tous les enfants, les associations doivent avoir été faites dans SACoche).
       $fr_edu_vecteur = (!empty($_SERVER['HTTP_FREDUVECTEUR'])) ? $_SERVER['HTTP_FREDUVECTEUR'] : '' ;
       $tab_vecteur = explode( ';' , $fr_edu_vecteur );
       $fr_edu_vecteur = $tab_vecteur[0];
@@ -561,7 +569,6 @@ if($connexion_mode=='gepi')
     $ce = $dom->createElementNS('gepi_name_space', 'gepi_name_space:organization', $BASE);
     $ext[] = new SAML2_XML_Chunk($ce);
   }
-  // Tester si le user est authentifié, rediriger sinon
   $auth->requireAuth( array('saml:Extensions'=>$ext) );
   // Tester si le user est authentifié, rediriger sinon
   $auth->requireAuth();

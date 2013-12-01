@@ -55,8 +55,8 @@ foreach($DB_TAB as $DB_ROW)
 $DB_TAB_series = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
 if(empty($DB_TAB_series))
 {
-  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !<p>'.NL;
-  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a><div>'.NL;
+  echo'<p class="danger">Aucun élève n\'est associé à une série du brevet !</p>'.NL;
+  echo'<div class="astuce"><a href="./index.php?page=brevet&amp;section=series">Effectuer l\'étape n°1.</a></div>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

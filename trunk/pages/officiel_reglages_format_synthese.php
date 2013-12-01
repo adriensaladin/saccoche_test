@@ -31,8 +31,6 @@ $TITRE = "Format de synthèse par référentiel";
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC : Réglages synthèses &amp; bilans &rarr; Format de synthèse adapté suivant chaque référentiel</a></span></div>
 
-<hr />
-
 <form action="#" method="post" id="form_synthese"><fieldset>
 
 <?php
@@ -41,7 +39,7 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_referentiels();
 
 if(empty($DB_TAB))
 {
-  echo'<p class="danger">Aucun référentiel enregistré !</p>'.NL;
+  echo'<hr /><p class="danger">Aucun référentiel enregistré !</p>'.NL;
 }
 else
 {
@@ -63,8 +61,16 @@ else
     $tab_themes[$ids][] = '<li class="li_n2">'.html($DB_ROW['theme_nom']).'</li>';
   }
   // Passer en revue les référentiels
+  $memo_matiere_id = 0;
   foreach($DB_TAB as $DB_ROW)
   {
+    if($memo_matiere_id!=$DB_ROW['matiere_id'])
+    {
+      $memo_matiere_id = $DB_ROW['matiere_id'];
+      echo'<hr />'.NL;
+      echo'<h2>'.html($DB_ROW['matiere_nom']).'</h2>'.NL;
+      echo'<hr />'.NL;
+    }
     $ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
     // Titre + boutons radio + bouton validation
     echo'<h4>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>'.NL;
@@ -97,4 +103,5 @@ else
 ?>
 
 </fieldset></form>
-<p />
+
+<hr />

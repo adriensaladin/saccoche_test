@@ -30,8 +30,8 @@ $TITRE = "Annuler une compétence validée du socle";
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !<p>'.NL;
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
+  echo'<p class="danger">Vous n\'avez pas un profil autorisé pour accéder à cette fonctionnalité !</p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo afficher_profils_droit_specifique($_SESSION['DROIT_ANNULATION_PILIER'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }

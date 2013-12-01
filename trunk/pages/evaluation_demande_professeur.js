@@ -268,6 +268,52 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic pour demander le recalcul d'un score
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#table_action').on
+    (
+      'click',
+      'q.actualiser',
+      function()
+      {
+        var obj_td  = $(this).parent();
+        var td_html = obj_td.html();
+        var ids     = obj_td.parent().children('td:first').children('input').val();
+        var score   = $(this).prev('i').html();
+        score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
+        obj_td.html('<label class="loader">&nbsp;</label>');
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&ids='+ids+'&score='+score,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                obj_td.replaceWith(responseHTML);
+              }
+              else
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                obj_td.html(td_html);
+              }
+            }
+          }
+        );
+        return false;
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic pour voir les messages des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -279,9 +325,9 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_devoir en ajax
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Charger le select f_devoir en ajax
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function maj_evaluation()
     {
@@ -309,7 +355,7 @@ $(document).ready
               $('#f_devoir').html(responseHTML).show();
               maj_dates();
             }
-          else
+            else
             {
               $('#ajax_maj1').removeAttr("class").addClass("alerte").html(responseHTML);
             }
@@ -318,9 +364,9 @@ $(document).ready
       );
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Tout cocher ou tout décocher
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tout cocher ou tout décocher
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#table_action').on
     (
@@ -333,9 +379,9 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Éléments dynamiques du formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Éléments dynamiques du formulaire
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
     $('#table_action').on

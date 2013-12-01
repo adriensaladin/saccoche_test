@@ -1047,7 +1047,7 @@ class PDF extends FPDF
       $this->SetFont( 'Arial' , '' , 7 );
       $this->choisir_couleur_fond('gris_clair');
       $this->choisir_couleur_trait('gris_moyen');
-      $this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.') , 'TB' /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ , SERVEUR_PROJET);
+      $this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],FALSE).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.') , 'TB' /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ , SERVEUR_PROJET);
     }
     elseif($this->officiel===TRUE)
     {
@@ -2036,7 +2036,8 @@ class PDF extends FPDF
     {
       extract($tab);  // $prof_info $appreciation $note
       $nom_auteur = ($nb_saisies==1) ? '' : '[ '.$prof_info.' ] ' ; // associer le nom de l'auteur avec l'appréciation si plusieurs appréciations pour une même rubrique
-      $texte .= str_replace( array("\r\n","\r","\n") , ' ' , $nom_auteur.$appreciation )."\r\n";
+      $appreciation_sans_br = str_replace( array("\r\n","\r","\n") , ' ' , $appreciation , $nombre_br );
+      $texte .= ($nombre_br<4-$nb_saisies) ? $nom_auteur.$appreciation."\r\n" : $nom_auteur.$appreciation_sans_br."\r\n" ;
       $nb_lignes_prevues += $nb_lignes_appreciation_potentielle_par_prof_hors_intitule;
     }
     // Intitulé "Appréciations / Conseils :" + auteurs

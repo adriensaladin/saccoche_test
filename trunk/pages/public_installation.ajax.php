@@ -211,6 +211,8 @@ if( $step==41 )
       'FICHIER_DUREE_CONSERVATION' => 12,
       'CHEMIN_LOGS_PHPCAS'         => CHEMIN_DOSSIER_TMP,
       'SYSTEME_UMASK'              => '000',
+      'CONTACT_MODIFICATION_USER'  => 'non',
+      'CONTACT_MODIFICATION_MAIL'  => 'non',
     ) );
     $affichage .= '<p><label class="valide">Les informations concernant le webmestre et l\'hébergement sont maintenant renseignées.</label></p>'.NL;
     $affichage .= '<div class="astuce">Vous pourrez les modifier depuis l\'espace du webmestre, en particulier ajouter un logo et un numéro de déclaration à la CNIL.</div>'.NL;

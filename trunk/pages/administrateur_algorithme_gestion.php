@@ -74,6 +74,10 @@ foreach($tab_options as $value => $texte)
 }
 ?>
 
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
+
+<hr />
+
 <form action="#" method="post" id="form_input">
   <table>
   <thead>
@@ -110,7 +114,7 @@ foreach($tab_options as $value => $texte)
     <button id="enregistrer" type="button" class="valider">Enregistrer ces valeurs.</button>
     <label id="ajax_msg">&nbsp;</label>
   </p>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
+  <p>Réglages <span class="danger">non rétroactifs pour les référentiels déjà en place</span> et <span class="astuce">modifiables pour chaque référentiel par les coordonnateurs</span> : voir la documentation.</p>
 </form>
 
 <hr />

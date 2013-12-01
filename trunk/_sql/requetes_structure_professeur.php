@@ -520,7 +520,7 @@ public static function DB_lister_items_devoir($devoir_id,$with_lien,$with_coef)
 public static function DB_lister_saisies_devoir($devoir_id,$with_REQ)
 {
   // On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
-  $DB_SQL = 'SELECT eleve_id, item_id, saisie_note ';
+  $DB_SQL = 'SELECT eleve_id, item_id, saisie_note, prof_id ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_sortie_date>NOW() ';
@@ -610,6 +610,27 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
   $DB_SQL.= 'GROUP BY periode_id ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
   $DB_VAR = array(':etat'=>'2rubrique');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Retourner les résultats pour 1 élève donné, pour 1 item matière donné
+ *
+ * @param int $eleve_id
+ * @param int $item_id
+ * @return array
+ */
+public static function DB_lister_result_eleve_item($eleve_id,$item_id)
+{
+  $DB_SQL = 'SELECT saisie_note AS note , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+  $DB_SQL.= 'FROM sacoche_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id AND saisie_note!="REQ" ';
+  $DB_SQL.= 'ORDER BY saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
+  $DB_VAR = array(':eleve_id'=>$eleve_id,':item_id'=>$item_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -854,6 +875,7 @@ public static function DB_modifier_ordre_item($devoir_id,$tab_items)
 /**
  * modifier_saisie
  *
+ * @param int    $prof_id
  * @param int    $eleve_id
  * @param int    $devoir_id
  * @param int    $item_id
@@ -861,12 +883,12 @@ public static function DB_modifier_ordre_item($devoir_id,$tab_items)
  * @param string $saisie_info
  * @return void
  */
-public static function DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note,$saisie_info)
+public static function DB_modifier_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$saisie_note,$saisie_info)
 {
   $DB_SQL = 'UPDATE sacoche_saisie ';
-  $DB_SQL.= 'SET saisie_note=:saisie_note,saisie_info=:saisie_info ';
+  $DB_SQL.= 'SET prof_id=:prof_id, saisie_note=:saisie_note, saisie_info=:saisie_info ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id ';
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':saisie_note'=>$saisie_note,':saisie_info'=>$saisie_info);
+  $DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':prof_id'=>$prof_id,':saisie_note'=>$saisie_note,':saisie_info'=>$saisie_info);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -919,7 +941,7 @@ public static function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // sacoche_saisie (maj)
-  $saisie_info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+  $saisie_info = $info.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   $DB_SQL = 'UPDATE sacoche_saisie ';
   $DB_SQL.= 'SET saisie_date=:date, saisie_info=:saisie_info, saisie_visible_date=:visible_date ';
   $DB_SQL.= 'WHERE prof_id=:prof_id AND devoir_id=:devoir_id ';
@@ -1165,20 +1187,36 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
 }
 
 /**
- * modifier_statut_demandes
+ * modifier_demandes_statut
  *
  * @param string $listing_demande_id   id des demandes séparées par des virgules
  * @param string $statut               'prof' ou ...
  * @param string $message              facultatif
  * @return void
  */
-public static function DB_modifier_statut_demandes($listing_demande_id,$statut,$message)
+public static function DB_modifier_demandes_statut($listing_demande_id,$statut,$message)
 {
-  $message_complementaire = ($message) ? "\r\n\r\n".$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.'."\r\n".$message : '' ;
+  $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
   $DB_SQL = 'UPDATE sacoche_demande ';
   $DB_SQL.= 'SET demande_statut=:demande_statut, demande_messages=CONCAT(demande_messages,:message_complementaire) ';
   $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
   $DB_VAR = array(':demande_statut'=>$statut,':message_complementaire'=>$message_complementaire);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_demande_score
+ *
+ * @param int      $demande_id
+ * @param int|null $demande_score
+ * @return void
+ */
+public static function DB_modifier_demande_score($demande_id,$demande_score)
+{
+  $DB_SQL = 'UPDATE sacoche_demande ';
+  $DB_SQL.= 'SET demande_score=:demande_score ';
+  $DB_SQL.= 'WHERE demande_id=:demande_id ';
+  $DB_VAR = array(':demande_id'=>$demande_id,':demande_score'=>$demande_score);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

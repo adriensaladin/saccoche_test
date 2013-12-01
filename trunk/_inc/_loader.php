@@ -406,8 +406,8 @@ define('URL_BASE',getServerProtocole().$HOST.getServerPort());
 // - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
 // - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
 // - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
-$test_local = ( ($HOST=='localhost') || ($HOST=='127.0.0.1') || (mb_substr($HOST,-6)=='.local') ) ? TRUE : FALSE ;
-$serveur_type = ($test_local) ? 'LOCAL' : ( ( (substr($HOST,-18)=='.sesamath.net:8080') || (substr($HOST,-18)=='.sesamath.net:8443') ) ? 'DEV' : 'PROD' ) ;
+$serveur_type = ( mb_strpos(URL_BASE,'localhost') || mb_strpos(URL_BASE,'127.0.0.1') || mb_strpos(URL_BASE,'.local') ) ? 'LOCAL' : 
+              ( ( mb_strpos(URL_BASE,'.sesamath.net:8080') || mb_strpos(URL_BASE,'.sesamath.net:8443') ) ? 'DEV' : 'PROD' ) ;
 define('SERVEUR_TYPE',$serveur_type); // PROD | DEV | LOCAL
 
 // ============================================================================

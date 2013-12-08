@@ -78,11 +78,11 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
       exit('Erreur : numéro UAI déjà utilisé !');
     }
   }
-  // Vérifier le domaine du serveur mail
+  // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
   $mail_domaine = tester_domaine_courriel_valide($contact_courriel);
   if($mail_domaine!==TRUE)
   {
-    exit('Erreur avec le domaine '.$mail_domaine.' !');
+    exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }
   // Insérer l'enregistrement dans la base du webmestre
   // Créer le fichier de connexion de la base de données de la structure
@@ -113,7 +113,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // Insérer le compte administrateur dans la base de cette structure
   $password = fabriquer_mdp();
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
   // Et lui envoyer un courriel
   if($courriel_envoi)
   {

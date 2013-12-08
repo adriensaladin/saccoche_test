@@ -26,21 +26,35 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$daltonisme  = (isset($_POST['daltonisme']))  ? Clean::entier($_POST['daltonisme'])  : -1 ;
+$courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : NULL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour la session + la base + le css perso
+// Mettre à jour son adresse e-mail (éventuellement vide pour la retirer)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($daltonisme,array(0,1)) )
+if($courriel!==NULL)
 {
-  $_SESSION['USER_DALTONISME'] = $daltonisme;
-  DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_daltonisme' , $daltonisme );
-  // Enregistrer en session le CSS personnalisé
-  SessionUser::adapter_daltonisme();
-  SessionUser::actualiser_style();
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  if($courriel)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$_SESSION['USER_ID']) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    {
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
+      {
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      }
+    }
+  }
+  // C'est ok...
+  DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_email' , $courriel );
   exit('ok');
 }
 

@@ -55,6 +55,7 @@ $tab_droits_par_page = array
   'calque_date_calendrier'                  => $tab_droits_profil_identifie,
   'conserver_session_active'                => $tab_droits_profil_identifie,
   'compte_accueil'                          => $tab_droits_profil_identifie,
+  'compte_email'                            => $tab_droits_profil_identifie,
   'compte_password'                         => $tab_droits_profil_identifie,
   // Profil public
   'public_accueil'                          => $tab_droits_profil_public,
@@ -126,6 +127,7 @@ $tab_droits_par_page = array
   'administrateur_professeur_matiere'       => $tab_droits_profil_administrateur,
   'administrateur_professeur_principal'     => $tab_droits_profil_administrateur,
   'administrateur_resilier'                 => $tab_droits_profil_administrateur,
+  'administrateur_user_recherche'           => $tab_droits_profil_administrateur,
   // Profil webmestre | développeur
   'webmestre_configuration_filesystem'      => $tab_droits_profil_webmestre_developpeur,
   'webmestre_database_test'                 => $tab_droits_profil_webmestre_developpeur,
@@ -134,6 +136,7 @@ $tab_droits_par_page = array
   'webmestre_statistiques'                  => $tab_droits_profil_webmestre_developpeur,
   // Profil webmestre
   'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre,
+  'webmestre_contact_modification'          => $tab_droits_profil_webmestre,
   'webmestre_fichiers_deposes'              => $tab_droits_profil_webmestre,
   'webmestre_geographie'                    => $tab_droits_profil_webmestre,
   'webmestre_identite_installation'         => $tab_droits_profil_webmestre,

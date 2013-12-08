@@ -229,7 +229,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
       }
       else
       {
-        echo'<tr><td class="nu probleme" colspan="7">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>'.NL;
+        echo'<tr><td class="nu probleme" colspan="7">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une convention.</td></tr>'.NL;
       }
       ?>
     </tbody>

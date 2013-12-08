@@ -765,6 +765,22 @@ jQuery.validator.addMethod
 ); 
 
 /**
+ * Ajout d'une méthode pour tester la syntaxe d'un domaine
+ */
+function test_domaine(domaine)
+{
+  return /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/i.test(domaine);
+}
+jQuery.validator.addMethod
+(
+  "domaine", function(value, element)
+  {
+    return this.optional(element) || test_domaine(value) ;
+  }
+  , "élément manquant"
+); 
+
+/**
  * jQuery !
  */
 $(document).ready

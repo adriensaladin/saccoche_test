@@ -34,6 +34,10 @@ $geo2                        = (isset($_POST['f_geo2']))                        
 $geo3                        = (isset($_POST['f_geo3']))                        ? Clean::entier($_POST['f_geo3'])                        : 0;
 $uai                         = (isset($_POST['f_uai']))                         ? Clean::uai($_POST['f_uai'])                            : '';
 
+$contact_nom                 = (isset($_POST['f_contact_nom']))                 ? Clean::nom($_POST['f_contact_nom'])                    : '';
+$contact_prenom              = (isset($_POST['f_contact_prenom']))              ? Clean::prenom($_POST['f_contact_prenom'])              : '';
+$contact_courriel            = (isset($_POST['f_contact_courriel']))            ? Clean::courriel($_POST['f_contact_courriel'])          : '';
+
 $sesamath_id                 = (isset($_POST['f_sesamath_id']))                 ? Clean::entier($_POST['f_sesamath_id'])                 : 0;
 $sesamath_uai                = (isset($_POST['f_sesamath_uai']))                ? Clean::uai($_POST['f_sesamath_uai'])                   : '';
 $sesamath_type_nom           = (isset($_POST['f_sesamath_type_nom']))           ? Clean::texte($_POST['f_sesamath_type_nom'])            : '';
@@ -87,6 +91,45 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mettre à jour les informations form_contact
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_prenom || $contact_courriel ) )
+{
+  // Vérifier les variables récupérées en focntion de ce qui est autorisé et donc requis.
+  if( (CONTACT_MODIFICATION_USER!='non') && ( !$contact_nom || !$contact_prenom ) )
+  {
+    exit('Erreur avec les données transmises !');
+  }
+  if(CONTACT_MODIFICATION_MAIL!='non') // oui ou domaine restreint
+  {
+    if(!$contact_courriel)
+    {
+      exit('Erreur avec les données transmises !');
+    }
+    if( (CONTACT_MODIFICATION_MAIL!='oui') && strpos($contact_courriel,CONTACT_MODIFICATION_MAIL)===FALSE )
+    {
+      exit('Erreur avec le domaine qui est restreint à "'.CONTACT_MODIFICATION_MAIL.'" par le webmestre.');
+    }
+    // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
+    $mail_domaine = tester_domaine_courriel_valide($contact_courriel);
+    if($mail_domaine!==TRUE)
+    {
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+    }
+  }
+  // On met à jour dans la base du webmestre, sans écraser l'existant.
+  charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+  $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
+  $contact_nom      = (CONTACT_MODIFICATION_USER!='non') ? $contact_nom      : $DB_ROW['structure_contact_nom'] ;
+  $contact_prenom   = (CONTACT_MODIFICATION_USER!='non') ? $contact_prenom   : $DB_ROW['structure_contact_prenom'] ;
+  $contact_courriel = (CONTACT_MODIFICATION_MAIL!='non') ? $contact_courriel : $DB_ROW['structure_contact_courriel'] ;
+  DB_WEBMESTRE_ADMINISTRATEUR::DB_modifier_contact_infos($_SESSION['BASE'],$contact_nom,$contact_prenom,$contact_courriel);
+  // Si on arrive là, alors tout s'est bien passé.
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mettre à jour les informations form_sesamath
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -118,6 +161,15 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 
 if( $etablissement_denomination )
 {
+  // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  if(HEBERGEUR_INSTALLATION=='multi-structures')
+  {
+    $mail_domaine = tester_domaine_courriel_valide($etablissement_courriel);
+    if($mail_domaine!==TRUE)
+    {
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+    }
+  }
   $tab_parametres = array();
   $tab_parametres['etablissement_denomination'] = $etablissement_denomination;
   $tab_parametres['etablissement_adresse1']     = $etablissement_adresse1;

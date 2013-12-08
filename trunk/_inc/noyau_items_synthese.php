@@ -666,7 +666,7 @@ foreach($tab_eleve as $tab)
       {
         if($is_appreciation_generale_enregistree)
         {
-          if( ($numero_tirage==0) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
+          if( (($numero_tirage==0)&&($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
           {
             $tab_image_tampon_signature = NULL;
           }
@@ -677,7 +677,7 @@ foreach($tab_eleve as $tab)
         }
         else
         {
-          $tab_image_tampon_signature = ( ($numero_tirage>0) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
+          $tab_image_tampon_signature = ( (($numero_tirage>0)||(!$_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
         }
         $moyenne_generale_eleve_affichee  = NULL;
         $moyenne_generale_classe_affichee = NULL;

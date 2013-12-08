@@ -50,6 +50,7 @@ $tab_menu = array
   "Paramétrages" => array
   (
     "Mot de passe"             => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'          ),
+    "Adresse e-mail"           => array( 'class' => 'mail'                , 'href' => 'page=compte_email'             ),
     "Daltonisme"               => array( 'class' => 'compte_daltonisme'   , 'href' => 'page=compte_daltonisme'        ),
     "Messages d'accueil"       => array( 'class' => 'message_accueil'     , 'href' => 'page=compte_message'           ),
     "Groupes de besoin"        => array( 'class' => 'groupe'              , 'href' => 'page=professeur_groupe_besoin' ),
@@ -128,6 +129,12 @@ if( !$_SESSION['SESAMATH_ID'] || !$_SESSION['SESAMATH_KEY'] )
 if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
   $tab_menu["Paramétrages"]["Mot de passe"]['class'] .= ' disabled';
+}
+
+// Changer son adresse e-mail (pas de restriction pour le profil [administrateur].
+if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']))
+{
+  $tab_menu["Paramétrages"]["Adresse e-mail"]['class'] .= ' disabled';
 }
 
 // Créer / paramétrer les référentiels (profil [professeur] uniquement).

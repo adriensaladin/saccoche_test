@@ -80,6 +80,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
       <th>Prénom</th>
       <th>Login</th>
       <th>Mot de passe</th>
+      <th>Courriel</th>
       <th>Date sortie</th>
       <th class="nu"><q class="ajouter" title="Ajouter un personnel."></q></th>
     </tr>
@@ -87,7 +88,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   <tbody>
     <?php
     // Lister les personnels (professeurs, directeurs, etc.)
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('professeur','directeur') , $statut , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_reference,user_profil_sigle,user_profil_nom_long_singulier,user_nom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , FALSE /*with_classe*/ );
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('professeur','directeur') , $statut , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_reference,user_profil_sigle,user_profil_nom_long_singulier,user_nom,user_prenom,user_login,user_email,user_sortie_date' /*liste_champs*/ , FALSE /*with_classe*/ );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -107,6 +108,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
+        echo  '<td>'.html($DB_ROW['user_email']).'</td>';
         echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce personnel."></q>';
@@ -116,7 +118,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
     }
     else
     {
-      echo'<tr><td class="nu" colspan="12"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="13"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -142,7 +144,8 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   </p>
   <p>
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
-    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
+    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
+    <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" />
   </p>
   <p>
     <label class="tab" for="f_login">Login :</label><input id="box_login" name="box_login" value="1" type="checkbox" checked /> <label for="box_login">automatique | inchangé</label><span><input id="f_login" name="f_login" type="text" value="" size="15" maxlength="20" /></span><br />

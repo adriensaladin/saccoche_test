@@ -25,11 +25,14 @@
  * 
  */
 
-// Fichier appelé pour l'affichage d'une archive PDF d'un bulletin.
+// Fichier appelé pour l'affichage d'une archive PDF d'un bilan officiel.
 // Passage en GET d'un paramètre pour savoir quelle page charger.
 
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
+
+// Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
+require(CHEMIN_FICHIER_CONFIG_INSTALL);
 
 // Ouverture de la session et gestion des droits d'accès
 if(!Session::verif_droit_acces(SACoche))
@@ -66,8 +69,9 @@ if( (!in_array($bilan_type,$tab_types)) || !$periode_id || !$eleve_id )
 }
 
 // Vérifications complémentaires
+var_dump($_SESSION);
 
-if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]))
+if( !isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]) || !isset($_SESSION['BASE']) )
 {
   exit_error( 'Accès non autorisé' /*titre*/ , 'Cet appel n\'est valide que pour un utilisateur précis, connecté, et ayant affiché la page listant les archives disponibles.<br />Veuillez ne pas appeler ce lien dans un autre contexte (ni le transmettre à un tiers).' /*contenu*/ , '' /*lien*/ );
 }
@@ -82,6 +86,27 @@ if(!is_file($fichier_archive))
 
 $fichier_copie_nom = 'officiel_'.$bilan_type.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
 copy($fichier_archive,CHEMIN_DOSSIER_EXPORT.$fichier_copie_nom);
+
+// Enregistrement de l'accès
+if( in_array( $_SESSION['USER_PROFIL_TYPE'] , array('eleve','parent') ) )
+{
+  // Connexion à la base de données adaptée (à ce stade, plus besoin de vérif, il s'agit d'une install bien en place...).
+  if(HEBERGEUR_INSTALLATION=='multi-structures')
+  {
+    $fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
+    $fichier_class_config = 'class.DB.config.sacoche_structure';
+  }
+  elseif(HEBERGEUR_INSTALLATION=='mono-structure')
+  {
+    $fichier_mysql_config = 'serveur_sacoche_structure';
+    $fichier_class_config = 'class.DB.config.sacoche_structure';
+  }
+  // Chargement du fichier de connexion à la BDD
+  require(CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
+  require(CHEMIN_DOSSIER_INCLUDE.$fichier_class_config.'.php');
+  // Et enfin la requête
+  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier_date( $eleve_id , $bilan_type , $periode_id , 'consultation_'.$_SESSION['USER_PROFIL_TYPE'] );
+}
 
 // Redirection du navigateur
 header('Status: 302 Found', TRUE, 302);

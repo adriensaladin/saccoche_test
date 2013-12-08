@@ -53,6 +53,7 @@ $tab_objet_profils['droit_annulation_pilier']  = $tab_profils_possibles['dir_per
 $tab_objet_profils['droit_gerer_referentiel']  = $tab_profils_possibles['pers_coord'];
 $tab_objet_profils['droit_gerer_ressource']    = $tab_profils_possibles['pers_coord'];
 $tab_objet_profils['droit_modifier_mdp']                          = $tab_profils_possibles['tous'];
+$tab_objet_profils['droit_modifier_email']                        = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_voir_algorithme']                       = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_voir_etat_acquisition_avec_evaluation'] = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_voir_grilles_items']                    = $tab_profils_possibles['tous'];

@@ -101,6 +101,24 @@ public static function DB_recuperer_referentiels_themes()
 }
 
 /**
+ * recuperer_arborescence_paliers
+ *
+ * @param string   champ_nom
+ * @param string   champ_val
+ * @return array
+ */
+public static function DB_rechercher_users($champ_nom,$champ_val)
+{
+  $DB_SQL = 'SELECT user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_email, user_login, user_sortie_date, user_id_ent, user_id_gepi, user_profil_nom_long_singulier ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_'.$champ_nom.' LIKE :champ_val ';
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+  $DB_VAR = array(':champ_val'=>$champ_val);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_lister_matieres_famille
  *
  * @param int   famille_id
@@ -887,7 +905,7 @@ public static function DB_tester_periode_nom($periode_nom,$periode_id=FALSE)
 /**
  * Recherche si un identifiant d'utilisateur est déjà pris (sauf éventuellement l'utilisateur concerné)
  *
- * @param string $champ_nom      sans le préfixe 'user_' : login | sconet_id | sconet_elenoet | reference | id_ent | id_gepi
+ * @param string $champ_nom      sans le préfixe 'user_' : login | sconet_id | sconet_elenoet | reference | id_ent | id_gepi | email
  * @param string $champ_valeur   la valeur testée
  * @param int    $user_id        inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @param string $profil_type    si transmis alors recherche parmi les utilisateurs de même type de profil (sconet_id|sconet_elenoet|reference), sinon alors parmi tous les utilisateurs de l'établissement (login|id_ent|id_gepi)
@@ -1055,7 +1073,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
  * On peut envisager une modification de "profil_sigle" entre personnels.
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':email'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 public static function DB_modifier_user($user_id,$DB_VAR)
@@ -1072,6 +1090,7 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':nom'         : $tab_set[] = 'user_nom='.$key;            break;
       case ':prenom'      : $tab_set[] = 'user_prenom='.$key;         break;
       case ':birth_date'  : $tab_set[] = 'user_naissance_date='.$key; break;
+      case ':email'       : $tab_set[] = 'user_email='.$key;          break;
       case ':login'       : $tab_set[] = 'user_login='.$key;          break;
       case ':password'    : $tab_set[] = 'user_password='.$key;       break;
       case ':daltonisme'  : $tab_set[] = 'user_daltonisme='.$key;     break;
@@ -1566,6 +1585,10 @@ public static function DB_supprimer_bilans_officiels()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_saisie'    , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_fichier'   , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_assiduite' , NULL);
+  // Sans oublier le champ pour les classes
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET fiche_brevet="" ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

@@ -26,33 +26,22 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Changer son mot de passe";
+$TITRE = "Changer son adresse e-mail";
 
-if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
-if($_SESSION['CONNEXION_MODE']!='normal')
-{
-  echo'<p class="astuce">Le mode de connexion est configuré pour utiliser une authentification externe.<br />Ce formulaire ne modifiera pas le mode de passe correspondant, il ne concerne que le mot de passe propre à l\'application.</p><hr />'.NL;
-}
-
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var MDP_LONGUEUR_MINI = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';';
 ?>
+<div class="travaux">Page en construction ; documentation et finalisation à venir prochainement !</div>
 
+<p><span class="astuce">Si vous avez plusieurs comptes <em>SACoche</em> (profils d'accès multiples...), ils ne peuvent pas être associés à la même adresse de courriel.</span></p>
 
-<p>Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</p>
 <form action="#" method="post"><fieldset>
-  <label class="tab" for="f_password0">Actuel :</label><input id="f_password0" name="f_password0" size="20" type="password" value="" /><br />
-  <label class="tab" for="f_password1"><img alt="" src="./_img/bulle_aide.png" title="La robustesse du mot de passe indiqué dans ce champ est estimée ci-dessous." /> Nouveau 1/2 :</label><input id="f_password1" name="f_password1" size="20" type="password" value="" /><br />
-  <label class="tab" for="f_password2">Nouveau 2/2 :</label><input id="f_password2" name="f_password2" size="20" type="password" value="" /><br />
+  <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="50" maxlength="63" /><br />
   <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Valider le changement.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 <hr />
-<p><span class="astuce">Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.</span></p>
-<div id="robustesse">indicateur de robustesse : <span>0</span> / 12</div>

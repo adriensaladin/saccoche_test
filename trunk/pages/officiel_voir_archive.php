@@ -99,9 +99,10 @@ else
   }
 }
 
+// marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
+$_SESSION['tmp_droit_voir_archive'] = array();
 // lister les bilans officiels archivés de l'année courante
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id );
-$_SESSION['tmp_droit_voir_archive'] = array(); // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
 foreach($DB_TAB as $DB_ROW)
 {
   if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
@@ -119,7 +120,6 @@ if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'
 {
   $bilan_type = 'brevet';
   $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_fichiers( implode(',',$tab_eleve_id) );
-  $_SESSION['tmp_droit_voir_archive'] = array(); // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
   foreach($DB_TAB as $user_id => $tab)
   {
     if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $user_id , $bilan_type , $annee_session_brevet )))
@@ -133,7 +133,9 @@ if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'
 
 // Assemblage et affichage du tableau.
 
-echo'<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>'.NL;
+echo'<p>Ces bilans sont des copies numériques, laissées à disposition <span class="danger">seulement jusqu\'à la fin de l\'année scolaire.</span></p>'.NL;
+echo'<p class="astuce">Cliquer sur un lien atteste que vous avez pris connaissance du document correspondant.</p>'.NL;
+echo'<hr />'.NL;
 echo'<table id="table_bilans"><thead>'.NL.'<tr>'.implode('',$tab_thead).'</tr>'.NL.'</thead><tbody>'.NL;
 unset($tab_thead[0]);
 foreach($tab_eleve_id as $eleve_id)

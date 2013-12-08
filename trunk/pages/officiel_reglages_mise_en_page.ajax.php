@@ -28,40 +28,68 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action             = (isset($_POST['f_action']))             ? $_POST['f_action']                           : '';
+$action                           = (isset($_POST['f_action']))                           ? $_POST['f_action']                                          : '';
 
-$tab_coordonnees    = (isset($_POST['f_coordonnees']))        ? $_POST['f_coordonnees']                      : array();
-$infos_responsables = (isset($_POST['f_infos_responsables'])) ? Clean::texte($_POST['f_infos_responsables']) : '';
-$horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? Clean::entier($_POST['f_horizontal_gauche']) : 0;
-$horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? Clean::entier($_POST['f_horizontal_milieu']) : 0;
-$horizontal_droite  = (isset($_POST['f_horizontal_droite']))  ? Clean::entier($_POST['f_horizontal_droite']) : 0;
-$vertical_haut      = (isset($_POST['f_vertical_haut']))      ? Clean::entier($_POST['f_vertical_haut'])     : 0;
-$vertical_milieu    = (isset($_POST['f_vertical_milieu']))    ? Clean::entier($_POST['f_vertical_milieu'])   : 0;
-$vertical_bas       = (isset($_POST['f_vertical_bas']))       ? Clean::entier($_POST['f_vertical_bas'])      : 0;
-$nombre_exemplaires = (isset($_POST['f_nombre_exemplaires'])) ? Clean::texte($_POST['f_nombre_exemplaires']) : '';
-$marge_gauche       = (isset($_POST['f_marge_gauche']))       ? Clean::entier($_POST['f_marge_gauche'])      : 0;
-$marge_droite       = (isset($_POST['f_marge_droite']))       ? Clean::entier($_POST['f_marge_droite'])      : 0;
-$marge_haut         = (isset($_POST['f_marge_haut']))         ? Clean::entier($_POST['f_marge_haut'])        : 0;
-$marge_bas          = (isset($_POST['f_marge_bas']))          ? Clean::entier($_POST['f_marge_bas'])         : 0;
-$tampon_signature   = (isset($_POST['f_tampon_signature']))   ? Clean::texte($_POST['f_tampon_signature'])   : '';
-$user_id            = (isset($_POST['f_user_id']))            ? Clean::entier($_POST['f_user_id'])           : -1;
-$user_texte         = (isset($_POST['f_user_texte']))         ? Clean::texte($_POST['f_user_texte'])         : '';
+$tab_coordonnees                  = (isset($_POST['f_coordonnees']))                      ? $_POST['f_coordonnees']                                     : array();
+$infos_responsables               = (isset($_POST['f_infos_responsables']))               ? Clean::texte($_POST['f_infos_responsables'])                : '';
+$horizontal_gauche                = (isset($_POST['f_horizontal_gauche']))                ? Clean::entier($_POST['f_horizontal_gauche'])                : 0;
+$horizontal_milieu                = (isset($_POST['f_horizontal_milieu']))                ? Clean::entier($_POST['f_horizontal_milieu'])                : 0;
+$horizontal_droite                = (isset($_POST['f_horizontal_droite']))                ? Clean::entier($_POST['f_horizontal_droite'])                : 0;
+$vertical_haut                    = (isset($_POST['f_vertical_haut']))                    ? Clean::entier($_POST['f_vertical_haut'])                    : 0;
+$vertical_milieu                  = (isset($_POST['f_vertical_milieu']))                  ? Clean::entier($_POST['f_vertical_milieu'])                  : 0;
+$vertical_bas                     = (isset($_POST['f_vertical_bas']))                     ? Clean::entier($_POST['f_vertical_bas'])                     : 0;
+$nombre_exemplaires               = (isset($_POST['f_nombre_exemplaires']))               ? Clean::texte($_POST['f_nombre_exemplaires'])                : '';
+$marge_gauche                     = (isset($_POST['f_marge_gauche']))                     ? Clean::entier($_POST['f_marge_gauche'])                     : 0;
+$marge_droite                     = (isset($_POST['f_marge_droite']))                     ? Clean::entier($_POST['f_marge_droite'])                     : 0;
+$marge_haut                       = (isset($_POST['f_marge_haut']))                       ? Clean::entier($_POST['f_marge_haut'])                       : 0;
+$marge_bas                        = (isset($_POST['f_marge_bas']))                        ? Clean::entier($_POST['f_marge_bas'])                        : 0;
+$archive_ajout_message_copie      = (isset($_POST['f_archive_ajout_message_copie']))      ? Clean::entier($_POST['f_archive_ajout_message_copie'])      : 0;
+$archive_retrait_tampon_signature = (isset($_POST['f_archive_retrait_tampon_signature'])) ? Clean::entier($_POST['f_archive_retrait_tampon_signature']) : 0;
+$tampon_signature                 = (isset($_POST['f_tampon_signature']))                 ? Clean::texte($_POST['f_tampon_signature'])                  : '';
+$user_id                          = (isset($_POST['f_user_id']))                          ? Clean::entier($_POST['f_user_id'])                          : -1;
+$user_texte                       = (isset($_POST['f_user_texte']))                       ? Clean::texte($_POST['f_user_texte'])                        : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_mise_en_page
+// Traitement du formulaire form_mise_en_page, partie "coordonnees"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $horizontal_milieu && $horizontal_droite && $vertical_haut && $vertical_milieu && $vertical_bas && $nombre_exemplaires && $marge_gauche && $marge_droite && $marge_haut && $marge_bas && $tampon_signature )
+if($action=='coordonnees')
 {
   $tab_parametres = array();
   $tab_parametres['officiel_infos_etablissement'] = implode(',',$tab_coordonnees);
-  $tab_parametres['officiel_infos_responsables']  = $infos_responsables;
-  $tab_parametres['officiel_nombre_exemplaires']  = $nombre_exemplaires;
-  $tab_parametres['officiel_marge_gauche']        = $marge_gauche;
-  $tab_parametres['officiel_marge_droite']        = $marge_droite;
-  $tab_parametres['officiel_marge_haut']          = $marge_haut;
-  $tab_parametres['officiel_marge_bas']           = $marge_bas;
-  $tab_parametres['officiel_tampon_signature']    = $tampon_signature;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] = implode(',',$tab_coordonnees) ;
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_mise_en_page, partie "responsables"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='responsables') && $infos_responsables && $nombre_exemplaires )
+{
+  $tab_parametres = array();
+  $tab_parametres['officiel_infos_responsables'] = $infos_responsables;
+  $tab_parametres['officiel_nombre_exemplaires'] = $nombre_exemplaires;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['OFFICIEL']['INFOS_RESPONSABLES'] = $infos_responsables ;
+  $_SESSION['OFFICIEL']['NOMBRE_EXEMPLAIRES'] = $nombre_exemplaires ;
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_mise_en_page, partie "positionnement"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && $horizontal_milieu && $horizontal_droite && $vertical_haut && $vertical_milieu && $vertical_bas && $marge_gauche && $marge_droite && $marge_haut && $marge_bas )
+{
+  $tab_parametres = array();
+  $tab_parametres['officiel_marge_gauche']                     = $marge_gauche;
+  $tab_parametres['officiel_marge_droite']                     = $marge_droite;
+  $tab_parametres['officiel_marge_haut']                       = $marge_haut;
+  $tab_parametres['officiel_marge_bas']                        = $marge_bas;
   if($infos_responsables=='oui_force')
   {
     $tab_parametres['enveloppe_horizontal_gauche'] = $horizontal_gauche;
@@ -73,14 +101,10 @@ if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $h
   }
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
-  $_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] = implode(',',$tab_coordonnees) ;
-  $_SESSION['OFFICIEL']['INFOS_RESPONSABLES']  = $infos_responsables ;
-  $_SESSION['OFFICIEL']['NOMBRE_EXEMPLAIRES']  = $nombre_exemplaires ;
-  $_SESSION['OFFICIEL']['MARGE_GAUCHE']        = $marge_gauche ;
-  $_SESSION['OFFICIEL']['MARGE_DROITE']        = $marge_droite ;
-  $_SESSION['OFFICIEL']['MARGE_HAUT']          = $marge_haut ;
-  $_SESSION['OFFICIEL']['MARGE_BAS']           = $marge_bas ;
-  $_SESSION['OFFICIEL']['TAMPON_SIGNATURE']    = $tampon_signature ;
+  $_SESSION['OFFICIEL']['MARGE_GAUCHE']                     = $marge_gauche ;
+  $_SESSION['OFFICIEL']['MARGE_DROITE']                     = $marge_droite ;
+  $_SESSION['OFFICIEL']['MARGE_HAUT']                       = $marge_haut ;
+  $_SESSION['OFFICIEL']['MARGE_BAS']                        = $marge_bas ;
   if($infos_responsables=='oui_force')
   {
     $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] = $horizontal_gauche ;
@@ -90,6 +114,36 @@ if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $h
     $_SESSION['ENVELOPPE']['VERTICAL_MILIEU']   = $vertical_milieu ;
     $_SESSION['ENVELOPPE']['VERTICAL_BAS']      = $vertical_bas ;
   }
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_mise_en_page, partie "archive"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='archive')
+{
+  $tab_parametres = array();
+  $tab_parametres['officiel_archive_ajout_message_copie']      = $archive_ajout_message_copie;
+  $tab_parametres['officiel_archive_retrait_tampon_signature'] = $archive_retrait_tampon_signature;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE']      = $archive_ajout_message_copie ;
+  $_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'] = $archive_retrait_tampon_signature ;
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_mise_en_page, partie "signature"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='signature') && $tampon_signature )
+{
+  $tab_parametres = array();
+  $tab_parametres['officiel_tampon_signature'] = $tampon_signature;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['OFFICIEL']['TAMPON_SIGNATURE'] = $tampon_signature ;
   exit('ok');
 }
 

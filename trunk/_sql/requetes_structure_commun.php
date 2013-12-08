@@ -523,6 +523,7 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_nom
  * @param string      $user_prenom
  * @param string|NULL $user_naissance_date
+ * @param string      $user_email
  * @param string      $user_login
  * @param string      $password_crypte
  * @param int         $eleve_classe_id facultatif, 0 si pas de classe ou profil non élève
@@ -530,11 +531,25 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_id_gepi    facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_nom,$user_prenom,$user_naissance_date,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
-  $DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_nom,:user_prenom,:user_naissance_date,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
-  $DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_sconet_elenoet'=>$user_sconet_elenoet,':user_reference'=>$user_reference,':user_profil_sigle'=>$user_profil_sigle,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_naissance_date'=>$user_naissance_date,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_naissance_date, user_email, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
+  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
+  $DB_VAR = array(
+    ':user_sconet_id'      => $user_sconet_id,
+    ':user_sconet_elenoet' => $user_sconet_elenoet,
+    ':user_reference'      => $user_reference,
+    ':user_profil_sigle'   => $user_profil_sigle,
+    ':user_nom'            => $user_nom,
+    ':user_prenom'         => $user_prenom,
+    ':user_naissance_date' => $user_naissance_date,
+    ':user_email'          => $user_email,
+    ':user_login'          => $user_login,
+    ':password_crypte'     => $password_crypte,
+    ':eleve_classe_id'     => $eleve_classe_id,
+    ':user_id_ent'         => $user_id_ent,
+    ':user_id_gepi'        => $user_id_gepi,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -587,34 +602,20 @@ public static function DB_modifier_parametres($tab_parametres)
 }
 
 /**
- * Modifier son paramètre daltonisme
+ * Modifier un de ses paramètres utilisateurs (daltonisme, adresse e-mail, configuration page d'accueil, ...).
+ * La modification du mdp est gérée par une autre fonction
  *
- * @param int   $user_id
- * @param 0|1   $user_daltonisme
+ * @param int    $user_id
+ * @param string $champ_nom
+ * @param mixed  $champ_val
  * @return void
  */
-public static function DB_modifier_user_daltonisme($user_id,$user_daltonisme)
+public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val)
 {
   $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET user_daltonisme=:user_daltonisme ';
+  $DB_SQL.= 'SET '.$champ_nom.'=:champ_val ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':user_daltonisme'=>$user_daltonisme);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Modifier sa configuration de la page d'accueil
- *
- * @param int   $user_id
- * @param 0|1   $user_param_accueil
- * @return void
- */
-public static function DB_modifier_user_param_accueil($user_id,$user_param_accueil)
-{
-  $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET user_param_accueil=:user_param_accueil ';
-  $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':user_param_accueil'=>$user_param_accueil);
+  $DB_VAR = array(':user_id'=>$user_id,':champ_val'=>$champ_val);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

@@ -34,6 +34,29 @@ class DB_WEBMESTRE_ADMINISTRATEUR extends DB
 {
 
 /**
+ * Modifier le contact d'un établissement
+ *
+ * @param int    $base_id
+ * @param string $contact_nom
+ * @param string $contact_prenom
+ * @param string $contact_courriel
+ * @return void
+ */
+public static function DB_modifier_contact_infos($base_id,$contact_nom,$contact_prenom,$contact_courriel)
+{
+  $DB_SQL = 'UPDATE sacoche_structure ';
+  $DB_SQL.= 'SET structure_contact_nom=:contact_nom, structure_contact_prenom=:contact_prenom, structure_contact_courriel=:contact_courriel ';
+  $DB_SQL.= 'WHERE sacoche_base=:base_id ';
+  $DB_VAR = array(
+    ':base_id'          => $base_id,
+    ':contact_nom'      => $contact_nom,
+    ':contact_prenom'   => $contact_prenom,
+    ':contact_courriel' => $contact_courriel
+  );
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Récupérer les coordonnées du contact référent d'un établissement
  *
  * @param int base_id

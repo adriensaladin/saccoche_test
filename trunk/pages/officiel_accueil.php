@@ -52,12 +52,12 @@ $profils_archives_pdf = 'administrateurs (de l\'établissement)<br />'.afficher_
 $affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT']) ;
 
 $tab_etats = array
-(
-  '0absence'  => 'indéfini',
-  '1vide'     => '<span class="step1">Vide (fermé)</span>',
-  '2rubrique' => '<span class="step2">Saisies Profs</span>',
-  '3synthese' => '<span class="step3">Saisie Synthèse</span>',
-  '4complet'  => '<span class="step4">Complet (fermé)</span>',
+( // le <span> supplémentaire sert pour appliquer un style css
+  '0absence'  => '<span>indéfini</span>',
+  '1vide'     => '<span>Vide (fermé)</span>',
+  '2rubrique' => '<span>Saisies Profs</span>',
+  '3synthese' => '<span>Saisie Synthèse</span>',
+  '4complet'  => '<span>Complet (fermé)</span>',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -544,7 +544,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
           <tr>
             <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th>
             <th>Élèves</th>
-            <th>Généré</th>
+            <th class="hc">Généré</th>
           </tr>
         </thead>
         <tbody>
@@ -560,16 +560,21 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
     </p>
   </div>
   <div id="zone_voir_archive" class="hide">
-    <p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu'à la fin de l'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>
+    <p>
+      <span class="astuce">Ces bilans ne sont que des copies, laissées à disposition pour information jusqu'à la fin de l'année scolaire.</span><br />
+      <span class="danger">Les originaux doivent être archivés par la personne ayant effectué l'impression PDF.</span>
+    </p>
     <table class="t9">
       <thead>
         <tr>
           <th>Élèves</th>
-          <th>Généré</th>
+          <th class="hc">Généré</th>
+          <th class="hc">Visualisation élève</th>
+          <th class="hc">Visualisation parent</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td class="nu" colspan="2"></td></tr>
+        <tr><td class="nu" colspan="4"></td></tr>
       </tbody>
     </table>
     <p class="ti">

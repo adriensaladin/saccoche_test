@@ -1895,7 +1895,19 @@ if( $step==52 )
         // Attention à la date de naissance, définie seulement pour les élèves
         $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : convert_date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
         // Ajouter l'utilisateur
-        $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajouter'][$i_fichier]['reference'],$tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'],$tab_memo_analyse['ajouter'][$i_fichier]['nom'],$tab_memo_analyse['ajouter'][$i_fichier]['prenom'],$birth_date,$login,crypter_mdp($password),$tab_memo_analyse['ajouter'][$i_fichier]['classe']);
+        $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur(
+          $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['reference'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['nom'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['prenom'],
+          $birth_date,
+          '', /* user_email */
+          $login,
+          crypter_mdp($password),
+          $tab_memo_analyse['ajouter'][$i_fichier]['classe']
+        );
         $tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
         $nb_add++;
         $tab_password[$user_id] = $password;

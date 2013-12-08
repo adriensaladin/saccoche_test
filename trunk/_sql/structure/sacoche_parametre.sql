@@ -104,6 +104,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "note_texte_RR"                                 , "RR" ),
 ( "note_texte_V"                                  , "V" ),
 ( "note_texte_VV"                                 , "VV" ),
+( "officiel_archive_ajout_message_copie"          , "1" ),
+( "officiel_archive_retrait_tampon_signature"     , "1" ),
 ( "officiel_bulletin_acquis_texte_code"           , "1" ),
 ( "officiel_bulletin_acquis_texte_nombre"         , "1" ),
 ( "officiel_bulletin_appreciation_generale"       , "400" ),

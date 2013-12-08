@@ -76,6 +76,11 @@ $tab_droits  = array
     'tous',
     array( 'droit_modifier_mdp' , "modifier son mot de passe" , 'tous' ),
   ),
+  "Adresse e-mail" => array
+  (
+    'tous',
+    array( 'droit_modifier_email' , "modifier son adresse e-mail" , 'tous' ),
+  ),
   "Gestion des référentiels de l'établissement" => array
   (
     'pers_coord',

@@ -54,13 +54,14 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
       <th>Prénom</th>
       <th>Login</th>
       <th>Mot de passe</th>
+      <th>Courriel</th>
       <th class="nu"><q class="ajouter" title="Ajouter un administrateur."></q></th>
     </tr>
   </thead>
   <tbody>
     <?php
     // Lister les administrateurs
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'administrateur' , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_id_gepi,user_nom,user_prenom,user_login' /*liste_champs*/ , FALSE /*with_classe*/ );
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'administrateur' , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_id_gepi,user_nom,user_prenom,user_login,user_email' /*liste_champs*/ , FALSE /*with_classe*/ );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -73,6 +74,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo  '<td>'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td>'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="i">champ crypté</td>';
+        echo  '<td>'.html($DB_ROW['user_email']).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cet administrateur."></q>';
         echo    ($DB_ROW['user_id']!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
@@ -82,7 +84,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
     }
     else
     {
-      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
+      echo'<tr><td class="nu" colspan="8"></td></tr>'.NL; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
     }
     ?>
   </tbody>
@@ -97,7 +99,8 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
     </p>
     <p>
       <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
-      <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
+      <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
+      <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" />
     </p>
     <p>
       <label class="tab" for="f_login">Login :</label><input id="box_login" name="box_login" value="1" type="checkbox" checked /> <label for="box_login">automatique | inchangé</label><span><input id="f_login" name="f_login" type="text" value="" size="15" maxlength="20" /></span><br />

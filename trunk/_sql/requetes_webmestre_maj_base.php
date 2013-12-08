@@ -159,6 +159,19 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     DB::close(SACOCHE_WEBMESTRE_BD_NAME);
   }
 
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-06-09 => 2013-12-03
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if($version_base_webmestre_actuelle=='2013-06-09')
+  {
+    // Actualisation date de version
+    $version_base_webmestre_actuelle = '2013-12-03';
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Modification d'un champ
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_structure CHANGE structure_contact_courriel structure_contact_courriel VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+  }
+
 }
 
 }

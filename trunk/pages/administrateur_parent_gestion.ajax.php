@@ -44,6 +44,7 @@ $sortie_date  = (isset($_POST['f_sortie_date'])) ? Clean::texte($_POST['f_sortie
 $box_login    = (isset($_POST['box_login']))     ? Clean::entier($_POST['box_login'])    : 0;
 $box_password = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
 $box_date     = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])     : 0;
+$courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_courriel']) : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouveau parent
@@ -119,8 +120,25 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
       exit('Erreur : mot de passe trop court pour ce profil !');
     }
   }
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  if($courriel)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    {
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
+      {
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      }
+    }
+  }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_date)
   {
@@ -145,6 +163,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le login généré !" /></td>';
   echo  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
+  echo  '<td class="label">'.html($courriel).'</td>';
   echo  '<td class="label">'.$sortie_date.'</td>';
   echo  '<td class="nu">';
   echo    '<q class="modifier" title="Modifier ce parent."></q>';
@@ -206,6 +225,23 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
     }
     $tab_donnees[':login'] = $login;
   }
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  if($courriel)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    {
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
+      {
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      }
+    }
+  }
   // Cas du mot de passe
   if(!$box_password)
   {
@@ -222,7 +258,7 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
     $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(':sconet_id'=>$sconet_id,':reference'=>$reference,':profil_sigle'=>$profil,':nom'=>$nom,':prenom'=>$prenom,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
+  $tab_donnees += array(':sconet_id'=>$sconet_id,':reference'=>$reference,':profil_sigle'=>$profil,':nom'=>$nom,':prenom'=>$prenom,':email'=>$courriel,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Afficher le retour
   $checked = ($check) ? ' checked' : '' ;
@@ -237,6 +273,7 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';
   echo ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+  echo'<td class="label">'.html($courriel).'</td>';
   echo'<td class="label">'.$sortie_date.'</td>';
   echo'<td class="nu">';
   echo  '<q class="modifier" title="Modifier ce parent."></q>';

@@ -61,6 +61,7 @@ $tab_menu = array
     "Format des identifiants de connexion" => array( 'class' => 'etabl_login'         , 'href' => 'page=administrateur_etabl_login'            ),
     "Délai avant déconnexion"              => array( 'class' => 'etabl_duree'         , 'href' => 'page=administrateur_etabl_duree_inactivite' ),
     "Changer mon mot de passe"             => array( 'class' => 'compte_password'     , 'href' => 'page=compte_password'                       ),
+    "Changer mon adresse e-mail"           => array( 'class' => 'mail'                , 'href' => 'page=compte_email'                          ),
   ),
   "Administration générale" => array
   (
@@ -84,6 +85,7 @@ $tab_menu = array
     "Parents"                     => array( 'class' => 'parent'            , 'href' => 'page=administrateur_parent'         ),
     "Professeurs / Personnels"    => array( 'class' => 'professeur'        , 'href' => 'page=administrateur_professeur'     ),
     "Administrateurs"             => array( 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' ),
+    "Rechercher un utilisateur"   => array( 'class' => 'user_recherche'    , 'href' => 'page=administrateur_user_recherche' ),
   ),
 );
 

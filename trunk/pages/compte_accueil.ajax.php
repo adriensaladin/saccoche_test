@@ -62,7 +62,7 @@ if($f_type!='messages')
     $tab_types[$key] = $val ;
   }
   $_SESSION['USER_PARAM_ACCUEIL'] = implode( ',' , array_keys( array_filter($tab_types) ) );
-  DB_STRUCTURE_COMMUN::DB_modifier_user_param_accueil( $_SESSION['USER_ID'] , $_SESSION['USER_PARAM_ACCUEIL'] );
+  DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_param_accueil' , $_SESSION['USER_PARAM_ACCUEIL'] );
   exit('ok');
 }
 

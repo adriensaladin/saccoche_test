@@ -39,7 +39,7 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{6:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{5:{sorter:false},7:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[2,0],[3,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -68,7 +68,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , profil , nom , prenom , login )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , profil , nom , prenom , login , courriel )
     {
       $('#f_action').val(mode);
       $('#f_id').val(id);
@@ -76,6 +76,7 @@ $(document).ready
       $('#f_id_gepi').val(id_gepi);
       $('#f_nom').val(nom);
       $('#f_prenom').val(prenom);
+      $('#f_courriel').val(courriel);
       // login
       memo_login = login;
       var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
@@ -112,7 +113,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ );
     };
 
     /**
@@ -131,6 +132,7 @@ $(document).ready
       var nom        = objet_tds.eq(2).html();
       var prenom     = objet_tds.eq(3).html();
       var login      = objet_tds.eq(4).html();
+      var courriel   = objet_tds.eq(6).html();
       // Retirer une éventuelle balise image présente dans login
       position_image = login.indexOf('<');
       if (position_image!=-1)
@@ -138,7 +140,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) );
     };
 
     /**
@@ -155,7 +157,7 @@ $(document).ready
       var nom        = objet_tds.eq(2).html();
       var prenom     = objet_tds.eq(3).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , '' /*id_ent*/ , '' /*id_gepi*/ , profil , unescapeHtml(nom) , unescapeHtml(prenom) , '' /*login*/ );
+      afficher_form_gestion( mode , id , '' /*id_ent*/ , '' /*id_gepi*/ , profil , unescapeHtml(nom) , unescapeHtml(prenom) , '' /*login*/ , '' /*courriel*/ );
     };
 
     /**
@@ -217,7 +219,8 @@ $(document).ready
           f_nom      : { required:true , maxlength:25 },
           f_prenom   : { required:true , maxlength:25 },
           f_login    : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
-          f_password : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 }
+          f_password : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 },
+          f_courriel : { required:false , email:true , maxlength:63 }
         },
         messages :
         {
@@ -226,7 +229,8 @@ $(document).ready
           f_nom      : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom   : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
           f_login    : { required:"login manquant"  , maxlength:"20 caractères maximum" },
-          f_password : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" }
+          f_password : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" },
+          f_courriel : { email:"adresse invalide", maxlength:"63 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -313,7 +317,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=7]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=8]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':

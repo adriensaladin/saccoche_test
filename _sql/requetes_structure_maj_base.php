@@ -2963,33 +2963,8 @@ public static function DB_maj_base($version_base_structure_actuelle)
     {
       $version_base_structure_actuelle = '2013-11-28';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // ajout de paramètre
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_modifier_email" , "DIR,ENS,DOC,EDU,TUT,ELV" )' );
-    }
-  }
-
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MAJ 2013-11-28 => 2013-12-08
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  if($version_base_structure_actuelle=='2013-11-28')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-12-08';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // valeurs renommées dans sacoche_niveau
-      if(empty($reload_sacoche_niveau))
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ref="ULIS", niveau_nom="Unité localisée pour l\'inclusion scolaire" WHERE niveau_id=38' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Maternelle, toute petite section" WHERE niveau_id=10' );
-      }
-      // modification sacoche_officiel_fichier
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_fichier CHANGE fichier_date fichier_date_generation DATE NOT NULL DEFAULT "0000-00-00"' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_fichier ADD fichier_date_consultation_eleve  DATE DEFAULT NULL' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_fichier ADD fichier_date_consultation_parent DATE DEFAULT NULL' );
       // ajout de paramètres
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_archive_ajout_message_copie"      , "1" )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_archive_retrait_tampon_signature" , "1" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_modifier_email" , "DIR,ENS,DOC,EDU,TUT,ELV" )' );
       // réordonner la table sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }

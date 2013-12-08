@@ -1168,7 +1168,7 @@ class PDF extends FPDF
         $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
         $bloc_etabl_hauteur = $this->officiel_bloc_etablissement($tab_etabl_coords,$tab_etabl_logo,$bloc_etabl_largeur);
         // Bloc titres
-        $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+        $alerte_archive = ($tab_adresse==='archive') ? TRUE : FALSE ;
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           // En dessous du bloc établissement
@@ -1479,7 +1479,6 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $page_numero = $this->page - $this->page_numero_first + 1 ;
     $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , '' , 7);
     $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
   }
@@ -1524,7 +1523,7 @@ class PDF extends FPDF
         $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
         $bloc_etabl_hauteur = $this->officiel_bloc_etablissement($tab_etabl_coords,$tab_etabl_logo,$bloc_etabl_largeur);
         // Bloc titres
-        $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+        $alerte_archive = ($tab_adresse==='archive') ? TRUE : FALSE ;
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           // En dessous du bloc établissement
@@ -1614,10 +1613,7 @@ class PDF extends FPDF
     // La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
     $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
     $lignes_nb = 1.5 + $lignes_nb ; // matière(marge+intitulé) + lignes dont résumés (on ne compte pas la légende)
-    $test_place_suffisante_page_courante = ($this->lignes_hauteur*$lignes_nb > $hauteur_dispo_restante);
-    $test_pas_deja_en_haut_de_page = ($this->GetY() > $this->marge_haut+$this->lignes_hauteur*8); // pour éviter un saut de page si déjà en haut (à cause d'une liste à rallonge dans une matière)
-    $test_place_suffisante_page_entiere = ($this->lignes_hauteur*$lignes_nb < $this->page_hauteur_moins_marges); // pas la peine de sauter une page si de toute façon ça ne rentre pas sur une page
-    $test_nouvelle_page = $test_place_suffisante_page_courante && $test_pas_deja_en_haut_de_page && $test_place_suffisante_page_entiere ;
+    $test_nouvelle_page = ($this->lignes_hauteur*$lignes_nb > $hauteur_dispo_restante) && ($this->GetY() > $this->lignes_hauteur*5) ; // 2e condition pour éviter un saut de page si déjà en haut (à cause d'une liste à rallonge dans une matière)
     if( $test_nouvelle_page )
     {
       if( ($this->legende) && (!$this->legende_deja_affichee) )
@@ -1676,7 +1672,10 @@ class PDF extends FPDF
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève (y a des bilans avec tellement d'items qu'il faut aussi mettre le test ici...
-      $this->bilan_item_individuel_rappel_eleve_page();
+      $this->AddPage($this->orientation , 'A4');
+      $this->choisir_couleur_texte('gris_fonce');
+      $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->choisir_couleur_texte('noir');
       $this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
     }
     list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
@@ -2174,7 +2173,7 @@ class PDF extends FPDF
           $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
           $bloc_etabl_hauteur = $this->officiel_bloc_etablissement($tab_etabl_coords,$tab_etabl_logo,$bloc_etabl_largeur);
           // Bloc titres
-          $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+          $alerte_archive = ($tab_adresse==='archive') ? TRUE : FALSE ;
           if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
           {
             // En dessous du bloc établissement

@@ -229,7 +229,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   }
   else
   {
-    echo'<tr><td class="nu probleme" colspan="10">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>';
+    echo'<tr><td class="nu probleme" colspan="10">Cliquer sur l\'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>';
   }
   
   echo'<SCRIPT>'.$script;

@@ -138,40 +138,32 @@ if($ACTION=='initialiser')
   {
     if($objet=='imprimer')
     {
-      $checked            = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
-      $td_date_generation = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']) : 'Non' ;
+      $checked    = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
+      $archive_td = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']) : 'Non' ;
       echo'<tr id="id_'.$eleve_id.'">';
       echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>';
       echo'<td class="label">'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="label hc">'.$td_date_generation.'</td>';
+      echo'<td class="label">'.$archive_td.'</td>';
       echo'</tr>';
     }
     elseif($objet=='voir_archive')
     {
       if(!isset($DB_TAB[$eleve_id]))
       {
-        $td_date_generation = 'Non, pas encore imprimé' ;
-        $td_date_consult_eleve = $td_date_consult_parent = 'Sans objet' ;
+        $archive_td = 'Non, pas encore imprimé' ;
+      }
+      elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
+      {
+        $_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
+        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$BILAN_TYPE.'_'.$periode_id.'" class="lien_ext">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
       }
       else
       {
-        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
-        {
-          $_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-          $td_date_generation = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$BILAN_TYPE.'_'.$periode_id.'" class="lien_ext">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']).'</a>' ;
-        }
-        else
-        {
-          $td_date_generation = 'Oui, mais archive non présente sur ce serveur' ;
-        }
-        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  ? convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
-        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) ? convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
+        $archive_td = 'Oui, mais archive non présente sur ce serveur' ;
       }
       echo'<tr>';
       echo'<td>'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="hc">'.$td_date_generation.'</td>';
-      echo'<td class="hc">'.$td_date_consult_eleve.'</td>';
-      echo'<td class="hc">'.$td_date_consult_parent.'</td>';
+      echo'<td>'.$archive_td.'</td>';
       echo'</tr>';
     }
   }
@@ -185,19 +177,10 @@ if($ACTION=='initialiser')
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
   Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
-  // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( $BILAN_TYPE , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) );
   foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     list( $eleve_identite , $page_plage ) = $tab_tirages[0];
-    if(!isset($DB_TAB[$eleve_id]))
-    {
-      DB_STRUCTURE_OFFICIEL::DB_ajouter_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
-    }
-    else
-    {
-      DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier_date( $eleve_id , $BILAN_TYPE , $periode_id , 'generation' );
-    }
+    DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
     $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
     unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][0]);
     $releve_pdf = new PDFMerger;

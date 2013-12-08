@@ -32,7 +32,6 @@ $(document).ready
 
     var user_id    = 0;
     var user_texte = 'Tampon de l\'établissement';
-    var partie     = '';
 
     // Réagir au changement du select
     $('#f_user').change
@@ -52,34 +51,12 @@ $(document).ready
     // Traitement du formulaire form_mise_en_page
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var form_partie = {
-      'f_coordonnees_adresse'   : 'coordonnees',
-      'f_coordonnees_telephone' : 'coordonnees',
-      'f_coordonnees_fax'       : 'coordonnees',
-      'f_coordonnees_courriel'  : 'coordonnees',
-      'f_coordonnees_logo'      : 'coordonnees',
-      'f_infos_responsables' : 'responsables',
-      'f_nombre_exemplaires' : 'responsables',
-      'f_horizontal_gauche' : 'positionnement',
-      'f_horizontal_milieu' : 'positionnement',
-      'f_horizontal_droite' : 'positionnement',
-      'f_vertical_haut'     : 'positionnement',
-      'f_vertical_milieu'   : 'positionnement',
-      'f_vertical_bas'      : 'positionnement',
-      'f_marge_gauche'      : 'positionnement',
-      'f_marge_droite'      : 'positionnement',
-      'f_marge_haut'        : 'positionnement',
-      'f_marge_bas'         : 'positionnement',
-      'f_archive_ajout_message_copie'      : 'archive',
-      'f_archive_retrait_tampon_signature' : 'archive',
-      'f_tampon_signature' : 'signature'
-    };
     // Alerter sur la nécessité de valider
     $("#form_mise_en_page input , #form_mise_en_page select").change
     (
       function()
       {
-        $('#ajax_msg_'+form_partie[$(this).attr('id')]).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+        $('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
       }
     );
 
@@ -99,53 +76,52 @@ $(document).ready
       }
     );
 
-    $('button.parametre').click
+    $('#bouton_valider_mise_en_page').click
     (
       function()
       {
-        partie = $(this).attr('id').substr(15); // bouton_valider_...
-        if( (partie=='positionnement') && ( $('#f_infos_responsables option:selected').val() == 'oui_force' ) )
+        if( $('#f_infos_responsables option:selected').val() == 'oui_force' )
         {
           // Vérifier les dimensions de l'enveloppe
           var enveloppe_largeur = parseInt($('#f_horizontal_gauche').val(),10) + parseInt($('#f_horizontal_milieu').val(),10) + parseInt($('#f_horizontal_droite').val(),10) ;
-          var enveloppe_hauteur = parseInt($('#f_vertical_haut'    ).val(),10) + parseInt($('#f_vertical_milieu'  ).val(),10) + parseInt($('#f_vertical_bas'     ).val(),10) ;
+          var enveloppe_hauteur = parseInt($('#f_vertical_haut').val(),10)     + parseInt($('#f_vertical_milieu').val(),10)   + parseInt($('#f_vertical_bas').val(),10) ;
           if( (enveloppe_largeur<215) || (enveloppe_largeur>235) )
           {
-            $('#ajax_msg_'+partie).removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la longueur de l'enveloppe doit être comprise entre 21,5cm et 23,5cm.");
+            $('#ajax_msg_mise_en_page').removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la longueur de l'enveloppe doit être comprise entre 21,5cm et 23,5cm.");
             return false;
           }
           if( (enveloppe_hauteur<105) || (enveloppe_hauteur>125) )
           {
-            $('#ajax_msg_'+partie).removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la hauteur de l'enveloppe doit être comprise entre 10,5cm et 12,5cm.");
+            $('#ajax_msg_mise_en_page').removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la hauteur de l'enveloppe doit être comprise entre 10,5cm et 12,5cm.");
             return false;
           }
         }
-        $("button.parametre").prop('disabled',true);
-        $('#ajax_msg_'+partie).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $("#bouton_valider_mise_en_page").prop('disabled',true);
+        $('#ajax_msg_mise_en_page').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+partie+'&'+$('#form_mise_en_page').serialize(),
+            data : 'csrf='+CSRF+'&f_action=mise_en_page'+'&'+$('#form_mise_en_page').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $("button.parametre").prop('disabled',false);
-              $('#ajax_msg_'+partie).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $("#bouton_valider_mise_en_page").prop('disabled',false);
+              $('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $("button.parametre").prop('disabled',false);
+              $("#bouton_valider_mise_en_page").prop('disabled',false);
               if(responseHTML!='ok')
               {
-                $('#ajax_msg_'+partie).removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg_'+partie).removeAttr("class").addClass("valide").html("Données enregistrées !");
+                $('#ajax_msg_mise_en_page').removeAttr("class").addClass("valide").html("Données enregistrées !");
               }
               return false;
             }

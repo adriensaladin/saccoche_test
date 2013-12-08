@@ -176,15 +176,14 @@ if( $step==41 )
   $password     = (isset($_POST['f_password1']))    ? Clean::password($_POST['f_password1']) : '';
   if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
   {
-    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-    if($installation=='multi-structures')
+    // On ne vérifie pas le domaine du serveur mail car ce peut être une installation sur un serveur local non ouvert sur l'extérieur, ou dont le proxy n'a pas encore été configuré.
+    /*
+    $mail_domaine = ester_domaine_courriel_valide($courriel);
+    if($mail_domaine!==TRUE)
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
-      {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
-      }
+      exit('Erreur avec le domaine '.$mail_domaine.' !');
     }
+    */
     // Il faut tout transmettre car à ce stade le fichier n'existe pas.
     FileSystem::fabriquer_fichier_hebergeur_info( array(
       'HEBERGEUR_INSTALLATION'     => $installation,
@@ -469,7 +468,7 @@ if( $step==6 )
       DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
       // Insérer un compte administrateur dans la base de la structure
       $password = fabriquer_mdp();
-      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
       // Affichage du retour
       $affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'.NL;
       $affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'.NL;

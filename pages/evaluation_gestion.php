@@ -179,7 +179,7 @@ $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
     </tr>
   </thead>
   <tbody>
-    <tr><td class="nu probleme" colspan="10">Cliquer sur l'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>
+    <tr><td class="nu probleme" colspan="10">Cliquer sur l'icone ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>
   </tbody>
 </table>
 

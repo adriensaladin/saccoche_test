@@ -39,7 +39,7 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},8:{sorter:'date_fr'},10:{sorter:false},12:{sorter:'date_fr'},13:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},8:{sorter:'date_fr'},10:{sorter:false},11:{sorter:'date_fr'},12:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,0],[7,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -100,7 +100,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , birth_date_fr , login , courriel , sortie_date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , birth_date_fr , login , sortie_date_fr , check )
     {
       $('#f_action').val(mode);
       $('#f_check').val(check);
@@ -112,7 +112,6 @@ $(document).ready
       $('#f_reference').val(reference);
       $('#f_nom').val(nom);
       $('#f_prenom').val(prenom);
-      $('#f_courriel').val(courriel);
       // login
       memo_login = login;
       var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
@@ -162,7 +161,7 @@ $(document).ready
       // Insérer l'information du groupe affiché
       $('#f_groupe').val($('#f_groupes option:selected').val());
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '-' /*birth_date_fr*/ , '' /*login*/ , '' /*couriel*/ , '-' /*sortie_date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , profil , '' /*nom*/ , '' /*prenom*/ , '-' /*birth_date_fr*/ , '' /*login*/ , '-' /*sortie_date_fr*/ , '' /*check*/ );
     };
 
     /**
@@ -186,8 +185,7 @@ $(document).ready
       var prenom         = objet_tds.eq( 7).html();
       var birth_date_fr  = objet_tds.eq( 8).html();
       var login          = objet_tds.eq( 9).html();
-      var courriel       = objet_tds.eq(11).html();
-      var sortie_date_fr = objet_tds.eq(12).html();
+      var sortie_date_fr = objet_tds.eq(11).html();
       // Retirer une éventuelle balise image présente dans login
       position_image = login.indexOf('<');
       if (position_image!=-1)
@@ -195,7 +193,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , birth_date_fr , unescapeHtml(login) , unescapeHtml(courriel) , sortie_date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , birth_date_fr , unescapeHtml(login) , sortie_date_fr , check );
     };
 
     /**
@@ -261,7 +259,6 @@ $(document).ready
           f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
           f_birth_date  : { required:function(){return !$('#box_birth_date').is(':checked');} , dateITA:true },
           f_password    : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 },
-          f_courriel    : { required:false , email:true , maxlength:63 },
           f_sortie_date : { required:function(){return !$('#box_sortie_date').is(':checked');} , dateITA:true }
         },
         messages :
@@ -276,7 +273,6 @@ $(document).ready
           f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
           f_birth_date  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_password    : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" },
-          f_courriel    : { email:"adresse invalide", maxlength:"63 caractères maximum" },
           f_sortie_date : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
         },
         errorElement : "label",
@@ -368,7 +364,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=14]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=12]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':

@@ -64,6 +64,10 @@ kbd:hover{background-color:#CCC;border-color:#AAA}
 .avant{color:#666;background-color:#FFC;font-size:12px}
 .notnow{color:#666}
 .now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
+.step1{color:#000;background-color:#FAA}
+.step2{color:#000;background-color:#FC9}
+.step3{color:#000;background-color:#FF9}
+.step4{color:#000;background-color:#CEA}
 .fluo{background:#FF0;padding:2px 1ex}
 div.appreciation {white-space:pre-wrap}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
@@ -146,7 +150,7 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_17.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_16.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu a.disabled {color:#99F;cursor:default;}
 #menu a.disabled:hover {background-color:#77F;color:#99F;cursor:default}
@@ -233,7 +237,6 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.structure_gestion     {background-position: 1px -1499px}
 #menu a.structure_transfert   {background-position: 1px -1519px}
 #menu a.trombinoscope         {background-position: 1px -1539px}
-#menu a.user_recherche        {background-position: 1px -1559px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */
@@ -315,12 +318,6 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 .rubrique {background-position: 0  -40px}
 .synthese {background-position: 0  -60px}
 .complet  {background-position: 0  -80px}
-
-.absence  span{color:#666}
-.vide     span{color:#000;background-color:#FAA}
-.rubrique span{color:#000;background-color:#FC9}
-.synthese span{color:#000;background-color:#FF9}
-.complet  span{color:#000;background-color:#CEA}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images pour les pages de validation du socle                                                        */
@@ -442,8 +439,8 @@ label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat
 label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
-form label.tab {line-height:1.6em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
-form span.radio{line-height:1.6em;display:inline-block;text-align:right;width:25em;margin-right:  1em;font-weight:bold}
+form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
+form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25em;margin-right:1em;font-weight:bold}
 form span.tab{line-height:2em;margin-left:11.5em}
 form label.mini{width:8em;}
 #zone_ressources label.tab{width:6em}

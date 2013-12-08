@@ -244,7 +244,16 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
   {
     $DB_SQL = 'INSERT INTO sacoche_structure(geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
     $DB_SQL.= 'VALUES(:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
-    $DB_VAR = array(':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
+    $DB_VAR = array(
+      ':geo_id'=>$geo_id,
+      ':structure_uai'    => $structure_uai,
+      ':localisation'     => $localisation,
+      ':denomination'     => $denomination,
+      ':contact_nom'      => $contact_nom,
+      ':contact_prenom'   => $contact_prenom,
+      ':contact_courriel' => $contact_courriel,
+      ':inscription_date' => $inscription_date,
+    );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
     $base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
   }
@@ -252,7 +261,17 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
   {
     $DB_SQL = 'INSERT INTO sacoche_structure(sacoche_base,geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
     $DB_SQL.= 'VALUES(:base_id,:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
-    $DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel,':inscription_date'=>$inscription_date);
+    $DB_VAR = array(
+      ':base_id'          => $base_id,
+      ':geo_id'           => $geo_id,
+      ':structure_uai'    => $structure_uai,
+      ':localisation'     => $localisation,
+      ':denomination'     => $denomination,
+      ':contact_nom'      => $contact_nom,
+      ':contact_prenom'   => $contact_prenom,
+      ':contact_courriel' => $contact_courriel,
+      ':inscription_date' => $inscription_date,
+    );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   }
   return $base_id;
@@ -273,7 +292,14 @@ public static function DB_ajouter_partenaire_conventionne($denomination,$nom,$pr
 {
   $DB_SQL = 'INSERT INTO sacoche_partenaire(partenaire_denomination,partenaire_nom,partenaire_prenom,partenaire_courriel,partenaire_password,partenaire_connecteurs) ';
   $DB_SQL.= 'VALUES(:denomination,:nom,:prenom,:courriel,:password_crypte,:connecteurs)';
-  $DB_VAR = array(':denomination'=>$denomination,':nom'=>$nom,':prenom'=>$prenom,':courriel'=>$courriel,':password_crypte'=>$password_crypte,':connecteurs'=>$connecteurs);
+  $DB_VAR = array(
+    ':denomination'    => $denomination,
+    ':nom'             => $nom,
+    ':prenom'          => $prenom,
+    ':courriel'        => $courriel,
+    ':password_crypte' => $password_crypte,
+    ':connecteurs'     => $connecteurs,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
 }
@@ -333,7 +359,16 @@ public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$lo
   $DB_SQL = 'UPDATE sacoche_structure ';
   $DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
   $DB_SQL.= 'WHERE sacoche_base=:base_id ';
-  $DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel);
+  $DB_VAR = array(
+    ':base_id'          => $base_id,
+    ':geo_id'           => $geo_id,
+    ':structure_uai'    => $structure_uai,
+    ':localisation'     => $localisation,
+    ':denomination'     => $denomination,
+    ':contact_nom'      => $contact_nom,
+    ':contact_prenom'   => $contact_prenom,
+    ':contact_courriel' => $contact_courriel
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -353,7 +388,14 @@ public static function DB_modifier_partenaire_conventionne($partenaire_id,$denom
   $DB_SQL = 'UPDATE sacoche_partenaire ';
   $DB_SQL.= 'SET partenaire_denomination=:denomination,partenaire_nom=:nom,partenaire_prenom=:prenom,partenaire_courriel=:courriel,partenaire_connecteurs=:connecteurs ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id,':denomination'=>$denomination,':nom'=>$nom,':prenom'=>$prenom,':courriel'=>$courriel,':connecteurs'=>$connecteurs);
+  $DB_VAR = array(
+    ':partenaire_id' => $partenaire_id,
+    ':denomination'  => $denomination,
+    ':nom'           => $nom,
+    ':prenom'        => $prenom,
+    ':courriel'      => $courriel,
+    ':connecteurs'   => $connecteurs,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

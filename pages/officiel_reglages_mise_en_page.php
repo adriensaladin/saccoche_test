@@ -34,6 +34,9 @@ $check_fax       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT']
 $check_courriel  = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))  ? ' checked' : '' ;
 $check_logo      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))      ? ' checked' : '' ;
 
+$check_archive_ajout_message_copie      = ($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])      ? ' checked' : '' ;
+$check_archive_retrait_tampon_signature = ($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE']) ? ' checked' : '' ;
+
 $options_infos_responsables = '<option value="non">ne pas indiquer les coordonnées des responsables</option><option value="oui_libre">indiquer les coordonnées des responsables, emplacement libre</option><option value="oui_force">indiquer les coordonnées des responsables, emplacement forcé (enveloppe à fenêtre)</option>';
 $options_infos_responsables = str_replace( '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'"' , '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'" selected' , $options_infos_responsables );
 
@@ -93,8 +96,9 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
 <hr />
 
 <form action="#" method="post" id="form_mise_en_page">
+  <h2>En-tête du document</h2>
   <p>
-    <label class="tab">Info. établissement :</label>
+    <label class="tab">Infos établissement :</label>
     <label for="f_coordonnees_adresse"><input type="checkbox" id="f_coordonnees_adresse" name="f_coordonnees[]" value="adresse"<?php echo $check_adresse ?> /> adresse</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_telephone"><input type="checkbox" id="f_coordonnees_telephone" name="f_coordonnees[]" value="telephone"<?php echo $check_telephone ?> /> téléphone</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_fax"><input type="checkbox" id="f_coordonnees_fax" name="f_coordonnees[]" value="fax"<?php echo $check_fax ?> /> fax</label>&nbsp;&nbsp;&nbsp;
@@ -102,11 +106,24 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
     <label for="f_coordonnees_logo"><input type="checkbox" id="f_coordonnees_logo" name="f_coordonnees[]" value="logo"<?php echo $check_logo ?> /> logo</label>
   </p>
   <p>
+    <span class="tab"></span><button id="bouton_valider_coordonnees" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_coordonnees">&nbsp;</label>
+  </p>
+  <hr />
+  <h2>Responsables légaux</h2>
+  <p>
     <label class="tab" for="f_infos_responsables">Coord. responsables :</label><select id="f_infos_responsables" name="f_infos_responsables"><?php echo $options_infos_responsables; ?></select>
   </p>
+  <p>
+    <label class="tab" for="f_nombre_exemplaires">Nb d'exemplaires :</label><select id="f_nombre_exemplaires" name="f_nombre_exemplaires"><?php echo $options_nombre_exemplaires; ?></select>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_responsables" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_responsables">&nbsp;</label>
+  </p>
+  <hr />
+  <h2>Positionnement des données</h2>
   <p id="p_enveloppe"<?php echo $class_enveloppe ?>>
     <img src="./_img/enveloppe.png" alt="envelopppe" width="230" height="115" class="fd" />
-    <label class="tab">Dim. enveloppe :</label><span class="i">Consulter la légende sur le schéma ci-contre.</span><br />
+    <label class="tab">Dim. enveloppe :</label><span class="astuce i">Voir légende sur le schéma ci-contre.</span><br />
     <span class="tab"></span>
     <label for="f_horizontal_gauche">HG </label><select id="f_horizontal_gauche" name="f_horizontal_gauche"><?php echo $options_horizontal_gauche; ?></select>&nbsp;&nbsp;&nbsp;
     <label for="f_horizontal_milieu">HM </label><select id="f_horizontal_milieu" name="f_horizontal_milieu"><?php echo $options_horizontal_milieu; ?></select>&nbsp;&nbsp;&nbsp;
@@ -117,9 +134,6 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
     <label for="f_vertical_bas">VB </label><select id="f_vertical_bas" name="f_vertical_bas"><?php echo $options_vertical_bas; ?></select>
   </p>
   <p>
-    <label class="tab" for="f_nombre_exemplaires">Nb d'exemplaires :</label><select id="f_nombre_exemplaires" name="f_nombre_exemplaires"><?php echo $options_nombre_exemplaires; ?></select>
-  </p>
-  <p>
     <label class="tab">Marges bord page :</label>
       <label for="f_marge_gauche">à gauche </label><select id="f_marge_gauche" name="f_marge_gauche"><?php echo $options_marge_gauche; ?></select>&nbsp;&nbsp;&nbsp;
       <label for="f_marge_droite">à droite </label><select id="f_marge_droite" name="f_marge_droite"><?php echo $options_marge_droite; ?></select>&nbsp;&nbsp;&nbsp;
@@ -127,18 +141,31 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
       <label for="f_marge_bas">en bas </label><select id="f_marge_bas" name="f_marge_bas"><?php echo $options_marge_bas; ?></select>
   </p>
   <p>
-    <label class="tab" for="f_tampon_signature">Tampon / Signature :</label><select id="f_tampon_signature" name="f_tampon_signature"><?php echo $options_tampon_signature; ?></select>
+    <span class="tab"></span><button id="bouton_valider_positionnement" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_positionnement">&nbsp;</label>
+  </p>
+  <hr />
+  <h2>Archives consultables</h2>
+  <p>
+    <label class="tab">&nbsp;</label><label for="f_archive_ajout_message_copie"><input type="checkbox" id="f_archive_ajout_message_copie" name="f_archive_ajout_message_copie" value="1"<?php echo $check_archive_ajout_message_copie ?> /> ajout de la mention <i>&laquo;&nbsp;Copie partielle pour information. Seul l'original fait foi.&nbsp;&raquo;</i></label><br />
+    <label class="tab">&nbsp;</label><label for="f_archive_retrait_tampon_signature"><input type="checkbox" id="f_archive_retrait_tampon_signature" name="f_archive_retrait_tampon_signature" value="1"<?php echo $check_archive_retrait_tampon_signature ?> /> ne pas faire figurer le tampon de l'établissement ni de signature utilisateur</label>&nbsp;&nbsp;&nbsp;
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_mise_en_page" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_mise_en_page">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider_archive" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_archive">&nbsp;</label>
+  </p>
+  <hr />
+  <h2>Tampon &amp; Signatures</h2>
+  <p>
+    <label class="tab" for="f_tampon_signature">Usage :</label><select id="f_tampon_signature" name="f_tampon_signature"><?php echo $options_tampon_signature; ?></select>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_signature" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_signature">&nbsp;</label>
   </p>
 </form>
-
-<hr />
-
-<h2>Tampon &amp; Signatures</h2>
 <form action="#" method="post" id="form_tampon">
+  <hr />
+  <h2></h2>
   <p><label class="tab" for="f_upload">Uploader image :</label> concernant <?php echo $select_user ?> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
 </form>
 <h4>Images enregistrées</h4>
 <ul class="puce" id="listing_signatures"><?php echo $li_signatures ?></ul>
+<hr />

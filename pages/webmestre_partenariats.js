@@ -186,7 +186,7 @@ $(document).ready
           f_denomination : { required:true , maxlength:63 },
           f_nom          : { required:true , maxlength:25 },
           f_prenom       : { required:true , maxlength:25 },
-          f_courriel     : { required:true , email:true , maxlength:60 },
+          f_courriel     : { required:true , email:true , maxlength:63 },
           f_connecteurs  : { required:true , maxlength:255 }
         },
         messages :
@@ -194,7 +194,7 @@ $(document).ready
           f_denomination : { required:"dénomination manquante" , maxlength:"63 caractères maximum" },
           f_nom          : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom       : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-          f_courriel     : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" },
+          f_courriel     : { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" },
           f_connecteurs  : { required:"liste des connecteurs manquante" , maxlength:"255 caractères maximum" }
         },
         errorElement : "label",

@@ -472,7 +472,7 @@ $(document).ready
           f_uai              : { required:false , uai_format:true , uai_clef:true },
           f_contact_nom      : { required:true , maxlength:20 },
           f_contact_prenom   : { required:true , maxlength:20 },
-          f_contact_courriel : { required:true , email:true , maxlength:60 },
+          f_contact_courriel : { required:true , email:true , maxlength:63 },
           f_courriel_envoi   : { required:false }
         },
         messages :
@@ -484,7 +484,7 @@ $(document).ready
           f_uai              : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
           f_contact_nom      : { required:"nom manquant" , maxlength:"20 caractères maximum" },
           f_contact_prenom   : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
-          f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" },
+          f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" },
           f_courriel_envoi   : { }
         },
         errorElement : "label",

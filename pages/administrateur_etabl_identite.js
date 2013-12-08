@@ -72,6 +72,104 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire form_contact
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_contact = $('#form_contact');
+
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation_contact = formulaire_contact.validate
+    (
+      {
+        rules :
+        {
+          f_contact_nom      : { required:function(){return CONTACT_MODIFICATION_USER!='non';} , maxlength:20 },
+          f_contact_prenom   : { required:function(){return CONTACT_MODIFICATION_USER!='non';} , maxlength:20 },
+          f_contact_courriel : { required:function(){return CONTACT_MODIFICATION_MAIL!='non';} , email:true , maxlength:63 }
+        },
+        messages :
+        {
+          f_contact_nom      : { required:"nom manquant" , maxlength:"20 caractères maximum" },
+          f_contact_prenom   : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
+          f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { element.after(error); }
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+      }
+    );
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_contact =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_contact",
+      beforeSubmit : test_form_avant_envoi_contact,
+      error : retour_form_erreur_contact,
+      success : retour_form_valide_contact
+    };
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_contact.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_contact);
+        return false;
+      }
+    ); 
+
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi_contact(formData, jqForm, options)
+    {
+      $('#ajax_msg_contact').removeAttr("class").html("&nbsp;");
+      var readytogo = validation_contact.form();
+      if(readytogo)
+      {
+        if( (CONTACT_MODIFICATION_MAIL!='oui') && (CONTACT_MODIFICATION_MAIL!='non') && ($('#f_contact_courriel').val().lastIndexOf(CONTACT_MODIFICATION_MAIL)==-1) )
+        {
+          $('#ajax_msg_contact').removeAttr("class").addClass("erreur").html("Adresse de courriel restreinte au domaine '"+CONTACT_MODIFICATION_MAIL+"' par le webmestre.").show(); // Ajout show() sinon ici ça disparait...
+          readytogo = false;
+        }
+      }
+      if(readytogo)
+      {
+        $("#bouton_valider_contact").prop('disabled',true);
+        $('#ajax_msg_contact').removeAttr("class").addClass("loader").html("En cours&hellip;").show(); // Ajout show() sinon ici ça disparait...
+      }
+      return readytogo;
+    }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_contact(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider_contact").prop('disabled',false);
+      $('#ajax_msg_contact').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_contact(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider_contact").prop('disabled',false);
+     if(responseHTML=='ok')
+      {
+        $('#ajax_msg_contact').removeAttr("class").addClass("valide").html("Données enregistrées !");
+      }
+      else
+      {
+        $('#ajax_msg_contact').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
+
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire form_sesamath
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +289,7 @@ $(document).ready
           f_etablissement_adresse3     : { required:false , maxlength:50 },
           f_etablissement_telephone    : { required:false , maxlength:25 },
           f_etablissement_fax          : { required:false , maxlength:25 },
-          f_etablissement_courriel     : { required:false , maxlength:50 , email:true }
+          f_etablissement_courriel     : { required:false , maxlength:63 , email:true }
         },
         messages :
         {
@@ -201,7 +299,7 @@ $(document).ready
           f_etablissement_adresse3     : { maxlength:"50 caractères maximum" },
           f_etablissement_telephone    : { maxlength:"25 caractères maximum" },
           f_etablissement_fax          : { maxlength:"25 caractères maximum" },
-          f_etablissement_courriel     : { maxlength:"50 caractères maximum" , email:"courriel invalide" }
+          f_etablissement_courriel     : { maxlength:"63 caractères maximum" , email:"courriel invalide" }
         },
         errorElement : "label",
         errorClass : "erreur",

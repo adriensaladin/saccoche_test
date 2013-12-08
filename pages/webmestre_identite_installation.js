@@ -268,7 +268,7 @@ $(document).ready
           f_cnil_date_recepisse  : { required:function(){return $('#f_cnil_oui').is(':checked');} , dateITA:true },
           f_nom                  : { required:true , maxlength:20 },
           f_prenom               : { required:true , maxlength:20 },
-          f_courriel             : { required:true , email:true , maxlength:60 }
+          f_courriel             : { required:true , email:true , maxlength:63 }
         },
         messages :
         {

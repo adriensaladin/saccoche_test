@@ -31,7 +31,6 @@ $TITRE = "Identité de l'établissement";
 $options_mois = '<option value="1">calquée sur l\'année civile</option><option value="2">bascule au 1er février</option><option value="3">bascule au 1er mars</option><option value="4">bascule au 1er avril</option><option value="5">bascule au 1er mai</option><option value="6">bascule au 1er juin</option><option value="7">bascule au 1er juillet</option><option value="8">bascule au 1er août (par défaut)</option><option value="9">bascule au 1er septembre</option><option value="10">bascule au 1er octobre</option><option value="11">bascule au 1er novembre</option><option value="12">bascule au 1er décembre</option>';
 $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'" selected' , $options_mois );
 
-
 // Récupérer le logo, si présent.
 $li_logo = '<li>Pas de logo actuellement enregistré.</li>';
 $DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
@@ -54,11 +53,19 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
   $contact_nom      = $DB_ROW['structure_contact_nom'];
   $contact_prenom   = $DB_ROW['structure_contact_prenom'];
   $contact_courriel = $DB_ROW['structure_contact_courriel'];
+  $user_readonly = (CONTACT_MODIFICATION_USER!='non') ? '' : ' readonly' ;
+  $mail_readonly = (CONTACT_MODIFICATION_MAIL!='non') ? '' : ' readonly' ;
+  $user_title    = (CONTACT_MODIFICATION_USER=='oui') ? '' : ' <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable directement.<br />Utiliser le lien ci-dessous." />' ;
+  $mail_title    = (CONTACT_MODIFICATION_MAIL=='oui') ? '' : ( (CONTACT_MODIFICATION_MAIL=='non') ? ' <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable directement.<br />Utiliser le lien ci-dessous." />' : ' <img alt="" src="./_img/bulle_aide.png" title="Valeur modifiable mais restreinte par le webmestre au domaine \''.CONTACT_MODIFICATION_MAIL.'\'." />' ) ;
+  $contact_class_valider = ( $user_readonly && $mail_readonly ) ? 'hide' : 'show' ;
+  $contact_class_mailto  = ( $user_readonly || $mail_readonly ) ? 'show' : 'hide' ;
+  $GLOBALS['HEAD']['js']['inline'][] = 'var CONTACT_MODIFICATION_USER = "'.CONTACT_MODIFICATION_USER.'";';
+  $GLOBALS['HEAD']['js']['inline'][] = 'var CONTACT_MODIFICATION_MAIL = "'.CONTACT_MODIFICATION_MAIL.'";';
 }
 else
 {
-  $contact_class_zone = 'hide';
-  $contact_nom = $contact_prenom = $contact_courriel = '';
+  $contact_class_zone = $contact_class_valider = $contact_class_mailto = 'hide';
+  $contact_nom = $contact_prenom = $contact_courriel = $user_title = $mail_title = $user_readonly = $mail_readonly = '';
 }
 
 ?>
@@ -67,21 +74,22 @@ else
 
   <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
 
-  <form action="#" method="post" id="zone_contact" class="<?php echo $contact_class_zone ?>">
+  <form action="#" method="post" id="form_contact" class="<?php echo $contact_class_zone ?>">
     <hr />
     <h2>Contact référent de l'établissement</h2>
-    <p>
-      <label class="tab" for="f_contact_nom">Nom <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_nom" name="f_contact_nom" size="25" type="text" value="<?php echo html($contact_nom); ?>" readonly /><br />
-      <label class="tab" for="f_contact_prenom">Prénom <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_prenom" name="f_contact_prenom" size="25" type="text" value="<?php echo html($contact_prenom); ?>" readonly /><br />
-      <label class="tab" for="f_contact_courriel">Courriel <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>" readonly /><br />
-    </p>
-    <div class="astuce">Dans le cas d'un serveur <em>SACoche</em> multi-établissements, le webmestre (responsable du serveur) dispose d'un contact référent pour chacun ; celui-ci :</div>
+    <div class="astuce">Dans le cas d'un serveur <em>SACoche</em> multi-établissements, il y a un contact référent <em>SACoche</em> par établissement :</div>
     <ul class="puce">
-      <li>est aussi le premier administrateur créé (des identifiants lui sont transmis)</li>
-      <li>est destinataire des lettres d'informations que peut envoyer le webmestre</li>
-      <li>reçoit une régénération de mot de passe administrateur demandée au webmestre</li>
+      <li>il réceptionne les identifiants du premier administrateur créé (à son nom) et les informations associées</li>
+      <li>il est destinataire des lettres d'informations que peut envoyer le webmestre</li>
+      <li>il reçoit une régénération de mot de passe administrateur effectuée par le webmestre</li>
     </ul>
-    <p>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</p>
+    <p>
+      <label class="tab" for="f_contact_nom">Nom<?php echo $user_title ?> :</label><input id="f_contact_nom" name="f_contact_nom" size="25" type="text" value="<?php echo html($contact_nom); ?>"<?php echo $user_readonly ?> /><br />
+      <label class="tab" for="f_contact_prenom">Prénom<?php echo $user_title ?> :</label><input id="f_contact_prenom" name="f_contact_prenom" size="25" type="text" value="<?php echo html($contact_prenom); ?>"<?php echo $user_readonly ?> /><br />
+      <label class="tab" for="f_contact_courriel">Courriel<?php echo $mail_title ?> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>"<?php echo $mail_readonly ?> /><br />
+      <span class="<?php echo $contact_class_valider ?>"><span class="tab"></span><button id="bouton_valider_contact" type="submit" class="parametre">Valider.</button><label id="ajax_msg_contact">&nbsp;</label></span>
+    </p>
+    <ul class="puce <?php echo $contact_class_mailto ?>"><li>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</li></ul>
   </form>
 
   <hr />

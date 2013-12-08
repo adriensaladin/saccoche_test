@@ -125,7 +125,7 @@ if(empty($_POST['f_afficher']))
     <p>
       <label class="tab" for="f_contact_nom">Contact Nom :</label><input id="f_contact_nom" name="f_contact_nom" type="text" value="" size="20" maxlength="20" /><br />
       <label class="tab" for="f_contact_prenom">Contact Prénom :</label><input id="f_contact_prenom" name="f_contact_prenom" type="text" value="" size="20" maxlength="20" /><br />
-      <label class="tab" for="f_contact_courriel">Contact Courriel :</label><input id="f_contact_courriel" name="f_contact_courriel" type="text" value="" size="50" maxlength="60" /><br />
+      <label class="tab" for="f_contact_courriel">Contact Courriel :</label><input id="f_contact_courriel" name="f_contact_courriel" type="text" value="" size="50" maxlength="63" /><br />
       <span id="span_envoi">
         <label class="tab"></label><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
       </span>

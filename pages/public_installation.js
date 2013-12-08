@@ -243,7 +243,7 @@ $(document).ready
           f_adresse_site : { required:false , url:true, maxlength:150 },
           f_nom :          { required:true , maxlength:20 },
           f_prenom :       { required:true , maxlength:20 },
-          f_courriel :     { required:true , email:true , maxlength:60 },
+          f_courriel :     { required:true , email:true , maxlength:63 },
           f_password1 :    { required:true , minlength:6 , maxlength:20 },
           f_password2 :    { required:true , minlength:6 , maxlength:20 , equalTo: "#f_password1" }
         },

@@ -221,7 +221,8 @@ date_default_timezone_set('Europe/Paris');
 // Requiert le module "mbstring" ; on a été stoppé avant si ce dernier est manquant.
 mb_internal_encoding(CHARSET);
 
-// Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 6.0.0).
+// Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 5.4.0).
+// Cette remédiation n'est toutefois que partielle car des antislashs sont aussi ajouté à tout ce qui vient "de l'extérieur", donc file_get_contents() & Co.
 // array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
 // function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
 if(get_magic_quotes_gpc())

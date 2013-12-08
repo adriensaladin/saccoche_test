@@ -30,7 +30,7 @@ INSERT INTO sacoche_niveau VALUES
 
 -- Primaire
 
-(  10, 0,  2,   0,    "TPS", "0041000111.", "Maternelle, très petite section"),
+(  10, 0,  2,   0,    "TPS", "0041000111.", "Maternelle, toute petite section"),
 (  11, 0,  2,   1,     "PS", "0001000131.", "Maternelle, petite section"),
 (  12, 0,  2,   2,     "MS", "0001000132.", "Maternelle, moyenne section"),
 (  13, 0,  2,   3,     "GS", "0001000133.", "Maternelle, grande section"),
@@ -52,7 +52,7 @@ INSERT INTO sacoche_niveau VALUES
 (  35, 0,  3,  35,      "3", "103100..11.", "Troisième"),
 (  36, 0,  3,  41,     "3I", "104100..11.", "Troisième d'insertion"),
 (  37, 0,  3,  42,    "REL", "105100..11.", "Classe / Atelier relais"),
-(  38, 0,  3,  43,    "UPI", "106100..11.", "Unité pédagogique d'intégration"),
+(  38, 0,  3,  43,   "ULIS", "106100..11.", "Unité localisée pour l'inclusion scolaire"), -- ex UPI / Unité pédagogique d`intégration
 
 -- SEGPA - Pré apprentissage
 

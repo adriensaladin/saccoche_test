@@ -213,7 +213,7 @@ public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
  * @param int    $periode_id     0 pour toutes les périodes
  * @param array  $tab_eleve_id
  *
- * @return array   array( [eleve_id] => array( 0 => array( 'fichier_date' ) ) ) OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date' ) )
+ * @return array   array( [eleve_id] => array( 0 => array( 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) ) ) OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) )
  */
 public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode_id,$tab_eleve_id)
 {
@@ -222,7 +222,7 @@ public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode
   $where_type     = ($officiel_type) ? 'officiel_type=:officiel_type AND ' : '' ;
   $where_periode  = ($periode_id)    ? 'periode_id=:periode_id AND '       : '' ;
   $key_eleve_id   = ($officiel_type) ? TRUE : FALSE ;
-  $DB_SQL = 'SELECT user_id , '.$select_type.$select_periode.'fichier_date ';
+  $DB_SQL = 'SELECT user_id , '.$select_type.$select_periode.'fichier_date_generation, fichier_date_consultation_eleve, fichier_date_consultation_parent ';
   $DB_SQL.= 'FROM sacoche_officiel_fichier ';
   $DB_SQL.= 'WHERE '.$where_type.$where_periode.'user_id IN ('.implode(',',$tab_eleve_id).') ';
   $DB_SQL.= ($officiel_type) ? '' : 'ORDER BY officiel_type ASC ' ;
@@ -265,6 +265,40 @@ public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
 }
 
 /**
+ * ajouter_bilan_officiel_fichier
+ *
+ * @param int     $user_id
+ * @param string  $officiel_type
+ * @param int     $periode_id
+ * @return void
+ */
+public static function DB_ajouter_bilan_officiel_fichier($user_id,$officiel_type,$periode_id)
+{
+  $DB_SQL = 'INSERT INTO sacoche_officiel_fichier (user_id, officiel_type, periode_id, fichier_date_generation) ';
+  $DB_SQL.= 'VALUES(:user_id, :officiel_type, :periode_id, NOW() ) ';
+  $DB_VAR = array(':user_id'=>$user_id,':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_bilan_officiel_fichier_consultation
+ *
+ * @param int     $user_id
+ * @param string  $officiel_type
+ * @param int     $periode_id
+ * @param string  $champ   "generation" | "consultation_eleve" | "consultation_parent"
+ * @return void
+ */
+public static function DB_modifier_bilan_officiel_fichier_date($user_id,$officiel_type,$periode_id,$champ)
+{
+  $DB_SQL = 'UPDATE sacoche_officiel_fichier ';
+  $DB_SQL.= 'SET fichier_date_'.$champ.'=NOW() ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND officiel_type=:officiel_type AND periode_id=:periode_id ';
+  $DB_VAR = array(':user_id'=>$user_id,':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * modifier_bilan_officiel_saisie
  *
  * @param string  $officiel_type
@@ -282,22 +316,6 @@ public static function DB_modifier_bilan_officiel_saisie($officiel_type,$periode
   $DB_SQL = 'REPLACE INTO sacoche_officiel_saisie (officiel_type, periode_id, eleve_ou_classe_id, rubrique_id, prof_id, saisie_type, saisie_note, saisie_appreciation) ';
   $DB_SQL.= 'VALUES(:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
   $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':rubrique_id'=>$rubrique_id,':prof_id'=>$prof_id,':saisie_type'=>$saisie_type,':saisie_note'=>$note,':saisie_appreciation'=>$appreciation);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_bilan_officiel_fichier
- *
- * @param int     $user_id
- * @param string  $officiel_type
- * @param int     $periode_id
- * @return void
- */
-public static function DB_modifier_bilan_officiel_fichier($user_id,$officiel_type,$periode_id)
-{
-  $DB_SQL = 'REPLACE INTO sacoche_officiel_fichier (user_id, officiel_type, periode_id, fichier_date) ';
-  $DB_SQL.= 'VALUES(:user_id, :officiel_type, :periode_id, NOW() ) ';
-  $DB_VAR = array(':user_id'=>$user_id,':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

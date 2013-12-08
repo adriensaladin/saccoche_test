@@ -120,6 +120,7 @@ elseif($find_doublon) // (forcément)
       <th>Prénom</th>
       <th>Login</th>
       <th>Mot de passe</th>
+      <th>Courriel</th>
       <th>Date sortie</th>
       <th class="nu"><q class="ajouter" title="Ajouter un parent."></q></th>
     </tr>
@@ -146,6 +147,7 @@ elseif($find_doublon) // (forcément)
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
+        echo  '<td>'.html($DB_ROW['user_email']).'</td>';
         echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce parent."></q>';
@@ -160,7 +162,7 @@ elseif($find_doublon) // (forcément)
     }
     else
     {
-      echo'<tr><td class="nu" colspan="13"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="14"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -196,7 +198,8 @@ if( $find_doublon && !empty($DB_TAB) )
   </p>
   <p>
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
-    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
+    <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
+    <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" />
   </p>
   <p>
     <label class="tab" for="f_login">Login :</label><input id="box_login" name="box_login" value="1" type="checkbox" checked /> <label for="box_login">automatique | inchangé</label><span><input id="f_login" name="f_login" type="text" value="" size="15" maxlength="20" /></span><br />

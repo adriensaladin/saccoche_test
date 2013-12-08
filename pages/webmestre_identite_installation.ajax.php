@@ -133,14 +133,15 @@ if( ($action=='delete_logo') && $logo )
 
 if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
-  // On ne vérifie pas le domaine du serveur mail car ce peut être une installation sur un serveur local non ouvert sur l'extérieur, ou dont le proxy n'a pas encore été configuré.
-  /*
-  $mail_domaine = tester_domaine_courriel_valide($courriel);
-  if($mail_domaine!==TRUE)
+  // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    exit('Erreur avec le domaine '.$mail_domaine.' !');
+    $mail_domaine = tester_domaine_courriel_valide($courriel);
+    if($mail_domaine!==TRUE)
+    {
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+    }
   }
-  */
   FileSystem::fabriquer_fichier_hebergeur_info( array(
     'HEBERGEUR_DENOMINATION' => $denomination,
     'HEBERGEUR_UAI'          => $uai,

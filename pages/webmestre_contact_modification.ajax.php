@@ -26,21 +26,29 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$daltonisme  = (isset($_POST['daltonisme']))  ? Clean::entier($_POST['daltonisme'])  : -1 ;
+$f_user    = (isset($_POST['f_user']))    ? Clean::texte($_POST['f_user'])    : '' ;
+$f_mail    = (isset($_POST['f_mail']))    ? Clean::texte($_POST['f_mail'])    : '' ;
+$f_domaine = (isset($_POST['f_domaine'])) ? Clean::texte($_POST['f_domaine']) : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour la session + la base + le css perso
+// Enregistrer des nouveaux réglages
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($daltonisme,array(0,1)) )
+if( in_array($f_user,array('oui','non')) && in_array($f_mail,array('oui','non','domaine')) && ( ($f_mail!='domaine') || ($f_domaine) ) )
 {
-  $_SESSION['USER_DALTONISME'] = $daltonisme;
-  DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_daltonisme' , $daltonisme );
-  // Enregistrer en session le CSS personnalisé
-  SessionUser::adapter_daltonisme();
-  SessionUser::actualiser_style();
+  if($f_mail=='domaine')
+  {
+    // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
+    $mail_domaine = tester_domaine_courriel_valide('username@'.$f_domaine);
+    if($mail_domaine!==TRUE)
+    {
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+    }
+    $f_mail = $f_domaine;
+  }
+  FileSystem::fabriquer_fichier_hebergeur_info( array('CONTACT_MODIFICATION_USER'=>$f_user,'CONTACT_MODIFICATION_MAIL'=>$f_mail) );
   exit('ok');
 }
 

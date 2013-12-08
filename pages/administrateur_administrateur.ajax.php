@@ -39,6 +39,7 @@ $login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'
 $password     = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password']) : '' ;
 $box_login    = (isset($_POST['box_login']))     ? Clean::entier($_POST['box_login'])    : 0;
 $box_password = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
+$courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_courriel']) : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouvel administrateur
@@ -93,8 +94,25 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
       exit('Erreur : mot de passe trop court pour ce profil !');
     }
   }
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  if($courriel)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    {
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
+      {
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      }
+    }
+  }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Afficher le retour
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td>'.html($id_ent).'</td>';
@@ -103,6 +121,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
   echo  '<td>'.html($prenom).'</td>';
   echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le login !" /></td>';
   echo  '<td class="new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
+  echo  '<td>'.html($courriel).'</td>';
   echo  '<td class="nu">';
   echo    '<q class="modifier" title="Modifier cet administrateur."></q>';
   echo    '<q class="supprimer" title="Retirer cet administrateur."></q>';
@@ -143,13 +162,30 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
     }
     $tab_donnees[':login'] = $login;
   }
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  if($courriel)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    {
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
+      {
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      }
+    }
+  }
   // Cas du mot de passe
   if(!$box_password)
   {
     $tab_donnees[':password'] = crypter_mdp($password);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(':nom'=>$nom,':prenom'=>$prenom,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
+  $tab_donnees += array(':nom'=>$nom,':prenom'=>$prenom,':email'=>$courriel,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Mettre à jour aussi éventuellement la session
   if($id==$_SESSION['USER_ID'])
@@ -164,6 +200,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';
   echo ($box_password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+  echo'<td>'.html($courriel).'</td>';
   echo'<td class="nu">';
   echo  '<q class="modifier" title="Modifier ce administrateur."></q>';
   echo  ($id!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;

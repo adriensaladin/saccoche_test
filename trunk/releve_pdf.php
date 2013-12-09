@@ -69,7 +69,6 @@ if( (!in_array($bilan_type,$tab_types)) || !$periode_id || !$eleve_id )
 }
 
 // Vérifications complémentaires
-var_dump($_SESSION);
 
 if( !isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]) || !isset($_SESSION['BASE']) )
 {

@@ -38,7 +38,7 @@ $date_fin       = (isset($_POST['f_date_fin']))        ? Clean::date_fr($_POST['
 $ref            = (isset($_POST['f_ref']))             ? Clean::texte($_POST['f_ref'])                   : '';
 $date           = (isset($_POST['f_date']))            ? Clean::date_fr($_POST['f_date'])                : '';
 $date_fr        = (isset($_POST['f_date_fr']))         ? Clean::date_fr($_POST['f_date_fr'])             : '';
-$date_visible   = (isset($_POST['f_date_visible']))    ? Clean::date_fr($_POST['f_date_visible'])        : ''; // JJ/MM/AAAA
+$date_visible   = (isset($_POST['f_date_visible']))    ? Clean::date_fr($_POST['f_date_visible'])        : ''; // JJ/MM/AAAA ou "identique" (est alors transformé en 00/00/0000)
 $date_autoeval  = (isset($_POST['f_date_autoeval']))   ? Clean::date_fr($_POST['f_date_autoeval'])       : ''; // JJ/MM/AAAA mais peut valoir 00/00/0000
 $description    = (isset($_POST['f_description']))     ? Clean::texte($_POST['f_description'])           : '';
 $doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
@@ -424,7 +424,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Afficher le retour
-  $date_visible  = ($date==$date_visible)         ? 'identique'  : $date_visible  ;
+  $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
   $ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
   $cs = ($nb_items>1)  ? 's' : '';
@@ -1164,7 +1164,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   }
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
   $date_mysql         = convert_date_french_to_mysql($date_fr);
-  $date_visible_mysql = ($date_visible=='identique') ? $date_mysql : convert_date_french_to_mysql($date_visible);
+  $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : convert_date_french_to_mysql($date_visible);
   $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_nouveau_ajouter as $key => $note)
   {

@@ -276,6 +276,10 @@ $nom_bilan_html = 'releve_HTML';
 
 if(empty($is_test_impression))
 {
+  if(!count($tab_pages_decoupe_pdf))
+  {
+    exit('Erreur : aucune donnée trouvée pour le ou les élèves concernés !');
+  }
   $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
   $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
   exit('ok');

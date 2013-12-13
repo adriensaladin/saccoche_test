@@ -634,7 +634,7 @@ if( $step==20 )
       $tab_elements = array_slice($tab_elements,0,6);
       if(count($tab_elements)>=4)
       {
-        list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array_fill(4,2,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array_fill(4,2,NULL); // Evite des NOTICE en initilisant les valeurs manquantes
         $profil = Clean::ref($profil);
         if( ($nom!='') && ($prenom!='') && isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) && in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil],array('professeur','directeur')) )
         {
@@ -711,7 +711,7 @@ if( $step==20 )
       $tab_elements = array_slice($tab_elements,0,6);
       if(count($tab_elements)>=5)
       {
-        list($reference,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(5=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(5=>NULL); // Evite des NOTICE en initilisant les valeurs manquantes
         if( ($nom!='') && ($prenom!='') )
         {
           $tab_users_fichier['sconet_id'   ][] = 0;
@@ -787,7 +787,7 @@ if( $step==20 )
       $tab_elements = array_slice($tab_elements,0,19);
       if(count($tab_elements)>=11)
       {
-        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(3,16,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
+        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(3,16,NULL); // Evite des NOTICE en initilisant les valeurs manquantes
         if( ($nom!='') && ($prenom!='') && ($enfant1!='') )
         {
           // enfants

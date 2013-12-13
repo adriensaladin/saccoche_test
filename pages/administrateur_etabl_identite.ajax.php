@@ -91,6 +91,32 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mettre à jour les informations form_sesamath
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
+{
+  $retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
+  if($retour!='ok')
+  {
+    exit($retour);
+  }
+  // Si on arrive là, alors tout s'est bien passé.
+  $tab_parametres = array();
+  $tab_parametres['sesamath_id']       = $sesamath_id;
+  $tab_parametres['sesamath_uai']      = $sesamath_uai;
+  $tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
+  $tab_parametres['sesamath_key']      = $sesamath_key;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['SESAMATH_ID']       = $sesamath_id ;
+  $_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
+  $_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
+  $_SESSION['SESAMATH_KEY']      = $sesamath_key ;
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mettre à jour les informations form_contact
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -126,32 +152,6 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
   $contact_courriel = (CONTACT_MODIFICATION_MAIL!='non') ? $contact_courriel : $DB_ROW['structure_contact_courriel'] ;
   DB_WEBMESTRE_ADMINISTRATEUR::DB_modifier_contact_infos($_SESSION['BASE'],$contact_nom,$contact_prenom,$contact_courriel);
   // Si on arrive là, alors tout s'est bien passé.
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour les informations form_sesamath
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
-{
-  $retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
-  if($retour!='ok')
-  {
-    exit($retour);
-  }
-  // Si on arrive là, alors tout s'est bien passé.
-  $tab_parametres = array();
-  $tab_parametres['sesamath_id']       = $sesamath_id;
-  $tab_parametres['sesamath_uai']      = $sesamath_uai;
-  $tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
-  $tab_parametres['sesamath_key']      = $sesamath_key;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-  // On modifie aussi la session
-  $_SESSION['SESAMATH_ID']       = $sesamath_id ;
-  $_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
-  $_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
-  $_SESSION['SESAMATH_KEY']      = $sesamath_key ;
   exit('ok');
 }
 

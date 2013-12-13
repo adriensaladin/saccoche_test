@@ -242,6 +242,7 @@ class SessionUser
     $_SESSION['USER_ID']                = (int) $DB_ROW['user_id'];
     $_SESSION['USER_NOM']               = $DB_ROW['user_nom'];
     $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];
+    $_SESSION['USER_EMAIL']             = $DB_ROW['user_email'];
     $_SESSION['USER_LOGIN']             = $DB_ROW['user_login'];
     $_SESSION['USER_DESCR']             = '['.$DB_ROW['user_profil_nom_court_singulier'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
     $_SESSION['USER_DALTONISME']        = $DB_ROW['user_daltonisme'];

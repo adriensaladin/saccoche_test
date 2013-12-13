@@ -74,29 +74,9 @@ else
 
   <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
 
-  <form action="#" method="post" id="form_contact" class="<?php echo $contact_class_zone ?>">
-    <hr />
-    <h2>Contact référent de l'établissement</h2>
-    <div class="astuce">Dans le cas d'un serveur <em>SACoche</em> multi-établissements, il y a un contact référent <em>SACoche</em> par établissement :</div>
-    <ul class="puce">
-      <li>il réceptionne les identifiants du premier administrateur créé (à son nom) et les informations associées</li>
-      <li>il est destinataire des lettres d'informations que peut envoyer le webmestre</li>
-      <li>il reçoit une régénération de mot de passe administrateur effectuée par le webmestre</li>
-    </ul>
-    <p>
-      <label class="tab" for="f_contact_nom">Nom<?php echo $user_title ?> :</label><input id="f_contact_nom" name="f_contact_nom" size="25" type="text" value="<?php echo html($contact_nom); ?>"<?php echo $user_readonly ?> /><br />
-      <label class="tab" for="f_contact_prenom">Prénom<?php echo $user_title ?> :</label><input id="f_contact_prenom" name="f_contact_prenom" size="25" type="text" value="<?php echo html($contact_prenom); ?>"<?php echo $user_readonly ?> /><br />
-      <label class="tab" for="f_contact_courriel">Courriel<?php echo $mail_title ?> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>"<?php echo $mail_readonly ?> /><br />
-      <span class="<?php echo $contact_class_valider ?>"><span class="tab"></span><button id="bouton_valider_contact" type="submit" class="parametre">Valider.</button><label id="ajax_msg_contact">&nbsp;</label></span>
-    </p>
-    <ul class="puce <?php echo $contact_class_mailto ?>"><li>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</li></ul>
-  </form>
-
-  <hr />
-
-  <h2>Données saisies par le webmestre</h2>
-
   <form action="#" method="post" id="form_webmestre">
+    <hr />
+    <h2>Données saisies par le webmestre</h2>
     <p>
       <label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
       <label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
@@ -104,11 +84,9 @@ else
     <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
   </form>
 
-  <hr />
-
-  <h2>Identification de l'établissement dans la base Sésamath</h2>
-
   <form action="#" method="post" id="form_sesamath">
+    <hr />
+    <h2>Identification de l'établissement dans la base Sésamath</h2>
     <p>
       <label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly /><br />
       <label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utiliser le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly /><br />
@@ -119,11 +97,28 @@ else
   <ul class="puce"><li><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath</a> afin de pouvoir échanger ensuite avec le serveur communautaire.</li></ul>
   </form>
 
-  <hr />
-
-  <h2>Coordonnées de l'établissement</h2>
+  <form action="#" method="post" id="form_contact" class="<?php echo $contact_class_zone ?>">
+    <hr />
+    <h2>Contact référent de l'établissement</h2>
+    <div class="astuce">Dans le cas d'un serveur <em>SACoche</em> de type multi-structures, il y a un contact référent <em>SACoche</em> par établissement :</div>
+    <ul class="puce">
+      <li>il réceptionne les identifiants du premier administrateur créé (à son nom) et les informations associées</li>
+      <li>il est destinataire des lettres d'informations que peut envoyer le webmestre</li>
+      <li>il reçoit une régénération de mot de passe administrateur effectuée par le webmestre</li>
+      <li>il reçoit les courriels de gestion d'une éventuelle convention ENT-établissement sur le serveur Sésamath</li>
+    </ul>
+    <p>
+      <label class="tab" for="f_contact_nom">Nom<?php echo $user_title ?> :</label><input id="f_contact_nom" name="f_contact_nom" size="25" type="text" value="<?php echo html($contact_nom); ?>"<?php echo $user_readonly ?> /><br />
+      <label class="tab" for="f_contact_prenom">Prénom<?php echo $user_title ?> :</label><input id="f_contact_prenom" name="f_contact_prenom" size="25" type="text" value="<?php echo html($contact_prenom); ?>"<?php echo $user_readonly ?> /><br />
+      <label class="tab" for="f_contact_courriel">Courriel<?php echo $mail_title ?> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>"<?php echo $mail_readonly ?> /><br />
+      <span class="<?php echo $contact_class_valider ?>"><span class="tab"></span><button id="bouton_valider_contact" type="submit" class="parametre">Valider.</button><label id="ajax_msg_contact">&nbsp;</label></span>
+    </p>
+    <ul class="puce <?php echo $contact_class_mailto ?>"><li>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</li></ul>
+  </form>
 
   <form action="#" method="post" id="form_etablissement">
+    <hr />
+    <h2>Coordonnées de l'établissement</h2>
     <p>
       <label class="tab" for="f_etablissement_denomination">Dénomination :</label><input id="f_etablissement_denomination" name="f_etablissement_denomination" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['DENOMINATION']); ?>" /><br />
       <label class="tab" for="f_etablissement_adresse1">Adresse ligne 1 :</label><input id="f_etablissement_adresse1" name="f_etablissement_adresse1" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE1']); ?>" /><br />
@@ -136,20 +131,16 @@ else
     </p>
   </form>
 
-  <hr />
-
-  <h2>Logo de l'établissement</h2>
-
   <form action="#" method="post" id="form_logo">
+    <hr />
+    <h2>Logo de l'établissement</h2>
     <p><label class="tab" for="f_upload">Uploader image :</label> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
   </form>
   <ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
 
-  <hr />
-
-  <h2>Année scolaire</h2>
-
   <form action="#" method="post" id="form_annee_scolaire">
+    <hr />
+    <h2>Année scolaire</h2>
     <p>
       <label class="tab" for="f_mois_bascule_annee_scolaire">Fonctionnement :</label><select id="f_mois_bascule_annee_scolaire" name="f_mois_bascule_annee_scolaire"><?php echo $options_mois; ?></select><br />
       <label class="tab">Affichage obtenu :</label><span class="i">&laquo;&nbsp;Année scolaire <span id="span_simulation"></span>&nbsp;&raquo;</span><br />

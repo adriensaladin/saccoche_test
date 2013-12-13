@@ -36,12 +36,14 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specif
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
-<div class="travaux">Page en construction ; documentation et finalisation à venir prochainement !</div>
 
+<p><span class="astuce">Les adresses e-mail ne sont utilisées que par l'application et ne sont pas visibles des autres utilisateurs à l'exception des administrateurs.</span></p>
 <p><span class="astuce">Si vous avez plusieurs comptes <em>SACoche</em> (profils d'accès multiples...), ils ne peuvent pas être associés à la même adresse de courriel.</span></p>
+<hr />
 
 <form action="#" method="post"><fieldset>
-  <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="50" maxlength="63" /><br />
+  <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="<?php echo html($_SESSION['USER_EMAIL']); ?>" size="50" maxlength="63" /><br />
   <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Valider le changement.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 <hr />
+<div class="travaux">Fonctionnalité en développement ; finalisation et documentation à venir prochainement&hellip;</div>

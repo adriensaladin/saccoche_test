@@ -193,9 +193,9 @@ public static function DB_recuperer_bilan_officiel_notes_classe($periode_id,$cla
 
 /**
  * recuperer_officiel_assiduite
+ *
  * @param int    $periode_id
  * @param array  $eleve_id
- *
  * @return array
  */
 public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
@@ -209,10 +209,10 @@ public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
 
 /**
  * lister_bilan_officiel_fichiers
+ *
  * @param string $officiel_type  rien pour tous les types
  * @param int    $periode_id     0 pour toutes les périodes
  * @param array  $tab_eleve_id
- *
  * @return array   array( [eleve_id] => array( 0 => array( 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) ) ) OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) )
  */
 public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode_id,$tab_eleve_id)
@@ -232,9 +232,9 @@ public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode
 
 /**
  * lister_officiel_assiduite
+ *
  * @param int    $periode_id
  * @param array  $tab_eleve_id
- *
  * @return array
  */
 public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
@@ -243,6 +243,23 @@ public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
   $DB_SQL.= 'WHERE periode_id=:periode_id AND user_id IN ('.implode(',',$tab_eleve_id).') ';
   $DB_VAR = array(':periode_id'=>$periode_id);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_profs_principaux
+ *
+ * @param int   $classe_id
+ * @return array
+ */
+public static function DB_lister_profs_principaux($classe_id)
+{
+  $DB_SQL = 'SELECT user_nom, user_prenom ';
+  $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND jointure_pp=:pp ';
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+  $DB_VAR = array(':groupe_id'=>$classe_id,':pp'=>1);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

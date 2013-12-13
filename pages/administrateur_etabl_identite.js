@@ -71,6 +71,99 @@ $(document).ready
       }
     );
 
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire form_sesamath
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_sesamath = $('#form_sesamath');
+
+    // Vérifier la validité du formulaire (avec jquery.validate.js)
+    var validation_sesamath = formulaire_sesamath.validate
+    (
+      {
+        rules :
+        {
+          f_sesamath_id       : { required:true , digits:true },
+          f_sesamath_uai      : { required:false , uai_format:true , uai_clef:true },
+          f_sesamath_type_nom : { required:true , maxlength:50 },
+          f_sesamath_key      : { required:true , rangelength:[32,32] }
+        },
+        messages :
+        {
+          f_sesamath_id       : { required:"identifiant manquant" , digits:"identifiant uniquement composé de chiffres" },
+          f_sesamath_uai      : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
+          f_sesamath_type_nom : { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
+          f_sesamath_key      : { required:"clef manquante" , rangelength:"la clef doit comporter 32 caractères" }
+        },
+        errorElement : "label",
+        errorClass : "erreur",
+        errorPlacement : function(error,element) { element.after(error); }
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+      }
+    );
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_sesamath =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : "html",
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_sesamath",
+      beforeSubmit : test_form_avant_envoi_sesamath,
+      error : retour_form_erreur_sesamath,
+      success : retour_form_valide_sesamath
+    };
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_sesamath.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_sesamath);
+        return false;
+      }
+    ); 
+
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi_sesamath(formData, jqForm, options)
+    {
+      $('#ajax_msg_sesamath').removeAttr("class").html("&nbsp;");
+      var readytogo = validation_sesamath.form();
+      if(readytogo)
+      {
+        $("#bouton_valider_sesamath").prop('disabled',true);
+        $('#ajax_msg_sesamath').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      }
+      return readytogo;
+    }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_sesamath(jqXHR, textStatus, errorThrown)
+    {
+      $("#bouton_valider_sesamath").prop('disabled',false);
+      $('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+    }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_sesamath(responseHTML)
+    {
+      initialiser_compteur();
+      $("#bouton_valider_sesamath").prop('disabled',false);
+      if(responseHTML=='ok')
+      {
+        $('#ajax_msg_sesamath').removeAttr("class").addClass("valide").html("Données enregistrées !");
+      }
+      else
+      {
+        $('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html(responseHTML);
+      }
+    }
+
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire form_contact
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,98 +258,6 @@ $(document).ready
       else
       {
         $('#ajax_msg_contact').removeAttr("class").addClass("alerte").html(responseHTML);
-      }
-    }
-
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire form_sesamath
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_sesamath = $('#form_sesamath');
-
-    // Vérifier la validité du formulaire (avec jquery.validate.js)
-    var validation_sesamath = formulaire_sesamath.validate
-    (
-      {
-        rules :
-        {
-          f_sesamath_id       : { required:true , digits:true },
-          f_sesamath_uai      : { required:false , uai_format:true , uai_clef:true },
-          f_sesamath_type_nom : { required:true , maxlength:50 },
-          f_sesamath_key      : { required:true , rangelength:[32,32] }
-        },
-        messages :
-        {
-          f_sesamath_id       : { required:"identifiant manquant" , digits:"identifiant uniquement composé de chiffres" },
-          f_sesamath_uai      : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
-          f_sesamath_type_nom : { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
-          f_sesamath_key      : { required:"clef manquante" , rangelength:"la clef doit comporter 32 caractères" }
-        },
-        errorElement : "label",
-        errorClass : "erreur",
-        errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
-      }
-    );
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_sesamath =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : "html",
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg_sesamath",
-      beforeSubmit : test_form_avant_envoi_sesamath,
-      error : retour_form_erreur_sesamath,
-      success : retour_form_valide_sesamath
-    };
-
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_sesamath.submit
-    (
-      function()
-      {
-        $(this).ajaxSubmit(ajaxOptions_sesamath);
-        return false;
-      }
-    ); 
-
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-    function test_form_avant_envoi_sesamath(formData, jqForm, options)
-    {
-      $('#ajax_msg_sesamath').removeAttr("class").html("&nbsp;");
-      var readytogo = validation_sesamath.form();
-      if(readytogo)
-      {
-        $("#bouton_valider_sesamath").prop('disabled',true);
-        $('#ajax_msg_sesamath').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      }
-      return readytogo;
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_sesamath(jqXHR, textStatus, errorThrown)
-    {
-      $("#bouton_valider_sesamath").prop('disabled',false);
-      $('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_sesamath(responseHTML)
-    {
-      initialiser_compteur();
-      $("#bouton_valider_sesamath").prop('disabled',false);
-      if(responseHTML=='ok')
-      {
-        $('#ajax_msg_sesamath').removeAttr("class").addClass("valide").html("Données enregistrées !");
-      }
-      else
-      {
-        $('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html(responseHTML);
       }
     }
 
@@ -367,9 +368,10 @@ $(document).ready
       }
     }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_annee_scolaire
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire form_annee_scolaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Alerter sur la nécessité de valider et simulation de l'affichage de l'année scolaire
     function simuler_affichage_annee_scolaire()
@@ -441,9 +443,10 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#form_communautaire').submit
     (
@@ -457,9 +460,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Charger le select geo1 en ajax (appel au serveur communautaire)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger le select geo1 en ajax (appel au serveur communautaire)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function maj_geo1()
     {
@@ -637,9 +640,9 @@ $(document).ready
       );
     }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Choix du mode de recherche de la structure => demande d'actualisation éventuelle du select geo1
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Choix du mode de recherche de la structure => demande d'actualisation éventuelle du select geo1
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_recherche_mode input').click
     (
@@ -668,9 +671,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement du select geo1 => demande d'actualisation du select geo2
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Changement du select geo1 => demande d'actualisation du select geo2
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#f_geo1").change
     (
@@ -693,9 +696,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement du select geo2 => demande d'actualisation du select geo3
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Changement du select geo2 => demande d'actualisation du select geo3
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#f_geo2").change
     (
@@ -718,9 +721,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement du select geo3 => demande d'actualisation du résultat de la recherche
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Changement du select geo3 => demande d'actualisation du résultat de la recherche
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#f_geo3").change
     (
@@ -741,9 +744,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Validation du numéro uai => demande d'actualisation du résultat de la recherche
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Validation du numéro uai => demande d'actualisation du résultat de la recherche
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $("#rechercher_uai").click
     (
@@ -772,9 +775,9 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une image pour Valider le choix d'une structure
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur une image pour Valider le choix d'une structure
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_recherche_resultat').on
     (

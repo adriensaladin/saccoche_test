@@ -71,7 +71,7 @@ elseif( isset($_GET['partenaire']) && $partenaire_possible )
 }
 else
 {
-  $profil = 'normal';
+  $profil = 'structure';
   $h1_identification = 'Identification';
   $liens_autres_profils = '<a class="anti_h2" href="index.php?webmestre">accès webmestre</a>';
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
@@ -79,11 +79,33 @@ else
 ?>
 
 <h1 class="identification"><?php echo $h1_identification ?><?php echo $liens_autres_profils ?></h1>
-<form id="form_auth" action="#" method="post"><fieldset>
+<form id="form_auth" action="#" method="post">
+  <fieldset>
   <input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
   <input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
   <label id="ajax_msg" class="loader">Chargement en cours...</label>
-</fieldset></form>
+  </fieldset>
+</form>
+<form id="form_lost" action="#" method="post" class="hide ml">
+  <fieldset id="lost_structure" class="hide">
+    <div class="astuce">Le mot de passe, crypté, ne peut pas être renvoyé en cas d'oubli.</div>
+    <ul class="puce">
+      <li class="p">Si vous aviez renseigné une adresse de courriel, alors indiquez-la pour obtenir de nouveaux identifiants :<br /><input id="f_courriel_lost" name="f_courriel" type="text" value="" size="30" maxlength="63" /> <button id="submit_lost" type="button" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_lost">&nbsp;</label></li>
+      <li class="p">Sinon, suivre selon votre profil <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__identifiants#toggle_oubli_mdp">la procédure décrite dans la documentation</a></span>.</li>
+    </ul>
+  </fieldset>
+  <div id="lost_webmestre" class="hide">
+    <div class="astuce">Le webmestre est la personne qui a installé le logiciel sur ce serveur.</div>
+    <p>En cas de perte de ce mot de passe, suivre <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__identifiants#toggle_oubli_mdp">la procédure décrite dans la documentation</a></span>.</p>
+  </div>
+  <div id="lost_partenaire" class="hide">
+    <p>Oh, sérieusement ?! Alors contactez Sésamath...</p> <!-- Les personnes concernées se comptent sur le doigt de la main et sauront nous trouver si besoin ! -->
+  </div>
+  <div id="lost_confirmation" class="hide">
+    <p><label class="valide">Courriel envoyé à l'adresse indiquée : consultez votre boite aux lettres électronique.</label></p>
+  </div>
+  <div class="ti"><button id="quit_lost" type="button" class="retourner">Retour au formulaire d'identification.</button></div>
+</form>
 
 <hr />
 

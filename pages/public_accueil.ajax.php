@@ -29,10 +29,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
 $BASE       = (isset($_POST['f_base']))       ? Clean::entier($_POST['f_base'])       : 0 ;
-$profil     = (isset($_POST['f_profil']))     ? Clean::texte($_POST['f_profil'])      : '';  // normal | webmestre | partenaire
+$profil     = (isset($_POST['f_profil']))     ? Clean::texte($_POST['f_profil'])      : '';  // structure | webmestre | partenaire
 $login      = (isset($_POST['f_login']))      ? Clean::login($_POST['f_login'])       : '';
 $password   = (isset($_POST['f_password']))   ? Clean::password($_POST['f_password']) : '';
 $partenaire = (isset($_POST['f_partenaire'])) ? Clean::entier($_POST['f_partenaire']) : 0 ;
+$courriel   = (isset($_POST['f_courriel']))   ? Clean::courriel($_POST['f_courriel']) : '';
 
 /*
  * Afficher le formulaire de choix des établissements (installation multi-structures)
@@ -67,6 +68,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
   {
     echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
     echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span class="tab"></span><a class="lost" href="#lost_webmestre">[ Identifiants oubliés ! ]</a>'.NL;
   }
   elseif($profil=='partenaire')
   {
@@ -76,12 +78,14 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     echo'<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'.NL;
     echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span class="tab"></span><a class="lost" href="#lost_partenaire">[ Identifiants oubliés ! ]</a>'.NL;
   }
   elseif($mode=='normal')
   {
     echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
-    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span class="tab"></span><a class="lost" href="#lost_structure">[ Identifiants oubliés ! ]</a>'.NL;
   }
   else
   {
@@ -92,7 +96,8 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     echo'</fieldset>'.NL;
-    echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
+    echo'<span id="lien_lost" class="hide"><span class="tab"></span><a class="lost" href="#lost_structure">[ Identifiants oubliés ! ]</a></span>'.NL;
   }
 }
 
@@ -222,9 +227,9 @@ function adresse_redirection_apres_authentification()
   return URL_DIR_SACOCHE.'index.php?'.implode('&',$tab_get);
 }
 
-// Pour un utilisateur normal, y compris un administrateur
+// Pour un utilisateur d'établissement, y compris un administrateur
 
-if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
+if( ($action=='identifier') && ($profil=='structure') && ($login!='') && ($password!='') )
 {
   list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
   if($auth_resultat=='ok')
@@ -268,6 +273,61 @@ if( ($action=='identifier') && ($profil=='partenaire') && ($partenaire!=0) && ($
     exit(adresse_redirection_apres_authentification());
   }
   exit($auth_resultat);
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Demander l'obtention de nouveaux identifiants
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='demande_mdp') && ($courriel!='') && ( ($BASE>0) || (HEBERGEUR_INSTALLATION=='mono-structure') ) )
+{
+  // On vérifie le domaine du serveur mail même en mode mono-structures parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
+  $mail_domaine = tester_domaine_courriel_valide($courriel);
+  if($mail_domaine!==TRUE)
+  {
+    exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+  }
+  // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
+  if(HEBERGEUR_INSTALLATION=='multi-structures')
+  {
+    charger_parametres_mysql_supplementaires($BASE);
+  }
+  // On teste si l'adresse mail est trouvée
+  $DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_user_for_new_mdp('user_email',$courriel);
+  if(empty($DB_ROW))
+  {
+    exit('Adresse de courriel non enregistrée !');
+  }
+  $user_pass_key = crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']);
+  $code_mdp = ($BASE) ? $user_pass_key.'g'.$BASE : $user_pass_key ;
+  DB_STRUCTURE_PUBLIC::DB_modifier_user_password_or_key ($DB_ROW['user_id'] , '' /*user_password*/ , $user_pass_key /*user_pass_key*/ );
+  $AdresseIP = Session::get_IP();
+  $HostName  = gethostbyaddr($AdresseIP);
+  $UserAgent = Session::get_UserAgent();
+  $mail_contenu = 'Bonjour,'."\r\n";
+  $mail_contenu.= "\r\n";
+  $mail_contenu.= 'Une demande de nouveaux identifiants vient d\'être formulée concernant le compte SACoche ayant cette adresse de courriel :'."\r\n";
+  $mail_contenu.= $DB_ROW['user_email']."\r\n";
+  $mail_contenu.= "\r\n";
+  $mail_contenu.= 'Pour confirmer la génération d\'un nouveau mot de passe, veuillez cliquer sur ce lien :'."\r\n";
+  $mail_contenu.= URL_DIR_SACOCHE.'?code_mdp='.$code_mdp."\r\n";
+  $mail_contenu.= "\r\n";
+  $mail_contenu.= 'Si vous n\'êtes pas à l\'origine de cette demande, alors il s\'agit d\'une mauvaise plaisanterie !'."\r\n";
+  $mail_contenu.= 'Dans ce cas, merci d\'ignorer ce message.'."\r\n";
+  $mail_contenu.= "\r\n";
+  $mail_contenu.= 'Voici pour information les informations relatives à la connexion internet utilisée :'."\r\n";
+  $mail_contenu.= 'Adresse IP --> '.$AdresseIP."\r\n";
+  $mail_contenu.= 'Nom d\'hôte --> '.$HostName."\r\n";
+  $mail_contenu.= 'Navigateur --> '.$UserAgent."\r\n";
+  $mail_contenu.= "\r\n";
+  $mail_contenu.= '--'."\r\n";
+  $mail_contenu.= 'SACoche - '.HEBERGEUR_DENOMINATION."\r\n";
+  $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu );
+  if(!$courriel_bilan)
+  {
+    exit('Erreur lors de l\'envoi du courriel !'.$code_mdp);
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

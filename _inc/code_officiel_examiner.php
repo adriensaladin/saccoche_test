@@ -140,6 +140,10 @@ foreach($DB_TAB as $DB_ROW)
 
 $affichage_assiduite = FALSE ;
 
+// Pas besoin de récupérer les professeurs principaux
+
+$affichage_prof_principal = FALSE ;
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation de variables supplémentaires
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES

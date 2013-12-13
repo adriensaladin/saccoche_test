@@ -33,7 +33,7 @@ $(document).ready
 
     function curseur()
     {
-      if($("#f_profil").val()!='normal')
+      if($("#f_profil").val()!='structure')
       {
         $('#f_password').focus();
       }
@@ -66,7 +66,7 @@ $(document).ready
             }
             else
             {
-              $("fieldset").html(responseHTML);
+              $("#form_auth fieldset").html(responseHTML);
               curseur();
             }
           }
@@ -106,7 +106,7 @@ $(document).ready
               }
               else
               {
-                $("fieldset").html(responseHTML);
+                $("#form_auth fieldset").html(responseHTML);
                 curseur();
               }
             }
@@ -146,12 +146,39 @@ $(document).ready
               }
               else
               {
-                $("fieldset").html(responseHTML);
+                $("#form_auth fieldset").html(responseHTML);
                 curseur();
               }
             }
           }
         );
+      }
+    );
+
+    // Clic sur le lien [ Identifiants oubliés ! ]
+    $('#form_auth').on
+    (
+      'click',
+      'a.lost',
+      function()
+      {
+        var ancre = $(this).attr('href').substr(1); // #...
+        $('#form_auth').hide();
+        $('#'+ancre+', #form_lost').show();
+
+      }
+    );
+
+    // Clic sur le bouton [Retour au formulaire d'identification]
+    $('#form_lost').on
+    (
+      'click',
+      '#quit_lost',
+      function()
+      {
+        $('#lost_structure, #lost_webmestre, #lost_confirmation, #lost_partenaire, #form_lost').hide();
+        $('#ajax_msg_lost').removeAttr("class").html('');
+        $('#form_auth').show();
       }
     );
 
@@ -164,12 +191,12 @@ $(document).ready
       {
         if($('#f_mode_normal').is(':checked'))
         {
-          $("#fieldset_normal").show();
+          $("#fieldset_normal, #lien_lost").show();
           $('#f_login').focus();
         }
         else
         {
-          $("#fieldset_normal").hide();
+          $("#fieldset_normal, #lien_lost").hide();
         }
       }
     );
@@ -201,6 +228,79 @@ $(document).ready
       );
     }
     tester_version();
+
+    // Intercepter la touche entrée
+    $('#form_lost').on
+    (
+      'keyup',
+      'input',
+      function(e)
+      {
+        if(e.which==13)  // touche entrée
+        {
+          $('#submit_lost').click();
+          return false;
+        }
+      }
+    );
+
+    // Demande pour obtenir la génération de nouveaux identifiants
+    $('#form_lost').on
+    (
+      'click',
+      '#submit_lost',
+      function()
+      {
+        var f_courriel = $('#f_courriel_lost').val();
+        if(!f_courriel)
+        {
+          $('#ajax_msg_lost').removeAttr("class").addClass("erreur").html('adresse manquante');
+          $('#f_courriel_lost').focus();
+          return false;
+        }
+        if(!testMail(f_courriel))
+        {
+          $('#ajax_msg_lost').removeAttr("class").addClass("erreur").html('adresse invalide');
+          $('#f_courriel_lost').focus();
+          return false;
+        }
+        $('#ajax_msg_lost').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('button').prop('disabled',true);
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=demande_mdp'+'&f_base='+$('#f_base').val()+'&f_courriel='+encodeURIComponent(f_courriel),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              $('button').prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#lost_'+f_profil).hide();
+                $('#lost_confirmation').show();
+              }
+            }
+          }
+        );
+      }
+    );
+
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire de validation de ses identifiants
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
     var formulaire = $('form');

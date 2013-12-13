@@ -79,6 +79,23 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
 }
 
 /**
+ * Récuperer, à partir d'une adresse email ou d'un code transmis, quelques données d'un utilisateur demandant la génération d'un nouveau mdp
+ *
+ * @param string $champ_nom   user_email | user_pass_key
+ * @param void   $champ_val
+ * @return array
+ */
+public static function DB_recuperer_user_for_new_mdp($champ_nom,$champ_val)
+{
+  $DB_SQL = 'SELECT user_id, user_email, user_login, user_password, user_connexion_date ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'WHERE '.$champ_nom.'=:champ_val ';
+  // LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
+  $DB_VAR = array(':champ_val'=>$champ_val);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Retourner la version de la base de l'établissement
  *
  * @param void
@@ -119,8 +136,33 @@ public static function DB_enregistrer_date($champ,$user_id)
 {
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';
+  if($champ=='connexion')
+  {
+    $DB_SQL.= ', user_pass_key="" ';
+  }
   $DB_SQL.= 'WHERE user_id=:user_id ';
   $DB_VAR = array(':user_id'=>$user_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Modifier le mdp d'un utilisateur ou la clef pour en obtenir un autre (demande de génération si mdp perdu)
+ *
+ * @param int     $user_id
+ * @param string  $user_password   vide pour ne pas le modifier
+ * @param string  $user_pass_key
+ * @return void
+ */
+public static function DB_modifier_user_password_or_key($user_id,$user_password,$user_pass_key)
+{
+  $DB_SQL = 'UPDATE sacoche_user ';
+  $DB_SQL.= 'SET user_pass_key=:user_pass_key ';
+  if($user_password)
+  {
+    $DB_SQL.= ', user_password=:user_password ';
+  }
+  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_VAR = array(':user_id'=>$user_id,':user_pass_key'=>$user_pass_key,':user_password'=>$user_password);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

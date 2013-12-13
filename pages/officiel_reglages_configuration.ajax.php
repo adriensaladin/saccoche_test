@@ -34,6 +34,7 @@ $releve_appreciation_rubrique   = (isset($_POST['f_releve_appreciation_rubrique'
 $releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale']))   ? Clean::entier($_POST['f_releve_appreciation_generale'])   : 0;
 $releve_ligne_supplementaire    = (isset($_POST['f_releve_check_supplementaire']))    ? Clean::texte($_POST['f_releve_ligne_supplementaire'])     : '';
 $releve_assiduite               = (isset($_POST['f_releve_assiduite']))               ? 1                                                         : 0;
+$releve_prof_principal          = (isset($_POST['f_releve_prof_principal']))          ? 1                                                         : 0;
 $releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::texte($_POST['f_releve_retroactif'])               : '';
 $releve_only_socle              = (isset($_POST['f_releve_only_socle']))              ? 1                                                         : 0;
 $releve_etat_acquisition        = (isset($_POST['f_releve_etat_acquisition']))        ? 1                                                         : 0;
@@ -52,6 +53,7 @@ $bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubriqu
 $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
 $bulletin_ligne_supplementaire  = (isset($_POST['f_bulletin_check_supplementaire']))  ? Clean::texte($_POST['f_bulletin_ligne_supplementaire'])   : '';
 $bulletin_assiduite             = (isset($_POST['f_bulletin_assiduite']))             ? 1                                                         : 0;
+$bulletin_prof_principal        = (isset($_POST['f_bulletin_prof_principal']))        ? 1                                                         : 0;
 $bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::texte($_POST['f_bulletin_retroactif'])             : '';
 $bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_fusion_niveaux        = (isset($_POST['f_bulletin_fusion_niveaux']))        ? 1                                                         : 0;
@@ -69,6 +71,7 @@ $socle_appreciation_rubrique    = (isset($_POST['f_socle_appreciation_rubrique']
 $socle_appreciation_generale    = (isset($_POST['f_socle_appreciation_generale']))    ? Clean::entier($_POST['f_socle_appreciation_generale'])    : 0;
 $socle_ligne_supplementaire     = (isset($_POST['f_socle_check_supplementaire']))     ? Clean::texte($_POST['f_socle_ligne_supplementaire'])      : '';
 $socle_assiduite                = (isset($_POST['f_socle_assiduite']))                ? 1                                                         : 0;
+$socle_prof_principal           = (isset($_POST['f_socle_prof_principal']))           ? 1                                                         : 0;
 $socle_only_presence            = (isset($_POST['f_socle_only_presence']))            ? 1                                                         : 0;
 $socle_pourcentage_acquis       = (isset($_POST['f_socle_pourcentage_acquis']))       ? 1                                                         : 0;
 $socle_etat_validation          = (isset($_POST['f_socle_etat_validation']))          ? 1                                                         : 0;
@@ -85,6 +88,7 @@ $tab_variables = array(
     'appreciation_generale',
     'ligne_supplementaire',
     'assiduite',
+    'prof_principal',
     'retroactif',
     'only_socle',
     'etat_acquisition',
@@ -104,6 +108,7 @@ $tab_variables = array(
     'appreciation_generale',
     'ligne_supplementaire',
     'assiduite',
+    'prof_principal',
     'retroactif',
     'only_socle',
     'fusion_niveaux',
@@ -122,6 +127,7 @@ $tab_variables = array(
     'appreciation_generale',
     'ligne_supplementaire',
     'assiduite',
+    'prof_principal',
     'only_presence',
     'pourcentage_acquis',
     'etat_validation',

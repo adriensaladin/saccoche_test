@@ -32,16 +32,16 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 // Autres cas
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$indicateur        = (isset($_POST['f_indicateur']))        ? Clean::texte($_POST['f_indicateur']) : '';
-$conversion_sur_20 = (isset($_POST['f_conversion_sur_20'])) ? 1                                    : 0;
+$indicateur        = (isset($_POST['f_indicateur']))        ? Clean::texte($_POST['f_indicateur'])   : '';
+$conversion_sur_20 = (isset($_POST['f_conversion_sur_20'])) ? 1                                      : 0;
 $with_coef         = 1; // Il n'y a que des courbes par matière et pas de courbe commune : on prend en compte les coefficients pour chaque courbe matière.
-$groupe_id         = (isset($_POST['f_groupe']))            ? Clean::entier($_POST['f_groupe'])    : 0;
-$eleve_id          = (isset($_POST['f_eleve']))             ? Clean::entier($_POST['f_eleve'])     : 0;
-$periode_id        = (isset($_POST['f_periode']))           ? Clean::entier($_POST['f_periode'])   : 0;
-$date_debut        = (isset($_POST['f_date_debut']))        ? Clean::texte($_POST['f_date_debut']) : '';
-$date_fin          = (isset($_POST['f_date_fin']))          ? Clean::texte($_POST['f_date_fin'])   : '';
-$retroactif        = (isset($_POST['f_retroactif']))        ? Clean::texte($_POST['f_retroactif']) : '';
-$only_socle        = (isset($_POST['f_restriction']))       ? 1                                    : 0;
+$groupe_id         = (isset($_POST['f_groupe']))            ? Clean::entier($_POST['f_groupe'])      : 0;
+$eleve_id          = (isset($_POST['f_eleve']))             ? Clean::entier($_POST['f_eleve'])       : 0;
+$periode_id        = (isset($_POST['f_periode']))           ? Clean::entier($_POST['f_periode'])     : 0;
+$date_debut        = (isset($_POST['f_date_debut']))        ? Clean::date_fr($_POST['f_date_debut']) : '';
+$date_fin          = (isset($_POST['f_date_fin']))          ? Clean::date_fr($_POST['f_date_fin'])   : '';
+$retroactif        = (isset($_POST['f_retroactif']))        ? Clean::texte($_POST['f_retroactif'])   : '';
+$only_socle        = (isset($_POST['f_restriction']))       ? 1                                      : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
@@ -116,7 +116,7 @@ list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_items_travailles
 $item_nb = count($tab_item);
 if( !$item_nb && (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ) // Dans le cas d'un professeur / directeur, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  exit('Aucun item évalué sur cette période selon les paramètres choisis !');
+  exit('Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item_id  = implode(',',$tab_liste_item);
@@ -128,7 +128,7 @@ $liste_item_id  = implode(',',$tab_liste_item);
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , TRUE /*first_order_by_date*/ );
+$DB_TAB = ($item_nb) ? DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , TRUE /*first_order_by_date*/ ) : array() ;
 foreach($DB_TAB as $DB_ROW)
 {
   if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )

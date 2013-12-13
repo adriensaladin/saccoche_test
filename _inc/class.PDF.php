@@ -526,8 +526,8 @@ class PDF extends FPDF
     $this->page_largeur_moins_marges = $this->page_largeur - $this->marge_gauche - $this->marge_droite ;
     $this->page_hauteur_moins_marges = $this->page_hauteur - $this->marge_haut   - $this->marge_bas ;
     // Couleurs prédéfinies
-    $this->tab_choix_couleur = ($this->couleur=='oui') ? array( 'NA'=>'rouge'      , 'VA'=>'jaune'      , 'A'=>'vert'        , 'v0'=>'invalidé'   , 'v1'=>'validé'     , 'v2'=>'non renseigné' )
-                                                       : array( 'NA'=>'gris_fonce' , 'VA'=>'gris_moyen' , 'A'=>'gris_clair'  , 'v0'=>'gris_fonce' , 'v1'=>'gris_clair' , 'v2'=>'blanc'         ) ;
+    $this->tab_choix_couleur['oui'] = array( 'NA'=>'rouge'      , 'VA'=>'jaune'      , 'A'=>'vert'        , 'v0'=>'invalidé'   , 'v1'=>'validé'     , 'v2'=>'non renseigné' );
+    $this->tab_choix_couleur['non'] = array( 'NA'=>'gris_fonce' , 'VA'=>'gris_moyen' , 'A'=>'gris_clair'  , 'v0'=>'gris_fonce' , 'v1'=>'gris_clair' , 'v2'=>'blanc'         );
     $this->tab_couleur['blanc']      = array('r'=>255,'v'=>255,'b'=>255);
     $this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
     $this->tab_couleur['gris_moyen'] = array('r'=>190,'v'=>190,'b'=>190);
@@ -689,7 +689,7 @@ class PDF extends FPDF
   // $tab_infos contient 'etat' / 'date' / 'info'
   $this->SetFont('Arial' , $gras , $this->taille_police);
   $texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
-  $this->choisir_couleur_fond($this->tab_choix_couleur['v'.$tab_infos['etat']]);
+  $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['v'.$tab_infos['etat']]);
   $this->Cell( $this->validation_largeur , $this->cases_hauteur , To::pdf($texte) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 }
 
@@ -707,9 +707,9 @@ class PDF extends FPDF
   }
   else
   {
-        if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
-    elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
-    else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
+        if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
+    elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
+    else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
     if($affich=='detail')
     {
       $this->SetFont('Arial' , $gras , $this->taille_police);
@@ -743,9 +743,9 @@ class PDF extends FPDF
     }
     else
     {
-          if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
-      elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
-      else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
+          if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
+      elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
+      else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
       $affichage = ($afficher_score) ? $score : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
@@ -765,7 +765,7 @@ class PDF extends FPDF
     // Couleurs de fond + textes
     foreach($tab_infos as $etat => $nb)
     {
-      $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+      $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
       $largeur_case = $largeur*$nb/$total ;
           if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat]; }
       elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS_TEXTE'][$etat]; }
@@ -848,25 +848,18 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher la ligne d'absences/retards d'un bilan officiel
+  // Méthode pour afficher des informations additionnelles sur un bilan officiel (absences/retards ; profs principaux ; message personnalisé)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_assiduite($texte_assiduite)
+  public function afficher_lignes_additionnelles($tab_pdf_lignes_additionnelles)
   {
     $this->SetFont('Arial' , '' , $this->taille_police*1.2);
-    $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.35);
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_assiduite) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-  }
-
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher la ligne avec un message personnalisé d'un bilan officiel
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public function afficher_ligne_additionnelle($texte_personnalise)
-  {
-    $this->SetFont('Arial' , '' , $this->taille_police*1.2);
-    $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
-    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_personnalise) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    foreach($tab_pdf_lignes_additionnelles as $i => $texte)
+    {
+      $sens = ($i) ? -1 : 1 ;
+      $this->SetXY($this->marge_gauche , $this->GetY() + $sens*$this->taille_police*0.1 );
+      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    }
   }
 
   /**
@@ -977,7 +970,7 @@ class PDF extends FPDF
       foreach($tab_seuils as $etat => $texte)
       {
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
         $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         $this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
       }
@@ -992,7 +985,7 @@ class PDF extends FPDF
       foreach($tab_etats as $etat)
       {
         $this->Write($hauteur , $espace , '');
-        $couleur_fond = (!$force_nb) ? $this->tab_choix_couleur[$etat] : 'blanc' ;
+        $couleur_fond = (!$force_nb) ? $this->tab_choix_couleur[$this->couleur][$etat] : 'blanc' ;
         $this->choisir_couleur_fond($couleur_fond);
         $this->Cell($case_largeur , $case_hauteur , To::pdf($_SESSION['ACQUIS_TEXTE'][$etat]) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
         $this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
@@ -1009,7 +1002,7 @@ class PDF extends FPDF
       foreach($tab_seuils as $etat => $texte)
       {
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
         $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
       }
     }
@@ -1024,7 +1017,7 @@ class PDF extends FPDF
       foreach($tab_etats as $etat => $texte)
       {
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
         $this->Cell(3.5*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
       }
     }
@@ -1059,9 +1052,9 @@ class PDF extends FPDF
       }
       $this->SetFont( 'Arial' , '' , 4 );
       $this->choisir_couleur_texte('noir');
-      $this->SetXY( 0 , -$this->distance_pied - 3 );
-      $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
       $this->SetXY( 0 , -$this->distance_pied - 1.5 );
+      $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
+      $this->SetXY( 0 , -$this->distance_pied );
       $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf(SERVEUR_PROJET) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
     }
   }
@@ -1377,10 +1370,10 @@ class PDF extends FPDF
     }
   }
 
-  public function bilan_synthese_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_message_et_legende , $moyenne_generale_eleve , $moyenne_generale_classe )
+  public function bilan_synthese_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende , $moyenne_generale_eleve , $moyenne_generale_classe )
   {
     $hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
-    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_message_et_legende ) ;
+    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_pp_et_message_et_legende ) ;
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
@@ -1651,10 +1644,10 @@ class PDF extends FPDF
     $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->synthese_largeur , $this->lignes_hauteur , 'releve' , $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE'] );
   }
 
-  public function bilan_item_individuel_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_message_et_legende )
+  public function bilan_item_individuel_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende )
   {
     $hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
-    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_message_et_legende ) ;
+    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_pp_et_message_et_legende ) ;
     if($hauteur_requise > $hauteur_restante)
     {
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
@@ -2375,10 +2368,10 @@ class PDF extends FPDF
     $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->item_largeur , $this->cases_hauteur , 'socle' , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE'] );
   }
 
-  public function releve_socle_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_message_et_legende )
+  public function releve_socle_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende )
   {
     $this->SetXY( $this->marge_gauche + $this->retrait_pourcentage , $this->GetY() + $this->cases_hauteur );
-    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_message_et_legende ) ;
+    $hauteur_requise = $this->lignes_hauteur * ( $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite_et_pp_et_message_et_legende ) ;
     $hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
     if($hauteur_requise > $hauteur_restante)
     {
@@ -2465,7 +2458,7 @@ class PDF extends FPDF
       extract($tab);  // $pilier_ref $pilier_nom $pilier_nb_entrees
       $texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==2) ) ? '-' : '' ;
       $this->SetX( $this->GetX()+1 );
-      $this->choisir_couleur_fond($this->tab_choix_couleur['v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']]);
+      $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']]);
       $this->Cell($pilier_nb_entrees*$this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
     // positionnement pour la suite
@@ -2480,7 +2473,7 @@ class PDF extends FPDF
       foreach($tab as $socle_id => $socle_nom)
       {
         $texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) ) ? '-' : '' ;
-        $couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : $this->tab_choix_couleur['v'.$tab_user_entree[$eleve_id][$socle_id]['etat']] ;
+        $couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : $this->tab_choix_couleur[$this->couleur]['v'.$tab_user_entree[$eleve_id][$socle_id]['etat']] ;
         $this->choisir_couleur_fond($couleur);
         $this->Cell( $this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
       }
@@ -2605,9 +2598,9 @@ class PDF extends FPDF
     }
     else
     {
-          if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
-      elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
-      else                                                     {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
+          if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
+      elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
+      else                                                     {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
       $score_affiche = test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']) ? $moyenne_pourcent.'%' : '' ;
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
@@ -2625,9 +2618,9 @@ class PDF extends FPDF
     }
     else
     {
-          if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
-      elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
-      else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
+          if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
+      elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
+      else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
       $score_affiche = test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']) ? $moyenne_nombre.'%' : '' ;
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }

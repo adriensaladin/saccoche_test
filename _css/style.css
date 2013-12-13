@@ -55,7 +55,7 @@ em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /
 del{text-decoration:line-through;color:#666}
 kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
 kbd:hover{background-color:#CCC;border-color:#AAA}
-.hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
+.hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
 .t9{font-size:90%}

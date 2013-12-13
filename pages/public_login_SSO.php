@@ -515,7 +515,7 @@ if($connexion_mode=='shibboleth')
       $fr_edu_vecteur = (!empty($_SERVER['HTTP_FREDUVECTEUR'])) ? $_SERVER['HTTP_FREDUVECTEUR'] : '' ;
       $tab_vecteur = explode( ';' , $fr_edu_vecteur );
       $fr_edu_vecteur = $tab_vecteur[0];
-      list( $vecteur_profil , $vecteur_nom , $vecteur_prenom , $vecteur_eleve_id , $vecteur_uai ) = explode('|',$fr_edu_vecteur ) + array_fill(0,5,NULL) ; // http://fr.php.net/manual/fr/function.list.php#103311
+      list( $vecteur_profil , $vecteur_nom , $vecteur_prenom , $vecteur_eleve_id , $vecteur_uai ) = explode('|',$fr_edu_vecteur ) + array_fill(0,5,NULL) ; // Evite des NOTICE en initilisant les valeurs manquantes
       if( in_array($vecteur_profil,array(3,4)) && ($vecteur_eleve_id) && ($vecteur_eleve_id!=$eleve_sconet_id) ) // cas d'un élève
       {
         list($auth_resultat_siecle,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'siecle' /*mode_connection*/ );

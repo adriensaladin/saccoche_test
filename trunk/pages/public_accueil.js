@@ -288,7 +288,7 @@ $(document).ready
               }
               else
               {
-                $('#lost_lost_structure').hide();
+                $('#lost_structure').hide();
                 $('#lost_confirmation').show();
               }
             }

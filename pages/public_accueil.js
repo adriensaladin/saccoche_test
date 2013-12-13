@@ -288,7 +288,7 @@ $(document).ready
               }
               else
               {
-                $('#lost_'+f_profil).hide();
+                $('#lost_lost_structure').hide();
                 $('#lost_confirmation').show();
               }
             }

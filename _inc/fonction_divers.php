@@ -396,10 +396,9 @@ function compacter($chemin,$methode)
  * => pour avoir des infos sur le contact référent, ou l'état d'une convention ENT
  * 
  * @param int   $BASE   0 pour celle du webmestre
- * @param bool  $exit   TRUE par défaut (arrêt si erreur)
- * @return bool | exit
+ * @return void | exit
  */
-function charger_parametres_mysql_supplementaires( $BASE , $exit=TRUE )
+function charger_parametres_mysql_supplementaires($BASE)
 {
   $fichier_mysql_config_supplementaire = ($BASE) ? CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php' : CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php' ;
   $fichier_class_config_supplementaire = ($BASE) ? CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php' : CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_webmestre.php' ;
@@ -408,18 +407,10 @@ function charger_parametres_mysql_supplementaires( $BASE , $exit=TRUE )
     global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
     require($fichier_mysql_config_supplementaire);
     require($fichier_class_config_supplementaire);
-    return TRUE;
   }
   else
   {
-    if($exit)
-    {
-      exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($fichier_mysql_config_supplementaire).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
-    }
-    else
-    {
-      return FALSE;
-    }
+    exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($fichier_mysql_config_supplementaire).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
   }
 }
 

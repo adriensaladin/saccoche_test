@@ -259,20 +259,6 @@ class Clean
   public static function decimal($text)      { return floatval(str_replace(',','.',$text)); }
   public static function txt_note($text)     { return Clean::tronquer_chaine( trim($text) , 40); }
 
-  public static function date_fr($text)
-  {
-    $sep = '/';
-    list($jour,$mois,$annee) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initilisant les valeurs manquantes
-    return sprintf("%02u",$jour).$sep.sprintf("%02u",$mois).$sep.sprintf("%04u",$annee);
-  }
-
-  public static function date_mysql($text) /* inutilisé */
-  {
-    $sep = '-';
-    list($annee,$mois,$jour) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initilisant les valeurs manquantes
-    return sprintf("%04u",$annee).$sep.sprintf("%02u",$mois).$sep.sprintf("%02u",$jour);
-  }
-
   public static function map_entier($array)
   {
     return array_map( 'intval' , $array );

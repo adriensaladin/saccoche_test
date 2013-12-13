@@ -154,13 +154,12 @@ class Webmestre
   {
     $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Une base SACoche pour l\'établissement "'.$denomination.'" vient d\'être créée sur le serveur "'.HEBERGEUR_DENOMINATION.'".'."\r\n";
+    $texte.= 'Une base SACoche pour l\'établissement "'.$denomination.'" vient d\'être créée sur le serveur "'.HEBERGEUR_DENOMINATION.'"'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Pour accéder à votre espace SACoche sans avoir besoin de sélectionner votre établissement, utiliser le lien suivant :'."\r\n";
     $texte.= $url_dir_sacoche.'?id='.$base_id."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Un premier compte administrateur a été créé à votre nom.'."\r\n";
-    $texte.= 'Pour vous connecter comme administrateur, utiliser le lien'."\r\n";
+    $texte.= 'Un premier compte administrateur a été créé à votre nom. Pour vous connecter comme administrateur, utiliser le lien'."\r\n";
     $texte.= $url_dir_sacoche.'?id='.$base_id."\r\n";
     $texte.= 'et entrer les identifiants'."\r\n";
     $texte.= 'nom d\'utilisateur :   '.$admin_login."\r\n";
@@ -170,7 +169,7 @@ class Webmestre
     $texte.= 'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Vous êtes aussi désormais le contact référent de votre établissement pour cette installation de SACoche.'."\r\n";
-    $texte.= 'Pour modifier les coordonnées de la personne référente, rendez-vous dans votre espace d\'administration.'."\r\n";
+    $texte.= 'Pour modifier les coordonnées de la personne référente, voyez votre espace d\'administration.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n";
     $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";

@@ -55,7 +55,6 @@ if($courriel!==NULL)
   }
   // C'est ok...
   DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_email' , $courriel );
-  $_SESSION['USER_EMAIL'] = $courriel ;
   exit('ok');
 }
 

@@ -28,9 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_GET['action']))        ? $_GET['action']                        : '';
-$date_debut = (isset($_POST['f_date_debut'])) ? Clean::date_fr($_POST['f_date_debut']) : '';
-$date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fin'])   : '';
+$action     = (isset($_GET['action']))        ? $_GET['action']                     : '';
+$date_debut = (isset($_POST['f_date_debut'])) ? Clean::texte($_POST['f_date_debut']) : '';
+$date_fin   = (isset($_POST['f_date_fin']))   ? Clean::texte($_POST['f_date_fin'])   : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_select_periodes        = (isset($_POST['select_periodes']))        ? ( (is_array($_POST['select_periodes']))        ? $_POST['select_periodes']        : explode(',',$_POST['select_periodes'])        ) : array() ;
 $tab_select_classes_groupes = (isset($_POST['select_classes_groupes'])) ? ( (is_array($_POST['select_classes_groupes'])) ? $_POST['select_classes_groupes'] : explode(',',$_POST['select_classes_groupes']) ) : array() ;

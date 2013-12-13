@@ -43,7 +43,7 @@ class Session
   public static  $_CSRF_value        = '';
 
   // //////////////////////////////////////////////////
-  // Méthodes privées (internes) - Outils
+  // Méthodes publiques - Outils
   // //////////////////////////////////////////////////
 
   /*
@@ -52,7 +52,7 @@ class Session
    * @param void
    * @return string
    */
-  private static function get_IP()
+  public static function get_IP()
   {
     /**
      * Si PHP est derrière un reverse proxy ou un load balancer, REMOTE_ADDR peut contenir l'ip du proxy.
@@ -87,7 +87,7 @@ class Session
    * @param void
    * @return string
    */
-  private static function get_UserAgent()
+  public static function get_UserAgent()
   {
     if(isset($_SERVER['HTTP_USER_AGENT']))
     {

@@ -22,6 +22,7 @@ CREATE TABLE sacoche_user (
   user_id_ent         VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
   user_id_gepi        VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
   user_param_accueil  VARCHAR(40)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,messages,demandes,help,ecolo",
+  user_pass_key       CHAR(32)     COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (user_id),
   UNIQUE KEY user_login (user_login),
   KEY profil_sigle (user_profil_sigle),

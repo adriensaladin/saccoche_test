@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_evaluations')&&($_POST['f_action']!='Voir_notes')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])     : '';
-$eleve_id   = (isset($_POST['f_eleve']))      ? Clean::entier($_POST['f_eleve'])     : 0;
-$date_debut = (isset($_POST['f_date_debut'])) ? Clean::texte($_POST['f_date_debut']) : '';
-$date_fin   = (isset($_POST['f_date_fin']))   ? Clean::texte($_POST['f_date_fin'])   : '';
-$devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])    : 0;
+$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])       : '';
+$eleve_id   = (isset($_POST['f_eleve']))      ? Clean::entier($_POST['f_eleve'])       : 0;
+$date_debut = (isset($_POST['f_date_debut'])) ? Clean::date_fr($_POST['f_date_debut']) : '';
+$date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fin'])   : '';
+$devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])      : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
@@ -74,7 +74,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $classe_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
   if(empty($DB_TAB))
   {
-    exit('Aucune évaluation trouvée sur la période indiquée !');
+    exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !');
   }
   foreach($DB_TAB as $DB_ROW)
   {

@@ -2990,6 +2990,24 @@ public static function DB_maj_base($version_base_structure_actuelle)
       // ajout de paramètres
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_archive_ajout_message_copie"      , "1" )' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_archive_retrait_tampon_signature" , "1" )' );
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2013-12-08 => 2013-12-13
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  if($version_base_structure_actuelle=='2013-12-08')
+  {
+    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+    {
+      $version_base_structure_actuelle = '2013-12-13';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+      // ajout champ table sacoche_user
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_pass_key CHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+      // ajout de paramètres
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_prof_principal" , "0" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_prof_principal"   , "0" )' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_prof_principal"    , "0" )' );
       // réordonner la table sacoche_parametre
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }

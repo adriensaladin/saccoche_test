@@ -46,6 +46,7 @@ $select_socle_legende                  = Form::afficher_select(Form::$tab_select
 
 $check_releve_ligne_supplementaire   =  $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']    ? ' checked' : '' ;
 $check_releve_assiduite              =  $_SESSION['OFFICIEL']['RELEVE_ASSIDUITE']               ? ' checked' : '' ;
+$check_releve_prof_principal         =  $_SESSION['OFFICIEL']['RELEVE_PROF_PRINCIPAL']          ? ' checked' : '' ;
 $check_releve_only_socle             =  $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE']              ? ' checked' : '' ;
 $check_releve_retroactif_auto        = ($_SESSION['OFFICIEL']['RELEVE_RETROACTIF']=='auto')     ? ' checked' : '' ;
 $check_releve_retroactif_non         = ($_SESSION['OFFICIEL']['RELEVE_RETROACTIF']=='non')      ? ' checked' : '' ;
@@ -61,6 +62,7 @@ $check_releve_aff_theme              =  $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'
 
 $check_bulletin_ligne_supplementaire =  $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']  ? ' checked' : '' ;
 $check_bulletin_assiduite            =  $_SESSION['OFFICIEL']['BULLETIN_ASSIDUITE']             ? ' checked' : '' ;
+$check_bulletin_prof_principal       =  $_SESSION['OFFICIEL']['BULLETIN_PROF_PRINCIPAL']        ? ' checked' : '' ;
 $check_bulletin_retroactif_auto      = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='auto')   ? ' checked' : '' ;
 $check_bulletin_retroactif_non       = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='non')    ? ' checked' : '' ;
 $check_bulletin_retroactif_oui       = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='oui')    ? ' checked' : '' ;
@@ -77,6 +79,7 @@ $check_bulletin_moyenne_generale     =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_
 
 $check_socle_ligne_supplementaire    =  $_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']     ? ' checked' : '' ;
 $check_socle_assiduite               =  $_SESSION['OFFICIEL']['SOCLE_ASSIDUITE']                ? ' checked' : '' ;
+$check_socle_prof_principal          =  $_SESSION['OFFICIEL']['SOCLE_PROF_PRINCIPAL']           ? ' checked' : '' ;
 $check_socle_only_presence           =  $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']            ? ' checked' : '' ;
 $check_socle_pourcentage_acquis      =  $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS']       ? ' checked' : '' ;
 $check_socle_etat_validation         =  $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION']          ? ' checked' : '' ;
@@ -106,6 +109,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Appr. générale :</label><?php echo $select_releve_appreciation_generale ?><br />
     <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_releve_check_supplementaire" name="f_releve_check_supplementaire" value="1"<?php echo $check_releve_ligne_supplementaire ?> /> <input id="f_releve_ligne_factice" name="f_releve_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_releve_ligne_factice ?>" disabled /><input id="f_releve_ligne_supplementaire" name="f_releve_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_releve_ligne_supplementaire ?>" /><br />
     <label class="tab">Assiduité :</label><label for="f_releve_assiduite"><input type="checkbox" id="f_releve_assiduite" name="f_releve_assiduite" value="1"<?php echo $check_releve_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <label class="tab">Prof. Principal :</label><label for="f_releve_prof_principal"><input type="checkbox" id="f_releve_prof_principal" name="f_releve_prof_principal" value="1"<?php echo $check_releve_prof_principal ?> /> Indiquer le ou les professeurs principaux de la classe</label><br />
     <span class="radio">Prise en compte des évaluations antérieures :</span>
       <label for="f_releve_retroactif_auto"><input type="radio" id="f_releve_retroactif_auto" name="f_releve_retroactif" value="auto"<?php echo $check_releve_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_releve_retroactif_non"><input type="radio" id="f_releve_retroactif_non" name="f_releve_retroactif" value="non"<?php echo $check_releve_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
@@ -130,6 +134,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Appr. générale :</label><?php echo $select_bulletin_appreciation_generale ?><br />
     <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_bulletin_check_supplementaire" name="f_bulletin_check_supplementaire" value="1"<?php echo $check_bulletin_ligne_supplementaire ?> /> <input id="f_bulletin_ligne_factice" name="f_bulletin_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_bulletin_ligne_factice ?>" disabled /><input id="f_bulletin_ligne_supplementaire" name="f_bulletin_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_bulletin_ligne_supplementaire ?>" /><br />
     <label class="tab">Assiduité :</label><label for="f_bulletin_assiduite"><input type="checkbox" id="f_bulletin_assiduite" name="f_bulletin_assiduite" value="1"<?php echo $check_bulletin_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <label class="tab">Prof. Principal :</label><label for="f_bulletin_prof_principal"><input type="checkbox" id="f_bulletin_prof_principal" name="f_bulletin_prof_principal" value="1"<?php echo $check_bulletin_prof_principal ?> /> Indiquer le ou les professeurs principaux de la classe</label><br />
     <span class="radio">Prise en compte des évaluations antérieures :</span>
       <label for="f_bulletin_retroactif_auto"><input type="radio" id="f_bulletin_retroactif_auto" name="f_bulletin_retroactif" value="auto"<?php echo $check_bulletin_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_bulletin_retroactif_non"><input type="radio" id="f_bulletin_retroactif_non" name="f_bulletin_retroactif" value="non"<?php echo $check_bulletin_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
@@ -164,6 +169,7 @@ $class_label_releve_conversion_sur_20      = ($check_releve_moyenne_scores || $c
     <label class="tab">Appr. générale :</label><?php echo $select_socle_appreciation_generale ?><br />
     <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_socle_check_supplementaire" name="f_socle_check_supplementaire" value="1"<?php echo $check_socle_ligne_supplementaire ?> /> <input id="f_socle_ligne_factice" name="f_socle_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_socle_ligne_factice ?>" disabled /><input id="f_socle_ligne_supplementaire" name="f_socle_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_socle_ligne_supplementaire ?>" /><br />
     <label class="tab">Assiduité :</label><label for="f_socle_assiduite"><input type="checkbox" id="f_socle_assiduite" name="f_socle_assiduite" value="1"<?php echo $check_socle_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <label class="tab">Prof. Principal :</label><label for="f_socle_prof_principal"><input type="checkbox" id="f_socle_prof_principal" name="f_socle_prof_principal" value="1"<?php echo $check_socle_prof_principal ?> /> Indiquer le ou les professeurs principaux de la classe</label><br />
     <label class="tab">Restriction :</label><label for="f_socle_only_presence"><input type="checkbox" id="f_socle_only_presence" name="f_socle_only_presence" value="1"<?php echo $check_socle_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
     <label class="tab">Indications :</label><label for="f_socle_pourcentage_acquis"><input type="checkbox" id="f_socle_pourcentage_acquis" name="f_socle_pourcentage_acquis" value="1"<?php echo $check_socle_pourcentage_acquis ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_etat_validation"><input type="checkbox" id="f_socle_etat_validation" name="f_socle_etat_validation" value="1"<?php echo $check_socle_etat_validation ?> /> État de validation</label><br />
     <label class="tab">Impression :</label><?php echo $select_socle_couleur ?> <?php echo $select_socle_legende ?>

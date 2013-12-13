@@ -53,10 +53,11 @@ if(isset($_COOKIE[COOKIE_MEMOGET]))
 }
 
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
-    if(isset($_GET['page']))  { $PAGE = $_GET['page']; }
-elseif(isset($_POST['page'])) { $PAGE = $_POST['page']; }
-elseif(isset($_GET['sso']))   { $PAGE = 'compte_accueil'; }
-else                          { $PAGE = 'public_accueil'; }
+    if(isset($_GET['page']))     { $PAGE = $_GET['page']; }
+elseif(isset($_POST['page']))    { $PAGE = $_POST['page']; }
+elseif(isset($_GET['code_mdp'])) { $PAGE = 'public_nouveau_mdp'; }
+elseif(isset($_GET['sso']))      { $PAGE = 'compte_accueil'; }
+else                             { $PAGE = 'public_accueil'; }
     if(isset($_GET['section']))  { $SECTION = $_GET['section']; }
 elseif(isset($_POST['section'])) { $SECTION = $_POST['section']; }
 else                             { $SECTION = ''; }
@@ -266,7 +267,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
 }
 else
 {
-  // Accueil (identification ou procédure d'installation) : cadre unique (avec image SACoche & image hébergeur).
+  // Accueil (identification ou procédure d'installation ou génération de nouveaux identifiants) : cadre unique (avec image SACoche & image hébergeur).
   echo    '<!-- cadre_milieu début -->'.NL;
   echo    '<div id="cadre_milieu">'.NL;
   if($PAGE=='public_accueil')

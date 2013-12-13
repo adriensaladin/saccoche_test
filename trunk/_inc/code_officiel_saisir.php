@@ -306,6 +306,32 @@ if( $affichage_assiduite && $eleve_id )
   $tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] ) ;
 }
 
+// Récupérer les professeurs principaux
+
+$affichage_prof_principal = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_PROF_PRINCIPAL']) ? TRUE : FALSE ;
+
+if( $affichage_prof_principal )
+{
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_profs_principaux($classe_id);
+  if(empty($DB_TAB))
+  {
+    $texte_prof_principal = 'Professeur principal : sans objet.';
+  }
+  else if(count($DB_TAB)==1)
+  {
+    $texte_prof_principal = 'Professeur principal : '.afficher_identite_initiale($DB_TAB[0]['user_nom'],FALSE,$DB_TAB[0]['user_prenom'],TRUE);
+  }
+  else
+  {
+    $tab_pp = array();
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_pp[] = afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE);
+    }
+    $texte_prof_principal = 'Professeurs principaux : '.implode(' ; ',$tab_pp);
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation de variables supplémentaires
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
@@ -420,9 +446,9 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( !count($tab_eval) && empty($is_appreciation_groupe) )
+if( in_array($BILAN_TYPE,array('releve','bulletin')) && !count($tab_eval) && empty($is_appreciation_groupe) )
 {
-  ${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période selon les paramètres choisis !</div>' ;
+  ${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !</div>' ;
 }
 
 if($ACTION=='initialiser')

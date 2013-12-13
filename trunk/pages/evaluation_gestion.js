@@ -1712,8 +1712,8 @@ $(document).ready
           f_description   : { required:false , maxlength:60 },
           f_prof_nombre   : { required:false },
           f_compet_nombre : { isWord:'item' },
-          f_doc_sujet     : { required:false , testURL:true },
-          f_doc_corrige   : { required:false , testURL:true }
+          f_doc_sujet     : { required:false , url:true },
+          f_doc_corrige   : { required:false , url:true }
         },
         messages :
         {
@@ -1725,8 +1725,8 @@ $(document).ready
           f_description   : { maxlength:"60 caractères maximum" },
           f_prof_nombre   : { },
           f_compet_nombre : { isWord:"item(s) manquant(s)" },
-          f_doc_sujet     : { testURL:" URL sujet invalide" },
-          f_doc_corrige   : { testURL:" URL corrigé invalide" }
+          f_doc_sujet     : { url:" URL sujet invalide" },
+          f_doc_corrige   : { url:" URL corrigé invalide" }
         },
         errorElement : "label",
         errorClass : "erreur",

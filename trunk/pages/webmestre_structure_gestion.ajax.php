@@ -40,7 +40,7 @@ $contact_nom      = (isset($_POST['f_contact_nom']))      ? Clean::nom($_POST['f
 $contact_prenom   = (isset($_POST['f_contact_prenom']))   ? Clean::prenom($_POST['f_contact_prenom'])     : '';
 $contact_courriel = (isset($_POST['f_contact_courriel'])) ? Clean::courriel($_POST['f_contact_courriel']) : '';
 $courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? Clean::entier($_POST['f_courriel_envoi'])     : 0;
-$date_fr          = (isset($_POST['f_date_fr']))          ? Clean::texte($_POST['f_date_fr'])             : '' ;
+$date_fr          = (isset($_POST['f_date_fr']))          ? Clean::date_fr($_POST['f_date_fr'])           : '' ;
 $admin_id         = (isset($_POST['f_admin_id']))         ? Clean::entier($_POST['f_admin_id'])           : 0;
 
 // On récupère les zones géographiques pour 2 raisons :

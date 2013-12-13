@@ -28,22 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_demandes')){exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';      // pour le form_prechoix
-$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action; // pour le form_gestion
-$matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])      : 0;
-$matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])   : '';
-$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])    : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
-$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])   : '';
-$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])    : '';
+$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])          : '';      // pour le form_prechoix
+$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])            : $action; // pour le form_gestion
+$matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])        : 0;
+$matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])     : '';
+$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])      : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
+$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])     : '';
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])      : '';
 
-$qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui'])           : '';
-$date          = (isset($_POST['f_date']))          ? Clean::texte($_POST['f_date'])          : '';
-$date_visible  = (isset($_POST['f_date_visible']))  ? Clean::texte($_POST['f_date_visible'])  : '';
-$date_autoeval = (isset($_POST['f_date_autoeval'])) ? Clean::texte($_POST['f_date_autoeval']) : '';
-$info          = (isset($_POST['f_info']))          ? Clean::texte($_POST['f_info'])          : '';
-$devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_devoir'])        : '';
-$suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])         : '';
-$message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])       : '' ;
+$qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui'])             : '';
+$date          = (isset($_POST['f_date']))          ? Clean::date_fr($_POST['f_date'])          : '';
+$date_visible  = (isset($_POST['f_date_visible']))  ? Clean::date_fr($_POST['f_date_visible'])  : '';
+$date_autoeval = (isset($_POST['f_date_autoeval'])) ? Clean::date_fr($_POST['f_date_autoeval']) : '';
+$info          = (isset($_POST['f_info']))          ? Clean::texte($_POST['f_info'])            : '';
+$devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_devoir'])          : '';
+$suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])           : '';
+$message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])         : '' ;
 
 $score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])          : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 

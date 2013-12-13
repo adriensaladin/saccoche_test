@@ -61,6 +61,7 @@ $tab_droits_par_page = array
   'public_accueil'                          => $tab_droits_profil_public,
   'public_installation'                     => $tab_droits_profil_public,
   'public_logout_SSO'                       => $tab_droits_profil_public,
+  'public_nouveau_mdp'                      => $tab_droits_profil_public,
   // Profil élève
   'evaluation_demande_eleve'                => $tab_droits_profil_eleve,
   'evaluation_demande_eleve_ajout'          => $tab_droits_profil_eleve,

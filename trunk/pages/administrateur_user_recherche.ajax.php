@@ -41,7 +41,7 @@ $nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom
 $prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
 $login           = (isset($_POST['f_login']))         ? Clean::login($_POST['f_login'])          : '';
 $courriel        = (isset($_POST['f_courriel']))      ? Clean::courriel($_POST['f_courriel'])    : '';
-$sortie_date     = (isset($_POST['f_sortie_date']))   ? Clean::texte($_POST['f_sortie_date'])    : '' ;
+$sortie_date     = (isset($_POST['f_sortie_date']))   ? Clean::date_fr($_POST['f_sortie_date'])  : '' ;
 $box_sortie_date = (isset($_POST['box_sortie_date'])) ? Clean::entier($_POST['box_sortie_date']) : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

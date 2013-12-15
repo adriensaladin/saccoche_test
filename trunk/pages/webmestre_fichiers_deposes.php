@@ -63,32 +63,21 @@ foreach($tab_select_duree_conservation as $option_value => $option_texte)
 
 ?>
 
-<p>
-  Les professeurs peuvent joindre à chaque évaluation un sujet et / ou une correction accessible par les élèves et les parents.<br />
-  Ces fichiers dont stockés sur le serveur.<br />
-  <span class="astuce">Les fichiers au format <em class="file file_php">php</em>, <em class="file file_exe">bat com exe</em> ou <em class="file file_zip">zip</em> sont rejetés car inappropriés ou potentiellement dangereux.</span>
-</p>
-
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__fichiers_deposes">DOC : Fichiers déposés.</a></span></p>
 <hr />
 
 <form action="#" method="post" id="form_fichiers"><fieldset>
-  <p>
-    Vous pouvez choisir la taille maximale autorisée de ces fichiers.<br />
-    La valeur par défaut est 500 Ko (limite considérée raisonnable vu l'usage destiné).<br />
-    <span class="astuce">Il faut aussi tenir compte de la configuration du serveur : <?php echo InfoServeur::minimum_limitations_upload() ?>.</span>
-  </p>
   <label class="tab" for="f_taille_max">Taille maximale :</label><select id="f_taille_max" name="f_taille_max"><?php echo $select_taille_max ?></select>
   <p>
-    Vous pouvez choisir la durée de conservation de ces fichiers.<br />
-    La valeur par défaut est 1 an (durée compatible avec une année scolaire).<br />
-    <span class="astuce">Une initialisation annuelle des données supprime les accès aux évaluations, donc de toutes façons le référencement de ces documents.</span>
+    <span class="astuce">Il faut aussi tenir compte de la configuration du serveur : <b><?php echo InfoServeur::minimum_limitations_upload() ?></b>.</span>
   </p>
+  <hr />
   <label class="tab" for="f_duree_conservation">Durée conservation :</label><select id="f_duree_conservation" name="f_duree_conservation"><?php echo $select_duree_conservation ?></select>
+  <p>
+    <span class="astuce">Une initialisation annuelle des données supprime de toutes façons le référencement des documents concernés.</span>
+  </p>
+  <hr />
   <p>
     <span class="tab"></span><button id="f_enregistrer" type="submit" class="parametre">Enregistrer ces paramètres.</button><label id="ajax_msg_enregistrer">&nbsp;</label><br />
   </p>
 </fieldset></form>
-
-<hr />
-
-<div id="retour_test"></div>

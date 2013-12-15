@@ -37,7 +37,9 @@ if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*ma
 }
 
 // Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
-$texte_retroactif = ($_SESSION['CALCUL_RETROACTIF']=='non') ? '(sur la période)' : '(rétroactivement)' ;
+    if($_SESSION['CALCUL_RETROACTIF']=='non')    { $texte_retroactif = '(sur la période)';       }
+elseif($_SESSION['CALCUL_RETROACTIF']=='oui')    { $texte_retroactif = '(rétroactivement)';      }
+elseif($_SESSION['CALCUL_RETROACTIF']=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
 if($_SESSION['CALCUL_LIMITE']==1)  // si une seule saisie prise en compte
 {
   $calcul_texte = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
@@ -81,6 +83,7 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var tab_information       = new Array();';
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC : Créer / paramétrer les référentiels.</a></span></li>
   <li><span class="danger">Supprimer un référentiel efface les résultats associés de tous les élèves !</span></li>
 </ul>
+<hr />
 
 <div id="div_tableaux">
 
@@ -97,7 +100,7 @@ $DB_TAB_MATIERES = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_
 if(empty($DB_TAB_MATIERES))
 {
   $nb_matieres = 0;
-  echo'<hr /><p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
+  echo'<p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
 }
 else
 {
@@ -115,7 +118,7 @@ else
   if(empty($DB_TAB_NIVEAUX))
   {
     $nb_niveaux = 0;
-    echo'<hr /><p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+    echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
   }
   else
   {
@@ -133,7 +136,9 @@ else
       foreach($DB_TAB as $DB_ROW)
       {
         // Définition de $methode_calcul_texte
-        $texte_retroactif = ($DB_ROW['referentiel_calcul_retroactif']=='non') ? '(sur la période)' : '(rétroactivement)' ;
+            if($DB_ROW['referentiel_calcul_retroactif']=='non')    { $texte_retroactif = '(sur la période)';       }
+        elseif($DB_ROW['referentiel_calcul_retroactif']=='oui')    { $texte_retroactif = '(rétroactivement)';      }
+        elseif($DB_ROW['referentiel_calcul_retroactif']=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
         if($DB_ROW['referentiel_calcul_limite']==1)  // si une seule saisie prise en compte
         {
           $methode_calcul_texte = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
@@ -184,7 +189,7 @@ else
       $matiere_perso  = ($matiere_id>ID_MATIERE_PARTAGEE_MAX) ? 1 : 0 ;
       $matiere_droit  = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
       $matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
-      echo'<hr /><h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>'.NL;
+      echo'<h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>'.NL;
       echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead>'.NL.'<tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr>'.NL.'</thead><tbody>'.NL;
       if(isset($tab_colonne[$matiere_id]))
       {
@@ -211,7 +216,7 @@ else
       $matiere_nombre = str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) ;
       $matiere_nombre = ( ($matiere_droit) && (isset($tab_colonne[$matiere_id])) ) ? $matiere_nombre : str_replace('<select','<select disabled',$matiere_nombre) ;
       echo'<tr><td colspan="4" class="nu">'.$matiere_nombre.$infobulle.$label.'</td>'.'</tr>'.NL;
-      echo'</tbody></table>'.NL;
+      echo'</tbody></table><hr />'.NL;
     }
   }
 }
@@ -220,7 +225,6 @@ else
 </div>
 
 <div id="choisir_referentiel" class="hide">
-  <hr />
   <h2>Créer un référentiel &rarr; <span></span><input id="matiere_id" name="matiere_id" type="hidden" value="" /><input id="matiere_perso" name="matiere_perso" type="hidden" value="" /></h2>
   <p>
   <?php
@@ -302,11 +306,11 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
 
 <?php
 // Fabrication du select f_limite
-$select_limite = '<option value="0">de toutes les notes</option><option value="1">de la dernière note</option>';
+$select_limite = '<option value="0">de toutes les notes</option><option value="1">de la dernière note</option>'.NL;
 $tab_options = array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 foreach($tab_options as $val)
 {
-  $select_limite .= '<option value="'.$val.'">des '.$val.' dernières notes</option>';
+  $select_limite .= '<option value="'.$val.'">des '.$val.' dernières notes</option>'.NL;
 }
 ?>
 
@@ -325,7 +329,20 @@ foreach($tab_options as $val)
   </div>
   <div id="gestion_calculer">
     <label class="tab" for="f_methode">Mode de calcul :</label>
-    <select id="f_methode" name="f_methode"><option value="geometrique">Coefficients &times;2</option><option value="arithmetique">Coefficients +1</option><option value="classique">Moyenne classique</option><option value="bestof1">La meilleure</option><option value="bestof2">Les 2 meilleures</option><option value="bestof3">Les 3 meilleures</option></select><select id="f_limite" name="f_limite"><?php echo $select_limite ?></select><select id="f_retroactif" name="f_retroactif"><option value="non">(sur la période).</option><option value="oui">(rétroactivement).</option></select>
+      <select id="f_methode" name="f_methode">
+        <option value="geometrique">Coefficients &times;2</option>
+        <option value="arithmetique">Coefficients +1</option>
+        <option value="classique">Moyenne classique</option>
+        <option value="bestof1">La meilleure</option>
+        <option value="bestof2">Les 2 meilleures</option>
+        <option value="bestof3">Les 3 meilleures</option>
+      </select><select id="f_limite" name="f_limite">
+        <?php echo $select_limite ?>
+      </select><select id="f_retroactif" name="f_retroactif">
+        <option value="non">(sur la période).</option>
+        <option value="oui">(rétroactivement).</option>
+        <option value="annuel">(rétroactif sur l'année scolaire).</option>
+      </select>
   </div>
   <div id="gestion_supprimer">
     <ul class="puce"><li>Confirmez-vous la suppression de ce référentiel ?</li></ul>

@@ -30,7 +30,9 @@ $TITRE = "Statistiques d'utilisation";
 
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation.</a></span></p>
+
+<hr />
 
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 

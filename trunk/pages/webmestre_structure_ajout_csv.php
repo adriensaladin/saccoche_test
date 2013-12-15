@@ -43,7 +43,7 @@ $contenu_csv.= ''.$separateur.'1'.$separateur.'Jolieville'.$separateur.'CLG du B
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures)</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures).</a></span></p>
 
 <ul class="puce">
   <li><a class="lien_ext" href="<?php echo URL_DIR_TMP.$fichier_csv ?>"><span class="file file_txt">Récupérer le modèle de fichier <em>CSV</em> à utiliser.</span></a></li>

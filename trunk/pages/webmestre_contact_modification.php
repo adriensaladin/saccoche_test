@@ -37,20 +37,9 @@ $value_mail_domaine = ($checked_mail_domaine) ? CONTACT_MODIFICATION_MAIL : 'dom
 
 ?>
 
-<p>
-  Dans le cas d'un serveur <em>SACoche</em> multi-établissements, il y a un contact référent <em>SACoche</em> par établissement :
-</p>
-<ul class="puce">
-  <li>il réceptionne les identifiants du premier administrateur créé (à son nom) et les informations associées</li>
-  <li>il est destinataire des lettres d'informations que peut envoyer le webmestre</li>
-  <li>il reçoit une régénération de mot de passe administrateur effectuée par le webmestre</li>
-</ul>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__contact_modification">DOC : Contact référent (multi-structures).</a></span></p>
 
 <hr />
-
-<p class="astuce">
-  Ce menu permet de choisir si les administrateurs d'un établissement peuvent eux-même changer les coordonnées du contact référent, ou doivent solliciter le webmestre pour toute modification.
-</p>
 
 <form action="#" method="post" id="form_contact"><fieldset>
   <p>

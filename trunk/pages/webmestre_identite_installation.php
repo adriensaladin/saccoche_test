@@ -40,7 +40,7 @@ $cnil_numero          = intval(CNIL_NUMERO) ? CNIL_NUMERO : '' ;
 $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__identite_installation">DOC : Identité de l'installation (page d'accueil)</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__identite_installation">DOC : Identité de l'installation.</a></span></p>
 
 <hr />
 

@@ -38,19 +38,20 @@ if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 
 // L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 Form::load_choix_memo();
-$check_type_generique  = (Form::$tab_choix['type_generique'])     ? ' checked' : '' ;
-$check_type_individuel = (Form::$tab_choix['type_individuel'])    ? ' checked' : '' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])      ? ' checked' : '' ;
-$check_retro_auto      = (Form::$tab_choix['retroactif']=='auto') ? ' checked' : '' ;
-$check_retro_non       = (Form::$tab_choix['retroactif']=='non')  ? ' checked' : '' ;
-$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui')  ? ' checked' : '' ;
-$check_only_socle      = (Form::$tab_choix['only_socle'])         ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])           ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])          ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])           ? ' checked' : '' ;
-$class_form_generique  = (Form::$tab_choix['type_generique'])     ? 'hide'     : 'show' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel'])    ? 'show'     : 'hide' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])      ? 'show'     : 'hide' ;
+$check_type_generique    = (Form::$tab_choix['type_generique'])       ? ' checked' : '' ;
+$check_type_individuel   = (Form::$tab_choix['type_individuel'])      ? ' checked' : '' ;
+$check_type_synthese     = (Form::$tab_choix['type_synthese'])        ? ' checked' : '' ;
+$check_retroactif_auto   = (Form::$tab_choix['retroactif']=='auto')   ? ' checked' : '' ;
+$check_retroactif_non    = (Form::$tab_choix['retroactif']=='non')    ? ' checked' : '' ;
+$check_retroactif_oui    = (Form::$tab_choix['retroactif']=='oui')    ? ' checked' : '' ;
+$check_retroactif_annuel = (Form::$tab_choix['retroactif']=='annuel') ? ' checked' : '' ;
+$check_only_socle        = (Form::$tab_choix['only_socle'])           ? ' checked' : '' ;
+$check_aff_coef          = (Form::$tab_choix['aff_coef'])             ? ' checked' : '' ;
+$check_aff_socle         = (Form::$tab_choix['aff_socle'])            ? ' checked' : '' ;
+$check_aff_lien          = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
+$class_form_generique    = (Form::$tab_choix['type_generique'])       ? 'hide'     : 'show' ;
+$class_form_individuel   = (Form::$tab_choix['type_individuel'])      ? 'show'     : 'hide' ;
+$class_form_synthese     = (Form::$tab_choix['type_synthese'])        ? 'show'     : 'hide' ;
 
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
@@ -178,9 +179,10 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
     <span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
-      <label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
+      <label for="f_retroactif_auto"><input type="radio" id="f_retroactif_auto" name="f_retroactif" value="auto"<?php echo $check_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_non"><input type="radio" id="f_retroactif_non" name="f_retroactif" value="non"<?php echo $check_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_annuel"><input type="radio" id="f_retroactif_annuel" name="f_retroactif" value="annuel"<?php echo $check_retroactif_annuel ?> /> de l'année scolaire
   </p>
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

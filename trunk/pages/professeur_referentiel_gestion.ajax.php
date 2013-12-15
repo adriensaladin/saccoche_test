@@ -28,18 +28,18 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action         = (isset($_POST['f_action']))         ? $_POST['f_action']                        : '';
-$matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_matiere_id'])     : 0;
-$niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])      : 0;
-$structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])   : 0;
-$nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])    : -1;  // Changer le nb de demandes
-$partage        = (isset($_POST['f_partage']))        ? Clean::texte($_POST['f_partage'])         : '';  // Changer l'état de partage
-$methode        = (isset($_POST['f_methode']))        ? Clean::texte($_POST['f_methode'])         : '';  // Changer le mode de calcul
-$limite         = (isset($_POST['f_limite']))         ? Clean::entier($_POST['f_limite'])         : -1;  // Changer le nb d'items pris en compte
-$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::texte($_POST['f_retroactif'])      : '';  // Changer le nb d'items pris en compte
-$information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_information'])     : '';
-$referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id']) : -1;  // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
-$ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                           : '';
+$action         = (isset($_POST['f_action']))         ? $_POST['f_action']                                : '';
+$matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_matiere_id'])             : 0;
+$niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])              : 0;
+$structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])           : 0;
+$nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])            : -1; // Changer le nb de demandes
+$partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : ''; // Changer l'état de partage
+$methode        = (isset($_POST['f_methode']))        ? Clean::calcul_methode($_POST['f_methode'])        : ''; // Changer le mode de calcul
+$limite         = (isset($_POST['f_limite']))         ? Clean::calcul_limite($_POST['f_limite'],$methode) : 0;  // Changer le nb d'items pris en compte
+$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::calcul_retroactif($_POST['f_retroactif'])  : ''; // Changer le nb d'items pris en compte
+$information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_information'])             : '';
+$referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id'])         : -1; // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
+$ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                                   : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier le nb de demandes autorisées pour une matière
@@ -92,16 +92,6 @@ $matiere_id = Clean::entier($matiere_id);
 $niveau_id  = Clean::entier($niveau_id);
 $perso      = Clean::entier($perso);
 
-$tab_partages = array('oui','non','bof','hs');
-$tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
-$tab_limites['geometrique']  = array(1,2,3,4,5);
-$tab_limites['arithmetique'] = array(1,2,3,4,5,6,7,8,9);
-$tab_limites['classique']    = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof1']      = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof2']      = array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_retroactifs = array('non','oui');
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +106,7 @@ if( ($action=='voir_referentiel_etablissement') && $matiere_id && $niveau_id )
 // Modifier le partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='partager') && $matiere_id && $niveau_id && ($perso==0) && in_array($partage,$tab_partages) && ($partage!='hs') )
+if( ($action=='partager') && $matiere_id && $niveau_id && ($perso==0) && $partage && ($partage!='hs') )
 {
   if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
   {
@@ -175,7 +165,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 // Supprimer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
+if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage )
 {
   // S'il était partagé, il faut le retirer du serveur communautaire
   if($partage=='oui')
@@ -200,10 +190,12 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && in_array($partage,$ta
 // Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) && in_array($retroactif,$tab_retroactifs) )
+if( ($action=='calculer') && $matiere_id && $niveau_id && $methode && $limite && $retroactif )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
-  $texte_retroactif = ($retroactif=='non') ? '(sur la période)' : '(rétroactivement)' ;
+      if($retroactif=='non')    { $texte_retroactif = '(sur la période)';        }
+  elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';       }
+  elseif($retroactif=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
   if($limite==1)  // si une seule saisie prise en compte
   {
     $retour = 'Seule la dernière saisie compte '.$texte_retroactif.'.';

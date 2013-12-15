@@ -101,7 +101,9 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     // Définition de $methode_calcul_texte
-    $texte_retroactif = ($DB_ROW['referentiel_calcul_retroactif']=='non') ? '(sur la période)' : '(rétroactivement)' ;
+        if($DB_ROW['referentiel_calcul_retroactif']=='non')    { $texte_retroactif = '(sur la période)';       }
+    elseif($DB_ROW['referentiel_calcul_retroactif']=='oui')    { $texte_retroactif = '(rétroactivement)';      }
+    elseif($DB_ROW['referentiel_calcul_retroactif']=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
     if($DB_ROW['referentiel_calcul_limite']==1)  // si une seule saisie prise en compte
     {
       $methode_calcul_texte = 'Seule la dernière saisie compte '.$texte_retroactif.'.';

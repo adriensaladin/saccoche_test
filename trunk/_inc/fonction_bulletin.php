@@ -35,7 +35,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * @param int    $classe_id
  * @param string $liste_eleve_id
  * @param string $liste_matiere_id   renseigné pour un prof effectuant une saisie, vide sinon
- * @param string $retroactif   oui|non|auto
+ * @param string $retroactif   oui|non|annuel|auto
  * @param bool   $memo_moyennes_classe
  * @param bool   $memo_moyennes_generale
  * @return void
@@ -62,13 +62,17 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
+  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+      if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
+  elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
+  else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
     {
-      if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
+      $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
+      if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
       {
         $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
       }
@@ -252,12 +256,16 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
   $tab_liste_item = array_keys($tab_item);
   $liste_item_id = implode(',',$tab_liste_item);
   // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-  $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
+  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+      if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
+  elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
+  else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ );
   if(empty($DB_TAB)) return FALSE;
   foreach($DB_TAB as $DB_ROW)
   {
-    if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
+    $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
+    if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
     {
       $tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
     }

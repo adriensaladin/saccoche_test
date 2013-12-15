@@ -64,8 +64,9 @@ foreach($tab_options as $value)
 
 // Option select : éval antérieures
 $tab_options = array();
-$tab_options['non'] = 'Sans prise en compte des évaluations antérieures.';
-$tab_options['oui'] = 'Avec prise en compte des évaluations antérieures.';
+$tab_options['non']    = 'Sans prise en compte des évaluations antérieures.';
+$tab_options['oui']    = 'Avec prise en compte des évaluations antérieures.';
+$tab_options['annuel'] = 'Prise en compte mais restreinte à l\'année scolaire.';
 $options_retroactif = '';
 foreach($tab_options as $value => $texte)
 {

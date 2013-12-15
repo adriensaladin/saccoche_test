@@ -17,7 +17,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "acquis_texte_VA"                               , "VA" ),
 ( "calcul_limite"                                 , "5" ),
 ( "calcul_methode"                                , "geometrique" ),
-( "calcul_retroactif"                             , "oui" ),
+( "calcul_retroactif"                             , "1" ),
 ( "calcul_seuil_R"                                , "40" ),
 ( "calcul_seuil_V"                                , "60" ),
 ( "calcul_valeur_R"                               , "33" ),

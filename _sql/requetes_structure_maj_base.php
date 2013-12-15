@@ -3013,22 +3013,6 @@ public static function DB_maj_base($version_base_structure_actuelle)
     }
   }
 
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MAJ 2013-12-13 => 2013-12-15
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  if($version_base_structure_actuelle=='2013-12-13')
-  {
-    if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-    {
-      $version_base_structure_actuelle = '2013-12-15';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-      // modification de paramètre mal initialisé
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="oui" WHERE parametre_nom="calcul_retroactif" AND parametre_valeur="1"' );
-      // modification sacoche_referentiel
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel CHANGE referentiel_calcul_retroactif referentiel_calcul_retroactif ENUM("non","oui","annuel") COLLATE utf8_unicode_ci NOT NULL DEFAULT "non" COMMENT "Avec ou sans prise en compte des évaluations antérieures. Valeur surclassant la configuration par défaut." ' );
-    }
-  }
-
 }
 
 }

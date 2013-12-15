@@ -827,7 +827,6 @@ function annee_session_brevet()
 
 /**
  * Tester si on est dans la période de rentrée
- * Par défaut : 01/08 -> 30/09
  *
  * @param void
  * @return bool
@@ -838,22 +837,6 @@ function test_periode_rentree()
   $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] ; // par défaut août
   $mois_rentree   = ($mois_bascule<12) ? $mois_bascule+1 : 1 ; // par défaut septembre
   return ($mois_actuel==$mois_bascule) || ($mois_actuel==$mois_rentree) ;
-}
-
-/**
- * Tester si on est dans la période de sortie
- * Par défaut : 01/06 -> 31/07
- *
- * @param void
- * @return bool
- */
-function test_periode_sortie()
-{
-  $mois_actuel    = date('n');
-  $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] ; // par défaut août
-  $mois_sortie    = ($mois_bascule>1) ? $mois_bascule-1 : 12 ; // par défaut juillet
-  $mois_fin_annee = ($mois_sortie>1)  ? $mois_sortie-1  : 12 ; // par défaut juin
-  return ($mois_actuel==$mois_sortie) || ($mois_actuel==$mois_fin_annee) ;
 }
 
 /**

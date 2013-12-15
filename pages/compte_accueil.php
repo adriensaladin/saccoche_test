@@ -77,6 +77,37 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   }
 }
 
+if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
+{
+  $alerte_novice = FALSE ;
+  $info_rentree  = FALSE ;
+  if(!DB_STRUCTURE_ADMINISTRATEUR::compter_matieres_etabl())
+  {
+    $tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
+    $alerte_novice = TRUE ;
+  }
+  if(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( TRUE /*with_specifiques*/ ))
+  {
+    $tab_accueil['alert'] .= '<p class="danger">Aucun niveau n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+    $alerte_novice = TRUE ;
+  }
+  elseif(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( FALSE /*with_specifiques*/ ))
+  {
+    $tab_accueil['alert'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+    $alerte_novice = TRUE ;
+  }
+  if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())
+  {
+    $tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non archivée ! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+    $info_rentree  = TRUE ;
+  }
+  if($alerte_novice)
+  {
+    // volontairement pas en pop-up mais dans un nouvel onglet
+    $tab_accueil['alert'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message de bienvenue (informations utilisateur : infos profil, infos selon profil, infos adresse de connexion)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,11 +210,6 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
     $tab_accueil['user'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
-  }
-  if( test_periode_sortie() )
-  {
-    $lien_contact_referent = (HEBERGEUR_INSTALLATION=='multi-structures') ? '<a href="./index.php?page=administrateur_etabl_identite"><span class="b">indiquer le nouveau contact référent éventuel</span></a> et à ' : '' ;
-    $tab_accueil['user'] .= '<p><span class="danger">Si vous passez la main à la prochaine rentrée</span>, alors pensez à '.$lien_contact_referent.'<a href="./index.php?page=administrateur_administrateur"><span class="b">transmettre des identifiants d\'administrateur</span></a>.</p>';
   }
 }
 // infos adresse de connexion

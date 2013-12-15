@@ -273,47 +273,6 @@ class Clean
     return sprintf("%04u",$annee).$sep.sprintf("%02u",$mois).$sep.sprintf("%02u",$jour);
   }
 
-  public static function calcul_methode($text)
-  {
-    $tab = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
-    return in_array($text,$tab) ? $text : '' ;
-  }
-
-  public static function calcul_limite($text,$methode)
-  {
-    $text = Clean::entier($text);
-    $tab = array(
-      'geometrique'  => array(1,2,3,4,5),
-      'arithmetique' => array(1,2,3,4,5,6,7,8,9),
-      'classique'    => array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
-      'bestof1'      => array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
-      'bestof2'      => array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
-      'bestof3'      => array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0),
-    );
-    return ( isset($tab[$methode]) && in_array($text,$tab[$methode]) ) ? $text : '' ;
-  }
-
-  public static function calcul_retroactif($text)
-  {
-    $tab = array('non','oui','annuel','auto');
-    return in_array($text,$tab) ? $text : '' ;
-  }
-
-  public static function synthese_methode($text)
-  {
-    $tab = array('inconnu','sans','domaine','theme');
-    return in_array($text,$tab) ? $text : '' ;
-  }
-
-  public static function referentiel_partage($text)
-  {
-    $tab = array('oui','non','bof','hs');
-    return in_array($text,$tab) ? $text : '' ;
-  }
-
-  /*
-    Pour array_filter().
-  */
   public static function map_entier($array)
   {
     return array_map( 'intval' , $array );

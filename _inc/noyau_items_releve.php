@@ -106,10 +106,9 @@ if($date_mysql_debut>$date_mysql_fin)
 
 $tab_precision_retroactif = array
 (
-  'auto'   => 'notes antérieures selon référentiels',
-  'oui'    => 'avec notes antérieures',
-  'non'    => 'sans notes antérieures',
-  'annuel' => 'notes antérieures de l\'année scolaire',
+  'auto' => 'notes antérieures selon référentiels',
+  'oui'  => 'avec notes antérieures',
+  'non'  => 'sans notes antérieures',
 );
 $precision_socle = $only_socle ? ', restriction au socle' : '' ;
 $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroactif[$retroactif].$precision_socle.').';
@@ -202,18 +201,15 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
-      if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
-  elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
-  else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
+
+  $date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
   $onlyprof = ($format=='professeur') ? $prof_id : FALSE ;
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof );
   foreach($DB_TAB as $DB_ROW)
   {
     if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
     {
-      $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
-      if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
+      if( ($retroactif!='auto') || ($tab_item[$DB_ROW['item_id']][0]['calcul_retroactif']=='oui') || ($DB_ROW['date']>=$date_mysql_debut) )
       {
         $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
         $tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];  // sert pour la synthèse sur une sélection d'items issus de différentes matières

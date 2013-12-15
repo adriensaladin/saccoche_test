@@ -54,7 +54,9 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var options_geo = "'.str_replace('"','\"',
 $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures).</a></span></p>
+
+<hr />
 
 <form action="./index.php?page=webmestre_structure_gestion" method="post" id="form_prechoix">
   <div><label class="tab" for="f_groupe">Zone géographique :</label><?php echo $select_f_geo_id ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>

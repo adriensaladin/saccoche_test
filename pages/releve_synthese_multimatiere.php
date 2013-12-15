@@ -32,16 +32,17 @@ $TITRE = "Synthèse pluridisciplinaire";
 <?php
 // L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 Form::load_choix_memo();
-$check_fusion_niveaux = (Form::$tab_choix['fusion_niveaux'])     ? ' checked' : '' ;
-$check_retro_auto     = (Form::$tab_choix['retroactif']=='auto') ? ' checked' : '' ;
-$check_retro_non      = (Form::$tab_choix['retroactif']=='non')  ? ' checked' : '' ;
-$check_retro_oui      = (Form::$tab_choix['retroactif']=='oui')  ? ' checked' : '' ;
-$check_only_socle     = (Form::$tab_choix['only_socle'])         ? ' checked' : '' ;
-$check_only_niveau    = (Form::$tab_choix['only_niveau'])        ? ' checked' : '' ;
-$check_aff_coef       = (Form::$tab_choix['aff_coef'])           ? ' checked' : '' ;
-$check_aff_socle      = (Form::$tab_choix['aff_socle'])          ? ' checked' : '' ;
-$check_aff_lien       = (Form::$tab_choix['aff_lien'])           ? ' checked' : '' ;
-$check_aff_start      = (Form::$tab_choix['aff_start'])          ? ' checked' : '' ;
+$check_fusion_niveaux    = (Form::$tab_choix['fusion_niveaux'])       ? ' checked' : '' ;
+$check_retroactif_auto   = (Form::$tab_choix['retroactif']=='auto')   ? ' checked' : '' ;
+$check_retroactif_non    = (Form::$tab_choix['retroactif']=='non')    ? ' checked' : '' ;
+$check_retroactif_oui    = (Form::$tab_choix['retroactif']=='oui')    ? ' checked' : '' ;
+$check_retroactif_annuel = (Form::$tab_choix['retroactif']=='annuel') ? ' checked' : '' ;
+$check_only_socle        = (Form::$tab_choix['only_socle'])           ? ' checked' : '' ;
+$check_only_niveau       = (Form::$tab_choix['only_niveau'])          ? ' checked' : '' ;
+$check_aff_coef          = (Form::$tab_choix['aff_coef'])             ? ' checked' : '' ;
+$check_aff_socle         = (Form::$tab_choix['aff_socle'])            ? ' checked' : '' ;
+$check_aff_lien          = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
+$check_aff_start         = (Form::$tab_choix['aff_start'])            ? ' checked' : '' ;
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -116,9 +117,10 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
     <span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
-      <label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
+      <label for="f_retroactif_auto"><input type="radio" id="f_retroactif_auto" name="f_retroactif" value="auto"<?php echo $check_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_non"><input type="radio" id="f_retroactif_non" name="f_retroactif" value="non"<?php echo $check_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_annuel"><input type="radio" id="f_retroactif_annuel" name="f_retroactif" value="annuel"<?php echo $check_retroactif_annuel ?> /> de l'année scolaire
   </p>
   <div id="zone_options" class="<?php echo $class_form_option ?>">
     <div class="toggle">

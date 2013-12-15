@@ -28,23 +28,23 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
-$check        = (isset($_POST['f_check']))       ? Clean::entier($_POST['f_check'])      : 0;
-$id           = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])         : 0;
-$id_ent       = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])      : '';
-$id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])     : '';
-$sconet_id    = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])  : 0;
-$reference    = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])     : '';
-$profil       = (isset($_POST['f_profil']))      ? Clean::texte($_POST['f_profil'])      : '';
-$nom          = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])           : '';
-$prenom       = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])     : '';
-$login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])       : '';
-$password     = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password']) : '' ;
-$sortie_date  = (isset($_POST['f_sortie_date'])) ? Clean::texte($_POST['f_sortie_date']) : '' ;
-$box_login    = (isset($_POST['box_login']))     ? Clean::entier($_POST['box_login'])    : 0;
-$box_password = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
-$box_date     = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])     : 0;
-$courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_courriel']) : '';
+$action       = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])        : '';
+$check        = (isset($_POST['f_check']))       ? Clean::entier($_POST['f_check'])        : 0;
+$id           = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])           : 0;
+$id_ent       = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])        : '';
+$id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])       : '';
+$sconet_id    = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])    : 0;
+$reference    = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])       : '';
+$profil       = (isset($_POST['f_profil']))      ? Clean::texte($_POST['f_profil'])        : '';
+$nom          = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])             : '';
+$prenom       = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])       : '';
+$login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])         : '';
+$password     = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password'])   : '' ;
+$sortie_date  = (isset($_POST['f_sortie_date'])) ? Clean::date_fr($_POST['f_sortie_date']) : '' ;
+$box_login    = (isset($_POST['box_login']))     ? Clean::entier($_POST['box_login'])      : 0;
+$box_password = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password'])   : 0;
+$box_date     = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])       : 0;
+$courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_courriel'])   : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouveau parent

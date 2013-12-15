@@ -36,7 +36,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
 }
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__zones_geographiques">DOC : Zones géographiques</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__zones_geographiques">DOC : Zones géographiques (multi-structures).</a></span></p>
 
 <hr />
 

@@ -40,21 +40,12 @@ $seuil = array();
 $seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
 $seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
-$methode    = (isset($_POST['f_methode']))    ? Clean::texte($_POST['f_methode'])    : '' ;
-$limite     = (isset($_POST['f_limite']))     ? Clean::entier($_POST['f_limite'])    : 0 ;
-$retroactif = (isset($_POST['f_retroactif'])) ? Clean::texte($_POST['f_retroactif']) : '' ;
-
-$tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
-$tab_limites['geometrique']  = array(1,2,3,4,5);
-$tab_limites['arithmetique'] = array(1,2,3,4,5,6,7,8,9);
-$tab_limites['classique']    = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof1']      = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof2']      = array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
-$tab_retroactifs = array('non','oui');
+$methode    = (isset($_POST['f_methode']))    ? Clean::calcul_methode($_POST['f_methode'])        : '' ;
+$limite     = (isset($_POST['f_limite']))     ? Clean::calcul_limite($_POST['f_limite'],$methode) : 0 ;
+$retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST['f_retroactif'])  : '' ;
 
 // Vérification des données transmises
-if( !in_array($methode,$tab_methodes) || !in_array($limite,$tab_limites[$methode]) || !in_array($retroactif,$tab_retroactifs) )
+if( !$methode || !$limite || !$retroactif )
 {
   exit('Erreur avec les données transmises !');
 }

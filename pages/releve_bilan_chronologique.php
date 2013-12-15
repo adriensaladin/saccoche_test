@@ -67,10 +67,11 @@ else
   $pourcentage_acquis = '<label for="f_indicateur_PA"><input type="radio" id="f_indicateur_PA" name="f_indicateur" value="pourcentage_acquis"'.$check_pourcentage_acquis.' /> Pourcentage d\'items acquis</label>';
   $conversion_sur_20  = '<label for="f_conversion_sur_20" class="'.$class_conversion_sur_20.'"><input type="checkbox" id="f_conversion_sur_20" name="f_conversion_sur_20" value="1"'.$check_conversion_sur_20.' /> Conversion en note sur 20</label>';
 }
-$check_retro_auto         = (Form::$tab_choix['retroactif']=='auto')     ? ' checked' : '' ;
-$check_retro_non          = (Form::$tab_choix['retroactif']=='non')      ? ' checked' : '' ;
-$check_retro_oui          = (Form::$tab_choix['retroactif']=='oui')      ? ' checked' : '' ;
-$check_only_socle         = (Form::$tab_choix['only_socle'])             ? ' checked' : '' ;
+$check_retroactif_auto    = (Form::$tab_choix['retroactif']=='auto')   ? ' checked' : '' ;
+$check_retroactif_non     = (Form::$tab_choix['retroactif']=='non')    ? ' checked' : '' ;
+$check_retroactif_oui     = (Form::$tab_choix['retroactif']=='oui')    ? ' checked' : '' ;
+$check_retroactif_annuel  = (Form::$tab_choix['retroactif']=='annuel') ? ' checked' : '' ;
+$check_only_socle         = (Form::$tab_choix['only_socle'])           ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 $separateur_check_matieres = '<br />';
 
@@ -143,9 +144,10 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
     <span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
-      <label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
+      <label for="f_retroactif_auto"><input type="radio" id="f_retroactif_auto" name="f_retroactif" value="auto"<?php echo $check_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_non"><input type="radio" id="f_retroactif_non" name="f_retroactif" value="non"<?php echo $check_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_retroactif_annuel"><input type="radio" id="f_retroactif_annuel" name="f_retroactif" value="annuel"<?php echo $check_retroactif_annuel ?> /> de l'année scolaire</label>
   </p>
   <p>
     <label class="tab" for="f_matiere">Matière(s) :</label><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><?php echo $separateur_check_matieres ?><q class="cocher_rien" title="Tout décocher."></q><?php echo $bouton_modifier_matieres ?></span>

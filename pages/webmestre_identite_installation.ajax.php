@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action               = (isset($_POST['f_action']))               ? Clean::texte($_POST['f_action'])               : '';
-$denomination         = (isset($_POST['f_denomination']))         ? Clean::texte($_POST['f_denomination'])         : '';
-$uai                  = (isset($_POST['f_uai']))                  ? Clean::uai($_POST['f_uai'])                    : '';
-$adresse_site         = (isset($_POST['f_adresse_site']))         ? Clean::url($_POST['f_adresse_site'])           : '';
-$logo                 = (isset($_POST['f_logo']))                 ? Clean::texte($_POST['f_logo'])                 : '';
-$cnil_numero          = (isset($_POST['f_cnil_numero']))          ? Clean::entier($_POST['f_cnil_numero'])         : 0;
-$cnil_date_engagement = (isset($_POST['f_cnil_date_engagement'])) ? Clean::texte($_POST['f_cnil_date_engagement']) : '';
-$cnil_date_recepisse  = (isset($_POST['f_cnil_date_recepisse']))  ? Clean::texte($_POST['f_cnil_date_recepisse'])  : '';
-$nom                  = (isset($_POST['f_nom']))                  ? Clean::nom($_POST['f_nom'])                    : '';
-$prenom               = (isset($_POST['f_prenom']))               ? Clean::prenom($_POST['f_prenom'])              : '';
-$courriel             = (isset($_POST['f_courriel']))             ? Clean::courriel($_POST['f_courriel'])          : '';
+$action               = (isset($_POST['f_action']))               ? Clean::texte($_POST['f_action'])                 : '';
+$denomination         = (isset($_POST['f_denomination']))         ? Clean::texte($_POST['f_denomination'])           : '';
+$uai                  = (isset($_POST['f_uai']))                  ? Clean::uai($_POST['f_uai'])                      : '';
+$adresse_site         = (isset($_POST['f_adresse_site']))         ? Clean::url($_POST['f_adresse_site'])             : '';
+$logo                 = (isset($_POST['f_logo']))                 ? Clean::texte($_POST['f_logo'])                   : '';
+$cnil_numero          = (isset($_POST['f_cnil_numero']))          ? Clean::entier($_POST['f_cnil_numero'])           : 0;
+$cnil_date_engagement = (isset($_POST['f_cnil_date_engagement'])) ? Clean::date_fr($_POST['f_cnil_date_engagement']) : '';
+$cnil_date_recepisse  = (isset($_POST['f_cnil_date_recepisse']))  ? Clean::date_fr($_POST['f_cnil_date_recepisse'])  : '';
+$nom                  = (isset($_POST['f_nom']))                  ? Clean::nom($_POST['f_nom'])                      : '';
+$prenom               = (isset($_POST['f_prenom']))               ? Clean::prenom($_POST['f_prenom'])                : '';
+$courriel             = (isset($_POST['f_courriel']))             ? Clean::courriel($_POST['f_courriel'])            : '';
 
 $tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 

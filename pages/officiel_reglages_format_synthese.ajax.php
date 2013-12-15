@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$methode    = (isset($_POST['f_methode'])) ? Clean::texte($_POST['f_methode'])  : '';
-$matiere_id = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0;
-$niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])  : 0;
+$methode    = (isset($_POST['f_methode'])) ? Clean::synthese_methode($_POST['f_methode']) : '';
+$matiere_id = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere'])           : 0;
+$niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])            : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier le mode de synthèse d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($methode,array('inconnu','sans','domaine','theme')) && $matiere_id && $niveau_id )
+if( $methode && $matiere_id && $niveau_id )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
   exit('ok');

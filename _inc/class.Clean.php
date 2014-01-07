@@ -262,14 +262,14 @@ class Clean
   public static function date_fr($text)
   {
     $sep = '/';
-    list($jour,$mois,$annee) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initialisant les valeurs manquantes
+    list($jour,$mois,$annee) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initilisant les valeurs manquantes
     return sprintf("%02u",$jour).$sep.sprintf("%02u",$mois).$sep.sprintf("%04u",$annee);
   }
 
   public static function date_mysql($text) /* inutilisé */
   {
     $sep = '-';
-    list($annee,$mois,$jour) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initialisant les valeurs manquantes
+    list($annee,$mois,$jour) = explode($sep,$text) + array_fill(0,3,0); // Evite des NOTICE en initilisant les valeurs manquantes
     return sprintf("%04u",$annee).$sep.sprintf("%02u",$mois).$sep.sprintf("%02u",$jour);
   }
 

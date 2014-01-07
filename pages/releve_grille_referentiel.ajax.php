@@ -28,31 +28,31 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$remplissage       = (isset($_POST['f_remplissage']))   ? Clean::texte($_POST['f_remplissage'])            : '';
-$colonne_bilan     = (isset($_POST['f_colonne_bilan'])) ? Clean::texte($_POST['f_colonne_bilan'])          : '';
-$colonne_vide      = (isset($_POST['f_colonne_vide']))  ? Clean::entier($_POST['f_colonne_vide'])          : 0;
-$tableau_tri_objet = (isset($_POST['f_tri_objet']))     ? Clean::texte($_POST['f_tri_objet'])              : '';
-$tableau_tri_mode  = (isset($_POST['f_tri_mode']))      ? Clean::texte($_POST['f_tri_mode'])               : '';
-$matiere_id        = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])               : 0;
-$matiere_nom       = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])            : '';
-$groupe_id         = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])                : 0;
-$groupe_nom        = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])             : '';
-$niveau_id         = (isset($_POST['f_niveau']))        ? Clean::entier($_POST['f_niveau'])                : 0;
-$niveau_nom        = (isset($_POST['f_niveau_nom']))    ? Clean::texte($_POST['f_niveau_nom'])             : '';
-$periode_id        = (isset($_POST['f_periode']))       ? Clean::entier($_POST['f_periode'])               : 0;
-$date_debut        = (isset($_POST['f_date_debut']))    ? Clean::date_fr($_POST['f_date_debut'])           : '';
-$date_fin          = (isset($_POST['f_date_fin']))      ? Clean::date_fr($_POST['f_date_fin'])             : '';
+$remplissage       = (isset($_POST['f_remplissage']))   ? Clean::texte($_POST['f_remplissage'])     : '';
+$colonne_bilan     = (isset($_POST['f_colonne_bilan'])) ? Clean::texte($_POST['f_colonne_bilan'])   : '';
+$colonne_vide      = (isset($_POST['f_colonne_vide']))  ? Clean::entier($_POST['f_colonne_vide'])   : 0;
+$tableau_tri_objet = (isset($_POST['f_tri_objet']))     ? Clean::texte($_POST['f_tri_objet'])       : '';
+$tableau_tri_mode  = (isset($_POST['f_tri_mode']))      ? Clean::texte($_POST['f_tri_mode'])        : '';
+$matiere_id        = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])        : 0;
+$matiere_nom       = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])     : '';
+$groupe_id         = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])         : 0;
+$groupe_nom        = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])      : '';
+$niveau_id         = (isset($_POST['f_niveau']))        ? Clean::entier($_POST['f_niveau'])         : 0;
+$niveau_nom        = (isset($_POST['f_niveau_nom']))    ? Clean::texte($_POST['f_niveau_nom'])      : '';
+$periode_id        = (isset($_POST['f_periode']))       ? Clean::entier($_POST['f_periode'])        : 0;
+$date_debut        = (isset($_POST['f_date_debut']))    ? Clean::date_fr($_POST['f_date_debut'])    : '';
+$date_fin          = (isset($_POST['f_date_fin']))      ? Clean::date_fr($_POST['f_date_fin'])      : '';
 $retroactif        = (isset($_POST['f_retroactif']))    ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
-$only_socle        = (isset($_POST['f_restriction']))   ? 1                                                : 0;
-$aff_coef          = (isset($_POST['f_coef']))          ? 1                                                : 0;
-$aff_socle         = (isset($_POST['f_socle']))         ? 1                                                : 0;
-$aff_lien          = (isset($_POST['f_lien']))          ? 1                                                : 0;
-$orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f_orientation'])            : '';
-$couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])                : '';
-$legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])                : '';
-$marge_min         = (isset($_POST['f_marge_min']))     ? Clean::texte($_POST['f_marge_min'])              : '';
-$cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])              : -1;
-$cases_largeur     = (isset($_POST['f_cases_larg']))    ? Clean::entier($_POST['f_cases_larg'])            : 0;
+$only_socle        = (isset($_POST['f_restriction']))   ? 1                                         : 0;
+$aff_coef          = (isset($_POST['f_coef']))          ? 1                                         : 0;
+$aff_socle         = (isset($_POST['f_socle']))         ? 1                                         : 0;
+$aff_lien          = (isset($_POST['f_lien']))          ? 1                                         : 0;
+$orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f_orientation'])     : '';
+$couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])         : '';
+$legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])         : '';
+$marge_min         = (isset($_POST['f_marge_min']))     ? Clean::texte($_POST['f_marge_min'])       : '';
+$cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])       : -1;
+$cases_largeur     = (isset($_POST['f_cases_larg']))    ? Clean::entier($_POST['f_cases_larg'])     : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve_id = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;

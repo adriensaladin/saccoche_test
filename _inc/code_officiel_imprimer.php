@@ -477,7 +477,7 @@ if($BILAN_TYPE=='releve')
   $marge_droite           = $_SESSION['OFFICIEL']['MARGE_DROITE'];
   $marge_haut             = $_SESSION['OFFICIEL']['MARGE_HAUT'];
   $marge_bas              = $_SESSION['OFFICIEL']['MARGE_BAS'];
-  $pages_nb               = $_SESSION['OFFICIEL']['RELEVE_PAGES_NB'];
+  $pages_nb               = 'optimise'; // pas jugé utile de le mettre en option... à revoir ?
   $cases_nb               = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
   $cases_largeur          = 5; // pas jugé utile de le mettre en option...
   $tab_eleve              = $tab_eleve_id;

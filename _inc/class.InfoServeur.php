@@ -151,8 +151,7 @@ class InfoServeur
     $tab_tr = array();
     foreach($tab_objets as $nom_objet => $nom_affichage)
     {
-      $cellule  = (version_compare(PHP_VERSION,'5.2.3','>=')) ? call_user_func('InfoServeur::'.$nom_objet) : call_user_func( array('InfoServeur',$nom_objet) ) ;
-      $tab_tr[] = '<tr><td><img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire($nom_objet).'" /> '.$nom_affichage.'</td>'.$cellule.'</tr>';
+      $tab_tr[] = '<tr><td><img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire($nom_objet).'" /> '.$nom_affichage.'</td>'.call_user_func('InfoServeur::'.$nom_objet).'</tr>';
     }
     return'<table class="p"><thead><tr><th colspan="2">'.$titre.'</th></tr></thead><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }

@@ -71,6 +71,8 @@ elseif($action=='retirer')
     foreach($tab_select_classes_groupes as $groupe_id)
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , FALSE );
+      // Log de l'action
+      SACocheLog::ajouter('Suppression d\'une association période (n°'.$periode_id.') / regroupement (n°'.$groupe_id.'), avec les bilans officiels associés.');
     }
   }
 }

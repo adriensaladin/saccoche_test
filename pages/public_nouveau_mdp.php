@@ -37,7 +37,7 @@ if(!$code_mdp)
 }
 
 // Vérification de la structure du code
-list( $user_pass_key , $BASE ) = explode( 'g' , $code_mdp ) + array_fill(0,2,NULL) ; // Evite des NOTICE en initilisant les valeurs manquantes
+list( $user_pass_key , $BASE ) = explode( 'g' , $code_mdp ) + array_fill(0,2,NULL) ; // Evite des NOTICE en initialisant les valeurs manquantes
 $BASE = (int)$BASE;
 
 if( (!$user_pass_key) || ( ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) )

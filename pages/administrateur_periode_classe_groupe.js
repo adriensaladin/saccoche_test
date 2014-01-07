@@ -84,6 +84,17 @@ $(document).ready
             return(false);
           }
         }
+        if(id=='retirer')
+        {
+          if(!(confirm("Les bilans officiels associés seront perdus !\n\nPour modifier les dates, il faut utiliser le bouton du dessus.\n\nConfirmez-vous vouloir retirer ces associations période(s) / classe(s) groupe(s) ?")) )
+          {
+            return(false);
+          }
+          if(!(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nLes éventuels bilans officiels associés (bulletins...) seront supprimés !\n\nAvez-bien coché ce que vous souhaitiez, en connaissance de cause ?")) )
+          {
+            return(false);
+          }
+        }
         $('button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax

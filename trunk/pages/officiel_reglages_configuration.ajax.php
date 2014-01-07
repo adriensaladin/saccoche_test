@@ -35,7 +35,7 @@ $releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale'
 $releve_ligne_supplementaire    = (isset($_POST['f_releve_check_supplementaire']))    ? Clean::texte($_POST['f_releve_ligne_supplementaire'])     : '';
 $releve_assiduite               = (isset($_POST['f_releve_assiduite']))               ? 1                                                         : 0;
 $releve_prof_principal          = (isset($_POST['f_releve_prof_principal']))          ? 1                                                         : 0;
-$releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::calcul_retroactif($_POST['f_releve_retroactif'])          : '';
+$releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::calcul_retroactif($_POST['f_releve_retroactif'])   : '';
 $releve_only_socle              = (isset($_POST['f_releve_only_socle']))              ? 1                                                         : 0;
 $releve_etat_acquisition        = (isset($_POST['f_releve_etat_acquisition']))        ? 1                                                         : 0;
 $releve_moyenne_scores          = (isset($_POST['f_releve_moyenne_scores']))          ? 1                                                         : 0;
@@ -48,13 +48,14 @@ $releve_aff_domaine             = (isset($_POST['f_releve_aff_domaine']))       
 $releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))               ? 1                                                         : 0;
 $releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? Clean::texte($_POST['f_releve_couleur'])                  : '';
 $releve_legende                 = (isset($_POST['f_releve_legende']))                 ? Clean::texte($_POST['f_releve_legende'])                  : '';
+$releve_pages_nb                = (isset($_POST['f_releve_pages_nb']))                ? Clean::texte($_POST['f_releve_pages_nb'])                 : '';
 
 $bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? Clean::entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
 $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
 $bulletin_ligne_supplementaire  = (isset($_POST['f_bulletin_check_supplementaire']))  ? Clean::texte($_POST['f_bulletin_ligne_supplementaire'])   : '';
 $bulletin_assiduite             = (isset($_POST['f_bulletin_assiduite']))             ? 1                                                         : 0;
 $bulletin_prof_principal        = (isset($_POST['f_bulletin_prof_principal']))        ? 1                                                         : 0;
-$bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::calcul_retroactif($_POST['f_bulletin_retroactif'])        : '';
+$bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::calcul_retroactif($_POST['f_bulletin_retroactif']) : '';
 $bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_fusion_niveaux        = (isset($_POST['f_bulletin_fusion_niveaux']))        ? 1                                                         : 0;
 $bulletin_barre_acquisitions    = (isset($_POST['f_bulletin_barre_acquisitions']))    ? 1                                                         : 0;
@@ -102,6 +103,7 @@ $tab_variables = array(
     'aff_theme',
     'couleur',
     'legende',
+    'pages_nb',
   ),
   'bulletin' => array(
     'appreciation_rubrique',

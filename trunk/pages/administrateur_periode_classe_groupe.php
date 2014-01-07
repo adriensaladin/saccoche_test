@@ -55,9 +55,12 @@ $select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_clas
         du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
         au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
       </p>
+      <hr />
       <p>
-        <button id="retirer" type="button" class="periode_retirer">Retirer ces associations.</button>
+        <button id="retirer" type="button" class="periode_retirer">Retirer ces associations.</button><br />
+        <span class="danger">Les bilans officiels associés seront perdus !</span>
       </p>
+      <hr />
       <p><label id="ajax_msg">&nbsp;</label></p>
     </td>
   </tr></table>

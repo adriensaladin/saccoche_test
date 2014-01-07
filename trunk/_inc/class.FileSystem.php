@@ -403,6 +403,7 @@ class FileSystem
       'CONTACT_MODIFICATION_USER',
       'CONTACT_MODIFICATION_MAIL',
     );
+    $longueur_constante_maxi = 26;
     $fichier_contenu = '<?php'.NL;
     $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'.NL;
     foreach($tab_constantes_requises as $constante_nom)
@@ -423,7 +424,7 @@ class FileSystem
         // ce qui pose un gros souci (fichier de configuration de l'hébergement corrompu).
         exit_error( 'Constante manquante' /*titre*/ , 'Pour la mise à jour du fichier de configuration de l\'hébergement, la constante "'.$constante_nom.'" s\'avère manquer.<br />Par sécurité, arrêt de l\'application.' /*contenu*/ );
       }
-      $espaces = str_repeat(' ',26-strlen($constante_nom));
+      $espaces = str_repeat(' ',$longueur_constante_maxi-strlen($constante_nom));
       $quote = '\'';
       // var_export() permet d'échapper \ ' et inclus des ' autour.
       $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'.NL;

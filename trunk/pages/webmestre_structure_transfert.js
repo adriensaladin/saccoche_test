@@ -432,7 +432,7 @@ $(document).ready
                   $(this).parent().remove();
                 }
               );
-              $('#ajax_supprimer_export').removeAttr("class").html('&nbsp;');
+              $('#ajax_supprimer_export').removeAttr("class").addClass("valide").html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -513,7 +513,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer_import').removeAttr("class").html('&nbsp;');
+              $('#ajax_supprimer_import').removeAttr("class").addClass("valide").html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }

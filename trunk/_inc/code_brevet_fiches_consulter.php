@@ -65,7 +65,7 @@ if(!$BILAN_ETAT)
 {
   exit('Fiche brevet introuvable !');
 }
-if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) )
+if(in_array($BILAN_ETAT,array('0absence','1vide')))
 {
   exit('Fiche brevet interdite d\'accès pour cette action !');
 }

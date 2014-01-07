@@ -235,7 +235,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+              $('#ajax_supprimer').removeAttr("class").addClass("valide").html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }

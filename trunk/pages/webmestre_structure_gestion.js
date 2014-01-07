@@ -357,7 +357,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+              $('#ajax_supprimer').removeAttr("class").addClass("valide").html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -579,7 +579,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html('Demande réalisée !');
         switch (mode)
         {
           case 'ajouter':

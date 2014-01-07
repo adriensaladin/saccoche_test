@@ -280,19 +280,25 @@ if($action=='imprimer_donnees_eleves_moyennes')
   $tab_eleve_id[0] = array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' );
 
   // Fabrication du PDF ; on a besoin de tourner du texte à 90°
+  // Fabrication d'un CSV en parallèle
   $tab_brevet_epreuve[$serie_ref][CODE_BREVET_EPREUVE_TOTAL] = 'Total des points';
   $nb_epreuves = count($tab_brevet_epreuve,COUNT_RECURSIVE) - count($tab_brevet_epreuve) ;
   $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   $releve_PDF->tableau_moyennes_initialiser( $nb_eleves+1 , $nb_epreuves );
+  $releve_CSV = '';
+  $separateur = ';';
   // 1ère ligne : intitulés, noms rubriques
   $releve_PDF->tableau_moyennes_intitule( $classe_nom , 'Session '.$annee_session_brevet , TRUE /*is_brevet*/ );
+  $releve_CSV .= '"'.$classe_nom.' | Session '.$annee_session_brevet.'"';
   foreach($tab_brevet_serie as $serie_ref => $serie_nom)
   {
     foreach($tab_brevet_epreuve[$serie_ref] as $epreuve_ref => $epreuve_nom)
     {
       $releve_PDF->tableau_moyennes_reference_rubrique( $epreuve_ref , $epreuve_nom );
+      $releve_CSV .= $separateur.'"'.$epreuve_nom.'"';
     }
   }
+  $releve_CSV .= "\r\n";
   // ligne suivantes : élèves, notes
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->marge_haut+$releve_PDF->etiquette_hauteur );
@@ -300,15 +306,18 @@ if($action=='imprimer_donnees_eleves_moyennes')
   {
     extract($tab_eleve);  // $eleve_nom $eleve_prenom
     $releve_PDF->tableau_moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
+    $releve_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
     foreach($tab_brevet_serie as $serie_ref => $serie_nom)
     {
       foreach($tab_brevet_epreuve[$serie_ref] as $epreuve_ref => $epreuve_nom)
       {
         $note = (isset($tab_saisie[$eleve_id][$serie_ref.$epreuve_ref])) ? $tab_saisie[$eleve_id][$serie_ref.$epreuve_ref] : NULL ;
         $releve_PDF->tableau_moyennes_note( $eleve_id , $epreuve_ref , $note , TRUE /*is_brevet*/ );
+        $releve_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
       }
     }
     $releve_PDF->SetXY($releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur);
+    $releve_CSV .= "\r\n";
   }
 }
 
@@ -316,8 +325,15 @@ if($action=='imprimer_donnees_eleves_moyennes')
 // Enregistrement et affichage du retour.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export,'F');
-exit('<a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
+$fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf','F');
+echo'<a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
+// Et le csv éventuel
+if($action=='imprimer_donnees_eleves_moyennes')
+{
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($releve_CSV) );
+  echo'<br />'.NL.'<a class="lien_ext" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
+}
+exit();
 
 ?>

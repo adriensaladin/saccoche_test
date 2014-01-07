@@ -535,7 +535,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("valide").html(responseHTML);
+                $('#ajax_msg_archiver_imprimer').removeAttr("class").html(responseHTML);
                 format_liens('#ajax_msg_archiver_imprimer');
               }
             }

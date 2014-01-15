@@ -37,6 +37,16 @@ $test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 
 $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
 $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
+
+// Javascript
+$jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+$check_eleve      = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_ELEVES']      ) ? 'complet' : 'partiel' ;
+$check_parent     = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PARENTS']     ) ? 'complet' : 'partiel' ;
+$check_professeur = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PROFESSEURS'] ) ? 'complet' : 'partiel' ;
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_eleve      = "'.$check_eleve.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_parent     = "'.$check_parent.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_professeur = "'.$check_professeur.'";';
+
 ?>
 
 <form action="#" method="post" id="form_choix">
@@ -60,8 +70,8 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
         <option value="sconet_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichier extrait de Base Élèves (recommandé pour le premier degré)">
-        <option value="base-eleves_eleves">Importer les élèves (avec leurs affectations).</option>
-        <option value="base-eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
+        <option value="base_eleves_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option value="base_eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
         <option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
@@ -69,6 +79,11 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
         <option value="tableur_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
     </select><br />
+    <span id="span_mode" class="hide">
+      <label class="tab">Affichage :</label>
+      <label for="f_mode_complet"><input type="radio" id="f_mode_complet" name="f_mode" value="complet" /> bilan complet (import de début d'année)</label>&nbsp;&nbsp;&nbsp;
+      <label for="f_mode_partiel"><input type="radio" id="f_mode_partiel" name="f_mode" value="partiel" /> seulement les différences trouvées (mise à jour en cours d'année)</label>
+    </span>
   </fieldset>
 
   <fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">
@@ -113,19 +128,19 @@ $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_base-eleves_eleves" class="hide">
+  <fieldset id="fieldset_base_eleves_eleves" class="hide">
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base_eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_base-eleves_parents" class="hide">
+  <fieldset id="fieldset_base_eleves_parents" class="hide">
     <hr />
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base_eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

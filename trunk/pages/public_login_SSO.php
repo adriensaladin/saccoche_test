@@ -255,11 +255,14 @@ if($connexion_mode=='cas')
     return $str_traces;
   }
   // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
-  if (DEBUG_PHPCAS)
+  if(DEBUG_PHPCAS)
   {
-    $fichier_nom_debut = 'debugcas_'.$BASE;
-    $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
-    phpCAS::setDebug(CHEMIN_LOGS_PHPCAS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
+    if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_ETABL_ID_LISTING || (strpos(PHPCAS_ETABL_ID_LISTING,','.$BASE.',')!==FALSE) )
+    {
+      $fichier_nom_debut = 'debugcas_'.$BASE;
+      $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+      phpCAS::setDebug(PHPCAS_CHEMIN_LOGS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
+    }
   }
   // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
   phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
@@ -346,7 +349,7 @@ if($connexion_mode=='cas')
     {
       exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS sont anormaux (connexion_mode vaut "'.$connexion_mode.'" ; connexion_departement vaut "'.$connexion_departement.'" ; connexion_nom vaut "'.$connexion_nom.'") !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
     }
-    // TEST À SUPPRIMER RENTRÉE 2013 QUAND LES CAS PERSO SERONT AUSSI CONCERNÉS - PRENDRA AUSSI EN COMPTE LES CAS À SOUS-DOMAINE VARIABLE, CE QUI N'EST PAS TESTÉ ACTUELLEMENT
+    // TEST À SUPPRIMER RENTRÉE 2014 QUAND LES CAS PERSO SERONT AUSSI CONCERNÉS - PRENDRA AUSSI EN COMPTE LES CAS À SOUS-DOMAINE VARIABLE, CE QUI N'EST PAS TESTÉ ACTUELLEMENT
     if($connexion_nom=='perso')
     {
       // RETIRÉ DURANT LA SESSION 2013-2014 POUR NE PAS POSER PB AUX ÉTABLISSEMENTS AUXQUEL CELA N'A PAS ÉTÉ ANNONCÉ

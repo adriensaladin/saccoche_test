@@ -47,7 +47,34 @@ public static function DB_executer_requetes_MySQL($requetes)
 }
 
 /**
+ * Analyser les tables
+ * @see http://dev.mysql.com/doc/refman/5.0/fr/check-table.html
+ *
+ * @param string $listing_tables
+ * @return void
+ */
+public static function DB_analyser_tables($listing_tables)
+{
+  $DB_SQL = 'CHECK TABLE '.$listing_tables;
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Réparer une table
+ * @see http://dev.mysql.com/doc/refman/5.0/fr/repair-table.html
+ *
+ * @param string $table
+ * @return void
+ */
+public static function DB_reparer_table($table)
+{
+  $DB_SQL = 'REPAIR TABLE '.$table;
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * Récupérer les informations concernant les tables présentes dans la base
+ * @see http://dev.mysql.com/doc/refman/5.0/fr/show-table-status.html
  *
  * Retourne une ligne par table, avec pour chacune les champs Engine / Version / Row_format / Rows / Avg_row_length / Data_length / Max_data_length / Index_length / Data_free / Auto_increment / Create_time / Update_time / Check_time / Collation / Checksum / Create_options / Comment
  *
@@ -246,6 +273,20 @@ public static function DB_recuperer_matieres_professeur($user_id)
   $DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 ';
   $DB_VAR = array(':user_id'=>$user_id);
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Lister les tables de SACoche en base de données
+ * @see http://dev.mysql.com/doc/refman/5.0/fr/show-tables.html
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_lister_tables()
+{
+  $DB_SQL = 'SHOW TABLES ';
+  $DB_SQL.= 'LIKE "sacoche_%" ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE);
 }
 
 /**

@@ -28,15 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? $_POST['f_action']              : ''; // transmis la 1e fois manuellement, ensuite dans un INPUT
+$action = (isset($_POST['f_action'])) ? $_POST['f_action']              : '';
+$mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
 $step   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
 $tab_actions = array(
   'sconet_professeurs_directeurs_oui' => 'sconet_professeurs_directeurs',
   'sconet_eleves_oui'                 => 'sconet_eleves',
   'sconet_parents_oui'                => 'sconet_parents',
-  'base-eleves_eleves'                => 'base-eleves_eleves',
-  'base-eleves_parents'               => 'base-eleves_parents',
+  'base_eleves_eleves'                => 'base_eleves_eleves',
+  'base_eleves_parents'               => 'base_eleves_parents',
   'tableur_professeurs_directeurs'    => 'tableur_professeurs_directeurs',
   'tableur_eleves'                    => 'tableur_eleves',
   'tableur_parents'                   => 'tableur_parents',
@@ -75,32 +76,32 @@ function load_fichier($nom)
 // Liste des étapes suivant le mode d'import
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_etapes['sconet_professeurs_directeurs']   = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs']  = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>'.NL;
 
-$tab_etapes['sconet_parents']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['sconet_parents']                 .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Adresses (ajouts / modifications)</li>'.NL;
-$tab_etapes['sconet_parents']                 .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_parents']                 .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
+$tab_etapes['sconet_parents']                 = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+$tab_etapes['sconet_parents']                .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+$tab_etapes['sconet_parents']                .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_parents']                .= '<li id="step7">Étape 4 - Adresses (ajouts / modifications)</li>'.NL;
+$tab_etapes['sconet_parents']                .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['sconet_parents']                .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
 
-$tab_etapes['base-eleves_eleves']              = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['base-eleves_eleves']             .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>'.NL;
+$tab_etapes['base_eleves_eleves']             = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+$tab_etapes['base_eleves_eleves']            .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+$tab_etapes['base_eleves_eleves']            .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['base_eleves_eleves']            .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+$tab_etapes['base_eleves_eleves']            .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>'.NL;
 
-$tab_etapes['sconet_eleves']                   = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['tableur_professeurs_directeurs']  = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['tableur_eleves']                  = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['base-eleves_parents']             = $tab_etapes['sconet_parents'];
-$tab_etapes['tableur_parents']                 = $tab_etapes['sconet_parents'];
+$tab_etapes['sconet_eleves']                  = $tab_etapes['sconet_professeurs_directeurs'];
+$tab_etapes['tableur_professeurs_directeurs'] = $tab_etapes['sconet_professeurs_directeurs'];
+$tab_etapes['tableur_eleves']                 = $tab_etapes['sconet_professeurs_directeurs'];
+$tab_etapes['base_eleves_parents']            = $tab_etapes['sconet_parents'];
+$tab_etapes['tableur_parents']                = $tab_etapes['sconet_parents'];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Étape 10 - Récupération du fichier (tous les cas)
@@ -140,6 +141,7 @@ if( $step==10 )
   }
   // On affiche le bilan et les puces des étapes
   echo'<hr />'.NL;
+  echo ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyses restreintes aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
   echo'<ul id="step">'.NL.$tab_etapes[$action].'</ul>'.NL;
   echo'<hr />'.NL;
   echo'<fieldset>'.NL;
@@ -824,10 +826,10 @@ if( $step==20 )
     $nb_lien_responsabilite = array_sum($tab_responsabilites);
     $nb_adresses = count($tab_adresses_uniques);
   }
-  if($action=='base-eleves_eleves')
+  if($action=='base_eleves_eleves')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Étape 2g - Extraction base-eleves_eleves
+    // Étape 2g - Extraction base_eleves_eleves
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
     $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -919,10 +921,10 @@ if( $step==20 )
       }
     }
   }
-  if($action=='base-eleves_parents')
+  if($action=='base_eleves_parents')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Étape 2h - Extraction base-eleves_parents
+    // Étape 2h - Extraction base_eleves_parents
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
     $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -1044,12 +1046,12 @@ if( $step==20 )
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
-    case 'base-eleves_eleves' :
+    case 'base_eleves_eleves' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
     case 'sconet_parents' :
-    case 'base-eleves_parents' :
+    case 'base_eleves_parents' :
     case 'tableur_parents' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['adresse'],$tab_users_fichier['enfant']);
       break;
@@ -1083,7 +1085,7 @@ if( $step==20 )
       echo'<p><label class="valide">'.$nombre.' '.$tab_profils_libelles[$profil][min(2,$nombre)].' trouvé'.$s.'.</label></p>'.NL;
     }
   }
-  else if( ($action=='sconet_parents') || ($action=='base-eleves_parents') || ($action=='tableur_parents') )
+  else if( ($action=='sconet_parents') || ($action=='base_eleves_parents') || ($action=='tableur_parents') )
   {
     exit('<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>');
   }
@@ -1092,7 +1094,7 @@ if( $step==20 )
     exit('<p><label class="alerte">Aucun utilisateur trouvé !</label></p>');
   }
   // On affiche le bilan des classes trouvées
-   if( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='tableur_parents') )
+   if( ($action!='sconet_parents') && ($action!='base_eleves_parents') && ($action!='tableur_parents') )
   {
     $nombre = count($tab_classes_fichier['ref']);
     if($nombre)
@@ -1106,7 +1108,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des groupes trouvés
-  if( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='base-eleves_eleves') && ($action!='tableur_parents') )
+  if( ($action!='sconet_parents') && ($action!='base_eleves_parents') && ($action!='base_eleves_eleves') && ($action!='tableur_parents') )
   {
     $nombre = count($tab_groupes_fichier['ref']);
     if($nombre)
@@ -1120,7 +1122,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des parents trouvés
-  if( ($action=='sconet_parents') || ($action=='base-eleves_parents') || ($action=='tableur_parents') )
+  if( ($action=='sconet_parents') || ($action=='base_eleves_parents') || ($action=='tableur_parents') )
   {
     if($nb_adresses)
     {
@@ -1142,13 +1144,15 @@ if( $step==20 )
     }
   }
   // Fin de l'extraction
+$mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
+  
   $step = ( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='tableur_parents') ) ? '3' : '5' ;
   echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 31 - Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 31 - Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==31 )
@@ -1177,7 +1181,10 @@ if( $step==31 )
     $id_base = array_search($ref,$tab_classes_base['ref']);
     if($id_base!==FALSE)
     {
-      $lignes_ras .= '<tr><th>'.html($tab_classes_base['ref'][$id_base]).'</th><td>'.html($tab_classes_base['nom'][$id_base]).'</td></tr>'.NL;
+      if($mode=='complet')
+      {
+        $lignes_ras .= '<tr><th>'.html($tab_classes_base['ref'][$id_base]).'</th><td>'.html($tab_classes_base['nom'][$id_base]).'</td></tr>'.NL;
+      }
       $tab_i_classe_TO_id_base[$i_classe] = $id_base;
       unset($tab_classes_fichier['ref'][$i_classe] , $tab_classes_fichier['nom'][$i_classe] ,  $tab_classes_fichier['niveau'][$i_classe] , $tab_classes_base['ref'][$id_base] , $tab_classes_base['nom'][$id_base]);
     }
@@ -1208,7 +1215,7 @@ if( $step==31 )
     {
       // On préselectionne un niveau :
       // - pour sconet_eleves                 on compare avec un masque d'expression régulière
-      // - pour base-eleves_eleves            on compare avec les niveaux de SACoche
+      // - pour base_eleves_eleves            on compare avec les niveaux de SACoche
       // - pour sconet_professeurs_directeurs on compare avec le début de la référence de la classe
       // - pour tableur_eleves                on compare avec le début de la référence de la classe
       $id_checked = '';
@@ -1218,7 +1225,7 @@ if( $step==31 )
         {
           $id_checked = (preg_match('/^'.$masque_recherche.'$/',$tab_classes_fichier['niveau'][$i_classe])) ? $niveau_id : '';
         }
-        elseif($action=='base-eleves_eleves')
+        elseif($action=='base_eleves_eleves')
         {
           $id_checked = (mb_strpos($tab_classes_fichier['niveau'][$i_classe],$masque_recherche)===0) ? $niveau_id : '';
         }
@@ -1246,13 +1253,18 @@ if( $step==31 )
     echo'<p class="danger">Des classes non trouvées sont proposées à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL;
   }
   echo'<table>'.NL;
+  if($mode=='complet')
+  {
+    echo  '<tbody>'.NL;
+    echo    '<tr><th colspan="2">Classes actuelles à conserver</th></tr>'.NL;
+    echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucune</td></tr>'.NL;
+    echo  '</tbody>'.NL;
+  }
   echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Classes actuelles à conserver</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucune</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
   echo    '<tr><th colspan="2">Classes nouvelles à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucune</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
+  echo  '</tbody>'.NL;
+  echo  '<tbody>'.NL;
   echo    '<tr><th colspan="2">Classes anciennes à supprimer<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucune</td></tr>'.NL;
   echo  '</tbody>'.NL;
@@ -1262,7 +1274,7 @@ if( $step==31 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==32 )
@@ -1324,28 +1336,33 @@ if( $step==32 )
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // Afficher le bilan
   $lignes = '';
-  $nb_fin = 0;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
-  foreach($DB_TAB as $DB_ROW)
+  if($mode=='complet')
   {
-    $lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'.NL;
-    $nb_fin++;
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'.NL;
+    }
   }
+  $nb_fin = count($DB_TAB);
   $nb_ras = $nb_fin - $nb_add + $nb_del;
   $s_ras = ($nb_ras>1) ? 's' : '';
   $s_add = ($nb_add>1) ? 's' : '';
   $s_del = ($nb_del>1) ? 's' : '';
   $s_fin = ($nb_fin>1) ? 's' : '';
   echo'<p><label class="valide">'.$nb_ras.' classe'.$s_ras.' présente'.$s_ras.' + '.$nb_add.' classe'.$s_add.' ajoutée'.$s_add.' &minus; '.$nb_del.' classe'.$s_del.' supprimée'.$s_del.' = '.$nb_fin.' classe'.$s_fin.' résultante'.$s_fin.'.</label></p>'.NL;
-  echo'<table>'.NL;
-  echo  '<thead>'.NL;
-  echo    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL;
-  echo  '</thead>'.NL;
-  echo  '<tbody>'.NL;
-  echo    $lignes;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  $step = ($action!='base-eleves_eleves') ? '4' : '5' ;
+  if($mode=='complet')
+  {
+    echo'<table>'.NL;
+    echo  '<thead>'.NL;
+    echo    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL;
+    echo  '</thead>'.NL;
+    echo  '<tbody>'.NL;
+    echo    $lignes;
+    echo  '</tbody>'.NL;
+    echo'</table>'.NL;
+  }
+  $step = ($action!='base_eleves_eleves') ? '4' : '5' ;
   echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
@@ -1380,7 +1397,10 @@ if( $step==41 )
     $id_base = array_search($ref,$tab_groupes_base['ref']);
     if($id_base!==FALSE)
     {
-      $lignes_ras .= '<tr><th>'.html($tab_groupes_base['ref'][$id_base]).'</th><td>'.html($tab_groupes_base['nom'][$id_base]).'</td></tr>'.NL;
+      if($mode=='complet')
+      {
+        $lignes_ras .= '<tr><th>'.html($tab_groupes_base['ref'][$id_base]).'</th><td>'.html($tab_groupes_base['nom'][$id_base]).'</td></tr>'.NL;
+      }
       $tab_i_groupe_TO_id_base[$i_groupe] = $id_base;
       unset($tab_groupes_fichier['ref'][$i_groupe] , $tab_groupes_fichier['nom'][$i_groupe] ,  $tab_groupes_fichier['niveau'][$i_groupe] , $tab_groupes_base['ref'][$id_base] , $tab_groupes_base['nom'][$id_base]);
     }
@@ -1411,7 +1431,7 @@ if( $step==41 )
     {
       // On préselectionne un niveau :
       // - pour sconet_eleves                 on compare avec un masque d'expression régulière
-      // - pour base-eleves_eleves            on compare avec les niveaux de SACoche
+      // - pour base_eleves_eleves            on compare avec les niveaux de SACoche
       // - pour sconet_professeurs_directeurs on compare avec le début de la référence du groupe
       // - pour tableur_eleves                on compare avec le début de la référence du groupe
       $id_checked = '';
@@ -1445,13 +1465,18 @@ if( $step==41 )
     echo'<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL;
   }
   echo'<table>'.NL;
+  if($mode=='complet')
+  {
+    echo  '<tbody>'.NL;
+    echo    '<tr><th colspan="2">Groupes actuels à conserver</th></tr>'.NL;
+    echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+    echo  '</tbody>'.NL;
+  }
   echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Groupes actuels à conserver</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
   echo    '<tr><th colspan="2">Groupes nouveaux à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
+  echo  '</tbody>'.NL;
+  echo  '<tbody>'.NL;
   echo    '<tr><th colspan="2">Groupes anciens à supprimer<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucun</td></tr>'.NL;
   echo  '</tbody>'.NL;
@@ -1523,27 +1548,32 @@ if( $step==42 )
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // Afficher le bilan
   $lignes = '';
-  $nb_fin = 0;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
-  foreach($DB_TAB as $DB_ROW)
+  if($mode=='complet')
   {
-    $lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'.NL;
-    $nb_fin++;
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'.NL;
+    }
   }
+  $nb_fin = count($DB_TAB);
   $nb_ras = $nb_fin - $nb_add + $nb_del;
   $s_ras = ($nb_ras>1) ? 's' : '';
   $s_add = ($nb_add>1) ? 's' : '';
   $s_del = ($nb_del>1) ? 's' : '';
   $s_fin = ($nb_fin>1) ? 's' : '';
   echo'<p><label class="valide">'.$nb_ras.' groupe'.$s_ras.' présent'.$s_ras.' + '.$nb_add.' groupe'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' groupe'.$s_del.' supprimé'.$s_del.' = '.$nb_fin.' groupe'.$s_fin.' résultant'.$s_fin.'.</label></p>'.NL;
-  echo'<table>'.NL;
-  echo  '<thead>'.NL;
-  echo    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL;
-  echo  '</thead>'.NL;
-  echo  '<tbody>'.NL;
-  echo    $lignes;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
+  if($mode=='complet')
+  {
+    echo'<table>'.NL;
+    echo  '<thead>'.NL;
+    echo    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL;
+    echo  '</thead>'.NL;
+    echo  '<tbody>'.NL;
+    echo    $lignes;
+    echo  '</tbody>'.NL;
+    echo'</table>'.NL;
+  }
   echo'<p class="li"><a href="#step51" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
@@ -1711,8 +1741,11 @@ if( $step==51 )
       // Cas [6] : présent dans le fichier, présent dans la base, classe indiquée dans le fichier si élève, actuel dans la base et aucune différence constatée : contenu à conserver (contenu identique)
       else
       {
-        $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
-        $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
+        if($mode=='complet')
+        {
+          $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+          $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
+        }
       }
     }
     // Supprimer l'entrée du fichier et celle de la base éventuelle
@@ -1740,8 +1773,11 @@ if( $step==51 )
       // Cas [8] : absent dans le fichier, présent dans la base, ancien : contenu inchangé (restant ancien)
       else
       {
-        $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
-        $lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
+        if($mode=='complet')
+        {
+          $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+          $lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
+        }
       }
       unset( $tab_users_base['sconet_id'][$id_base] , $tab_users_base['sconet_num'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['sortie'][$id_base] );
     }
@@ -1777,15 +1813,21 @@ if( $step==51 )
   echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="2">Aucun</td></tr>'.NL;
   echo  '</tbody>'.NL;
   // Cas [6]
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs à conserver (actuels)</th></tr>'.NL;
-  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
+  if($mode=='complet')
+  {
+    echo  '<tbody>'.NL;
+    echo    '<tr><th colspan="2">Utilisateurs à conserver (actuels)</th></tr>'.NL;
+    echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+    echo  '</tbody>'.NL;
+  }
   // Cas [4] et [8]
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs inchangés (anciens)</th></tr>'.NL;
-  echo($lignes_inchanger) ? $lignes_inchanger : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
+  if($mode=='complet')
+  {
+    echo  '<tbody>'.NL;
+    echo    '<tr><th colspan="2">Utilisateurs inchangés (anciens)</th></tr>'.NL;
+    echo($lignes_inchanger) ? $lignes_inchanger : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+    echo  '</tbody>'.NL;
+  }
   // Cas [1]
   if($is_profil_eleve)
   {
@@ -1961,12 +2003,15 @@ if( $step==52 )
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_nom_court_singulier,user_nom,user_prenom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , $with_classe , TRUE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
-    $td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
     if(TODAY_MYSQL<$DB_ROW['user_sortie_date']) {$nb_fin_actuel++;} else {$nb_fin_ancien++;}
-    $champ = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
-    $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
-    $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'.NL;
+    if($mode=='complet')
+    {
+      $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
+      $td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
+      $champ = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
+      $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
+      $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'.NL;
+    }
   }
   $s_debut_actuel = ($nb_debut_actuel>1) ? 's' : '';
   $s_debut_ancien = ($nb_debut_ancien>1) ? 's' : '';
@@ -1997,14 +2042,17 @@ if( $step==52 )
   }
   $champ = ($is_profil_eleve) ? 'Classe' : 'Profil' ;
   echo'<p><label class="valide">'.$nb_debut_actuel.' utilisateur'.$s_debut_actuel.' actuel'.$s_debut_actuel.' et '.$nb_debut_ancien.' utilisateur'.$s_debut_ancien.' ancien'.$s_debut_ancien.' &rarr; '.$nb_mod.' utilisateur'.$s_mod.' modifié'.$s_mod.' + '.$nb_add.' utilisateur'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' utilisateur'.$s_del.' retiré'.$s_del.' &rarr; '.$nb_fin_actuel.' utilisateur'.$s_fin_actuel.' actuel'.$s_fin_actuel.' et '.$nb_fin_ancien.' utilisateur'.$s_fin_ancien.' ancien'.$s_fin_ancien.'.</label></p>'.NL;
-  echo'<table>'.NL;
-  echo  '<thead>'.NL;
-  echo    '<tr><th>Id Sconet</th><th>N° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Sortie</th></tr>'.NL;
-  echo  '</thead>'.NL;
-  echo  '<tbody>'.NL;
-  echo    $lignes;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
+  if($mode=='complet')
+  {
+    echo'<table>'.NL;
+    echo  '<thead>'.NL;
+    echo    '<tr><th>Id Sconet</th><th>N° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Sortie</th></tr>'.NL;
+    echo  '</thead>'.NL;
+    echo  '<tbody>'.NL;
+    echo    $lignes;
+    echo  '</tbody>'.NL;
+    echo'</table>'.NL;
+  }
   if($nb_add)
   {
     echo'<p class="li"><a href="#" class="step53">Récupérer les identifiants de tout nouvel utilisateur inscrit.</a><input id="archive" name="archive" type="hidden" value="'.$fnom.'" /><label id="ajax_msg">&nbsp;</label></p>'.NL;
@@ -2020,8 +2068,8 @@ if( $step==52 )
       case 'tableur_professeurs_directeurs' : $etape = 6; $step = 61; break;
       case 'sconet_parents'                 : $etape = 4; $step = 71; break;
       case 'tableur_parents'                : $etape = 4; $step = 71; break;
-      case 'base-eleves_parents'            : $etape = 4; $step = 71; break;
-      case 'base-eleves_eleves'             : $etape = 5; $step = 90; break;
+      case 'base_eleves_parents'            : $etape = 4; $step = 71; break;
+      case 'base_eleves_eleves'             : $etape = 5; $step = 90; break;
     }
     echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   }
@@ -2053,8 +2101,8 @@ if( $step==53 )
     case 'tableur_professeurs_directeurs' : $etape = 4; $step = 61; break;
     case 'sconet_parents'                 : $etape = 4; $step = 71; break;
     case 'tableur_parents'                : $etape = 4; $step = 71; break;
-    case 'base-eleves_parents'            : $etape = 4; $step = 71; break;
-    case 'base-eleves_eleves'             : $etape = 5; $step = 90; break;
+    case 'base_eleves_parents'            : $etape = 4; $step = 71; break;
+    case 'base_eleves_eleves'             : $etape = 5; $step = 90; break;
   }
   echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
@@ -2129,7 +2177,10 @@ if( $step==61 )
             if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
             {
               $tab_asso_prof_classe[$user_id.'_'.$groupe_id] = TRUE;
-              $lignes_classes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+              if($mode=='complet')
+              {
+                $lignes_classes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+              }
               unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
             }
             else
@@ -2179,7 +2230,10 @@ if( $step==61 )
               $groupe_id = $tab_i_classe_TO_id_base[$i_classe];
               if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
               {
-                $lignes_principal_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                if($mode=='complet')
+                {
+                  $lignes_principal_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                }
                 unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
               }
               elseif(isset($tab_asso_prof_classe[$user_id.'_'.$groupe_id]))
@@ -2233,7 +2287,10 @@ if( $step==61 )
             $matiere_id = $tab_matiere_ref_TO_id_base[$matiere_code];
             if(isset($tab_base_affectation[$user_id.'_'.$matiere_id]))
             {
-              $lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
+              if($mode=='complet')
+              {
+                $lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
+              }
               unset($tab_base_affectation[$user_id.'_'.$matiere_id]);
             }
             else
@@ -2281,7 +2338,10 @@ if( $step==61 )
           $groupe_id = $tab_i_groupe_TO_id_base[$i_groupe];
           if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
           {
-            $lignes_groupes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>'.NL;
+            if($mode=='complet')
+            {
+              $lignes_groupes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>'.NL;
+            }
             unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
           }
           else
@@ -2310,46 +2370,67 @@ if( $step==61 )
   echo'<table>'.NL;
   if( ($action=='sconet_professeurs_directeurs') || ($action=='tableur_professeurs_directeurs') )
   {
+    if($mode=='complet')
+    {
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / classes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_classes_ras) ? $lignes_classes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
+    }
     echo    '<tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / classes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_classes_ras) ? $lignes_classes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
     echo      '<tr><th colspan="3">Associations utilisateurs / classes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_classes_add) ? $lignes_classes_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
+    echo    '</tbody>'.NL;
+    echo    '<tbody>'.NL;
     echo      '<tr><th colspan="3">Associations utilisateurs / classes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_classes_del) ? $lignes_classes_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
     echo    '</tbody>'.NL;
   }
   if($action=='sconet_professeurs_directeurs')
   {
+    if($mode=='complet')
+    {
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
+    }
     echo    '<tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
     echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_principal_add) ? $lignes_principal_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
+    echo    '</tbody>'.NL;
+    echo    '<tbody>'.NL;
     echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_principal_del) ? $lignes_principal_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody><tbody>'.NL;
+    echo    '</tbody>'.NL;
+    if($mode=='complet')
+    {
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
+    }
+    echo    '<tbody>'.NL;
     echo      '<tr><th colspan="3">Associations utilisateurs / matières à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_matieres_add) ? $lignes_matieres_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    // echo    '</tbody><tbody>'.NL;
+    // echo    '</tbody>'.NL;
+    // echo    '<tbody>'.NL;
     // echo      '<tr><th colspan="3">Associations utilisateurs / matières à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     // echo($lignes_matieres_del) ? $lignes_matieres_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
     echo    '</tbody>'.NL;
   }
-  echo    '<tbody>';
-  echo      '<tr><th colspan="3">Associations utilisateurs / groupes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-  echo($lignes_groupes_ras) ? $lignes_groupes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-  echo    '</tbody><tbody>'.NL;
+  if($mode=='complet')
+  {
+    echo    '<tbody>';
+    echo      '<tr><th colspan="3">Associations utilisateurs / groupes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    echo($lignes_groupes_ras) ? $lignes_groupes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
+  }
+  echo    '<tbody>'.NL;
   echo      '<tr><th colspan="3">Associations utilisateurs / groupes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_groupes_add) ? $lignes_groupes_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-  echo    '</tbody><tbody>'.NL;
+  echo    '</tbody>'.NL;
+  echo    '<tbody>'.NL;
   echo      '<tr><th colspan="3">Associations utilisateurs / groupes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_groupes_del) ? $lignes_groupes_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
   echo    '</tbody>'.NL;
@@ -2441,7 +2522,7 @@ if( $step==62 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 71 - Adresses des parents (sconet_parents | base-eleves_parents | tableur_parents)
+// Étape 71 - Adresses des parents (sconet_parents | base_eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==71 )
@@ -2506,7 +2587,10 @@ if( $step==71 )
       if($nb_differences==0)
       {
         // Cas [2a] : adresses identiques &rarr; conserver
-        $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>'.NL;
+        if($mode=='complet')
+        {
+          $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>'.NL;
+        }
       }
       else
       {
@@ -2529,17 +2613,20 @@ if( $step==71 )
   echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucune</td></tr>'.NL;
   echo    '</tbody>'.NL;
   // Cas [2a]
-  echo    '<tbody>'.NL;
-  echo      '<tr><th colspan="3">Adresses à conserver</th></tr>'.NL;
-  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-  echo    '</tbody>'.NL;
+  if($mode=='complet')
+  {
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Adresses à conserver</th></tr>'.NL;
+    echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
+  }
   echo'</table>'.NL;
   echo'<p class="li"><a href="#step72" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base-eleves_parents | tableur_parents)
+// Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base_eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==72 )
@@ -2582,7 +2669,7 @@ if( $step==72 )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 81 - Liens de responsabilités des parents (sconet_parents | base-eleves_parents | tableur_parents)
+// Étape 81 - Liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==81 )
@@ -2610,7 +2697,7 @@ if( $step==81 )
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_infos_eleve = array( 'nom'=>$DB_ROW['eleve_nom'] , 'prenom'=>$DB_ROW['eleve_prenom'] );
-    if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($action=='base-eleves_parents') ) )
+    if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($action=='base_eleves_parents') ) )
     {
       $tab_infos_parent = array( 'id'=>(int)$DB_ROW['parent_id'] , 'nom'=>$DB_ROW['parent_nom'] , 'prenom'=>$DB_ROW['parent_prenom'] );
       if(!isset($tab_base_parents_par_eleve[(int)$DB_ROW['eleve_id']]))
@@ -2694,7 +2781,10 @@ if( $step==81 )
       if($nb_differences==0)
       {
         // Cas [1] : responsables identiques &rarr; conserver
-        $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>'.NL;
+        if($mode=='complet')
+        {
+          $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>'.NL;
+        }
       }
       else
       {
@@ -2712,17 +2802,20 @@ if( $step==81 )
   echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucun</td></tr>'.NL;
   echo    '</tbody>'.NL;
   // Cas [1]
-  echo    '<tbody>'.NL;
-  echo      '<tr><th colspan="3">Liens de responsabilité à conserver</th></tr>'.NL;
-  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucun</td></tr>'.NL;
-  echo    '</tbody>'.NL;
+  if($mode=='complet')
+  {
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Liens de responsabilité à conserver</th></tr>'.NL;
+    echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucun</td></tr>'.NL;
+    echo    '</tbody>'.NL;
+  }
   echo'</table>'.NL;
   echo'<p class="li"><a href="#step82" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base-eleves_parents | tableur_parents)
+// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==82 )
@@ -2777,6 +2870,11 @@ if( $step==90 )
   FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'       , TRUE /*verif_exist*/ );
   FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt'  , TRUE /*verif_exist*/ );
   FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt' , TRUE /*verif_exist*/ );
+  // Retenir qu'un import a été effectué
+  $nom_variable = (mb_strpos($action,'_eleves')) ? 'date_last_import_eleves' : ( (mb_strpos($action,'_parents')) ? 'date_last_import_parents' : 'date_last_import_professeurs' ) ;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
+  $_SESSION[strtoupper($nom_variable)] = TODAY_MYSQL;
+  // Game over
   echo'<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>'.NL;
   echo'<p class="li"><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();

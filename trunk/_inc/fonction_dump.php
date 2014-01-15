@@ -312,4 +312,48 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
   }
 }
 
+/**
+ * analyser_et_reparer_tables_base_etablissement
+ * Sans lien direct avec la sauvegarde, mais tout de même rangé dans ce fichier...
+ *
+ * @param void
+ * @return array   un code de niveau d'alerte + un message
+ */
+
+function analyser_et_reparer_tables_base_etablissement()
+{
+  // Lister les tables
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_tables();
+  $listing_tables = implode( ',', array_keys($DB_TAB) );
+  // Analyser les tables
+  $niveau_alerte = 0;
+  $tab_messages = array();
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_analyser_tables($listing_tables);
+  foreach($DB_TAB as $key => $DB_ROW)
+  {
+    if( ($DB_ROW['Msg_text']!='OK') && ($DB_ROW['Msg_text']!='Not checked') )
+    {
+      $niveau_alerte = max( $niveau_alerte , 1 );
+      $tab_messages[$key] = $DB_ROW['Table'].' &rarr; '.$DB_ROW['Msg_text'];
+      // Réparer une table
+      $DB_ROW2 = DB_STRUCTURE_COMMUN::DB_reparer_table($DB_ROW['Table']);
+      $tab_messages[$key] .= ' &rarr; Réparation &rarr; '.$DB_ROW2['Msg_text'];
+      if($DB_ROW2['Msg_text']!='OK')
+      {
+        $niveau_alerte = 2;
+      }
+    }
+    elseif(HEBERGEUR_INSTALLATION=='mono-structure')
+    {
+      $tab_messages[$key] = $DB_ROW['Table'].' &rarr; '.$DB_ROW['Msg_text'];
+    }
+  }
+  // Retour
+  if(!count($tab_messages))
+  {
+    $tab_messages[] = count($DB_TAB).' tables OK';
+  }
+  return array( $niveau_alerte , implode('<br />',$tab_messages) );
+}
+
 ?>

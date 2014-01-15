@@ -28,9 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
-$chemin_logs  = (isset($_POST['f_chemin_logs'])) ? Clean::texte($_POST['f_chemin_logs']) : '';
-$fichier_logs = (isset($_POST['f_fichier']))     ? Clean::fichier($_POST['f_fichier'])   : '';
+$action           = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])           : '';
+$chemin_logs      = (isset($_POST['f_chemin_logs']))      ? Clean::texte($_POST['f_chemin_logs'])      : '';
+$etabl_id_listing = (isset($_POST['f_etabl_id_listing'])) ? Clean::texte($_POST['f_etabl_id_listing']) : '';
+$fichier_logs     = (isset($_POST['f_fichier']))          ? Clean::fichier($_POST['f_fichier'])        : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier les paramètres de debug
@@ -67,25 +68,36 @@ if($action=='modifier_debug')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modifier le chemin des logs phpCAS
+// Modifier les paramètres des logs phpCAS
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
+if( ($action=='modifier_phpCAS') && ($chemin_logs) )
 {
   $chemin_logs = (substr($chemin_logs,-1)==DS) ? $chemin_logs : $chemin_logs.DS ;
   // Vérifier chemin valide
   if(!is_dir($chemin_logs))
   {
-    exit('Chemin invalide (ce dossier n\'existe pas) !');
+    exit('Chemin invalide (le dossier n\'existe pas) !');
   }
   // Tester droits en écriture
   if( !FileSystem::ecrire_fichier_si_possible( $chemin_logs.'debugcas_test_ecriture.txt' , 'ok' ) )
   {
-    exit('Droits en écriture dans ce dossier insuffisants !');
+    exit('Droits en écriture dans le dossier insuffisants !');
+  }
+  FileSystem::supprimer_fichier($chemin_logs.'debugcas_test_ecriture.txt');
+  // Nettoyer la liste des établissements transmise
+  if($etabl_id_listing)
+  {
+    $tab_etabl_id = explode(',',$etabl_id_listing);
+    $tab_etabl_id = Clean::map_entier($tab_etabl_id);
+    $tab_etabl_id = array_filter($tab_etabl_id,'positif');
+    $etabl_id_listing = count($tab_etabl_id) ? ','.implode(',',$tab_etabl_id).',' : '' ;
   }
   // ok
-  FileSystem::supprimer_fichier($chemin_logs.'debugcas_test_ecriture.txt');
-  FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
+  FileSystem::fabriquer_fichier_hebergeur_info( array(
+    'PHPCAS_CHEMIN_LOGS'      => $chemin_logs,
+    'PHPCAS_ETABL_ID_LISTING' => $etabl_id_listing,
+  ) );
   exit('ok');
 }
 
@@ -95,7 +107,7 @@ if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 
 if( ($action=='supprimer') && $fichier_logs )
 {
-  FileSystem::supprimer_fichier( CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( PHPCAS_CHEMIN_LOGS.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
   exit('ok');
 }
 
@@ -105,7 +117,7 @@ if( ($action=='supprimer') && $fichier_logs )
 
 if( ($action=='voir') && $fichier_logs )
 {
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt') );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_CHEMIN_LOGS.$fichier_logs.'.txt') );
   exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 

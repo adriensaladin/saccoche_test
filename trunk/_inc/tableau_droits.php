@@ -135,6 +135,7 @@ $tab_droits_par_page = array
   'webmestre_debug'                         => $tab_droits_profil_webmestre_developpeur,
   'webmestre_maintenance'                   => $tab_droits_profil_webmestre_developpeur,
   'webmestre_statistiques'                  => $tab_droits_profil_webmestre_developpeur,
+  'webmestre_structure_bdd_repair'          => $tab_droits_profil_webmestre_developpeur,
   // Profil webmestre
   'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre,
   'webmestre_contact_modification'          => $tab_droits_profil_webmestre,

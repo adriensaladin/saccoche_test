@@ -325,12 +325,12 @@ define('DEBUG_CONST',   DEBUG & 512 ? TRUE : FALSE );
 if(DEBUG_PHP)
 {
   // Rapporter toutes les erreurs PHP (http://fr.php.net/manual/fr/errorfunc.constants.php)
-  ini_set('error_reporting',E_ALL | E_STRICT);
+  ini_set('error_reporting', E_ALL | E_STRICT);
 }
 else
 {
-  // Rapporter les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
-  ini_set('error_reporting',E_ALL & ~E_STRICT & ~E_NOTICE);
+  // Rapporter seulement les erreurs les plus importantes (configuration par défaut de php.ini : tout sauf E_NOTICE + E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4).
+  ini_set('error_reporting', E_ERROR | E_WARNING | E_PARSE); // ex E_ALL & ~E_STRICT & ~E_NOTICE
 }
 
 // ============================================================================

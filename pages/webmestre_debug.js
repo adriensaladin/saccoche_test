@@ -42,15 +42,11 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Retirer un message de confirmation ou d'erreur
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
     $("#form_phpCAS input").change
     (
       function()
       {
-        $('#ajax_save_chemin').removeAttr("class").html("");
+        $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
       }
     );
 
@@ -97,39 +93,39 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Modifier le chemin des logs phpCAS
+    // Modifier les paramètres des logs phpCAS
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#bouton_save_chemin').click
+    $('#bouton_phpCAS').click
     (
       function()
       {
-        $('#bouton_save_chemin').prop('disabled',true);
-        $('#ajax_save_chemin').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_phpCAS').prop('disabled',true);
+        $('#ajax_phpCAS').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=modifier_chemin_phpCAS'+'&'+$('#form_phpCAS').serialize(),
+            data : 'csrf='+CSRF+'&f_action=modifier_phpCAS'+'&'+$('#form_phpCAS').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#bouton_save_chemin').prop('disabled',false);
-              $('#ajax_save_chemin').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#bouton_phpCAS').prop('disabled',false);
+              $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
-              $('#bouton_save_chemin').prop('disabled',false);
+              $('#bouton_phpCAS').prop('disabled',false);
               if(responseHTML=='ok')
               {
-                $('#ajax_save_chemin').removeAttr("class").addClass("valide").html('Chemin enregistré.');
+                $('#ajax_phpCAS').removeAttr("class").addClass("valide").html('Choix enregistrés.');
                 initialiser_compteur();
               }
               else
               {
-                $('#ajax_save_chemin').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               return false;
             }
@@ -146,7 +142,7 @@ $(document).ready
     (
       function()
       {
-        $("#bouton_save_chemin").click();
+        $("#bouton_phpCAS").click();
         return false;
       }
     );

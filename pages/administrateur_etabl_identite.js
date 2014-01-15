@@ -803,7 +803,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Envoi du fichier avec jquery.ajaxupload.js
-    var uploader_signature = new AjaxUpload
+    new AjaxUpload
     ('#f_upload',
       {
         action: 'ajax.php?page='+PAGE,

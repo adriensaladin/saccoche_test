@@ -146,7 +146,7 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_17.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_18.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu a.disabled {color:#99F;cursor:default;}
 #menu a.disabled:hover {background-color:#77F;color:#99F;cursor:default}
@@ -230,10 +230,11 @@ h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.socle_pilier          {background-position: 1px -1439px}
 #menu a.statistiques          {background-position: 1px -1459px}
 #menu a.structure_ajout_csv   {background-position: 1px -1479px}
-#menu a.structure_gestion     {background-position: 1px -1499px}
-#menu a.structure_transfert   {background-position: 1px -1519px}
-#menu a.trombinoscope         {background-position: 1px -1539px}
-#menu a.user_recherche        {background-position: 1px -1559px}
+#menu a.structure_bdd_repair  {background-position: 1px -1499px}
+#menu a.structure_gestion     {background-position: 1px -1519px}
+#menu a.structure_transfert   {background-position: 1px -1539px}
+#menu a.trombinoscope         {background-position: 1px -1559px}
+#menu a.user_recherche        {background-position: 1px -1579px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */

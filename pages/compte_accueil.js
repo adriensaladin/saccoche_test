@@ -30,13 +30,6 @@ $(document).ready
   function()
   {
 
-    // Ajout alerte si usage frame / iframe
-    if(top.frames.length!=0)
-    {
-      $('h1').after('<hr /><div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
-      format_liens('#cadre_bas');
-    }
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
     // ////////////////////////////////////////////////////////////////////////////////////////////////////

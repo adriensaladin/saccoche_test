@@ -48,7 +48,7 @@ if(!defined('FICHIER_DUREE_CONSERVATION'))
 }
 
 // A compter du 18/10/2012, ajout de paramètre dans le fichier de constantes pour le chemin des logs phpCAS. [TODO] peut être retiré dans un an environ
-if(!defined('CHEMIN_LOGS_PHPCAS'))
+if( !defined('CHEMIN_LOGS_PHPCAS') && !defined('PHPCAS_CHEMIN_LOGS') )
 {
   $tab_constantes_manquantes += array('CHEMIN_LOGS_PHPCAS'=>CHEMIN_DOSSIER_TMP);
   $ancien_fichier = CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt';
@@ -65,6 +65,12 @@ if(!defined('SYSTEME_UMASK'))
 if(!defined('CONTACT_MODIFICATION_USER'))
 {
   $tab_constantes_manquantes += array('CONTACT_MODIFICATION_USER'=>'non','CONTACT_MODIFICATION_MAIL'=>'non');
+}
+
+// A compter du 14/01/2014, ajout de paramètres dans le fichier de constantes pour le debug phpCAS. [TODO] peut être retiré dans un an environ
+if(!defined('PHPCAS_CHEMIN_LOGS'))
+{
+  $tab_constantes_manquantes += array('PHPCAS_CHEMIN_LOGS'=>CHEMIN_LOGS_PHPCAS,'PHPCAS_ETABL_ID_LISTING'=>'');
 }
 
 // Application patch si besoin

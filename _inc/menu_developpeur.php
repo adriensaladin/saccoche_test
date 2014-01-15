@@ -42,14 +42,15 @@ $tab_menu = array
   ),
   "Administration du site" => array
   (
-    "Test des droits MySQL"          => array( 'class' => 'serveur_database'    , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
-    "Droits du système de fichiers"  => array( 'class' => 'serveur_erreur'      , 'href' => 'page=webmestre_configuration_filesystem' ),
-    "Maintenance &amp; mise à jour"  => array( 'class' => 'serveur_maintenance' , 'href' => 'page=webmestre_maintenance'              ),
-    "Débogueur"                      => array( 'class' => 'serveur_debug'       , 'href' => 'page=webmestre_debug'                    ),
+    "Test des droits MySQL"          => array( 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    "Droits du système de fichiers"  => array( 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
+    "Maintenance &amp; mise à jour"  => array( 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
+    "Débogueur"                      => array( 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
+    "Analyser / Réparer les bases"   => array( 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
   ),
   "Gestion des inscriptions" => array
   ( // multi-structures uniquement
-    "Statistiques d'utilisation" => array( 'class' => 'statistiques'        , 'href' => 'page=webmestre_statistiques'        ),
+    "Statistiques d'utilisation"   => array( 'class' => 'statistiques'         , 'href' => 'page=webmestre_statistiques'         ),
   ),
 );
 

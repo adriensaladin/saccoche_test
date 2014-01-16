@@ -33,32 +33,33 @@ $mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
 $step   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
 $tab_actions = array(
-  'sconet_professeurs_directeurs_oui' => 'sconet_professeurs_directeurs',
-  'sconet_eleves_oui'                 => 'sconet_eleves',
-  'sconet_parents_oui'                => 'sconet_parents',
-  'base_eleves_eleves'                => 'base_eleves_eleves',
-  'base_eleves_parents'               => 'base_eleves_parents',
-  'tableur_professeurs_directeurs'    => 'tableur_professeurs_directeurs',
-  'tableur_eleves'                    => 'tableur_eleves',
-  'tableur_parents'                   => 'tableur_parents',
+  'sconet_professeurs_directeurs_oui' => array('sconet'     ,'professeur'),
+  'sconet_eleves_oui'                 => array('sconet'     ,'eleve'     ),
+  'sconet_parents_oui'                => array('sconet'     ,'parent'    ),
+  'base_eleves_eleves'                => array('base_eleves','eleve'     ),
+  'base_eleves_parents'               => array('base_eleves','parent'    ),
+  'tableur_professeurs_directeurs'    => array('tableur'    ,'professeur'),
+  'tableur_eleves'                    => array('tableur'    ,'eleve'     ),
+  'tableur_parents'                   => array('tableur'    ,'parent'    ),
 );
-$tab_etapes  = array();
 
 if( !isset($tab_actions[$action]) )
 {
   exit('Erreur avec les données transmises !');
 }
 
-$action = $tab_actions[$action];
-$test_sconet = (substr($action,0,6)=='sconet') ? TRUE : FALSE ;
-$tab_extensions_autorisees = $test_sconet ? array('zip','xml') : array('txt','csv') ;
-$extension_fichier_dest    = $test_sconet ? 'xml'              : 'txt' ;
-$fichier_dest = 'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
+list( $import_origine , $import_profil ) = $tab_actions[$action];
+
+$tab_etapes  = array();
+
+$tab_extensions_autorisees = ($import_origine=='sconet') ? array('zip','xml') : array('txt','csv') ;
+$extension_fichier_dest    = ($import_origine=='sconet') ? 'xml'              : 'txt' ;
+$fichier_dest = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
 
 function load_fichier($nom)
 {
-  global $action;
-  $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
+  global $import_origine,$import_profil;
+  $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
   if(!is_file($fnom))
   {
     exit('Erreur : le fichier contenant les données à traiter est introuvable !');
@@ -72,36 +73,44 @@ function load_fichier($nom)
   return $tableau;
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Liste des étapes suivant le mode d'import
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$tab_etapes['sconet_professeurs_directeurs']  = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_professeurs_directeurs'] .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>'.NL;
-
-$tab_etapes['sconet_parents']                 = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['sconet_parents']                .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['sconet_parents']                .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_parents']                .= '<li id="step7">Étape 4 - Adresses (ajouts / modifications)</li>'.NL;
-$tab_etapes['sconet_parents']                .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['sconet_parents']                .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
-
-$tab_etapes['base_eleves_eleves']             = '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
-$tab_etapes['base_eleves_eleves']            .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
-$tab_etapes['base_eleves_eleves']            .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['base_eleves_eleves']            .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
-$tab_etapes['base_eleves_eleves']            .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>'.NL;
-
-$tab_etapes['sconet_eleves']                  = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['tableur_professeurs_directeurs'] = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['tableur_eleves']                 = $tab_etapes['sconet_professeurs_directeurs'];
-$tab_etapes['base_eleves_parents']            = $tab_etapes['sconet_parents'];
-$tab_etapes['tableur_parents']                = $tab_etapes['sconet_parents'];
+function afficher_etapes($import_origine,$import_profil)
+{
+  $puces = '<ul id="step">'.NL;
+  switch($import_origine.'+'.$import_profil)
+  {
+    case  'sconet+professeur' :
+    case 'tableur+professeur' :
+    case  'sconet+eleve'      :
+    case 'tableur+eleve'      :
+      $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+      $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+      $puces .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>'.NL;
+      break;
+    case      'sconet+parent' :
+    case 'base_eleves+parent' :
+    case     'tableur+parent' :
+      $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+      $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+      $puces .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step7">Étape 4 - Adresses (ajouts / modifications)</li>'.NL;
+      $puces .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
+      break;
+    case  'base_eleves+eleve' :
+      $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+      $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+      $puces .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>'.NL;
+      $puces .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>'.NL;
+      break;
+  }
+  $puces .= '</ul>'.NL;
+  return $puces;
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Étape 10 - Récupération du fichier (tous les cas)
@@ -111,7 +120,7 @@ if( $step==10 )
 {
   // Nom du fichier à extraire si c'est un fichier zippé
   $alerte = '';
-  if($action=='sconet_eleves')
+  if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   {
     $nom_fichier_extrait = 'ElevesSansAdresses.xml';
     if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesAvecAdresses')) )
@@ -120,7 +129,7 @@ if( $step==10 )
       $alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">avec</span> adresses ! Vous pouvez toutefois poursuivre&hellip;</p>'.NL;
     }
   }
-  elseif($action=='sconet_parents')
+  else if( ($import_origine=='sconet') && ($import_profil=='parent') )
   {
     $nom_fichier_extrait = 'ResponsablesAvecAdresses.xml';
     if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesSansAdresses')) )
@@ -141,8 +150,8 @@ if( $step==10 )
   }
   // On affiche le bilan et les puces des étapes
   echo'<hr />'.NL;
-  echo ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyses restreintes aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
-  echo'<ul id="step">'.NL.$tab_etapes[$action].'</ul>'.NL;
+  echo ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyse restreinte aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
+  echo afficher_etapes($import_origine,$import_profil);
   echo'<hr />'.NL;
   echo'<fieldset>'.NL;
   echo  '<div><label class="valide">Votre fichier a été correctement réceptionné.</label></div>'.NL;
@@ -191,7 +200,7 @@ if( $step==20 )
   // Pour retenir à part les dates de sortie Sconet des élèves
   $_SESSION['tmp']['date_sortie'] = array();
   // Procédures différentes suivant le mode d'import...
-  if($action=='sconet_professeurs_directeurs')
+  if( ($import_origine=='sconet') && ($import_profil=='professeur') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2a - Extraction sconet_professeurs_directeurs
@@ -433,7 +442,7 @@ if( $step==20 )
       }
     }
   }
-  if($action=='sconet_eleves')
+  if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2b - Extraction sconet_eleves
@@ -531,7 +540,7 @@ if( $step==20 )
     // suppression du tableau temporaire
     unset($tab_users_fichier['niveau']);
   }
-  if($action=='sconet_parents')
+  if( ($import_origine=='sconet') && ($import_profil=='parent') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2c - Extraction sconet_parents
@@ -617,7 +626,7 @@ if( $step==20 )
       }
     }
   }
-  if($action=='tableur_professeurs_directeurs')
+  if( ($import_origine=='tableur') && ($import_profil=='professeur') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2d - Extraction tableur_professeurs_directeurs
@@ -694,7 +703,7 @@ if( $step==20 )
       }
     }
   }
-  if($action=='tableur_eleves')
+  if( ($import_origine=='tableur') && ($import_profil=='eleve') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2e - Extraction tableur_eleves
@@ -759,7 +768,7 @@ if( $step==20 )
       }
     }
   }
-  if($action=='tableur_parents')
+  if( ($import_origine=='tableur') && ($import_profil=='parent') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2f - Extraction tableur_parents
@@ -826,7 +835,7 @@ if( $step==20 )
     $nb_lien_responsabilite = array_sum($tab_responsabilites);
     $nb_adresses = count($tab_adresses_uniques);
   }
-  if($action=='base_eleves_eleves')
+  if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2g - Extraction base_eleves_eleves
@@ -921,7 +930,7 @@ if( $step==20 )
       }
     }
   }
-  if($action=='base_eleves_parents')
+  if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Étape 2h - Extraction base_eleves_parents
@@ -1028,31 +1037,31 @@ if( $step==20 )
   $tab_i_fichier_TO_id_base = array();
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
   // On trie
-  switch($action)
+  switch($import_origine.'+'.$import_profil)
   {
-    case 'sconet_professeurs_directeurs' :
+    case 'sconet+professeur' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
-    case 'tableur_professeurs_directeurs' :
+    case 'tableur+professeur' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
-    case 'sconet_eleves' :
-    case 'tableur_eleves' :
+    case  'sconet+eleve' :
+    case 'tableur+eleve' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
-    case 'base_eleves_eleves' :
+    case 'base_eleves+eleve' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe']);
       $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
       break;
-    case 'sconet_parents' :
-    case 'base_eleves_parents' :
-    case 'tableur_parents' :
+    case      'sconet+parent' :
+    case 'base_eleves+parent' :
+    case     'tableur+parent' :
       $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['adresse'],$tab_users_fichier['enfant']);
       break;
   }
@@ -1060,13 +1069,13 @@ if( $step==20 )
   // Edit au 11/05/2012 : a priori c'est corrigé, mais je laisse quand même le test au cas où, ça ne coûte rien...
   if(!$test1)
   {
-    ajouter_log_PHP( 'Import fichier '.$action /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
+    ajouter_log_PHP( 'Import fichier '.$import_origine.' '.$import_profil /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
   }
   // On enregistre
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // On affiche le bilan des utilisateurs trouvés
   if(count($tab_users_fichier['profil_sigle']))
   {
@@ -1085,7 +1094,7 @@ if( $step==20 )
       echo'<p><label class="valide">'.$nombre.' '.$tab_profils_libelles[$profil][min(2,$nombre)].' trouvé'.$s.'.</label></p>'.NL;
     }
   }
-  else if( ($action=='sconet_parents') || ($action=='base_eleves_parents') || ($action=='tableur_parents') )
+  else if($import_profil=='parent')
   {
     exit('<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>');
   }
@@ -1094,7 +1103,7 @@ if( $step==20 )
     exit('<p><label class="alerte">Aucun utilisateur trouvé !</label></p>');
   }
   // On affiche le bilan des classes trouvées
-   if( ($action!='sconet_parents') && ($action!='base_eleves_parents') && ($action!='tableur_parents') )
+   if($import_profil!='parent')
   {
     $nombre = count($tab_classes_fichier['ref']);
     if($nombre)
@@ -1108,7 +1117,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des groupes trouvés
-  if( ($action!='sconet_parents') && ($action!='base_eleves_parents') && ($action!='base_eleves_eleves') && ($action!='tableur_parents') )
+  if( ($import_profil!='parent') && ($import_origine!='base_eleves') )
   {
     $nombre = count($tab_groupes_fichier['ref']);
     if($nombre)
@@ -1122,7 +1131,7 @@ if( $step==20 )
     }
   }
   // On affiche le bilan des parents trouvés
-  if( ($action=='sconet_parents') || ($action=='base_eleves_parents') || ($action=='tableur_parents') )
+  if($import_profil=='parent')
   {
     if($nb_adresses)
     {
@@ -1144,9 +1153,7 @@ if( $step==20 )
     }
   }
   // Fin de l'extraction
-$mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
-  
-  $step = ( ($action!='sconet_parents') && ($action!='base-eleves_parents') && ($action!='tableur_parents') ) ? '3' : '5' ;
+  $step = ($import_profil=='parent') ? '5' : '3' ;
   echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
@@ -1208,7 +1215,7 @@ if( $step==31 )
     foreach($DB_TAB as $DB_ROW)
     {
       $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-      $key = ($action=='sconet_eleves') ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
+      $key = ( ($import_origine=='sconet') && ($import_profil=='eleve') ) ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
       $tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
     }
     foreach($tab_classes_fichier['ref'] as $i_classe => $ref)
@@ -1221,11 +1228,11 @@ if( $step==31 )
       $id_checked = '';
       foreach($tab_niveau_ref as $masque_recherche => $niveau_id)
       {
-        if($action=='sconet_eleves')
+        if( ($import_origine=='sconet') && ($import_profil=='eleve') )
         {
           $id_checked = (preg_match('/^'.$masque_recherche.'$/',$tab_classes_fichier['niveau'][$i_classe])) ? $niveau_id : '';
         }
-        elseif($action=='base_eleves_eleves')
+        elseif( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
         {
           $id_checked = (mb_strpos($tab_classes_fichier['niveau'][$i_classe],$masque_recherche)===0) ? $niveau_id : '';
         }
@@ -1244,7 +1251,7 @@ if( $step==31 )
   }
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // On affiche
   echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label></p>'.NL;
   // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1333,7 +1340,7 @@ if( $step==32 )
   }
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // Afficher le bilan
   $lignes = '';
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
@@ -1362,7 +1369,7 @@ if( $step==32 )
     echo  '</tbody>'.NL;
     echo'</table>'.NL;
   }
-  $step = ($action!='base_eleves_eleves') ? '4' : '5' ;
+  $step = ( ($import_origine=='base_eleves') && ($import_profil=='eleve') ) ? '5' : '4' ;
   echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
 }
@@ -1424,7 +1431,7 @@ if( $step==41 )
     foreach($DB_TAB as $DB_ROW)
     {
       $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-      $key = ($action=='sconet_eleves') ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
+      $key = ( ($import_origine=='sconet') && ($import_profil=='eleve') ) ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
       $tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
     }
     foreach($tab_groupes_fichier['ref'] as $i_groupe => $ref)
@@ -1437,7 +1444,7 @@ if( $step==41 )
       $id_checked = '';
       foreach($tab_niveau_ref as $masque_recherche => $niveau_id)
       {
-        if($action=='sconet_eleves')
+        if( ($import_origine=='sconet') && ($import_profil=='eleve') )
         {
           $id_checked = (preg_match('/^'.$masque_recherche.'$/',$tab_groupes_fichier['niveau'][$i_groupe])) ? $niveau_id : '';
         }
@@ -1456,7 +1463,7 @@ if( $step==41 )
   }
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // On affiche
   echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>'.NL;
   // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1545,7 +1552,7 @@ if( $step==42 )
   }
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // Afficher le bilan
   $lignes = '';
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
@@ -1584,8 +1591,6 @@ if( $step==42 )
 
 if( $step==51 )
 {
-  $is_profil_eleve  = (mb_strpos($action,'_eleves'))  ? TRUE : FALSE ;
-  $is_profil_parent = (mb_strpos($action,'_parents')) ? TRUE : FALSE ;
   // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
   $tab_liens_id_base = load_fichier('liens_id_base');
   $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
@@ -1607,8 +1612,8 @@ if( $step==51 )
   $tab_users_base['sortie'      ] = array();
   $tab_users_base['classe'      ] = array();
   $tab_users_base['adresse'     ] = array();
-  $profil_type = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
-  $with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
+  $profil_type = ($import_profil!='professeur') ? $import_profil : array('professeur','directeur') ;
+  $with_classe = ($import_profil=='eleve') ? TRUE : FALSE ;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -1620,7 +1625,7 @@ if( $step==51 )
     $tab_users_base['birth_date'  ][$DB_ROW['user_id']] = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
     $tab_users_base['prenom'      ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
     $tab_users_base['sortie'      ][$DB_ROW['user_id']] = $DB_ROW['user_sortie_date'] ;
-    $tab_users_base['classe'      ][$DB_ROW['user_id']] = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : '' ;
+    $tab_users_base['classe'      ][$DB_ROW['user_id']] = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : '' ;
   }
   // Pour préparer l'affichage
   $lignes_ignorer   = '';
@@ -1667,35 +1672,35 @@ if( $step==51 )
       }
     }
     // Cas [1] : présent dans le fichier, absent de la base, pas de classe dans le fichier (élèves uniquements) : contenu à ignorer (probablement des anciens élèves, ou des élèves jamais venus, qu'il est inutile d'importer)
-    if( ($is_profil_eleve) && (!$id_base) && (!$tab_users_fichier['classe'][$i_fichier]) )
+    if( ($import_profil=='eleve') && (!$id_base) && (!$tab_users_fichier['classe'][$i_fichier]) )
     {
-      $indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
+      $indication = ($import_profil=='eleve') ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
       $lignes_ignorer .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>'.NL;
     }
     // Cas [2] : présent dans le fichier, absent de la base, prof ou classe indiquée dans le fichier si élève : contenu à ajouter (nouvel élève ou nouveau professeur / directeur)
-    elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
+    elseif( (!$id_base) && ( ($import_profil!='eleve') || ($tab_users_fichier['classe'][$i_fichier]) ) )
     {
-      $indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
+      $indication = ($import_profil=='eleve') ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
       $lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>'.NL;
-      $id_classe = ( ($is_profil_eleve) && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
+      $id_classe = ( ($import_profil=='eleve') && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
       $tab_users_ajouter[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil_sigle'=>$tab_users_fichier['profil_sigle'][$i_fichier] , 'classe'=>$id_classe );
-      if($is_profil_eleve)
+      if($import_profil=='eleve')
       {
         $tab_users_ajouter[$i_fichier]['birth_date'] = $tab_users_fichier['birth_date'][$i_fichier];
       }
     }
     // Cas [3] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), actuel dans la base : contenu à retirer (probablement des élèves nouvellement sortants)
-    elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]==SORTIE_DEFAUT_MYSQL) )
+    elseif( ($import_profil=='eleve') && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]==SORTIE_DEFAUT_MYSQL) )
     {
-      $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+      $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
       $date_sortie_fr = TODAY_FR;
       $lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>'.NL;
       $tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
     }
     // Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), ancien dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
-    elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL) )
+    elseif( ($import_profil=='eleve') && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL) )
     {
-      $indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
+      $indication = ($import_profil=='eleve') ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
       $lignes_inchanger .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>'.NL;
     }
     else
@@ -1703,7 +1708,7 @@ if( $step==51 )
       // On compare les données de 2 enregistrements pour voir si des choses ont été modifiées
       $td_modif = '';
       $nb_modif = 0;
-      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil_sigle'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
+      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil_sigle'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
       foreach($tab_champs as $champ_ref => $champ_aff)
       {
         if($champ_ref=='classe')
@@ -1743,7 +1748,7 @@ if( $step==51 )
       {
         if($mode=='complet')
         {
-          $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+          $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
           $lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
         }
       }
@@ -1765,7 +1770,7 @@ if( $step==51 )
       // Cas [7] : absent dans le fichier, présent dans la base, actuel : contenu à retirer (probablement un user nouvellement sortant)
       if($tab_users_base['sortie'][$id_base]==SORTIE_DEFAUT_MYSQL)
       {
-        $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+        $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
         $date_sortie_fr = isset($_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]]) ? $_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]] : TODAY_FR ;
         $lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>'.NL;
         $tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
@@ -1775,7 +1780,7 @@ if( $step==51 )
       {
         if($mode=='complet')
         {
-          $indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
+          $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
           $lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>'.NL;
         }
       }
@@ -1785,10 +1790,10 @@ if( $step==51 )
   unset($_SESSION['tmp']['date_sortie']);
   // On enregistre
   $tab_memo_analyse = array('modifier'=>$tab_users_modifier,'ajouter'=>$tab_users_ajouter,'retirer'=>$tab_users_retirer);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // On affiche
   echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>'.NL;
   if( $lignes_ajouter && $lignes_retirer )
@@ -1802,7 +1807,7 @@ if( $step==51 )
   echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="2">Aucun</td></tr>'.NL;
   echo  '</tbody>'.NL;
   // Cas [3] et [7]
-  $texte = ($is_profil_eleve) ? ' ou sans classe affectée' : ( ($is_profil_parent) ? ' ou sans enfant actuel' : '' ) ;
+  $texte = ($import_profil=='eleve') ? ' ou sans classe affectée' : ( ($import_profil=='parent') ? ' ou sans enfant actuel' : '' ) ;
   echo  '<tbody>'.NL;
   echo    '<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.')<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
   echo($lignes_retirer) ? $lignes_retirer : '<tr><td colspan="2">Aucun</td></tr>'.NL;
@@ -1829,7 +1834,7 @@ if( $step==51 )
     echo  '</tbody>'.NL;
   }
   // Cas [1]
-  if($is_profil_eleve)
+  if($import_profil=='eleve')
   {
     echo  '<tbody>'.NL;
     echo    '<tr><th colspan="2">Utilisateurs ignorés (sans classe affectée).</th></tr>'.NL;
@@ -1847,8 +1852,6 @@ if( $step==51 )
 
 if( $step==52 )
 {
-  $is_profil_eleve  = (mb_strpos($action,'_eleves'))  ? TRUE : FALSE ;
-  $is_profil_parent = (mb_strpos($action,'_parents')) ? TRUE : FALSE ;
   // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
   $tab_liens_id_base = load_fichier('liens_id_base');
   $tab_i_classe_TO_id_base   = $tab_liens_id_base['classes'];
@@ -1877,7 +1880,7 @@ if( $step==52 )
     }
   }
   // Dénombrer combien d'actuels et d'anciens au départ
-  $profil_type = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
+  $profil_type = ($import_profil!='professeur') ? $import_profil : array('professeur','directeur') ;
   list($nb_debut_actuel,$nb_debut_ancien) = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_users_suivant_statut($profil_type);
   // Retirer des users éventuels
   $nb_del = 0;
@@ -1897,14 +1900,14 @@ if( $step==52 )
   $nb_add = 0;
   $tab_password = array();
   $separateur = ';';
-  $classe_ou_profil = ($is_profil_eleve) ? 'CLASSE' : 'PROFIL' ;
+  $classe_ou_profil = ($import_profil=='eleve') ? 'CLASSE' : 'PROFIL' ;
   $fcontenu_csv = 'SCONET_Id'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$classe_ou_profil.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
   $fcontenu_pdf_tab = array();
   if(count($tab_add))
   {
     // Récupérer les noms de classes pour le fichier avec les logins/mdp
     $tab_nom_classe = array();
-    if($is_profil_eleve)
+    if($import_profil=='eleve')
     {
       $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
       foreach($DB_TAB as $DB_ROW)
@@ -1926,7 +1929,7 @@ if( $step==52 )
           $login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
         }
         // Construire le password
-        if( (!$is_profil_eleve) || (!$_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI']['ELV']) || (empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date'])) )
+        if( ($import_profil!='eleve') || (!$_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI']['ELV']) || (empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date'])) )
         {
           $password = fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle']);
         }
@@ -1953,7 +1956,7 @@ if( $step==52 )
         $tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
         $nb_add++;
         $tab_password[$user_id] = $password;
-        $classe_ou_profil = ($is_profil_eleve) ? $tab_nom_classe[$tab_memo_analyse['ajouter'][$i_fichier]['classe']] : $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'] ;
+        $classe_ou_profil = ($import_profil=='eleve') ? $tab_nom_classe[$tab_memo_analyse['ajouter'][$i_fichier]['classe']] : $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'] ;
         $fcontenu_csv .= '"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['reference'].'"'.$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'].$separateur.$login.$separateur.'"'.$password.'"'."\r\n";
         $ligne1 = $classe_ou_profil;
         $ligne2 = $tab_memo_analyse['ajouter'][$i_fichier]['nom'].' '.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'];
@@ -1970,7 +1973,7 @@ if( $step==52 )
     foreach($tab_mod as $id_base)
     {
       // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
-      $tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'birth_date' ) : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'nom' , 'prenom' ) ;
+      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'birth_date' ) : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'nom' , 'prenom' ) ;
       $DB_VAR  = array();
       foreach($tab_champs as $champ_ref)
       {
@@ -1993,13 +1996,13 @@ if( $step==52 )
   }
   // On enregistre (tableau mis à jour)
   $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
   // Afficher le bilan
   $lignes        = '';
   $nb_fin_actuel = 0;
   $nb_fin_ancien = 0;
-  $profil_type = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
-  $with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
+  $profil_type = ($import_profil!='professeur') ? $import_profil : array('professeur','directeur') ;
+  $with_classe = ($import_profil=='eleve') ? TRUE : FALSE ;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_nom_court_singulier,user_nom,user_prenom,user_prenom,user_login,user_sortie_date' /*liste_champs*/ , $with_classe , TRUE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -2008,7 +2011,7 @@ if( $step==52 )
     {
       $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
       $td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
-      $champ = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
+      $champ = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
       $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
       $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'.NL;
     }
@@ -2023,7 +2026,7 @@ if( $step==52 )
   if($nb_add)
   {
     // On archive les nouveaux identifiants dans un fichier tableur (csv tabulé)
-    $profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : 'personnel' ) ;
+    $profil = ($import_profil=='eleve') ? 'eleve' : ( ($import_profil=='parent') ? 'parent' : 'personnel' ) ;
     $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.csv' , To::csv($fcontenu_csv) );
     // On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
@@ -2040,7 +2043,7 @@ if( $step==52 )
     }
     $pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
   }
-  $champ = ($is_profil_eleve) ? 'Classe' : 'Profil' ;
+  $champ = ($import_profil=='eleve') ? 'Classe' : 'Profil' ;
   echo'<p><label class="valide">'.$nb_debut_actuel.' utilisateur'.$s_debut_actuel.' actuel'.$s_debut_actuel.' et '.$nb_debut_ancien.' utilisateur'.$s_debut_ancien.' ancien'.$s_debut_ancien.' &rarr; '.$nb_mod.' utilisateur'.$s_mod.' modifié'.$s_mod.' + '.$nb_add.' utilisateur'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' utilisateur'.$s_del.' retiré'.$s_del.' &rarr; '.$nb_fin_actuel.' utilisateur'.$s_fin_actuel.' actuel'.$s_fin_actuel.' et '.$nb_fin_ancien.' utilisateur'.$s_fin_ancien.' ancien'.$s_fin_ancien.'.</label></p>'.NL;
   if($mode=='complet')
   {
@@ -2060,16 +2063,16 @@ if( $step==52 )
   else
   {
     echo'<p class="astuce">Il n\'y a aucun nouvel utilisateur inscrit, donc pas d\'identifiants à récupérer.</p>'.NL;
-    switch($action)
+    switch($import_origine.'+'.$import_profil)
     {
-      case 'sconet_eleves'                  : $etape = 6; $step = 61; break;
-      case 'sconet_professeurs_directeurs'  : $etape = 6; $step = 61; break;
-      case 'tableur_eleves'                 : $etape = 6; $step = 61; break;
-      case 'tableur_professeurs_directeurs' : $etape = 6; $step = 61; break;
-      case 'sconet_parents'                 : $etape = 4; $step = 71; break;
-      case 'tableur_parents'                : $etape = 4; $step = 71; break;
-      case 'base_eleves_parents'            : $etape = 4; $step = 71; break;
-      case 'base_eleves_eleves'             : $etape = 5; $step = 90; break;
+      case 'sconet+eleve'       : $etape = 6; $step = 61; break;
+      case 'sconet+professeur'  : $etape = 6; $step = 61; break;
+      case 'tableur+eleve'      : $etape = 6; $step = 61; break;
+      case 'tableur+professeur' : $etape = 6; $step = 61; break;
+      case 'sconet+parent'      : $etape = 4; $step = 71; break;
+      case 'tableur+parent'     : $etape = 4; $step = 71; break;
+      case 'base_eleves+parent' : $etape = 4; $step = 71; break;
+      case 'base_eleves+eleve'  : $etape = 5; $step = 90; break;
     }
     echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   }
@@ -2093,16 +2096,16 @@ if( $step==53 )
   echo  '<li><a class="lien_ext" href="./force_download.php?auth&amp;fichier='.$archive.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
   echo'</ul>'.NL;
   echo'<p class="danger">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>'.NL;
-  switch($action)
+  switch($import_origine.'+'.$import_profil)
   {
-    case 'sconet_eleves'                  : $etape = 6; $step = 61; break;
-    case 'sconet_professeurs_directeurs'  : $etape = 6; $step = 61; break;
-    case 'tableur_eleves'                 : $etape = 5; $step = 61; break;
-    case 'tableur_professeurs_directeurs' : $etape = 4; $step = 61; break;
-    case 'sconet_parents'                 : $etape = 4; $step = 71; break;
-    case 'tableur_parents'                : $etape = 4; $step = 71; break;
-    case 'base_eleves_parents'            : $etape = 4; $step = 71; break;
-    case 'base_eleves_eleves'             : $etape = 5; $step = 90; break;
+    case 'sconet+eleve'       : $etape = 6; $step = 61; break;
+    case 'sconet+professeur'  : $etape = 6; $step = 61; break;
+    case 'tableur+eleve'      : $etape = 5; $step = 61; break;
+    case 'tableur+professeur' : $etape = 4; $step = 61; break;
+    case 'sconet+parent'      : $etape = 4; $step = 71; break;
+    case 'tableur+parent'     : $etape = 4; $step = 71; break;
+    case 'base_eleves+parent' : $etape = 4; $step = 71; break;
+    case 'base_eleves+eleve'  : $etape = 5; $step = 90; break;
   }
   echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
   exit();
@@ -2138,7 +2141,7 @@ if( $step==61 )
   // Pour tableur_professeurs_directeurs, il faut regarder les associations profs/classes & profs/groupes.
   // Pour sconet_eleves & tableur_eleves, il faut juste à regarder les associations élèves/groupes.
   //
-  if( ($action=='sconet_professeurs_directeurs') || ($action=='tableur_professeurs_directeurs') )
+  if($import_profil=='professeur')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // associations profs/classes
@@ -2201,107 +2204,107 @@ if( $step==61 )
         $lignes_classes_del .= '<tr><th>Supprimer <input id="classe_'.$user_id.'_'.$groupe_id.'_0" name="classe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
       }
     }
-  }
-  if($action=='sconet_professeurs_directeurs')
-  {
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // associations profs/PP
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE ($tab_base_classe déjà renseigné)
-    $tab_base_affectation = array();
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
-    foreach($DB_TAB as $DB_ROW)
+    if($import_origine=='sconet')
     {
-      $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
-    }
-    // Parcourir chaque entrée du fichier à la recherche d'affectations profs/PP
-    foreach( $tab_users_fichier['classe'] as $i_fichier => $tab_classes )
-    {
-      if(count($tab_classes))
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // associations profs/PP
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE ($tab_base_classe déjà renseigné)
+      $tab_base_affectation = array();
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
+      foreach($DB_TAB as $DB_ROW)
       {
-        foreach( $tab_classes as $i_classe => $classe_pp )
+        $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
+      }
+      // Parcourir chaque entrée du fichier à la recherche d'affectations profs/PP
+      foreach( $tab_users_fichier['classe'] as $i_fichier => $tab_classes )
+      {
+        if(count($tab_classes))
         {
-          if($classe_pp=='PP')
+          foreach( $tab_classes as $i_classe => $classe_pp )
+          {
+            if($classe_pp=='PP')
+            {
+              // On a trouvé une telle affectation ; comparer avec ce que contient la base
+              if( (isset($tab_i_fichier_TO_id_base[$i_fichier])) && (isset($tab_i_classe_TO_id_base[$i_classe])) )
+              {
+                $user_id   = $tab_i_fichier_TO_id_base[$i_fichier];
+                $groupe_id = $tab_i_classe_TO_id_base[$i_classe];
+                if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
+                {
+                  if($mode=='complet')
+                  {
+                    $lignes_principal_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                  }
+                  unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
+                }
+                elseif(isset($tab_asso_prof_classe[$user_id.'_'.$groupe_id]))
+                {
+                  $lignes_principal_add .= '<tr><th>Ajouter <input id="pp_'.$user_id.'_'.$groupe_id.'_1" name="pp_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                }
+              }
+            }
+          }
+        }
+      }
+      // Associations à retirer
+      if(count($tab_base_affectation))
+      {
+        foreach($tab_base_affectation as $key => $bool)
+        {
+          list($user_id,$groupe_id) = explode('_',$key);
+          $lignes_principal_del .= '<tr><th>Supprimer <input id="pp_'.$user_id.'_'.$groupe_id.'_0" name="pp_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+        }
+      }
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // associations profs/matières
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////
+      // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_matiere_id]=TRUE + $tab_base_matiere[matiere_id]=matiere_nom + $tab_matiere_ref_TO_id_base[matiere_ref]=id_base
+      // En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
+      $tab_base_matiere = array();
+      $tab_matiere_ref_TO_id_base = array();
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
+        $tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
+      }
+      $tab_base_affectation = array();
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;
+      }
+      // Parcourir chaque entrée du fichier à la recherche d'affectations profs/matières
+      foreach( $tab_users_fichier['matiere'] as $i_fichier => $tab_matieres )
+      {
+        if(count($tab_matieres))
+        {
+          foreach( $tab_matieres as $matiere_code => $type_rattachement ) // $type_rattachement vaut 'discipline' ou 'service'
           {
             // On a trouvé une telle affectation ; comparer avec ce que contient la base
-            if( (isset($tab_i_fichier_TO_id_base[$i_fichier])) && (isset($tab_i_classe_TO_id_base[$i_classe])) )
+            if( (isset($tab_i_fichier_TO_id_base[$i_fichier])) && (isset($tab_matiere_ref_TO_id_base[$matiere_code])) )
             {
-              $user_id   = $tab_i_fichier_TO_id_base[$i_fichier];
-              $groupe_id = $tab_i_classe_TO_id_base[$i_classe];
-              if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
+              $user_id    = $tab_i_fichier_TO_id_base[$i_fichier];
+              $matiere_id = $tab_matiere_ref_TO_id_base[$matiere_code];
+              if(isset($tab_base_affectation[$user_id.'_'.$matiere_id]))
               {
                 if($mode=='complet')
                 {
-                  $lignes_principal_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                  $lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
                 }
-                unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
+                unset($tab_base_affectation[$user_id.'_'.$matiere_id]);
               }
-              elseif(isset($tab_asso_prof_classe[$user_id.'_'.$groupe_id]))
+              else
               {
-                $lignes_principal_add .= '<tr><th>Ajouter <input id="pp_'.$user_id.'_'.$groupe_id.'_1" name="pp_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
+                $lignes_matieres_add .= '<tr><th>Ajouter <input id="matiere_'.$user_id.'_'.$matiere_id.'_1" name="matiere_'.$user_id.'_'.$matiere_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
               }
             }
           }
         }
       }
+      // Retirer des matières semble sans intérêt.
     }
-    // Associations à retirer
-    if(count($tab_base_affectation))
-    {
-      foreach($tab_base_affectation as $key => $bool)
-      {
-        list($user_id,$groupe_id) = explode('_',$key);
-        $lignes_principal_del .= '<tr><th>Supprimer <input id="pp_'.$user_id.'_'.$groupe_id.'_0" name="pp_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
-      }
-    }
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // associations profs/matières
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_matiere_id]=TRUE + $tab_base_matiere[matiere_id]=matiere_nom + $tab_matiere_ref_TO_id_base[matiere_ref]=id_base
-    // En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
-    $tab_base_matiere = array();
-    $tab_matiere_ref_TO_id_base = array();
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
-      $tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
-    }
-    $tab_base_affectation = array();
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;
-    }
-    // Parcourir chaque entrée du fichier à la recherche d'affectations profs/matières
-    foreach( $tab_users_fichier['matiere'] as $i_fichier => $tab_matieres )
-    {
-      if(count($tab_matieres))
-      {
-        foreach( $tab_matieres as $matiere_code => $type_rattachement ) // $type_rattachement vaut 'discipline' ou 'service'
-        {
-          // On a trouvé une telle affectation ; comparer avec ce que contient la base
-          if( (isset($tab_i_fichier_TO_id_base[$i_fichier])) && (isset($tab_matiere_ref_TO_id_base[$matiere_code])) )
-          {
-            $user_id    = $tab_i_fichier_TO_id_base[$i_fichier];
-            $matiere_id = $tab_matiere_ref_TO_id_base[$matiere_code];
-            if(isset($tab_base_affectation[$user_id.'_'.$matiere_id]))
-            {
-              if($mode=='complet')
-              {
-                $lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
-              }
-              unset($tab_base_affectation[$user_id.'_'.$matiere_id]);
-            }
-            else
-            {
-              $lignes_matieres_add .= '<tr><th>Ajouter <input id="matiere_'.$user_id.'_'.$matiere_id.'_1" name="matiere_'.$user_id.'_'.$matiere_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>'.NL;
-            }
-          }
-        }
-      }
-    }
-    // Retirer des matières semble sans intérêt.
   }
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // associations profs/groupes ou élèves/groupes
@@ -2317,8 +2320,7 @@ if( $step==61 )
     $tab_base_groupe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
   }
   $tab_base_affectation = array();
-  $profil_type = (mb_strpos($action,'_eleves')) ? 'eleve' : 'professeur' ;
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe( $profil_type , TRUE /*only_actuels*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe( $import_profil , TRUE /*only_actuels*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -2368,7 +2370,7 @@ if( $step==61 )
     echo'<p class="danger">Des suppressions sont proposées. Elles peuvent provenir d\'un fichier incomplet ou d\'ajouts manuels antérieurs dans SACoche. Décochez-les si besoin !</p>'.NL;
   }
   echo'<table>'.NL;
-  if( ($action=='sconet_professeurs_directeurs') || ($action=='tableur_professeurs_directeurs') )
+  if($import_profil=='professeur')
   {
     if($mode=='complet')
     {
@@ -2385,39 +2387,39 @@ if( $step==61 )
     echo      '<tr><th colspan="3">Associations utilisateurs / classes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
     echo($lignes_classes_del) ? $lignes_classes_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
     echo    '</tbody>'.NL;
-  }
-  if($action=='sconet_professeurs_directeurs')
-  {
-    if($mode=='complet')
+    if($import_origine=='sconet')
     {
+      if($mode=='complet')
+      {
+        echo    '<tbody>'.NL;
+        echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+        echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+        echo    '</tbody>'.NL;
+      }
       echo    '<tbody>'.NL;
-      echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-      echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_principal_add) ? $lignes_principal_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_principal_del) ? $lignes_principal_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
+      if($mode=='complet')
+      {
+        echo    '<tbody>'.NL;
+        echo      '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+        echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+        echo    '</tbody>'.NL;
+      }
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / matières à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_matieres_add) ? $lignes_matieres_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      // echo    '</tbody>'.NL;
+      // echo    '<tbody>'.NL;
+      // echo      '<tr><th colspan="3">Associations utilisateurs / matières à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      // echo($lignes_matieres_del) ? $lignes_matieres_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
       echo    '</tbody>'.NL;
     }
-    echo    '<tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_principal_add) ? $lignes_principal_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody>'.NL;
-    echo    '<tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_principal_del) ? $lignes_principal_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody>'.NL;
-    if($mode=='complet')
-    {
-      echo    '<tbody>'.NL;
-      echo      '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-      echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-      echo    '</tbody>'.NL;
-    }
-    echo    '<tbody>'.NL;
-    echo      '<tr><th colspan="3">Associations utilisateurs / matières à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    echo($lignes_matieres_add) ? $lignes_matieres_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    // echo    '</tbody>'.NL;
-    // echo    '<tbody>'.NL;
-    // echo      '<tr><th colspan="3">Associations utilisateurs / matières à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-    // echo($lignes_matieres_del) ? $lignes_matieres_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-    echo    '</tbody>'.NL;
   }
   if($mode=='complet')
   {
@@ -2445,7 +2447,6 @@ if( $step==61 )
 
 if( $step==62 )
 {
-  $user_profil_type = (mb_strpos($action,'_eleves')) ? 'eleve' : 'professeur' ;
   // Récupérer les éléments postés
   $tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
   $tab_post = array( 'classe'=>array() , 'pp'=>array() , 'matiere'=>array() , 'groupe'=>array() );
@@ -2465,7 +2466,7 @@ if( $step==62 )
     {
       foreach($tab_id2 as $classe_id => $etat)
       {
-        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$user_profil_type,$classe_id,'classe',$etat);
+        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$classe_id,'classe',$etat);
       }
     }
   }
@@ -2502,19 +2503,19 @@ if( $step==62 )
     {
       foreach($tab_id2 as $groupe_id => $etat)
       {
-        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$user_profil_type,$groupe_id,'groupe',$etat);
+        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$groupe_id,'groupe',$etat);
       }
     }
   }
   // Afficher le résultat
-  if( ($action=='sconet_professeurs_directeurs') || ($action=='tableur_professeurs_directeurs') )
+  if($import_profil=='professeur')
   {
     echo'<p><label class="valide">Modifications associations utilisateurs / classes effectuées : '.$nb_asso_classes.'</label></p>'.NL;
-  }
-  if($action=='sconet_professeurs_directeurs')
-  {
-    echo'<p><label class="valide">Modifications associations utilisateurs / p.principal effectuées : '.$nb_asso_pps.'</label></p>'.NL;
-    echo'<p><label class="valide">Modifications associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>'.NL;
+    if($import_origine=='sconet')
+    {
+      echo'<p><label class="valide">Modifications associations utilisateurs / p.principal effectuées : '.$nb_asso_pps.'</label></p>'.NL;
+      echo'<p><label class="valide">Modifications associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>'.NL;
+    }
   }
   echo'<p><label class="valide">Modifications associations utilisateurs / groupes effectuées : '.$nb_asso_groupes.'</label></p>'.NL;
   echo'<p class="li"><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>'.NL;
@@ -2531,7 +2532,7 @@ if( $step==71 )
   $tab_liens_id_base = load_fichier('liens_id_base');
   $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
   // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil_sigle / nom / prenom / classe / groupes / matieres / adresse / enfant
-  $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
+  $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
   if(!is_file($fnom))
   {
     exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
@@ -2697,7 +2698,7 @@ if( $step==81 )
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_infos_eleve = array( 'nom'=>$DB_ROW['eleve_nom'] , 'prenom'=>$DB_ROW['eleve_prenom'] );
-    if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($action=='base_eleves_parents') ) )
+    if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($import_origine=='base_eleves') ) )
     {
       $tab_infos_parent = array( 'id'=>(int)$DB_ROW['parent_id'] , 'nom'=>$DB_ROW['parent_nom'] , 'prenom'=>$DB_ROW['parent_prenom'] );
       if(!isset($tab_base_parents_par_eleve[(int)$DB_ROW['eleve_id']]))
@@ -2729,7 +2730,7 @@ if( $step==81 )
       $tab_memo_analyse[$eleve_id_base][$parent_id_base] = $resp_legal_num;
     }
   }
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
   // Pour préparer l'affichage
   $lignes_modifier  = '';
   $lignes_conserver = '';
@@ -2864,14 +2865,14 @@ if( $step==82 )
 if( $step==90 )
 {
   // Il est arrivé que ces fichiers n'existent plus (bizarre...) d'où le test d'existence.
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest                                                                 , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'         , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'       , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'       , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt'  , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt' , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest                                                                                            , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'         , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'       , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'       , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt'  , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt' , TRUE /*verif_exist*/ );
   // Retenir qu'un import a été effectué
-  $nom_variable = (mb_strpos($action,'_eleves')) ? 'date_last_import_eleves' : ( (mb_strpos($action,'_parents')) ? 'date_last_import_parents' : 'date_last_import_professeurs' ) ;
+  $nom_variable = 'date_last_import_'.$import_profil.'s';
   DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
   $_SESSION[strtoupper($nom_variable)] = TODAY_MYSQL;
   // Game over

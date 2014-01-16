@@ -297,7 +297,7 @@ if($connexion_mode=='cas')
   catch(Exception $e)
   {
     // @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
-    $msg  = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté ';
+    $msg  = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
     $msg .= $e->getMessage();
     // on ajoute les traces dans le log
     $traces = get_string_traces($e);

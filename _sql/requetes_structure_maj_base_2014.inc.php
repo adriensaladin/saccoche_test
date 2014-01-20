@@ -59,22 +59,4 @@ if($version_base_structure_actuelle=='2014-01-07')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-01-14 => 2014-01-20
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-if($version_base_structure_actuelle=='2014-01-14')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-01-20';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification sacoche_parametre (paramètres CAS pour ENT Cartable de Savoie)
-    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-    if($connexion_nom=='cartabledesavoie')
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="www.cartabledesavoie.com" WHERE parametre_nom="cas_serveur_host" ' );
-    }
-  }
-}
-
 ?>

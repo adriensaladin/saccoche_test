@@ -30,12 +30,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 ?>
 
-<!--
-http://dev.mysql.com/doc/refman/5.0/fr/repair.html
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation.</a></span></p>
+En cas de crash serveur, coupure d'électricité, etc., il peut arriver qu'une base de données soit physiquement corrompue.<br />
+Cet outil <a class="lien_ext" href="http://dev.mysql.com/doc/refman/5.0/fr/check-table.html">analyse</a> et <a class="lien_ext" href="http://dev.mysql.com/doc/refman/5.0/fr/repair-table.html">répare</a> si besoin, <a class="lien_ext" href="http://dev.mysql.com/doc/refman/5.0/fr/repair.html">dans la mesure du possible</a>, la ou les bases de données des établissements.
 
 <hr />
--->
 
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 

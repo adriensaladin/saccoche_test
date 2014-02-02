@@ -6,3 +6,5 @@ phpCAS est une classe PHP utilisée comme client CAS, pour communiquer avec un s
 
 Seule la classe est présente dans SACoche.
 Pour infos et documentations : https://wiki.jasig.org/display/CASC/phpCAS
+
+Fichier de certificats ajouté pour l'utilisation de phpCAS::setCasServerCACert() .

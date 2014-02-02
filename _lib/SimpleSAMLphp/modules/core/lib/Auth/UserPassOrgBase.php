@@ -196,12 +196,14 @@ abstract class sspmod_core_Auth_UserPassOrgBase extends SimpleSAML_Auth_Source {
 	 *
 	 * This function is used by the login form (core/www/loginuserpassorg.php) when the user
 	 * enters a username and password. On success, it will not return. On wrong
-	 * username/password failure, and other errors, it will throw an exception.
+	 * username/password failure, it will return the error code. Other failures will throw an
+	 * exception.
 	 *
 	 * @param string $authStateId  The identifier of the authentication state.
 	 * @param string $username  The username the user wrote.
 	 * @param string $password  The password the user wrote.
 	 * @param string $organization  The id of the organization the user chose.
+	 * @return string Error code in the case of an error.
 	 */
 	public static function handleLogin($authStateId, $username, $password, $organization) {
 		assert('is_string($authStateId)');
@@ -228,13 +230,17 @@ abstract class sspmod_core_Auth_UserPassOrgBase extends SimpleSAML_Auth_Source {
 			} else {
 				if ($orgMethod === 'force') {
 					/* The organization should be a part of the username, but isn't. */
-					throw new SimpleSAML_Error_Error('WRONGUSERPASS');
+					return 'WRONGUSERPASS';
 				}
 			}
 		}
 
-		/* Attempt to log in. */
-		$attributes = $source->login($username, $password, $organization);
+		try {
+			/* Attempt to log in. */
+			$attributes = $source->login($username, $password, $organization);
+		} catch (SimpleSAML_Error_Error $e) {
+			return $e->getErrorCode();
+		}
 
 		// Add the selected Org to the state
 		$state[self::ORGID] = $organization;

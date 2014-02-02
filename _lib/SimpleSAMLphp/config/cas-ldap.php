@@ -13,7 +13,7 @@ $casldapconfig = array (
 		),
 		'ldap' => array(
 			'servers' => 'idpentityid.example.org',
-			'enable_tls' => true,
+			'enable_tls' => false,
 			'searchbase' => 'dc=example,dc=org',
 			'searchattributes' => 'uid',
 			'attributes' => array('cn', 'mail'),
@@ -26,7 +26,7 @@ $casldapconfig = array (
 		),
 		'ldap' => array(
 			'servers' => 'ldap://idpentityid2.example.org',
-			'enable_tls' => true,
+			'enable_tls' => false,
 			'searchbase' => 'ou=users,dc=example,dc=org',
 			'searchattributes' => array('uid', 'mail'), # array for being able to login with either uid or mail.
 			'attributes' => null,

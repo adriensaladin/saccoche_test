@@ -185,12 +185,13 @@ abstract class sspmod_core_Auth_UserPassBase extends SimpleSAML_Auth_Source {
 	 * Handle login request.
 	 *
 	 * This function is used by the login form (core/www/loginuserpass.php) when the user
-	 * enters a username and password. On success, it will not return. On wrong
-	 * username/password failure, and other errors, it will throw an exception.
+	 * enters a username and password. On success, it will not return. If an error occurs,
+	 * it will return the error code.
 	 *
 	 * @param string $authStateId  The identifier of the authentication state.
 	 * @param string $username  The username the user wrote.
 	 * @param string $password  The password the user wrote.
+	 * @return string Error code in the case of an error.
 	 */
 	public static function handleLogin($authStateId, $username, $password) {
 		assert('is_string($authStateId)');
@@ -212,8 +213,16 @@ abstract class sspmod_core_Auth_UserPassBase extends SimpleSAML_Auth_Source {
 		 * was called. We should call login() on the same authentication source.
 		 */
 
-		/* Attempt to log in. */
-		$attributes = $source->login($username, $password);
+		try {
+			/* Attempt to log in. */
+			$attributes = $source->login($username, $password);
+		} catch (SimpleSAML_Error_Error $e) {
+			/*
+			 * Login failed. Return the error code to the login form, so that it
+			 * can display an error message to the user.
+			 */
+			return $e->getErrorCode();
+		}
 
 		/* Save the attributes we received from the login-function in the $state-array. */
 		assert('is_array($attributes)');

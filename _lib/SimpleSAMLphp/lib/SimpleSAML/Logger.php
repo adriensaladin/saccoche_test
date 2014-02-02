@@ -219,7 +219,7 @@ class SimpleSAML_Logger {
 			$session = SimpleSAML_Session::getInstance();
 
 			/* Update the trackid. */
-			self::$trackid = $session->getTrackID();
+			self::$trackid = $session->getTrackId();
 		}
 
 		assert('is_string(self::$trackid)');

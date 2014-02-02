@@ -77,21 +77,4 @@ if($version_base_structure_actuelle=='2014-01-14')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-01-20 => 2014-01-31
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-if($version_base_structure_actuelle=='2014-01-20')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-01-31';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // suppression de la Note de Vie Scolaire des fiches brevet
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_brevet_epreuve WHERE brevet_epreuve_code=112 ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_brevet_saisie ' ); // retirer seulement brevet_epreuve_code IN(112,255) ne suffit pas
-    // matière renommée
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_nom="7 Autonomie et initiative" WHERE matiere_id=9908 ' );
-  }
-}
-
 ?>

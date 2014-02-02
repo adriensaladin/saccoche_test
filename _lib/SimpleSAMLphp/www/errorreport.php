@@ -36,7 +36,7 @@ if ($data === NULL) {
 	);
 
 	if (isset($session)) {
-		$data['trackId'] = $session->getTrackID();
+		$data['trackId'] = $session->getTrackId();
 	}
 }
 

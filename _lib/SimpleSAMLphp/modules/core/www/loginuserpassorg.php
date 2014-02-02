@@ -50,7 +50,6 @@ if (array_key_exists('organization', $_REQUEST)) {
 }
 
 $errorCode = NULL;
-$errorParams = NULL;
 if ($organizations === NULL || !empty($organization)) {
 	if (!empty($username) && !empty($password)) {
 
@@ -62,13 +61,7 @@ if ($organizations === NULL || !empty($organization)) {
 			setcookie($source->getAuthId() . '-username', $username, $params['expire'], $params['path'], $params['domain'], $params['secure'], $params['httponly']);
 		}
 
-		try {
-			sspmod_core_Auth_UserPassOrgBase::handleLogin($authStateId, $username, $password, $organization);
-		} catch (SimpleSAML_Error_Error $e) {
-			/* Login failed. Extract error code and parameters, to display the error. */
-			$errorCode = $e->getErrorCode();
-			$errorParams = $e->getParameters();
-		}
+		$errorCode = sspmod_core_Auth_UserPassOrgBase::handleLogin($authStateId, $username, $password, $organization);
 	}
 }
 
@@ -81,7 +74,6 @@ $t->data['rememberUsernameEnabled'] = $source->getRememberUsernameEnabled();
 $t->data['rememberUsernameChecked'] = $source->getRememberUsernameChecked();
 if (isset($_COOKIE[$source->getAuthId() . '-username'])) $t->data['rememberUsernameChecked'] = TRUE;
 $t->data['errorcode'] = $errorCode;
-$t->data['errorparams'] = $errorParams;
 
 if ($organizations !== NULL) {
 	$t->data['selectedOrg'] = $organization;

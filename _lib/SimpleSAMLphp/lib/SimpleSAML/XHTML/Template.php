@@ -5,7 +5,7 @@
  *
  * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
- * @version $Id: Template.php 3217 2013-01-08 11:56:19Z comel.ah $
+ * @version $Id: Template.php 3001 2011-12-19 13:06:18Z comel.ah $
  */
 class SimpleSAML_XHTML_Template {
 
@@ -39,12 +39,6 @@ class SimpleSAML_XHTML_Template {
 
 
 	/**
-	 * HTTP GET language parameter name.
-	 */
-	private $languageParameterName = 'language';
-
-
-	/**
 	 * Constructor
 	 *
 	 * @param $configuration   Configuration object
@@ -58,10 +52,9 @@ class SimpleSAML_XHTML_Template {
 		$this->data['baseurlpath'] = $this->configuration->getBaseURL();
 
 		$this->availableLanguages = $this->configuration->getArray('language.available', array('en'));
-
-		$this->languageParameterName = $this->configuration->getString('language.parameter.name', 'language');
-		if (isset($_GET[$this->languageParameterName])) {
-			$this->setLanguage($_GET[$this->languageParameterName], $this->configuration->getBoolean('language.parameter.setcookie', TRUE));
+		
+		if (isset($_GET['language'])) {
+			$this->setLanguage($_GET['language']);
 		}
 
 		if($defaultDictionary !== NULL && substr($defaultDictionary, -4) === '.php') {
@@ -579,7 +572,7 @@ class SimpleSAML_XHTML_Template {
 	public function show() {
 
 		$filename = $this->findTemplatePath($this->template);
-		require($filename);
+		require_once($filename);
 	}
 
 
@@ -676,10 +669,9 @@ class SimpleSAML_XHTML_Template {
 	public static function getLanguageCookie() {
 		$config = SimpleSAML_Configuration::getInstance();
 		$availableLanguages = $config->getArray('language.available', array('en'));
-		$name = $config->getString('language.cookie.name', 'language');
 
-		if (isset($_COOKIE[$name])) {
-			$language = strtolower((string)$_COOKIE[$name]);
+		if (isset($_COOKIE['language'])) {
+			$language = strtolower((string)$_COOKIE['language']);
 			if (in_array($language, $availableLanguages, TRUE)) {
 				return $language;
 			}
@@ -704,19 +696,7 @@ class SimpleSAML_XHTML_Template {
 		if (!in_array($language, $availableLanguages, TRUE) || headers_sent()) {
 			return;
 		}
-
-		$name = $config->getString('language.cookie.name', 'language');
-		$domain = $config->getString('language.cookie.domain', NULL);
-		$path = $config->getString('language.cookie.path', '/');
-		$lifetime = $config->getInteger('language.cookie.lifetime', 60*60*24*900);
-
-		if ($lifetime === 0) {
-			$expire = 0;
-		} else {
-			$expire = time() + $lifetime;
-		}
-
-		setcookie($name, $language, $expire, $path, $domain);
+		setcookie('language', $language, time()+60*60*24*900, '/');
 	}
 
 }

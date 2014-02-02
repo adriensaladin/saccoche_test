@@ -1,5 +1,5 @@
 ================================================================================
-Librairie : SimpleSAMLphp               Version : 1.10.0
+Librairie : SimpleSAMLphp               Version : 1.11.0
 ================================================================================
 
 SimpleSAMLphp permet d'interroger un service d'authentification (CAS, LDAP, ...) mais aussi de fournir ce service.

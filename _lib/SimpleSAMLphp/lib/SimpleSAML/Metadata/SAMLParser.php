@@ -223,13 +223,13 @@ class SimpleSAML_Metadata_SAMLParser {
 
 
 	/**
-	 * This function parses a DOMElement which represents a EntityDescriptor element.
+	 * This function parses a SAML2_XML_md_EntityDescriptor object which represents a EntityDescriptor element.
 	 *
-	 * @param $entityElement  A DOMElement which represents a EntityDescriptor element.
+	 * @param $entityElement  A SAML2_XML_md_EntityDescriptor object which represents a EntityDescriptor element.
 	 * @return An instance of this class with the metadata loaded.
 	 */
 	public static function parseElement($entityElement) {
-		assert('$entityElement instanceof DOMElement');
+		assert('$entityElement instanceof SAML2_XML_md_EntityDescriptor');
 
 		return new SimpleSAML_Metadata_SAMLParser($entityElement, NULL);
 	}
@@ -623,6 +623,15 @@ class SimpleSAML_Metadata_SAMLParser {
 			$ret['keys'] = $spd['keys'];
 		}
 
+		/* Add validate.authnrequest. */
+		if (array_key_exists('AuthnRequestsSigned', $spd)) {
+			$ret['validate.authnrequest'] = $spd['AuthnRequestsSigned'];
+		}
+
+		/* Add saml20.sign.assertion. */
+		if (array_key_exists('WantAssertionsSigned', $spd)) {
+			$ret['saml20.sign.assertion'] = $spd['WantAssertionsSigned'];
+		}
 
 		/* Add extensions. */
 		$this->addExtensions($ret, $spd);
@@ -808,6 +817,16 @@ class SimpleSAML_Metadata_SAMLParser {
 		$attcs = $element->AttributeConsumingService;
 		if (count($attcs) > 0) {
 			self::parseAttributeConsumerService($attcs[0], $sp);
+		}
+
+		/* Check AuthnRequestsSigned */
+		if ($element->AuthnRequestsSigned !== NULL) {
+			$sp['AuthnRequestsSigned'] = $element->AuthnRequestsSigned;
+		}
+
+		/* Check WantAssertionsSigned */
+		if ($element->WantAssertionsSigned !== NULL) {
+			$sp['WantAssertionsSigned'] = $element->WantAssertionsSigned;
 		}
 
 		$this->spDescriptors[] = $sp;

@@ -117,7 +117,7 @@ $(document).ready
       var eleve_liste   = tab_eleves[id];
       var prof_liste    = tab_profs[id];
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(niveau_nom) , unescapeHtml(nom) , eleve_nombre , eleve_liste , prof_nombre , prof_liste );
+      afficher_form_gestion( mode , id , niveau_nom /* volontairement sans unescapeHtml() */ , unescapeHtml(nom) , eleve_nombre , eleve_liste , prof_nombre , prof_liste );
     };
 
     /**

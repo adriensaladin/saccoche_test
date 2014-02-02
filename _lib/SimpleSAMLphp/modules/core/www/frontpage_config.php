@@ -85,7 +85,7 @@ $functionchecks = array(
 	'simplexml_import_dom' => array('required', 'SimpleXML'),
 	'dom_import_simplexml' => array('required', 'XML DOM'),
 	'preg_match'       => array('required',  'RegEx support'),
-	'mcrypt_module_open'=> array('optional',  'MCrypt'),
+	'mcrypt_module_open'=> array('required',  'MCrypt'),
 	'mysql_connect'    => array('optional',  'MySQL support'),
 );
 if (SimpleSAML_Module::isModuleEnabled('ldap')) {
@@ -131,7 +131,7 @@ $funcmatrix[] = array(
 $funcmatrix[] = array(
 	'required' => 'reccomended',
 	'descr' => 'Magic Quotes should be turned off',
-	'enabled' => (get_magic_quotes_runtime() === 0)
+	'enabled' => (get_magic_quotes_runtime() == 0)
 );
 
 

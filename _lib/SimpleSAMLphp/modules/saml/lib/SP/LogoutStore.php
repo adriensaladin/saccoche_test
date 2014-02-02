@@ -108,14 +108,15 @@ class sspmod_saml_SP_LogoutStore {
 			'now' => gmdate('Y-m-d H:i:s'),
 		);
 
-		$query = 'SELECT _sessionIndex, _sessionId FROM ' . $store->prefix . '_saml_LogoutStore' .
+		/* We request the columns in lowercase in order to be compatible with PostgreSQL. */
+		$query = 'SELECT _sessionIndex AS _sessionindex, _sessionId AS _sessionid FROM ' . $store->prefix . '_saml_LogoutStore' .
 			' WHERE _authSource = :_authSource AND _nameId = :_nameId AND _expire >= :now';
 		$query = $store->pdo->prepare($query);
 		$query->execute($params);
 
 		$res = array();
 		while ( ($row = $query->fetch(PDO::FETCH_ASSOC)) !== FALSE) {
-			$res[$row['_sessionIndex']] = $row['_sessionId'];
+			$res[$row['_sessionindex']] = $row['_sessionid'];
 		}
 
 		return $res;
@@ -264,7 +265,7 @@ class sspmod_saml_SP_LogoutStore {
 				continue;
 			}
 
-			SimpleSAML_Logger::info('saml.LogoutStore: Logging out of session with trackId [' . $session->getTrackId() . '].');
+			SimpleSAML_Logger::info('saml.LogoutStore: Logging out of session with trackId [' . $session->getTrackID() . '].');
 			$session->doLogout($authId);
 			$numLoggedOut += 1;
 		}

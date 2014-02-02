@@ -100,7 +100,7 @@ $(document).ready
       // Enlever l'ordre du niveau caché
       niveau_nom = niveau_nom.substring(9,niveau_nom.length);
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(niveau_nom) , unescapeHtml(ref) , unescapeHtml(nom) );
+      afficher_form_gestion( mode , id , niveau_nom /* volontairement sans unescapeHtml() */ , unescapeHtml(ref) , unescapeHtml(nom) );
     };
 
     /**

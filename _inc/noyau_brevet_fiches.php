@@ -161,75 +161,75 @@ if($make_pdf)
   $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Quelques valeurs de positionnement ...
   $pdf_coords_session       = array( 'G'=>array(111,18,15,4) , 'P'=>array(103,18,15,4) );
-  $pdf_coords_academie      = array(30,29.5,38,3);
-  $pdf_coords_departement   = array(34,33,35,3);
-  $pdf_coords_etablissement = array(15,42,55,3);
-  $pdf_coords_eleve_nom     = array(127,28,63,3);
+  $pdf_coords_academie      = array( 30  ,29.5,38,3);
+  $pdf_coords_departement   = array( 34  ,33  ,35,3);
+  $pdf_coords_etablissement = array( 15  ,42  ,55,3);
+  $pdf_coords_eleve_nom     = array(127  ,28  ,63,3);
   $pdf_coords_eleve_prenom  = array(131.8,35.2,58,3);
   $pdf_coords_eleve_date    = array(147.6,42.5,42,3);
-  $pdf_coords_classe_nom    = array(132.5,50,57,3);
+  $pdf_coords_classe_nom    = array(132.5,50  ,57,3);
   // Français
-  $pdf_coords_epreuve_classe[101] = array( 'G'=>array(56,97.5,15,13) , 'P'=>array(52,104,14,13) );
-  $pdf_coords_epreuve_eleve[101]  = array( 'G'=>array(71,97.5,14,13) , 'P'=>array(66,104,14,13) );
+  $pdf_coords_epreuve_classe[101] = array( 'G'=>array(56,97.5, 15,13) , 'P'=>array(52,104, 14,13) );
+  $pdf_coords_epreuve_eleve[101]  = array( 'G'=>array(71,97.5, 14,13) , 'P'=>array(66,104, 14,13) );
   $pdf_coords_epreuve_appr[101]   = array( 'G'=>array(85,97.5,108,13) , 'P'=>array(80,104,113,13) );
   // Mathématiques
-  $pdf_coords_epreuve_classe[102] = array( 'G'=>array(56,111,15,13) , 'P'=>array(52,117,14,13) );
-  $pdf_coords_epreuve_eleve[102]  = array( 'G'=>array(71,111,14,13) , 'P'=>array(66,117,14,13) );
+  $pdf_coords_epreuve_classe[102] = array( 'G'=>array(56,111, 15,13) , 'P'=>array(52,117, 14,13) );
+  $pdf_coords_epreuve_eleve[102]  = array( 'G'=>array(71,111, 14,13) , 'P'=>array(66,117, 14,13) );
   $pdf_coords_epreuve_appr[102]   = array( 'G'=>array(85,111,108,13) , 'P'=>array(80,117,113,13) );
   // Première langue vivante || Langues vivantes [pb pour P-Agri : mauvais intitulé sur la fiche]
-  $pdf_coords_epreuve_classe[103] = array( 'G'=>array(56,124,15,13) , 'P'=>array(52,131,14,18) );
-  $pdf_coords_epreuve_eleve[103]  = array( 'G'=>array(71,124,14,13) , 'P'=>array(66,131,14,18) );
+  $pdf_coords_epreuve_classe[103] = array( 'G'=>array(56,124, 15,13) , 'P'=>array(52,131, 14,18) );
+  $pdf_coords_epreuve_eleve[103]  = array( 'G'=>array(71,124, 14,13) , 'P'=>array(66,131, 14,18) );
   $pdf_coords_epreuve_appr[103]   = array( 'G'=>array(85,124,108,13) , 'P'=>array(80,131,113,18) );
   // Sciences de la vie et de la terre
-  $pdf_coords_epreuve_classe[104] = array( 'G'=>array(56,151,15,13) );
-  $pdf_coords_epreuve_eleve[104]  = array( 'G'=>array(71,151,14,13) );
+  $pdf_coords_epreuve_classe[104] = array( 'G'=>array(56,151, 15,13) );
+  $pdf_coords_epreuve_eleve[104]  = array( 'G'=>array(71,151, 14,13) );
   $pdf_coords_epreuve_appr[104]   = array( 'G'=>array(85,151,108,13) );
   // Physique-chimie || Prévention santé environnement
-  $pdf_coords_epreuve_classe[105] = array( 'G'=>array(56,164,15,13) , 'P'=>array(52,149,14,13) );
-  $pdf_coords_epreuve_eleve[105]  = array( 'G'=>array(71,164,14,13) , 'P'=>array(66,149,14,13) );
+  $pdf_coords_epreuve_classe[105] = array( 'G'=>array(56,164, 15,13) , 'P'=>array(52,149, 14,13) );
+  $pdf_coords_epreuve_eleve[105]  = array( 'G'=>array(71,164, 14,13) , 'P'=>array(66,149, 14,13) );
   $pdf_coords_epreuve_appr[105]   = array( 'G'=>array(85,164,108,13) , 'P'=>array(80,149,113,13) );
   // Éducation physique et sportive
-  $pdf_coords_epreuve_classe[106] = array( 'G'=>array(56,177.5,15,13) , 'P'=>array(52,162,14,13) );
-  $pdf_coords_epreuve_eleve[106]  = array( 'G'=>array(71,177.5,14,13) , 'P'=>array(66,162,14,13) );
+  $pdf_coords_epreuve_classe[106] = array( 'G'=>array(56,177.5, 15,13) , 'P'=>array(52,162, 14,13) );
+  $pdf_coords_epreuve_eleve[106]  = array( 'G'=>array(71,177.5, 14,13) , 'P'=>array(66,162, 14,13) );
   $pdf_coords_epreuve_appr[106]   = array( 'G'=>array(85,177.5,108,13) , 'P'=>array(80,162,113,13) );
   // Arts plastiques || Éducation artistique [pb pour P : "Enseignements artistiques" écrit sur la fiche] || Éducation socioculturelle [pb pour P-Agri : épreuve pas sur la fiche]
-  $pdf_coords_epreuve_classe[107] = array( 'G'=>array(56,191,15,8) , 'P'=>array(52,176,14,13) );
-  $pdf_coords_epreuve_eleve[107]  = array( 'G'=>array(71,191,14,8) , 'P'=>array(66,176,14,13) );
+  $pdf_coords_epreuve_classe[107] = array( 'G'=>array(56,191, 15,8) , 'P'=>array(52,176, 14,13) );
+  $pdf_coords_epreuve_eleve[107]  = array( 'G'=>array(71,191, 14,8) , 'P'=>array(66,176, 14,13) );
   $pdf_coords_epreuve_appr[107]   = array( 'G'=>array(85,191,108,8) , 'P'=>array(80,176,113,13) );
   // Éducation musicale || Sciences et technologie
-  $pdf_coords_epreuve_classe[108] = array( 'G'=>array(56,199,15,9) , 'P'=>array(52,189,14,13) );
-  $pdf_coords_epreuve_eleve[108]  = array( 'G'=>array(71,199,14,9) , 'P'=>array(66,189,14,13) );
+  $pdf_coords_epreuve_classe[108] = array( 'G'=>array(56,199, 15,9) , 'P'=>array(52,189, 14,13) );
+  $pdf_coords_epreuve_eleve[108]  = array( 'G'=>array(71,199, 14,9) , 'P'=>array(66,189, 14,13) );
   $pdf_coords_epreuve_appr[108]   = array( 'G'=>array(85,199,108,9) , 'P'=>array(80,189,113,13) );
   // Technologie || Technologie, sciences et découverte de la vie professionnelle et des métiers [pb pour P-Agri : épreuve pas sur la fiche]
-  $pdf_coords_epreuve_classe[109] = array( 'G'=>array(56,208,15,13) , 'P'=>array(52,202,14,13) );
-  $pdf_coords_epreuve_eleve[109]  = array( 'G'=>array(71,208,14,13) , 'P'=>array(66,202,14,13) );
+  $pdf_coords_epreuve_classe[109] = array( 'G'=>array(56,208, 15,13) , 'P'=>array(52,202, 14,13) );
+  $pdf_coords_epreuve_eleve[109]  = array( 'G'=>array(71,208, 14,13) , 'P'=>array(66,202, 14,13) );
   $pdf_coords_epreuve_appr[109]   = array( 'G'=>array(85,208,108,13) , 'P'=>array(80,202,113,13) );
   // Deuxième langue vivante || Découverte professionnelle
-  $pdf_coords_epreuve_classe[110] = array( 'G'=>array(56,137.5,15,13) , 'P'=>array(52,202,14,13) );
-  $pdf_coords_epreuve_eleve[110]  = array( 'G'=>array(71,137.5,14,13) , 'P'=>array(66,202,14,13) );
+  $pdf_coords_epreuve_classe[110] = array( 'G'=>array(56,137.5, 15,13) , 'P'=>array(52,202, 14,13) );
+  $pdf_coords_epreuve_eleve[110]  = array( 'G'=>array(71,137.5, 14,13) , 'P'=>array(66,202, 14,13) );
   $pdf_coords_epreuve_appr[110]   = array( 'G'=>array(85,137.5,108,13) , 'P'=>array(80,202,113,13) );
   // Vie scolaire
-  $pdf_coords_epreuve_classe[112] = array( 'G'=>array(56,242,15,13) , 'P'=>array(52,237,14,13) );
-  $pdf_coords_epreuve_eleve[112]  = array( 'G'=>array(71,242,14,13) , 'P'=>array(66,237,14,13) );
-  $pdf_coords_epreuve_appr[112]   = array( 'G'=>array(85,242,108,13) , 'P'=>array(80,237,113,13) );
+  // $pdf_coords_epreuve_classe[112] = array( 'G'=>array(56,242, 15,13) , 'P'=>array(52,237, 14,13) );
+  // $pdf_coords_epreuve_eleve[112]  = array( 'G'=>array(71,242, 14,13) , 'P'=>array(66,237, 14,13) );
+  // $pdf_coords_epreuve_appr[112]   = array( 'G'=>array(85,242,108,13) , 'P'=>array(80,237,113,13) );
   // Option facultative [pb pour P : anormalement présent sur la fiche]
-  $pdf_coords_epreuve_classe[113] = array( 'G'=>array(56,221,15,13) );
-  $pdf_coords_epreuve_eleve[113]  = array( 'G'=>array(71,221,14,13) );
+  $pdf_coords_epreuve_classe[113] = array( 'G'=>array(56,221, 15,13) );
+  $pdf_coords_epreuve_eleve[113]  = array( 'G'=>array(71,221, 14,13) );
   $pdf_coords_epreuve_appr[113]   = array( 'G'=>array(85,221,108,13) );
   // Histoire-géographie || Histoire-géographie éducation civique [pb pour P de partage de la case en 2 sur la fiche]
-  $pdf_coords_epreuve_classe[121] = array( 'G'=>array(56,255,15,7) , 'P'=>array(52,249,14,13) );
-  $pdf_coords_epreuve_eleve[121]  = array( 'G'=>array(71,255,14,7) , 'P'=>array(66,249,14,13) );
+  $pdf_coords_epreuve_classe[121] = array( 'G'=>array(56,255, 15,7) , 'P'=>array(52,249, 14,13) );
+  $pdf_coords_epreuve_eleve[121]  = array( 'G'=>array(71,255, 14,7) , 'P'=>array(66,249, 14,13) );
   $pdf_coords_epreuve_appr[121]   = array( 'G'=>array(85,255,108,7) , 'P'=>array(80,249,113,13) );
   // Éducation civique
-  $pdf_coords_epreuve_classe[122] = array( 'G'=>array(56,262,15,6) );
-  $pdf_coords_epreuve_eleve[122]  = array( 'G'=>array(71,262,14,6) );
+  $pdf_coords_epreuve_classe[122] = array( 'G'=>array(56,262, 15,6) );
+  $pdf_coords_epreuve_eleve[122]  = array( 'G'=>array(71,262, 14,6) );
   $pdf_coords_epreuve_appr[122]   = array( 'G'=>array(85,262,108,6) );
   // Niveau A2 de langue régionale
-  $pdf_coords_epreuve_classe[130] = array( 'G'=>array(56,134,15,13) , 'P'=>array(52,228,14,13) );
-  $pdf_coords_epreuve_eleve[130]  = array( 'G'=>array(71,134,14,13) , 'P'=>array(66,228,14,13) );
+  $pdf_coords_epreuve_classe[130] = array( 'G'=>array(56,134, 15,13) , 'P'=>array(52,228, 14,13) );
+  $pdf_coords_epreuve_eleve[130]  = array( 'G'=>array(71,134, 14,13) , 'P'=>array(66,228, 14,13) );
   $pdf_coords_epreuve_appr[130]   = array( 'G'=>array(85,134,108,13) , 'P'=>array(80,228,113,13) );
   // Avis circonstancié du chef d’établissement
-  $pdf_coords_epreuve_eleve[CODE_BREVET_EPREUVE_TOTAL] = array( 'G'=>array(15,72,47,11) , 'P'=>array(15,77,48,13) );
+  $pdf_coords_epreuve_eleve[CODE_BREVET_EPREUVE_TOTAL] = array( 'G'=>array( 15,72,47,11) , 'P'=>array( 15,77,48,13) );
   $pdf_coords_epreuve_appr[ CODE_BREVET_EPREUVE_TOTAL] = array( 'G'=>array(106,72,86,11) , 'P'=>array(109,77,82,13) );
   // Avis du conseil de classe
   $pdf_coords_epreuve_case['F'] = array( 'G'=>array(65.5,78.5,2,2) , 'P'=>array(67,84,2,2) );

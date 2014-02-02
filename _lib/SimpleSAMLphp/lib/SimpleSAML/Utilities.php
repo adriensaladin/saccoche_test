@@ -5,7 +5,7 @@
  *
  * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
- * @version $Id: Utilities.php 3085 2012-05-04 08:03:01Z olavmrk $
+ * @version $Id: Utilities.php 3233 2013-04-08 08:44:05Z olavmrk $
  */
 class SimpleSAML_Utilities {
 
@@ -563,14 +563,20 @@ class SimpleSAML_Utilities {
 	 *               will be urlencoded. If the value is NULL, then the
 	 *               parameter will be encoded as just the name, without a
 	 *               value.
+	 *  $allowed_redirect_hosts
+	 *               Array whitelist of hosts that redirects are allowed for.
+	 *               If NULL value, redirect will be allowed to any host.
+	 *               Otherwise, $url host must be present in Array for redirect.
+	 *               If the host is not present, an exception will be thrown.
 	 *
 	 * Returns:
 	 *  This function never returns.
 	 */
-	public static function redirect($url, $parameters = array()) {
+	public static function redirect($url, $parameters = array(), $allowed_redirect_hosts = NULL) {
 		assert(is_string($url));
 		assert(strlen($url) > 0);
 		assert(is_array($parameters));
+		if($allowed_redirect_hosts != NULL) assert(is_array($allowed_redirect_hosts));
 
 		/* Check for relative URL. */
 		if(substr($url, 0, 1) === '/') {
@@ -583,6 +589,17 @@ class SimpleSAML_Utilities {
 		/* Verify that the URL is to a http or https site. */
 		if (!preg_match('@^https?://@i', $url)) {
 			throw new SimpleSAML_Error_Exception('Redirect to invalid URL: ' . $url);
+		}
+
+		/* Validates that URL host is among those allowed. */
+		if ($allowed_redirect_hosts != NULL) {
+			preg_match('@^https?://([^/]+)@i', $url, $matches);
+			$hostname = $matches[1];
+
+			/* Throw exception for redirect to untrusted site */
+			if(!in_array($hostname, $allowed_redirect_hosts)) {
+				throw new SimpleSAML_Error_Exception('Redirect not to allowed redirect host: ' . $url);
+			}
 		}
 
 		/* Determine which prefix we should put before the first
@@ -667,6 +684,26 @@ class SimpleSAML_Utilities {
 		exit;
 	}
 
+	/*
+	 * This function validates untrusted url has hostname against
+	 *  config option 'redirect.trustedsites'.
+	 *
+	 * If option not set or hostname present among trusted sites,
+	 * peforms redirect via function redirect above.
+	 *
+	 * If site is not trusted, an exception will be thrown.
+	 *
+	 * See function redirect for details on url, parameters and return.
+	 */
+	public static function redirectUntrustedURL($url, $parameters = array()) {
+		$redirectTrustedSites = SimpleSAML_Configuration::getInstance()->getArray('redirect.trustedsites', NULL);
+		try {
+			self::redirect($url, $parameters, $redirectTrustedSites);
+		}
+		catch (SimpleSAML_Error_Exception $e) {
+			throw new SimpleSAML_Error_Exception('Site not in redirect.trusted sites: ' . $url);
+		}
+	}
 
 	/**
 	 * This function transposes a two-dimensional array, so that
@@ -2170,6 +2207,30 @@ class SimpleSAML_Utilities {
 			}
 			if (!isset($context['http']['request_fulluri'])) {
 				$context['http']['request_fulluri'] = TRUE;
+			}
+			// If the remote endpoint over HTTPS uses the SNI extension
+			// (Server Name Indication RFC 4366), the proxy could
+			// introduce a mismatch between the names in the
+			// Host: HTTP header and the SNI_server_name in TLS
+			// negotiation (thanks to Cristiano Valli @ GARR-IDEM
+			// to have pointed this problem).
+			// See: https://bugs.php.net/bug.php?id=63519
+			// These controls will force the same value for both fields.
+			// Marco Ferrante (marco@csita.unige.it), Nov 2012
+			if (preg_match('#^https#i', $path)
+				&& defined('OPENSSL_TLSEXT_SERVER_NAME')
+				&& OPENSSL_TLSEXT_SERVER_NAME) {
+				// Extract the hostname
+				$hostname = parse_url($path, PHP_URL_HOST);
+				if (!empty($hostname)) {
+					$context['ssl'] = array(
+						'SNI_server_name' => $hostname,
+						'SNI_enabled' => TRUE,
+						);
+				}
+				else {
+					SimpleSAML_Logger::warning('Invalid URL format or local URL used through a proxy');
+				}
 			}
 		}
 

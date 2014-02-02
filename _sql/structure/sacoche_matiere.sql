@@ -2154,7 +2154,7 @@ INSERT INTO sacoche_matiere VALUES
 (9905, 0, 1,  99, 0, 255, "P4"   , "4 Maîtrise des TICE"),
 (9906, 0, 1,  99, 0, 255, "P5"   , "5 Culture humaniste"),
 (9907, 0, 1,  99, 0, 255, "P6"   , "6 Compétences sociales et civiques"),
-(9908, 0, 1,  99, 0, 255, "P7"   , "7 Autonomie et l'initiative"),
+(9908, 0, 1,  99, 0, 255, "P7"   , "7 Autonomie et initiative"),
 (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours"),
 (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1"),
 (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2"),

@@ -111,7 +111,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo*/ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , input_date /*date_fr*/ , 'bloquer' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo ; volontairement sans unescapeHtml() */ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , input_date /*date_fr*/ , 'bloquer' /*acces*/ , '' /*check*/ );
     };
 
     /**
@@ -143,7 +143,7 @@ $(document).ready
       var denomination     = tab_infos[0];
       var uai              = tab_infos[1];
       // Afficher le formulaire
-      afficher_form_gestion( mode , base_id , unescapeHtml(geo) , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date_fr , acces , check );
+      afficher_form_gestion( mode , base_id , geo , unescapeHtml(localisation) , unescapeHtml(denomination) , unescapeHtml(uai) , unescapeHtml(contact_nom) , unescapeHtml(contact_prenom) , unescapeHtml(contact_courriel) , date_fr , acces , check );
     };
 
     /**

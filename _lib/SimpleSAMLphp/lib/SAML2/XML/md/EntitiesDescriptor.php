@@ -104,6 +104,7 @@ class SAML2_XML_md_EntitiesDescriptor extends SAML2_SignedElementHelper {
 		assert('is_null($this->ID) || is_string($this->ID)');
 		assert('is_null($this->validUntil) || is_int($this->validUntil)');
 		assert('is_null($this->cacheDuration) || is_string($this->cacheDuration)');
+		assert('is_null($this->Name) || is_string($this->Name)');
 		assert('is_array($this->Extensions)');
 		assert('is_array($this->children)');
 
@@ -126,6 +127,10 @@ class SAML2_XML_md_EntitiesDescriptor extends SAML2_SignedElementHelper {
 
 		if (isset($this->cacheDuration)) {
 			$e->setAttribute('cacheDuration', $this->cacheDuration);
+		}
+
+		if (isset($this->Name)) {
+			$e->setAttribute('Name', $this->Name);
 		}
 
 		SAML2_XML_md_Extensions::addList($e, $this->Extensions);

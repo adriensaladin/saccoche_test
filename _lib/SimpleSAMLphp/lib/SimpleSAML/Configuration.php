@@ -5,7 +5,7 @@
  *
  * @author Andreas Aakre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
- * @version $Id: Configuration.php 3176 2012-09-25 10:15:16Z jaimepc@gmail.com $
+ * @version $Id: Configuration.php 3252 2013-06-05 11:43:45Z jaimepc@gmail.com $
  */
 class SimpleSAML_Configuration {
 
@@ -295,7 +295,7 @@ class SimpleSAML_Configuration {
 	 * @return string
 	 */
 	public function getVersion() {
-		return '1.10.0';
+		return '1.11.0';
 	}
 
 

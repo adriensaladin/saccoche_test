@@ -37,7 +37,6 @@ INSERT INTO sacoche_brevet_epreuve VALUES
 ("G"     , 108, "Éducation musicale"               , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "813"                                            , NULL, 1, NULL),
 ("G"     , 109, "Technologie"                      , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "708,738"                                        , NULL, 1, NULL),
 ("G"     , 110, "Deuxième langue vivante"          , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "327,328,329,330,331,332,333,334,335,336,337,338", NULL, 1, NULL),
-("G"     , 112, "Vie scolaire"                     , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "54"                                             , NULL, 1, NULL),
 ("G"     , 113, "Option facultative"               , FALSE, TRUE , TRUE , TRUE , 1, "AB,DI"   , "201,6929,202,6923,50,51,74,399,230"             , NULL, 1, NULL),
 ("G"     , 121, "Histoire-géographie"              , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "406,6926,421"                                   , NULL, 1, NULL),
 ("G"     , 122, "Éducation civique"                , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "414,406,6926,421,6925"                          , NULL, 1, NULL),
@@ -53,7 +52,6 @@ INSERT INTO sacoche_brevet_epreuve VALUES
 ("P"     , 107, "Éducation artistique"                 , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "905"                                                                                            , NULL, 0, NULL),
 ("P"     , 108, "Sciences et technologie"              , TRUE , TRUE , FALSE, TRUE , 2, "AB,DI"   , "708,738"                                                                                        , NULL, 0, NULL),
 ("P"     , 110, "Découverte professionnelle"           , TRUE , TRUE , FALSE, TRUE , 3, "AB,DI"   , "50,51,74"                                                                                       , NULL, 1, NULL),
-("P"     , 112, "Vie scolaire"                         , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "54"                                                                                             , NULL, 1, NULL),
 ("P"     , 121, "Histoire-géographie éducation civique", TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "421,6925,406,6926,414"                                                                          , NULL, 0, NULL),
 ("P"     , 130, "Niveau A2 de langue régionale"        , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                                                                        , NULL, 1, NULL),
 
@@ -66,7 +64,6 @@ INSERT INTO sacoche_brevet_epreuve VALUES
 ("P-Agri", 106, "Éducation physique et sportive"                                              , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "1001,6914"                                      , NULL, 1, NULL),
 ("P-Agri", 107, "Éducation socioculturelle"                                                   , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "5,6919"                                         , NULL, 1, NULL),
 ("P-Agri", 109, "Technologie, sciences et découverte de la vie professionnelle et des métiers", TRUE , TRUE , FALSE, TRUE , 3, "AB,DI"   , "708,738"                                        , NULL, 0, NULL),
-("P-Agri", 112, "Vie scolaire"                                                                , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "54"                                             , NULL, 1, NULL),
 ("P-Agri", 121, "Histoire-géographie éducation civique"                                       , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "421,6925,406,6926,414"                          , NULL, 0, NULL),
 ("P-Agri", 130, "Niveau A2 de langue régionale"                                               , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                        , NULL, 1, NULL);
 

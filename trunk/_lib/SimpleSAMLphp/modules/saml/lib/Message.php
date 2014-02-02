@@ -11,18 +11,23 @@
 class sspmod_saml_Message {
 
 	/**
-	 * Add signature key and and senders certificate to an element (Message or Assertion).
+	 * Add signature key and sender certificate to an element (Message or Assertion).
 	 *
 	 * @param SimpleSAML_Configuration $srcMetadata  The metadata of the sender.
 	 * @param SimpleSAML_Configuration $dstMetadata  The metadata of the recipient.
 	 * @param SAML2_Message $element  The element we should add the data to.
 	 */
-	public static function addSign(SimpleSAML_Configuration $srcMetadata, SimpleSAML_Configuration $dstMetadata = NULL, SAML2_SignedElement $element) {
+	public static function addSign(SimpleSAML_Configuration $srcMetadata, SimpleSAML_Configuration $dstMetadata, SAML2_SignedElement $element) {
 
 		$keyArray = SimpleSAML_Utilities::loadPrivateKey($srcMetadata, TRUE);
 		$certArray = SimpleSAML_Utilities::loadPublicKey($srcMetadata, FALSE);
 
-		$privateKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA1, array('type' => 'private'));
+		$algo = $dstMetadata->getString('signature.algorithm', NULL);
+		if ($algo === NULL) {
+			$algo = $srcMetadata->getString('signature.algorithm', XMLSecurityKey::RSA_SHA1);
+		}
+
+		$privateKey = new XMLSecurityKey($algo, array('type' => 'private'));
 		if (array_key_exists('password', $keyArray)) {
 			$privateKey->passphrase = $keyArray['password'];
 		}
@@ -595,15 +600,14 @@ class sspmod_saml_Message {
 			/* Is SSO with HoK enabled? IdP remote metadata overwrites SP metadata configuration. */
 			$hok = $idpMetadata->getBoolean('saml20.hok.assertion', NULL);
 			if ($hok === NULL) {
-			    $protocolBinding = $spMetadata->getString('ProtocolBinding', SAML2_Const::BINDING_HTTP_POST);
-			    if ($protocolBinding === SAML2_Const::BINDING_HOK_SSO) {
-				$hok = TRUE;
-			    } else {
-				$hok = FALSE;
-			    }
+				$hok = $spMetadata->getBoolean('saml20.hok.assertion', FALSE);
 			}
 			if ($sc->Method === SAML2_Const::CM_BEARER && $hok) {
 				$lastError = 'Bearer SubjectConfirmation received, but Holder-of-Key SubjectConfirmation needed';
+				continue;
+			}
+			if ($sc->Method === SAML2_Const::CM_HOK && !$hok) {
+				$lastError = 'Holder-of-Key SubjectConfirmation received, but the Holder-of-Key profile is not enabled.';
 				continue;
 			}
 

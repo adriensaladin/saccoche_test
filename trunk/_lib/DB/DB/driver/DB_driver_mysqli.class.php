@@ -14,7 +14,7 @@ class DB_driver_mysqli {
 
   /**
    * Identifiant de l'objet de connexion
-   * @var $id
+   * @var DatabaseInterface $id
    */
   protected  $id;
 
@@ -202,7 +202,7 @@ class DB_driver_mysqli {
           if($indexkey_is_uniq) {
           	if(!isset($this->data[$rkey])) $this->data[$rkey] = $row;
           } else {
-          	$this->data[$rkey][] = $row;          	
+          	$this->data[$rkey][] = $row;
           }
         }
       }

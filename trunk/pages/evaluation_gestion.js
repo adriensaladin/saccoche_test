@@ -193,7 +193,7 @@ $(document).ready
       var prof_liste    = tab_profs[ref];
       var compet_liste  = tab_items[ref];
       // Afficher le formulaire
-      afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , '' /*groupe_val*/ , unescapeHtml(groupe_nom) , eleve_nombre , eleve_liste , prof_nombre , prof_liste , unescapeHtml(description) , compet_nombre , compet_liste , tab_sujets[ref] , tab_corriges[ref] , fini );
+      afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , '' /*groupe_val*/ , groupe_nom /* volontairement sans unescapeHtml() */ , eleve_nombre , eleve_liste , prof_nombre , prof_liste , unescapeHtml(description) , compet_nombre , compet_liste , tab_sujets[ref] , tab_corriges[ref] , fini );
     };
 
     /**

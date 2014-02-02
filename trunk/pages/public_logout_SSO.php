@@ -92,8 +92,12 @@ if($connexion_mode=='cas')
   // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
   phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
   phpCAS::setLang(PHPCAS_LANG_FRENCH);
-  // On indique qu'il n'y a pas de validation du certificat SSL à faire
-  phpCAS::setNoCasServerValidation();
+  // On indique qu'il n'y a pas de validation du certificat SSL à faire pour les CAS perso (LCS... ou autres...).
+  // Mais on laisse obligatoire cette vérification SSL pour tous les ENT, sinon ça ne sert à rien de faire du CAS.
+  if($connexion_nom=='perso')
+  {
+    phpCAS::setNoCasServerValidation();
+  }
   // Surcharge éventuelle des URL
   if ($cas_serveur_url_login)    { phpCAS::setServerLoginURL($cas_serveur_url_login); }
   if ($cas_serveur_url_logout)   { phpCAS::setServerLogoutURL($cas_serveur_url_logout); }

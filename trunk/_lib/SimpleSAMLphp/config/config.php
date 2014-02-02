@@ -188,12 +188,31 @@ $config = array (
 	'enable.wsfed-sp'		=> false,
 	'enable.authmemcookie' => TRUE,
 
+
+	/*
+	 * Module enable configuration
+	 *
+	 * Configuration to override module enabling/disabling.
+	 *
+	 * Example:
+	 *
+	 * 'module.enable' => array(
+	 * 	// Setting to TRUE enables.
+	 * 	'exampleauth' => TRUE,
+	 * 	// Setting to FALSE disables.
+	 * 	'saml' => FALSE,
+	 * 	// Unset or NULL uses default.
+	 * 	'core' => NULL,
+	 * ),
+	 *
+	 */
+
+
 	/* 
 	 * This value is the duration of the session in seconds. Make sure that the time duration of
 	 * cookies both at the SP and the IdP exceeds this duration.
 	 */
 	'session.duration'		=>  8 * (60*60), // 8 hours.
-	'session.requestcache'	=>  4 * (60*60), // 4 hours
 
 	/*
 	 * Sets the duration, in seconds, data should be stored in the datastore. As the datastore is used for
@@ -288,6 +307,20 @@ $config = array (
 	'language.available'	=> array('en', 'no', 'nn', 'se', 'da', 'de', 'sv', 'fi', 'es', 'fr', 'it', 'nl', 'lb', 'cs', 'sl', 'lt', 'hr', 'hu', 'pl', 'pt', 'pt-br', 'tr', 'ja', 'zh', 'zh-tw', 'ru', 'et', 'he', 'id', 'sr'),
 	'language.rtl'		=> array('ar','dv','fa','ur','he'),
 	'language.default'		=> 'fr',
+
+	/*
+	 * Options to override the default settings for the language parameter
+	 */
+	'language.parameter.name'   => 'language',
+	'language.parameter.setcookie'  => TRUE,
+
+	/*
+	 * Options to override the default settings for the language cookie
+	 */
+	'language.cookie.name'		=> 'language',
+	'language.cookie.domain'		=> NULL,
+	'language.cookie.path'		=> '/',
+	'language.cookie.lifetime'		=> (60*60*24*900),
 
 	/**
 	 * Custom getLanguage function called from SimpleSAML_XHTML_Template::getLanguage().
@@ -645,5 +678,15 @@ $config = array (
 	 *   'proxy' => 'tcp://proxy.example.com:5100'
 	 */
 	'proxy' => NULL,
+
+	/*
+	 * Array of URL's to allow a trusted redirect to.
+	 *
+	 * Set to NULL to disable.
+	 *
+	 * Example:
+	 *   'redirect.trustedsites' => array('sp.example.com', 'othersite.org'),
+	 */
+	'redirect.trustedsites' => NULL,
 
 );

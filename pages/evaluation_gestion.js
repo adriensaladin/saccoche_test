@@ -98,22 +98,22 @@ $(document).ready
       if(date_visible=='identique')
       {
         $('#box_visible').prop('checked',true).next().show(0);
-        $('#f_date_visible').val(date_fr).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#f_date_visible').val(date_fr).parent().hide(0);
       }
       else
       {
-        $('#box_visible').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#box_visible').prop('checked',false).next().hide(0);
         $('#f_date_visible').val(date_visible).parent().show(0);
       }
       // date fin auto-évaluation
       if(date_autoeval=='sans objet')
       {
         $('#box_autoeval').prop('checked',true).next().show(0);
-        $('#f_date_autoeval').val('00/00/0000').parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#f_date_autoeval').val('00/00/0000').parent().hide(0);
       }
       else
       {
-        $('#box_autoeval').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#box_autoeval').prop('checked',false).next().hide(0);
         $('#f_date_autoeval').val(date_autoeval).parent().show(0);
       }
       // pour finir

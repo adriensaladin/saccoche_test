@@ -80,11 +80,11 @@ $(document).ready
       // login
       memo_login = login;
       var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
-      $('#f_login').val(login).parent().hide(0);
+      $('#f_login').val(login).css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
       $('#box_login').prop('checked',true).next().show(0).html(texte_box);
       // mot de passe
       var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
-      $('#f_password').val('').parent().hide(0);
+      $('#f_password').val('').css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.10.2 un hide() sur un élément déjà caché provoque ici sa réapparition...
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un utilisateur");

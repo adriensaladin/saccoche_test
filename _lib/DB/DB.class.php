@@ -12,7 +12,7 @@
  * @since Thu Apr 13 10:28:49 CEST 2006
  */
 // Classe de gestion des connexions aux pools
-require( dirname(__FILE__) .'/DB/DB_Manager.class.php');
+require(__DIR__ .'/DB/DB_Manager.class.php');
 
 class DB {
 

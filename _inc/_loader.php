@@ -733,20 +733,6 @@ function exit_redirection($adresse)
   exit();
 }
 
-/**
- * Retour d'un tableau au format JSON avec comme clefs "statut" (boolean) et "value" (chaine) ou un tableau de clefs transmis
- *
- * @param bool         $statut
- * @param string|array $value   (facultatif)
- * @return void
- */
-function exit_json( $statut , $value=NULL )
-{
-  $tab_statut = array( 'statut' => $statut ) ;
-  $tab_valeur = is_array($value) ? $value : array( 'value' => $value ) ;
-  exit( json_encode( array_merge($tab_statut,$tab_valeur) ) );
-}
-
 /*
  * Pour retenir les données qui seront à afficher dans la section <head></head> de la page.
  */

@@ -52,22 +52,22 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
-            if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $("#form_auth fieldset").html(responseJSON['value']);
+              curseur();
             }
             else
             {
-              $("#form_auth fieldset").html(responseHTML);
-              curseur();
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
             }
           }
         }
@@ -90,24 +90,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=charger'+'&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               $('button').prop('disabled',false);
-              if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $("#form_auth fieldset").html(responseJSON['value']);
+                curseur();
               }
               else
               {
-                $("#form_auth fieldset").html(responseHTML);
-                curseur();
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
               }
             }
           }
@@ -130,24 +130,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=choisir'+'&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#f_changer').show();
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               $('#f_changer').show();
-              if(responseHTML.substring(0,18)!='<label class="tab"')
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $("#form_auth fieldset").html(responseJSON['value']);
+                curseur();
               }
               else
               {
-                $("#form_auth fieldset").html(responseHTML);
-                curseur();
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
               }
             }
           }
@@ -213,7 +213,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_version').addClass("alerte").html('Échec de la connexion avec le serveur communautaire !');
+            $('#ajax_version').addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -272,24 +272,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=demande_mdp'+'&f_base='+$('#f_base').val()+'&f_courriel='+encodeURIComponent(f_courriel),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               $('button').prop('disabled',false);
-              if(responseHTML!='ok')
-              {
-                $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
+              if(responseJSON['statut']==true)
               {
                 $('#lost_structure').hide();
                 $('#lost_confirmation').show();
+              }
+              else
+              {
+                $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(responseJSON['value']);
               }
             }
           }
@@ -335,7 +335,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -379,21 +379,21 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,4)=='http')
+      if(responseJSON['statut']==true)
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
-        document.location.href = responseHTML;
+        document.location.href = responseJSON['value'];
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
       }
     }
 

@@ -27,25 +27,25 @@
 
 // Versions des navigateurs.
 
-define(  'CHROME_VERSION_MINI_REQUISE'   , 1); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 1 minimum (sortie en 2008).');
-define(  'CHROME_VERSION_MINI_CONSEILLEE', 5);
-define(  'CHROME_VERSION_LAST'           ,32); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_MINI_REQUISE'   , 3  ); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2009).');
+define(  'CHROME_VERSION_MINI_CONSEILLEE', 5  );
+define(  'CHROME_VERSION_LAST'           ,32  ); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
-define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2008).');
-define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4);
-define( 'FIREFOX_VERSION_LAST'           ,26); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
+define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3.5); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3.5 minimum (sortie en 2009).');
+define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4  );
+define( 'FIREFOX_VERSION_LAST'           ,26  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
-define(   'OPERA_VERSION_MINI_REQUISE'   , 9); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 9 minimum (sortie en 2006).');
-define(   'OPERA_VERSION_MINI_CONSEILLEE',11);
-define(   'OPERA_VERSION_LAST'           ,19); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
+define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
+define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
+define(   'OPERA_VERSION_LAST'           ,19  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
 
-define(  'SAFARI_VERSION_MINI_REQUISE'   , 3); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2007).');
-define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5);
-define(  'SAFARI_VERSION_LAST'           , 6); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ?
+define(  'SAFARI_VERSION_MINI_REQUISE'   , 4  ); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 4 minimum (sortie en 2009).');
+define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5  );
+define(  'SAFARI_VERSION_LAST'           , 7  ); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ?
 
-define('EXPLORER_VERSION_MINI_REQUISE'   , 8); define('EXPLORER_TEXTE_MINI_REQUIS'     , 'Version 8 minimum (sortie en 2009) <span class="danger">mais usage déconseillé</span> (surtout avant la version 9).');
-define('EXPLORER_VERSION_MINI_CONSEILLEE', 9);
-define('EXPLORER_VERSION_LAST'           ,11); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home');
+define('EXPLORER_VERSION_MINI_REQUISE'   , 8  ); define('EXPLORER_TEXTE_MINI_REQUIS'     , 'Version 8 minimum (sortie en 2009) <span class="danger">mais usage déconseillé</span> (surtout avant la version 9).');
+define('EXPLORER_VERSION_MINI_CONSEILLEE', 9  );
+define('EXPLORER_VERSION_LAST'           ,11  ); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home');
 
 //
 // Chrome

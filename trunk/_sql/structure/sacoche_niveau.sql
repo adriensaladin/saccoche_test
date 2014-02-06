@@ -41,7 +41,7 @@ INSERT INTO sacoche_niveau VALUES
 (  18, 0,  2,  13,    "CM2", "0031000222.", "Cours moyen 2e année"),
 (  19, 0,  2,  21,   "INIT", "0601000311.", "Initiation"),
 (  20, 0,  2,  22,   "ADAP", "0611000411.", "Adaptation"),
-(  21, 0,  2,  23,   "CLIS", "0621000511.", "Classe d'intégration scolaire"),
+(  21, 0,  2,  23,   "CLIS", "0621000511.", "Classe pour l'inclusion scolaire"),
 
 -- Collège (4e et 4AES ont le même code_mef ...)
 

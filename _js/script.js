@@ -88,6 +88,34 @@ function replaceAll(find, replace, str)
 }
 
 /**
+ * Fonction pour interpréter une erreur d'extraction json
+ *
+ * @param jqXHR      l'objet retourné par ajax, contenant la réponse du serveur
+ * @param textStatus le statut de l'analyse json
+ * @return string
+ */
+function afficher_json_message_erreur(jqXHR, textStatus)
+{
+  // Une erreur de syntaxe lors de l'analyse du json : probablement une erreur ou un avertissement PHP, éventuellement suivi de la chaine json retournée
+  if(textStatus=='parsererror')
+  {
+    var pos_debut_json = jqXHR['responseText'].indexOf('{"');
+    var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
+    return 'Anomalie rencontrée ! ' + chaine_anormale;
+  }
+  // Rien de retourné : probablement un souci de connexion au serveur
+  else if( (textStatus=='error') && (typeof(jqXHR['responseText'])=='undefined') )
+  {
+    return 'Échec de la connexion au serveur !';
+  }
+  // 404 ou autre...
+  else
+  {
+    return 'Erreur inattendue ! ' + jqXHR['responseText'];
+  }
+}
+
+/**
  * Fonction pour afficher / masquer les images cliquables (en général dans la dernière colonne du tableau)
  *
  * Remarque : un toogle ne peut être simplement mis en oeuvre à cause des nouvelle images créées...

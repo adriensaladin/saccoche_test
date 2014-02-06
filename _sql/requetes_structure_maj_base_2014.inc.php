@@ -94,4 +94,21 @@ if($version_base_structure_actuelle=='2014-01-20')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-01-31 => 2014-02-07
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+if($version_base_structure_actuelle=='2014-01-31')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-02-07';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // valeur renommée dans sacoche_niveau
+    if(empty($reload_sacoche_niveau))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Classe pour l\'inclusion scolaire" WHERE niveau_id=21' );
+    }
+  }
+}
+
 ?>

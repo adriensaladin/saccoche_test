@@ -39,6 +39,7 @@ $tab_menu = array
   (
     "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
     "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
+    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'   , 'href' => 'page=compte_info_serveur'     ),
   ),
   "Paramétrages" => array
   (

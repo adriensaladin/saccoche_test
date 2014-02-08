@@ -54,11 +54,12 @@ class InfoServeur
   {
     if($type_base=='structure')
     {
-      return (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur dépend de chaque structure&hellip;<br />' : '' ;
+      return (!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur dépend de chaque structure&hellip;<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
     }
     if($type_base=='webmestre')
     {
-      return (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Sans objet pour une installation de type mono-structure.<br />' : '' ;
+      return (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Sans objet pour une installation de type mono-structure.<br />' : ( (in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) ? '' : 'Information disponible sous un profil webmestre.<br />' ) ;
+       ;
     }
   }
 
@@ -108,7 +109,7 @@ class InfoServeur
       case 'session_use_trans_sid'          : return 'Par défaut désactivé, ce qui rend le support de l\'identifiant de session transparent.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
-      case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.';
+      case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.';
       default                               : return '';
     }
   }
@@ -228,17 +229,16 @@ class InfoServeur
   /**
    * version_sacoche_base_structure
    * Retourne une chaîne indiquant la version logicielle de la base de données de SACoche.
-   * En mode multi-structures, celle-ci est propre à chaque établissement.
+   * En mode multi-structure, celle-ci est propre à chaque établissement.
    *
    * @param void
    * @return string   AAAA-MM-JJ
    */
   private static function version_sacoche_base_structure()
   {
-    $version_base = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB_STRUCTURE_MAJ_BASE::DB_version_base() : NULL ;
-    if(HEBERGEUR_INSTALLATION=='multi-structures')                return InfoServeur::cellule_coloree_centree('variable'    ,'jaune');
-    if(version_compare($version_base,VERSION_BASE_STRUCTURE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert' );
-                                                                  return InfoServeur::cellule_coloree_centree($version_base ,'rouge');
+    if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire'))) return InfoServeur::cellule_coloree_centree('indisponible'           ,'jaune');
+    if(version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'='))                 return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'vert');
+                                                                                              return InfoServeur::cellule_coloree_centree($_SESSION['VERSION_BASE'],'rouge');
   }
 
   /**
@@ -251,9 +251,10 @@ class InfoServeur
    */
   private static function version_sacoche_base_webmestre()
   {
-    $version_base = (HEBERGEUR_INSTALLATION=='multi-structures') ? DB_WEBMESTRE_MAJ_BASE::DB_version_base() : NULL ;
     if(HEBERGEUR_INSTALLATION=='mono-structure')                  return InfoServeur::cellule_coloree_centree('sans objet'  ,'jaune');
-    if(version_compare($version_base,VERSION_BASE_WEBMESTRE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert' );
+    if($_SESSION['USER_PROFIL_TYPE']=='administrateur')           return InfoServeur::cellule_coloree_centree('indisponible','jaune');
+    $version_base = DB_WEBMESTRE_MAJ_BASE::DB_version_base();
+    if(version_compare($version_base,VERSION_BASE_WEBMESTRE,'=')) return InfoServeur::cellule_coloree_centree($version_base ,'vert');
                                                                   return InfoServeur::cellule_coloree_centree($version_base ,'rouge');
   }
 
@@ -660,12 +661,12 @@ class InfoServeur
       {
         $indice = $numero_colonne*$nb_lignes + $numero_ligne ;
         $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_modules[$indice]),$tab_modules_requis)) ) ? ' class="'.InfoServeur::$tab_style['vert'].'"' : '' ;
-        $lignes .= ($indice<$nb_modules) ? '<td'.$style.'><a href="#'.$tab_modules[$indice].'">'.$tab_modules[$indice].'</a></td>' : '<td class="hc">-</td>' ;
+        $lignes .= ($indice<$nb_modules) ? '<td'.$style.'>'.$tab_modules[$indice].'</td>' : '<td class="hc">-</td>' ;
       }
       $lignes .= '</tr>';
     }
     $tr_head = '<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire('modules_PHP').'" /></th></tr>';
-    return'<table id="tab_modules" class="p"><thead>'.$tr_head.'</thead><tbody>'.$lignes.'</tbody></table>';
+    return'<table class="p"><thead>'.$tr_head.'</thead><tbody>'.$lignes.'</tbody></table>';
   }
 
   public static function tableau_reglages_Suhosin()
@@ -732,40 +733,6 @@ class InfoServeur
     $tab_tr[] = '<tr><th>Système d\'exploitation</th><td>'.html(php_uname('s').' '.php_uname('r')).'</td></tr>';
     $tab_tr[] = '<tr><th>Adresse d\'installation</th><td>'.html(URL_INSTALL_SACOCHE).'</td></tr>';
     return'<table class="p"><tbody>'.implode('',$tab_tr).'</tbody></table>';
-  }
-
-  /*
-   * Récupérer dans un tableau le résultat d'un phpinfo().
-   * @see http://fr2.php.net/manual/fr/function.phpinfo.php
-   * 
-   * @param const $quoi   liste sur http://fr2.php.net/phpinfo
-   * @return array
-   */
-  // 
-  public static function array_phpinfo($quoi=INFO_ALL)
-  {
-    ob_start();
-    phpinfo($quoi); 
-    $phpinfo_lignes = explode("\n", strip_tags(ob_get_contents(), '<tr><td><h2>'));
-    ob_end_clean(); 
-    $categorie = 'Général';
-    $tab_infos = array();
-    foreach($phpinfo_lignes as $ligne)
-    {
-      // nouvelle catégorie ?
-      preg_match("~<h2>(.*)</h2>~", $ligne, $title) ? $categorie = $title[1] : null;
-      // 2 colonnes
-      if(preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $ligne, $val))
-      {
-        $tab_infos[$categorie][$val[1]] = $val[2];
-      }
-      // 3 colonnes
-      elseif(preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $ligne, $val))
-      {
-        $tab_infos[$categorie][$val[1]] = array( 'local' => $val[2], 'master' => $val[3] );
-      }
-    }
-    return $tab_infos;
   }
 
 }

@@ -196,6 +196,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
     setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     exit_json( FALSE , 'Établissement non trouvé dans la base d\'administration !' );
   }
+  afficher_nom_etablissement($BASE,$structure_denomination);
   // Mettre à jour la base si nécessaire
   charger_parametres_mysql_supplementaires($BASE);
   maj_base_structure_si_besoin($BASE);
@@ -209,7 +210,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
   {
     exit_json( FALSE , 'Base de l\'établissement incomplète !' );
   }
-  exit_json( TRUE , afficher_nom_etablissement($BASE,$structure_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
+  exit_json( TRUE , afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

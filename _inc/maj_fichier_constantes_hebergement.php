@@ -73,12 +73,6 @@ if(!defined('PHPCAS_CHEMIN_LOGS'))
   $tab_constantes_manquantes += array('PHPCAS_CHEMIN_LOGS'=>CHEMIN_LOGS_PHPCAS,'PHPCAS_ETABL_ID_LISTING'=>'');
 }
 
-// A compter du 08/02/2014, ajout de paramètre dans le fichier de constantes pour permettre de ne pas vérifier le certificat ssl de certaines connexions CAS
-if(!defined('PHPCAS_NO_CERTIF_LISTING'))
-{
-  $tab_constantes_manquantes += array('PHPCAS_NO_CERTIF_LISTING'=>',perso,');
-}
-
 // Application patch si besoin
 if(count($tab_constantes_manquantes))
 {

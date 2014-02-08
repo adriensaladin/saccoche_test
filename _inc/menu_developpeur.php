@@ -37,18 +37,16 @@ $tab_menu = array
 (
   "Informations" => array
   (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'         ),
-    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'   , 'href' => 'page=webmestre_info_serveur' ),
+    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'      ),
+    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'   , 'href' => 'page=compte_info_serveur' ),
   ),
   "Administration du site" => array
   (
-    "Configuration d'un proxy"          => array( 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
-    "Test des droits MySQL"             => array( 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
-    "Droits du système de fichiers"     => array( 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
-    "Maintenance &amp; mise à jour"     => array( 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
-    "Analyser / Réparer les bases"      => array( 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
-    "Vérification des certificats SSL"  => array( 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
-    "Débogueur"                         => array( 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
+    "Test des droits MySQL"          => array( 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    "Droits du système de fichiers"  => array( 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
+    "Maintenance &amp; mise à jour"  => array( 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
+    "Débogueur"                      => array( 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
+    "Analyser / Réparer les bases"   => array( 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
   ),
   "Gestion des inscriptions" => array
   ( // multi-structures uniquement

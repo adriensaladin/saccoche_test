@@ -27,7 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Caractéristiques du serveur";
+?>
 
+<?php
 echo InfoServeur::tableau_serveur_et_client();
 echo InfoServeur::tableau_versions_logicielles();
 echo InfoServeur::tableau_limitations_PHP();

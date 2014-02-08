@@ -42,7 +42,6 @@ $tab_menu = array
     "Date de dernière connexion"  => array( 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     "Export de données"           => array( 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     "Log des actions sensibles"   => array( 'class' => 'log_actions'      , 'href' => 'page=administrateur_log_actions'       ),
-    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'     , 'href' => 'page=compte_info_serveur'              ),
   ),
   "Paramétrages établissement" => array
   (

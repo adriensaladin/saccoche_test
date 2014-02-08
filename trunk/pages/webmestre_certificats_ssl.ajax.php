@@ -27,30 +27,34 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$tab_id = (isset($_POST['tab_id']))   ? explode(',',$_POST['tab_id'])    : array() ;
 
-// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
-$tab_menu = array
-(
-  "Informations" => array
-  (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
-  ),
-  "Paramétrages" => array
-  (
-    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
-  ),
-);
+unset($tab_serveur_cas['']);
+$tab_cas_nom   = array_merge( array('perso') , array_keys($tab_serveur_cas) );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Adaptations
+// Choix des serveurs phpCAS sans vérif SSL
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// RAS !
+if($action=='Choix_serveurs')
+{
+  // Nettoyer la liste transmise
+  $tab_id = array_diff($tab_cas_nom, $tab_id);
+  $serveurs_listing = count($tab_id) ? ','.implode(',',$tab_id).',' : '' ;
+  // ok
+  FileSystem::fabriquer_fichier_hebergeur_info( array(
+    'PHPCAS_NO_CERTIF_LISTING' => $serveurs_listing,
+  ) );
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
 
 ?>

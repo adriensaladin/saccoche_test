@@ -26,31 +26,40 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = "Vérification des certificats SSL";
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
-// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
-
-$tab_menu = array
-(
-  "Informations" => array
-  (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
-  ),
-  "Paramétrages" => array
-  (
-    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
-  ),
-);
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Adaptations
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// RAS !
-
+unset($tab_serveur_cas['']);
+$tab_cas_nom   = array_merge( array('perso') , array_keys($tab_serveur_cas) );
+$tab_no_certif = explode(',',mb_substr(PHPCAS_NO_CERTIF_LISTING,1,-1));
 ?>
+
+Lors d'une connexion CAS à un ENT, la validité du certificat SSL est vérifiée.<br />
+Cette interface permet de décocher la vérification pour certains ENT (mais on perd alors tout l'intérêt d'une connexion sécurisée).
+
+<hr />
+
+<form id="table_action" action="#" method="post" id="serveurs_cas">
+  <table class="form">
+    <thead>
+      <tr><th class="nu"></th><th>Serveurs CAS</th></tr>
+    </thead>
+    <tbody>
+      <?php
+      foreach($tab_cas_nom as $cas_nom)
+      {
+        // Afficher une ligne du tableau
+        $checked = (in_array($cas_nom,$tab_no_certif)) ? '' : ' checked' ;
+        echo'<tr>';
+        echo  '<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$cas_nom.'"'.$checked.' /></td>';
+        echo  '<td class="label">'.$cas_nom.'</td>';
+        echo'</tr>'.NL;
+      }
+      ?>
+    </tbody>
+  </table>
+  <p>
+    <span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce choix.</button><label id="ajax_msg">&nbsp;</label>
+  </p>
+</form>

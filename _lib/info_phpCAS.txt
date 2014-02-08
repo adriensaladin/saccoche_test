@@ -7,10 +7,22 @@ phpCAS est une classe PHP utilisée comme client CAS, pour communiquer avec un s
 Seule la classe est présente dans SACoche.
 Pour infos et documentations : https://wiki.jasig.org/display/CASC/phpCAS
 
-Fichier de certificats ajouté pour l'utilisation de phpCAS::setCasServerCACert().
-Note de Daniel : pour un truc aussi important que la liste des certifs racine
-(qui défini donc quel certif est valide, une autorité foireuse dans le lot
-et tu ne peux plus faire confiance à aucune connexion ssl), je préfère limiter ma confiance
-(donc dans mon cas le dépôt Debian et le Firefox qui s'y trouve).
-J'ai généré phpCAS/ca-bundle.crt à partir des certifs de mon Firefox de l'époque
-(cf ssl:/sso/_docs_dev/readme_certificat_CAS.php).
+
+========================================
+Fichier de certificats
+========================================
+
+
+Requis pour l'utilisation de phpCAS::setCasServerCACert().
+
+A/ [certificats/cacert.pem] est issu de http://curl.haxx.se/docs/caextract.html
+B/ [certificats/ca-bundle.crt] a été généré par Daniel à partir des certificats de Firefox du dépôt Debian
+ (cf ssl:/sso/_docs_dev/readme_certificat_CAS.php)
+
+Très curieusement, seul A fonctionne sur mon PC pour la vérification de certains domaines, alors que B est plus complet.
+Du coup, j'ai généré [certificats/certificats.txt] qui est la concaténation des deux !
+
+En cas de souci avec un ENT, on peut vérifier manuellement la validité de son certificat
+ avec l'un de ces services efficaces et explicatifs :
+https://ssltools.websecurity.symantec.com/checker/views/certCheck.jsp
+https://www.sslshopper.com/ssl-checker.html

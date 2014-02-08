@@ -1,4 +1,3 @@
-<?php
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
@@ -25,32 +24,46 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
-
-$tab_menu = array
+// jQuery !
+$(document).ready
 (
-  "Informations" => array
-  (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
-  ),
-  "Paramétrages" => array
-  (
-    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
-  ),
+  function()
+  {
+
+    $('#tab_modules a').click
+    (
+      function()
+      {
+        var module = $(this).attr('href').substr(1); // #...
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_module='+module,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,17)!='<table class="p">')
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+              else
+              {
+                $.fancybox( responseHTML , {'centerOnScroll':true} );
+              }
+            }
+          }
+        );
+        return false;
+      }
+    );
+
+  }
 );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Adaptations
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// RAS !
-
-?>

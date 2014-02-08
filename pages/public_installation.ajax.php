@@ -212,6 +212,7 @@ if( $step==41 )
       'FICHIER_DUREE_CONSERVATION' => 12,
       'PHPCAS_CHEMIN_LOGS'         => CHEMIN_DOSSIER_TMP,
       'PHPCAS_ETABL_ID_LISTING'    => '',
+      'PHPCAS_NO_CERTIF_LISTING'   => ',perso,',
       'SYSTEME_UMASK'              => '000',
       'CONTACT_MODIFICATION_USER'  => 'non',
       'CONTACT_MODIFICATION_MAIL'  => 'non',

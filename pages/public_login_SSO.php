@@ -283,8 +283,8 @@ if($connexion_mode=='cas')
       phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
     }
   }
-  // On indique qu'il faut vérifier la validité du certificat SSL pour les ENT "classiques", sinon ça ne sert à rien de faire du CAS.
-  if($connexion_nom!='perso')
+  // On indique qu'il faut vérifier la validité du certificat SSL, sauf exception paramétrée, mais alors dans ce cas ça ne sert à rien d'utiliser une connexion sécurisée.
+  if(strpos(PHPCAS_NO_CERTIF_LISTING,','.$connexion_nom.',')===FALSE)
   {
     phpCAS::setCasServerCACert(CHEMIN_FICHIER_CA_CERTS_FILE);
   }

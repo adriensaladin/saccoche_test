@@ -130,14 +130,16 @@ $tab_droits_par_page = array
   'administrateur_resilier'                 => $tab_droits_profil_administrateur,
   'administrateur_user_recherche'           => $tab_droits_profil_administrateur,
   // Profil webmestre | développeur
+  'webmestre_certificats_ssl'               => $tab_droits_profil_webmestre_developpeur,
   'webmestre_configuration_filesystem'      => $tab_droits_profil_webmestre_developpeur,
+  'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre_developpeur,
   'webmestre_database_test'                 => $tab_droits_profil_webmestre_developpeur,
   'webmestre_debug'                         => $tab_droits_profil_webmestre_developpeur,
+  'webmestre_info_serveur'                  => $tab_droits_profil_webmestre_developpeur,
   'webmestre_maintenance'                   => $tab_droits_profil_webmestre_developpeur,
   'webmestre_statistiques'                  => $tab_droits_profil_webmestre_developpeur,
   'webmestre_structure_bdd_repair'          => $tab_droits_profil_webmestre_developpeur,
   // Profil webmestre
-  'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre,
   'webmestre_contact_modification'          => $tab_droits_profil_webmestre,
   'webmestre_fichiers_deposes'              => $tab_droits_profil_webmestre,
   'webmestre_geographie'                    => $tab_droits_profil_webmestre,
@@ -205,7 +207,6 @@ $tab_droits_par_page = array
   'releve_synthese_multimatiere'            => $tab_droits_profil_eleve_parent_prof_dir,
   // Profils particuliers à gérer au cas par cas
   '_maj_select_eleves'                      => array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
-  'compte_info_serveur'                     => array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>1 , 'developpeur'=>1 , 'partenaire'=>1 ),
   'officiel_voir_archive'                   => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
   'consultation_referentiel_interne'        => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
   'releve_pdf'                              => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),

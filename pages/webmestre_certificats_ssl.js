@@ -1,4 +1,3 @@
-<?php
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
@@ -25,32 +24,64 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
-
-$tab_menu = array
+// jQuery !
+$(document).ready
 (
-  "Informations" => array
-  (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
-  ),
-  "Paramétrages" => array
-  (
-    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
-  ),
+  function()
+  {
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur un checkbox
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('input[type=checkbox]').click
+    (
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validation du formulaire
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    $('#bouton_valider').click
+    (
+      function()
+      {
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        var check_ids = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=Choix_serveurs'+'&tab_id='+check_ids,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $("#bouton_valider").prop('disabled',false);
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
+              }
+            }
+          }
+        );
+      }
+    );
+
+  }
 );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Adaptations
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// RAS !
-
-?>

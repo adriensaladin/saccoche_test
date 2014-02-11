@@ -173,8 +173,7 @@ class FileSystem
    */
   public static function fin_chemin($chemin)
   {
-    $longueur = defined('APPEL_SITE_PROJET') ? LONGUEUR_CHEMIN_PROJET : LONGUEUR_CHEMIN_SACOCHE ;
-    return substr($chemin,$longueur);
+    return substr($chemin,LONGUEUR_CHEMIN_SACOCHE);
   }
 
   /**

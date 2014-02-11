@@ -27,18 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Nettoyer / Initialiser la base";
-
-$label = (version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'=')) ? 'valide' : 'alerte' ;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>
-
-<hr />
-
-<h2>Version de la base</h2>
-
-<div class="astuce">La base de données est mise à jour automatiquement.</div>
-<div>Version attendue : <?php echo VERSION_BASE_STRUCTURE ?>. Version en place : <label class="<?php echo $label ?>"><?php echo VERSION_BASE_STRUCTURE ?></label>.</div>
 
 <hr />
 

@@ -84,11 +84,6 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a class="lost" href="#lost_partenaire">[ Identifiants oubliés ! ]</a>'.NL;
   }
-  elseif($profil=='developpeur')
-  {
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
-    $affichage .= '<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-  }
   elseif($mode=='normal')
   {
     $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
@@ -139,9 +134,9 @@ if($action=='tester_version')
 // Charger un formulaire d'identification
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Charger le formulaire pour le webmestre d'un serveur, ou un développeur
+// Charger le formulaire pour le webmestre d'un serveur
 
-if( ($action=='initialiser') && ( ($profil=='webmestre') || ($profil=='developpeur') ) )
+if( ($action=='initialiser') && ($profil=='webmestre') )
 {
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
@@ -249,7 +244,7 @@ if( ($action=='identifier') && ($profil=='structure') && ($login!='') && ($passw
   exit_json( FALSE , $auth_resultat );
 }
 
-// Pour le webmestre d'un serveur
+// Pour le webmestre d'un serveur ou  éventuellement un développeur
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
@@ -258,6 +253,15 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
   {
     SessionUser::initialiser_webmestre();
     exit_json( TRUE , adresse_redirection_apres_authentification() );
+  }
+  else
+  {
+    $auth_resultat = SessionUser::tester_authentification_developpeur($password);
+    if($auth_resultat=='ok')
+    {
+      SessionUser::initialiser_developpeur();
+      exit_json( TRUE , adresse_redirection_apres_authentification() );
+    }
   }
   exit_json( FALSE , $auth_resultat );
 }
@@ -270,19 +274,6 @@ if( ($action=='identifier') && ($profil=='partenaire') && ($partenaire!=0) && ($
   if($auth_resultat=='ok')
   {
     SessionUser::initialiser_partenaire($auth_DB_ROW);
-    exit_json( TRUE , adresse_redirection_apres_authentification() );
-  }
-  exit_json( FALSE , $auth_resultat );
-}
-
-// Pour un développeur
-
-if( ($action=='identifier') && ($profil=='developpeur') && ($login=='developpeur') && ($password!='') )
-{
-  $auth_resultat = SessionUser::tester_authentification_developpeur($password);
-  if($auth_resultat=='ok')
-  {
-    SessionUser::initialiser_developpeur();
     exit_json( TRUE , adresse_redirection_apres_authentification() );
   }
   exit_json( FALSE , $auth_resultat );

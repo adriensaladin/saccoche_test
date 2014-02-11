@@ -73,7 +73,7 @@ if($DB_ROW['item_cart']==0)
 
 // Enregistrement de la demande
 $score = ($score!=-1) ? $score : NULL ;
-$demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , 0 /*prof_id*/ , $score , 'eleve' /*statut*/ , $message );
+$demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$score,$statut='eleve',$message);
 
 // Ajout aux flux RSS des profs concernés
 $titre = 'Demande ajoutée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);

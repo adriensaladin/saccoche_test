@@ -246,13 +246,6 @@ define('DS',DIRECTORY_SEPARATOR);
 define('CHEMIN_DOSSIER_SACOCHE'  , realpath(dirname(dirname(__FILE__))).DS);
 define('LONGUEUR_CHEMIN_SACOCHE' , strlen(CHEMIN_DOSSIER_SACOCHE)-1);
 
-if(defined('APPEL_SITE_PROJET'))
-{
-  define('CHEMIN_DOSSIER_PROJET'         , realpath(dirname(dirname(dirname(__FILE__)))).DS);
-  define('LONGUEUR_CHEMIN_PROJET'        , strlen(CHEMIN_DOSSIER_PROJET)-1);
-  define('CHEMIN_DOSSIER_PROJET_INCLUDE' , CHEMIN_DOSSIER_PROJET.'_inc'.DS);
-}
-
 // Vers des sous-dossiers, avec séparateur final.
 define('CHEMIN_DOSSIER_PRIVATE'       , CHEMIN_DOSSIER_SACOCHE.'__private'.DS);
 define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);

@@ -92,8 +92,6 @@ class InfoServeur
       case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre').'Version attendue : '.VERSION_BASE_WEBMESTRE;
       case 'max_execution_time'             : return 'Par défaut 30 secondes.<br />Une valeur trop faible peut gêner les sauvegardes / restaurations de grosses bases ou des générations de bilans PDF.';
       case 'max_input_vars'                 : return 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
-      case 'max_input_time'                 : return 'Par défaut -1 (pas de limitation).<br />Disponible à compter de PHP 4.3.0 uniquement.';
-      case 'max_input_nesting_level'        : return 'Par défaut 64.<br />Disponible à compter de PHP 4.4.8 et PHP 5.2.3 uniquement.';
       case 'memory_limit'                   : return 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
       case 'post_max_size'                  : return 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
       case 'upload_max_filesize'            : return 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
@@ -111,7 +109,6 @@ class InfoServeur
       case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
       case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.';
-      case 'suhosin'                        : return 'Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).';
       default                               : return '';
     }
   }
@@ -175,7 +172,7 @@ class InfoServeur
   private static function version_php()
   {
     if(version_compare(PHP_VERSION,PHP_VERSION_MINI_CONSEILLEE,'>=')) return InfoServeur::cellule_coloree_centree(PHP_VERSION,'vert');
-    if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE   ,'>=')) return InfoServeur::cellule_coloree_centree(PHP_VERSION,'jaune');
+    if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'>='))    return InfoServeur::cellule_coloree_centree(PHP_VERSION,'jaune');
                                                                       return InfoServeur::cellule_coloree_centree(PHP_VERSION,'rouge');
   }
 
@@ -191,7 +188,7 @@ class InfoServeur
   {
     $mysql_version = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_version_MySQL() : DB_WEBMESTRE_PUBLIC::DB_recuperer_version_MySQL() ;
     if(version_compare($mysql_version,MYSQL_VERSION_MINI_CONSEILLEE,'>=')) return InfoServeur::cellule_coloree_centree($mysql_version,'vert');
-    if(version_compare($mysql_version,MYSQL_VERSION_MINI_REQUISE   ,'>=')) return InfoServeur::cellule_coloree_centree($mysql_version,'jaune');
+    if(version_compare($mysql_version,MYSQL_VERSION_MINI_REQUISE,'>='))    return InfoServeur::cellule_coloree_centree($mysql_version,'jaune');
                                                                            return InfoServeur::cellule_coloree_centree($mysql_version,'rouge');
   }
 
@@ -277,6 +274,22 @@ class InfoServeur
   }
 
   /**
+   * max_input_vars
+   * Limite le nombre de variables transmises (POST ou GET).
+   * Information à recouper avec des limites Suhosin éventuelles.
+   * Disponible à compter de Lorsque PHP 5.3.9 uniquement.
+   * Voir http://www.php.net/manual/fr/info.configuration.php#ini.max-input-vars
+   *
+   * @param void
+   * @return string
+   */
+  private static function max_input_vars()
+  {
+    $val = (version_compare(phpversion(),'5.3.9','>=')) ? ini_get('max_input_vars') : '---' ;
+    return InfoServeur::cellule_centree( $val );
+  }
+
+  /**
    * memory_limit
    * Cette option détermine la mémoire limite, en octets, qu'un script est autorisé à allouer.
    * Cela permet de prévenir l'utilisation de toute la mémoire par un script mal codé.
@@ -321,53 +334,6 @@ class InfoServeur
   private static function upload_max_filesize()
   {
     return InfoServeur::cellule_centree( ini_get('upload_max_filesize') );
-  }
-
-  /**
-   * max_input_vars
-   * Limite le nombre de variables transmises (POST ou GET).
-   * Information à recouper avec des limites Suhosin éventuelles.
-   * Disponible depuis PHP 5.3.9.
-   * Voir http://www.php.net/manual/fr/info.configuration.php#ini.max-input-vars
-   *
-   * @param void
-   * @return string
-   */
-  private static function max_input_vars()
-  {
-    $val = (version_compare(phpversion(),'5.3.9','>=')) ? ini_get('max_input_vars') : '---' ;
-    return InfoServeur::cellule_centree( $val );
-  }
-
-  /**
-   * max_input_time
-   * Cette option spécifie la durée maximale pour analyser les données d'entrée, via POST et GET.
-   * Cette durée est mesurée depuis le moment où toutes les données sont reçues du serveur jusqu'à début de l'exécution du script.
-   * Disponible depuis PHP 4.3.0.
-   * Voir http://www.php.net/manual/fr/info.configuration.php#ini.max-input-time
-   *
-   * @param void
-   * @return string
-   */
-  private static function max_input_time()
-  {
-    $val = (version_compare(phpversion(),'4.3','>=')) ? ini_get('max_input_time') : '---' ;
-    return InfoServeur::cellule_centree( $val );
-  }
-
-  /**
-   * max_input_nesting_level
-   * Définit la profondeur maximale des variables d'entrées (i.e. $_GET, $_POST..).
-   * Disponible depuis PHP 4.4.8 et PHP 5.2.3.
-   * Voir http://www.php.net/manual/fr/info.configuration.php#ini.max-input-nesting-level
-   *
-   * @param void
-   * @return string
-   */
-  private static function max_input_nesting_level()
-  {
-    $val = ( (version_compare(phpversion(),'4.4.8','>=')) && (!version_compare(phpversion(),'5.2.3','<')) ) ? ini_get('max_input_nesting_level') : '---' ;
-    return InfoServeur::cellule_centree( $val );
   }
 
   /**
@@ -644,13 +610,11 @@ class InfoServeur
   public static function tableau_limitations_PHP()
   {
     $tab_objets = array(
-      'max_execution_time'      => 'max execution time',
-      'memory_limit'            => 'memory limit',
-      'post_max_size'           => 'post max size',
-      'upload_max_filesize'     => 'upload max filesize',
-      'max_input_vars'          => 'max input vars',
-      'max_input_time'          => 'max input time',
-      'max_input_nesting_level' => 'max input nesting level',
+      'max_execution_time'  => 'max execution time',
+      'max_input_vars'      => 'max input vars',
+      'memory_limit'        => 'memory limit',
+      'post_max_size'       => 'post max size',
+      'upload_max_filesize' => 'upload max filesize',
     );
     return InfoServeur::tableau_deux_colonnes( 'Réglage des limitations PHP' , $tab_objets );
   }
@@ -706,29 +670,22 @@ class InfoServeur
 
   public static function tableau_reglages_Suhosin()
   {
+    $tab_lignes   = array(1=>'get','post','request');
+    $tab_colonnes = array(1=>'max_name_length','max_totalname_length','max_value_length','max_vars');
     $tab_tr = array();
-    $tab_tr[0] = '<tr><th>Suhosin <img alt="" src="./_img/bulle_aide.png" title="'.InfoServeur::commentaire('suhosin').'" /></th>';
-    if(version_compare(PHP_VERSION,5.4,'>='))
+    $tab_suhosin_options = (version_compare(PHP_VERSION,5.3,'<')) ? @ini_get_all( 'suhosin' ) : @ini_get_all( 'suhosin' , FALSE /*details*/ ) ; // http://fr.php.net/ini_get_all
+    $tab_tr[0] = '<tr><th>Suhosin</th>';
+    foreach($tab_lignes as $i_ligne => $categorie)
     {
-      $tab_tr[1] .= '<tr><td class="hc">---</td></tr>';
-    }
-    else
-    {
-      $tab_lignes   = array(1=>'get','post','request');
-      $tab_colonnes = array(1=>'max_name_length','max_totalname_length','max_value_length','max_vars');
-      $tab_suhosin_options = (version_compare(PHP_VERSION,5.3,'<')) ? @ini_get_all( 'suhosin' ) : @ini_get_all( 'suhosin' , FALSE /*details*/ ) ; // http://fr.php.net/ini_get_all
-      foreach($tab_lignes as $i_ligne => $categorie)
+      $tab_tr[$i_ligne] = '<tr><td class="hc">'.$categorie.'</td>';
+      foreach($tab_colonnes as $i_colonne => $option)
       {
-        $tab_tr[$i_ligne] = '<tr><td class="hc">'.$categorie.'</td>';
-        foreach($tab_colonnes as $i_colonne => $option)
-        {
-          $tab_tr[0] .= ($i_ligne==1) ? '<td class="hc">'.str_replace('_',' ',$option).'</td>' : '' ;
-          $option_nom = ( ($categorie!='request') || ($option!='max_name_length') ) ? 'suhosin'.'.'.$categorie.'.'.$option : 'suhosin.request.max_varname_length' ;
-          $option_val = (isset($tab_suhosin_options[$option_nom])) ? $tab_suhosin_options[$option_nom] : '---' ;
-          $tab_tr[$i_ligne] .= '<td class="hc">'.$option_val.'</td>' ;
-        }
-        $tab_tr[$i_ligne] .= '</tr>';
+        $tab_tr[0] .= ($i_ligne==1) ? '<td class="hc">'.str_replace('_',' ',$option).'</td>' : '' ;
+        $option_nom = ( ($categorie!='request') || ($option!='max_name_length') ) ? 'suhosin'.'.'.$categorie.'.'.$option : 'suhosin.request.max_varname_length' ;
+        $option_val = (isset($tab_suhosin_options[$option_nom])) ? $tab_suhosin_options[$option_nom] : '---' ;
+        $tab_tr[$i_ligne] .= '<td class="hc">'.$option_val.'</td>' ;
       }
+      $tab_tr[$i_ligne] .= '</tr>';
     }
     $tab_tr[0] .= '</tr>';
     return'<table class="p"><tbody>'.implode('',$tab_tr).'</tbody></table>';

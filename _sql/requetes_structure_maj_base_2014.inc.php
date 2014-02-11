@@ -111,24 +111,4 @@ if($version_base_structure_actuelle=='2014-01-31')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-02-07 => 2014-02-11
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-if($version_base_structure_actuelle=='2014-02-07')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-02-11';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // niveau ajouté
-    if(empty($reload_sacoche_niveau))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 6, 0, 1, 68, "P3S", "", "Cycle SEGPA") ' );
-    }
-    // table sacoche_demande modifiée
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande CHANGE user_id eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD prof_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Dans le cas où l\'élève adresse sa demande à un prof donné." AFTER item_id ' );
-  }
-}
-
 ?>

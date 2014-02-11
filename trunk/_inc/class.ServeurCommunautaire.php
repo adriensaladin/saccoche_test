@@ -403,7 +403,7 @@ class ServeurCommunautaire
   }
 
   /**
-   * Ajouter le signature au XML d'export des validations vers LPC.
+   * Ajouter la signature au XML d'export des validations vers LPC.
    * 
    * @param int       $sesamath_id
    * @param string    $sesamath_key
@@ -536,6 +536,21 @@ class ServeurCommunautaire
     $tab_post['adresse_retour']  = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']   = ServeurCommunautaire::fabriquer_chaine_integrite();
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE ,$tab_post , 30 /*timeout*/ );
+  }
+
+  /**
+   * Appel au serveur communautaire pour tester une authentification comme développeur.
+   * 
+   * @param string    $password_crypte
+   * @return string   'ok' ou 'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.'
+   */
+  public static function tester_auth_devel($password_crypte)
+  {
+    $tab_post = array();
+    $tab_post['fichier']         = 'auth_devel_test';
+    $tab_post['password_crypte'] = $password_crypte;
+    $tab_post['version_prog']    = VERSION_PROG; // Le service web doit être compatible
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
 }

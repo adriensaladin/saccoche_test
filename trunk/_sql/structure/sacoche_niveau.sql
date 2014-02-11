@@ -25,6 +25,7 @@ INSERT INTO sacoche_niveau VALUES
 (   5, 0,  1,   5,     "P0",            "", "Cycle 1 (PS-GS)"),
 (   1, 0,  1,   9,     "P1",            "", "Cycle 2 (GS-CE1)"),
 (   2, 0,  1,  29,     "P2",            "", "Cycle 3 (CE2-CM2)"),
+(   6, 0,  1,  68,    "P3S",            "", "Cycle SEGPA"),
 (   3, 0,  1,  69,     "P3",            "", "Cycle Collège"),
 (   4, 0,  1, 199,     "P4",            "", "Cycle Lycée"),
 

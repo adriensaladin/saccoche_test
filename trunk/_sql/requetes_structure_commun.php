@@ -960,16 +960,19 @@ public static function DB_OPT_niveaux_famille($niveau_famille_id)
 {
   Form::$tab_select_option_first['niveaux_famille'] = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille');
   // Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
+  // Attention en cas de modification : ce tableau est dans 3 fichiers différents (dépôt SACoche x2 + dépôt portail x1).
   $tab_sql = array(
     1 => '',
     2 => 'OR niveau_id IN(5,1,2,201) ',
     3 => 'OR niveau_id IN(3,202,203) ',
-    4 => 'OR niveau_id IN(3,202,203) ',
+    4 => 'OR niveau_id IN(6,202,203) ',
     5 => 'OR niveau_id IN(4,204,205,206) ',
     6 => 'OR niveau_id IN(4,204,205,206) ',
     7 => 'OR niveau_id IN(4,204,205,206) ',
     8 => 'OR niveau_id IN(4,204,205,206) ',
     9 => '',
+   10 => '',
+   11 => 'OR niveau_id IN(4,204,205,206) ',
   );
   $DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_niveau ';

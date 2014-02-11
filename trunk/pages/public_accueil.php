@@ -69,6 +69,12 @@ elseif( isset($_GET['partenaire']) && $partenaire_possible )
   $h1_identification = '<span style="color:#C00">Accès partenaire</span>';
   $liens_autres_profils = '<a class="anti_h2" href="index.php">profils établissement</a><a class="anti_h2" href="index.php?webmestre">accès webmestre</a>';
 }
+elseif(isset($_GET['developpeur']))
+{
+  $profil = 'developpeur';
+  $h1_identification = '<span style="color:#C00">Accès développeur</span>';
+  $liens_autres_profils = '' ;
+}
 else
 {
   $profil = 'structure';

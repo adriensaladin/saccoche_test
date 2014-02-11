@@ -1087,7 +1087,7 @@ $(document).ready
     (
       function()
       {
-        var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
+        var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') && (PROFIL_TYPE!='developpeur') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
         window.document.location.href = adresse;
       }
     );

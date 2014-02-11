@@ -45,7 +45,7 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
 {
   $DB_SQL = 'SELECT item_id , COUNT(item_id) AS popularite ';
   $DB_SQL.= 'FROM sacoche_demande ';
-  $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') AND user_id IN('.$listing_user_id.') ';
+  $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') AND eleve_id IN('.$listing_user_id.') ';
   $DB_SQL.= 'GROUP BY item_id ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -64,7 +64,7 @@ public static function DB_compter_demandes_eleves_en_attente($prof_id,$user_join
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE demande_statut=:statut AND sacoche_demande.user_id IN('.$listing_eleves_id.') AND sacoche_jointure_user_matiere.user_id=:user_id ';
+  $DB_SQL.= 'WHERE demande_statut=:statut AND eleve_id IN('.$listing_eleves_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:user_id ';
   $DB_VAR = array(':statut'=>'eleve',':user_id'=>$prof_id);
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -379,16 +379,16 @@ public static function DB_lister_demandes_prof($matiere_id,$listing_user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.eleve_id=sacoche_user.user_id ';
   if($matiere_id)
   {
-    $DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') AND sacoche_demande.matiere_id=:matiere_id ';
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_demande.matiere_id=:matiere_id ';
   }
   else
   {
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
     $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_jointure_user_matiere.matiere_id=sacoche_matiere.matiere_id ';
-    $DB_SQL.= 'WHERE sacoche_user.user_id IN('.$listing_user_id.') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
   }
   $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(':matiere_id'=>$matiere_id,':prof_id'=>$_SESSION['USER_ID']);
@@ -1316,7 +1316,7 @@ public static function DB_supprimer_demandes_devoir($listing_demande_id)
 public static function DB_supprimer_demande_precise($eleve_id,$item_id)
 {
   $DB_SQL = 'DELETE FROM sacoche_demande ';
-  $DB_SQL.= 'WHERE user_id=:eleve_id AND item_id=:item_id ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id ';
   $DB_VAR = array(':eleve_id'=>$eleve_id,':item_id'=>$item_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

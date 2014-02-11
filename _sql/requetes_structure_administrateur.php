@@ -189,11 +189,12 @@ public static function DB_lister_matieres_etablissement($order_by_name)
 public static function DB_lister_niveaux_famille($niveau_famille_id)
 {
   // Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
+  // Attention en cas de modification : ce tableau est dans 3 fichiers différents (dépôt SACoche x2 + dépôt portail x1).
   $tab_sql = array(
     1 => '',
     2 => 'OR niveau_id IN(5,1,2,201) ',
     3 => 'OR niveau_id IN(3,202,203) ',
-    4 => 'OR niveau_id IN(3,202,203) ',
+    4 => 'OR niveau_id IN(6,202,203) ',
     5 => 'OR niveau_id IN(4,204,205,206) ',
     6 => 'OR niveau_id IN(4,204,205,206) ',
     7 => 'OR niveau_id IN(4,204,205,206) ',
@@ -1715,7 +1716,7 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_demande ';
-    $DB_SQL.= 'WHERE user_id=:user_id';
+    $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
     $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
@@ -1768,6 +1769,10 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_selection_item ';
     $DB_SQL.= 'WHERE user_id=:user_id';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    $DB_SQL = 'UPDATE sacoche_demande ';
+    $DB_SQL.= 'SET prof_id=0 ';
+    $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
   if( ($user_profil_type=='professeur') || ($user_profil_type=='directeur') )
@@ -1831,11 +1836,11 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
   }
   // Déplacer les référentiels d'une matière vers une autre
   $tab_tables = array(
-    'sacoche_jointure_user_matiere'=>'matiere_id',
-    'sacoche_demande'=>'matiere_id',
-    'sacoche_referentiel'=>'matiere_id',
-    'sacoche_referentiel_domaine'=>'matiere_id',
-    'sacoche_officiel_saisie'=>'rubrique_id',
+    'sacoche_jointure_user_matiere' => 'matiere_id',
+    'sacoche_demande'               => 'matiere_id',
+    'sacoche_referentiel'           => 'matiere_id',
+    'sacoche_referentiel_domaine'   => 'matiere_id',
+    'sacoche_officiel_saisie'       => 'rubrique_id',
   );
   foreach($tab_tables as $table_nom => $table_champ)
   {
@@ -1982,12 +1987,18 @@ public static function DB_corriger_anomalies()
   // Recherche d'anomalies : demandes d'évaluations associées à un user ou une matière ou un item supprimé...
   $DB_SQL = 'DELETE sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_demande ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_matiere.matiere_id IS NULL) OR (sacoche_referentiel_item.item_id IS NULL) ) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  $DB_SQL = 'UPDATE sacoche_demande ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'SET prof_id=0 ';
+  $DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $nb_modifs += DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
   $message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
   $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
   $tab_bilan[] = '<label class="'.$classe.'">Demandes d\'évaluations : '.$message.'.</label>';

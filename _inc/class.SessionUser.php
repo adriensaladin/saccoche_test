@@ -85,11 +85,11 @@ class SessionUser
       return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
     }
     // Si mdp incorrect...
-    $password_crypte = crypter_mdp($password);
-    if($password_crypte!='aea4611f9630f77039558bbecc843375')
+    $auth_result = ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
+    if($auth_result!='ok')
     {
       FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
-      return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
+      return $auth_result;
     }
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
     return'ok';

@@ -64,7 +64,13 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
     <table>
       <tr>
         <td class="nu" style="width:30em;text-align:left">
-          <div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><option value=""></option><option value="eleves">élèves</option><option value="parents">responsables légaux</option><option value="professeurs">professeurs</option><option value="directeurs">directeurs</option></select></div>
+          <div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil">
+            <option value=""></option>
+            <option value="eleves">élèves</option>
+            <option value="parents">responsables légaux</option>
+            <option value="professeurs">professeurs</option>
+            <option value="directeurs">directeurs</option>
+          </select></div>
           <div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?></div>
           <div id="div_users" class="hide"><label class="tab" for="f_user">Utilisateur(s) :</label><span id="f_user" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
         </td>

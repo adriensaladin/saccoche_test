@@ -37,7 +37,7 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},5:{sorter:false},6:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},6:{sorter:false},7:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -58,12 +58,13 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var tab_ids   = objet_tr.attr('id').split('_');
       var matiere   = objet_tds.eq(1).html();
-      var item      = objet_tds.eq(2).text();
+      var item      = objet_tds.eq(3).text();
       // Reporter les données
       $('#f_action').val(mode);
       $('#f_demande_id').val(tab_ids[1]);
       $('#f_item_id'   ).val(tab_ids[2]);
       $('#f_matiere_id').val(tab_ids[3]);
+      $('#f_prof_id'   ).val(tab_ids[4]);
       $('#gestion_delete_identite').html(matiere+' | '+item);
       // pour finir
       $('#ajax_msg_gestion').removeAttr('class').html("");

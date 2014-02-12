@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_matiere_famille;
 
 CREATE TABLE sacoche_matiere_famille (
   matiere_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques",
+  matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques ; 4 = Enseignements complémentaires",
   matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (matiere_famille_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -67,7 +67,8 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 68, 3, "Transformation"),
 ( 69, 3, "Disciplines générales enseignement agricole"),
 ( 90, 3, "Enseignement religieux"),
-( 98, 3, "Champs professionnels en SEGPA"),
+( 97, 4, "Spécialités de baccalauréat professionnel"),
+( 98, 4, "Champs professionnels en SEGPA"),
 ( 99, 1, "Matières principales");
 
 ALTER TABLE sacoche_matiere_famille ENABLE KEYS;

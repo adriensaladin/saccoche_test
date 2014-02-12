@@ -31,8 +31,8 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},9:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[8,0],[1,0],[3,1],[2,0]] ] ); };
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},10:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[9,0],[1,0],[3,1],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
 
@@ -570,7 +570,7 @@ $(document).ready
       {
         quoi  = $("#f_quoi").val();
         suite = $("#f_suite").val();
-        if( ((quoi=='creer')&&(suite=='changer')) || ((quoi=='completer')&&(suite=='changer')) || (quoi=='changer') )
+        if( ((quoi=='creer')&&(suite=='changer')) || ((quoi=='completer')&&(suite=='changer')) || (quoi=='changer_prof') )
         {
           // Changer le statut des demandes cochées
           $('#table_action input[type=checkbox]:checked').each
@@ -579,9 +579,22 @@ $(document).ready
             {
               this.checked = false;
               $(this).parent().parent().removeAttr("class").children("td:last").prev().html('évaluation en préparation');
-              tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
             }
           );
+          tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
+        }
+        else if(quoi=='changer_eleve')
+        {
+          // Changer le statut des demandes cochées
+          $('#table_action input[type=checkbox]:checked').each
+          (
+            function()
+            {
+              this.checked = false;
+              $(this).parent().parent().removeAttr("class").addClass("new").children("td:last").prev().html('demande non traitée');
+            }
+          );
+          tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
         }
         else if( ((quoi=='creer')&&(suite=='retirer')) || ((quoi=='completer')&&(suite=='retirer')) || (quoi=='retirer') )
         {

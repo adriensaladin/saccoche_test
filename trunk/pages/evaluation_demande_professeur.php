@@ -91,6 +91,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
         <th>Élève</th>
         <th>Score</th>
         <th>Date</th>
+        <th>Destinaire(s)</th>
         <th>Statut</th>
         <th>Messages</th>
       </tr>
@@ -108,7 +109,14 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
   <div id="zone_actions" class="hide">
     <h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
     <fieldset>
-      <label class="tab" for="f_quoi">Action :</label><select id="f_quoi" name="f_quoi"><option value=""></option><option value="creer">Créer une nouvelle évaluation.</option><option value="completer">Compléter une évaluation existante.</option><option value="changer">Changer le statut pour "évaluation en préparation".</option><option value="retirer">Retirer de la liste des demandes.</option></select>
+      <label class="tab" for="f_quoi">Action :</label><select id="f_quoi" name="f_quoi">
+        <option value=""></option>
+        <option value="creer">Créer une nouvelle évaluation.</option>
+        <option value="completer">Compléter une évaluation existante.</option>
+        <option value="changer_prof">Changer le statut pour "évaluation en préparation".</option>
+        <option value="changer_eleve">Changer le statut pour "demande non traitée".</option>
+        <option value="retirer">Retirer de la liste des demandes.</option>
+      </select>
     </fieldset>
     <fieldset id="step_qui" class="hide">
       <label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>

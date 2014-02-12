@@ -34,7 +34,10 @@ $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ 
 $select_profil = '<option value=""></option>';
 $select_profil.= ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<option value="administrateur">Administrateurs</option>' : '' ;
 $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))) ? '<option value="directeur">Directeurs</option>' : '' ;
-$select_profil.= '<option value="professeur">Professeurs</option><option value="personnel">Personnels autres</option><option value="eleve">Élèves</option><option value="parent">Responsables légaux</option>';
+$select_profil.= '<option value="professeur">Professeurs</option>' ;
+$select_profil.= '<option value="personnel">Personnels autres</option>' ;
+$select_profil.= '<option value="eleve">Élèves</option>' ;
+$select_profil.= '<option value="parent">Responsables légaux</option>';
 
 // Javascript
 $GLOBALS['HEAD']['js']['inline'][] = 'var input_date = "'.TODAY_FR.'";';

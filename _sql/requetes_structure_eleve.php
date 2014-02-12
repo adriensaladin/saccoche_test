@@ -136,14 +136,13 @@ public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere
   }
   // Maintenant qu'on a la matière et la classe / les groupes, on cherche les profs à la fois dans sacoche_jointure_user_matiere et sacoche_jointure_user_groupe .
   // On part de sacoche_jointure_user_matiere qui ne contient que des profs.
-  $DB_SQL = 'SELECT DISTINCT(user_id), user_nom, user_prenom ';
+  $DB_SQL = 'SELECT DISTINCT(user_id) ';
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND groupe_id IN('.$liste_groupes.') ';
-  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
   $DB_VAR = array(':matiere_id'=>$matiere_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -197,15 +196,13 @@ public static function DB_lister_demandes_eleve($eleve_id)
 {
   $DB_SQL = 'SELECT sacoche_demande.*, ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-  $DB_SQL.= 'item_id , item_nom , item_lien , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom , ';
-  $DB_SQL.= 'prof_id , user_nom , user_prenom ';
+  $DB_SQL.= 'item_id , item_nom , item_lien , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_referentiel_domaine.matiere_id=sacoche_matiere.matiere_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id ';
   $DB_SQL.= 'ORDER BY sacoche_demande.matiere_id ASC, niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(':eleve_id'=>$eleve_id);

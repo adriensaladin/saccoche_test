@@ -38,7 +38,7 @@ $label = (version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'='))
 <h2>Version de la base</h2>
 
 <div class="astuce">La base de données est mise à jour automatiquement.</div>
-<div>Version attendue : <?php echo VERSION_BASE_STRUCTURE ?>. Version en place : <label class="<?php echo $label ?>"><?php echo $_SESSION['VERSION_BASE'] ?></label>.</div>
+<div>Version attendue : <?php echo VERSION_BASE_STRUCTURE ?>. Version en place : <label class="<?php echo $label ?>"><?php echo VERSION_BASE_STRUCTURE ?></label>.</div>
 
 <hr />
 

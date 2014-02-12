@@ -45,7 +45,7 @@ $devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_dev
 $suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])           : '';
 $message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])         : '' ;
 
-$score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])            : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+$score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])          : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 
 $tab_demande_id = array();
 $tab_user_id    = array();
@@ -127,7 +127,6 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $score  = ($DB_ROW['demande_score']!==NULL) ? $DB_ROW['demande_score'] : FALSE ;
     $date   = convert_date_mysql_to_french($DB_ROW['demande_date']);
     $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
-    $dest   = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? 'vous seul' : 'collègues concernés' ;
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
     $matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
     $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
@@ -143,7 +142,6 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td>';
     $retour .= str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
     $retour .= '<td class="label">'.$date.'</td>';
-    $retour .= '<td class="label">'.$dest.'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
     $retour .= '<td class="label">'.$commentaire.'</td>';
     $retour .= '</tr>';
@@ -251,14 +249,13 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changer le statut pour "évaluation en préparation" ou "demande non traitée"
+// Changer le statut pour "évaluation en préparation"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ( ($action=='changer_prof') || ($action=='changer_eleve') ) && $nb_demandes )
+if( ($action=='changer') && $nb_demandes )
 {
   $listing_demande_id = implode(',',$tab_demande_id);
-  $statut = substr($action,8);
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_demandes_statut($listing_demande_id,$statut,$message);
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_demandes_statut($listing_demande_id,'prof',$message);
   exit('ok');
 }
 

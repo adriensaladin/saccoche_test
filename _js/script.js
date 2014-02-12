@@ -1373,50 +1373,21 @@ $(document).ready
         item_id    = tab_infos[2];
         score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
         item_nom   = $(this).parent().text();
-        // Récupérer le nombre de profs potentiellements concernés
-        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-        $.ajax
+        var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
+                    + '<form action="#" method="post" id="form_demande_evaluation">'
+                    + '<p class="b">'+item_nom+'</p>'
+                    + '<p>Message (facultatif) : <textarea id="zone_message" name="message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
+                    + '<p><span class="tab"></span><input name="matiere_id" type="hidden" value="'+matiere_id+'" /><input name="item_id" type="hidden" value="'+item_id+'" /><input name="score" type="hidden" value="'+score+'" />'
+                    + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
+                    + '</form>';
+        $.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
+        $('#form_demande_evaluation textarea').focus();
+        // Indiquer le nombre de caractères restant autorisés dans le textarea
+        $('#zone_message').keyup
         (
+          function()
           {
-            type : 'POST',
-            url : 'ajax.php?page=evaluation_demande_eleve_ajout',
-            data : 'f_action=lister_profs'+'&'+'f_matiere_id='+matiere_id,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-            },
-            success : function(responseHTML)
-            {
-              if(responseHTML.substring(0,7)!='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-
-                var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
-                            + '<form action="#" method="post" id="form_demande_evaluation">'
-                            + '<p class="b">'+item_nom+'</p>'
-                            + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseHTML+'</select></p>'
-                            + '<p><label class="tab">Message (facultatif) :</label><textarea id="zone_message" name="f_message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
-                            + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" />'
-                            + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
-                            + '</form>';
-                $.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
-                $('#form_demande_evaluation textarea').focus();
-                // Indiquer le nombre de caractères restant autorisés dans le textarea
-                $('#zone_message').keyup
-                (
-                  function()
-                  {
-                    afficher_textarea_reste( $(this) , 500 );
-                  }
-                );
-
-              }
-              $('#form_demande_evaluation button').prop('disabled',false);
-            }
+            afficher_textarea_reste( $(this) , 500 );
           }
         );
       }
@@ -1453,7 +1424,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=evaluation_demande_eleve_ajout',
-            data : 'f_action=confirmer_ajout'+'&'+$("#form_demande_evaluation").serialize(),
+            data : $("#form_demande_evaluation").serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

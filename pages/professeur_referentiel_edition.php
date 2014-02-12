@@ -97,13 +97,54 @@ else
   {
     $GLOBALS['HEAD']['js']['inline'][] = 'var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";';
     echo'<p>'.NL;
-    echo'<select id="select_action_groupe_choix" name="select_action_groupe"><option value=""></option><option value="modifier_coefficient">Modifier tous les coefficients des items</option><option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option><option value="deplacer_domaine">Déplacer tout le domaine</option><option value="deplacer_theme">Déplacer tout le thème</option></select>'.NL;
-    echo'<select id="select_action_groupe_modifier_objet" name="select_action_groupe_modifier_objet" class="hide"><option value=""></option><option value="referentiel">du référentiel</option><option value="domaine">du domaine</option><option value="theme">du thème</option></select>'.NL;
+    echo'<select id="select_action_groupe_choix" name="select_action_groupe">'
+          .'<option value=""></option>'
+          .'<option value="modifier_coefficient">Modifier tous les coefficients des items</option>'
+          .'<option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option>'
+          .'<option value="deplacer_domaine">Déplacer tout le domaine</option>'
+          .'<option value="deplacer_theme">Déplacer tout le thème</option>'
+        .'</select>'.NL;
+    echo'<select id="select_action_groupe_modifier_objet" name="select_action_groupe_modifier_objet" class="hide">'
+          .'<option value=""></option>'
+          .'<option value="referentiel">du référentiel</option>'
+          .'<option value="domaine">du domaine</option>'
+          .'<option value="theme">du thème</option>'
+        .'</select>'.NL;
     echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"><option value=""></option></select>'.NL;
-    echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide"><option value=""></option><option value="0">à 0</option><option value="1">à 1</option><option value="2">à 2</option><option value="3">à 3</option><option value="4">à 4</option><option value="5">à 5</option><option value="6">à 6</option><option value="7">à 7</option><option value="8">à 8</option><option value="9">à 9</option><option value="10">à 10</option><option value="11">à 11</option><option value="12">à 12</option><option value="13">à 13</option><option value="14">à 14</option><option value="15">à 15</option><option value="16">à 16</option><option value="17">à 17</option><option value="18">à 18</option><option value="19">à 19</option><option value="20">à 20</option></select>'.NL;
-    echo'<select id="select_action_groupe_modifier_cart" name="select_action_groupe_modifier_cart" class="hide"><option value=""></option><option value="1">à "oui"</option><option value="0">à "non"</option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide">'
+          .'<option value=""></option>'
+          .'<option value="0">à 0</option>'
+          .'<option value="1">à 1</option>'
+          .'<option value="2">à 2</option>'
+          .'<option value="3">à 3</option>'
+          .'<option value="4">à 4</option>'
+          .'<option value="5">à 5</option>'
+          .'<option value="6">à 6</option>'
+          .'<option value="7">à 7</option>'
+          .'<option value="8">à 8</option>'
+          .'<option value="9">à 9</option>'
+          .'<option value="10">à 10</option>'
+          .'<option value="11">à 11</option>'
+          .'<option value="12">à 12</option>'
+          .'<option value="13">à 13</option>'
+          .'<option value="14">à 14</option>'
+          .'<option value="15">à 15</option>'
+          .'<option value="16">à 16</option>'
+          .'<option value="17">à 17</option>'
+          .'<option value="18">à 18</option>'
+          .'<option value="19">à 19</option>'
+          .'<option value="20">à 20</option>'
+        .'</select>'.NL;
+    echo'<select id="select_action_groupe_modifier_cart" name="select_action_groupe_modifier_cart" class="hide">'
+          .'<option value=""></option>'
+          .'<option value="1">à "oui"</option>'
+          .'<option value="0">à "non"</option>'
+        .'</select>'.NL;
     echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"><option value=""></option></select>'.NL;
-    echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide"><option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option><option value="deplacer_theme">vers le domaine (d\'une autre matière)</option></select>'.NL;
+    echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide">'
+          .'<option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option>'
+          .'<option value="deplacer_theme">vers le domaine (d\'une autre matière)</option>'
+        .'</select>'.NL;
     echo'<select id="select_action_groupe_deplacer_id_final" name="select_action_groupe_deplacer_id_final" class="hide"><option value=""></option></select>'.NL;
     echo'</p>'.NL;
     echo'<p><span class="tab"></span><button id="bouton_valider_groupe" type="button" class="valider" disabled>Valider cette action</button><label id="ajax_msg_groupe">&nbsp;</label></p>';

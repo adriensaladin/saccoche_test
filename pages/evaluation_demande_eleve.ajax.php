@@ -32,12 +32,13 @@ $action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])
 $demande_id = (isset($_POST['f_demande_id'])) ? Clean::entier($_POST['f_demande_id']) : 0;
 $item_id    = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
 $matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
+$prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])    : -1;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une demande
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
+if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_id!=-1) )
 {
   DB_STRUCTURE_ELEVE::DB_supprimer_demande_precise($demande_id);
   // Récupérer la référence et le nom de l'item
@@ -46,11 +47,21 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
   $titre = 'Demande retirée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
   $guid  = 'demande_'.$demande_id.'_del';
-  // On récupère les profs...
-  $DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
-  foreach($DB_COL as $prof_id)
+  if($prof_id)
   {
     RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
+  }
+  else
+  {
+    // On récupère les profs...
+    $DB_TAB = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        RSS::modifier_fichier_prof($DB_ROW['user_id'],$titre,$texte,$guid);
+      }
+    }
   }
   // Affichage du retour
   exit('ok');

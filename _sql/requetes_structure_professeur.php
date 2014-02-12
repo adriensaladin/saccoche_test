@@ -373,7 +373,7 @@ public static function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 
   $DB_SQL = 'SELECT sacoche_demande.*, '.$select_matiere;
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-  $DB_SQL.= 'item_nom, user_nom, user_prenom ';
+  $DB_SQL.= 'item_nom, user_nom, user_prenom, prof_id ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
@@ -1190,7 +1190,7 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
  * modifier_demandes_statut
  *
  * @param string $listing_demande_id   id des demandes séparées par des virgules
- * @param string $statut               'prof' ou ...
+ * @param string $statut               'prof' | 'eleve'
  * @param string $message              facultatif
  * @return void
  */

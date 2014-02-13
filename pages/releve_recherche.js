@@ -181,6 +181,7 @@ $(document).ready
       function()
       {
         var socle_id = $("#zone_socle_item input[type=radio]:checked").val();
+alert(socle_id);
         if(isNaN(socle_id))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
           socle_id = 0;
@@ -189,6 +190,7 @@ $(document).ready
         else
         {
           var socle_nom = $("#zone_socle_item input[type=radio]:checked").parent().text();
+alert(socle_nom);
         }
         $('#f_socle_item_nom').val(socle_nom);
         $('#f_socle_item_id').val(socle_id);

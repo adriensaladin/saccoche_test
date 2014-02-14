@@ -40,12 +40,12 @@ $seuil = array();
 $seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
 $seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
-$methode    = (isset($_POST['f_methode']))    ? Clean::calcul_methode($_POST['f_methode'])        : '' ;
-$limite     = (isset($_POST['f_limite']))     ? Clean::calcul_limite($_POST['f_limite'],$methode) : 0 ;
-$retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST['f_retroactif'])  : '' ;
+$methode    = (isset($_POST['f_methode']))    ? Clean::calcul_methode($_POST['f_methode'])        : NULL ;
+$limite     = (isset($_POST['f_limite']))     ? Clean::calcul_limite($_POST['f_limite'],$methode) : NULL ;
+$retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL ;
 
 // Vérification des données transmises
-if( !$methode || !$limite || !$retroactif )
+if( is_null($methode) || is_null($limite) || is_null($retroactif) )
 {
   exit('Erreur avec les données transmises !');
 }

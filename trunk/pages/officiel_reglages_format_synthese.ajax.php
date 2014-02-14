@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$methode    = (isset($_POST['f_methode'])) ? Clean::synthese_methode($_POST['f_methode']) : '';
+$methode    = (isset($_POST['f_methode'])) ? Clean::synthese_methode($_POST['f_methode']) : NULL;
 $matiere_id = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere'])           : 0;
 $niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])            : 0;
 

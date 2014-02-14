@@ -33,10 +33,10 @@ $matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_
 $niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])              : 0;
 $structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])           : 0;
 $nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])            : -1; // Changer le nb de demandes
-$partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : ''; // Changer l'état de partage
-$methode        = (isset($_POST['f_methode']))        ? Clean::calcul_methode($_POST['f_methode'])        : ''; // Changer le mode de calcul
-$limite         = (isset($_POST['f_limite']))         ? Clean::calcul_limite($_POST['f_limite'],$methode) : 0;  // Changer le nb d'items pris en compte
-$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::calcul_retroactif($_POST['f_retroactif'])  : ''; // Changer le nb d'items pris en compte
+$partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : NULL; // Changer l'état de partage
+$methode        = (isset($_POST['f_methode']))        ? Clean::calcul_methode($_POST['f_methode'])        : NULL; // Changer le mode de calcul
+$limite         = (isset($_POST['f_limite']))         ? Clean::calcul_limite($_POST['f_limite'],$methode) : NULL; // Changer le nb d'items pris en compte
+$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL; // Changer le nb d'items pris en compte
 $information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_information'])             : '';
 $referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id'])         : -1; // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 $ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                                   : '';
@@ -190,8 +190,12 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage )
 // Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='calculer') && $matiere_id && $niveau_id && $methode && $limite && $retroactif )
+if( ($action=='calculer') && $matiere_id && $niveau_id )
 {
+  if( is_null($methode) || is_null($limite) || is_null($retroactif) )
+  {
+    exit('Erreur avec les données transmises !');
+  }
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
       if($retroactif=='non')    { $texte_retroactif = '(sur la période)';        }
   elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';       }

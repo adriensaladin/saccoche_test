@@ -276,7 +276,7 @@ class Clean
   public static function calcul_methode($text)
   {
     $tab = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
-    return in_array($text,$tab) ? $text : '' ;
+    return in_array($text,$tab) ? $text : NULL ;
   }
 
   public static function calcul_limite($text,$methode)
@@ -290,25 +290,25 @@ class Clean
       'bestof2'      => array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
       'bestof3'      => array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0),
     );
-    return ( isset($tab[$methode]) && in_array($text,$tab[$methode]) ) ? $text : '' ;
+    return ( isset($tab[$methode]) && in_array($text,$tab[$methode]) ) ? $text : NULL ;
   }
 
   public static function calcul_retroactif($text)
   {
     $tab = array('non','oui','annuel','auto');
-    return in_array($text,$tab) ? $text : '' ;
+    return in_array($text,$tab) ? $text : NULL ;
   }
 
   public static function synthese_methode($text)
   {
     $tab = array('inconnu','sans','domaine','theme');
-    return in_array($text,$tab) ? $text : '' ;
+    return in_array($text,$tab) ? $text : NULL ;
   }
 
   public static function referentiel_partage($text)
   {
     $tab = array('oui','non','bof','hs');
-    return in_array($text,$tab) ? $text : '' ;
+    return in_array($text,$tab) ? $text : NULL ;
   }
 
   /*

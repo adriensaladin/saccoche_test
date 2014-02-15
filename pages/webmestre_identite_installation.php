@@ -51,7 +51,7 @@ $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
   <label class="tab" for="f_uai">n° UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Ce champ est facultatif." /> :</label><input id="f_uai" name="f_uai" size="8" type="text" value="<?php echo html(HEBERGEUR_UAI); ?>" /><br />
   <?php echo $uai_div_hide_apres ?>
   <label class="tab" for="f_adresse_site">Adresse web <img alt="" src="./_img/bulle_aide.png" title="Exemple : <?php echo $exemple_adresse_web ?>" /> :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="<?php echo html(HEBERGEUR_ADRESSE_SITE); ?>" /><br />
-  <label class="tab" for="f_logo">Logo :</label><select id="f_logo" name="f_logo"><option value=""></option></select><label id="ajax_logo"></label><br />
+  <label class="tab" for="f_logo">Logo :</label><select id="f_logo" name="f_logo"></select><label id="ajax_logo"></label><br />
   <h2>Déclaration C.N.I.L. <img alt="" src="./_img/bulle_aide.png" title="Voir la documentation." /></h2>
   <label class="tab" for="f_logo">État :</label><label for="f_cnil_non"><input type="radio" id="f_cnil_non" name="f_cnil_etat" value="non"<?php echo $cnil_check_non ?> /> non renseignée</label>&nbsp;&nbsp;&nbsp;<label for="f_cnil_oui"><input type="radio" id="f_cnil_oui" name="f_cnil_etat" value="oui"<?php echo $cnil_check_oui ?> /> n°</label><input id="f_cnil_numero" name="f_cnil_numero" size="10" type="text" value="<?php echo $cnil_numero ?>" />
   <div id="cnil_dates" class="<?php echo $cnil_dates_class; ?>">

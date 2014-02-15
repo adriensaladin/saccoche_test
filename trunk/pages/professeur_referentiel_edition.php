@@ -110,7 +110,7 @@ else
           .'<option value="domaine">du domaine</option>'
           .'<option value="theme">du thème</option>'
         .'</select>'.NL;
-    echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"><option value=""></option></select>'.NL;
+    echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"></select>'.NL;
     echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide">'
           .'<option value=""></option>'
           .'<option value="0">à 0</option>'
@@ -140,12 +140,12 @@ else
           .'<option value="1">à "oui"</option>'
           .'<option value="0">à "non"</option>'
         .'</select>'.NL;
-    echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"><option value=""></option></select>'.NL;
+    echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"></select>'.NL;
     echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide">'
           .'<option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option>'
           .'<option value="deplacer_theme">vers le domaine (d\'une autre matière)</option>'
         .'</select>'.NL;
-    echo'<select id="select_action_groupe_deplacer_id_final" name="select_action_groupe_deplacer_id_final" class="hide"><option value=""></option></select>'.NL;
+    echo'<select id="select_action_groupe_deplacer_id_final" name="select_action_groupe_deplacer_id_final" class="hide"></select>'.NL;
     echo'</p>'.NL;
     echo'<p><span class="tab"></span><button id="bouton_valider_groupe" type="button" class="valider" disabled>Valider cette action</button><label id="ajax_msg_groupe">&nbsp;</label></p>';
     echo'<p id="groupe_modifier_avertissement" class="hide">'.NL;

@@ -137,10 +137,14 @@ public static function DB_supprimer_tables_structure()
 public static function DB_OPT_administrateurs_etabl()
 {
   // La révision du 5 janvier 2013 a modifié le champ "user_profil" en "user_profil_sigle".
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
-  $champ_profil = (!empty($DB_TAB)) ? 'user_profil_type' : 'user_profil' ;
-  $left_join    = (!empty($DB_TAB)) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
-  $DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
+  $DB_Test = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
+  $champ_profil = !empty($DB_Test) ? 'user_profil_type' : 'user_profil' ;
+  $left_join    = !empty($DB_Test) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
+  // La révision du 22 février 2013 a ajouté le champ "user_email".
+  $DB_Test = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_email"' , NULL);
+  $select_texte = !empty($DB_Test) ? 'CONCAT(user_nom," ",user_prenom," (",user_email,")")' : 'CONCAT(user_nom," ",user_prenom)' ;
+  // Passons à la requête en question
+  $DB_SQL = 'SELECT user_id AS valeur, '.$select_texte.' AS texte ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= $left_join;
   $DB_SQL.= 'WHERE '.$champ_profil.'=:profil '; // AND user_sortie_date>NOW() est inutile pour les admins, et évite une erreur qd cette fonction est appelée via un webmestre multi-structures alors que la base de l'établ n'est pas à jour

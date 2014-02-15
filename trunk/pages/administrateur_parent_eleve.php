@@ -44,7 +44,7 @@ $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 
 <form action="#" method="post">
   <fieldset id="fieldset_eleves">
-    <label class="tab" for="f_groupe">Élève :</label><?php echo $select_f_groupes ?> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
+    <label class="tab" for="f_groupe">Élève :</label><?php echo $select_f_groupes ?> <select id="select_eleve" name="select_eleve"></select> <label id="ajax_msg">&nbsp;</label>
   </fieldset>
   <hr />
   <fieldset id="fieldset_parents">

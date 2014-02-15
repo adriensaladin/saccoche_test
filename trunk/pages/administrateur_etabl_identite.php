@@ -170,9 +170,9 @@ else
     <label class="tab">Technique :</label><label for="f_mode_geo"><input type="radio" id="f_mode_geo" name="f_mode" value="geo" /> recherche sur critères géographiques</label>&nbsp;&nbsp;&nbsp;<label for="f_mode_uai"><input type="radio" id="f_mode_uai" name="f_mode" value="uai" /> recherche à partir du numéro UAI (ex-RNE)</label>
   </p>
   <fieldset id="f_recherche_geo" class="hide">
-    <label class="tab" for="f_geo1">Etape 1/3 :</label><select id="f_geo1" name="f_geo1"><option value=""></option></select><br />
-    <label class="tab" for="f_geo2">Etape 2/3 :</label><select id="f_geo2" name="f_geo2"><option value=""></option></select><br />
-    <label class="tab" for="f_geo3">Etape 3/3 :</label><select id="f_geo3" name="f_geo3"><option value=""></option></select><br />
+    <label class="tab" for="f_geo1">Etape 1/3 :</label><select id="f_geo1" name="f_geo1"></select><br />
+    <label class="tab" for="f_geo2">Etape 2/3 :</label><select id="f_geo2" name="f_geo2"></select><br />
+    <label class="tab" for="f_geo3">Etape 3/3 :</label><select id="f_geo3" name="f_geo3"></select><br />
   </fieldset>
   <fieldset id="f_recherche_uai" class="hide">
     <label class="tab" for="f_uai2">Code UAI (ex-RNE) :</label><input id="f_uai2" name="f_uai2" size="8" type="text" value="" /><br />

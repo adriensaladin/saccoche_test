@@ -640,7 +640,7 @@ foreach($tab_eleve as $tab)
             }
             if($make_html)
             {
-              $releve_HTML .= '<tr><td colspan="4" class="nu"></td></tr>'.NL;
+              $releve_HTML .= '<tr><td class="nu"></td><td class="nu"></td><td class="nu"></td><td class="nu"></td></tr>'.NL; // En 4 cellules pour résoudre un pb de bordures sous Chrome
             }
           }
           // Examen de présence des appréciations intermédiaires

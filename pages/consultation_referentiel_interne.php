@@ -140,7 +140,7 @@ foreach($tab_matiere as $matiere_id => $tab)
   $matiere_nom   = $tab['nom'];
   $matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
   $matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="br hc">Aucun.' ;
-  $affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'.NL;
+  $affichage .= '<tr><td colspan="6" class="nu">&nbsp;</td><td class="nu">&nbsp;</td></tr>'.NL; // En 2 cellules pour résoudre un pb de bordures sous Chrome
   $affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
   $affichage_suite = FALSE;
   if(isset($tab_colonne[$matiere_id]))

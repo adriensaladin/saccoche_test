@@ -215,7 +215,7 @@ else
       }
       $matiere_nombre = str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) ;
       $matiere_nombre = ( ($matiere_droit) && (isset($tab_colonne[$matiere_id])) ) ? $matiere_nombre : str_replace('<select','<select disabled',$matiere_nombre) ;
-      echo'<tr><td colspan="3" class="nu">'.$matiere_nombre.$infobulle.$label.'</td><td class="nu">&nbsp;</td>'.'</tr>'.NL; // En 2 cellules pour résoudre un pb de bordures sous Chrome
+      echo'<tr><td colspan="4" class="nu">'.$matiere_nombre.$infobulle.$label.'</td>'.'</tr>'.NL;
       echo'</tbody></table><hr />'.NL;
     }
   }

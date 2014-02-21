@@ -465,7 +465,7 @@ define('SERVEUR_TELECHARGEMENT' ,SERVEUR_PROJET.'/telechargement.php');      // 
 define('SERVEUR_VERSION'        ,SERVEUR_PROJET.'/sacoche/VERSION.txt');     // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_CNIL'           ,SERVEUR_PROJET.'/?fichier=cnil');           // URL de la page "CNIL (données personnelles)"
 define('SERVEUR_CONTACT'        ,SERVEUR_PROJET.'/?fichier=contact');        // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_GUIDE_ENT'      ,SERVEUR_PROJET.'/?fichier=ent');            // URL de la page "Mode d'identification & Guide d'intégration aux ENT"
+define('SERVEUR_CARTE_ENT'      ,SERVEUR_PROJET.'/?fichier=ent');            // URL de la page "Avec quels ENT SACoche est-il interconnecté ?"
 define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?fichier=guide_admin');    // URL de la page "Guide de démarrage (administrateur de SACoche)"
 define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?fichier=guide_rentree');  // URL de la page "Guide de changement d'année (administrateur de SACoche)"
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?fichier=news');           // URL de la page "Historique des nouveautés"
@@ -619,22 +619,9 @@ function __autoload($class_name)
     'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
     'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php' ,
   );
-  if(defined('APPEL_SITE_PROJET'))
-  {
-    $tab_classes_projet = array(
-      'DB_PROJET'       => 'class.requetes_DB_projet.php' ,
-      'ProjetAdmin'     => 'class.ProjetAdmin.php' ,
-      'ServeurSesamath' => 'class.ServeurSesamath.php' ,
-    );
-  }
   if(isset($tab_classes[$class_name]))
   {
     load_class($class_name,CHEMIN_DOSSIER_SACOCHE.$tab_classes[$class_name]);
-  }
-  // Pour le portail sacoche.sesamath.net
-  elseif(isset($tab_classes_projet[$class_name]))
-  {
-    load_class($class_name,CHEMIN_DOSSIER_PROJET_INCLUDE.$tab_classes_projet[$class_name]);
   }
   // Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
   // Voir le fichier ./_lib/phpCAS/CAS/autoload.php

@@ -25,8 +25,6 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
 /**
  * afficher_form_element_checkbox_eleves_professeur
  *

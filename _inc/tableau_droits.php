@@ -51,8 +51,8 @@ $tab_droits_par_page = array
   // Tous profils
   'fermer_session'                          => $tab_droits_profil_tous, // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
   'webservices'                             => $tab_droits_profil_tous,
-  'calque_date_calendrier'                  => $tab_droits_profil_tous, // Aussi utilisé par un espace de gestion Sésamath extérieur
   // Profils identifiés
+  'calque_date_calendrier'                  => $tab_droits_profil_identifie,
   'conserver_session_active'                => $tab_droits_profil_identifie,
   'compte_accueil'                          => $tab_droits_profil_identifie,
   'compte_email'                            => $tab_droits_profil_identifie,

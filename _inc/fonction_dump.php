@@ -25,8 +25,6 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
 /*
 
 Ces fonctions ont été isolées dans un fichier car elles servent à 2 endroits : administrateur_dump_ajax et webmestre_transfert_bases_ajax

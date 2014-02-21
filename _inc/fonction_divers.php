@@ -25,8 +25,6 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
 /*
  * Réciproque de html()
  * 

@@ -85,7 +85,7 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE
 
 <div id="zone_perso">
   <hr />
-  <h2>Matières spécifiques</h2>
+  <h2>Matières spécifiques (établissement)</h2>
   <table class="form hsort">
     <thead>
       <tr>

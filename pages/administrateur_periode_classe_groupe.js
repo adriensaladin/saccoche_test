@@ -90,7 +90,7 @@ $(document).ready
           {
             return(false);
           }
-          if(!(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nLes éventuels bilans officiels associés (bulletins...) seront supprimés !\n\nAvez-bien coché ce que vous souhaitiez, en connaissance de cause ?")) )
+          if(!(confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS BILANS OFFICIELS ASSOCIÉS (BULLETINS...) SERONT SUPPRIMÉS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nAVEZ-BIEN COCHÉ CE QUE VOUS SOUHAITIEZ, EN CONNAISSANCE DE CAUSE ?")) )
           {
             return(false);
           }

@@ -488,8 +488,8 @@ define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
 
 // Identifiants particuliers (à ne pas modifier)
 define('ID_DEMO'                   , 9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_MATIERE_PARTAGEE_MAX'   , 9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
-define('ID_NIVEAU_MAX'             , 1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
+define('ID_MATIERE_PARTAGEE_MAX'   , 9999); // id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
+define('ID_NIVEAU_PARTAGE_MAX'     ,  215); // id maximal des niveaux partagés (les id des niveaux spécifiques sont supérieurs)
 define('ID_FAMILLE_MATIERE_USUELLE',   99);
 define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
 

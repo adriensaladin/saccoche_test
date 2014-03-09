@@ -284,4 +284,22 @@ if($version_base_structure_actuelle=='2014-02-15')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-02-17 => 2014-03-09
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-02-17')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-03-09';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Modification format champ niveau_id
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau              CHANGE niveau_id niveau_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe              CHANGE niveau_id niveau_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel         CHANGE niveau_id niveau_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_domaine CHANGE niveau_id niveau_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 ' );
+  }
+}
+
 ?>

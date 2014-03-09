@@ -355,7 +355,7 @@ a.cocher_rien {padding-left:19px;background:transparent url(../_img/check/cocher
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-q {background:transparent url(../_img/sprite_action_10.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+q {background:transparent url(../_img/sprite_action_11.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
 q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 q.activer            {background-position: 0     0px}
 q.actualiser         {background-position: 0   -20px}
@@ -382,55 +382,56 @@ q.detailler          {background-position: 0  -420px}
 q.detailler_non      {background-position: 0  -440px}
 q.dupliquer          {background-position: 0  -460px}
 q.echanger           {background-position: 0  -480px}
-q.imprimer_arbre     {background-position: 0  -500px}
-q.imprimer           {background-position: 0  -500px} /* attention : même décalage */
-q.imprimer_non       {background-position: 0  -520px}
-q.initialiser_mdp    {background-position: 0  -540px}
-q.modifier           {background-position: 0  -560px}
-q.modifier_non       {background-position: 0  -580px}
-q.ordonner           {background-position: 0  -600px}
-q.ordonner_non       {background-position: 0  -620px}
-q.calculer           {background-position: 0  -640px}
-q.calculer_non       {background-position: 0  -660px}
-q.envoyer            {background-position: 0  -680px}
-q.envoyer_non        {background-position: 0  -700px}
-q.partager           {background-position: 0  -720px}
-q.partager_non       {background-position: 0  -740px}
-q.ress_ajouter       {background-position: 0  -760px}
-q.ress_page_elaborer {background-position: 0  -780px}
-q.retourner          {background-position: 0  -800px}
-q.saisir             {background-position: 0  -820px}
-q.saisir_non         {background-position: 0  -840px}
-q.supprimer          {background-position: 0  -860px}
-q.supprimer_non      {background-position: 0  -880px}
-q.tamponner          {background-position: 0  -900px}
-q.tamponner_non      {background-position: 0  -920px}
-q.texte_editer       {background-position: 0  -940px}
-q.uploader_doc       {background-position: 0  -960px}
-q.uploader_doc_non   {background-position: 0  -980px}
-q.valider            {background-position: 0 -1000px}
-q.voir_archive       {background-position: 0 -1020px}
-q.voir_archive_non   {background-position: 0 -1040px}
-q.voir_repart        {background-position: 0 -1060px}
-q.voir               {background-position: 0 -1080px}
-q.voir_non           {background-position: 0 -1100px}
-q.n1_add             {background-position: 0 -1120px}
-q.n1_del             {background-position: 0 -1140px}
-q.n1_edit            {background-position: 0 -1160px}
-q.n1_move            {background-position: 0 -1180px}
-q.n1_move2           {background-position: 0 -1200px}
-q.n2_add             {background-position: 0 -1220px}
-q.n2_del             {background-position: 0 -1240px}
-q.n2_edit            {background-position: 0 -1260px}
-q.n2_move            {background-position: 0 -1280px}
-q.n2_move2           {background-position: 0 -1300px}
-q.n3_add             {background-position: 0 -1320px}
-q.n3_del             {background-position: 0 -1340px}
-q.n3_edit            {background-position: 0 -1360px}
-q.n3_fus             {background-position: 0 -1380px}
-q.n3_fus2            {background-position: 0 -1400px}
-q.n3_move            {background-position: 0 -1420px}
-q.n3_move2           {background-position: 0 -1440px}
+q.ecrire             {background-position: 0  -500px}
+q.imprimer_arbre     {background-position: 0  -520px}
+q.imprimer           {background-position: 0  -520px} /* attention : même décalage */
+q.imprimer_non       {background-position: 0  -540px}
+q.initialiser_mdp    {background-position: 0  -560px}
+q.modifier           {background-position: 0  -580px}
+q.modifier_non       {background-position: 0  -600px}
+q.ordonner           {background-position: 0  -620px}
+q.ordonner_non       {background-position: 0  -640px}
+q.calculer           {background-position: 0  -660px}
+q.calculer_non       {background-position: 0  -680px}
+q.envoyer            {background-position: 0  -700px}
+q.envoyer_non        {background-position: 0  -720px}
+q.partager           {background-position: 0  -740px}
+q.partager_non       {background-position: 0  -760px}
+q.ress_ajouter       {background-position: 0  -780px}
+q.ress_page_elaborer {background-position: 0  -800px}
+q.retourner          {background-position: 0  -820px}
+q.saisir             {background-position: 0  -840px}
+q.saisir_non         {background-position: 0  -860px}
+q.supprimer          {background-position: 0  -880px}
+q.supprimer_non      {background-position: 0  -900px}
+q.tamponner          {background-position: 0  -920px}
+q.tamponner_non      {background-position: 0  -940px}
+q.texte_editer       {background-position: 0  -960px}
+q.uploader_doc       {background-position: 0  -980px}
+q.uploader_doc_non   {background-position: 0 -1000px}
+q.valider            {background-position: 0 -1020px}
+q.voir_archive       {background-position: 0 -1040px}
+q.voir_archive_non   {background-position: 0 -1060px}
+q.voir_repart        {background-position: 0 -1080px}
+q.voir               {background-position: 0 -1100px}
+q.voir_non           {background-position: 0 -1120px}
+q.n1_add             {background-position: 0 -1140px}
+q.n1_del             {background-position: 0 -1160px}
+q.n1_edit            {background-position: 0 -1180px}
+q.n1_move            {background-position: 0 -1200px}
+q.n1_move2           {background-position: 0 -1220px}
+q.n2_add             {background-position: 0 -1240px}
+q.n2_del             {background-position: 0 -1260px}
+q.n2_edit            {background-position: 0 -1280px}
+q.n2_move            {background-position: 0 -1300px}
+q.n2_move2           {background-position: 0 -1320px}
+q.n3_add             {background-position: 0 -1340px}
+q.n3_del             {background-position: 0 -1360px}
+q.n3_edit            {background-position: 0 -1380px}
+q.n3_fus             {background-position: 0 -1400px}
+q.n3_fus2            {background-position: 0 -1420px}
+q.n3_move            {background-position: 0 -1440px}
+q.n3_move2           {background-position: 0 -1460px}
 q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -502,7 +503,7 @@ button.voir_photo        {background-position: 2px -879px}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 *[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
-*[disabled]:hover,*[disabled].hover{cursor:progress}
+button[disabled]:hover,button[disabled].hover{cursor:not-allowed}
 button img{width:16px;height:16px}
 
 /* input / select / textarea */

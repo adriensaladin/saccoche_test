@@ -221,7 +221,7 @@ $(document).ready
       {
         if (!please_wait)
         {
-          if( (mode!='supprimer') || (confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nLes éventuels bilans officiels associés (bulletins...) seront supprimés !\n\nÊtes-vous bien certain de vouloir supprimer cette période ?\nPour modifier les dates, il faut utiliser le menu [Périodes & classes / groupes].")) )
+          if( (mode!='supprimer') || (confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS BILANS OFFICIELS ASSOCIÉS (BULLETINS...) SERONT SUPPRIMÉS !\nPour modifier les dates, il faut utiliser le menu [Périodes & classes / groupes]...\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CETTE PÉRIODE ?")) )
           {
             $(this).ajaxSubmit(ajaxOptions);
           }

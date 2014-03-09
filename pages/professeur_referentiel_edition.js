@@ -740,7 +740,7 @@ $(document).ready
       'q.valider[lang=supprimer]',
       function()
       {
-        if(confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer cet élément de référentiel ?"))
+        if(confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nTOUS LES RÉSULTATS ASSOCIÉS DES ÉLÈVES SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CE RÉFÉRENTIEL ?"))
         {
           // On récupère le contexte de la demande : n1 ou n2 ou n3
           contexte = $(this).parent().parent().attr('id').substring(0,2);

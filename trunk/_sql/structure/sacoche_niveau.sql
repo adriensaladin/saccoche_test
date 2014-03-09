@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS sacoche_niveau;
 
 CREATE TABLE sacoche_niveau (
-  niveau_id         TINYINT(3)  UNSIGNED                NOT NULL AUTO_INCREMENT,
+  niveau_id         SMALLINT(5) UNSIGNED                NOT NULL AUTO_INCREMENT,
   niveau_actif      TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
   niveau_famille_id TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
   niveau_ordre      TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,

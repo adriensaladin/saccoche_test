@@ -27,7 +27,7 @@
  
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
-// Ces méthodes ne concernent que la base WEBMESTRE (donc une installation multi-structure).
+// Ces méthodes ne concernent que la base WEBMESTRE (donc une installation multi-structures).
 // Ces méthodes ne concernent que les administrateurs d'un établissement donné.
 
 class DB_WEBMESTRE_ADMINISTRATEUR extends DB

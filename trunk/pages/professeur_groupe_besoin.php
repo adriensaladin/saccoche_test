@@ -88,7 +88,7 @@ if( !empty($DB_TAB) )
 // Eléments javascript concernant les niveaux : select_niveau & tab_niveau_ordre_js
 
 $select_niveau = '<option value=""></option>';
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
 if(!empty($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)

@@ -55,7 +55,7 @@ class cURL
   }
 
   /**
-   * Options cURL commune à tous les appels
+   * Options cURL communes à tous les appels
    *
    * @param void
    * @return void
@@ -151,7 +151,7 @@ class cURL
   }
 
   /**
-   * Recherche "manuelle" l'adresse finale si on ne peut pas utiliser l'option CURLOPT_FOLLOWLOCATION.
+   * Recherche "manuelle" de l'adresse finale si on ne peut pas utiliser l'option CURLOPT_FOLLOWLOCATION.
    *
    * @param void
    * @return string  $new_url

@@ -789,13 +789,23 @@ class PDF extends FPDF
     $e = chr(0xC2).chr(0xA0); // espace insécable en UTF-8 (http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable ; http://fr.wikipedia.org/wiki/UTF-8)
     $tab_bad = array(   ' !' ,   ' ?' ,   ' :' ,   ' ;' ,   ' %' , ' .' , ' ,' );
     $tab_bon = array( $e.'!' , $e.'?' , $e.':' , $e.';' , $e.'%' ,  '.' ,  ',' );
-    return str_replace( $tab_bad , $tab_bon , $texte );
+    return trim( str_replace( $tab_bad , $tab_bon , $texte ) );
   }
 
   public function afficher_appreciation( $largeur_autorisee , $hauteur_autorisee , $taille_police , $taille_interligne , $texte )
   {
     $this->SetFont('Arial' , '' , $taille_police);
     $texte = $this->correction_espaces($texte);
+    // Traiter un éventuel nombre de retours à la ligne saisis excessifs
+    $texte = str_replace( array("\r\n","\r","\n") , "\n" , $texte ); // Le dénombrement n'est pas effectué ici mais à la ligne suivante sinon un "\r\n" compte double...
+    $nombre_lignes_actuelles = substr_count($texte,"\n") + 1 ;
+    $nombre_lignes_tolerees  = floor($hauteur_autorisee / $taille_interligne);
+    if($nombre_lignes_actuelles>$nombre_lignes_tolerees)
+    {
+      $tab_lignes = explode("\n",$texte);
+      $tab_blocs  = array_chunk($tab_lignes, $nombre_lignes_tolerees);
+      $texte = implode("\n",$tab_blocs[0]).' '.implode(' ',$tab_blocs[1]);
+    }
     // Ajustement de la taille de la police et de l'interligne si appréciation trop longue
     do
     {
@@ -2029,9 +2039,16 @@ class PDF extends FPDF
     foreach($tab_saisie as $prof_id => $tab)
     {
       extract($tab);  // $prof_info $appreciation $note
-      $nom_auteur = ($nb_saisies==1) ? '' : '[ '.$prof_info.' ] ' ; // associer le nom de l'auteur avec l'appréciation si plusieurs appréciations pour une même rubrique
-      $appreciation_sans_br = str_replace( array("\r\n","\r","\n") , ' ' , $appreciation , $nombre_br );
-      $texte .= ($nombre_br<4-$nb_saisies) ? $nom_auteur.$appreciation."\r\n" : $nom_auteur.$appreciation_sans_br."\r\n" ;
+      if($nb_saisies==1)
+      {
+        $texte .= $appreciation;
+      }
+      else
+      {
+        $nom_auteur = '[ '.$prof_info.' ] '; // associer le nom de l'auteur avec l'appréciation si plusieurs appréciations pour une même rubrique
+        $appreciation_sans_br = str_replace( array("\r\n","\r","\n") , ' ' , $appreciation , $nombre_br );
+        $texte .= ($nombre_br<4-$nb_saisies) ? $nom_auteur.$appreciation."\n" : $nom_auteur.$appreciation_sans_br."\n" ;
+      }
       $nb_lignes_prevues += $nb_lignes_appreciation_potentielle_par_prof_hors_intitule;
     }
     // Intitulé "Appréciations / Conseils :" + auteurs
@@ -2059,8 +2076,6 @@ class PDF extends FPDF
     $nb_lignes_appreciation_generale_hors_intitule = $nb_lignes_appreciation_generale_avec_intitule - 1 ;
     // Récupération des données de l'appréciation
     extract($tab_infos);  // $prof_info $appreciation $note
-    $appreciation_sans_br = str_replace( array("\r\n","\r","\n") , ' ' , $appreciation , $nombre_br );
-    $appreciation = ($nombre_br<$nb_lignes_appreciation_generale_hors_intitule) ? $appreciation : $appreciation_sans_br ;
     // Intitulé "Appréciation générale"
     $memoX = $this->GetX();
     $memoY = $this->GetY();

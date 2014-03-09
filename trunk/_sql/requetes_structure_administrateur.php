@@ -212,6 +212,21 @@ public static function DB_lister_niveaux_famille($niveau_famille_id)
 }
 
 /**
+ * DB_lister_niveaux
+ *
+ * @param bool   is_specifique
+ * @return array
+ */
+public static function DB_lister_niveaux($is_specifique)
+{
+  $DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom ';
+  $DB_SQL.= 'FROM sacoche_niveau ';
+  $DB_SQL.= ($is_specifique) ? 'WHERE niveau_id>'.ID_NIVEAU_PARTAGE_MAX.' ' : 'WHERE niveau_actif=1 AND niveau_id<='.ID_NIVEAU_PARTAGE_MAX.' ' ;
+  $DB_SQL.= ($is_specifique) ? 'ORDER BY niveau_nom ASC' : 'ORDER BY niveau_ordre ASC' ;
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_paliers_SACoche
  *
  * @param void
@@ -850,6 +865,24 @@ public static function DB_tester_matiere_reference($matiere_ref,$matiere_id=FALS
 }
 
 /**
+ * tester_niveau_reference
+ *
+ * @param string $niveau_ref
+ * @param int    $niveau_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
+ * @return int
+ */
+public static function DB_tester_niveau_reference($niveau_ref,$niveau_id=FALSE)
+{
+  $DB_SQL = 'SELECT niveau_id ';
+  $DB_SQL.= 'FROM sacoche_niveau ';
+  $DB_SQL.= 'WHERE niveau_ref=:niveau_ref ';
+  $DB_SQL.= ($niveau_id) ? 'AND niveau_id!=:niveau_id ' : '' ;
+  $DB_VAR = array(':niveau_ref'=>$niveau_ref,':niveau_id'=>$niveau_id);
+  $DB_SQL.= 'LIMIT 1'; // utile
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * tester_classe_reference
  *
  * @param string $groupe_ref
@@ -967,6 +1000,22 @@ public static function DB_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
   $DB_SQL = 'INSERT INTO sacoche_matiere(matiere_active,matiere_usuelle,matiere_famille_id,matiere_nb_demandes,matiere_ordre,matiere_ref,matiere_nom) ';
   $DB_SQL.= 'VALUES(:matiere_active,:matiere_usuelle,:matiere_famille_id,:matiere_nb_demandes,:matiere_ordre,:matiere_ref,:matiere_nom)';
   $DB_VAR = array(':matiere_active'=>1,':matiere_usuelle'=>0,':matiere_famille_id'=>0,':matiere_nb_demandes'=>0,':matiere_ordre'=>255,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * ajouter_niveau_specifique
+ *
+ * @param string $niveau_ref
+ * @param string $niveau_nom
+ * @return int
+ */
+public static function DB_ajouter_niveau_specifique($niveau_ref,$niveau_nom)
+{
+  $DB_SQL = 'INSERT INTO sacoche_niveau(niveau_actif,niveau_famille_id,niveau_ordre,niveau_ref,code_mef,niveau_nom) ';
+  $DB_SQL.= 'VALUES(:niveau_actif,:niveau_famille_id,:niveau_ordre,:niveau_ref,:code_mef,:niveau_nom)';
+  $DB_VAR = array(':niveau_actif'=>1,':niveau_famille_id'=>0,':niveau_ordre'=>255,':niveau_ref'=>$niveau_ref,':code_mef'=>"",':niveau_nom'=>$niveau_nom);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -1157,13 +1206,13 @@ public static function DB_modifier_palier($palier_id,$palier_actif)
 }
 
 /**
- * modifier_niveau
+ * modifier_niveau_partage
  *
  * @param int    $niveau_id
  * @param int    $niveau_actif   (0/1)
  * @return void
  */
-public static function DB_modifier_niveau($niveau_id,$niveau_actif)
+public static function DB_modifier_niveau_partage($niveau_id,$niveau_actif)
 {
   $DB_SQL = 'UPDATE sacoche_niveau ';
   $DB_SQL.= 'SET niveau_actif=:niveau_actif ';
@@ -1212,6 +1261,23 @@ public static function DB_modifier_matiere_specifique($matiere_id,$matiere_ref,$
   $DB_SQL.= 'SET matiere_ref=:matiere_ref,matiere_nom=:matiere_nom ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
   $DB_VAR = array(':matiere_id'=>$matiere_id,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_niveau_specifique
+ *
+ * @param int    $niveau_id
+ * @param string $niveau_ref
+ * @param string $niveau_nom
+ * @return void
+ */
+public static function DB_modifier_niveau_specifique($niveau_id,$niveau_ref,$niveau_nom)
+{
+  $DB_SQL = 'UPDATE sacoche_niveau ';
+  $DB_SQL.= 'SET niveau_ref=:niveau_ref,niveau_nom=:niveau_nom ';
+  $DB_SQL.= 'WHERE niveau_id=:niveau_id ';
+  $DB_VAR = array(':niveau_id'=>$niveau_id,':niveau_ref'=>$niveau_ref,':niveau_nom'=>$niveau_nom);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1486,18 +1552,35 @@ public static function DB_supprimer_matiere_specifique($matiere_id)
   $DB_VAR = array(':matiere_id'=>$matiere_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins de la matière)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels_matiere($matiere_id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels('matiere_id',$matiere_id);
 }
 
 /**
- * Supprimer les référentiels dépendant d'une matière
+ * Supprimer un niveau spécifique
  *
- * @param int $matiere_id
+ * @param int $niveau_id
  * @return void
  */
-public static function DB_supprimer_referentiels_matiere($matiere_id)
+public static function DB_supprimer_niveau_specifique($niveau_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
+  $DB_SQL = 'DELETE FROM sacoche_niveau ';
+  $DB_SQL.= 'WHERE niveau_id=:niveau_id ';
+  $DB_VAR = array(':niveau_id'=>$niveau_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  // Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins du niveau)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels('niveau_id',$niveau_id);
+}
+
+/**
+ * Supprimer les référentiels dépendant d'une matière ou d'un niveau
+ *
+ * @param string $champ_nom   'matiere_id' | 'niveau_id'
+ * @param int    $champ_val   $matiere_id  | $niveau_id
+ * @return void
+ */
+public static function DB_supprimer_referentiels($champ_nom,$champ_val)
+{
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
@@ -1505,8 +1588,29 @@ public static function DB_supprimer_referentiels_matiere($matiere_id)
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id);
+  $DB_SQL.= 'WHERE '.$champ_nom.'=:champ_val ';
+  $DB_VAR = array(':champ_val'=>$champ_val);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Supprimer les référentiels dépendant d'un niveau
+ *
+ * @param int $niveau_id
+ * @return void
+ */
+public static function DB_supprimer_referentiels_niveau($niveau_id)
+{
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
+  $DB_SQL.= 'WHERE niveau_id=:niveau_id ';
+  $DB_VAR = array(':niveau_id'=>$niveau_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

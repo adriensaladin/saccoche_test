@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_niveau_famille;
 
 CREATE TABLE sacoche_niveau_famille (
   niveau_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  niveau_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Niveaux classes ; 2 = Niveaux spécifiques",
+  niveau_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Niveaux classes ; 2 = Niveaux particuliers",
   niveau_famille_ordre     TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
   niveau_famille_nom       VARCHAR(63) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (niveau_famille_id)

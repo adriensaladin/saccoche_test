@@ -292,16 +292,16 @@ public static function DB_lister_tables()
 /**
  * lister_niveaux_etablissement
  *
- * @param bool $with_particuliers
+ * @param bool $with_specifiques
  * @return array
  */
-public static function DB_lister_niveaux_etablissement($with_particuliers)
+public static function DB_lister_niveaux_etablissement($with_specifiques)
 {
   $DB_SQL = 'SELECT niveau_id, niveau_ordre, niveau_ref, code_mef, niveau_nom ';
   $DB_SQL.= 'FROM sacoche_niveau ';
-  $DB_SQL.= ($with_particuliers) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
+  $DB_SQL.= ($with_specifiques) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
   $DB_SQL.= 'WHERE niveau_actif=1 ';
-  $DB_SQL.= ($with_particuliers) ? '' : 'AND niveau_famille_categorie=1 ';
+  $DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=1 ';
   $DB_SQL.= 'ORDER BY niveau_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -958,7 +958,7 @@ public static function DB_OPT_niveaux()
  */
 public static function DB_OPT_niveaux_famille($niveau_famille_id)
 {
-  Form::$tab_select_option_first['niveaux_famille'] = array(ID_NIVEAU_PARTAGE_MAX+$niveau_famille_id,'Tous les niveaux de cette famille');
+  Form::$tab_select_option_first['niveaux_famille'] = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille');
   // Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
   // Attention en cas de modification : ce tableau est dans 3 fichiers différents (dépôt SACoche x2 + dépôt portail x1).
   $tab_sql = array(

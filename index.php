@@ -111,13 +111,13 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
   // Choix des paramètres de connexion à la base de données adaptée...
-  // ...multi-structures ; base sacoche_structure_*** (si connecté sur un établissement)
+  // ...multi-structure ; base sacoche_structure_*** (si connecté sur un établissement)
   if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($_SESSION['BASE']>0) )
   {
     $fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
     $fichier_class_config = 'class.DB.config.sacoche_structure';
   }
-  // ...multi-structures ; base sacoche_webmestre (si non connecté ou connecté comme webmestre)
+  // ...multi-structure ; base sacoche_webmestre (si non connecté ou connecté comme webmestre)
   elseif(HEBERGEUR_INSTALLATION=='multi-structures')
   {
     $fichier_mysql_config = 'serveur_sacoche_webmestre';

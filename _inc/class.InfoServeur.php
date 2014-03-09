@@ -247,7 +247,7 @@ class InfoServeur
   /**
    * version_sacoche_base_webmestre
    * Retourne une chaîne indiquant la version logicielle de la base de données de SACoche.
-   * En mode multi-structures, celle-ci est propre à chaque établissement.
+   * En mode multi-structure, celle-ci est propre à chaque établissement.
    *
    * @param void
    * @return string   AAAA-MM-JJ

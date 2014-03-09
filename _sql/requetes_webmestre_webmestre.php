@@ -27,7 +27,7 @@
  
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
-// Ces méthodes ne concernent que la base WEBMESTRE (donc une installation multi-structures).
+// Ces méthodes ne concernent que la base WEBMESTRE (donc une installation multi-structure).
 // Ces méthodes ne concernent que le webmestre.
 
 class DB_WEBMESTRE_WEBMESTRE extends DB
@@ -56,7 +56,7 @@ public static function DB_recuperer_structure_by_Id($base_id)
  */
 public static function DB_recuperer_convention_structure_info($convention_id)
 {
-  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, ';
+  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation, ';
   $DB_SQL.= 'structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
@@ -148,7 +148,7 @@ public static function DB_lister_partenaires_conventionnes()
  */
 public static function DB_lister_conventions_structures()
 {
-  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, ';
+  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_activation, ';
   $DB_SQL.= 'structure_uai, structure_localisation, structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel, ';
   $DB_SQL.= 'geo_ordre, geo_nom ';
   $DB_SQL.= 'FROM sacoche_convention ';
@@ -436,7 +436,7 @@ public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  * Modifier une date d'une convention
  *
  * @param int    convention_id
- * @param string objet         signature | paiement | relance
+ * @param string objet         signature | paiement
  * @param string date_mysql
  * @return void
  */

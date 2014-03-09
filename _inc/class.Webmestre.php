@@ -210,9 +210,8 @@ class Webmestre
     $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n";
     $texte.= "\r\n";
     $texte.= 'Un nouveau mot de passe vient d\'être généré pour '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le serveur "'.HEBERGEUR_DENOMINATION.'".'."\r\n";
-    $texte.= 'Vous le recevez en tant que contact référent de votre établissement pour cette installation de SACoche.'."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Pour se connecter avec ce compte administrateur, utiliser le lien'."\r\n";
+    $texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n";
     $texte.= $url_dir_sacoche.'?id='.$base_id."\r\n";
     $texte.= 'et entrer les identifiants'."\r\n";
     $texte.= 'nom d\'utilisateur :   '.$admin_login."\r\n";
@@ -220,7 +219,6 @@ class Webmestre
     $texte.= "\r\n";
     $texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n";
     $texte.= 'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n";
-    $texte.= 'Si ce compte correspond à un administrateur qui n\'est plus présent dans votre établissement, vous pouvez modifier ses coordonnées depuis l\'espace d\'administration.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n";
     $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";

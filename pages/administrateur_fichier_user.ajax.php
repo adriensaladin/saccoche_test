@@ -1211,7 +1211,7 @@ if( $step==31 )
   {
     $select_niveau = '<option value=""></option>';
     $tab_niveau_ref = array();
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
     foreach($DB_TAB as $DB_ROW)
     {
       $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -1427,7 +1427,7 @@ if( $step==41 )
   {
     $select_niveau = '<option value=""></option>';
     $tab_niveau_ref = array();
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
     foreach($DB_TAB as $DB_ROW)
     {
       $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

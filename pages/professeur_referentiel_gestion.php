@@ -69,8 +69,7 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var calcul_methode          = "'.$_SESSION
 $GLOBALS['HEAD']['js']['inline'][] = 'var calcul_limite           = "'.$_SESSION['CALCUL_LIMITE'].'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var calcul_retroactif       = "'.$_SESSION['CALCUL_RETROACTIF'].'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var calcul_texte            = "'.$calcul_texte.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var ID_NIVEAU_PARTAGE_MAX   = '.ID_NIVEAU_PARTAGE_MAX.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var id_matiere_partagee_max = '.ID_MATIERE_PARTAGEE_MAX.';';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_partage_etat      = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_methode    = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_limite     = new Array();';
@@ -129,7 +128,7 @@ else
       $tab_niveau[$DB_ROW['valeur']] = html($DB_ROW['texte']);
     }
     // On récupère la liste des référentiels par matière et niveau
-    $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+    $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
     if(!empty($DB_TAB))
     {
@@ -187,19 +186,19 @@ else
     {
       $matiere_nom    = $tab['nom'];
       $matiere_coord  = $tab['coord'];
+      $matiere_perso  = ($matiere_id>ID_MATIERE_PARTAGEE_MAX) ? 1 : 0 ;
       $matiere_droit  = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
       $matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
       echo'<h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>'.NL;
-      echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead>'.NL.'<tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'">'.$matiere_ajout.'</th></tr>'.NL.'</thead><tbody>'.NL;
+      echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead>'.NL.'<tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr>'.NL.'</thead><tbody>'.NL;
       if(isset($tab_colonne[$matiere_id]))
       {
         foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
         {
-          $partageable = ( ( $matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( $niveau_id <= ID_NIVEAU_PARTAGE_MAX ) ) ? TRUE : FALSE ;
-          $ids = 'ids'.'_'.$matiere_id.'_'.$niveau_id;
+          $ids = 'ids'.'_'.$matiere_id.'_'.$niveau_id.'_'.$matiere_perso;
           if($matiere_droit)
           {
-            $partager = ($partageable) ? '<q class="partager" title="Modifier le partage de ce référentiel."></q>' : '<q class="partager_non" title="Le référentiel d\'une matière ou d\'un niveau spécifique à l\'établissement ne peut être partagé."></q>' ;
+            $partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
             $envoyer = (strpos($tab_colonne[$matiere_id][$niveau_id],'partage_oui.gif')) ? '<q class="envoyer" title="Mettre à jour sur le serveur de partage la dernière version de ce référentiel."></q>' : '<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q>' ;
             $colonnes = $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.$envoyer.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>';
           }
@@ -226,7 +225,7 @@ else
 </div>
 
 <div id="choisir_referentiel" class="hide">
-  <h2>Créer un référentiel &rarr; <span></span><input id="matiere_id" name="matiere_id" type="hidden" value="" /></h2>
+  <h2>Créer un référentiel &rarr; <span></span><input id="matiere_id" name="matiere_id" type="hidden" value="" /><input id="matiere_perso" name="matiere_perso" type="hidden" value="" /></h2>
   <p>
   <?php
   if($nb_matieres && $nb_niveaux);
@@ -326,7 +325,7 @@ foreach($tab_options as $val)
         <option value="oui">Partagé sur le serveur communautaire.</option>
         <option value="bof">Partage sans intérêt (pas novateur).</option>
         <option value="non">Non partagé avec la communauté.</option>
-        <option value="hs">Sans objet (matière ou niveau spécifique).</option>
+        <option value="hs">Sans objet (matière spécifique).</option>
       </select>
     </div>
     <div id="ligne_information">

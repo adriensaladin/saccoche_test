@@ -183,7 +183,7 @@ class Form
     ),
     'familles_niveaux' => array(
       1 => 'Niveaux classes',
-      2 => 'Niveaux particuliers',
+      2 => 'Niveaux spécifiques',
     ),
     'profs_directeurs' => array(
       'directeur'  => 'Directeurs',

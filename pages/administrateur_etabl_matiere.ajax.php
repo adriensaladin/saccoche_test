@@ -100,7 +100,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref) )
   {
-    exit('Erreur : référence déjà prise !');
+    exit('Erreur : référence déjà existante !');
   }
   // Insérer l'enregistrement
   $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
@@ -117,7 +117,7 @@ if( ($action=='modifier') && $id && $ref && $nom )
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref,$id) )
   {
-    exit('Erreur : référence déjà prise !');
+    exit('Erreur : référence officielle déjà prise !');
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
@@ -136,7 +136,7 @@ function retirer_ou_supprimer_matiere($id)
     DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
     // Log de l'action
     SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id.').');
-    SACocheLog::ajouter('Suppression des référentiels associés (matière '.$id.').');
+    SACocheLog::ajouter('Suppression de référentiels (matière '.$id.').');
   }
   else
   {

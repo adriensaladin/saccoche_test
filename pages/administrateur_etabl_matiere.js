@@ -479,10 +479,7 @@ $(document).ready
       {
         if (!please_wait)
         {
-          if( (mode!='supprimer') || ($('#f_id').val()<=ID_MATIERE_PARTAGEE_MAX) || (confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS RÉFÉRENTIELS ASSOCIÉS SERONT SUPPRIMÉS !\nLES RÉSULTATS DES ÉLÈVES QUI EN DÉPENDENT SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CETTE MATIÈRE ?")) )
-          {
-            $(this).ajaxSubmit(ajaxOptions);
-          }
+          $(this).ajaxSubmit(ajaxOptions);
           return false;
         }
         else

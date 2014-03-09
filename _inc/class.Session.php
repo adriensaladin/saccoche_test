@@ -138,12 +138,6 @@ class Session
   {
     Session::param();
     $ID = $_COOKIE[SESSION_NOM];
-    // Pour éviter "PHP Warning:  session_start(): The session id is too long or contains illegal characters, valid characters are a-z, A-Z, 0-9 and '-,' in ..."
-    if( !preg_match('/^[a-z0-9]{45}$/',$ID) ) // car formé dans open_new() avec uniqid().md5() donc 13+32 caractères alphanumériques
-    {
-      Session::close(FALSE); // Sinon on repasse par ici en boucle
-      exit_error( 'Ouverture de session' /*titre*/ , 'L\'identifiant de session n\'est pas conforme.<br />Valeur du cookie de session modifiée manuellement ?' /*contenu*/ );
-    }
     session_id($ID);
     if( !session_start() )
     {
@@ -293,19 +287,16 @@ class Session
    * Appelé une fois depuis /webservices/argos_parent.php et une fois depuis ajax.php
    * Remarque: pour obliger à une reconnexion sans détruire la session (donc les infos des fournisseurs de SSO), il suffit de faire $_SESSION['USER_PROFIL_SIGLE'] = 'OUT';
    * 
-   * @param bool   is_initialized   TRUE par défaut ; FALSE pour éviter "Warning: session_destroy(): Trying to destroy uninitialized session"
+   * @param void
    * @return void
    */
-  public static function close($is_initialized=TRUE)
+  public static function close()
   {
     // Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
     $_SESSION = array();
     session_unset();
     setcookie( session_name() /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
-    if($is_initialized)
-    {
-      session_destroy();
-    }
+    session_destroy();
   }
 
   /*

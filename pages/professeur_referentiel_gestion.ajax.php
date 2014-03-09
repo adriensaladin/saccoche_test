@@ -82,15 +82,15 @@ if( ($action=='voir_referentiel_communautaire') && $referentiel_id )
 // Pour les autres cas on doit récupérer le paramètre ids
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(mb_substr_count($ids,'_')!=2)
+if(mb_substr_count($ids,'_')!=3)
 {
   exit('Erreur avec les données transmises !');
 }
 
-list($prefixe,$matiere_id,$niveau_id) = explode('_',$ids);
-$matiere_id  = Clean::entier($matiere_id);
-$niveau_id   = Clean::entier($niveau_id);
-$partageable = ( ( $matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( $niveau_id <= ID_NIVEAU_PARTAGE_MAX ) ) ? TRUE : FALSE ;
+list($prefixe,$matiere_id,$niveau_id,$perso) = explode('_',$ids);
+$matiere_id = Clean::entier($matiere_id);
+$niveau_id  = Clean::entier($niveau_id);
+$perso      = Clean::entier($perso);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés
@@ -106,7 +106,7 @@ if( ($action=='voir_referentiel_etablissement') && $matiere_id && $niveau_id )
 // Modifier le partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $partage && ($partage!='hs') )
+if( ($action=='partager') && $matiere_id && $niveau_id && ($perso==0) && $partage && ($partage!='hs') )
 {
   if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
   {
@@ -132,7 +132,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   // Tout s'est bien passé si on arrive jusque là...
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
-  $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+  $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
   exit( str_replace('◄DATE►',Html::date(TODAY_MYSQL),$tab_partage[$partage]) );
 }
 
@@ -140,7 +140,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
 // Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
+if( ($action=='envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 {
   if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
   {
@@ -239,7 +239,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
   if($referentiel_id==0)
   {
     // C'est une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
-    $partage = ($partageable) ? 'non' : 'hs' ;
+    $partage = ($perso==1) ? 'hs' : 'non' ;
     DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
     exit('ok');
   }
@@ -263,7 +263,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
       exit($test_XML_valide);
     }
     DB_STRUCTURE_REFERENTIEL::DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
-    $partage = ($partageable) ? 'bof' : 'hs' ;
+    $partage = ($perso==1) ? 'hs' : 'bof' ;
     DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
     exit('ok');
   }

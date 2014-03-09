@@ -218,7 +218,7 @@ $(document).ready
         $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + ' || ' + $(this).parent().prev().prev().prev().html() );
         $('#f_action').val(mode);
         $('#f_ids').val(ids);
-        if( ( tab_ids[1] <= ID_MATIERE_PARTAGEE_MAX ) && ( tab_ids[2] <= ID_NIVEAU_PARTAGE_MAX ) )
+        if( tab_ids[1] <= id_matiere_partagee_max )
         {
           $('#f_partage option[value=oui] , #f_partage option[value=bof] , #f_partage option[value=non]').prop('disabled',false);
           $('#f_partage option[value=hs]').prop('disabled',true);
@@ -283,7 +283,7 @@ $(document).ready
       '#bouton_valider' ,
       function()
       {
-        if( (mode!='supprimer') || confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nTOUS LES ITEMS CORRESPONDANTS SERONT SUPPRIMÉS !\nLES RÉSULTATS DES ÉLÈVES QUI EN DÉPENDENT SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CE RÉFÉRENTIEL ?") )
+        if( (mode!='supprimer') || confirm("--- ATTENTION --- DERNIÈRE DEMANDE DE CONFIRMATION ---\nTous les items et les résultats associés des élèves seront perdus !\nÊtes-vous bien certain de vouloir supprimer ce référentiel ?") )
         {
           $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
           $.ajax
@@ -403,8 +403,10 @@ $(document).ready
         ids = $(this).parent().attr('id');
         tab_ids = ids.split('_');
         var matiere_id    = tab_ids[1];
+        var matiere_perso = tab_ids[2];
         var matiere_nom = $('#h2_'+matiere_id).html();
         $('#matiere_id').val(matiere_id);
+        $('#matiere_perso').val(matiere_perso);
         $('#choisir_referentiel h2 span').html(matiere_nom);
         $("#f_niveau_create option").each
         (
@@ -413,7 +415,7 @@ $(document).ready
             var matiere_valeur = $(this).val();
             if( matiere_valeur )
             {
-              if( $('#ids_'+matiere_id+'_'+matiere_valeur).length )
+              if( $('#ids_'+matiere_id+'_'+matiere_valeur+'_'+matiere_perso).length )
               {
                 $(this).prop('disabled',true);
               }
@@ -424,7 +426,6 @@ $(document).ready
             }
           }
         );
-        $("#f_niveau_create option:first").prop('selected',true);
         $('#div_tableaux').hide();
         $('#choisir_importer').parent().hide();
         $('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
@@ -776,7 +777,7 @@ $(document).ready
           $('#ajax_msg_choisir').removeAttr("class").addClass("erreur").html('Choisir un niveau !');
           return false;
         }
-        var partageable = ( ( matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( niveau_id <= ID_NIVEAU_PARTAGE_MAX ) ) ? true : false ;
+        var matiere_perso = $('#matiere_perso').val();
         $('#ajax_msg_choisir').removeAttr("class").html('');
         var referentiel_id = $(this).val().substring(3);
         $('button').prop('disabled',true);
@@ -786,7 +787,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=ajouter_referentiel_etablissement'+'&f_ids=ids_'+matiere_id+'_'+niveau_id+'&f_referentiel_id='+referentiel_id,
+            data : 'csrf='+CSRF+'&f_action=ajouter_referentiel_etablissement'+'&f_ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&f_referentiel_id='+referentiel_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -807,9 +808,9 @@ $(document).ready
                 // niveau
                 var td_niveau = '<td>'+$('#f_niveau_create option:selected').text()+'</td>';
                 // partage
-                if(!partageable)
+                if(matiere_perso=='1')
                 {
-                  var td_partage = '<td class="hc"><img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." src="./_img/etat/partage_non.gif" /></td>';
+                  var td_partage = '<td class="hc"><img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/etat/partage_non.gif" /></td>';
                   tab_partage_etat[matiere_id+'_'+niveau_id] = 'hs';
                 }
                 else if(referentiel_id!='0')
@@ -827,8 +828,8 @@ $(document).ready
                 tab_calcul_methode[matiere_id+'_'+niveau_id] = calcul_methode;
                 tab_calcul_limite[matiere_id+'_'+niveau_id]  = calcul_limite;
                 // actions
-                var q_partager = (partageable) ? '<q class="partager" title="Modifier le partage de ce référentiel."></q>' : '<q class="partager_non" title="Le référentiel d\'une matière ou d\'un niveau spécifique à l\'établissement ne peut être partagé."></q>' ;
-                var td_actions = '<td id="ids_'+matiere_id+'_'+niveau_id+'" class="nu"><q class="voir" title="Voir le détail de ce référentiel."></q>'+q_partager+'<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>';
+                var q_partager = (matiere_perso=='1') ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
+                var td_actions = '<td id="ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'" class="nu"><q class="voir" title="Voir le détail de ce référentiel."></q>'+q_partager+'<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>';
                 // ajout de la ligne
                 $('#mat_'+matiere_id).children('tbody').prepend('<tr class="new">'+td_niveau+td_partage+td_calcul+td_actions+'</tr>');
                 $('#mat_'+matiere_id).children('tbody').children('tr.absent').remove();

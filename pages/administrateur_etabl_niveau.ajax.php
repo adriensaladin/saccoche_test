@@ -31,9 +31,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action     = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])    : '';
 $famille_id = (isset($_POST['f_famille']))  ? Clean::entier($_POST['f_famille'])  : 0 ;
 $niveau_id  = (isset($_POST['f_niveau']))   ? Clean::entier($_POST['f_niveau'])   : 0 ;
-$id         = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])       : 0;
-$ref        = (isset($_POST['f_ref']))      ? Clean::ref($_POST['f_ref'])         : '';
-$nom        = (isset($_POST['f_nom']))      ? Clean::texte($_POST['f_nom'])       : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher les niveaux d'une famille donnée
@@ -52,75 +49,13 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un choix de niveau partagé
+// Ajouter un niveau
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter_partage') && $niveau_id )
+if( ($action=='ajouter') && $niveau_id )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($niveau_id,1);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,1);
   exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un nouveau niveau spécifique
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='ajouter_perso') && $ref && $nom )
-{
-  // Vérifier que la référence de la matière est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref) )
-  {
-    exit('Erreur : référence déjà prise !');
-  }
-  // Insérer l'enregistrement
-  $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_niveau_specifique($ref,$nom);
-  // Afficher le retour
-  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modifier un niveau spécifique existant
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='modifier') && $id && $ref && $nom )
-{
-  // Vérifier que la référence du niveau est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref,$id) )
-  {
-    exit('Erreur : référence déjà prise !');
-  }
-  // Mettre à jour l'enregistrement
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_specifique($id,$ref,$nom);
-  // Afficher le retour
-  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un niveau partagé || Supprimer un niveau spécifique existant
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function retirer_ou_supprimer_niveau($id)
-{
-  if($id>ID_NIVEAU_PARTAGE_MAX)
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_niveau_specifique($id);
-    // Log de l'action
-    SACocheLog::ajouter('Suppression d\'un niveau spécifique (n°'.$id.').');
-    SACocheLog::ajouter('Suppression des référentiels associés (niveau '.$id.').');
-  }
-  else
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,0);
-    // Log de l'action
-    SACocheLog::ajouter('Retrait d\'un niveau partagé (n°'.$id.').');
-  }
-}
-
-if( ($action=='supprimer') && $id )
-{
-  retirer_ou_supprimer_niveau($id);
-  // Afficher le retour
-  exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +64,7 @@ if( ($action=='supprimer') && $id )
 
 if( ($action=='supprimer') && $niveau_id )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($niveau_id,0);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,0);
   exit('ok');
 }
 

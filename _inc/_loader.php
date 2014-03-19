@@ -707,31 +707,31 @@ function html($text)
  */
 function exit_error( $titre , $contenu , $lien='accueil' )
 {
-  header('Content-Type: text/html; charset='.CHARSET);
-  if( in_array( SACoche , array('ajax','appel_externe') ) )
+  if(SACoche!='ajax')
   {
-    echo str_replace('<br />',' ',$contenu);
-  }
-  else
-  {
+    header('Content-Type: text/html; charset='.CHARSET);
     echo'<!DOCTYPE html>'.NL;
     echo'<html>'.NL;
     echo  '<head>'.NL;
     echo    '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
-    echo    '<link rel="stylesheet" type="text/css" href="'.URL_DIR_SACOCHE.'_css/style.css" />'.NL;
+    echo    '<link rel="stylesheet" type="text/css" href="./_css/style.css" />'.NL;
     echo    '<style type="text/css">#cadre_milieu{color:#D00}</style>'.NL;
     echo    '<title>SACoche » '.$titre.'</title>'.NL;
     echo  '</head>'.NL;
     echo  '<body>'.NL;
     echo    '<div id="cadre_milieu">'.NL;
-    echo      '<div class="hc"><img src="'.URL_DIR_SACOCHE.'_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
+    echo      '<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
     echo      '<h1>'.$titre.'</h1>'.NL;
     echo      '<p>'.str_replace('<br />','</p><p>',$contenu).'</p>'.NL;
-        if($lien=='accueil') { echo'<p><a href="'.URL_DIR_SACOCHE.'index.php">Retour en page d\'accueil de SACoche.</a></p>'.NL; } 
-    elseif($lien=='install') { echo'<p><a href="'.URL_DIR_SACOCHE.'index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'.NL; } 
+        if($lien=='accueil') { echo'<p><a href="./index.php">Retour en page d\'accueil de SACoche.</a></p>'.NL; } 
+    elseif($lien=='install') { echo'<p><a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'.NL; } 
     echo    '</div>'.NL;
     echo  '</body>'.NL;
     echo'</html>'.NL;
+  }
+  else
+  {
+    echo str_replace('<br />',' ',$contenu);
   }
   exit();
 }

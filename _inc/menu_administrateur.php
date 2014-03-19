@@ -47,7 +47,6 @@ $tab_menu = array
   (
     "Identité de l'établissement"          => array( 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
     "Mode d'identification"                => array( 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
-    "Redirection après déconnexion"        => array( 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
     "Niveaux"                              => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
     "Matières"                             => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
     "Paliers du socle"                     => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),

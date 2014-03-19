@@ -100,6 +100,7 @@ $tab_droits_par_page = array
   'administrateur_eleve_groupe'             => $tab_droits_profil_administrateur,
   'administrateur_eleve_photo'              => $tab_droits_profil_administrateur,
   'administrateur_etabl_connexion'          => $tab_droits_profil_administrateur,
+  'administrateur_etabl_deconnexion'        => $tab_droits_profil_administrateur,
   'administrateur_etabl_duree_inactivite'   => $tab_droits_profil_administrateur,
   'administrateur_etabl_identite'           => $tab_droits_profil_administrateur,
   'administrateur_etabl_login'              => $tab_droits_profil_administrateur,

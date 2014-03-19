@@ -219,12 +219,13 @@ if(in_array($PAGE,$tab_pages_graphiques)) $GLOBALS['HEAD']['js']['file'][] = com
 if(is_file($filename_js_normal))          $GLOBALS['HEAD']['js']['file'][] = compacter($filename_js_normal,'pack');
 
 // Ultimes constantes javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE            = "'.$PAGE.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var CSRF            = "'.Session::$_CSRF_value.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var PROFIL_TYPE     = "'.$_SESSION['USER_PROFIL_TYPE'].'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var CONNEXION_USED  = "'.((isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal').'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AUTORISEE = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AFFICHEE  = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE              = "'.$PAGE.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CSRF              = "'.Session::$_CSRF_value.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var PROFIL_TYPE       = "'.$_SESSION['USER_PROFIL_TYPE'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CONNEXION_USED    = "'.((isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal').'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";';
 
 // Affichage
 afficher_page_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ );

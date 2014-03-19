@@ -143,10 +143,10 @@ public static function DB_lister_partenaires_conventionnes()
 /**
  * Lister les conventions des établissements
  *
- * @param void
+ * @param string $where_string
  * @return array
  */
-public static function DB_lister_conventions_structures()
+public static function DB_lister_conventions_structures($where_string)
 {
   $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, ';
   $DB_SQL.= 'structure_uai, structure_localisation, structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel, ';
@@ -154,6 +154,10 @@ public static function DB_lister_conventions_structures()
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
   $DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
+  if($where_string)
+  {
+    $DB_SQL.= 'WHERE '.$where_string.' ';
+  }
   $DB_SQL.= 'ORDER BY convention_date_debut DESC, geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
   return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
 }

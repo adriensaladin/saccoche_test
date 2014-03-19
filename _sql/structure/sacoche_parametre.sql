@@ -39,6 +39,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "date_last_import_eleves"                       , "0000-00-00" ),
 ( "date_last_import_parents"                      , "0000-00-00" ),
 ( "date_last_import_professeurs"                  , "0000-00-00" ),
+( "deconnexion_adresse_redirection"               , "" ),
 ( "droit_affecter_langue"                         , "DIR,ENS,ONLY_LV" ),
 ( "droit_annulation_pilier"                       , "DIR" ),
 ( "droit_fiche_brevet_appreciation_generale"      , "DIR" ),

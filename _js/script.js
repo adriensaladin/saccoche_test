@@ -581,7 +581,7 @@ function tester_compteur()
       $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_anim");
       if(DUREE_AFFICHEE==0)
       {
-        fermer_session();
+        fermer_session_en_ajax('inactivite');
       }
     }
   }
@@ -620,10 +620,10 @@ function conserver_session_active()
 /**
  * Fonction pour fermer la session : appel si le compteur arrive à zéro (en ajax)
  *
- * @param void
- * @return void
+ * @param string motif   inactivite | redirection
+ * @return bool
  */
-function fermer_session()
+function fermer_session_en_ajax(motif)
 {
   $.ajax
   (
@@ -642,18 +642,25 @@ function fermer_session()
         {
           return false;
         }
-        $("body").stopTime('compteur');
-        $('#menu').remove();
-        if(CONNEXION_USED=='normal')
+        if(motif=='redirection')
         {
-          var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
-          $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="'+adresse+'">Se reconnecter&hellip;</a></span>');
+          window.document.location.href = DECONNEXION_REDIR ;
         }
-        else
+        if(motif=='inactivite')
         {
-          $('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
+          $("body").stopTime('compteur');
+          $('#menu').remove();
+          if(CONNEXION_USED=='normal')
+          {
+            var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
+            $('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="'+adresse+'">Se reconnecter&hellip;</a></span>');
+          }
+          else
+          {
+            $('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
+          }
+          $.fancybox( '<div class="danger">Délai de '+DUREE_AUTORISEE+'min sans activité atteint &rarr; session fermée.<br />Toute action ultérieure ne sera pas enregistrée.</div>' , {'centerOnScroll':true} );
         }
-        $.fancybox( '<div class="danger">Délai de '+DUREE_AUTORISEE+'min sans activité atteint &rarr; session fermée.<br />Toute action ultérieure ne sera pas enregistrée.</div>' , {'centerOnScroll':true} );
       }
     }
   );
@@ -1087,8 +1094,18 @@ $(document).ready
     (
       function()
       {
-        var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') && (PROFIL_TYPE!='developpeur') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
-        window.document.location.href = adresse;
+        if(DECONNEXION_REDIR!='')
+        {
+          fermer_session_en_ajax('redirection');
+        }
+        else if( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') && (PROFIL_TYPE!='developpeur') )
+        {
+          window.document.location.href = './index.php' ;
+        }
+        else
+        {
+          window.document.location.href = './index.php?'+PROFIL_TYPE ;
+        }
       }
     );
 

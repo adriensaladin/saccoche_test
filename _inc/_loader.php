@@ -395,16 +395,7 @@ $HOST = getServerUrl();
 function getServerProtocole()
 {
   // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
-  if ( isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS'])=='on') )
-  {
-    return 'https://';
-  }
-  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_headers)
-  if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO']=='https') )
-  {
-    return 'https://';
-  }
-  return 'http://';
+  return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 }
 
 function getServerPort()

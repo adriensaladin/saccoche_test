@@ -239,9 +239,9 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
  * Utilise aussi le tableau $GLOBALS['HEAD'] avec les clefs suivantes :
  * ['title'] - ['css']['file'][] - ['css_ie']['file'][] - ['css']['inline'][] - ['js']['file'][] - ['js']['inline'][]
  * 
- * @param bool   $is_meta_robots  insertion (ou pas) des balises meta pour les robots
- * @param bool   $is_favicon      insertion (ou pas) des favicon
- * @param bool   $is_rss          insertion (ou pas) du flux RSS associé
+ * @param bool   $is_meta_robots  affichage ou non des balises meta pour les robots
+ * @param bool   $is_favicon      affichage ou non du favicon
+ * @param bool   $is_rss          affichage ou non du flux RSS associé
  * @return void
  */
 function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
@@ -260,30 +260,10 @@ function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
   }
   if($is_favicon)
   {
-    // @see http://realfavicongenerator.net/
-    echo    '<meta name="msapplication-TileColor" content="#e6e6ff" />'.NL;
-    echo    '<meta name="msapplication-TileImage" content="/_img/favicon/microsoft-tile-square-144x144.png" />'.NL;
-    echo    '<meta name="msapplication-square70x70logo"   content="/_img/favicon/microsoft-tile-square-70x70.png" />'.NL;
-    // echo    '<meta name="msapplication-square144x144logo" content="/_img/favicon/microsoft-tile-square-144x144.png" />'.NL; // Pb validité HTML : Bad value msapplication-square144x144logo for attribute name on element meta: Keyword msapplication-square144x144logo is not registered.
-    echo    '<meta name="msapplication-square150x150logo" content="/_img/favicon/microsoft-tile-square-150x150.png" />'.NL;
-    echo    '<meta name="msapplication-square310x310logo" content="/_img/favicon/microsoft-tile-square-310x310.png" />'.NL;
-    echo    '<meta name="msapplication-wide310x150logo"   content="/_img/favicon/microsoft-tile-wide-310x150.png" />'.NL;
+    echo    '<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />'.NL;
     echo    '<link rel="icon" type="image/png" href="./favicon.png" />'.NL;
-    echo    '<link rel="shortcut icon"  type="images/x-icon" href="./_img/favicon/favicon.ico" />'.NL;
-    echo    '<link rel="apple-touch-icon-precomposed"     href="./_img/apple-touch-icon-114x114.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="57x57"   href="./_img/favicon/apple-touch-icon-57x57.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="114x114" href="./_img/favicon/apple-touch-icon-114x114.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="72x72"   href="./_img/favicon/apple-touch-icon-72x72.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="144x144" href="./_img/favicon/apple-touch-icon-144x144.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="60x60"   href="./_img/favicon/apple-touch-icon-60x60.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="120x120" href="./_img/favicon/apple-touch-icon-120x120.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="76x76"   href="./_img/favicon/apple-touch-icon-76x76.png" />'.NL;
-    echo    '<link rel="apple-touch-icon" sizes="152x152" href="./_img/favicon/apple-touch-icon-152x152.png" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./_img/favicon/favicon-196x196.png" sizes="196x196" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./_img/favicon/favicon-160x160.png" sizes="160x160" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./_img/favicon/favicon-96x96.png" sizes="96x96" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./_img/favicon/favicon-32x32.png" sizes="32x32" />'.NL;
-    echo    '<link rel="icon" type="image/png" href="./_img/favicon/favicon-16x16.png" sizes="16x16" />'.NL;
+    echo    '<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />'.NL;
+    echo    '<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />'.NL;
   }
   if($is_rss)
   {

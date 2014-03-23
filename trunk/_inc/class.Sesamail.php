@@ -103,19 +103,26 @@ class Sesamail
     if ($this->charset != 'utf-8') {
       throw new \Exception("Cette classe Mail ne fonctionne qu'avec un mb_internal_encoding en UTF-8 (ici on a " .$this->charset .')');
     }
-    
+
     // le from par défaut (utilisé en Return-Path)
-    $this->default_sender = WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM.' <'.WEBMESTRE_COURRIEL.'>';
-    
+    if(defined('WEBMESTRE_COURRIEL'))
+    {
+      $this->default_sender = WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM.' <'.WEBMESTRE_COURRIEL.'>';
+    }
+    else if(defined('MAIL_SACOCHE_CONTACT'))
+    {
+      $this->default_sender = 'Contact SACoche <'.MAIL_SACOCHE_CONTACT.'>';
+    }
+
     // le préfixe du sujet
-    $this->subject_prefix = 'SACoche '.HEBERGEUR_DENOMINATION.' - ';
-    
+    $this->subject_prefix = (defined('HEBERGEUR_DENOMINATION')) ? 'SACoche '.HEBERGEUR_DENOMINATION.' - ' : $this->subject_prefix = 'SACoche - ' ;
+
     // Les headers communs à tous nos mails
     $this->headers = '';
-    
+
     // Return-Path
     $this->headers .= 'Return-Path: ' .$this->default_sender ."\r\n"; 
-    
+
     // Content
     $this->headers .= 'Content-type: text/plain; charset=' .$this->charset ."\r\n";
     $this->headers .= 'Content-Transfer-Encoding: 8bit'."\r\n";

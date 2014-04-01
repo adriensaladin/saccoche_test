@@ -1,25 +1,25 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
+ * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
  * ****************************************************************************************************
  * 
  * Ce fichier est une partie de SACoche.
  * 
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  * 
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Générale Publique GNU pour plus de détails.
+ * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
  * 
- * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
@@ -251,6 +251,13 @@ $(document).ready
             {
               $('#ajax_maj').removeAttr("class").html("&nbsp;");
               $('#f_eleve').html(responseHTML).parent().show();
+              // Demande d'affichage du relevé pour un parent avec plusieurs enfants
+              if(auto_select_eleve_id)
+              {
+                $('#f_eleve option[value='+auto_select_eleve_id+']').prop('selected',true);
+                $('#bouton_valider').click();
+                auto_voir_releve = false;
+              }
             }
             else
             {
@@ -263,7 +270,7 @@ $(document).ready
 
     $("#f_groupe").change
     (
-      function()
+      function charger_eleves()
       {
         // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
         // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
@@ -372,7 +379,8 @@ $(document).ready
           f_marge_min          : { required:true },
           f_pages_nb           : { required:true },
           f_cases_nb           : { required:true },
-          f_cases_larg         : { required:true }
+          f_cases_larg         : { required:true },
+          f_highlight_id       : { required:false }
         },
         messages :
         {
@@ -402,7 +410,8 @@ $(document).ready
           f_marge_min          : { required:"marge mini manquante" },
           f_pages_nb           : { required:"choix manquant" },
           f_cases_nb           : { required:"nombre manquant" },
-          f_cases_larg         : { required:"largeur manquante" }
+          f_cases_larg         : { required:"largeur manquante" },
+          f_highlight_id       : { }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -544,6 +553,28 @@ $(document).ready
         );
       }
     );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Initialisation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Afficher un relevé au chargement
+if(auto_voir_releve)
+{
+  // Parent avec plusieurs enfants : d'abord charger la liste des enfants de la classe
+  if(auto_select_eleve_id)
+  {
+    groupe_id = $("#f_groupe").val();
+    groupe_type = 'Classes';
+    maj_eleve(groupe_id,groupe_type);
+  }
+  // Parent avec un seul enfant ou élève : on peut lancer le formulaire de suite
+  else
+  {
+    $('#bouton_valider').click();
+    auto_voir_releve = false;
+  }
+}
 
   }
 );

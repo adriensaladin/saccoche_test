@@ -2,32 +2,34 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  * 
  * Ce fichier est une partie de SACoche.
  * 
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  * 
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Relevé d'items d'une matière";
+?>
 
+<?php
 // L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 // L'élève ne choisit pas non plus son type de bilan (=>individuel), et les options du relevé sont prédéfinies.
 Form::load_choix_memo();
@@ -40,16 +42,6 @@ $check_etat_acquisition   = (Form::$tab_choix['aff_etat_acquisition'])   ? ' che
 $check_moyenne_score      = (Form::$tab_choix['aff_moyenne_scores'])     ? ' checked' : '' ;
 $check_pourcentage_acquis = (Form::$tab_choix['aff_pourcentage_acquis']) ? ' checked' : '' ;
 $check_conversion_sur_20  = (Form::$tab_choix['conversion_sur_20'])      ? ' checked' : '' ;
-
-// Réception d'id transmis via un lien en page d'accueil.
-$auto_voir_releve       = isset($_GET['matiere_id']) ? 'true'                             : 'false' ;
-$auto_select_matiere_id = isset($_GET['matiere_id']) ? Clean::entier($_GET['matiere_id']) : Form::$tab_choix['matiere_id'] ;
-$auto_select_eleve_num  = isset($_GET['eleve_num'])  ? Clean::entier($_GET['eleve_num'])  : FALSE ;
-$auto_highlight_item_id = isset($_GET['item_id'])    ? Clean::entier($_GET['item_id'])    : 0 ;
-
-$auto_select_eleve_id  = ( ($auto_select_eleve_num!==FALSE) && !empty($_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]) ) ? $_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]['valeur']    : 0 ;
-$auto_select_classe_id = ( ($auto_select_eleve_num!==FALSE) && !empty($_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]) ) ? $_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]['classe_id'] : FALSE ;
-
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
@@ -92,7 +84,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-  $of_g = ''; $sel_g = $auto_select_classe_id; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
+  $of_g = ''; $sel_g = FALSE; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
 }
@@ -117,7 +109,7 @@ $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 $select_tri_objet   = Form::afficher_select(Form::$tab_select_tri_objet   , 'f_tri_objet'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_objet'] /*selection*/ ,              '' /*optgroup*/);
 $select_tri_mode    = Form::afficher_select(Form::$tab_select_tri_mode    , 'f_tri_mode'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']  /*selection*/ ,              '' /*optgroup*/);
 $select_groupe      = Form::afficher_select($tab_groupes                  , 'f_groupe'      /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                /*selection*/ , 'regroupements' /*optgroup*/);
-$select_matiere     = Form::afficher_select($tab_matieres                 , 'f_matiere'     /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_matiere_id               /*selection*/ ,              '' /*optgroup*/);
+$select_matiere     = Form::afficher_select($tab_matieres                 , 'f_matiere'     /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']        /*selection*/ ,              '' /*optgroup*/);
 $select_periode     = Form::afficher_select($tab_periodes                 , 'f_periode'     /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                 /*selection*/ ,              '' /*optgroup*/);
 $select_orientation = Form::afficher_select(Form::$tab_select_orientation , 'f_orientation' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']       /*selection*/ ,              '' /*optgroup*/);
 $select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , 'f_marge_min'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']         /*selection*/ ,              '' /*optgroup*/);
@@ -130,8 +122,6 @@ $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , 'f_c
 // Javascript
 $GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql  = "'.TODAY_MYSQL.'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var auto_voir_releve     = '.$auto_voir_releve.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var auto_select_eleve_id = '.$auto_select_eleve_id.';';
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
@@ -182,7 +172,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?> <?php echo $select_pages_nb ?><br />
     <label class="tab">Évaluations :</label><?php echo(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ? $select_cases_nb : 'cases' ; ?> de largeur <?php echo $select_cases_larg ?>
   </div>
-  <p><span class="tab"></span><input type="hidden" id="f_highlight_id" name="f_highlight_id" value="<?php echo $auto_highlight_item_id ?>" /><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
+  <p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 
 <div id="bilan"></div>

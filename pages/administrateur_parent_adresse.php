@@ -2,25 +2,25 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  * 
  * Ce fichier est une partie de SACoche.
  * 
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  * 
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
@@ -167,7 +167,7 @@ if( $levenshtein && !empty($DB_TAB) )
     <label class="tab" for="f_ligne2">Ligne 2 :</label><input id="f_ligne2" name="f_ligne2" type="text" value="" size="50" maxlength="50" /><br />
     <label class="tab" for="f_ligne3">Ligne 3 :</label><input id="f_ligne3" name="f_ligne3" type="text" value="" size="50" maxlength="50" /><br />
     <label class="tab" for="f_ligne4">Ligne 4 :</label><input id="f_ligne4" name="f_ligne4" type="text" value="" size="50" maxlength="50" /><br />
-    <label class="tab" for="f_code_postal">Code postal :</label><input id="f_code_postal" name="f_code_postal" type="text" value="" size="6" maxlength="10" /><br />
+    <label class="tab" for="f_code_postal">Code postal :</label><input id="f_code_postal" name="f_code_postal" type="text" value="" size="6" maxlength="6" /><br />
     <label class="tab" for="f_commune">Commune :</label><input id="f_commune" name="f_commune" type="text" value="" size="45" maxlength="45" /><br />
     <label class="tab" for="f_pays">Pays :</label><input id="f_pays" name="f_pays" type="text" value="" size="35" maxlength="35" />
   </p>

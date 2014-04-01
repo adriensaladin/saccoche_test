@@ -2,37 +2,31 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  * 
  * Ce fichier est une partie de SACoche.
  * 
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  * 
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Liste des évaluations";
-
-// Réception d'id transmis via un lien en page d'accueil.
-$auto_voir_devoir_id   = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
-$auto_select_eleve_num = isset($_GET['eleve_num']) ? Clean::entier($_GET['eleve_num']) : FALSE ;
-
-$auto_select_eleve_id = ( ($auto_select_eleve_num!==FALSE) && !empty($_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]) ) ? $_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]['valeur'] : FALSE ;
 
 // Fabrication des éléments select du formulaire
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
@@ -52,7 +46,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
   $tab_groupes  = array();
   $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';
-  $select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/);
+  $select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -84,7 +78,6 @@ else
 // Javascript
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_dates = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';';
 ?>
 
 <form action="#" method="post" id="form"><fieldset>

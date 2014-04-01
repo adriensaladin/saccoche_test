@@ -2,25 +2,25 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  *
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  *
  * Ce fichier est une partie de SACoche.
  *
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  *
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  *
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  *
  */
@@ -51,23 +51,22 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
 }
 
 /**
- * compter_demandes_evaluation
+ * compter_demandes_eleves_en_attente
  *
  * @param int  $prof_id
  * @param string $user_join_groupes
- * @return array
+ * @return int
  */
-public static function DB_compter_demandes_evaluation($prof_id,$user_join_groupes)
+public static function DB_compter_demandes_eleves_en_attente($prof_id,$user_join_groupes)
 {
   $listing_eleves_id = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur($prof_id,$user_join_groupes);
-  if(!$listing_eleves_id) return array();
-  $DB_SQL = 'SELECT demande_statut, COUNT(demande_id) AS nombre ';
+  if(!$listing_eleves_id) return 0;
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$listing_eleves_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:user_id ';
-  $DB_SQL.= 'GROUP BY demande_statut ';
-  $DB_VAR = array(':user_id'=>$_SESSION['USER_ID']);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
+  $DB_SQL.= 'WHERE demande_statut=:statut AND eleve_id IN('.$listing_eleves_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:user_id ';
+  $DB_VAR = array(':statut'=>'eleve',':user_id'=>$prof_id);
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

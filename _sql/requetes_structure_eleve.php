@@ -2,25 +2,25 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  *
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  *
  * Ce fichier est une partie de SACoche.
  *
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  *
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  *
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  *
  */
@@ -34,19 +34,18 @@ class DB_STRUCTURE_ELEVE extends DB
 {
 
 /**
- * compter_demandes_evaluation
+ * compter_reponses_professeur_en_attente
  *
  * @param int  $eleve_id
- * @return array
+ * @return int
  */
-public static function DB_compter_demandes_evaluation($eleve_id)
+public static function DB_compter_reponses_professeur_en_attente($eleve_id)
 {
-  $DB_SQL = 'SELECT demande_statut, COUNT(demande_id) AS nombre ';
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_demande ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id ';
-  $DB_SQL.= 'GROUP BY demande_statut ';
-  $DB_VAR = array(':eleve_id'=>$eleve_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
+  $DB_SQL.= 'WHERE demande_statut=:statut AND eleve_id=:eleve_id ';
+  $DB_VAR = array(':statut'=>'prof',':eleve_id'=>$eleve_id);
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -229,7 +228,7 @@ public static function DB_recuperer_classe_eleve($eleve_id)
 }
 
 /**
- * Lister les évaluations concernant la classe ou les groupes d'un élève sur une période donnée
+ * Lister les évaluations concernant un élève sur une période donnée
  *
  * @param int    $eleve_id
  * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
@@ -238,7 +237,7 @@ public static function DB_recuperer_classe_eleve($eleve_id)
  * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_devoirs_groupes_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql,$user_profil_type)
+public static function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql,$user_profil_type)
 {
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
   $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
@@ -249,60 +248,9 @@ public static function DB_lister_devoirs_groupes_eleve($eleve_id,$classe_id,$dat
   $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
   $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
-  $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
+  $DB_SQL.= 'ORDER BY devoir_date DESC ';
   $DB_VAR = array(':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Lister les évaluations concernant un élève donné sur les derniers jours
- *
- * @param int    $eleve_id
- * @param int    $nb_jours
- * @param string $user_profil_type
- * @return array
- */
-public static function DB_lister_devoirs_eleve_recents_avec_notes_saisies($eleve_id,$nb_jours,$user_profil_type)
-{
-  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
-  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note!="REQ" ';
-  $DB_SQL.= 'AND DATE_ADD(devoir_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
-  $DB_SQL.= 'GROUP BY devoir_id ';
-  $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':nb_jours'=>$nb_jours);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Lister les évaluations concernant un élève sur une période donnée
- *
- * @param int    $eleve_id
- * @param int    $nb_jours
- * @param string $user_profil_type
- * @return array
- */
-public static function DB_lister_derniers_mauvais_resultats_eleve($eleve_id,$nb_jours,$user_profil_type)
-{
-  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
-  $DB_SQL = 'SELECT item_id , item_nom , saisie_date , saisie_note , ';
-  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-  $DB_SQL.= 'matiere_id , niveau_id , matiere_nom ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note IN("RR","R") ';
-  $DB_SQL.= 'AND DATE_ADD(saisie_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
-  // Pas de 'GROUP BY item_id ' car le regroupement est effectué avant le tri et du coup un R suivi d'un RR ressortira R
-  $DB_SQL.= 'ORDER BY saisie_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':nb_jours'=>$nb_jours);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE); // TRUE permet d'avoir item_id en clef et, pour un item qui ressortirait plusieurs fois, d'avoir la dernière saisie en [item_id][0]
 }
 
 /**

@@ -1,25 +1,25 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
  * 
  * Ce fichier est une partie de SACoche.
  * 
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
  * 
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
  * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
@@ -64,7 +64,7 @@ kbd:hover{background-color:#CCC;border-color:#AAA}
 .avant{color:#666;background-color:#FFC;font-size:12px}
 .notnow{color:#666}
 .now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
-.fluo{background:#FF0} /* pas de padding sinon pose souci pour du texte dans un tableau */
+.fluo{background:#FF0;padding:2px 1ex}
 div.appreciation {white-space:pre-wrap}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 
@@ -265,19 +265,13 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.rien64       {padding-left:70px}
-.accueil64    {background:transparent url(../_img/sprite_accueil64_1.png) 0 0 no-repeat;padding-left:70px;min-height:64px;max-height:500px}
-.alert64      {background-position: 0     0px}
-.ecolo64      {background-position: 0  -300px}
-.help64       {background-position: 0  -600px}
-.resultats64  {background-position: 0  -900px}
-.faiblesses64 {background-position: 0  -900px} /* attention : même décalage */
-.demandes64   {background-position: 0  -900px} /* attention : même décalage */
-.saisies64    {background-position: 0  -900px} /* attention : même décalage */
-.officiel64   {background-position: 0  -900px} /* attention : même décalage */
-.socle64      {background-position: 0  -900px} /* attention : même décalage */
-.messages64   {background-position: 0 -1200px}
-.user64       {background-position: 0 -1500px}
+.rien64     {padding-left:70px}
+.messages64,
+.demandes64 {background:transparent url(../_img/icone64/info.png)  no-repeat left;padding-left:70px;min-height:64px}
+.alert64    {background:transparent url(../_img/icone64/alert.png) no-repeat left;padding-left:70px;min-height:64px}
+.help64     {background:transparent url(../_img/icone64/help.png)  no-repeat left;padding-left:70px;min-height:64px}
+.user64     {background:transparent url(../_img/icone64/user.png)  no-repeat left;padding-left:70px;min-height:64px}
+.ecolo64    {background:transparent url(../_img/icone64/ecolo.png) no-repeat left;padding-left:70px;min-height:64px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */
@@ -896,16 +890,16 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
  * © 2008 Steven Wittens
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */

@@ -44,7 +44,6 @@ $tab_accueil = array(
  'messages'   => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
  'resultats'  => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Résultats récents" ) ,
  'faiblesses' => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
- 'reussites'  => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Items récents les mieux réussis" ) ,
  'demandes'   => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Demandes d'évaluations" ) ,
  'saisies'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_saisies ) ,
  'officiel'   => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_officiel ) ,
@@ -256,15 +255,14 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
 // [resultats] - Résultats récents (élèves & parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $nb_jours_consideres = 7;
   $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
   $nb_eleves = count($tab_eleves);
   foreach($tab_eleves as $eleve_num => $tab_eleve_info)
   {
     $eleve_id  = $tab_eleve_info['valeur'];
-    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve_recents_avec_notes_saisies( $eleve_id , $nb_jours_consideres , $_SESSION['USER_PROFIL_TYPE'] );
+    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve_recents_avec_notes_saisies( $eleve_id , 8 /*nb_jours*/ , $_SESSION['USER_PROFIL_TYPE'] );
     if(!empty($DB_TAB))
     {
       if(!$tab_accueil['resultats']['nombre'])
@@ -287,62 +285,46 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // [faiblesses] - Items récents à retravailler (prof) ou Items récents à améliorer (élèves / parents)
-// [reussites] - Items récents les mieux réussis (élèves / parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
+if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $nb_jours_consideres = 14;
-  $nb_resultats_maximum = 7;
-  $tab_notes_observees = array(
-    'RR' => 'faiblesses' ,
-    'R'  => 'faiblesses' ,
-    'V'  => 'reussites'  ,
-    'VV' => 'reussites'  ,
-  );
   $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
   $nb_eleves = count($tab_eleves);
-  $longueur_intitule_item_maxi = ($nb_eleves==1) ? 100 : 75 ;
   foreach($tab_eleves as $eleve_num => $tab_eleve_info)
   {
     $eleve_id  = $tab_eleve_info['valeur'];
-    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_derniers_resultats_eleve( $eleve_id , $nb_jours_consideres , $_SESSION['USER_PROFIL_TYPE'] );
+    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_derniers_mauvais_resultats_eleve( $eleve_id , 15 /*nb_jours*/ , $_SESSION['USER_PROFIL_TYPE'] );
     if(!empty($DB_TAB))
     {
       // On parcourt une première fois le tableau pour ne pas compter plusieurs fois un même item + cibler les plus mauvais / récents résultats + éventuellement limiter leur nb
-      $tab_selection_faiblesses_key = array();
-      $tab_selection_reussites_key  = array();
+      $tab_selection_key = array();
       foreach($DB_TAB as $item_id => $DB_ROW)
       {
-        if( isset($tab_notes_observees[$DB_ROW[0]['saisie_note']]) && !isset($tab_selection_faiblesses_key[$item_id]) && !isset($tab_selection_reussites_key[$item_id]) )
+        if(!isset($tab_selection_key[$item_id]))
         {
-          
-          ${'tab_selection_'.$tab_notes_observees[$DB_ROW[0]['saisie_note']].'_key'}[$item_id] = $DB_ROW[0]['saisie_note'].$DB_ROW[0]['saisie_date'];
+          $tab_selection_key[$item_id] = $DB_ROW[0]['saisie_note'].$DB_ROW[0]['saisie_date'];
         }
       }
-      $tab_critere = array( 'faiblesses' , 'reussites' );
-      foreach($tab_critere as $critere)
+      arsort($tab_selection_key);
+      $tab_selection_key = array_slice ( $tab_selection_key , 0 , 8 , TRUE );
+      // $tab_selection_key a maintenant les bons indices, on poursuit
+      if(!$tab_accueil['faiblesses']['nombre'])
       {
-        arsort(${'tab_selection_'.$critere.'_key'});
-        ${'tab_selection_'.$critere.'_key'} = array_slice ( ${'tab_selection_'.$critere.'_key'} , 0 , $nb_resultats_maximum , TRUE );
-        // $tab_selection_*_key a maintenant les bons indices, on poursuit
-        if(!$tab_accueil[$critere]['nombre'])
-        {
-          $tab_accueil[$critere]['contenu'] = '<div class="b"><TG> '.$tab_accueil[$critere]['masque'].'</div>';
-        }
-        $tab_accueil[$critere]['nombre'] += count(${'tab_selection_'.$critere.'_key'});
-        $tab_accueil[$critere]['contenu'].= '<ul class="puce p">';
-        $param_eleve_num = ($nb_eleves==1) ? '' : '&amp;eleve_num='.$eleve_num ;
-        $text_eleve_nom  = ($nb_eleves==1) ? '' : html($tab_eleve_info['texte']).' || ' ;
-        foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
-        {
-          $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
-          $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items_matiere&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
-        }
-        $tab_accueil[$critere]['contenu'].= '<ul class="puce">';
+        $tab_accueil['faiblesses']['contenu'] = '<div class="b"><TG> '.$tab_accueil['faiblesses']['masque'].'</div>';
       }
+      $tab_accueil['faiblesses']['nombre'] += count($tab_selection_key);
+      $tab_accueil['faiblesses']['contenu'].= '<ul class="puce p">';
+      $param_eleve_num = ($nb_eleves>1) ? '&amp;eleve_num='.$eleve_num          : '' ;
+      $text_eleve_nom  = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
+      foreach($tab_selection_key as $item_id => $tab_temp)
+      {
+        $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
+        $tab_accueil['faiblesses']['contenu'] .= '<li>'.Html::note($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items_matiere&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.$DB_TAB[$item_id][0]['item_nom']).'</a></li>';
+      }
+      $tab_accueil['faiblesses']['contenu'].= '<ul class="puce">';
     }
   }
 }

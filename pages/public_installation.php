@@ -42,7 +42,7 @@ $TITRE = "Procédure d'installation";
 
 <form action="#" method="post" id="form_start">
   <h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
-  <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a class="lien_ext" href="https://www.gnu.org/licenses/agpl-3.0.html">licence libre GNU AGPL3</a>.</p>
+  <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a class="lien_ext" href="http://www.rodage.org/gpl-3.0.fr.html">licence libre GNU GPL3</a>.</p>
   <p class="danger">Webmestre et administrateurs sont responsables de toute mauvaise manipulation ou négligence qui entraînerait des pertes de données.</p>
   <p><span class="tab"><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>
 </form>

@@ -1447,7 +1447,7 @@ class PDF extends FPDF
       $eleves_nb_par_page       = ceil( $eleves_nb / $nb_page_moyen ) ;
       if($pages_nb_methode=='augmente')
       {
-        $eleves_nb_par_page = ($eleves_nb_par_page>1) ? $eleves_nb_par_page-1 : 0.5 ;
+        $eleves_nb_par_page = max( 1 , $eleves_nb_par_page-1 ) ; // Sans doute à revoir... un élève demeure forcé sur 1 page...
       }
       // $nb_page_calcule = ceil( $eleves_nb / $eleves_nb_par_page ) ; // devenu inutile
       $lignes_nb_moyen_eleve      = $lignes_nb_tous_eleves / $eleves_nb ;
@@ -1456,7 +1456,7 @@ class PDF extends FPDF
       $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
       $this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
       // On s'occupe aussi maintenant de la taille de la police
-      $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
+      $this->taille_police  = min($this->lignes_hauteur,$this->cases_largeur) * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
       $this->taille_police  = min ( $this->taille_police , 10 ) ;
       // Pour forcer à prendre une nouvelle page au 1er élève
       $this->SetXY(0,$this->page_hauteur);
@@ -1722,14 +1722,14 @@ class PDF extends FPDF
   // grille_referentiel_legende()
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , $aff_anciennete_notation , $aff_etat_acquisition , $pages_nb_methode )
+  public function grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , $aff_anciennete_notation , $aff_etat_acquisition )
   {
     // On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible, un minimum de pages sinon
     $hauteur_dispo_par_page  = $this->page_hauteur_moins_marges ;
     $this->legende_nb_lignes = 1 + (int)$aff_anciennete_notation + (int)$aff_etat_acquisition ;
     $lignes_nb = 1 + 1 + 1 + $lignes_nb + ($this->legende*$this->legende_nb_lignes+0.25) ; // intitulé-structure + matière-niveau-élève + marge (1 & un peu plus car aussi avant domaines) + lignes (domaines+thèmes+items) + légende
-    $hauteur_ligne_minimale = ($pages_nb_methode=='optimise') ? 3.5 : 6 ;
-    $hauteur_ligne_maximale = ($pages_nb_methode=='optimise') ? 6   : 9 ;
+    $hauteur_ligne_minimale = 3.5;
+    $hauteur_ligne_maximale = 5;
     $nb_pages = 0;
     do
     {
@@ -1739,8 +1739,7 @@ class PDF extends FPDF
     while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
     if($nb_pages>1)
     {
-      $coef_retrait = ($pages_nb_methode=='optimise') ? 0.1 : 0.2 ;
-      $hauteur_ligne_calcule -= $nb_pages*$coef_retrait; // Tenter de contrebalancer un peu le pb des thèmes non coupés
+      $hauteur_ligne_calcule -= $nb_pages*0.1; // Tenter de contrebalancer un peu le pb des thèmes non coupés
     }
     $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
     $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;

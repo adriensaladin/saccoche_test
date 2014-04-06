@@ -278,14 +278,14 @@ public static function DB_lister_devoirs_eleve_recents_avec_notes_saisies($eleve
 }
 
 /**
- * Lister les évaluations concernant un élève sur les derniers jours
+ * Lister les évaluations concernant un élève sur une période donnée
  *
  * @param int    $eleve_id
  * @param int    $nb_jours
  * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours,$user_profil_type)
+public static function DB_lister_derniers_mauvais_resultats_eleve($eleve_id,$nb_jours,$user_profil_type)
 {
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT item_id , item_nom , saisie_date , saisie_note , ';
@@ -297,9 +297,9 @@ public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours,$u
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note IN("RR","R") ';
   $DB_SQL.= 'AND DATE_ADD(saisie_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
-  // Pas de 'GROUP BY item_id ' car le regroupement est effectué avant le tri par date
+  // Pas de 'GROUP BY item_id ' car le regroupement est effectué avant le tri et du coup un R suivi d'un RR ressortira R
   $DB_SQL.= 'ORDER BY saisie_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
   $DB_VAR = array(':eleve_id'=>$eleve_id,':nb_jours'=>$nb_jours);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE); // TRUE permet d'avoir item_id en clef et, pour un item qui ressortirait plusieurs fois, d'avoir la dernière saisie en [item_id][0]

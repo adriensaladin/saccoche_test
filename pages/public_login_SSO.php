@@ -254,55 +254,52 @@ if($connexion_mode=='cas')
     }
     return $str_traces;
   }
+  // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
+  if(DEBUG_PHPCAS)
+  {
+    if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_ETABL_ID_LISTING || (strpos(PHPCAS_ETABL_ID_LISTING,','.$BASE.',')!==FALSE) )
+    {
+      $fichier_nom_debut = 'debugcas_'.$BASE;
+      $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+      phpCAS::setDebug(PHPCAS_CHEMIN_LOGS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
+    }
+  }
+  // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+  phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
+  phpCAS::setLang(PHPCAS_LANG_FRENCH);
+  // Surcharge éventuelle des URL
+  if ($cas_serveur_url_login)    { phpCAS::setServerLoginURL($cas_serveur_url_login); }
+  if ($cas_serveur_url_logout)   { phpCAS::setServerLogoutURL($cas_serveur_url_logout); }
+  if ($cas_serveur_url_validate) { phpCAS::setServerServiceValidateURL($cas_serveur_url_validate); }
+  // Appliquer un proxy si défini par le webmestre ; voir cURL::get_contents() pour les commentaires.
+  if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
+  {
+    phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
+    phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
+    phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
+    if(SERVEUR_PROXY_AUTH_USED)
+    {
+      phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
+      phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
+    }
+  }
+  // On indique qu'il faut vérifier la validité du certificat SSL, sauf exception paramétrée, mais alors dans ce cas ça ne sert à rien d'utiliser une connexion sécurisée.
+  if(strpos(PHPCAS_NO_CERTIF_LISTING,','.$connexion_nom.',')===FALSE)
+  {
+    phpCAS::setCasServerCACert(CHEMIN_FICHIER_CA_CERTS_FILE);
+  }
+  else
+  {
+    phpCAS::setNoCasServerValidation();
+  }
+  // Gestion du single sign-out
+  phpCAS::handleLogoutRequests(FALSE);
+  // Demander à CAS d'aller interroger le serveur
+  // Cette méthode permet de forcer CAS à demander au client de s'authentifier s'il ne trouve aucun client d'authentifié.
+  // (redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a été trouvé par le client CAS)
   try
   {
-    // Si besoin, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
-    if(DEBUG_PHPCAS)
-    {
-      if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_ETABL_ID_LISTING || (strpos(PHPCAS_ETABL_ID_LISTING,','.$BASE.',')!==FALSE) )
-      {
-        $fichier_nom_debut = 'debugcas_'.$BASE;
-        $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
-        phpCAS::setDebug(PHPCAS_CHEMIN_LOGS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
-      }
-    }
-    // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
-    phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
-    phpCAS::setLang(PHPCAS_LANG_FRENCH);
-    // Surcharge éventuelle des URL
-    if ($cas_serveur_url_login)    { phpCAS::setServerLoginURL($cas_serveur_url_login); }
-    if ($cas_serveur_url_logout)   { phpCAS::setServerLogoutURL($cas_serveur_url_logout); }
-    if ($cas_serveur_url_validate) { phpCAS::setServerServiceValidateURL($cas_serveur_url_validate); }
-    // Appliquer un proxy si défini par le webmestre ; voir cURL::get_contents() pour les commentaires.
-    if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
-    {
-      phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
-      phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
-      phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
-      if(SERVEUR_PROXY_AUTH_USED)
-      {
-        phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
-        phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
-      }
-    }
-    // On indique qu'il faut vérifier la validité du certificat SSL, sauf exception paramétrée, mais alors dans ce cas ça ne sert à rien d'utiliser une connexion sécurisée.
-    if(strpos(PHPCAS_NO_CERTIF_LISTING,','.$connexion_nom.',')===FALSE)
-    {
-      phpCAS::setCasServerCACert(CHEMIN_FICHIER_CA_CERTS_FILE);
-    }
-    else
-    {
-      phpCAS::setNoCasServerValidation();
-    }
-    // Gestion du single sign-out
-    phpCAS::handleLogoutRequests(FALSE);
-    // Demander à CAS d'aller interroger le serveur
-    // Cette méthode permet de forcer CAS à demander au client de s'authentifier s'il ne trouve aucun client d'authentifié.
-    // (redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a été trouvé par le client CAS)
     phpCAS::forceAuthentication();
-    // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
-    // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
-    $id_ENT = phpCAS::getUser();
   }
   catch(Exception $e)
   {
@@ -327,6 +324,19 @@ if($connexion_mode=='cas')
       trigger_error('phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté mais ce n\'est pas une CAS_AuthenticationException');
       exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_sup /*contenu*/ );
     }
+  }
+  // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
+  // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
+  $id_ENT = phpCAS::getUser();
+  // Récupérer les attributs CAS => SACoche ne récupère aucun attribut, il n'y a pas de récupération de données via le ticket et donc pas de nécessité de convention.
+  if( IS_HEBERGEMENT_SESAMATH && (SERVEUR_TYPE=='DEV') )
+  {
+    // Test temporaire pour Rennes
+    $tab_attributs = phpCAS::getAttributes();
+    echo'<pre>';
+    var_dump($tab_attributs);
+    echo'</pre>';
+    exit();
   }
   // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.
   unset($_SESSION['phpCAS']);

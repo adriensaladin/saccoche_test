@@ -172,7 +172,7 @@ class Webmestre
     $texte.= 'Vous êtes aussi désormais le contact référent de votre établissement pour cette installation de SACoche.'."\r\n";
     $texte.= 'Pour modifier les coordonnées de la personne référente, rendez-vous dans votre espace d\'administration.'."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n";
+    $texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU AGPL3.'."\r\n";
     $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n";
@@ -222,7 +222,7 @@ class Webmestre
     $texte.= 'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n";
     $texte.= 'Si ce compte correspond à un administrateur qui n\'est plus présent dans votre établissement, vous pouvez modifier ses coordonnées depuis l\'espace d\'administration.'."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n";
+    $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU AGPL3.'."\r\n";
     $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n";

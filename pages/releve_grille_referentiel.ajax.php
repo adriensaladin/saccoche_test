@@ -51,6 +51,7 @@ $orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f
 $couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])                : '';
 $legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])                : '';
 $marge_min         = (isset($_POST['f_marge_min']))     ? Clean::texte($_POST['f_marge_min'])              : '';
+$pages_nb          = (isset($_POST['f_pages_nb']))      ? Clean::texte($_POST['f_pages_nb'])               : '';
 $cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])              : -1;
 $cases_largeur     = (isset($_POST['f_cases_larg']))    ? Clean::entier($_POST['f_cases_larg'])            : 0;
 
@@ -95,7 +96,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
 
-if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || ($cases_nb<0) || !$cases_largeur || !count($tab_type) )
+if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -455,7 +456,7 @@ if( $type_generique || $type_individuel )
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>'.NL;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
-  $releve_PDF->grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ );
+  $releve_PDF->grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , $pages_nb );
   $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
 
   // Pour chaque élève...

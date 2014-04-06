@@ -49,6 +49,7 @@ $tab_types = array(
  'messages'   => 'modifiable' ,
  'resultats'  => 'modifiable' ,
  'faiblesses' => 'modifiable' ,
+ 'reussites'  => 'modifiable' ,
  'demandes'   => 'modifiable' ,
  'saisies'    => 'modifiable' ,
  'officiel'   => 'modifiable' ,

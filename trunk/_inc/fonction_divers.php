@@ -983,4 +983,26 @@ function afficher_identite_initiale( $partie1 , $is_initiale1 , $partie2 , $is_i
   return trim($partie1.' '.$partie2);
 }
 
+/**
+ * Afficher un texte tronqué au dela d'un certain nombre de caractères
+ *
+ * @param string $texte
+ * @param int    $longueur_max
+ * @return string
+ */
+function afficher_texte_tronque( $texte , $longueur_max )
+{
+  if( mb_strlen($texte) < $longueur_max )
+  {
+    return $texte;
+  }
+  $pos_espace = mb_strpos( $texte , ' ' , $longueur_max-10 );
+  $chaine_de_fin = ' [...]';
+  if($pos_espace!==FALSE)
+  {
+    return mb_substr( $texte , 0 , $pos_espace ).$chaine_de_fin;
+  }
+  return mb_substr( $texte , 0 , $longueur_max-5 ).$chaine_de_fin;
+}
+
 ?>

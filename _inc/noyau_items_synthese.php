@@ -521,7 +521,7 @@ foreach($tab_eleve as $tab)
                     $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                   }
                 }
-                $tab_ligne[0] = html($periode_nom_avant.' : '.$tab_ligne[0]);
+                $tab_ligne[0] = html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0];
                 $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
                 $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
               }
@@ -628,7 +628,7 @@ foreach($tab_eleve as $tab)
                   $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                 }
               }
-              $tab_ligne[0] = html($periode_nom_avant.' : '.$tab_ligne[0]);
+              $tab_ligne[0] = html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0];
               $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
               $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
             }

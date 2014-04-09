@@ -141,7 +141,7 @@ public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND groupe_id IN('.$liste_groupes.') ';
+  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND groupe_id IN('.$liste_groupes.') AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
   $DB_VAR = array(':matiere_id'=>$matiere_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

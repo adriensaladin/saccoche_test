@@ -205,7 +205,6 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
 {
   $tab_accueil['user']['contenu'] .= '<div>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.URL_DIR_SACOCHE.'?'.$_SESSION['USER_PROFIL_TYPE'].'</b></div>';
-  $tab_accueil['user']['masque'] = NULL;
 }
 else
 {

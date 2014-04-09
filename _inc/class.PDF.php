@@ -1729,7 +1729,7 @@ class PDF extends FPDF
     $this->legende_nb_lignes = 1 + (int)$aff_anciennete_notation + (int)$aff_etat_acquisition ;
     $lignes_nb = 1 + 1 + 1 + $lignes_nb + ($this->legende*$this->legende_nb_lignes+0.25) ; // intitulé-structure + matière-niveau-élève + marge (1 & un peu plus car aussi avant domaines) + lignes (domaines+thèmes+items) + légende
     $hauteur_ligne_minimale = ($pages_nb_methode=='optimise') ? 3.5 : 6 ;
-    $hauteur_ligne_maximale = ($pages_nb_methode=='optimise') ? 5   : 9 ;
+    $hauteur_ligne_maximale = ($pages_nb_methode=='optimise') ? 6   : 9 ;
     $nb_pages = 0;
     do
     {

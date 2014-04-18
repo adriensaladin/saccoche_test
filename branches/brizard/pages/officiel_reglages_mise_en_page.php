@@ -89,6 +89,23 @@ foreach($DB_TAB as $DB_ROW)
 }
 $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fichier image trouvé !</li>' ;
 
+/* Create the list of the available fonts */
+$tab_select_police = array();
+if ($dossier = opendir('./_lib/FPDF/font'))
+{
+  while (($file = readdir($dossier)) !== false)
+  {
+    if (substr($file, -4) == ".php")
+    {
+      if (substr($file, -6) != "bd.php")
+      {
+        $tab_select_police[] = array('valeur'=> substr($file, 0, -4)  , 'texte'=>substr($file, 0, -4));
+      }
+    }
+  }
+}
+
+$select_police = Form::afficher_select($tab_select_police, 'f_police' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['POLICE'] /*selection*/ , '' /*optgroup*/);
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_mise_en_page">DOC : Réglages synthèses &amp; bilans &rarr; Mise en page des bilans officiels</a></span></div>
@@ -139,6 +156,9 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
       <label for="f_marge_droite">à droite </label><select id="f_marge_droite" name="f_marge_droite"><?php echo $options_marge_droite; ?></select>&nbsp;&nbsp;&nbsp;
       <label for="f_marge_haut">en haut </label><select id="f_marge_haut" name="f_marge_haut"><?php echo $options_marge_haut; ?></select>&nbsp;&nbsp;&nbsp;
       <label for="f_marge_bas">en bas </label><select id="f_marge_bas" name="f_marge_bas"><?php echo $options_marge_bas; ?></select>
+  </p>
+  <p>
+    <label class="tab">Police de caractères : </label><?php echo $select_police ?>
   </p>
   <p>
     <span class="tab"></span><button id="bouton_valider_positionnement" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_positionnement">&nbsp;</label>

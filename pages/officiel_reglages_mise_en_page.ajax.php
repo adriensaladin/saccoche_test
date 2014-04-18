@@ -48,6 +48,7 @@ $archive_retrait_tampon_signature = (isset($_POST['f_archive_retrait_tampon_sign
 $tampon_signature                 = (isset($_POST['f_tampon_signature']))                 ? Clean::texte($_POST['f_tampon_signature'])                  : '';
 $user_id                          = (isset($_POST['f_user_id']))                          ? Clean::entier($_POST['f_user_id'])                          : -1;
 $user_texte                       = (isset($_POST['f_user_texte']))                       ? Clean::texte($_POST['f_user_texte'])                        : '';
+$police                           = (isset($_POST['f_police']))                           ? Clean::police($_POST['f_police'])                           : 'arial';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire form_mise_en_page, partie "coordonnees"
@@ -90,6 +91,7 @@ if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && 
   $tab_parametres['officiel_marge_droite']                     = $marge_droite;
   $tab_parametres['officiel_marge_haut']                       = $marge_haut;
   $tab_parametres['officiel_marge_bas']                        = $marge_bas;
+  $tab_parametres['officiel_police']                           = $police;
   if($infos_responsables=='oui_force')
   {
     $tab_parametres['enveloppe_horizontal_gauche'] = $horizontal_gauche;
@@ -105,6 +107,7 @@ if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && 
   $_SESSION['OFFICIEL']['MARGE_DROITE']                     = $marge_droite ;
   $_SESSION['OFFICIEL']['MARGE_HAUT']                       = $marge_haut ;
   $_SESSION['OFFICIEL']['MARGE_BAS']                        = $marge_bas ;
+  $_SESSION['OFFICIEL']['POLICE']                           = $police ;
   if($infos_responsables=='oui_force')
   {
     $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] = $horizontal_gauche ;

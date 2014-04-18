@@ -134,6 +134,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_marge_gauche"                         , "5" ),
 ( "officiel_marge_haut"                           , "5" ),
 ( "officiel_nombre_exemplaires"                   , "un" ),
+( "officiel_police"                               , "arial" ),
 ( "officiel_releve_aff_coef"                      , "0" ),
 ( "officiel_releve_aff_domaine"                   , "0" ),
 ( "officiel_releve_aff_socle"                     , "1" ),

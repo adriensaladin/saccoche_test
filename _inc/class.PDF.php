@@ -500,8 +500,30 @@ class PDF extends FPDF
     $this->legende     = ($legende=='oui') ? 1 : 0 ;
     $this->filigrane   = $filigrane;
     // Déclaration de la police pour la rendre disponible même si non présente sur le serveur
-    $this->AddFont('Arial','' ,'arial.php');
-    $this->AddFont('Arial','B','arialbd.php');
+    if ($dossier = opendir('./_lib/FPDF/font'))
+    {
+      while (($file = readdir($dossier)) !== false) 
+      {
+        if (substr($file, -4) == ".php")
+        {
+          if (substr($file, -6) == "bd.php")
+          {
+            if (substr($file, 0, -6) == $_SESSION["OFFICIEL"]["POLICE"])
+            {
+              $this->AddFont(substr($file, 0, -6),'B' ,$file);
+            }
+          }
+          else
+          {
+            if (substr($file, 0, -4) == $_SESSION["OFFICIEL"]["POLICE"])
+            {
+              $this->AddFont(substr($file, 0, -4),'' ,$file);
+            }
+          }
+        }
+      }
+    }
+    
     // initialiser les marges principales
     if($orientation=='portrait')
     {
@@ -687,7 +709,7 @@ class PDF extends FPDF
   public function afficher_etat_validation( $gras , $tab_infos )
 {
   // $tab_infos contient 'etat' / 'date' / 'info'
-  $this->SetFont('Arial' , $gras , $this->taille_police);
+  $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , $gras , $this->taille_police);
   $texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
   $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['v'.$tab_infos['etat']]);
   $this->Cell( $this->validation_largeur , $this->cases_hauteur , To::pdf($texte) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
@@ -712,12 +734,12 @@ class PDF extends FPDF
     else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
     if($affich=='detail')
     {
-      $this->SetFont('Arial' , $gras , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , $gras , $this->taille_police);
       $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
     elseif($affich=='pourcentage')
     {
-      $this->SetFont('Arial' , $gras , $this->taille_police/2);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , $gras , $this->taille_police/2);
       $this->Cell( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%']) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
     elseif($affich=='rien')
@@ -747,9 +769,9 @@ class PDF extends FPDF
       elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
       else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
       $affichage = ($afficher_score) ? $score : '' ;
-      $this->SetFont('Arial' , '' , $this->taille_police-2);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     }
   }
 
@@ -794,7 +816,7 @@ class PDF extends FPDF
 
   public function afficher_appreciation( $largeur_autorisee , $hauteur_autorisee , $taille_police , $taille_interligne , $texte )
   {
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     $texte = $this->correction_espaces($texte);
     // Traiter un éventuel nombre de retours à la ligne saisis excessifs
     $texte = str_replace( array("\r\n","\r","\n") , "\n" , $texte ); // Le dénombrement n'est pas effectué ici mais à la ligne suivante sinon un "\r\n" compte double...
@@ -821,7 +843,7 @@ class PDF extends FPDF
     }
     while($is_trop_haut);
     // Affichage du texte ligne par ligne
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     $memo_abscisse = $this->GetX();
     $memo_ordonnee = $this->GetY();
     $ordonnee = $this->GetY() + ($hauteur_autorisee - $hauteur_requise ) / 3 ; // Verticalement, on laisse 1/3 marge dessus et 2/3 marge dessous
@@ -863,7 +885,7 @@ class PDF extends FPDF
 
   public function afficher_lignes_additionnelles($tab_pdf_lignes_additionnelles)
   {
-    $this->SetFont('Arial' , '' , $this->taille_police*1.2);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*1.2);
     foreach($tab_pdf_lignes_additionnelles as $i => $texte)
     {
       $sens = ($i) ? -1 : 1 ;
@@ -916,9 +938,9 @@ class PDF extends FPDF
       $ratio = min( 1 , $largeur_dispo_pour_texte / $largeur_texte );
       // On y va maintenant
 
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $this->Write($hauteur , To::pdf('Codes d\'évaluation :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $memo_lomer_espace_largeur = $this->lomer_espace_largeur;
       $memo_lomer_espace_hauteur = $this->lomer_espace_hauteur;
       $memo_taille_police = $this->taille_police;
@@ -953,9 +975,9 @@ class PDF extends FPDF
     // Afficher la légende de l'ancienneté de la notation
     if($type_legende=='anciennete_notation')
     {
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $this->Write($hauteur , To::pdf('Ancienneté :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $tab_etats = array('blanc'=>'Sur la période.','gris_moyen'=>'Début d\'année scolaire.','gris_fonce'=>'Année scolaire précédente.');
       foreach($tab_etats as $couleur => $texte)
       {
@@ -970,9 +992,9 @@ class PDF extends FPDF
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
       $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $seuil_NA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']>0)   ) ? '0 à '.($_SESSION['CALCUL_SEUIL']['R']-1)   : '' ;
       $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
       $seuil_VA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']!=$_SESSION['CALCUL_SEUIL']['V']) ) ? $_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] : '' ;
@@ -988,9 +1010,9 @@ class PDF extends FPDF
     // Afficher la légende des états d'acquisition
     if($type_legende=='etat_acquisition')
     {
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $tab_etats = array('NA','VA','A');
       foreach($tab_etats as $etat)
       {
@@ -1004,10 +1026,10 @@ class PDF extends FPDF
     // Afficher la légende des pourcentages d'items acquis
     if($type_legende=='pourcentage_acquis')
     {
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $indication_position = ($this->orientation=='portrait') ? ' (à gauche)' : '' ;
       $this->Write($hauteur , To::pdf('Pourcentages d\'items acquis'.$indication_position.' :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $tab_seuils = array('NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'],'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'],'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100');
       foreach($tab_seuils as $etat => $texte)
       {
@@ -1019,10 +1041,10 @@ class PDF extends FPDF
     // Afficher la légende des états de validation
     if($type_legende=='etat_validation')
     {
-      $this->SetFont('Arial' , 'B' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $size);
       $indication_position = ($this->orientation=='portrait') ? ' (à droite)' : '' ;
       $this->Write($hauteur , To::pdf('États de validation'.$indication_position.' :') , '');
-      $this->SetFont('Arial' , '' , $size);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $size);
       $tab_etats = array('v1'=>'Validé','v0'=>'Invalidé','v2'=>'Non renseigné');
       foreach($tab_etats as $etat => $texte)
       {
@@ -1047,7 +1069,7 @@ class PDF extends FPDF
     if($this->officiel===FALSE)
     {
       $this->SetXY( 0 , -$this->distance_pied );
-      $this->SetFont( 'Arial' , '' , 7 );
+      $this->SetFont( $_SESSION["OFFICIEL"]["POLICE"] , '' , 7 );
       $this->choisir_couleur_fond('gris_clair');
       $this->choisir_couleur_trait('gris_moyen');
       $this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],FALSE).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.') , 'TB' /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ , SERVEUR_PROJET);
@@ -1056,11 +1078,11 @@ class PDF extends FPDF
     {
       if($this->filigrane)
       {
-        $this->SetFont( 'Arial' , 'B' , 72 );
+        $this->SetFont( $_SESSION["OFFICIEL"]["POLICE"] , 'B' , 72 );
         $this->choisir_couleur_texte('gris_fonce');
         $this->TextWithRotation( $this->page_largeur/6 /*x*/ , $this->page_hauteur*5/6 /*y*/ , "TEST D'IMPRESSION" /*txt*/ , tanh($this->page_hauteur/$this->page_largeur)*180/M_PI /*txt_angle*/ , 0 /*font_angle*/ );
       }
-      $this->SetFont( 'Arial' , '' , 4 );
+      $this->SetFont( $_SESSION["OFFICIEL"]["POLICE"] , '' , 4 );
       $this->choisir_couleur_texte('noir');
       $this->SetXY( 0 , -$this->distance_pied - 1.5 );
       $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ , SERVEUR_PROJET);
@@ -1229,17 +1251,17 @@ class PDF extends FPDF
       $this->doc_titre = 'Synthèse '.$texte_format.' - '.$texte_periode;
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Synthèse '.$texte_format)                  , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       // Période / Classe - élève
       $memo_y = $this->GetY();
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $this->SetXY($this->GetX(),$this->GetY()-$this->lignes_hauteur*0.2);
       $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode)   , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->SetXY($this->GetX(),$this->GetY()-$this->lignes_hauteur*0.6);
       $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_precision) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->SetXY($this->marge_gauche+$largeur_demi_page,$memo_y-$this->lignes_hauteur*0.1);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       if($format=='matiere')
@@ -1258,7 +1280,7 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $this->page_numero_first = $this->page;
     $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , 'B' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , 7);
     $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
     $this->SetXY($this->marge_gauche,$this->marge_haut);
@@ -1268,7 +1290,7 @@ class PDF extends FPDF
   {
     $this->AddPage($this->orientation , 'A4');
     $page_numero = $this->page - $this->page_numero_first + 1 ;
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->choisir_couleur_texte('gris_fonce');
     $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
@@ -1295,12 +1317,12 @@ class PDF extends FPDF
     if(!$this->officiel)
     {
       // Intitulé matière
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
       $couleur_fond = ($this->couleur=='oui') ? 'gris_moyen' : 'blanc' ;
       $this->choisir_couleur_fond($couleur_fond);
       $this->CellFit( $this->page_largeur_moins_marges - 80 , $this->lignes_hauteur*1.5 , To::pdf($matiere_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
       // Proportions acquis matière
-      $this->SetFont('Arial' , 'B' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
       $this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total,$avec_texte_nombre,$avec_texte_code);
       // Interligne
       $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
@@ -1310,7 +1332,7 @@ class PDF extends FPDF
       $memo_y = $this->GetY();
       $demi_largeur = ( $this->page_largeur_moins_marges ) / 2 ;
       // Intitulé matière
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
       $couleur_fond = ($this->couleur=='oui') ? 'gris_moyen' : 'blanc' ;
       $this->choisir_couleur_fond($couleur_fond);
       $this->CellFit( $demi_largeur , $this->lignes_hauteur*2 , To::pdf($matiere_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
@@ -1321,16 +1343,16 @@ class PDF extends FPDF
         $largeur_note = 10;
         $this->Rect( $this->GetX() , $this->GetY() , $demi_largeur , $this->lignes_hauteur*$nb_lignes_hauteur , 'D' /* DrawFill */ );
         $texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne élève (classe) :' : 'Moyenne élève :' ;
-        $this->SetFont('Arial' , '' , $this->taille_police);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
         $largueur_texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $demi_largeur-2*$largeur_note : $demi_largeur-$largeur_note ;
         $this->Cell( $largueur_texte , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
         $moyenne_eleve = ($moyenne_eleve!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_eleve,1,',','') : ($moyenne_eleve*5).'%' ) : '-' ;
-        $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
         $this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
         if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
         {
           $moyenne_classe = ($moyenne_classe!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_classe,1,',','') : round($moyenne_classe*5).'%' ) : '-' ;
-          $this->SetFont('Arial' , '' , $this->taille_police*0.8);
+          $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*0.8);
           $this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf('('.$moyenne_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
         }
         $this->SetXY($this->marge_gauche + $demi_largeur , $this->GetY() + $this->lignes_hauteur*$nb_lignes_hauteur );
@@ -1339,7 +1361,7 @@ class PDF extends FPDF
       if($_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'])
       {
         $nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
-        $this->SetFont('Arial' , '' , $this->taille_police);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
         $this->afficher_proportion_acquis($demi_largeur,$this->lignes_hauteur*$nb_lignes_hauteur,$tab_infos_matiere,$total,$avec_texte_nombre,$avec_texte_code);
       }
       // Positionnement
@@ -1351,11 +1373,11 @@ class PDF extends FPDF
   {
     $hauteur_ligne = $this->lignes_hauteur * $hauteur_ligne_synthese ;
     $largeur_diagramme = ($this->officiel) ? 20 : 40 ;
-    $this->SetFont('Arial' , '' , $this->taille_police*0.8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*0.8);
     $this->afficher_proportion_acquis($largeur_diagramme,$hauteur_ligne,$tab_infos_synthese,$total,$avec_texte_nombre,$avec_texte_code);
     $intitule_synthese_largeur = ( ($this->officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ) ? ( $this->page_largeur_moins_marges ) / 2 - $largeur_diagramme : $this->page_largeur_moins_marges - $largeur_diagramme ;
     // Intitulé synthèse
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ;
     $this->choisir_couleur_fond($couleur_fond);
     $this->CellFit( $intitule_synthese_largeur , $hauteur_ligne , To::pdf($synthese_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
@@ -1471,7 +1493,7 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $this->page_numero_first = $this->page;
     $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , '' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 7);
     $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
     $this->SetXY($this->marge_gauche,$this->marge_haut);
@@ -1482,7 +1504,7 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $page_numero = $this->page - $this->page_numero_first + 1 ;
     $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , '' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 7);
     $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
   }
@@ -1593,13 +1615,13 @@ class PDF extends FPDF
     {
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       // Période / Classe - élève
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       if( ($this->format!='multimatiere') )
       {
@@ -1644,7 +1666,7 @@ class PDF extends FPDF
     {
       $this->bilan_item_individuel_rappel_eleve_page();
     }
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
     $this->Cell($this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($matiere_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
@@ -1684,16 +1706,16 @@ class PDF extends FPDF
     }
     list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
     $this->choisir_couleur_fond('gris_clair');
-    $this->SetFont('Arial' , '' , $this->taille_police*0.8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*0.8);
     $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($ref_suite) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE  /*remplissage*/ );
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->choisir_couleur_fond('blanc');
   }
 
   public function bilan_item_individuel_ligne_synthese($bilan_texte)
   {
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                    , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->Cell( $this->synthese_largeur  , $this->cases_hauteur , To::pdf($bilan_texte) , 1 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , TRUE  /*remplissage*/ );
@@ -1770,7 +1792,7 @@ class PDF extends FPDF
     $this->SetXY($this->marge_gauche,$this->marge_haut);
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // intitulé-structure
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.4);
     $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Grille d\'items d\'un référentiel')        , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
     // matière-niveau-élève
@@ -1813,7 +1835,7 @@ class PDF extends FPDF
       // Prendre une nouvelle page après avoir éventuellement affiché la légende
       $this->grille_referentiel_new_page( $hauteur_restante );
     }
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
     $this->SetXY(15 , $this->GetY()+1);
     $this->Cell( $this->intitule_largeur , $this->cases_hauteur , To::pdf($domaine_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
@@ -1827,7 +1849,7 @@ class PDF extends FPDF
       // Prendre une nouvelle page après avoir éventuellement affiché la légende
       $this->grille_referentiel_new_page( $hauteur_restante );
     }
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , To::pdf($theme_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     $this->Cell( $this->intitule_largeur , $this->cases_hauteur , To::pdf($theme_nom)  , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
@@ -1840,7 +1862,7 @@ class PDF extends FPDF
       $this->Cell( $this->colonne_vide_largeur , $this->cases_hauteur * ($theme_nb_lignes-1) , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->SetXY( $abscisse , $ordonnee );
     }
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
   }
 
   public function grille_referentiel_item( $item_ref , $item_texte , $colspan_nb )
@@ -1898,14 +1920,14 @@ class PDF extends FPDF
         // Nom de l'établissement
         $taille_police = 11 ;
         $ligne_hauteur = $taille_police*0.4 ;
-        $this->SetFont('Arial' , '' , $taille_police);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
       }
       elseif($key==1)
       {
         // A partir de la ligne suivante
         $taille_police = 8 ;
         $ligne_hauteur = $taille_police*0.4 ;
-        $this->SetFont('Arial' , '' , $taille_police);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
       }
       $this->CellFit( $bloc_largeur-$largeur_logo , $ligne_hauteur , To::pdf($ligne_etabl) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $bloc_hauteur_texte += $ligne_hauteur ;
@@ -1920,7 +1942,7 @@ class PDF extends FPDF
     $taille_police = 10 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $bloc_hauteur = ($alerte_archive) ? 4*$ligne_hauteur : 3*$ligne_hauteur ;
-    $this->SetFont('Arial' , 'B' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $taille_police);
     $tab_bloc_titres[2] = $this->eleve_nom.' '.$this->eleve_prenom.' ('.$tab_bloc_titres[2].')';
     $this->choisir_couleur_fond('gris_clair');
     $this->Rect( $this->GetX() , $this->GetY() , $bloc_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
@@ -1946,13 +1968,13 @@ class PDF extends FPDF
       $ligne_largeur = $ligne_largeur / 2;
       $taille_police = 7 ;
       $ligne_hauteur = $taille_police*0.4 ;
-      $this->SetFont('Arial' , '' , $taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
       $this->Cell( $ligne_largeur , $ligne_hauteur , To::pdf('né(e) le '.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     }
     // Tag date heure initiales
     $taille_police = 5 ;
     $ligne_hauteur = $taille_police*0.4 ;
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     $this->Cell( $ligne_largeur , $ligne_hauteur , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
@@ -1960,7 +1982,7 @@ class PDF extends FPDF
   {
     $taille_police = 9 ;
     $ligne_hauteur = $taille_police*0.4 ;
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     foreach($tab_adresse as $ligne_adresse)
     {
       $this->CellFit( $bloc_largeur , $ligne_hauteur , To::pdf($ligne_adresse) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2013,7 +2035,7 @@ class PDF extends FPDF
     $taille_police = $ligne_hauteur_reste*2.5 ;
     $marge_centrage_y = ( $interieur_hauteur_reste - $ligne_hauteur_reste*$lignes_adresse_nb ) / 2 ;
     $this->SetXY( $interieur_coin_hg_x+$marge_suppl_x , $interieur_coin_hg_y+$marge_suppl_y+$marge_centrage_y );
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     foreach($tab_adresse as $ligne_adresse)
     {
       $this->CellFit( $interieur_largeur_reste , $ligne_hauteur_reste , To::pdf($ligne_adresse) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2056,11 +2078,11 @@ class PDF extends FPDF
     $hauteur_ligne_auteurs = $ligne_hauteur*0.8;
     $memoX = $this->GetX();
     $memoY = $this->GetY();
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->Write( $hauteur_ligne_auteurs , To::pdf('Appréciations / Conseils') );
     if($nb_saisies==1) // mettre le nom de l'auteur en tête si plusieurs appréciations pour une même rubrique
     {
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $this->Write( $hauteur_ligne_auteurs , To::pdf('   [ '.$prof_info.' ]') );
     }
     $this->SetXY( $memoX , $memoY+$hauteur_ligne_auteurs );
@@ -2080,11 +2102,11 @@ class PDF extends FPDF
     // Intitulé "Appréciation générale"
     $memoX = $this->GetX();
     $memoY = $this->GetY();
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.4);
     $this->Write( $ligne_hauteur , To::pdf('Appréciation générale') );
     if($prof_info)
     {
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $this->Write( $ligne_hauteur , To::pdf('   [ '.$prof_info.' ]') );
     }
     // Moyenne générale éventuelle (élève & classe)
@@ -2094,16 +2116,16 @@ class PDF extends FPDF
     {
       $largeur_note = 10;
       $texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne générale élève (classe) :' : 'Moyenne générale élève :' ;
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $largueur_texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $largeur-2*$largeur_note : $largeur-$largeur_note ;
       $this->Cell( $largueur_texte , $ligne_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       $moyenne_generale_eleve = ($moyenne_generale_eleve!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_eleve,1,',','') : round($moyenne_generale_eleve*5).'%' ) : '-' ;
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
       $this->Cell( $largeur_note , $ligne_hauteur , To::pdf($moyenne_generale_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
       if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
       {
         $moyenne_generale_classe = ($moyenne_generale_classe!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_classe,1,',','') : round($moyenne_generale_classe*5).'%' ) : '-' ;
-        $this->SetFont('Arial' , '' , $this->taille_police*0.8);
+        $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*0.8);
         $this->Cell( $largeur_note , $ligne_hauteur , To::pdf('('.$moyenne_generale_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
       }
     }
@@ -2286,7 +2308,7 @@ class PDF extends FPDF
       list( $titre , $palier_nom ) = $tab_infos_entete;
       $this->doc_titre = $titre.' - '.$palier_nom;
       // Intitulé
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->Cell( $this->page_largeur-$this->marge_droite-75 , $this->cases_hauteur , To::pdf($titre)      , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->Cell( $this->page_largeur-$this->marge_droite-75 , $this->cases_hauteur , To::pdf($palier_nom) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       // Structure + Nom / prénom ; on met le document au nom de l'élève ou on établit un document générique
@@ -2297,7 +2319,7 @@ class PDF extends FPDF
         $this->Line($this->page_largeur-$this->marge_droite-75 , $this->marge_haut+2*$this->cases_hauteur , $this->page_largeur-$this->marge_droite , $this->marge_haut+2*$this->cases_hauteur);
         $this->choisir_couleur_trait('noir');
       }
-      $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
       $this->SetXY($this->page_largeur-$this->marge_droite-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
       $this->Cell(50 , $this->cases_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       $this->Cell(50 , $this->cases_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom)   , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2309,7 +2331,7 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $this->page_numero_first = $this->page;
     $this->choisir_couleur_texte('gris_fonce');
-    $this->SetFont('Arial' , 'B' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , 7);
     $this->Cell( $this->page_largeur_moins_marges , 4 /*ligne_hauteur*/ , To::pdf('Page 1/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
     $this->SetXY($this->marge_gauche,$this->marge_haut);
@@ -2320,7 +2342,7 @@ class PDF extends FPDF
     $info_identite = ($this->eleve_id) ? ' - '.$this->eleve_nom.' '.$this->eleve_prenom : '' ;
     $this->AddPage($this->orientation , 'A4');
     $page_numero = $this->page - $this->page_numero_first + 1 ;
-    $this->SetFont('Arial' , 'B' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , 7);
     $this->choisir_couleur_texte('gris_fonce');
     $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($this->doc_titre.$info_identite.' - Page '.$page_numero.'/'.$this->page_nombre_alias) , 0 /*bordure*/ , 1 /*br*/ , $this->page_nombre_alignement , FALSE /*remplissage*/ );
     $this->choisir_couleur_texte('noir');
@@ -2337,7 +2359,7 @@ class PDF extends FPDF
       // Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
       $this->releve_socle_rappel_eleve_page();
     }
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.25);
     $this->choisir_couleur_fond('gris_moyen');
     $br = $test_affichage_Validation ? 0 : 1 ;
     $this->CellFit( $this->pilier_largeur , $this->cases_hauteur , To::pdf($pilier_nom) , 1 , $br , 'L' , TRUE , '');
@@ -2354,7 +2376,7 @@ class PDF extends FPDF
   public function releve_socle_section($section_nom)
   {
     $this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY());
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
     $this->CellFit( $this->section_largeur , $this->cases_hauteur , To::pdf($section_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
   }
@@ -2368,7 +2390,7 @@ class PDF extends FPDF
     }
     // Case intitulé
     $this->choisir_couleur_fond('gris_clair');
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $br = $test_affichage_Validation ? 0 : 1 ;
     $this->CellFit( $this->item_largeur , $this->cases_hauteur , To::pdf($item_nom) , 1 /*bordure*/ , $br , 'L' /*alignement*/ , TRUE /*remplissage*/ );
     // Case validation
@@ -2434,13 +2456,13 @@ class PDF extends FPDF
     $this->lignes_hauteur = $this->cases_hauteur;
     $this->taille_police = 8;
     // Intitulés
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.5);
     $this->Cell(0 , $this->taille_police , To::pdf('Synthèse de maîtrise du socle : '.$titre_info.' - '.$groupe_nom.' - '.$palier_nom) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
   public function releve_synthese_socle_entete($tab_pilier)
   {
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->SetXY($this->marge_gauche+$this->eleve_largeur,$this->marge_haut+$this->taille_police);
     $this->choisir_couleur_fond('gris_fonce');
     foreach($tab_pilier as $tab)
@@ -2451,7 +2473,7 @@ class PDF extends FPDF
       $this->Cell($pilier_nb_entrees*$this->cases_largeur , $this->cases_hauteur , To::pdf($texte.$pilier_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     }
     // positionnement pour la suite
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
   }
 
@@ -2502,7 +2524,7 @@ class PDF extends FPDF
   {
     $this->pourcentage_largeur = $this->cases_largeur;
     $this->choisir_couleur_fond('gris_moyen');
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->eleve_largeur , $this->cases_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
     if($drapeau_langue)
     {
@@ -2569,7 +2591,7 @@ class PDF extends FPDF
   {
     $hauteur_entete = 10;
     // Intitulé
-    $this->SetFont('Arial' , 'B' , 10);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , 10);
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->Cell( $this->page_largeur-$this->marge_droite-55 , 4 , To::pdf('Bilan '.$titre_nom) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->Cell( $this->page_largeur-$this->marge_droite-55 , 4 , To::pdf($matiere_et_groupe)  , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2577,11 +2599,11 @@ class PDF extends FPDF
     $this->SetXY($this->page_largeur-$this->marge_droite-50 , $this->marge_haut);
     $this->Cell(20 , 4 , To::pdf('SYNTHESE') , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     // Période
-    $this->SetFont('Arial' , '' , 8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 8);
     $this->Cell( $this->page_largeur-$this->marge_gauche-$this->marge_droite , 4 , To::pdf($texte_periode) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
     // On se positionne sous l'entête
     $this->SetXY($this->marge_gauche , $this->marge_haut+$hauteur_entete);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
   }
 
   public function bilan_periode_synthese_pourcentages( $moyenne_pourcent , $moyenne_nombre , $last_ligne , $last_colonne )
@@ -2685,12 +2707,12 @@ class PDF extends FPDF
   {
     $hauteur_tiers = $this->etiquette_hauteur / 3 ;
     $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $hauteur_tiers , To::pdf($groupe_nom)  , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $hauteur_tiers , To::pdf($date_fr)     , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $hauteur_tiers , To::pdf($description) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->Cell( $this->reference_largeur , $this->etiquette_hauteur , '' , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
@@ -2707,9 +2729,9 @@ class PDF extends FPDF
     $this->choisir_couleur_fond('gris_clair');
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
     $this->SetXY($memo_x , $memo_y+1);
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , 3 , To::pdf($item_intro) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->MultiCell( $this->reference_largeur , 3 , To::pdf($item_nom) , 0 /*bordure*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
   }
@@ -2815,9 +2837,9 @@ class PDF extends FPDF
       $this->AddPage($this->orientation , 'A4');
     }
     // Intitulé
-    $this->SetFont('Arial' , '' , 10);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 10);
     $this->Cell(0 , $this->cases_hauteur , To::pdf($texte_entete) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetFont('Arial' , '' , 8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 8);
   }
 
   public function cartouche_minimal_competence( $item_ref , $note )
@@ -2825,10 +2847,10 @@ class PDF extends FPDF
     $memo_x = $this->GetX();
     $memo_y = $this->GetY();
     list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-    $this->SetFont('Arial' , '' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 7);
     $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetFont('Arial' , '' , 8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 8);
     $this->SetXY($memo_x , $memo_y);
     $this->Cell( $this->cases_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
@@ -2840,10 +2862,10 @@ class PDF extends FPDF
     $memo_x = $this->GetX();
     $memo_y = $this->GetY();
     list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-    $this->SetFont('Arial' , '' , 7);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 7);
     $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetFont('Arial' , '' , 8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , 8);
     $this->SetXY($memo_x , $memo_y);
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                         , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_intitule) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
@@ -2871,7 +2893,7 @@ class PDF extends FPDF
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
     $this->SetAutoPageBreak(FALSE);
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.2);
     $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($intitule)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
   }
@@ -2947,7 +2969,7 @@ class PDF extends FPDF
     $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $remplissage );
     // nom-prénom
     $this->SetXY($memo_x , $memo_y+($nb_lignes-2+(int)$remplissage)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_nom)    , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($eleve_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // moyenne
@@ -2983,7 +3005,7 @@ class PDF extends FPDF
     if($eleve_nom && $eleve_prenom)
     {
       $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
       $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
     }
     // cadre
@@ -2992,7 +3014,7 @@ class PDF extends FPDF
     $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // rubrique + moyenne
     $this->SetXY($memo_x , $memo_y+($nb_lignes-2)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     if($with_moyenne)
     {
@@ -3017,7 +3039,7 @@ class PDF extends FPDF
     $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // rubrique + moyenne
     $this->SetXY($memo_x , $memo_y+($nb_lignes-2)*$this->lignes_hauteur/2);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom)    , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     if($with_moyenne)
     {
@@ -3056,13 +3078,13 @@ class PDF extends FPDF
     $ligne2 = (!$is_brevet) ? 'Tableau des moyennes' : 'Notes et total des points' ;
     $hauteur_quart = $this->etiquette_hauteur / 4 ;
     $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($ligne1)      , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($ligne2)      , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($classe_nom)  , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->reference_largeur , $hauteur_quart , To::pdf($periode_nom) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($this->marge_gauche , $this->marge_haut);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->Cell( $this->reference_largeur , $this->etiquette_hauteur , '' , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
@@ -3102,7 +3124,7 @@ class PDF extends FPDF
     $this->choisir_couleur_fond('gris_moyen');
     // nom-prénom-série
     $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom.' - '.$serie_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
   }
 
@@ -3118,7 +3140,7 @@ class PDF extends FPDF
     $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // épreuve, moyenne, appréciation
     $this->SetXY($memo_x , $memo_y);
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($epreuve_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
     // appréciations
@@ -3143,7 +3165,7 @@ class PDF extends FPDF
     $bold = (!in_array($type,array('Session','Avertissement'))) ? '' : 'B' ;
     list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
     $this->SetXY($posx,$posy);
-    $this->SetFont('Arial',$bold,$size);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"],$bold,$size);
     if(!in_array($type,array('Établissement','Avertissement')))
     {
       $this->CellFit( $largeur , $hauteur , To::pdf($contenu) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE  /*remplissage*/ );
@@ -3173,7 +3195,7 @@ class PDF extends FPDF
   {
     list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
     $this->SetXY($posx,$posy);
-    $this->SetFont('Arial','',8);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"],'',8);
     $this->SetFillColor(255,255,255);
     foreach($contenu as $ligne)
     {
@@ -3187,7 +3209,7 @@ class PDF extends FPDF
     $bold = ($type=='classe') ? '' : 'B' ;
     list($posx,$posy,$largeur,$hauteur) = $tab_pdf_coords;
     $this->SetXY($posx,$posy);
-    $this->SetFont('Arial',$bold,$size);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"],$bold,$size);
     $this->CellFit( $largeur , $hauteur , To::pdf($contenu) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   }
 
@@ -3209,7 +3231,7 @@ class PDF extends FPDF
   {
     $taille_police = 5 ;
     $ligne_hauteur = $taille_police*0.4 ;
-    $this->SetFont('Arial' , '' , $taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $taille_police);
     $this->SetXY( $this->marge_gauche-1 , $this->marge_haut+8.5 );
     $this->Cell( $this->page_largeur_moins_marges , $ligne_hauteur , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
   }
@@ -3228,16 +3250,16 @@ class PDF extends FPDF
     $this->AddPage($this->orientation , 'A4');
     $this->SetAutoPageBreak(TRUE);
     // Titre
-    $this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , 'B' , $this->taille_police*1.2);
     $this->CellFit( $this->page_largeur_moins_marges , 7 , To::pdf($regroupement)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     // Avertissement
-    $this->SetFont('Arial' , '' , $this->taille_police*0.9);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police*0.9);
     $this->SetX( $this->GetX() + 5 );
     $message = 'Le trombinoscope est privé (accessible aux seuls personnels habilités) et réservé à un usage pédagogique interne (il ne doit pas être transmis à un tiers), ceci quel que soit son support (numérique ou imprimé). Pour davantage d\'informations relatives au respect de la vie privée et au droit à l\'image, consulter la documentation correspondante (intégrée à l\'application et disponible sur internet).';
     $this->MultiCell( $this->page_largeur_moins_marges - 2*5 , 4 , To::pdf($message)  , 1 /*bordure*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // Next...
     $this->SetY( $this->GetY() + 2 );
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
     $this->photo_hauteur_maxi   = PHOTO_DIMENSION_MAXI*$this->coef_conv_pixel_to_mm;
     $this->cadre_photo_hauteur  = $this->photo_hauteur_maxi + 0.5 + 8 ; // 0.5 marge + 2x4mm pour lignes nom et prénom
   }

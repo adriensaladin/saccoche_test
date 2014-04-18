@@ -325,5 +325,25 @@ class Clean
     return array_map( 'trim' , $array );
   }
 
+  public static function police($text)
+  {
+    $tab_police = array();
+    if ($dossier = opendir('./_lib/FPDF/font'))
+    {
+      while (($file = readdir($dossier)) !== false)
+      {
+        if (substr($file, -4) == ".php")
+        {
+          if (substr($file, -6) != "bd.php")
+          {
+            $tab_police[] = substr($file, 0, -4);
+          }
+        }
+      }
+    }
+    
+    return in_array($text,$tab_police) ? $text : 'arial' ;
+  }
+  
 }
 ?>

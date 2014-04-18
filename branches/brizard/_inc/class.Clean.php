@@ -306,6 +306,12 @@ class Clean
     return in_array($text,$tab) ? $text : NULL ;
   }
 
+  public static function synthese_AfficherDate($text)
+  {
+  	$tab = array('1','0');
+  	return in_array($text,$tab) ? $text : '' ;
+  }
+  
   public static function referentiel_partage($text)
   {
     $tab = array('oui','non','bof','hs');

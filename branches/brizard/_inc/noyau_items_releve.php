@@ -363,6 +363,17 @@ if($calcul_acquisitions)
   }
 }
 
+/* Vérifier si la case pour la date de la réussite doit être affichée ou non */
+$aff_date_reussite = false;
+foreach($tab_item as $item)
+{
+  extract($item[0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite $afficher_date
+  if ($afficher_date == 1 && $calcul_methode == "bestof1")
+  {
+    $aff_date_reussite = true;
+    break;
+  }
+}
 /*
   On renseigne (uniquement utile pour le tableau de synthèse) :
   $tab_moyenne_scores_item[$item_id]
@@ -500,7 +511,7 @@ if($type_individuel)
     $lignes_nb = ($format!='multimatiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
     $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
     $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
-    $releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
+    $releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_date_reussite , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
   }
   // Pour chaque élève...
   foreach($tab_eleve as $tab)
@@ -560,6 +571,7 @@ if($type_individuel)
                       $releve_HTML_table_head .= '<th></th>';  // Pas de colspan sinon pb avec le tri
                     }
                   }
+                  $releve_HTML_table_head .= ($aff_date_reussite) ? '<th>date d\'acquisition</th>' : '' ;
                   $releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
                   $releve_HTML_table_head .= '</tr></thead>'.NL;
                   $releve_HTML_table_body = '<tbody>'.NL;
@@ -650,6 +662,32 @@ if($type_individuel)
                         if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
                       }
                     }
+                  }
+                  if ($aff_date_reussite)
+                  {
+                    $date_reussite = "";
+                    if ($afficher_date == 1 && $calcul_methode == "bestof1")
+                    {
+                      foreach ($tab_devoirs as $devoir)
+                      {
+                        extract($devoir);
+                        if ($note == "VV")
+                        {
+                          $date_reussite = date("d/m/Y", strtotime($date));
+                          break;
+                        }
+                      }
+                      $pdf_bg = '';
+                      $td_class = '';
+                    }
+                    else
+                    {
+                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'not_available' : '' ;
+                      $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+                    }
+                    
+                    if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.$date_reussite.'</td>'; }
+                    if($make_pdf)  { $releve_PDF->bilan_item_individuel_afficher_date_reussite($date_reussite, $pdf_bg); }
                   }
                   // affichage du bilan de l'item
                   if($aff_etat_acquisition)

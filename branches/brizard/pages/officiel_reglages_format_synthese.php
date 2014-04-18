@@ -80,6 +80,8 @@ else
       $checked = ($DB_ROW['referentiel_mode_synthese']==$option_valeur) ? ' checked' : '' ;
       echo'<label for="f_'.$ids.'_'.$option_valeur.'"><input type="radio" id="f_'.$ids.'_'.$option_valeur.'" name="f_'.$ids.'" value="'.$option_valeur.'"'.$checked.' /> '.$option_texte.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     }
+    $checked = ($DB_ROW['referentiel_afficher_date']==true) ? ' checked' : '' ;
+    echo'<label for="f_'.$ids.'__AfficherDate"><input type="checkbox" id="f_'.$ids.'__AfficherDate" name="f_'.$ids.'__AfficherDate" value="false"'.$checked.' /> Afficher la date</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     echo ($DB_ROW['referentiel_mode_synthese']=='inconnu') ? '<button id="bouton_'.$ids.'" type="button" class="valider" disabled>Valider.</button><label id="label_'.$ids.'" class="erreur">Choix manquant !</label>' : '<button id="bouton_'.$ids.'" type="button" class="valider">Valider.</button><label id="label_'.$ids.'" class="valide">ok</label>' ;
     echo'</li></ul>'.NL;
     // Div avec ses domaines

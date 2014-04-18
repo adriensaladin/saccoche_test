@@ -156,7 +156,7 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
 public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
   $DB_SQL = 'INSERT INTO sacoche_referentiel ';
-  $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:calcul_retroactif,:mode_synthese,:information)';
+  $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:calcul_retroactif,:mode_synthese,:afficher_date,:information)';
   $DB_VAR = array(
     ':matiere_id'        => $matiere_id,
     ':niveau_id'         => $niveau_id,
@@ -166,6 +166,7 @@ public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_et
     ':calcul_limite'     => $_SESSION['CALCUL_LIMITE'],
     ':calcul_retroactif' => $_SESSION['CALCUL_RETROACTIF'],
     ':mode_synthese'     => 'inconnu',
+    ':afficher_date'     => 0,
     ':information'       => '',
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

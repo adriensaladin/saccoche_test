@@ -510,7 +510,17 @@ if($type_individuel)
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
     $lignes_nb = ($format!='multimatiere') ? $tab_nb_lignes[$eleve_id][$matiere_id] : 0 ;
     $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
-    $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+    switch ($_SESSION['OFFICIEL']['RELEVE_MODELE'])
+    {
+      case 1:
+        $releve_PDF = new PDF_BilanItemIndividuel_Model2( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+        break;
+        
+      case 0:
+      default:
+        $releve_PDF = new PDF_BilanItemIndividuel_Model1( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
+        break;
+    }
     $releve_PDF->bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_date_reussite , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
   }
   // Pour chaque élève...

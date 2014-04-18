@@ -220,6 +220,11 @@ class Form
     'matieres_famille'      => array(), 
     'niveaux_famille'       => array(),
   );
+  
+  public static $tab_select_releve_modele = array(
+    array('valeur'=>  0 , 'texte'=>'Modèle 1') ,
+    array('valeur'=>  1 , 'texte'=>'Modèle 2') ,
+  );
 
   // //////////////////////////////////////////////////
   // Méthodes

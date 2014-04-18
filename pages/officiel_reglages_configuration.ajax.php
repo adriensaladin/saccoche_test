@@ -49,6 +49,7 @@ $releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))         
 $releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? Clean::texte($_POST['f_releve_couleur'])                  : '';
 $releve_legende                 = (isset($_POST['f_releve_legende']))                 ? Clean::texte($_POST['f_releve_legende'])                  : '';
 $releve_pages_nb                = (isset($_POST['f_releve_pages_nb']))                ? Clean::texte($_POST['f_releve_pages_nb'])                 : '';
+$releve_modele                  = (isset($_POST['f_releve_modele']))                  ? Clean::entier($_POST['f_releve_modele'])                  : 0;
 
 $bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? Clean::entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
 $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
@@ -104,6 +105,7 @@ $tab_variables = array(
     'couleur',
     'legende',
     'pages_nb',
+    'modele',
   ),
   'bulletin' => array(
     'appreciation_rubrique',

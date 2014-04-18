@@ -366,6 +366,8 @@ if($version_base_structure_actuelle=='2014-04-04')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_afficher_date TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Permet d aficher la date de la dernière réussite dans le relevé d évaluations." ');
     // ajout du paramètre officiel_police
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_police" , "arial" )' );
+    // ajout du paramètre officiel_releve_modele
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_modele" , "0" )' );
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     }

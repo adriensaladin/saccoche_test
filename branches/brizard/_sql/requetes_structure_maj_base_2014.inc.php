@@ -364,6 +364,8 @@ if($version_base_structure_actuelle=='2014-04-04')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // ajout d'une colonne à la table sacoche_referentiel
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_afficher_date TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Permet d aficher la date de la dernière réussite dans le relevé d évaluations." ');
+    // La référence du domaine est maintenant sur 2 caractères
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_domaine CHANGE domaine_ref domaine_ref CHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
     // ajout du paramètre officiel_police
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_police" , "arial" )' );
     // ajout du paramètre officiel_releve_modele

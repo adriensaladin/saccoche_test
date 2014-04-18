@@ -169,7 +169,7 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            new_li += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
+            new_li += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="2" maxlength="2" type="text" value="" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
             texte = 'ce domaine';
             break;
           case 'n2' :  // thème
@@ -232,9 +232,16 @@ $(document).ready
           case 'n1' :  // domaine
             // on récupère la référence et le nom
             span = $(this).parent().children('span').text();
-            ref = span.charAt(0);
-            nom = span.substring(4);
-            new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
+            var reg = new RegExp(" - ", "g");
+            var tableau = span.split(reg);
+            ref = tableau[0];
+            nom = tableau[1];
+            for (var i = 2 ; i < tableau.length ; i++)
+            {
+              nom = nom.concat(" - ");
+              nom = nom.concat(tableau[i]);
+            }
+            new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="2" maxlength="2" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
             texte = 'ce domaine';
             break;
           case 'n2' :  // thème
@@ -493,11 +500,14 @@ $(document).ready
             $('#f_ref').focus();
             return false;
           }
-          if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
+          for (var i=0;i<ref.length;i++)
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
-            $('#f_ref').focus();
-            return false;
+            if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref[i])==-1)
+            {
+              $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
+              $('#f_ref').focus();
+              return false;
+            }
           }
         }
         else
@@ -634,11 +644,14 @@ $(document).ready
             $('#f_ref').focus();
             return false;
           }
-          if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
+          for (var i=0;i<ref.length;i++)
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
-            $('#f_ref').focus();
-            return false;
+            if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref[i])==-1)
+            {
+              $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
+              $('#f_ref').focus();
+              return false;
+            }
           }
         }
         else

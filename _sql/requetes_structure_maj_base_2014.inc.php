@@ -362,6 +362,8 @@ if($version_base_structure_actuelle=='2014-04-04')
   {
     $version_base_structure_actuelle = '2014-04-18';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // ajout d'une colonne à la table sacoche_referentiel
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_afficher_date TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Permet d aficher la date de la dernière réussite dans le relevé d évaluations." ');
     // ajout du paramètre officiel_police
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_police" , "arial" )' );
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)

@@ -192,7 +192,7 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
   $DB_SQL.= $item_nom.' , ';
   $DB_SQL.= 'item_coef , item_cart , entree_id AS item_socle , item_lien , ';
   $DB_SQL.= ($matiere_id<0) ? 'matiere_id , matiere_nom , ' : '' ;
-  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
+  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif , referentiel_afficher_date AS afficher_date ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';

@@ -413,6 +413,35 @@ class PDF extends FPDF
     $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c %s',          ($x+$lx)*$k, ($h-($y+$ry))*$k, ($x+$rx)*$k, ($h-($y+$ly))*$k, ($x+$rx)*$k, ($h-$y)*$k,             $op));
   }
 
+  protected function GetMinCellWidth($text)
+  {
+    // Output text with automatic or explicit line breaks
+    $cw = &$this->CurrentFont['cw'];
+
+    $Lines = explode("\n", $text);
+
+    $NbLines = count($Lines);
+
+    $MinWidth = 0;
+    
+    foreach ($Lines as $line)
+    {
+      $words = preg_split('/ +/', $line);
+      foreach ($words as $word)
+      {
+        $width = $this->GetStringWidth($word);
+        if ($width > $MinWidth)
+        {
+          $MinWidth = $width;
+        }
+      }
+    }
+
+    $MinWidth += $this->cMargin * 2;
+    
+    return $MinWidth;
+  }
+
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Attributs de la classe (équivalents des "variables")
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,6 +506,8 @@ class PDF extends FPDF
   // Définition de qqs variables supplémentaires
   private $tab_legende_notes_speciales_texte  = array('ABS'=>'Absent','DISP'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
   private $tab_legende_notes_speciales_nombre = array('ABS'=>0       ,'DISP'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
+  private $case_date_largeur = 0;
+  
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
@@ -1440,9 +1471,10 @@ class PDF extends FPDF
   // bilan_item_individuel_debut_ligne_item()
   // bilan_item_individuel_ligne_synthese()
   // bilan_item_individuel_legende()
+  // bilan_item_individuel_afficher_date_reussite()
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleves_nb , $pages_nb_methode )
+  public function bilan_item_individuel_initialiser( $format , $aff_etat_acquisition , $aff_date_reussite, $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleves_nb , $pages_nb_methode )
   {
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->SetAutoPageBreak(FALSE);
@@ -1453,6 +1485,16 @@ class PDF extends FPDF
     $this->reference_largeur       = 10; // valeur fixe
     $this->synthese_largeur        = $this->page_largeur_moins_marges - $this->reference_largeur;
     $this->intitule_largeur        = $this->synthese_largeur - ( $this->cases_nb * $this->cases_largeur ) - $this->colonne_bilan_largeur;
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
+    if ($aff_date_reussite == true)
+    {
+      $this->case_date_largeur     = max($this->GetMinCellWidth(To::pdf("00/00/0000")), $cases_largeur);
+      $this->intitule_largeur      -= $this->case_date_largeur;
+    }
+    else
+    {
+      $this->case_date_largeur     = 0;
+    }
     $this->legende_deja_affichee   = FALSE; // Si multimatières, on n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
     $this->legende_nb_lignes       = 1 + (int)$aff_anciennete_notation + (int)$aff_etat_acquisition ;
     $this->aff_codes_notation      = TRUE;
@@ -1733,6 +1775,20 @@ class PDF extends FPDF
     }
   }
 
+  public function bilan_item_individuel_afficher_date_reussite($date, $background)
+  {
+    $this->SetFont($_SESSION["OFFICIEL"]["POLICE"] , '' , $this->taille_police);
+    if ( $background == "not_available" )
+    {
+      $this->choisir_couleur_fond('gris_fonce');
+    }
+    else
+    {
+      $this->choisir_couleur_fond('blanc');
+    }
+    $this->Cell( $this->case_date_largeur , $this->cases_hauteur , $date , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+  }
+    
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthodes pour la mise en page d'une grille d'items d'un référentiel
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

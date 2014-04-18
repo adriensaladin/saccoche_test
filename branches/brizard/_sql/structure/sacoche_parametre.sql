@@ -148,6 +148,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_releve_etat_acquisition"              , "1" ),
 ( "officiel_releve_legende"                       , "oui" ),
 ( "officiel_releve_ligne_supplementaire"          , "" ),
+( "officiel_releve_modele"                        , "0" ),
 ( "officiel_releve_moyenne_scores"                , "1" ),
 ( "officiel_releve_only_socle"                    , "0" ),
 ( "officiel_releve_pages_nb"                      , "optimise" ),

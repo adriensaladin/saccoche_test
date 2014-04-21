@@ -12,7 +12,7 @@ CREATE TABLE sacoche_convention (
   convention_signature   DATE                                          DEFAULT NULL,
   convention_paiement    DATE                                          DEFAULT NULL,
   convention_activation  TINYINT(1)   UNSIGNED                NOT NULL DEFAULT 0,
-  convention_commentaire TEXT         COLLATE utf8_unicode_ci         ,
+  convention_commentaire TEXT         COLLATE utf8_unicode_ci,
   PRIMARY KEY (convention_id),
   UNIQUE KEY (sacoche_base,connexion_nom,convention_date_debut),
   KEY convention_date_fin (convention_date_fin),

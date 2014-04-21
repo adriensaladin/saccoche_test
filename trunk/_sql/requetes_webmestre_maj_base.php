@@ -169,7 +169,7 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     $version_base_webmestre_actuelle = '2013-12-03';
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
     // Modification d'un champ
-    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_structure CHANGE structure_contact_courriel structure_contact_courriel VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL ' );
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_structure CHANGE structure_contact_courriel structure_contact_courriel VARCHAR(63)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     // ajout d'une colonne à la table sacoche_convention
     if(empty($reload_sacoche_convention))
     {
-      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_commentaire TEXT COLLATE utf8_unicode_ci DEFAULT NULL AFTER convention_activation ');
+      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_commentaire TEXT COLLATE utf8_unicode_ci AFTER convention_activation ');
     }
   }
 

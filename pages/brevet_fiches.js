@@ -300,7 +300,7 @@ $(document).ready
         $('#zone_action_eleve').html("&nbsp;").hide(0);
         $('#cadre_photo').hide(0);
         $('#cadre_statut , #table_accueil').show(0);
-        return false;
+        return(false);
       }
     );
 
@@ -310,7 +310,7 @@ $(document).ready
       {
         $('#zone_chx_rubriques').hide(0);
         $('#cadre_statut , #table_accueil').show(0);
-        return false;
+        return(false);
       }
     );
 
@@ -324,7 +324,7 @@ $(document).ready
         $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
         $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
         $('#cadre_statut , #table_accueil').show(0);
-        return false;
+        return(false);
       }
     );
 
@@ -1192,7 +1192,7 @@ $(document).ready
         $('#section_corriger').html("");
         $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
         $.fancybox.close();
-        return false;
+        return(false);
       }
     );
 

@@ -143,7 +143,7 @@ $(document).ready
         $('#zone_elaboration_referentiel').html("&nbsp;");
         afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
         $('#zone_choix_referentiel').show('fast');
-        return false;
+        return(false);
       }
     );
 
@@ -184,7 +184,7 @@ $(document).ready
       function()
       {
         $(this).parent().children('label').removeAttr("class").addClass("alerte").html("Penser à valider !");
-        return false;
+        return(false);
       }
     );
 
@@ -732,21 +732,37 @@ $(document).ready
         data: {'csrf':CSRF,'action':'Uploader_document'},
         autoSubmit: true,
         responseType: "html",
+        onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
       }
     );
+
+    function changer_fichier(fichier_nom,fichier_extension)
+    {
+      $('#ajax_ressources_upload').removeAttr("class").html('&nbsp;');
+      $('#zone_ressources_upload button').prop('disabled',true);
+      return true;
+    }
 
     function verifier_fichier(fichier_nom,fichier_extension)
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#zone_ressources_upload button').prop('disabled',false);
+        return false;
+      }
+      else if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) && !confirm('Vous devriez convertir votre fichier au format PDF.\nEtes-vous certain de vouloir l\'envoyer sous ce format ?') )
+      {
+        $('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Convertissez votre fichier en "pdf".');
+        $('#zone_ressources_upload button').prop('disabled',false);
         return false;
       }
       else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
       {
         $('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
+        $('#zone_ressources_upload button').prop('disabled',false);
         return false;
       }
       else
@@ -759,7 +775,6 @@ $(document).ready
 
     function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      fichier_extension = fichier_nom.split('.').pop();
       $('#zone_ressources_upload button').prop('disabled',false);
       if(responseHTML.substring(0,4)!='http')
       {
@@ -775,15 +790,6 @@ $(document).ready
         $('label[for=lien_nom]').removeAttr("class").addClass("alerte").html("Validez l'ajout&hellip;");
         $('#lien_url').val(upload_lien);
         $('#lien_nom').focus();
-        if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
-        {
-          $.prompt(
-            "Votre fichier a bien été enregistré comme ressource.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
-            {
-              title  : 'Information'
-            }
-          );
-        }
       }
     }
 

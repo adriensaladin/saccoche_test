@@ -209,12 +209,12 @@ $(document).ready
         if( !profil )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
-          return false;
+          return(false);
         }
         if( !$("#f_user input:checked").length )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
-          return false;
+          return(false);
         }
         $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");

@@ -729,7 +729,7 @@ $(document).ready
       function()
       {
         $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-        return false;
+        return(false);
       }
     );
 
@@ -751,7 +751,7 @@ $(document).ready
       }
       $('#zone_saisir').css("display","none");
       $('#form_prechoix , #table_action').show('fast');
-      return false;
+      return(false);
     }
 
     $('#fermer_zone_saisir').click
@@ -765,7 +765,7 @@ $(document).ready
         else
         {
           $.fancybox( { 'href':'#zone_confirmer_fermer_saisir' , onStart:function(){$('#zone_confirmer_fermer_saisir').css("display","block");} , onClosed:function(){$('#zone_confirmer_fermer_saisir').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-          return false;
+          return(false);
         }
       }
     );
@@ -803,7 +803,7 @@ $(document).ready
         }
         $('#zone_voir').css("display","none");
         $('#form_prechoix , #table_action').show('fast');
-        return false;
+        return(false);
       }
     );
 
@@ -1963,6 +1963,7 @@ $(document).ready
         data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
         autoSubmit: true,
         responseType: "html",
+        onChange: changer_fichier_document,
         onSubmit: verifier_fichier_document,
         onComplete: retourner_fichier_document
       }
@@ -1977,16 +1978,30 @@ $(document).ready
         data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
         autoSubmit: true,
         responseType: "html",
+        onChange: changer_fichier_document,
         onSubmit: verifier_fichier_document,
         onComplete: retourner_fichier_document
       }
     );
+
+    function changer_fichier_document(fichier_nom,fichier_extension)
+    {
+      $('#ajax_document_upload').removeAttr("class").html('&nbsp;');
+      $('#zone_upload button').prop('disabled',true);
+      return true;
+    }
 
     function verifier_fichier_document(fichier_nom,fichier_extension)
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
+        return false;
+      }
+      else if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) && !confirm('Vous devriez convertir votre fichier au format PDF.\nEtes-vous certain de vouloir l\'envoyer sous ce format ?') )
+      {
+        $('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Convertissez votre fichier en "pdf".');
         activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
         return false;
       }
@@ -2006,7 +2021,6 @@ $(document).ready
 
     function retourner_fichier_document(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      fichier_extension = fichier_nom.split('.').pop();
       var tab_infos = responseHTML.split(']¤[');
       if(tab_infos[0]!='ok')
       {
@@ -2024,15 +2038,6 @@ $(document).ready
         var lien        = '<a href="'+url+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
         $('#span_'+objet).html(lien);
         $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
-        if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
-        {
-          $.prompt(
-            "Votre fichier a bien été joint au devoir.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
-            {
-              title  : 'Information'
-            }
-          );
-        }
       }
       activer_boutons_upload(ref);
     }

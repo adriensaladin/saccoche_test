@@ -92,7 +92,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-  $of_g = ''; $sel_g = $auto_select_classe_id; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = ($auto_select_eleve_num!==FALSE) ? 'show' : 'hide' ;
+  $of_g = ''; $sel_g = $auto_select_classe_id; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
 }

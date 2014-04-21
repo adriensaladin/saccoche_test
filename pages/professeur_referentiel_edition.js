@@ -28,11 +28,9 @@
 // Permettre l'utilisation de caractères spéciaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var tab_entite_nom   = new Array('&sup2;','&sup3;','&times;','&divide;','&minus;','&pi;','&rarr;','&radic;','&infin;','&asymp;','&ne;','&le;','&ge;');
-var tab_entite_val   = new Array('²'     ,'³'     ,'×'      ,'÷'       ,'–'      ,'π'   ,'→'     ,'√'      ,'∞'      ,'≈'      ,'≠'   ,'≤'   ,'≥'   );
-var imax             = tab_entite_nom.length;
-var memo_text_delete = '';
-var memo_objet       = null;
+var tab_entite_nom = new Array('&sup2;','&sup3;','&times;','&divide;','&minus;','&pi;','&rarr;','&radic;','&infin;','&asymp;','&ne;','&le;','&ge;');
+var tab_entite_val = new Array('²'     ,'³'     ,'×'      ,'÷'       ,'–'      ,'π'   ,'→'     ,'√'      ,'∞'      ,'≈'      ,'≠'   ,'≤'   ,'≥'   );
+var imax = tab_entite_nom.length;
 function entity_convert(string)
 {
   for(i=0;i<imax;i++)
@@ -149,7 +147,7 @@ $(document).ready
         $('#zone_elaboration_referentiel').html("&nbsp;");
         afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
         $('#zone_choix_referentiel').show('fast');
-        return false;
+        return(false);
       }
     );
 
@@ -307,32 +305,26 @@ $(document).ready
         contexte = $(this).attr('class').substring(0,2);
         afficher_masquer_images_action('hide');
         // On créé le formulaire à valider
-        var matiere_nom = $('#zone_elaboration_referentiel h2').text();
         switch(contexte)
         {
           case 'n1' :  // domaine
             alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
-            texte1 = 'ce domaine';
-            texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+$(this).parent().children('span').text()+'&nbsp;&raquo;';
+            texte = 'ce domaine';
             break;
           case 'n2' :  // thème
             alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
-            texte1 = 'ce thème';
-            texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+$(this).parent().children('span').text()+'&nbsp;&raquo;';
+            texte = 'ce thème';
             break;
           case 'n3' :  // item
             alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
-            texte1 = 'cet item';
-            texte2 = 'l\'item sélectionné';
+            texte = 'cet item';
             break;
           default :
             alerte = '???';
-            texte1 = '???';
-            texte2 = '???';
+            texte = '???';
         }
-        memo_text_delete = texte2;
         new_div = '<div id="form_del" class="danger">'+alerte;  // un div.danger est utilisé au lieu du span.danger car un clic sur un span enroule/déroule le contenu
-        new_div += '<q class="valider" lang="supprimer" title="Valider la suppression de '+texte1+'."></q><q class="annuler" lang="supprimer" title="Annuler la suppression de '+texte1+'."></q> <label id="ajax_msg">&nbsp;</label>';
+        new_div += '<q class="valider" lang="supprimer" title="Valider la suppression de '+texte+'."></q><q class="annuler" lang="supprimer" title="Annuler la suppression de '+texte+'."></q> <label id="ajax_msg">&nbsp;</label>';
         new_div += '</div>';
         // On insère le formulaire dans la page
         if(contexte=='n3')
@@ -748,93 +740,55 @@ $(document).ready
       'q.valider[lang=supprimer]',
       function()
       {
-        memo_objet = $(this);
-        $.prompt(prompt_etapes);
+        if(confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nTOUS LES RÉSULTATS ASSOCIÉS DES ÉLÈVES SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CE RÉFÉRENTIEL ?"))
+        {
+          // On récupère le contexte de la demande : n1 ou n2 ou n3
+          contexte = $(this).parent().parent().attr('id').substring(0,2);
+          // On récupère l'id de l'élément concerné (domaine ou theme ou item)
+          element_id = $(this).parent().parent().attr('id').substring(3);
+          // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
+          li = $(this).parent().parent();
+          tab_id = new Array();
+          while(li.next().length)
+          {
+            li = li.next();
+            tab_id.push(li.attr('id').substring(3));
+          }
+          // Envoi des infos en ajax pour le traitement de la demande
+          $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $.ajax
+          (
+            {
+              type : 'POST',
+              url : 'ajax.php?page='+PAGE,
+              data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
+              dataType : "html",
+              error : function(jqXHR, textStatus, errorThrown)
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              },
+              success : function(responseHTML)
+              {
+                initialiser_compteur();
+                if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+                {
+                  $('#ajax_msg').parent().parent().remove();
+                  afficher_masquer_images_action('show');
+                }
+                else
+                {
+                  $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                }
+              }
+            }
+          );
+        }
+        else
+        {
+          $('q.annuler').click();
+        }
       }
     );
-
-    var prompt_etapes = {
-      etape_2: {
-        title   : 'Demande de confirmation (2/3)',
-        html    : "Tous les résultats des élèves qui en dépendent seront perdus !<br />Souhaitez-vous vraiment supprimer cet élément de référentiel ?",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            event.preventDefault();
-            $('#referentiel_infos_prompt').html(memo_text_delete);
-            $.prompt.goToState('etape_3');
-            return false;
-          }
-          else {
-            $('q.annuler').click();
-          }
-        }
-      },
-      etape_3: {
-        title   : 'Demande de confirmation (3/3)',
-        html    : "Attention : dernière demande de confirmation !!!<br />Êtes-vous bien certain de vouloir supprimer "+'<span id="referentiel_infos_prompt"></span>'+" ?<br />Est-ce définitivement votre dernier mot ???",
-        buttons : {
-          "Oui, j'insiste !" : true ,
-          "Non, surtout pas !" : false
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            envoyer_action_confirmee();
-            return true;
-          }
-          else {
-            $('q.annuler').click();
-          }
-        }
-      }
-    };
-
-    function envoyer_action_confirmee()
-    {
-      // On récupère le contexte de la demande : n1 ou n2 ou n3
-      contexte = memo_objet.parent().parent().attr('id').substring(0,2);
-      // On récupère l'id de l'élément concerné (domaine ou theme ou item)
-      element_id = memo_objet.parent().parent().attr('id').substring(3);
-      // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
-      li = memo_objet.parent().parent();
-      tab_id = new Array();
-      while(li.next().length)
-      {
-        li = li.next();
-        tab_id.push(li.attr('id').substring(3));
-      }
-      // Envoi des infos en ajax pour le traitement de la demande
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-          },
-          success : function(responseHTML)
-          {
-            initialiser_compteur();
-            if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-            {
-              $('#ajax_msg').parent().parent().remove();
-              afficher_masquer_images_action('show');
-            }
-            else
-            {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-          }
-        }
-      );
-    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour confirmer la fusion d'un item avec un second qui l'absorbe

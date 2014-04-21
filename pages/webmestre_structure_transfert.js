@@ -31,12 +31,6 @@ $(document).ready
   {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var listing_id = new Array();
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Demande d'export des bases => soumission du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -406,38 +400,6 @@ $(document).ready
 // Clic sur un bouton pour effectuer une action sur les structures sélectionnées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var prompt_etapes_supprimer_selectionnees = {
-      etape_1: {
-        title   : 'Demande de confirmation (1/2)',
-        html    : "Souhaitez-vous vraiment supprimer les bases des structures sélectionnées ?",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            event.preventDefault(); 
-            $.prompt.goToState('etape_2');
-            return false;
-          }
-        }
-      },
-      etape_2: {
-        title   : 'Demande de confirmation (2/2)',
-        html    : "Êtes-vous bien certain de vouloir supprimer ces bases ?<br /><b>Est-ce définitivement votre dernier mot ???</b>",
-        buttons : {
-          "Oui, j'insiste !" : true ,
-          "Non, surtout pas !" : false
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            supprimer_structures_selectionnees(listing_id);
-            return true;
-          }
-        }
-      }
-    };
-
     var supprimer_structures_selectionnees = function(listing_id)
     {
       $("button").prop('disabled',true);
@@ -483,8 +445,7 @@ $(document).ready
       function()
       {
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-        listing_id = [];
-        $("#f_base input:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#f_base input:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer_export').removeAttr("class").addClass("erreur").html("Aucune structure sélectionnée !");
@@ -494,7 +455,10 @@ $(document).ready
         var id = $(this).attr('id');
         if(id=='bouton_supprimer_export')
         {
-          $.prompt(prompt_etapes_supprimer_selectionnees);
+          if(confirm("Toutes les bases des structures sélectionnées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
+          {
+            supprimer_structures_selectionnees(listing_id);
+          }
         }
         else
         {
@@ -516,38 +480,6 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur un bouton pour effectuer une action sur les structures cochées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var prompt_etapes_supprimer_cochees = {
-      etape_1: {
-        title   : 'Demande de confirmation (1/2)',
-        html    : "Souhaitez-vous vraiment supprimer les bases des structures cochées ?<br />Toutes les données associées seront perdues !",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            event.preventDefault(); 
-            $.prompt.goToState('etape_2');
-            return false;
-          }
-        }
-      },
-      etape_2: {
-        title   : 'Demande de confirmation (2/2)',
-        html    : "Êtes-vous bien certain de vouloir supprimer ces bases ?<br />Est-ce définitivement votre dernier mot ???",
-        buttons : {
-          "Oui, j'insiste !" : true ,
-          "Non, surtout pas !" : false
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            supprimer_structures_cochees(listing_id);
-            return true;
-          }
-        }
-      }
-    };
 
     var supprimer_structures_cochees = function(listing_id)
     {
@@ -594,8 +526,7 @@ $(document).ready
       function()
       {
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-        listing_id = [];
-        $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer_import').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
@@ -605,7 +536,10 @@ $(document).ready
         var id = $(this).attr('id');
         if(id=='bouton_supprimer_import')
         {
-          $.prompt(prompt_etapes_supprimer_cochees);
+          if(confirm("Toutes les bases des structures cochées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
+          {
+            supprimer_structures_cochees(listing_id);
+          }
         }
         else
         {

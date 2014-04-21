@@ -211,12 +211,7 @@ public static function DB_tester_convention_active($base_id,$connexion_nom)
   $DB_SQL = 'SELECT convention_id ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'WHERE sacoche_base=:base_id AND connexion_nom=:connexion_nom AND convention_date_debut<=:today AND convention_date_fin>=:today AND convention_activation=:convention_activation ';
-  $DB_VAR = array(
-    ':base_id'               => $base_id,
-    ':connexion_nom'         => $connexion_nom,
-    ':today'                 => TODAY_MYSQL,
-    ':convention_activation' => 1,
-  );
+  $DB_VAR = array(':base_id'=>$base_id,':connexion_nom'=>$connexion_nom,':today'=>TODAY_MYSQL,':convention_activation'=>1);
   return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

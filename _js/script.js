@@ -604,25 +604,13 @@ function conserver_session_active()
       dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
-        $('div.jqibox').remove(); // Sinon il y a un pb d'affichage lors d'appels successifs
-        $.prompt(
-          "Échec lors de la connexion au serveur !<br />Le travail en cours pourrait ne pas pouvoir être sauvegardé...",
-          {
-            title  : 'Avertissement'
-          }
-        );
+        alert('Avertissement : échec lors de la connexion au serveur !\nLe travail en cours pourrait ne pas pouvoir être sauvegardé...');
       },
       success : function(responseHTML)
       {
         if(responseHTML != 'ok')
         {
-          $('div.jqibox').remove(); // Sinon il y a un pb d'affichage lors d'appels successifs
-          $.prompt(
-            responseHTML ,
-            {
-              title: 'Anomalie'
-            }
-          );
+          alert(responseHTML);
         }
       }
     }
@@ -874,48 +862,37 @@ $(document).ready
     /**
      * Ajouter une méthode de tri au plugin TableSorter
      */
-    $.tablesorter.addParser
-    (
-      {
-        // set a unique id
-        id: 'date_fr',
-        is: function(date_fr)
+      $.tablesorter.addParser
+      (
         {
-          // return false so this parser is not auto detected
-          return false;
-        },
-        format: function(date_fr)
-        {
-          // format your data for normalization
-          if(date_fr=='-')
+          // set a unique id
+          id: 'date_fr',
+          is: function(date_fr)
           {
-            return 99991231;
-          }
-          tab_date = date_fr.split('/');
-          if(tab_date.length==3)
+            // return false so this parser is not auto detected
+            return false;
+          },
+          format: function(date_fr)
           {
-            return tab_date[2]+tab_date[1]+tab_date[0]; // Il s'agit bien d'une concaténation, pas d'une somme.
-          }
-          else
-          {
-            return 0;
-          }
-        },
-        // set type, either numeric or text
-        type: 'numeric'
-      }
-    );
-
-    /**
-     * Plugin Impromptu - Options par défaut
-     */
-    jQuery.prompt.setDefaults({
-      opacity: 0.7, // Combiné au background-color:#000 modifié dans le css
-      zIndex : 9000 // Pour passer devant un fancybox
-    });
-    jQuery.prompt.setStateDefaults({
-      focus  : null // Pas de focus particulier ; ne fonctionne qu'avec la syntaxe utilisant une collection d'étapes, pas la syntaxe directe simplifiée.
-    });
+            // format your data for normalization
+            if(date_fr=='-')
+            {
+              return 99991231;
+            }
+            tab_date = date_fr.split('/');
+            if(tab_date.length==3)
+            {
+              return tab_date[2]+tab_date[1]+tab_date[0]; // Il s'agit bien d'une concaténation, pas d'une somme.
+            }
+            else
+            {
+              return 0;
+            }
+          },
+          // set type, either numeric or text
+          type: 'numeric'
+        }
+      );
 
     /**
      * MENU - Rendre transparente la page au survol.
@@ -1476,7 +1453,7 @@ $(document).ready
         {
           $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );
         }
-        return false;
+        return(false);
       }
     );
 

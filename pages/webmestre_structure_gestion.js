@@ -34,9 +34,8 @@ $(document).ready
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var mode        = false;
+    var mode = false;
     var please_wait = false;
-    var listing_id  = new Array();
 
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},6:{sorter:'date_fr'},7:{sorter:false}} });
@@ -86,7 +85,7 @@ $(document).ready
       }
       else
       {
-        $('#p_ajout , #span_envoi').css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#p_ajout , #span_envoi').hide(0);
       }
       if(mode!='supprimer')
       {
@@ -326,38 +325,6 @@ $(document).ready
 // Clic sur un bouton pour effectuer une action sur les structures cochées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var prompt_etapes_supprimer_cochees = {
-      etape_1: {
-        title   : 'Demande de confirmation (1/2)',
-        html    : "Souhaitez-vous vraiment supprimer les bases des structures cochées ?<br />Toutes les données associées seront perdues !",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            event.preventDefault(); 
-            $.prompt.goToState('etape_2');
-            return false;
-          }
-        }
-      },
-      etape_2: {
-        title   : 'Demande de confirmation (2/2)',
-        html    : "Êtes-vous bien certain de vouloir supprimer ces bases ?<br />Est-ce définitivement votre dernier mot ???",
-        buttons : {
-          "Oui, j'insiste !" : true ,
-          "Non, surtout pas !" : false
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            supprimer_structures_cochees(listing_id);
-            return true;
-          }
-        }
-      }
-    };
-
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
@@ -403,8 +370,7 @@ $(document).ready
       function()
       {
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-        listing_id = [];
-        $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
@@ -414,7 +380,10 @@ $(document).ready
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {
-          $.prompt(prompt_etapes_supprimer_cochees);
+          if(confirm("Toutes les bases des structures cochées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
+          {
+            supprimer_structures_cochees(listing_id);
+          }
         }
         else
         {
@@ -472,6 +441,9 @@ $(document).ready
               }
               else
               {
+                // var reg = new RegExp('<BR />',"g");  // Si on transmet les retours à la ligne en ajax alors ils se font pas...
+                // var message = responseHTML.replace(reg,'\n').substring(4);
+                // alert( message );
                 $.fancybox( '<p>'+responseHTML+'</p>' , {'centerOnScroll':true} );
               }
             }
@@ -536,40 +508,20 @@ $(document).ready
       success : retour_form_valide
     };
 
-    var prompt_etapes_confirmer_inscription = {
-      etape_1: {
-        title   : 'Demande de confirmation',
-        html    : "Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !<br />Souhaitez-vous vraiment ne pas vouloir envoyer le courriel d'inscription ?",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            formulaire.ajaxSubmit(ajaxOptions); // Pas de $(this) ici...
-          }
-        }
-      }
-    };
-
     // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
     (
       function()
       {
-        if (please_wait)
+        if (!please_wait)
         {
+          $(this).ajaxSubmit(ajaxOptions);
           return false;
-        }
-        else if( (mode=='ajouter') && ($('#f_courriel_envoi').is(':checked')==false) )
-        {
-          $.prompt(prompt_etapes_confirmer_inscription);
         }
         else
         {
-          $(this).ajaxSubmit(ajaxOptions);
+          return false;
         }
-        return false;
       }
     ); 
 
@@ -590,7 +542,14 @@ $(document).ready
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
-      var readytogo = validation.form();
+      if( (mode!='ajouter') || ($('#f_courriel_envoi').is(':checked')) || confirm("Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !\nConfirmez-vous ne pas vouloir envoyer le courriel d'inscription ?") )
+      {
+        var readytogo = validation.form();
+      }
+      else
+      {
+        var readytogo = false;
+      }
       if(readytogo)
       {
         please_wait = true;

@@ -307,6 +307,9 @@ $(document).ready
         }
         else
         {
+          // var reg = new RegExp('<BR />',"g");  // Si on transmet les retours à la ligne en ajax alors ils se font pas...
+          // var message = responseHTML.replace(reg,'\n').substring(4);
+          // alert( message );
           $.fancybox( '<p>'+responseHTML+'</p>' , {'centerOnScroll':true} );
         }
       }

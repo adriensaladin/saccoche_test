@@ -179,7 +179,6 @@ public static function DB_lister_classes_parent($parent_id)
  */
 public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id,$user_profil_type)
 {
-  // Cette fonction peut être appelée avec un autre profil.
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT item_id, saisie_note AS note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
@@ -241,7 +240,6 @@ public static function DB_recuperer_classe_eleve($eleve_id)
  */
 public static function DB_lister_devoirs_groupes_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql,$user_profil_type)
 {
-  // Cette fonction peut être appelée avec un autre profil.
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
   $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
   $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
@@ -261,11 +259,12 @@ public static function DB_lister_devoirs_groupes_eleve($eleve_id,$classe_id,$dat
  *
  * @param int    $eleve_id
  * @param int    $nb_jours
+ * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($eleve_id,$nb_jours)
+public static function DB_lister_devoirs_eleve_recents_avec_notes_saisies($eleve_id,$nb_jours,$user_profil_type)
 {
-  $sql_view = 'AND devoir_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
+  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
@@ -279,38 +278,16 @@ public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($elev
 }
 
 /**
- * Lister les évaluations concernant un élève donné comportant uen auto-évaluation en cours
- *
- * @param int    $eleve_id
- * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
- * @return array
- */
-public static function DB_lister_devoirs_eleve_avec_autoevaluation_en_cours($eleve_id,$classe_id)
-{
-  $sql_view = 'AND devoir_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
-  $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
-  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
-  $DB_SQL.= 'FROM  sacoche_devoir ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
-  $DB_SQL.= 'AND devoir_autoeval_date IS NOT NULL AND devoir_autoeval_date >= NOW() '.$sql_view ;
-  $DB_SQL.= 'GROUP BY devoir_id ';
-  $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Lister les évaluations concernant un élève sur les derniers jours
  *
  * @param int    $eleve_id
  * @param int    $nb_jours
+ * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours)
+public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours,$user_profil_type)
 {
-  $sql_view = 'AND saisie_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
+  $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT item_id , item_nom , saisie_date , saisie_note , ';
   $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
   $DB_SQL.= 'matiere_id , niveau_id , matiere_nom ';
@@ -363,7 +340,6 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
  */
 public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$user_profil_type,$with_REQ)
 {
-  // Cette fonction peut être appelée avec un autre profil.
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $req_view = ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
   $DB_SQL = 'SELECT item_id, saisie_note ';

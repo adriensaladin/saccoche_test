@@ -347,5 +347,5 @@ if( ($action=='demande_mdp') && ($courriel!='') && ( ($BASE>0) || (HEBERGEUR_INS
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit_json( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !')
 ?>

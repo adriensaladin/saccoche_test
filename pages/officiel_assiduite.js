@@ -453,8 +453,8 @@ $(document).ready
     // Clic sur un bouton pour fermer un cadre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#zone_confirmer').on( 'click' , '#fermer_zone_confirmer' , function(){ $.fancybox.close(); return false; } );
-    $('#zone_saisir'   ).on( 'click' , '#fermer_zone_saisir'    , function(){ $.fancybox.close(); return false; } );
+    $('#zone_confirmer').on( 'click' , '#fermer_zone_confirmer' , function(){ $.fancybox.close(); return(false); } );
+    $('#zone_saisir'   ).on( 'click' , '#fermer_zone_saisir'    , function(){ $.fancybox.close(); return(false); } );
 
   }
 );

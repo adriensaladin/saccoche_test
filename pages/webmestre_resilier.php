@@ -36,8 +36,8 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 }
 ?>
 
-<p><span class="danger"> Si vous résiliez l'inscription, alors toutes les données (élèves, professeurs, compétences, classes, etc.) seront complètement effacées !</span></p>
+<p><span class="danger"> Si vous confirmez votre choix, alors toutes les données des élèves, professeurs, compétences, classes, etc. seront complètement effacées !</span></p>
 
 <form action="#" method="post"><fieldset>
-  <span class="tab"></span><button id="bouton_valider" type="button" class="supprimer">Résilier l'inscription.</button><label id="ajax_msg">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_valider" type="submit" class="supprimer">Résilier l'inscription.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

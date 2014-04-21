@@ -196,7 +196,7 @@ $(document).ready
         $('#zone_resultat_eleve table tbody').html('<tr><td colspan="4"></td></tr>');
         $('#zone_action_eleve').hide(0);
         $('#table_accueil').show(0);
-        return false;
+        return(false);
       }
     );
 

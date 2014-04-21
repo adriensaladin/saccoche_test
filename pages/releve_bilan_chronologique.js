@@ -655,7 +655,7 @@ $(document).ready
         $('#bilan').hide();
         $('#form_select').show();
         bilan_affiche = false;
-        return false;
+        return(false);
       }
     );
 

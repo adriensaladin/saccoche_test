@@ -218,33 +218,7 @@ $(document).ready
     (
       function()
       {
-        if( (parseInt($('#valeurVV').val(),10)>100) && ($('#action').val()=='enregistrer') )
-        {
-          $.prompt(
-            "Souhaitez-vous vraiment une valeur supérieure à 100 pour le meilleur code de réussite ?",
-            {
-              title   : 'Demande de confirmation',
-              buttons : {
-                "Non, c'est une erreur !" : false ,
-                "Oui, je confirme !" : true
-              },
-              submit  : function(event, value, message, formVals) {
-                if(value)
-                {
-                  formulaire.ajaxSubmit(ajaxOptions); // Pas de $(this) ici...
-                }
-                else
-                {
-                  $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 100 maximum conseillé.").show();
-                }
-              }
-            }
-          );
-        }
-        else
-        {
-          $(this).ajaxSubmit(ajaxOptions);
-        }
+        $(this).ajaxSubmit(ajaxOptions);
         return false;
       }
     ); 
@@ -264,6 +238,10 @@ $(document).ready
         else if( parseInt($('#valeurVV').val(),10)>200 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 200 maximum pour le meilleur code.").show();
+        }
+        else if( (parseInt($('#valeurVV').val(),10)>100) && ($('#action').val()=='enregistrer') && !confirm("Confirmez-vous souhaiter une valeur supérieure à 100 pour le meilleur code de réussite ?") )
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 100 maximum conseillé.").show();
         }
         else if( (parseInt($('#valeurRR').val(),10)>parseInt($('#valeurR').val(),10)) || (parseInt($('#valeurR').val(),10)>parseInt($('#valeurV').val(),10)) || (parseInt($('#valeurV').val(),10)>parseInt($('#valeurVV').val(),10)) )
         {
@@ -290,7 +268,7 @@ $(document).ready
         }
         else if( $('#action').val()=='enregistrer' )
         {
-          memoriser_valeurs();
+        memoriser_valeurs();
         }
         $('button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;").show();

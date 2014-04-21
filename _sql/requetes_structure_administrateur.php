@@ -803,7 +803,7 @@ public static function compter_niveaux_etabl($with_specifiques)
  * @param void
  * @return int
  */
-public static function DB_compter_devoirs_annees_scolaires_precedentes()
+public static function DB_compter_devoirs_annee_scolaire_precedente()
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_devoir ';

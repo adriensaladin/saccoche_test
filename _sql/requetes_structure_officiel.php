@@ -213,28 +213,19 @@ public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
  * @param string $officiel_type  rien pour tous les types
  * @param int    $periode_id     0 pour toutes les périodes
  * @param array  $tab_eleve_id
- * @param bool   $with_periode_nom   FALSE par défaut
- * @param string $only_profil_non_vu   '' par défaut ; 'parent' | 'eleve' sinon
  * @return array   array( [eleve_id] => array( 0 => array( 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) ) ) OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) )
  */
-public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $periode_id , $tab_eleve_id , $with_periode_nom=FALSE , $only_profil_non_vu='' )
+public static function DB_lister_bilan_officiel_fichiers($officiel_type,$periode_id,$tab_eleve_id)
 {
-  $champ_consultation = 'fichier_date_consultation_'.$only_profil_non_vu;
-  $select_type    = ($officiel_type)         ? '' : 'officiel_type , ' ;
-  $select_periode = ($periode_id)            ? '' : 'periode_id , '    ;
-  $select_per_nom = ($with_periode_nom)      ? 'periode_nom , '                                : '' ;
-  $join_periode   = ($with_periode_nom)      ? 'LEFT JOIN sacoche_periode USING (periode_id) ' : '' ;
-  $where_type     = ($officiel_type)         ? 'officiel_type=:officiel_type AND '             : '' ;
-  $where_periode  = ($periode_id)            ? 'periode_id=:periode_id AND '                   : '' ;
-  $where_profil   = ($only_profil_non_vu)    ? $champ_consultation.' IS NULL AND '             : '' ;
-  $order_type     = (!$officiel_type)        ? 'officiel_type ASC '                            : '' ;
-  $order_user     = (count($tab_eleve_id)>1) ? 'user_id ASC '                                  : '' ;
-  $order_sep      = ( $order_type && $order_user ) ? ' , ' : '';
-  $key_eleve_id   = ($officiel_type)         ? TRUE : FALSE ;
-  $DB_SQL = 'SELECT user_id , '.$select_type.$select_periode.$select_per_nom.'fichier_date_generation, fichier_date_consultation_eleve, fichier_date_consultation_parent ';
-  $DB_SQL.= 'FROM sacoche_officiel_fichier '.$join_periode;
-  $DB_SQL.= 'WHERE '.$where_type.$where_periode.$where_profil.'user_id IN ('.implode(',',$tab_eleve_id).') ';
-  $DB_SQL.= ( $order_type || $order_user ) ? 'ORDER BY '.$order_type.$order_sep.$order_user : '' ;
+  $select_type    = ($officiel_type) ? '' : 'officiel_type , ' ;
+  $select_periode = ($periode_id)    ? '' : 'periode_id , '    ;
+  $where_type     = ($officiel_type) ? 'officiel_type=:officiel_type AND ' : '' ;
+  $where_periode  = ($periode_id)    ? 'periode_id=:periode_id AND '       : '' ;
+  $key_eleve_id   = ($officiel_type) ? TRUE : FALSE ;
+  $DB_SQL = 'SELECT user_id , '.$select_type.$select_periode.'fichier_date_generation, fichier_date_consultation_eleve, fichier_date_consultation_parent ';
+  $DB_SQL.= 'FROM sacoche_officiel_fichier ';
+  $DB_SQL.= 'WHERE '.$where_type.$where_periode.'user_id IN ('.implode(',',$tab_eleve_id).') ';
+  $DB_SQL.= ($officiel_type) ? '' : 'ORDER BY officiel_type ASC ' ;
   $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $key_eleve_id);
 }

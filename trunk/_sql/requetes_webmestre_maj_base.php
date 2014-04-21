@@ -184,7 +184,7 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     // ajout d'une colonne à la table sacoche_convention
     if(empty($reload_sacoche_convention))
     {
-      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_commentaire VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL AFTER convention_activation ');
+      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_commentaire TEXT COLLATE utf8_unicode_ci DEFAULT NULL AFTER convention_activation ');
     }
   }
 

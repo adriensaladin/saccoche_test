@@ -31,6 +31,12 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var memo_action = false;
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Alerter au changement d'un élément de formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,69 +71,100 @@ $(document).ready
     (
       function()
       {
-        id = $(this).attr('id');
+        memo_action = $(this).attr('id');
         if( $("#select_periodes input:checked").length==0 || $("#select_classes_groupes input:checked").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
-          return(false);
+          return false;
         }
-        if(id=='ajouter')
+        if(memo_action=='ajouter')
         {
           if( !test_dateITA( $("#f_date_debut").val() ) )
           {
             $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de début au format JJ/MM/AAAA incorrecte !");
-            return(false);
+            return false;
           }
           if( !test_dateITA( $("#f_date_fin").val() ) )
           {
             $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de fin au format JJ/MM/AAAA incorrecte !");
-            return(false);
+            return false;
           }
         }
-        if(id=='retirer')
+        if(memo_action=='retirer')
         {
-          if(!(confirm("Les bilans officiels associés seront perdus !\n\nPour modifier les dates, il faut utiliser le bouton du dessus.\n\nConfirmez-vous vouloir retirer ces associations période(s) / classe(s) groupe(s) ?")) )
-          {
-            return(false);
-          }
-          if(!(confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS BILANS OFFICIELS ASSOCIÉS (BULLETINS...) SERONT SUPPRIMÉS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nAVEZ-BIEN COCHÉ CE QUE VOUS SOUHAITIEZ, EN CONNAISSANCE DE CAUSE ?")) )
-          {
-            return(false);
-          }
+          $.prompt(prompt_etapes_confirmer_suppression);
+          return false;
         }
-        $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE+'&action='+id,
-            data : 'csrf='+CSRF+'&'+$("#form_select").serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('button').prop('disabled',false);
-              if(responseHTML.substring(0,6)!='<hr />')
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
-              {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                $('#bilan').html(responseHTML);
-              }
-            }
-          }
-        );
+        envoyer_action_confirmee();
       }
     );
+
+    var prompt_etapes_confirmer_suppression = {
+      etape_1: {
+        title   : 'Demande de confirmation (1/2)',
+        html    : "Les bilans officiels associés seront perdus !<br />Pour modifier les dates, il faut utiliser le bouton du dessus.<br />Souhaitez-vous vraiment supprimer ces associations période(s) / classe(s) groupe(s) ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $.prompt.goToState('etape_2');
+            return false;
+          }
+        }
+      },
+      etape_2: {
+        title   : 'Demande de confirmation (2/2)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Les éventuels bilans officiels associés (bulletins...) seront supprimés !<br />Avez-bien coché ce que vous souhaitiez, en connaissance de cause ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_action_confirmee();
+            return true;
+          }
+        }
+      }
+    };
+
+    function envoyer_action_confirmee()
+    {
+      $('button').prop('disabled',true);
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE+'&action='+memo_action,
+          data : 'csrf='+CSRF+'&'+$("#form_select").serialize(),
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('button').prop('disabled',false);
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            $('button').prop('disabled',false);
+            if(responseHTML.substring(0,6)!='<hr />')
+            {
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+            else
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+              $('#bilan').html(responseHTML);
+            }
+          }
+        }
+      );
+    }
 
     // Initialisation : charger au chargement l'affichage du bilan
 

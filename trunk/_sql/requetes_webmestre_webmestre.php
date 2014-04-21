@@ -148,7 +148,7 @@ public static function DB_lister_partenaires_conventionnes()
  */
 public static function DB_lister_conventions_structures($where_string)
 {
-  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, ';
+  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, convention_commentaire, ';
   $DB_SQL.= 'structure_uai, structure_localisation, structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel, ';
   $DB_SQL.= 'geo_ordre, geo_nom ';
   $DB_SQL.= 'FROM sacoche_convention ';
@@ -466,6 +466,22 @@ public static function DB_modifier_convention_activation($convention_id,$activat
   $DB_SQL.= 'SET convention_activation=:activation_etat ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';
   $DB_VAR = array(':convention_id'=>$convention_id,':activation_etat'=>$activation_etat);
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Modifier le commentaire d'une convention
+ *
+ * @param int    convention_id
+ * @param string commentaire
+ * @return void
+ */
+public static function DB_modifier_convention_commentaire($convention_id,$commentaire)
+{
+  $DB_SQL = 'UPDATE sacoche_convention ';
+  $DB_SQL.= 'SET convention_commentaire=:commentaire ';
+  $DB_SQL.= 'WHERE convention_id=:convention_id ';
+  $DB_VAR = array(':convention_id'=>$convention_id,':commentaire'=>$commentaire);
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

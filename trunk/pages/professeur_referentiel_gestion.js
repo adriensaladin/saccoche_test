@@ -215,7 +215,7 @@ $(document).ready
         var limite      = tab_calcul_limite[    id_mat_niv];
         var retroactif  = tab_calcul_retroactif[id_mat_niv];
         var information = tab_information[      id_mat_niv];
-        $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + ' || ' + $(this).parent().prev().prev().prev().html() );
+        $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + '&nbsp;||&nbsp;' + $(this).parent().prev().prev().prev().html() );
         $('#f_action').val(mode);
         $('#f_ids').val(ids);
         if( ( tab_ids[1] <= ID_MATIERE_PARTAGEE_MAX ) && ( tab_ids[2] <= ID_NIVEAU_PARTAGE_MAX ) )
@@ -283,112 +283,156 @@ $(document).ready
       '#bouton_valider' ,
       function()
       {
-        if( (mode!='supprimer') || confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nTOUS LES ITEMS CORRESPONDANTS SERONT SUPPRIMÉS !\nLES RÉSULTATS DES ÉLÈVES QUI EN DÉPENDENT SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CE RÉFÉRENTIEL ?") )
+        if(mode=='supprimer')
         {
-          $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          $.ajax
-          (
-            {
-              type : 'POST',
-              url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&'+$('#form_gestion').serialize(),
-              dataType : "html",
-              error : function(jqXHR, textStatus, errorThrown)
-              {
-                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-                return false;
-              },
-              success : function(responseHTML)
-              {
-                initialiser_compteur();
-                var action = $('#f_action').val();
-                if(action=='partager')
-                {
-                  if(responseHTML.substring(0,10)!='<img title')
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
-                    return false;
-                  }
-                  else
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                    var partage     = $('#f_partage option:selected').val();
-                    var information = $('#f_information').val();
-                    tab_partage_etat[id_mat_niv] = partage;
-                    tab_information[ id_mat_niv] = information;
-                    $('#'+ids).prev().prev().html(responseHTML);
-                    if(partage=='oui')
-                    {
-                      $('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
-                    }
-                    else
-                    {
-                      $('#'+ids).children('q.envoyer').attr('class','envoyer_non').attr('title','Un référentiel non partagé ne peut pas être transmis à la collectivité.');
-                    }
-                    $.fancybox.close();
-                  }
-                }
-                if(action=='envoyer')
-                {
-                  if(responseHTML.substring(0,10)!='<img title')
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
-                    return false;
-                  }
-                  else
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                    var information = $('#f_information').val();
-                    tab_information[ id_mat_niv] = information;
-                    $('#'+ids).prev().prev().html(responseHTML);
-                    $.fancybox.close();
-                  }
-                }
-                if(action=='calculer')
-                {
-                  if(responseHTML.substring(0,2)!='ok')
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
-                    return false;
-                  }
-                  else
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                    tab_calcul_methode[   id_mat_niv] = $('#f_methode option:selected'   ).val();
-                    tab_calcul_limite[    id_mat_niv] = $('#f_limite option:selected'    ).val();
-                    tab_calcul_retroactif[id_mat_niv] = $('#f_retroactif option:selected').val();
-                    $('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
-                    $.fancybox.close();
-                  }
-                }
-                if(action=='supprimer')
-                {
-                  if(responseHTML!='ok')
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
-                    return false;
-                  }
-                  else
-                  {
-                    $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                    $('#'+ids).parent().remove();
-                    if( $('#mat_'+tab_ids[1]+' tbody tr').length == 1 )
-                    {
-                      $('#mat_'+tab_ids[1]+' tbody').prepend('<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>');
-                    }
-                    $.fancybox.close();
-                  }
-                }
-              }
-            }
-          );
+          $.prompt(prompt_etapes);
         }
         else
         {
-          $.fancybox.close();
+          envoyer_action_confirmee();
         }
       }
     );
+
+    var prompt_etapes = {
+      etape_2: {
+        title   : 'Demande de confirmation (2/3)',
+        html    : "Tous les items correspondants seront supprimés !<br />Les résultats des élèves qui en dépendent seront perdus !<br />Souhaitez-vous vraiment supprimer ce référentiel ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $('#referentiel_infos_prompt').html($('#referentiel_infos').html());
+            $.prompt.goToState('etape_3');
+            return false;
+          }
+          else {
+            $('#bouton_annuler').click();
+          }
+        }
+      },
+      etape_3: {
+        title   : 'Demande de confirmation (3/3)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Êtes-vous bien certain de vouloir supprimer le référentiel &laquo;&nbsp;"+'<span id="referentiel_infos_prompt"></span>'+"&nbsp;&raquo; ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_action_confirmee();
+            return true;
+          }
+          else {
+            $('#bouton_annuler').click();
+          }
+        }
+      }
+    };
+
+    function envoyer_action_confirmee()
+    {
+      $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&'+$('#form_gestion').serialize(),
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            var action = $('#f_action').val();
+            if(action=='partager')
+            {
+              if(responseHTML.substring(0,10)!='<img title')
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
+              }
+              else
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                var partage     = $('#f_partage option:selected').val();
+                var information = $('#f_information').val();
+                tab_partage_etat[id_mat_niv] = partage;
+                tab_information[ id_mat_niv] = information;
+                $('#'+ids).prev().prev().html(responseHTML);
+                if(partage=='oui')
+                {
+                  $('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
+                }
+                else
+                {
+                  $('#'+ids).children('q.envoyer').attr('class','envoyer_non').attr('title','Un référentiel non partagé ne peut pas être transmis à la collectivité.');
+                }
+                $.fancybox.close();
+              }
+            }
+            if(action=='envoyer')
+            {
+              if(responseHTML.substring(0,10)!='<img title')
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
+              }
+              else
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                var information = $('#f_information').val();
+                tab_information[ id_mat_niv] = information;
+                $('#'+ids).prev().prev().html(responseHTML);
+                $.fancybox.close();
+              }
+            }
+            if(action=='calculer')
+            {
+              if(responseHTML.substring(0,2)!='ok')
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
+              }
+              else
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                tab_calcul_methode[   id_mat_niv] = $('#f_methode option:selected'   ).val();
+                tab_calcul_limite[    id_mat_niv] = $('#f_limite option:selected'    ).val();
+                tab_calcul_retroactif[id_mat_niv] = $('#f_retroactif option:selected').val();
+                $('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
+                $.fancybox.close();
+              }
+            }
+            if(action=='supprimer')
+            {
+              if(responseHTML!='ok')
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
+              }
+              else
+              {
+                $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                $('#'+ids).parent().remove();
+                if( $('#mat_'+tab_ids[1]+' tbody tr').length == 1 )
+                {
+                  $('#mat_'+tab_ids[1]+' tbody').prepend('<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>');
+                }
+                $.fancybox.close();
+              }
+            }
+          }
+        }
+      );
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Ajouter un référentiel => affichage de choisir_referentiel même dans le cas d'une matière spécifique à l'établissement
@@ -443,7 +487,7 @@ $(document).ready
         $('#choisir_referentiel').hide();
         $('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
         $('#div_tableaux').show();
-        return(false);
+        return false;
       }
     );
 
@@ -512,7 +556,7 @@ $(document).ready
         $('#form_instance').hide();
         $('#form_communautaire').show();
         initialiser_compteur();
-        return(false);
+        return false;
       }
     );
 
@@ -757,7 +801,7 @@ $(document).ready
         $('#form_instance').show();
         $('#form_communautaire').hide();
         $('#lister_referentiel_communautaire').hide();
-        return(false);
+        return false;
       }
     );
 

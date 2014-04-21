@@ -53,7 +53,7 @@ $(document).ready
         $('#f_recherche_resultat').html('<li></li>').hide();
         $('#form_communautaire').show();
         initialiser_compteur();
-        return(false);
+        return false;
       }
     );
 
@@ -67,7 +67,7 @@ $(document).ready
       {
         $('#div_instance').show();
         $('#form_communautaire').hide();
-        return(false);
+        return false;
       }
     );
 

@@ -114,7 +114,7 @@ $(document).ready
         if( !$("#f_eleve input:checked").length || !$("#f_groupe input:checked").length )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
-          return(false);
+          return false;
         }
         $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");

@@ -142,7 +142,7 @@ $(document).ready
       function()
       {
         $.fancybox.close();
-        return(false);
+        return false;
       }
     );
 

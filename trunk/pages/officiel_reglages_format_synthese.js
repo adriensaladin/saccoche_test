@@ -72,7 +72,7 @@ $(document).ready
         if( $('input[name=f_'+ids+']').is(':checked')!=true )  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
           $('#label_'+ids).removeAttr("class").addClass("erreur").html("Cocher une option !");
-          return(false);
+          return false;
         }
         var f_methode = $('input[name=f_'+ids+']:checked').val();
         var tab_infos = ids.split('_');

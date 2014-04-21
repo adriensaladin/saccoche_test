@@ -188,7 +188,7 @@ $(document).ready
       {
         $('#zone_ajout_form').hide();
         $('#zone_partage, #zone_perso').show();
-        return(false);
+        return false;
       }
     );
 
@@ -340,23 +340,63 @@ $(document).ready
       success : retour_form_valide
     };
 
+    var prompt_etapes_confirmer_suppression = {
+      etape_2: {
+        title   : 'Demande de confirmation (2/3)',
+        html    : "Les éventuels référentiels associés seront supprimés !<br />Les résultats des élèves qui en dépendent seront perdus !<br />Souhaitez-vous vraiment supprimer ce niveau ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $('#prompt_indication').html( $('#f_nom').val() );
+            $.prompt.goToState('etape_3');
+            return false;
+          }
+          else {
+            annuler();
+          }
+        }
+      },
+      etape_3: {
+        title   : 'Demande de confirmation (3/3)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Êtes-vous bien certain de vouloir supprimer le niveau &laquo;&nbsp;"+'<span id="prompt_indication"></span>'+"&nbsp;&raquo; ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            formulaire.ajaxSubmit(ajaxOptions); // Pas de $(this) ici...
+            return true;
+          }
+          else {
+            annuler();
+          }
+        }
+      }
+    };
+
     // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
     (
       function()
       {
-        if (!please_wait)
+        if (please_wait)
         {
-          if( (mode!='supprimer') || ($('#f_id').val()<=ID_NIVEAU_PARTAGE_MAX) || (confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS RÉFÉRENTIELS ASSOCIÉS SERONT SUPPRIMÉS !\nLES RÉSULTATS DES ÉLÈVES QUI EN DÉPENDENT SERONT PERDUS !\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CE NIVEAU ?")) )
-          {
-            $(this).ajaxSubmit(ajaxOptions);
-          }
           return false;
+        }
+        else if( (mode=='supprimer') && ($('#f_id').val()>ID_NIVEAU_PARTAGE_MAX) )
+        {
+          $.prompt(prompt_etapes_confirmer_suppression);
         }
         else
         {
-          return false;
+          $(this).ajaxSubmit(ajaxOptions);
         }
+        return false;
       }
     ); 
 

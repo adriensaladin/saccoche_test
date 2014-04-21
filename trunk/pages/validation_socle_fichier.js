@@ -125,7 +125,7 @@ $(document).ready
         if( $("#f_eleve input:checked").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un élève !");
-          return(false);
+          return false;
         }
         else
         {

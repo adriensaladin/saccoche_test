@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Nettoyer / Initialiser la base";
 
 $label = (version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'=')) ? 'valide' : 'alerte' ;
+$GLOBALS['HEAD']['js']['inline'][] = 'var nb_devoirs_annee_scolaire_precedente = '.DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes().';';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>

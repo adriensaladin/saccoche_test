@@ -359,7 +359,7 @@ $(document).ready
       $('#items').html('');
       $('#ajax_msg_information').removeAttr("class").html('');
       modification = false;
-      return(false);
+      return false;
     }
 
     $('#tableau_validation').on
@@ -375,7 +375,7 @@ $(document).ready
         else
         {
           $.fancybox( { 'href':'#zone_confirmer_fermer_validation' , onStart:function(){$('#zone_confirmer_fermer_validation').css("display","block");} , onClosed:function(){$('#zone_confirmer_fermer_validation').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-          return(false);
+          return false;
         }
       }
     );

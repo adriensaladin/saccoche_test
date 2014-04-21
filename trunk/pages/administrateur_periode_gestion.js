@@ -214,23 +214,63 @@ $(document).ready
       success : retour_form_valide
     };
 
+    var prompt_etapes_confirmer_suppression = {
+      etape_2: {
+        title   : 'Demande de confirmation (2/3)',
+        html    : "Les éventuels bilans officiels associés (bulletins...) seront supprimés !<br />Pour modifier les dates, il faut utiliser le menu [Périodes&nbsp;&amp;&nbsp;classes&nbsp;/&nbsp;groupes]&hellip;<br />Souhaitez-vous vraiment supprimer cette période ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $('#prompt_indication').html( $('#f_nom').val() );
+            $.prompt.goToState('etape_3');
+            return false;
+          }
+          else {
+            annuler();
+          }
+        }
+      },
+      etape_3: {
+        title   : 'Demande de confirmation (3/3)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Êtes-vous bien certain de vouloir supprimer la période &laquo;&nbsp;"+'<span id="prompt_indication"></span>'+"&nbsp;&raquo; ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            formulaire.ajaxSubmit(ajaxOptions); // Pas de $(this) ici...
+            return true;
+          }
+          else {
+            annuler();
+          }
+        }
+      }
+    };
+
     // Envoi du formulaire (avec jquery.form.js)
     formulaire.submit
     (
       function()
       {
-        if (!please_wait)
+        if (please_wait)
         {
-          if( (mode!='supprimer') || (confirm("ATTENTION : DERNIÈRE DEMANDE DE CONFIRMATION !!!\n\nLES ÉVENTUELS BILANS OFFICIELS ASSOCIÉS (BULLETINS...) SERONT SUPPRIMÉS !\nPour modifier les dates, il faut utiliser le menu [Périodes & classes / groupes]...\n\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT SUPPRIMER CETTE PÉRIODE ?")) )
-          {
-            $(this).ajaxSubmit(ajaxOptions);
-          }
           return false;
+        }
+        else if(mode=='supprimer')
+        {
+          $.prompt(prompt_etapes_confirmer_suppression);
         }
         else
         {
-          return false;
+          $(this).ajaxSubmit(ajaxOptions);
         }
+        return false;
       }
     ); 
 

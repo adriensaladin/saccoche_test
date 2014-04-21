@@ -100,7 +100,11 @@ public static function DB_tester_convention_precise($base_id,$connexion_nom,$con
   $DB_SQL = 'SELECT convention_id ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'WHERE sacoche_base=:base_id AND connexion_nom=:connexion_nom AND convention_date_debut=:convention_date_debut ';
-  $DB_VAR = array(':base_id'=>$base_id,':connexion_nom'=>$connexion_nom,':convention_date_debut'=>$convention_date_debut);
+  $DB_VAR = array(
+    ':base_id'               => $base_id,
+    ':connexion_nom'         => $connexion_nom,
+    ':convention_date_debut' => $convention_date_debut,
+  );
   return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -115,9 +119,18 @@ public static function DB_tester_convention_precise($base_id,$connexion_nom,$con
  */
 public static function DB_ajouter_convention($base_id,$connexion_nom,$convention_date_debut,$convention_date_fin)
 {
-  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation) ';
-  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation)';
-  $DB_VAR = array(':base_id'=>$base_id,':connexion_nom'=>$connexion_nom,':convention_date_debut'=>$convention_date_debut,':convention_date_fin'=>$convention_date_fin,':convention_signature'=>NULL,':convention_paiement'=>NULL,':convention_activation'=>0);
+  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation,convention_commentaire) ';
+  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation,:convention_commentaire)';
+  $DB_VAR = array(
+    ':base_id'                => $base_id,
+    ':connexion_nom'          => $connexion_nom,
+    ':convention_date_debut'  => $convention_date_debut,
+    ':convention_date_fin'    => $convention_date_fin,
+    ':convention_signature'   => NULL,
+    ':convention_paiement'    => NULL,
+    ':convention_activation'  => 0,
+    ':convention_commentaire' => NULL,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
 }

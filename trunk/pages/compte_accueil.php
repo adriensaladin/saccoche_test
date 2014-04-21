@@ -42,13 +42,13 @@ $tab_accueil = array(
  'user'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Informations d'accueil" ) ,
  'alert'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'messages'   => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
- 'resultats'  => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Résultats récents" ) ,
- 'faiblesses' => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
- 'reussites'  => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Items récents les mieux réussis" ) ,
- 'demandes'   => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"Demandes d'évaluations" ) ,
+ 'resultats'  => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Résultats récents" ) ,
+ 'faiblesses' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
+ 'reussites'  => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Items récents les mieux réussis" ) ,
+ 'demandes'   => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Demandes d'évaluations" ) ,
  'saisies'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_saisies ) ,
  'officiel'   => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_officiel ) ,
- 'socle'      => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
+ 'socle'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"" ) ,
  'help'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Astuce du moment" ) ,
  'ecolo'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"Protégeons l'environnement" ) ,
 );
@@ -76,7 +76,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
   }
-  if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())
+  if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes())
   {
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Année scolaire précédente non archivée ! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
     $info_rentree  = TRUE ;
@@ -265,7 +265,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   foreach($tab_eleves as $eleve_num => $tab_eleve_info)
   {
     $eleve_id  = $tab_eleve_info['valeur'];
-    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve_recents_avec_notes_saisies( $eleve_id , $nb_jours_consideres , $_SESSION['USER_PROFIL_TYPE'] );
+    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_derniers_devoirs_eleve_avec_notes_saisies( $eleve_id , $nb_jours_consideres );
     if(!empty($DB_TAB))
     {
       if(!$tab_accueil['resultats']['nombre'])
@@ -281,7 +281,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
         $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
         $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_num.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
-      $tab_accueil['resultats']['contenu'].= '<ul class="puce">';
+      $tab_accueil['resultats']['contenu'].= '</ul>';
     }
   }
 }
@@ -295,16 +295,16 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
 {
+  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
+  $nb_eleves = count($tab_eleves);
   $nb_jours_consideres = 14;
-  $nb_resultats_maximum = 7;
+  $nb_resultats_maximum = max( 4 , 10-2*$nb_eleves );
   $tab_notes_observees = array(
     'RR' => 'faiblesses' ,
     'R'  => 'faiblesses' ,
     'V'  => 'reussites'  ,
     'VV' => 'reussites'  ,
   );
-  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
-  $nb_eleves = count($tab_eleves);
   $longueur_intitule_item_maxi = ($nb_eleves==1) ? 100 : 75 ;
   foreach($tab_eleves as $eleve_num => $tab_eleve_info)
   {
@@ -326,23 +326,26 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       $tab_critere = array( 'faiblesses' , 'reussites' );
       foreach($tab_critere as $critere)
       {
-        arsort(${'tab_selection_'.$critere.'_key'});
-        ${'tab_selection_'.$critere.'_key'} = array_slice ( ${'tab_selection_'.$critere.'_key'} , 0 , $nb_resultats_maximum , TRUE );
-        // $tab_selection_*_key a maintenant les bons indices, on poursuit
-        if(!$tab_accueil[$critere]['nombre'])
+        if(count(${'tab_selection_'.$critere.'_key'}))
         {
-          $tab_accueil[$critere]['contenu'] = '<div class="b"><TG> '.$tab_accueil[$critere]['masque'].'</div>';
+          arsort(${'tab_selection_'.$critere.'_key'});
+          ${'tab_selection_'.$critere.'_key'} = array_slice ( ${'tab_selection_'.$critere.'_key'} , 0 , $nb_resultats_maximum , TRUE );
+          // $tab_selection_*_key a maintenant les bons indices, on poursuit
+          if(!$tab_accueil[$critere]['nombre'])
+          {
+            $tab_accueil[$critere]['contenu'] = '<div class="b"><TG> '.$tab_accueil[$critere]['masque'].'</div>';
+          }
+          $tab_accueil[$critere]['nombre'] += count(${'tab_selection_'.$critere.'_key'});
+          $tab_accueil[$critere]['contenu'].= '<ul class="puce p">';
+          $param_eleve_num = ($nb_eleves==1) ? '' : '&amp;eleve_num='.$eleve_num ;
+          $text_eleve_nom  = ($nb_eleves==1) ? '' : html($tab_eleve_info['texte']).' || ' ;
+          foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
+          {
+            $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
+            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items_matiere&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
+          }
+          $tab_accueil[$critere]['contenu'].= '</ul>';
         }
-        $tab_accueil[$critere]['nombre'] += count(${'tab_selection_'.$critere.'_key'});
-        $tab_accueil[$critere]['contenu'].= '<ul class="puce p">';
-        $param_eleve_num = ($nb_eleves==1) ? '' : '&amp;eleve_num='.$eleve_num ;
-        $text_eleve_nom  = ($nb_eleves==1) ? '' : html($tab_eleve_info['texte']).' || ' ;
-        foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
-        {
-          $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
-          $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items_matiere&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
-        }
-        $tab_accueil[$critere]['contenu'].= '<ul class="puce">';
       }
     }
   }
@@ -387,13 +390,86 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','eleve')))
 // [saisies] - Notes à saisir (prof) ou auto-évaluations en cours (élèves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - 
+// PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
+
+if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+{
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve_avec_autoevaluation_en_cours( $_SESSION['USER_ID'] , $_SESSION['ELEVE_CLASSE_ID'] );
+  if(!empty($DB_TAB))
+  {
+    $tab_accueil['saisies']['nombre']  = count($DB_TAB);
+    $tab_accueil['saisies']['contenu'] = '<div class="b"><TG> '.$tab_accueil['saisies']['masque'].'</div>';
+    $tab_accueil['saisies']['contenu'].= '<ul class="puce p">';
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
+      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+    }
+    $tab_accueil['saisies']['contenu'].= '</ul>';
+  }
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // [officiel] - Bilans officiels ouverts à la saisie (prof) ou à consulter (élèves / parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - A DEVELOPPER - 
+// PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
+
+if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
+{
+  // Cette section reprend pas mal de code issu de la page [officiel_voir_archive.php]
+  $tab_types = array
+  (
+    'brevet'   => array( 'droit'=>'FICHE_BREVET'      , 'titre'=>'Fiche brevet'          ) ,
+    'releve'   => array( 'droit'=>'OFFICIEL_RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+    'bulletin' => array( 'droit'=>'OFFICIEL_BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+    'palier1'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+    'palier2'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+    'palier3'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
+  );
+  $droit_voir_archives_pdf = FALSE;
+  foreach($tab_types as $BILAN_TYPE => $tab)
+  {
+    $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
+    if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
+  }
+  if($droit_voir_archives_pdf)
+  {
+    // identifiants élèves concernés
+    $tab_eleve_id = array();
+    if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+    {
+      $tab_eleve_id[] = $_SESSION['USER_ID'];
+    }
+    else
+    {
+      foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab)
+      {
+        $tab_eleve_id[] = $tab['valeur'];
+      }
+    }
+    $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
+    $nb_eleves = count($tab_eleve_id);
+    // lister les bilans officiels archivés de l'année courante
+    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id , TRUE /*with_periode_nom*/ , $_SESSION['USER_PROFIL_TYPE'] /*only_profil_non_vu*/ );
+    foreach($DB_TAB as $DB_ROW)
+    {
+      if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
+      {
+        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
+        {
+          $text_eleve_nom  = ($nb_eleves>1) ? html($_SESSION['OPT_PARENT_ENFANTS'][array_search($DB_ROW['user_id'],$tab_eleve_id)]['texte']).' || ' : '' ;
+          $tab_accueil['officiel']['nombre'] += 1;
+          $tab_accueil['officiel']['contenu'].= '<li>'.$text_eleve_nom.'<a href="./index.php?page=officiel_voir_archive">'.$tab_types[$DB_ROW['officiel_type']]['titre'].' || '.html($DB_ROW['periode_nom']).'</a></li>';
+        }
+      }
+    }
+    if($tab_accueil['officiel']['nombre'])
+    {
+      $tab_accueil['officiel']['contenu'] = '<div class="b"><TG> '.$tab_accueil['officiel']['masque'].'</div>'.'<ul class="puce p">'.$tab_accueil['officiel']['contenu'].'</ul>';
+    }
+  }
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // [socle] - ... en prévision de qqchose... à définir...

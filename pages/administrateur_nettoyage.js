@@ -31,6 +31,12 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var memo_action = false;
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Appel en ajax pour lancer un nettoyage
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,56 +44,142 @@ $(document).ready
     (
       function()
       {
-        var action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
-        if(action=='purger')
+        memo_action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
+        if(memo_action=='purger')
         {
-          var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nAttention : les données des bulletins seront effacées !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
+          var options = (nb_devoirs_annee_scolaire_precedente) ? prompt_etapes_confirmer_purge_une_etape : prompt_etapes_confirmer_purge_deux_etapes ;
+          $.prompt(options);
+          return false;
         }
-        else if(action=='supprimer')
+        else if(memo_action=='supprimer')
         {
-          var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? ( (confirm("DERNIER AVERTISSEMENT !!!\nEST-CE BIEN VOTRE DERNIER MOT ?\nVOULEZ-VOUS VRAIMENT REPARTIR DE ZÉRO ?")) ? true : false ) : false ;
+          $.prompt(prompt_etapes_confirmer_suppression);
+          return false;
         }
         else
         {
-          var continuer = true;
-        }
-        if(continuer)
-        {
-          $("button").prop('disabled',true);
-          $("label").removeAttr("class").html('');
-          $('#ajax_msg_'+action).addClass("loader").html("En cours&hellip;");
-          $.ajax
-          (
-            {
-              type : 'POST',
-              url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action='+action,
-              dataType : "html",
-              error : function(jqXHR, textStatus, errorThrown)
-              {
-                $("button").prop('disabled',false);
-                $('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-                return false;
-              },
-              success : function(responseHTML)
-              {
-                $("button").prop('disabled',false);
-                if(responseHTML.substring(0,4)!='<li>')
-                {
-                  $('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html(responseHTML);
-                }
-                else
-                {
-                  $('#ajax_msg_'+action).removeAttr("class").html('');
-                  $.fancybox( '<ul class="puce">'+responseHTML+'</ul>' , {'centerOnScroll':true} );
-                  initialiser_compteur();
-                }
-              }
-            }
-          );
+          envoyer_action_confirmee();
         }
       }
     );
+
+    var prompt_etapes_confirmer_purge_une_etape = {
+      etape_1: {
+        title   : 'Demande de confirmation',
+        html    : "Attention : les scores déjà saisis ne seront plus modifiables !<br />Attention : les données des bulletins seront effacées !<br />Souhaitez-vous vraiment lancer l'initialisation annuelle des données ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_action_confirmee();
+          }
+        }
+      }
+    };
+
+    var prompt_etapes_confirmer_purge_deux_etapes = {
+      etape_1: {
+        title   : 'Demande de confirmation (1/2)',
+        html    : "Votre base ne comporte pas de devoirs des années scolaires précédentes.<br />Une telle initialisation ne semble donc pas justifiée dans votre situation&hellip;<br />Souhaitez-vous vraiment lancer l'initialisation annuelle des données ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $.prompt.goToState('etape_2');
+            return false;
+          }
+        }
+      },
+      etape_2: {
+        title   : 'Demande de confirmation (2/2)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Les scores déjà saisis ne seront plus modifiables !<br />Les données des bulletins seront effacées !<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            nb_devoirs_annee_scolaire_precedente = 0;
+            envoyer_action_confirmee();
+            return true;
+          }
+        }
+      }
+    };
+
+    var prompt_etapes_confirmer_suppression = {
+      etape_1: {
+        title   : 'Demande de confirmation (1/2)',
+        html    : "Toutes les notes des élèves seront effacées !<br />Souhaitez-vous vraiment supprimer les scores et les validations ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault();
+            $.prompt.goToState('etape_2');
+            return false;
+          }
+        }
+      },
+      etape_2: {
+        title   : 'Demande de confirmation (2/2)',
+        html    : "Attention : dernière demande de confirmation !!!<br />Voulez-vous vraiment tout effacer et repartir de zéro ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_action_confirmee();
+            return true;
+          }
+        }
+      }
+    };
+
+
+    function envoyer_action_confirmee()
+    {
+      $("button").prop('disabled',true);
+      $("label").removeAttr("class").html('');
+      $('#ajax_msg_'+memo_action).addClass("loader").html("En cours&hellip;");
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action='+memo_action,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $("button").prop('disabled',false);
+            $('#ajax_msg_'+memo_action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            return false;
+          },
+          success : function(responseHTML)
+          {
+            $("button").prop('disabled',false);
+            if(responseHTML.substring(0,4)!='<li>')
+            {
+              $('#ajax_msg_'+memo_action).removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+            else
+            {
+              $('#ajax_msg_'+memo_action).removeAttr("class").html('');
+              $.fancybox( '<ul class="puce">'+responseHTML+'</ul>' , {'centerOnScroll':true} );
+              initialiser_compteur();
+            }
+          }
+        }
+      );
+    }
 
   }
 );

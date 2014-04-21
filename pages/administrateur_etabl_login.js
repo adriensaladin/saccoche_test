@@ -83,7 +83,7 @@ $(document).ready
         if( test_format_login(login)==false )
         {
           $('#ajax_msg_'+profil).removeAttr('class').addClass("erreur").html("Modèle de nom d'utilisateur incorrect !");
-          return(false);
+          return false;
         }
         $('#bouton_valider_'+profil).prop('disabled',true);
         $('#ajax_msg_'+profil).removeAttr('class').addClass('loader').html("En cours&hellip;");

@@ -34,9 +34,11 @@ $(document).ready
 // Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var mode = false;
-    var profil = 'ELV';
+    var mode       = false;
+    var profil     = 'ELV';
     var memo_login = '';
+    var listing_id = new Array();
+    var f_action   = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:false},8:{sorter:'date_fr'},10:{sorter:false},12:{sorter:'date_fr'},13:{sorter:false}} });
@@ -385,78 +387,98 @@ $(document).ready
 // Clic sur un bouton pour effectuer une action sur les utilisateurs cochés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    var prompt_etapes = {
+      etape_1: {
+        title   : 'Demande de confirmation',
+        html    : "Attention : les informations associées aux comptes seront perdues !<br />Souhaitez-vous vraiment supprimer les comptes sélectionnés ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_action_confirmee(f_action,listing_id);
+          }
+        }
+      }
+    };
+
     $('#zone_actions button').click
     (
       function()
       {
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-        var listing_id = new Array(); $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
+        listing_id = [];
+        $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_msg_actions').removeAttr("class").addClass("erreur").html("Aucun utilisateur coché !");
           return false;
         }
-        var f_action = $(this).attr('id');
         // On demande confirmation pour la suppression
+        f_action = $(this).attr('id');
         if(f_action=='supprimer')
         {
-          continuer = (confirm("Attention : les informations associées seront perdues !\nConfirmez-vous la suppression des comptes sélectionnés ?")) ? true : false ;
+          $('#ajax_msg_actions').removeAttr("class").html("&nbsp;");
+          $.prompt(prompt_etapes);
         }
         else
         {
-          continuer = true ;
+          envoyer_action_confirmee(f_action,listing_id);
         }
-        if(continuer)
-        {
-          $('#ajax_msg_actions').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          $('#zone_actions button').prop('disabled',true);
-          $.ajax
-          (
-            {
-              type : 'POST',
-              url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action='+f_action+'&f_listing_id='+listing_id,
-              dataType : "html",
-              error : function(jqXHR, textStatus, errorThrown)
-              {
-                $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-                $('#zone_actions button').prop('disabled',false);
-              },
-              success : function(responseHTML)
-              {
-                initialiser_compteur();
-                tab_response = responseHTML.split(',');
-                if(tab_response[0]!='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-                {
-                  $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html(responseHTML);
-                }
-                else
-                {
-                  $('#ajax_msg_actions').removeAttr("class").addClass("valide").html("Demande réalisée.");
-                  for ( i=1 ; i<tab_response.length ; i++ )
-                  {
-                    switch (f_action)
-                    {
-                      case 'retirer':
-                        $('#id_'+tab_response[i]).children("td:last").prev().html(input_date);
-                        break;
-                      case 'reintegrer':
-                        $('#id_'+tab_response[i]).children("td:last").prev().html('-');
-                        break;
-                      case 'supprimer':
-                        $('#id_'+tab_response[i]).remove();
-                        break;
-                    }
-                  }
-                  tableau_maj();
-                }
-                $('#zone_actions button').prop('disabled',false);
-              }
-            }
-          );
-        }
+        return false;
       }
     );
+
+    function envoyer_action_confirmee(f_action,listing_id)
+    {
+      $('#ajax_msg_actions').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#zone_actions button').prop('disabled',true);
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action='+f_action+'&f_listing_id='+listing_id,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#zone_actions button').prop('disabled',false);
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            tab_response = responseHTML.split(',');
+            if(tab_response[0]!='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+            else
+            {
+              $('#ajax_msg_actions').removeAttr("class").addClass("valide").html("Demande réalisée.");
+              for ( i=1 ; i<tab_response.length ; i++ )
+              {
+                switch (f_action)
+                {
+                  case 'retirer':
+                    $('#id_'+tab_response[i]).children("td:last").prev().html(input_date);
+                    break;
+                  case 'reintegrer':
+                    $('#id_'+tab_response[i]).children("td:last").prev().html('-');
+                    break;
+                  case 'supprimer':
+                    $('#id_'+tab_response[i]).remove();
+                    break;
+                }
+              }
+              tableau_maj();
+            }
+            $('#zone_actions button').prop('disabled',false);
+          }
+        }
+      );
+    }
 
   }
 );

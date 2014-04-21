@@ -193,7 +193,7 @@ $(document).ready
         {
           if( $('#devoir_'+auto_voir_devoir_id).length )
           {
-            $('#devoir_'+auto_voir_devoir_id).children('q.voir').click();
+            $('#devoir_'+auto_voir_devoir_id).children('q.'+auto_mode).click();
           }
           auto_voir_devoir_id = false;
         }

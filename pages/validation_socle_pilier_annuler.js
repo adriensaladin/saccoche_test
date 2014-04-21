@@ -260,7 +260,7 @@ $(document).ready
         $('#zone_choix').show('fast');
         $('#zone_validation').hide('fast');
         $('#tableau_validation').html('<tbody><tr><td></td></tr></tbody>');
-        return(false);
+        return false;
       }
     );
 

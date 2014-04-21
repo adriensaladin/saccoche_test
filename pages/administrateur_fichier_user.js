@@ -68,7 +68,7 @@ $(document).ready
       {
         $('#form_choix').show();
         $('#form_bilan').html('<hr /><label id="ajax_msg">&nbsp;</label>');
-        return(false);
+        return false;
       }
     );
 

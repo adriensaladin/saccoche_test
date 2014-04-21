@@ -236,7 +236,7 @@ $(document).ready
       function()
       {
         $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-        return(false);
+        return false;
       }
     );
 

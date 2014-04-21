@@ -30,88 +30,88 @@ $(document).ready
   function()
   {
 
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('form');
-
-    // Vérifier la validité du formulaire (avec jquery.validate.js)
-    var validation = formulaire.validate
-    (
-      {
-        rules :
-        {
+    var prompt_etapes = {
+      etape_1: {
+        title   : 'Demande de confirmation (1/2)',
+        html    : "Souhaitez-vous vraiment supprimer toutes vos données ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
         },
-        messages :
-        {
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault(); 
+            $.prompt.goToState('etape_2');
+            return false;
+          }
+        }
+      },
+      etape_2: {
+        title   : 'Demande de confirmation (2/2)',
+        html    : "Êtes-vous bien certain de vouloir tout supprimer ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
         },
-        errorElement : "label",
-        errorClass : "erreur",
-        errorPlacement : function(error,element) { $('#ajax_msg').after(error); }
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_demande_confirmee();
+            return true;
+          }
+        }
       }
-    );
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : "html",
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg",
-      beforeSubmit : test_form_avant_envoi,
-      error : retour_form_erreur,
-      success : retour_form_valide
     };
 
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+    $('#bouton_valider').click
     (
       function()
       {
-        $(this).ajaxSubmit(ajaxOptions);
-        return false;
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $.prompt(prompt_etapes);
       }
-    ); 
+    );
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-    function test_form_avant_envoi(formData, jqForm, options)
+    function envoyer_demande_confirmee()
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
-      if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
-      {
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        readytogo = true;
-      }
-      else
-      {
-        readytogo = false;
-      }
-      return readytogo;
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur(jqXHR, textStatus, errorThrown)
-    {
-      $("#bouton_valider").prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
-    {
-      initialiser_compteur();
-      if(responseHTML=='ok')
-      {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
-        alert("Toutes les données ont été effacées !\nDéconnexion du compte webmestre...");
-        document.location.href = './index.php';
-      }
-      else
-      {
-        $("#bouton_valider").prop('disabled',false);
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-      }
+      $("#bouton_valider").prop('disabled',true);
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $("#bouton_valider").prop('disabled',false);
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML=='ok')
+            {
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
+              $('div.jqibox').remove(); // Sinon il y a un conflit d'affichage avec le prompt précédent
+              $.prompt(
+                "Toutes les données ont été effacées !<br />Déconnexion du compte webmestre...",
+                {
+                  title  : 'Inscription supprimée',
+                  submit : function(event, value, message, formVals) {
+                    document.location.href = './index.php';
+                  }
+                }
+              );
+            }
+            else
+            {
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+          }
+        }
+      );
     }
 
   }

@@ -42,7 +42,7 @@ $(document).ready
         if( $("#f_base input:checked").length==0 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
-          return(false);
+          return false;
         }
         else
         {

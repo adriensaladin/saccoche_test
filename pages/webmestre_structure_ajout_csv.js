@@ -30,7 +30,11 @@ $(document).ready
   function()
   {
 
-    // Variable à définir globalement en dehors des fonctions
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Initialisation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var listing_id     = new Array();
     var courriel_envoi = -1 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,19 +112,44 @@ $(document).ready
       function()
       {
         courriel_envoi = $('#f_courriel_envoi').is(':checked') ? 1 : 0 ;
-        if( courriel_envoi || confirm("Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !\nConfirmez-vous ne pas vouloir envoyer le courriel d'inscription ?") )
+        if(courriel_envoi)
         {
-          $("button").prop('disabled',true);
-          var num = $('#ajax_import_num').html();
-          var max = $('#ajax_import_max').html();
-          $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
-          $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
-          $('#div_info_import').show('fast');
-          $('#structures').hide('fast').children('#table_action').children('tbody').html('');
-          importer();
+          envoyer_demande_import_confirmee();
+        }
+        else
+        {
+          $.prompt(prompt_etapes_confirmer_import);
         }
       }
     );
+
+    var prompt_etapes_confirmer_import = {
+      etape_1: {
+        title   : 'Demande de confirmation',
+        html    : "Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !<br />Souhaitez-vous vraiment ne pas vouloir envoyer le courriel d'inscription ?",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            envoyer_demande_import_confirmee();
+          }
+        }
+      }
+    };
+
+    function envoyer_demande_import_confirmee()
+    {
+      $("button").prop('disabled',true);
+      var num = $('#ajax_import_num').html();
+      var max = $('#ajax_import_max').html();
+      $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
+      $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
+      $('#div_info_import').show('fast');
+      $('#structures').hide('fast').children('#table_action').children('tbody').html('');
+      importer();
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Demande d'import du csv => étapes du traitement
@@ -211,6 +240,38 @@ $(document).ready
 // Clic sur un bouton pour effectuer une action sur les structures cochées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    var prompt_etapes_supprimer_cochees = {
+      etape_1: {
+        title   : 'Demande de confirmation (1/2)',
+        html    : "Souhaitez-vous vraiment supprimer les bases des structures cochées ?<br />Toutes les données associées seront perdues !",
+        buttons : {
+          "Non, c'est une erreur !" : false ,
+          "Oui, je confirme !" : true
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            event.preventDefault(); 
+            $.prompt.goToState('etape_2');
+            return false;
+          }
+        }
+      },
+      etape_2: {
+        title   : 'Demande de confirmation (2/2)',
+        html    : "Êtes-vous bien certain de vouloir supprimer ces bases ?<br />Est-ce définitivement votre dernier mot ???",
+        buttons : {
+          "Oui, j'insiste !" : true ,
+          "Non, surtout pas !" : false
+        },
+        submit  : function(event, value, message, formVals) {
+          if(value) {
+            supprimer_structures_cochees(listing_id);
+            return true;
+          }
+        }
+      }
+    };
+
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
@@ -257,7 +318,8 @@ $(document).ready
       function()
       {
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-        var listing_id = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+        listing_id = [];
+        $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
           $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
@@ -267,10 +329,7 @@ $(document).ready
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {
-          if(confirm("Toutes les bases des structures cochées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
-          {
-            supprimer_structures_cochees(listing_id);
-          }
+          $.prompt(prompt_etapes_supprimer_cochees);
         }
         else
         {

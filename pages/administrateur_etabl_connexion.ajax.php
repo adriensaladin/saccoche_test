@@ -44,7 +44,6 @@ $serveur_host_domain      = (isset($_POST['serveur_host_domain']))      ? Clean:
 $gepi_saml_url            = (isset($_POST['gepi_saml_url']))            ? Clean::texte($_POST['gepi_saml_url'])            : '';
 $gepi_saml_rne            = (isset($_POST['gepi_saml_rne']))            ? Clean::uai($_POST['gepi_saml_rne'])              : '';
 $gepi_saml_certif         = (isset($_POST['gepi_saml_certif']))         ? Clean::texte($_POST['gepi_saml_certif'])         : '';
-$f_first_time             = (isset($_POST['f_first_time']))             ? Clean::texte($_POST['f_first_time'])             : '';
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
@@ -57,12 +56,12 @@ if($f_action=='enregistrer_mode_identification')
 
   if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]))
   {
-    exit_json( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
 
   if( ($f_connexion_mode=='cas') && ($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]['serveur_host_subdomain']=='*') && !$serveur_host_subdomain )
   {
-    exit_json( FALSE , 'Sous-domaine manquant !' );
+    exit('Sous-domaine manquant !');
   }
 
   list($f_connexion_departement,$f_connexion_nom) = explode('|',$f_connexion_ref);
@@ -74,7 +73,7 @@ if($f_action=='enregistrer_mode_identification')
     $_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
     $_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
     $_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
-    exit_json( TRUE );
+    exit('ok');
   }
 
   if($f_connexion_mode=='cas')
@@ -84,29 +83,29 @@ if($f_action=='enregistrer_mode_identification')
     // Vérifier les paramètres CAS en reprenant le code de phpCAS
     if ( empty($cas_serveur_host) || !preg_match('/[\.\d\-abcdefghijklmnopqrstuvwxyz]*/',$cas_serveur_host) )
     {
-      exit_json( FALSE , 'Syntaxe du domaine incorrecte !' );
+      exit('Syntaxe du domaine incorrecte !');
     }
     if ( ($cas_serveur_port == 0) || !is_int($cas_serveur_port) )
     {
-      exit_json( FALSE , 'Numéro du port incorrect !' );
+      exit('Numéro du port incorrect !');
     }
     if ( !preg_match('/[\.\d\-_abcdefghijklmnopqrstuvwxyz\/]*/',$cas_serveur_root) )
     {
-      exit_json( FALSE , 'Syntaxe du chemin incorrecte !' );
+      exit('Syntaxe du chemin incorrecte !');
     }
     // Expression régulière pour tester une URL (pas trop compliquée)
     $masque = '#^http(s)?://[\w-]+[\w.-]+\.[a-zA-Z]{2,6}(:[0-9]+)?#';
     if ( $cas_serveur_url_login && !preg_match($masque,$cas_serveur_url_login) )
     {
-      exit_json( FALSE , 'Syntaxe URL login incorrecte !' );
+      exit('Syntaxe URL login incorrecte !');
     }
     if ( $cas_serveur_url_logout && !preg_match($masque,$cas_serveur_url_logout) )
     {
-      exit_json( FALSE , 'Syntaxe URL logout incorrecte !' );
+      exit('Syntaxe URL logout incorrecte !');
     }
     if ( $cas_serveur_url_validate && !preg_match($masque,$cas_serveur_url_validate) )
     {
-      exit_json( FALSE , 'Syntaxe URL validate incorrecte !' );
+      exit('Syntaxe URL validate incorrecte !');
     }
     // Ne pas dupliquer en paramétrage CAS-perso un paramétrage CAS-ENT existant (utiliser la connexion CAS officielle)
     if($f_connexion_nom=='perso')
@@ -119,7 +118,7 @@ if($f_action=='enregistrer_mode_identification')
           $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || (strpos($cas_serveur_url_login,$tab_cas_param['serveur_host_domain'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'])!==FALSE) ) ) ? TRUE : FALSE ;
           if( $is_param_defaut_identiques || $is_param_force_identiques )
           {
-            exit_json( FALSE , 'Paramètres d\'un ENT référencé : sélectionnez-le !' );
+            exit('Paramètres d\'un ENT référencé : sélectionnez-le !');
           }
         }
       }
@@ -129,12 +128,12 @@ if($f_action=='enregistrer_mode_identification')
     {
       if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
       {
-        exit_json( FALSE , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' );
+        exit('Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !');
       }  
       require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
       if( isset($tab_connecteurs_hebergement[$f_connexion_ref]) )
       {
-        exit_json( FALSE , 'Paramètres d\'un serveur CAS à utiliser sur l\'hébergement académique dédié !' );
+        exit('Paramètres d\'un serveur CAS à utiliser sur l\'hébergement académique dédié !');
       }
     }
     // C'est ok
@@ -149,7 +148,7 @@ if($f_action=='enregistrer_mode_identification')
     $_SESSION['CAS_SERVEUR']['URL_LOGIN']    = $cas_serveur_url_login;
     $_SESSION['CAS_SERVEUR']['URL_LOGOUT']   = $cas_serveur_url_logout;
     $_SESSION['CAS_SERVEUR']['URL_VALIDATE'] = $cas_serveur_url_validate;
-    exit_json( TRUE );
+    exit('ok');
   }
 
   if($f_connexion_mode=='gepi')
@@ -160,17 +159,17 @@ if($f_action=='enregistrer_mode_identification')
     // Donc on va se contenter de vraiment vérifier l'URL de Gepi via une requête cURL
     if(strlen($gepi_saml_url)<8)
     {
-      exit_json( FALSE , 'Adresse de GEPI manquante !' );
+      exit('Adresse de GEPI manquante !');
     }
     if(empty($gepi_saml_certif))
     {
-      exit_json( FALSE , 'Signature (empreinte du certificat) manquante !' );
+      exit('Signature (empreinte du certificat) manquante !');
     }
     $gepi_saml_url = (substr($gepi_saml_url,-1)=='/') ? substr($gepi_saml_url,0,-1) : $gepi_saml_url ;
     $fichier_distant = cURL::get_contents($gepi_saml_url.'/bandeau.css'); // Le mieux serait d'appeler le fichier du web-services... si un jour il y en a un...
     if(substr($fichier_distant,0,6)=='Erreur')
     {
-      exit_json( FALSE , 'Adresse de Gepi incorrecte [ '.$fichier_distant.' ] !' );
+      exit('Adresse de Gepi incorrecte [ '.$fichier_distant.' ]');
     }
     // C'est ok
     DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
@@ -181,7 +180,7 @@ if($f_action=='enregistrer_mode_identification')
     $_SESSION['GEPI_URL'] = $gepi_saml_url;
     $_SESSION['GEPI_RNE'] = $gepi_saml_rne;
     $_SESSION['GEPI_CERTIFICAT_EMPREINTE'] = $gepi_saml_certif;
-    exit_json( TRUE );
+    exit('ok');
   }
 
 }
@@ -194,7 +193,7 @@ if( ($f_action=='ajouter_convention') && $f_connexion_mode && $f_connexion_ref &
 {
   if( ($f_connexion_mode!='cas') || (!isset($tab_connexion_info['cas'][$f_connexion_ref])) )
   {
-    exit_json( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   // Extraire les infos
   list($f_connexion_departement,$f_connexion_nom) = explode('|',$f_connexion_ref);
@@ -204,40 +203,39 @@ if( ($f_action=='ajouter_convention') && $f_connexion_mode && $f_connexion_ref &
   charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
   if(DB_WEBMESTRE_ADMINISTRATEUR::DB_tester_convention_precise( $_SESSION['BASE'] , $f_connexion_nom , $date_debut_mysql ))
   {
-    exit_json( FALSE , 'Erreur : convention déjà existante pour ce service sur cette période !' );
+    exit('Erreur : convention déjà existante pour le service "'.html($f_connexion_nom).'" sur cette période !');
   }
   // Insérer l'enregistrement
   $convention_id = DB_WEBMESTRE_ADMINISTRATEUR::DB_ajouter_convention( $_SESSION['BASE'] , $f_connexion_nom , $date_debut_mysql , $date_fin_mysql );
   // Afficher le retour
-  $retour = '<tr id="id_'.$convention_id.'" class="new">';
-  $retour.=   '<td>'.html($f_connexion_nom).'</td>';
-  $retour.=   '<td>du '.convert_date_mysql_to_french($date_debut_mysql).' au '.convert_date_mysql_to_french($date_fin_mysql).'</td>';
-  $retour.=   '<td>'.TODAY_FR.'</td>';
-  $retour.=   '<td class="br">Non réceptionné</td>';
-  $retour.=   '<td class="br">Non réceptionné</td>';
-  $retour.=   '<td class="br">Non</td>';
-  $retour.=   '<td class="nu"><q class="voir_archive" title="Récupérer / Imprimer les documents associés."></q></td>';
-  $retour.= '</tr>';
-  $tab_retour = array( 'convention_id'=>$convention_id , 'tr'=>$retour );
-  exit_json( TRUE, $tab_retour );
+  echo'<tr id="id_'.$convention_id.'" class="new">';
+  echo  '<td>'.html($f_connexion_nom).'</td>';
+  echo  '<td>du '.convert_date_mysql_to_french($date_debut_mysql).' au '.convert_date_mysql_to_french($date_fin_mysql).'</td>';
+  echo  '<td>'.TODAY_FR.'</td>';
+  echo  '<td class="br">Non réceptionné</td>';
+  echo  '<td class="br">Non réceptionné</td>';
+  echo  '<td class="br">Non</td>';
+  echo  '<td class="nu"><q class="voir_archive" title="Récupérer / Imprimer les documents associés."></q></td>';
+  echo'</tr>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imprimer les documents associés à une convention
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_time,array('oui','non')) )
+if( ($f_action=='imprimer_documents') && $f_convention_id )
 {
   // Récupération et vérification des infos de la convention
   charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
   $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_convention($f_convention_id);
   if(empty($DB_ROW))
   {
-    exit_json( FALSE , 'Erreur : convention non trouvée !' );
+    exit('Erreur : convention non trouvée !');
   }
   if($DB_ROW['sacoche_base']!=$_SESSION['BASE'])
   {
-    exit_json( FALSE , 'Erreur : convention d\'une autre structure !' );
+    exit('Erreur : convention d\'une autre structure !');
   }
   // Coordonnées de l'établissement
   $tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
@@ -256,7 +254,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   // référence du connecteur
   $connecteur_ref = $_SESSION['BASE'].' . '.$f_convention_id.' . '.$DB_ROW['connexion_nom'];
   //
-  // Imprimer le contrat.
+  // Imprimer la convention.
   //
   $contrat_PDF = new FPDI( NULL /*make_officiel*/ , 'portrait' /*orientation*/ , 15 /*marge_gauche*/ , 15 /*marge_droite*/ , 10 /*marge_haut*/ , 15 /*marge_bas*/ , 'oui' /*couleur*/ , 'non' /*legende*/ , NULL /*filigrane*/ );
   $contrat_PDF->setSourceFile(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_convention_sacoche_etablissement_contrat.pdf');
@@ -361,7 +359,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     list($annee,$mois,$jour) = explode('-',$DB_ROW['convention_signature']);
     $timeunix_signature_plus2mois = mktime(0,0,0,$mois+2,$jour,$annee);
     list($annee,$mois,$jour) = explode('-',$DB_ROW['convention_date_debut']);
-    $timeunix_anneescolaire_plus3mois = mktime(0,0,0,$mois+2,$jour,$annee);
+    $timeunix_anneescolaire_plus3mois = mktime(0,0,0,$mois+3,$jour,$annee);
     $date_limite = date("d/m/Y", max($timeunix_signature_plus2mois,$timeunix_anneescolaire_plus3mois) );
     $texte = 'Date limite de règlement : '.$date_limite.'.';
   }
@@ -374,61 +372,14 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   // On enregistre la sortie PDF
   $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
   $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom,'F');
-  //
-  // Envoyer un courriel au contact.
-  //
-  if($f_first_time=='oui')
-  {
-    $titre = 'Convention connecteur ENT établissement - Documents générés';
-    $texte = 'Bonjour '.$DB_ROW2['structure_contact_prenom'].' '.$DB_ROW2['structure_contact_nom'].','."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Vous venez de générez les documents associés à une convention pour un connecteur ENT :'."\r\n";
-    $texte.= 'Référence : '.$connecteur_ref."\r\n";
-    $texte.= 'Établissement : '.$_SESSION['ETABLISSEMENT']['DENOMINATION']."\r\n";
-    $texte.= 'Période : du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin'])."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Le contrat est en deux exemplaires.'."\r\n";
-    $texte.= 'L\'un est à retourner signé au président de l\'association (ses coordonnées postales figurent sur le document).'."\r\n";
-    $texte.= 'L\'autre est à conserver par votre établissement.'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'La facture comporte les coordonnées bancaires de l\'association.'."\r\n";
-    $texte.= 'Votre service gestionnaire peut régler par mandat administratif.'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Ces documents vous resteront accessibles en vous connectant comme administrateur puis en vous rendant dans le menu [Paramétrages établissement] [Mode d\'identification] (cliquer alors sur l\'icône en bout de ligne du tableau).'."\r\n";
-    $texte.= URL_DIR_SACOCHE.'?id='.$_SESSION['BASE']."\r\n";
-    $texte.= "\r\n";
-    if($DB_ROW['convention_date_debut']<TODAY_MYSQL)
-    {
-      $texte.= 'Dès réception du contrat (ou perception du règlement), votre connecteur ENT sera automatiquement activé.'."\r\n";
-    }
-    else
-    {
-      $texte.= 'La réception du contrat (ou la perception du règlement) entrainera l\'activation automatique de votre connecteur ENT au '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' (changement d\'année scolaire).'."\r\n";
-    }
-    $texte.= 'Vous disposez de 2 mois à compter de l\'activation du connecteur ENT pour le tester et nous faire parvenir votre règlement (ou le contrat).'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Nous vous remercions de votre confiance et de votre soutien.'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Remarque : si vous ne souhaitez pas donner suite à cette convention, il vous suffit de ne rien envoyer et de sélectionner une connexion avec les identifiants de SACoche.'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Cordialement,'."\r\n";
-    $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n";
-    $texte.= 'Responsable SACoche pour Sésamath'."\r\n";
-    $texte.= "\r\n";
-    $courriel_bilan = Sesamail::mail( $DB_ROW2['structure_contact_courriel'] , $titre , $texte );
-    if(!$courriel_bilan)
-    {
-      exit_json( FALSE , 'Envoi du courriel infructueux !' );
-    }
-  }
   // Retour des informations.
-  exit_json( TRUE ,  array( 'fichier_contrat'=>URL_DIR_EXPORT.$contrat_fichier_nom , 'fichier_facture'=>URL_DIR_EXPORT.$facture_fichier_nom ) );
+  exit('ok'.']¤['.URL_DIR_EXPORT.$contrat_fichier_nom.']¤['.URL_DIR_EXPORT.$facture_fichier_nom);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit_json( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

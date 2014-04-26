@@ -67,15 +67,14 @@ $tab_menu = array
     "Demandes d'évaluations formulées" => array( 'class' => 'evaluation_demande' , 'href' => 'page=evaluation_demande_professeur'            ),
     "Évaluer une classe ou un groupe"  => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_gestion&amp;section=groupe'    ),
     "Évaluer des élèves sélectionnés"  => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_gestion&amp;section=selection' ),
-    "Évaluer un élève à la volée"      => array( 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation_ponctuelle'                    ),
     "Liste des évaluations"            => array( 'class' => 'evaluation_voir'    , 'href' => 'page=evaluation_voir'                          ),
   ),
   "Validation du socle" => array
   (
-    "Choisir la langue étrangère"      => array( 'class' => 'socle_langue'  , 'href' => 'page=administrateur_eleve_langue'                 ),
-    "Valider les items du socle"       => array( 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'         ),
-    "Valider les compétences du socle" => array( 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'       ),
-    "Annuler une compétence validée"   => array( 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
+    "Choisir la langue étrangère"     => array( 'class' => 'socle_langue'  , 'href' => 'page=administrateur_eleve_langue'                 ),
+    "Valider les items du socle"        => array( 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'         ),
+    "Valider les compétences du socle"  => array( 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'       ),
+    "Annuler une compétence validée"  => array( 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
   ),
   "Relevés / Synthèses" => array
   (

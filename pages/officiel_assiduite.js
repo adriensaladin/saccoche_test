@@ -130,36 +130,32 @@ $(document).ready
 
     // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
     // Attention, la variable f_action n'est pas accessible dans les AjaxUpload
-
-    if( $('#form_fichier').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
-    {
-      var uploader_fichier_siecle = new AjaxUpload
-      ('#import_siecle',
-        {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'f_action':'import_siecle','f_periode':'maj_plus_tard'},
-          autoSubmit: true,
-          responseType: "html",
-          onChange: changer_fichier,
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
-        }
-      );
-      var uploader_fichier_gepi = new AjaxUpload
-      ('#import_gepi',
-        {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
-          autoSubmit: true,
-          responseType: "html",
-          onChange: changer_fichier,
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
-        }
-      );
-    }
+    var uploader_fichier_siecle = new AjaxUpload
+    ('#import_siecle',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'import_siecle','f_periode':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
+      }
+    );
+    var uploader_fichier_gepi = new AjaxUpload
+    ('#import_gepi',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
+      }
+    );
 
     function changer_fichier(fichier_nom,fichier_extension)
     {

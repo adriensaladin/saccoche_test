@@ -67,12 +67,10 @@ $tab_droits_par_page = array
   'evaluation_demande_eleve_ajout'          => $tab_droits_profil_eleve,
   // Profil professeur
   '_maj_select_eval'                        => $tab_droits_profil_professeur,
-  '_maj_select_items'                       => $tab_droits_profil_professeur,
   '_maj_select_matieres_prof'               => $tab_droits_profil_professeur,
   '_maj_select_profs_groupe'                => $tab_droits_profil_professeur,
   'evaluation_demande_professeur'           => $tab_droits_profil_professeur,
   'evaluation_gestion'                      => $tab_droits_profil_professeur,
-  'evaluation_ponctuelle'                   => $tab_droits_profil_professeur,
   'professeur_groupe_besoin'                => $tab_droits_profil_professeur,
   'professeur_referentiel'                  => $tab_droits_profil_professeur,
   'professeur_referentiel_gestion'          => $tab_droits_profil_professeur,

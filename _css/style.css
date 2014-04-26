@@ -533,11 +533,10 @@ span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table {margin-left:1ex}
-th, td  {padding:0   2px;text-align:left;white-space:nowrap}
-span.td {padding:1px 2px;text-align:center;white-space:nowrap}
+th,td {padding:0 2px;text-align:left;white-space:nowrap}
 table tr {background:#EEF}
 table th {border:1px solid #66F;background:#DDF;font-weight:bold}
-table td, span.td {border:1px solid #66F;} /*vertical-align:top*/
+table td {border:1px solid #66F;vertical-align:top}
 tr.new{background:#CFC}
 td.new{font-weight:bold}
 th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em}  /* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
@@ -1300,7 +1299,7 @@ div.jqi .jqibuttons button:focus{
 div.jqi .jqiparentstate::after{ 
   background-color: #777;
   opacity: 0.6;
-  /*filter: alpha(opacity=60); */ /* retiré : balise propriétaire pour IE */
+  filter: alpha(opacity=60);
   content: '';
   position: absolute;
   top:0;left:0;bottom:0;right:0;

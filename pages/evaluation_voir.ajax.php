@@ -189,7 +189,6 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   $tab_liste_item = array_keys($DB_TAB_COMP);
   $liste_item_id = implode(',',$tab_liste_item);
   // boutons radio
-  $tab_radio_boutons = array();
   $tab_notes = array( 'X'=>'commun' , 'RR'=>$_SESSION['NOTE_DOSSIER'] , 'R'=>$_SESSION['NOTE_DOSSIER'] , 'V'=>$_SESSION['NOTE_DOSSIER'] , 'VV'=>$_SESSION['NOTE_DOSSIER'] );
   foreach($tab_notes as $note => $dossier)
   {

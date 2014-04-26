@@ -724,22 +724,18 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Envoi du fichier avec jquery.ajaxupload.js
-
-    if( $('#zone_ressources_form').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
-    {
-      new AjaxUpload
-      ('#bouton_import',
-        {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'action':'Uploader_document'},
-          autoSubmit: true,
-          responseType: "html",
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
-        }
-      );
-    }
+    new AjaxUpload
+    ('#bouton_import',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'action':'Uploader_document'},
+        autoSubmit: true,
+        responseType: "html",
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
+      }
+    );
 
     function verifier_fichier(fichier_nom,fichier_extension)
     {

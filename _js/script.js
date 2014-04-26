@@ -951,28 +951,6 @@ $(document).ready
     page_transparente();
 
     /**
-     * MENU - Déploiement au clic et plus seulement au survol pour les dispositifs tactiles.
-     */
-    if(isMobile)
-    {
-      $('#menu').on
-      (
-        'click',
-        'li',
-        function()
-        {
-          var obj_ul = $(this).children('ul');
-          if(typeof(obj_ul!=='undefined'))
-          {
-            var css_left = (obj_ul.css('left')=='auto') ? '-9999em' : 'auto' ;
-            $('#menu ul').css('left','-9999em');
-            obj_ul.css('left',css_left);
-          }
-        }
-      );
-    }
-
-    /**
      * Si on appuie sur la touche entrée, le premier élèment de formulaire est actionné.
      * S'il s'agit d'un input type image, cela peut dé-cocher tout un ensemble de cases à l'insu de l'utilisateur.
      * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.

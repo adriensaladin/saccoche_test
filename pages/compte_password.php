@@ -28,9 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Changer son mot de passe";
 
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var MDP_LONGUEUR_MINI = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';';
-
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
@@ -43,6 +40,9 @@ if($_SESSION['CONNEXION_MODE']!='normal')
 {
   echo'<p class="astuce">Le mode de connexion est configuré pour utiliser une authentification externe.<br />Ce formulaire ne modifiera pas le mode de passe correspondant, il ne concerne que le mot de passe propre à l\'application.</p><hr />'.NL;
 }
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var MDP_LONGUEUR_MINI = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';';
 ?>
 
 

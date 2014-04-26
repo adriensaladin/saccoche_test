@@ -209,34 +209,6 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
 }
 
 /**
- * Retourner un tableau [valeur texte optgroup] de l'arborescence d'un référentiel, pour une matière donnée et pour un niveau donné
- *
- * @param int  $matiere_id
- * @param int  $niveau_id
- * @return array
- */
-public static function DB_OPT_arborescence($matiere_id,$niveau_id)
-{
-  $DB_SQL = 'SELECT item_id AS valeur, item_nom AS texte, CONCAT(domaine_id,"_",theme_id) AS optgroup, CONCAT(domaine_nom," || ",theme_nom) AS optgroup_info ';
-  $DB_SQL.= 'FROM sacoche_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-  $DB_SQL.= 'ORDER BY domaine_ordre ASC, theme_ordre ASC, item_ordre ASC ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  $tab_optgroup = array();
-  foreach($DB_TAB as $key => $DB_ROW)
-  {
-    $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
-    unset($DB_TAB[$key]['optgroup_info']);
-  }
-  Form::$tab_select_optgroup['referentiel'] = $tab_optgroup;
-  return !empty($DB_TAB) ? $DB_TAB : 'Ce référentiel ne comporte aucun item !' ;
-}
-
-/**
  * recuperer_arborescence_palier
  *
  * @param int   $palier_id (facultatif ; les paliers de l'établissement sinon
@@ -1046,7 +1018,7 @@ public static function DB_OPT_paliers_etabl()
 }
 
 /**
- * Retourner un tableau [valeur texte optgroup] des piliers du socle de tous les paliers de l'établissement
+ * Retourner un tableau [valeur texte] des piliers du socle de tous les paliers de l'établissement, avec optgroup
  *
  * @param void
  * @return array|string
@@ -1060,10 +1032,9 @@ public static function DB_OPT_paliers_piliers()
   $DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC';
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_optgroup = array();
-  foreach($DB_TAB as $key => $DB_ROW)
+  foreach($DB_TAB as $DB_ROW)
   {
     $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
-    unset($DB_TAB[$key]['optgroup_info']);
   }
   Form::$tab_select_optgroup['paliers'] = $tab_optgroup;
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;

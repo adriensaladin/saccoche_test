@@ -235,7 +235,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     </tbody>
   </table>
   <p class="astuce">
-    Les documents seront établis au nom de <b><?php echo html($contact_nom.' '.$contact_prenom); ?></b>, contact référent de l'établissement pour <em>SACoche</em>, qui recevra des informations sur l'avancement du dossier à son adresse <b><?php echo html($contact_courriel) ?></b>.<br />
+    Les documents sont établis au nom de <b><?php echo html($contact_nom.' '.$contact_prenom); ?></b>, contact référent de l'établissement pour <em>SACoche</em>, qui recevra des informations sur l'avancement du dossier à son adresse <b><?php echo html($contact_courriel) ?></b>.<br />
     Pour communiquer les coordonnées d'un nouveau contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.
   </p>
 </div>
@@ -267,7 +267,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   <h2>Récupérer / Imprimer les documents associés</h2>
   <p class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</p>
   <ul class="puce">
-    <li><a id="fichier_contrat" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_convention" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
     <li><a id="fichier_facture" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
   </ul>
 </form>

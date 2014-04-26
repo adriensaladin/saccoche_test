@@ -28,6 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Associer des ressources aux items";
 
+// Acces serveur communautaire
+$acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
+
+// Javascript
+$GLOBALS['HEAD']['js']['inline'][] = 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';';
+
 if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
@@ -35,12 +41,6 @@ if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*mati
   echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
-// Acces serveur communautaire
-$acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
-
-// Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';';
 ?>
 
 <ul class="puce">

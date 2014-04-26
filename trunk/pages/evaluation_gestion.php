@@ -27,6 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
+// Réception d'id transmis via un lien de [Évaluer un élève à la volée].
+$auto_voir_devoir_id = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
+$auto_voir_groupe_id = isset($_GET['groupe_id']) ? Clean::entier($_GET['groupe_id']) : 'false' ;
+
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
@@ -84,7 +88,6 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var url_export     = "'.URL_DIR_EXPORT.'";
 $GLOBALS['HEAD']['js']['inline'][] = 'var input_date     = "'.TODAY_FR.'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql     = "'.TODAY_MYSQL.'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var input_autoeval = "'.$date_autoeval.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var isMobile       = '.(int)$_SESSION['BROWSER']['mobile'].';';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_items      = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_profs      = new Array();';
 $GLOBALS['HEAD']['js']['inline'][] = 'var tab_eleves     = new Array();';
@@ -97,6 +100,8 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var reception_items_texte = "'.$txt_items.
 $GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_texte = "'.$txt_users.'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var reception_items_liste = "'.implode('_',$tab_items).'";';
 $GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_liste = "'.implode('_',$tab_users).'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var auto_voir_groupe_id = '.$auto_voir_groupe_id.';';
 
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 

@@ -51,6 +51,44 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
 }
 
 /**
+ * recuperer_devoir_ponctuel_prof_by_date
+ *
+ * @param int    $prof_id
+ * @param string $date_mysql
+ * @param string $description
+ * @return array
+ */
+public static function DB_recuperer_devoir_ponctuel_prof_by_date($prof_id,$date_mysql,$description)
+{
+  $DB_SQL = 'SELECT devoir_id, groupe_id ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+  $DB_SQL.= 'WHERE prof_id=:prof_id AND groupe_type=:type4 AND devoir_date>=:date_mysql AND devoir_info=:description ' ;
+  $DB_SQL.= 'LIMIT 1';
+  $DB_VAR = array(':prof_id'=>$prof_id,':type4'=>'eval',':date_mysql'=>$date_mysql,':description'=>$description);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * tester_devoir_ponctuel_prof_by_ids
+ *
+ * @param int    $devoir_id
+ * @param int    $prof_id
+ * @param int    $groupe_id
+ * @return array
+ */
+public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id,$groupe_id)
+{
+  $DB_SQL = 'SELECT 1 ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id AND groupe_id=:groupe_id AND groupe_type=:type4 ' ;
+  $DB_SQL.= 'LIMIT 1';
+  $DB_VAR = array(':devoir_id'=>$devoir_id,':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':type4'=>'eval');
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * compter_demandes_evaluation
  *
  * @param int  $prof_id

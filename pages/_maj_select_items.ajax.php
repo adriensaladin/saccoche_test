@@ -25,18 +25,21 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_eleve" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "select_eleves" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$matiere      = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0 ;
-$option_first = (empty($_POST['f_first']))   ? FALSE                              : '';
+$matiere_id = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0 ;
+$niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])  : 0 ;
 
-if(!$matiere)
+if( (!$matiere_id) || (!$niveau_id) )
 {
   exit('Erreur avec les données transmises !');
 }
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , $option_first , FALSE /*selection*/ , '' /*optgroup*/ ) );
+// Affichage du retour.
+
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_arborescence($matiere_id,$niveau_id) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'referentiel' /*optgroup*/ , FALSE /*multiple*/ ) );
+
 ?>

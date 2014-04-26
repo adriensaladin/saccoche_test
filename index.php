@@ -226,10 +226,11 @@ $GLOBALS['HEAD']['js']['inline'][] = 'var CONNEXION_USED    = "'.((isset($_COOKI
 $GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
 $GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
 $GLOBALS['HEAD']['js']['inline'][] = 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var isMobile          = '.(int)$_SESSION['BROWSER']['mobile'].';';
 
 // Affichage
 afficher_page_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ );
-echo  '<body>'.NL;
+echo  '<body class="'.( (!$_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ).'">'.NL;
 if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).

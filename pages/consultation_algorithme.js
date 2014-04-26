@@ -77,7 +77,10 @@ $(document).ready
       );
     };
     // Appel de la fonction au chargement de la page puis à chaque changement de méthode
-    actualiser_select_limite();
+    if( $('#form_input').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
+    {
+      actualiser_select_limite();
+    }
     $('#f_methode').change( actualiser_select_limite );
 
 

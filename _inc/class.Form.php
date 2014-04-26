@@ -491,7 +491,7 @@ class Form
       }
       else
       {
-        // ... sélectionner une ou plusieurs option ; $selection contient la valeur / le tableau à sélectionner
+        // ... sélectionner une ou plusieurs option(s) ; $selection contient la valeur ou le tableau de valeurs à sélectionner
         if(!is_array($selection))
         {
           $options = (!$multiple) ? str_replace( 'value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options ) : str_replace( array($selection.'"><input',$selection.'" />') , array($selection.'" class="check"><input',$selection.'" checked />') , $options ) ;

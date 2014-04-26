@@ -272,7 +272,10 @@ $(document).ready
     );
 
     // Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-    selectionner_periode_adaptee();
+    if( $('#form_select').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
+    {
+      selectionner_periode_adaptee();
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax (au changement de f_groupe)

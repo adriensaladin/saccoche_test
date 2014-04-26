@@ -356,8 +356,19 @@ $(document).ready
      */
     var voir = function()
     {
-      mode = $(this).attr('class');
-      var objet_tds     = $(this).parent().parent().find('td');
+      // Afficher au chargement
+      if(auto_voir_devoir_id && auto_voir_groupe_id)
+      {
+        mode = 'voir';
+        var objet_tds = $('#devoir_'+auto_voir_devoir_id+'_E'+auto_voir_groupe_id).parent().find('td');
+        auto_voir_devoir_id = false;
+        auto_voir_groupe_id = false;
+      }
+      else
+      {
+        mode = $(this).attr('class');
+        var objet_tds     = $(this).parent().parent().find('td');
+      }
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
@@ -2389,6 +2400,19 @@ $(document).ready
         if( reception_todo )
         {
           $('q.ajouter').click();
+        }
+        // Afficher des résultats au chargement
+        if(auto_voir_devoir_id && auto_voir_groupe_id)
+        {
+          if( $('#devoir_'+auto_voir_devoir_id+'_E'+auto_voir_groupe_id).length )
+          {
+            voir();
+          }
+          else
+          {
+            auto_voir_devoir_id = false;
+            auto_voir_groupe_id = false;
+          }
         }
       }
     }

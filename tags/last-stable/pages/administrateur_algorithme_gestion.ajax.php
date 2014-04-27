@@ -1,0 +1,164 @@
+<?php
+/**
+ * @version $Id$
+ * @author Thomas Crespin <thomas.crespin@sesamath.net>
+ * @copyright Thomas Crespin 2010-2014
+ * 
+ * ****************************************************************************************************
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+ * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * ****************************************************************************************************
+ * 
+ * Ce fichier est une partie de SACoche.
+ * 
+ * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+ * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+ * 
+ * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+ * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+ * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * 
+ * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='calculer')){exit('Action désactivée pour la démo...');}
+
+$action = (isset($_POST['action'])) ? $_POST['action'] : '';
+// Valeur d'un code (sur 100)
+$valeur = array();
+$valeur['RR'] = (isset($_POST['valeurRR'])) ? Clean::entier($_POST['valeurRR']) :   0 ;
+$valeur['R']  = (isset($_POST['valeurR']))  ? Clean::entier($_POST['valeurR'])  :  33 ;
+$valeur['V']  = (isset($_POST['valeurV']))  ? Clean::entier($_POST['valeurV'])  :  67 ;
+$valeur['VV'] = (isset($_POST['valeurVV'])) ? Clean::entier($_POST['valeurVV']) : 100 ;
+// Seuil d'acquisition (sur 100) 
+$seuil = array();
+$seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
+$seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
+// Méthode de calcul
+$methode    = (isset($_POST['f_methode']))    ? Clean::calcul_methode($_POST['f_methode'])        : NULL ;
+$limite     = (isset($_POST['f_limite']))     ? Clean::calcul_limite($_POST['f_limite'],$methode) : NULL ;
+$retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL ;
+
+// Vérification des données transmises
+if( is_null($methode) || is_null($limite) || is_null($retroactif) )
+{
+  exit('Erreur avec les données transmises !');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enregistrer de nouveaux parapmètres par défaut
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='enregistrer')
+{
+  $_SESSION['CALCUL_VALEUR']     = $valeur;
+  $_SESSION['CALCUL_SEUIL']      = $seuil;
+  $_SESSION['CALCUL_METHODE']    = $methode;
+  $_SESSION['CALCUL_LIMITE']     = $limite;
+  $_SESSION['CALCUL_RETROACTIF'] = $retroactif;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('calcul_valeur_RR'=>$valeur['RR'],'calcul_valeur_R'=>$valeur['R'],'calcul_valeur_V'=>$valeur['V'],'calcul_valeur_VV'=>$valeur['VV'],'calcul_seuil_R'=>$seuil['R'],'calcul_seuil_V'=>$seuil['V'],'calcul_methode'=>$methode,'calcul_limite'=>$limite,'calcul_retroactif'=>$retroactif) );
+  exit('<ok>');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Simuler avec des paramètres donnés
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='calculer')
+{
+  $type_calcul = (in_array($methode,array('geometrique','arithmetique','classique'))) ? 'moyenne' : 'bestof' ;
+  $tab_bad = array('0','1','2','3');
+  $tab_bon = array(' RR',' R',' V',' VV');
+  $tab_lignes = array();
+  $tab_lignes[1] = '';
+  $tab_lignes = array_pad($tab_lignes,256,'');
+  for($nb_devoirs=1;$nb_devoirs<=4;$nb_devoirs++)
+  {
+    $nb_cas = pow(4,$nb_devoirs);
+    for($cas=0;$cas<$nb_cas;$cas++)
+    {
+      // Initialisation
+      if($type_calcul=='moyenne')
+      {
+        $somme_point = 0;
+        $somme_coef = 0;
+        $coef = 1;
+      }
+      elseif($type_calcul=='bestof')
+      {
+        $tab_notes = array();
+        $nb_best = (int)substr($methode,-1);
+      }
+      $masque = sprintf('%0'.$nb_devoirs.'u',base_convert($cas,10,4));
+      $codes = str_replace($tab_bad,$tab_bon,$masque);
+      $tab_codes = explode(' ',$codes);
+      // Pour chaque devoir (note)...
+      for($num_devoir=1;$num_devoir<=$nb_devoirs;$num_devoir++)
+      {
+        $code = $tab_codes[$num_devoir];
+        $tab_lignes[$cas] .= '<td><img alt="" src="./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$code.'.gif" /></td>';
+        // Si on prend ce devoir en compte
+        if( ($limite==0) || ($nb_devoirs-$num_devoir<$limite) )
+        {
+          if($type_calcul=='moyenne')
+          {
+            $somme_point += $valeur[$code]*$coef;
+            $somme_coef += $coef;
+            // Calcul du coef de l'éventuel devoir suivant
+            $coef = ($methode=='geometrique') ? $coef*2 : ( ($methode=='arithmetique') ? $coef+1 : 1 ) ;
+          }
+          elseif($type_calcul=='bestof')
+          {
+            $tab_notes[] = $valeur[$code];
+          }
+        }
+      }
+      // Calcul final du score
+      if($type_calcul=='moyenne')
+      {
+        $score = round( $somme_point/$somme_coef , 0 );
+      }
+      elseif($type_calcul=='bestof')
+      {
+        rsort($tab_notes);
+        $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
+        $score = round( array_sum($tab_notes)/count($tab_notes) , 0 );
+      }
+      // Ligne retournée
+      $bg = test_A($score,$seuil['V']) ? 'v' : ( test_NA($score,$seuil['R']) ? 'r' : 'o' ) ;
+      $tab_lignes[$cas] .= '<td class="'.$bg.'">'.$score.'</td>';
+      if( ($cas==0) && ($nb_devoirs!=4) )
+      {
+        $tab_lignes[$cas] .= '<td rowspan="256"></td>';
+      }
+    }
+  }
+
+  foreach($tab_lignes as $cas => $ligne)
+  {
+    $nb_td_manquant = 14 - substr_count($ligne,'<td');
+    echo'<tr>';
+    if($nb_td_manquant>0)
+    {
+      if($cas>63)     {$nb_td_manquant+=2;}
+      elseif($cas>15) {$nb_td_manquant+=1;}
+      echo'<td colspan="'.$nb_td_manquant.'"></td>';
+    }
+    echo $ligne;
+    echo'</tr>';
+  }
+  exit();
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là !
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
+
+?>

@@ -149,8 +149,8 @@ function format_liens(element)
 {
   $(element).find("a.lien_ext" ).attr("target","_blank");
   $(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/puce/puce_popup_onglet.gif) no-repeat right"});
-  $(element).find("a.pop_up" ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
-  $(element).find("a.lien_mail").css({"padding-left":"15px" , "background":"url(./_img/puce/puce_mail.gif) no-repeat left"});
+  $(element).find("a.pop_up"   ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
+  $(element).find("a.lien_mail").css({"padding-left" :"15px" , "background":"url(./_img/puce/puce_mail.gif)         no-repeat left" });
 }
 
 /**
@@ -838,10 +838,11 @@ $(document).ready
   function()
   {
 
-    // Initialisation
+    /**
+     * Initialisation
+     */
     format_liens('body');
     infobulle();
-
 
     /**
      * Alerte si usage frame / iframe
@@ -870,6 +871,79 @@ $(document).ready
       var endroit = ($('#titre_logo').length) ? '#titre_logo' : 'h1' ;
       $(endroit).after('<div class="probleme">Pour utiliser <em>SACoche</em> vous devez configurer l\'acceptation des cookies par votre navigateur.</div>');
     }
+
+    /**
+     * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
+     */
+    $(document).on
+    (
+      'click',
+      'img.toggle',
+      function()
+      {
+        id = $(this).parent().attr('id').substring(3); // 'to_' + id
+        $('#'+id).toggle('fast');
+        src = $(this).attr('src');
+        if( src.indexOf("plus") > 0 )
+        {
+          $(this).attr('src',src.replace('plus','moins'));
+        }
+        else
+        {
+          $(this).attr('src',src.replace('moins','plus'));
+        }
+        return false;
+      }
+    );
+
+    /**
+     * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
+     */
+    $(document).on
+    (
+      'click',
+      'a.pop_up',
+      function()
+      {
+        adresse = $(this).attr("href");
+        // Fenêtre principale ; si ce n'est pas le pop-up, on la redimensionne / repositionne
+        if(window.name!='popup')
+        {
+          var largeur = Math.max( 1000 , screen.width - 600 );
+          var hauteur = screen.height * 1 ;
+          var gauche = 0 ;
+          var haut  = 0 ;
+          window.moveTo(gauche,haut);
+          window.resizeTo(largeur,hauteur);
+        }
+        // Fenêtre pop-up
+        var largeur = 600 ;
+        var hauteur = screen.height * 1 ;
+        var gauche = screen.width - largeur ;
+        var haut  = 0 ;
+        w = window.open( adresse , 'popup' ,"toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width="+largeur+",height="+hauteur+",top="+haut+",left="+gauche ) ;
+        w.focus() ;
+        return false;
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////
+// La suite n'est à exécuter que si l'on est connecté.
+// Remarque : poursuivre l'analyse en l'état provoquerait des erreurs.
+// ////////////////////////////////////////////////////////////////////////////////
+    if(PAGE.substring(0,6)=='public') return false;
+// ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Plugin Impromptu - Options par défaut
+     */
+    jQuery.prompt.setDefaults({
+      opacity: 0.7, // Combiné au background-color:#000 modifié dans le css
+      zIndex : 9000 // Pour passer devant un fancybox
+    });
+    jQuery.prompt.setStateDefaults({
+      focus  : null // Pas de focus particulier ; ne fonctionne qu'avec la syntaxe utilisant une collection d'étapes, pas la syntaxe directe simplifiée.
+    });
 
     /**
      * Ajouter une méthode de tri au plugin TableSorter
@@ -907,17 +981,6 @@ $(document).ready
     );
 
     /**
-     * Plugin Impromptu - Options par défaut
-     */
-    jQuery.prompt.setDefaults({
-      opacity: 0.7, // Combiné au background-color:#000 modifié dans le css
-      zIndex : 9000 // Pour passer devant un fancybox
-    });
-    jQuery.prompt.setStateDefaults({
-      focus  : null // Pas de focus particulier ; ne fonctionne qu'avec la syntaxe utilisant une collection d'étapes, pas la syntaxe directe simplifiée.
-    });
-
-    /**
      * MENU - Rendre transparente la page au survol.
      *
      * Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
@@ -949,7 +1012,7 @@ $(document).ready
       );
     }
     page_transparente();
-
+    
     /**
      * MENU - Déploiement au clic et plus seulement au survol pour les dispositifs tactiles.
      */
@@ -971,23 +1034,6 @@ $(document).ready
         }
       );
     }
-
-    /**
-     * Si on appuie sur la touche entrée, le premier élèment de formulaire est actionné.
-     * S'il s'agit d'un input type image, cela peut dé-cocher tout un ensemble de cases à l'insu de l'utilisateur.
-     * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.
-     * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
-     */
-    // 
-    $(document).on
-    (
-      'click',
-      'input[name=leurre]',
-      function()
-      {
-        return false;
-      }
-    );
 
     /**
      * Select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur)
@@ -1021,6 +1067,7 @@ $(document).ready
         obj_select_multiple.children('label').addClass('check');
       }
     );
+
     $('span.check_multiple q.cocher_rien').click
     (
       function()
@@ -1030,6 +1077,7 @@ $(document).ready
         obj_select_multiple.children('label').removeAttr('class');
       }
     );
+
     $('span.check_multiple q.cocher_inverse').click
     (
       function()
@@ -1168,6 +1216,18 @@ $(document).ready
     );
 
     /**
+     * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
+     */
+    $('a.toggle').click
+    (
+      function()
+      {
+        $("div.toggle").toggle("slow");
+        return false;
+      }
+    );
+
+    /**
      * Clic sur une image-lien pour imprimer un referentiel en consultation
      */
     $(document).on
@@ -1181,87 +1241,17 @@ $(document).ready
     );
 
     /**
-     * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
-     */
-    $('a.toggle').click
-    (
-      function()
-      {
-        $("div.toggle").toggle("slow");
-        return false;
-      }
-    );
-
-    /**
-     * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
-     */
-    $(document).on
-    (
-      'click',
-      'img.toggle',
-      function()
-      {
-        id = $(this).parent().attr('id').substring(3); // 'to_' + id
-        $('#'+id).toggle('fast');
-        src = $(this).attr('src');
-        if( src.indexOf("plus") > 0 )
-        {
-          $(this).attr('src',src.replace('plus','moins'));
-        }
-        else
-        {
-          $(this).attr('src',src.replace('moins','plus'));
-        }
-        return false;
-      }
-    );
-
-    /**
-     * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
-     */
-    $(document).on
-    (
-      'click',
-      'a.pop_up',
-      function()
-      {
-        adresse = $(this).attr("href");
-        // Fenêtre principale ; si ce n'est pas le pop-up, on la redimensionne / repositionne
-        if(window.name!='popup')
-        {
-          var largeur = Math.max( 1000 , screen.width - 600 );
-          var hauteur = screen.height * 1 ;
-          var gauche = 0 ;
-          var haut  = 0 ;
-          window.moveTo(gauche,haut);
-          window.resizeTo(largeur,hauteur);
-        }
-        // Fenêtre pop-up
-        var largeur = 600 ;
-        var hauteur = screen.height * 1 ;
-        var gauche = screen.width - largeur ;
-        var haut  = 0 ;
-        w = window.open( adresse , 'popup' ,"toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width="+largeur+",height="+hauteur+",top="+haut+",left="+gauche ) ;
-        w.focus() ;
-        return false;
-      }
-    );
-
-    /**
      * Gestion de la durée d'inactivité
      *
      * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
      */
-    if(PAGE.substring(0,6)!='public')
-    {
-      initialiser_compteur();
-      $("body").everyTime
-      ('15s', 'compteur' , function()
-        {
-          tester_compteur();
-        }
-      );
-    }
+    initialiser_compteur();
+    $("body").everyTime
+    ('15s', 'compteur' , function()
+      {
+        tester_compteur();
+      }
+    );
 
     /**
      * Ajoute au document un calque qui est utilisé pour afficher un calendrier

@@ -489,7 +489,7 @@ class FileSystem
   {
     $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.$fichier_nom;
     $fichier_contenu = '<!DOCTYPE html>'.NL;
-    $fichier_contenu.= '<html>'.NL;
+    $fichier_contenu.= '<html lang="fr">'.NL;
     $fichier_contenu.=   '<head>'.NL;
     $fichier_contenu.=     '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.NL;
     $fichier_contenu.=     '<style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style>'.NL;

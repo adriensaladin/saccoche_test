@@ -71,7 +71,7 @@ $GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/script.js','pack'); // La m
 $GLOBALS['HEAD']['js' ]['file'][] = compacter('./pages/releve_html.js','pack');
 
 // Ultimes constantes javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE = "public_anti_maj_clock";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE = "public_anti_maj_clock";'; // Préfixe "public" pour indiquer que c'est une page accessible sans authentification.
 
 // Affichage
 afficher_page_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ );

@@ -767,7 +767,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   else
   {
     echo'<!DOCTYPE html>'.NL;
-    echo'<html>'.NL;
+    echo'<html lang="fr">'.NL;
     echo  '<head>'.NL;
     echo    '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
     echo    '<link rel="stylesheet" type="text/css" href="'.URL_DIR_SACOCHE.'_css/style.css" />'.NL;

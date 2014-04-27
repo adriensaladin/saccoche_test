@@ -248,7 +248,7 @@ function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
 {
   header('Content-Type: text/html; charset='.CHARSET);
   echo'<!DOCTYPE html>'.NL;
-  echo'<html>'.NL;
+  echo'<html lang="fr">'.NL;
   echo  '<head>'.NL;
   echo    '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
   if($is_meta_robots)
@@ -264,7 +264,7 @@ function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss )
     echo    '<meta name="msapplication-TileColor" content="#e6e6ff" />'.NL;
     echo    '<meta name="msapplication-TileImage" content="/_img/favicon/microsoft-tile-square-144x144.png" />'.NL;
     echo    '<meta name="msapplication-square70x70logo"   content="/_img/favicon/microsoft-tile-square-70x70.png" />'.NL;
-    // echo    '<meta name="msapplication-square144x144logo" content="/_img/favicon/microsoft-tile-square-144x144.png" />'.NL; // Pb validité HTML : Bad value msapplication-square144x144logo for attribute name on element meta: Keyword msapplication-square144x144logo is not registered.
+    // echo    '<meta name="msapplication-square144x144logo" content="/_img/favicon/microsoft-tile-square-144x144.png" />'.NL; // Pb validité HTML : Bad value msapplication-square144x144logo for attribute name on element meta: Keyword msapplication-square144x144logo is not registered (ce qui peut se vérifier ici : http://wiki.whatwg.org/wiki/MetaExtensions).
     echo    '<meta name="msapplication-square150x150logo" content="/_img/favicon/microsoft-tile-square-150x150.png" />'.NL;
     echo    '<meta name="msapplication-square310x310logo" content="/_img/favicon/microsoft-tile-square-310x310.png" />'.NL;
     echo    '<meta name="msapplication-wide310x150logo"   content="/_img/favicon/microsoft-tile-wide-310x150.png" />'.NL;

@@ -37,7 +37,8 @@ fieldset,img,hr {border:0}
 /* Personnalisations globales                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body {height:100%;width:100%;background:#FFF;font:13px "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
+html {height:100%;width:100%;background:#FFF;font-size:13px;}
+body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
@@ -66,7 +67,6 @@ kbd:hover{background-color:#CCC;border-color:#AAA}
 .fluo{background:#FF0} /* pas de padding sinon pose souci pour du texte dans un tableau */
 div.appreciation {white-space:pre-wrap}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
-*.probleme, noscript {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
@@ -78,8 +78,8 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #titre_logo a{margin:auto 1em}
 
 /* zone identifiée */
-#cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:48px;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;background:#FFF repeat 0 0 url("data:image/gif;base64,R0lGODdhBAAEAIABANfX/////ywAAAAABAAEAAACBkwAl2h5BQA7");} /* sacoche_fond_cadre_haut */
-#cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:49px;padding:4px;background:#FFF repeat-x 0 0 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAJBAMAAAABaFvXAAAAG1BMVEWkpP/Ix//g3v+wr/+Wl//T0/+Li/+7vP/r6/+vDUNWAAAAGUlEQVQI12NJYHnAcoDFgMWBZQEQX2BJAAAregSl0Sa5jwAAAABJRU5ErkJggg==");} /* sacoche_fond_degrade */
+#cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px}
+#cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
 #cadre_navig  {z-index:1003;position:fixed;top:2px;right:2px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
 #cadre_photo  {z-index:1004;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
 #cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
@@ -94,17 +94,19 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Titres                                                                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* h1 = titre de la page (ou de section à la page d'authentification) */
-h1{display:block;white-space:nowrap;font-size:115%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.1em;margin:1ex 2em;background:transparent url(../_img/sprite_titre_2.png) 0 0 no-repeat;padding-left:26px;line-height:16px}
+/* h1 = titre de la page (puce personnalisée à la page d'authentification) */
+h1{display:block;white-space:nowrap;font-size:115%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.1em;margin:1ex 2em;background:transparent url(../_img/sprite_titre_1.png) 0 0 no-repeat;padding-left:26px;line-height:16px}
 #cadre_milieu h1.hebergement    {background-position: 0  -20px}
 #cadre_milieu h1.identification {background-position: 0  -40px}
 #cadre_milieu h1.informations   {background-position: 0  -60px}
 
 /* h2 = titre d'une partie (souvent précédé d'un <hr />) */
-h2{display:block;white-space:nowrap;font-size:105%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.05em;margin:1ex auto 1ex 1em;background:transparent url(../_img/sprite_titre_2.png) 0 -80px no-repeat;padding-left:16px;line-height:14px}
+h2{display:block;white-space:nowrap;font-size:105%;text-align:left;font-weight:bold;color:#33A;letter-spacing:0.05em;margin:1ex auto 1ex 1em;background:transparent url(../_img/sprite_titre_1.png) 0 -80px no-repeat;padding-left:16px;line-height:14px}
 
-/* h3 = paragraphe dans une partie */
-h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:bold;color:#227;margin:1ex auto 1ex 4px;background:transparent url(../_img/sprite_titre_2.png) 0 -96px no-repeat;padding-left:14px;line-height:13px}
+/* h3 = réservé pour l'infobulle */
+
+/* h4 = paragraphe dans une partie */
+h4{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:bold;color:#227;margin:1ex auto 1ex 4px;background:transparent url(../_img/sprite_titre_1.png) 0 -96px no-repeat;padding-left:14px;line-height:13px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Boutons d'informations (dans #cadre_haut)                                                           */
@@ -123,18 +125,22 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #top_info span.profil_professeur     {background-position: 1px -179px}
 #top_info span.profil_webmestre      {background-position: 1px -199px}
 #top_info span.profil_developpeur    {background-position: 1px -199px}
-#top_info span.clock_fixe {background:#EEF 2px center no-repeat url("data:image/gif;base64,R0lGODlhEAAQAPZgALKzs0B0oM2mNvLKW/PTfTpslUd9q2WGoU2Gt7C2uVOPwlqYzdeZC+rFYMTFxeyqAPKxAKGhoStXeixYe/S1AMiyTnO8+sWbLXOcs/PQcteyRvbjquiwKGmexr2/wsypOfLPaPP9//P2+ez9/1qMvOzx8nCQxG6Zw3d+gER6sfj//4an09nj8XWs043C36XC4DZropzQ54Cgzun2/OPz+kl/sO75/uHv8uf6/7jDx2WbycHb8Ku+34ip2Je123ClznGXyKvS6/rqujZurtra2pOs1ZPL6YOLjHmi2f///9/1/6OuscLP0pSdnmuTvtrl55vD38zs+s/f79Pw+qbM41iFtNPT09Hf76ixi6G73Z3Bv5XA232pwofE7GuPv0l1oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUKAGAALAAAAAAQABAAAAfdgGBgEBQUgodghYgQA0IDFRaRFhUgBA+HjQ0fXUYxMUYuAgQZl2AEDQIuVC9FRVlUWhobHIIMF6o8LCUlLFlQWAIMghgtUDxJJU8qKiE+W1wdggstPiwhIk0lIgk7Ky0Lggo/KzM2KihLKDlTQD8Kggg6MjQzN0coTCNRJjoIggYkZOzAQSPHDRxKggAhYUBQgBoneoywESLEiBFITtQIcKhAiohSRIi4ssJJigKIwBxIQcKESy8kqhxICcaKBxgwhgyB8cWBg5QAiACYIKGohAlBEyCKEIGmIKaCAgEAOw==");} /* sacoche_clock_fixe */
-#top_info span.clock_anim {background:#EEF 2px center no-repeat url("data:image/gif;base64,R0lGODlhEAAQAPUFAKGhofLKXfL29n2Bgery8tri7kR9smWdyl19mW2RwpXG4oGhzp2+3vb6/yxZeer6/9ry+nm27rbK1jhtpZ2uws6lNG2ZvlWNvpW62s6ySFmJtnWu0qrS5jRlke76//////a2ALKysvKhme6hmfY0NO4kKPLSgfppZd6RDPZ1ccK+wvZQTOqBffLS1uqqAM7Kyup1dfKRieqVje5pYeqlMPLObfruvvaJgeqRifLm5vr2+tra2v/6+vLGWQAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMgAFACwAAAAAEAAQAAAGssBCAUQUGoegoytgC6BO0BOqZnIZmT3ULTYaxVIoU81aMGVFohj0JrrRTDQhCoUW5XS8XEzUo6GEM2wiHx85hB83IzMkQicxNy2EADofKi0nLIwFJ4o8hAMhAyoEJDKanCuUAgADL4WlJY1qkToqAoQtKyyxBSspIzCHhzOKvL0xMTCRHy0wLLtHBTA4iiskKyMyK9EFLyozLDIyLDAqKtEhOyEkJCXuJekhRwAA3EL0QkEAIfkEBTIAHwAsAQABAA4ADgAABo/Aj/CTiRgjmeEwUFEoOBwFpqJkPhkYDINDSQorGA6jQCAUGAwA1bJRMD5mYSO7OBw2mEJDABdQOAsbBxcbCw8eQhRCEAkbFwYHCxAPBAMfEg+MBwYGFwscmXAPDxwWjxMGFoYeDQ0eDwsWBhMfHakLBQICBQsJBh1DCAYaCcUJGhoISkIdE86oy0MO09RKQQA7");} /* sacoche_clock_anim */
-#top_info #clock {padding-right:3px;background:#EEF right top no-repeat url("data:image/gif;base64,R0lGODlhAwAPAPECAAAAAEZGRu0cJAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJMgACACwAAAAAAwAPAAACB5SPqcsCoQoAIfkEBTIAAAAsAAAAAAEAAQAAAgJEAQA7");} /* sacoche_clock_point */
+#top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
+#top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
+#top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Boutons de navigation (dans #cadre_navig)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #cadre_navig a{display:block;width:18px;height:18px;border:1px solid #99F;margin-top:1px}
-#go_haut {background:#DDF center center no-repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAdVBMVEUAAAB+qeh0ouJgld0scs0VRbcZWcYXUb8VR7saYsYUQbdHhNY9d9CIsOZ0ouCAq+lDgtV3puV4peCryO+Bq+Oiwu19qeGRtuhLiNYWTsB8qehhl907ccyBq+IYWcSZu+kaYsluoOKZu+ojbs01d9Jil+FTjtvu6wDfAAAADHRSTlMAh4eOpQS3raLvm55SQe+PAAAATklEQVQY02PABTjZWFH4LBIC7Mh8bmleWR4kEWZBeREhMR4OGJ+JV1RchI9PCCbCKCUsLKokzivGJ8MFFuDnF1RUVRNQUVaQkxxwa+EAAHryB9uHnpf4AAAAAElFTkSuQmCC")} /* sacoche_fleche_go_haut */
-#go_bas  {background:#DDF center center no-repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAb1BMVEUAAAAscs0aYsYZWcZHhNZgld10ouIXUb8VR7t+qegVRbcUQbd2pOGAq+l6qOdhl9+ryO9DgtWHsOaBq+Oiwu08ddCRtuh9qeE4dM9woeFLiNaKseSZu+k/etCBq+MWTsCZu+oYWcRTjtsjbs0aYsmy+Bs8AAAADHRSTlMApe+3no6HraKHBJv83+5sAAAAUklEQVQY02PAAuQVVZQlBJX4Jfl4ecEC3BI84kJiCiICAnycECUcojySPMJiIkJsQA5URJxHWIaHFWEMu6ywND8LssHsglKMKDZxMTMNuLWoAACnvweLyaYZNgAAAABJRU5ErkJggg==")} /* sacoche_fleche_go_bas */
+#go_haut {background:#DDF url(../_img/fleche/go_haut.png) center center no-repeat}
+#go_bas  {background:#DDF url(../_img/fleche/go_bas.png)  center center no-repeat}
 #cadre_navig a:hover{background-color:#EEF}
+
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Menu déroulant (dans #cadre_haut)                                                                   */
@@ -341,24 +347,17 @@ span.voir       {background-position: 0  -80px}
 /* Puces diverses                                                                                      */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-*.travaux {padding-left:50px;color:#000;     background:#FF0        no-repeat 5px      url("data:image/gif;base64,R0lGODlhJgAmAPEDAP/eAAAAAG1tbQAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFGQADACwAAAAAJgAmAAACw5yPacGhD+NpTVrJgAbsepRtWvddoTg6ZXSi6fq07gtPAUrhKixT/f6RcXwukkc4zBWBrNvM51xaMlBqY7YxKkLRZBebZS6iZCJYl2jdoJyzdIzzOr9KqZA90l2fe1H1j6fXZdVHVyfId+jXZ/clh6SjIwC3uMbItzhpU5nimLWkCVI295NXFppGqlpJloK6ZUnKqhbwGmPZ2WnGYAtBlfto1dvkJlkDCVpDecarvAnW7PycLC1KXW0dNlwNtY1N4a1QAAAh+QQFGQACACwGAA0AGAANAAACKoyOqcvtD5eJB9iLg94Ne7Bp4PiVzZR4lCBu14qEgbrKWB1a8GG/NWMpAAAh+QQFGQACACwHAA4AEwALAAACGYyOqQm2fwCAtNqL8wuyz8t5n+V4WoQ5SQEAIfkEBRkAAgAsBgAHABMAFQAAAjmUjwIL6beeNCDYO+HFKTC2WQj4dd5XhSoKqifbqlm3BDNy2veo71TvC+IaQsEr2IvcQsoZcCcSugoAIfkEBRkAAgAsBgAHABMAFQAAAjyUjxIb6beeNIyBCWu4CfivbUgYIR+wbaB1nstatS2JctjhiTde74nuo9iCRFOjKKgdfbbSDaVhIj3TUAEAIfkEBRkAAgAsBwAOABMACwAAAhqEjqkZtn9CgLTai/MDkksMeNJ0OSOpoZWTFAA7");min-height:40px;line-height:40px;font-weight:bold;} /* logo_chantier */
-*.astuce  {padding-left:19px;padding-top:1px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABL1BMVEUAAAA0UY81frxHjs41UIlEjcxAjco1UYxOl9U0aKw1cK80UIk1fb01aas1ZqtHkc41eLg1frxJkdE1Zak1UY80XKQ1Vp41UZBAi8dMktJSmNhNltQ0T4Y0Vp80VZk0UpI1UIlrmcZxncyiv95plsRok8JsmMX+//9lkL5ehbR2oM92o9F6pNKHrdaow+GEq9CvxuNzns71+PuMstliirm2zOeyyuX09/t4pMZlmstGjc6YtNOAqdafvOBcg7FijLuevNp3ncSrxt80UZQ0T4aTuNRgiremw9s1a7Fekb+rwuHU4O6lwN+Nqs2Rs9lWe66Ts9s7hcU1fr+ivNrT3+0zVZ/Q3Opbirlpkr6XuthqoNCduuBBi8u4y+F9p8tylr5SequQtNJXgLI0UIpsmcX3fijNAAAAIXRSTlMAfVPyUyLnIlNTIvL08vJ+fuf0In5+5+d95yN99FP05+ekUZ5YAAAAzElEQVQY023ORXYCARBFUUgChAjuTrt34+7u7g69/zVQ2Iw/e/fUoBRv53I701u1Q/Xqb9MalaRc6u/j2elIbMNn+22+qb216jMSz3KCwLKoqDMD6FMxjgmFwwjCdBdWAHVuyIQQFJVlQlzZAEZxDgkSJInhOFGuAIwlVsawToKiqOUdjEU+iOHTRCEaLdXsAIaWQOA7kpzTdGZgAfj5FydUoU7n873kr0YB0872xVKdPmSS1a/Hq17fudZonI4e6Mc0Sv+lGlDC/ZtdAZWsIDE+8vDCAAAAAElFTkSuQmCC");} /* puce_astuce */
-*.noprint {padding-left:19px;padding-top:1px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABklBMVEUAAACBgYFTU1OBgYFNi8hCeb+BgYFjb4Q7dsREfcFHR0ddXV1jY2NWVlYjIyMjIyNklslPjMnX19e7u7vN4/y1tbVLicb8/Pz5+fnu9PjJ4frs8vjD3fnQ5PzT5/2dJiaBgYG8v8SZmZnf4OAjIyPx9flFgMO81vPw9PnoX1+6Ghq3KCjMzMymf39nWIJYVla8QkOuqqp9fX17eXmVPj7o6OjU09OOjo5hYWHExMTHxMRwcHBglMejpKXX5vJJhsR9suJjkdr4+/3N5vyEtuLf6fTp7/XP0OS11PPBkJ64ODzQ3PTYERHRnaHP1NuhlZiolZrFEhKKGxt0NDSIdHSYY2OuFhZtamqnkJFrUFC+tcqfNTXMR0eIWlqBbGzVr6/X3uVPhL7CtbXu6OiLKSm5WVnuZWWVJiZ1dXVVgKurLy90dHS6Ly/ctLmvQ0uVKiqnp6fCbW1qamrb4euXNjZSUlKMIiLy8vJba6Hu6emXVFRDQUHX3+m7vsNYGho/Pz/P2OFsUlIqKipTeaM5HByysLDHnUEmAAAAEHRSTlMAY2PcwahFCJRgRdyZ6HrbXfz63wAAAPJJREFUGNM9y2N3xEAYhuG33BozmSTNxEnXNmvbtm2b/7s57Xavb899zgOWytJGC1sB/1ppE6W0pa3dlg9sM8MIYkdnV1khSJIgdtMe+9+2sU5ZZgRHn9P++ylS14f7e2VGdBz7A8UA5brXv+MaGJQWToJ3qcMqKInHVraCLs/ywWkkHEvVgspx3s3V7aWj8/vbNMdlIMzzIWNj0aMoaSPH80mIIKSjqHvXd3UTTyD0CnsYJ6bdMz4cij6oGH9AhpCpiaHJ2eT148s7ISZcnJH5cWVU07Tn3Ne3bkJNdWB/bmxk7fLpzfg06+vAkm3Iy1rjB+LHLR15AuvLAAAAAElFTkSuQmCC");color:#C00;} /* puce_noprint */
-*.danger  {padding-left:19px;padding-top:1px;background:transparent no-repeat top left url("data:image/gif;base64,R0lGODlhEAAQAMQfAP///+JQUPIkJN5ZWTg4OOZQUO4sLP/6+nl5edrW1vr29uo4OO40NBwcHO4wMN5QUOZxce7W1t7e3uplZe7KyuaBge7GxuZ5ec5hYeptbfLa2u7S0uq+vu4oKPIoKAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQBCgAfACwAAAAAEAAQAAAFduAnjh+GkSgpLIuQosPCccvwjsKUJJN7xxYCwVK7CTIKoSLjgzkoACGA4rChBBBFlABQQJqigWED2JY3BqtIcDmUEYjy4dIUR8oAiQQfSYsMFW4ACQ0NCXIVBh8DHRp4AHCPGh0DAQIBmJmamJcfD5ugAQ83pCEAOw==");color:#C00;} /* puce_danger */
-*.manuel  {padding-left:19px;padding-top:1px;background:#CCF        no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB40lEQVQ4y3WTv2pVQRDGf+fk3psQGxVFLJKgKEjiTaeCguALKD6BhSB2PoAPo4iV2iiIgoWxE7QWC1G0jEX+gMnZ3Zn5LPZEY7x3YRlYdn7zfbszjSSu33uwIumpYANxWQgJkKhBf3Z4oaStb+8e3T8NMKBeuCM4N15ebNZ/biHtJUGFBQrY3PrFbhKhwSn6VQFwdby80FxbXWDx5BhVAqGoVaNWP354nvm5AVdu3OUfANKR8coSrz5+YWNjB0UAEHsqJBRic3uHLmX2r94CzWA04Oz5Jc6cOIo7SEGEcBcegYXY7QpPnq1NAgj34Pv6NqN2SNd1lJSxqOfGDIPhiGOHZglpAgAID8wLKSVuXjxT5Vd1SOLh28+UuSEH8v8qKB54McxbHq99IhXDXLgFRsNwNCJbfdSJALMgl0IOUDtLMxxCK6IJIoLsDdmnAqCYY52RimMeFI8+VjgNmA9QTFPgQUmFVLzacZF7iLloG7DsUx6xt1ByBViIbIF7UEKU4szQUuY12UJIZHMsGakEJQI3UcIppe8FOcVi2i9QL2WvFiIwC8yEWe2FVg1uQoiI+PGfBdqWC5dWUdPgLsxF9FF9N+ZsSJC6tHYQ8Ob1y/e36+Tt638EByYT8eLrh+e39gC/AXz61Za7OscLAAAAAElFTkSuQmCC");} /* puce_manuel */
-*.rss     {padding-left:19px;                background:transparent no-repeat top left url("data:image/gif;base64,R0lGODlhEAAQAMQfAOqdRNpZAObOtua+mfLy8uJ5ANpdAOayfeKROObm5uJ1AN5lAOJ5BOKVbe66heqhVeqqZeLe2tZZAOrayuaFAO7q6tZQAOKVSN5pAOKFHOqdZequce7e1t5xAOJ1BAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAAEAAQAAAFtCDXWFJZBigqNaIzDE4sH1sNjQdRcYID/Y8HYBiQbAhInWATFA4NxsNhMEFWHMMsFHi5HCaVyiCLWEggAljwMqgkIAwKZRF4WAUXhmeQiCAKc3UCAmEcFwUZAgkDcXQIDBgIhBx/FxF+BRgBDAoKHomLDAwCERuZAQptAh4IEQl/GxEDCnQKHGEYowkNCgARAh1mCl8DC8MRBwqtE8ENHQUKz3IFgNMdLA0BBtsL3d0YGAssIQA7");} /* puce_rss */
-*.manuel:hover {background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA51BMVEUAAAAkVIIkVIJKfqxWjLpRh7VOg7Fjmsg6bZpHe6kZSXYVRHFdi7P5+fn4+Pj7+/timMbU1NTp6en19fURP2wVRHEtX4woWYbNzc3x8fHLy8vt7e3Y2NgCMF0GNGE4apgNPGkKOGUcS3khUX4yZZO8vLzHx8fz8/Pv7+89cJ5JfatOg7FTibdYjrtjm8nc3Nx+q8/Jyclgia2wxdjFxcXf399qlbokVIKmpqY3ZpJCdqNckb5glcIaSHRDd6Wnp6dck8EzY5G1tbV0oMaCrtN7pstmkLTS2N3f5evj4+N0kKtzj6qlpaUAXNKyAAAADHRSTlMAv5/0My30MzMz7u5GDlsRAAAAwUlEQVQY023N1xKCQAxA0dhBzbp0F7CBiF1R7L3X//8eQR71vGSSuTOBX5lQEiDJ8zzHBXv/PBxeTqnUdHodjeoc0D4iknE6McaAWgFKsej57HYv6J6D2gHoHllTFI4TiRkTtFWgPdQ9X9iZkt5wiKXBuovMEIW5KTXFAVFsWHXCIji4nu8Q2YJe+1u8TdcIitoGutvwLXu4BIlIygp0WpW6qs2eL0Wu1solGdr5L9uKZhWWUbFYREUJIvFsLgb/fQAlSBgVoWuMHwAAAABJRU5ErkJggg==");} /* puce_manuel_ouvert */
+*.travaux {background:#FF0        url(../_img/chantier.gif)          no-repeat 5px;     padding-left:50px;min-height:40px;line-height:40px;color:#000;font-weight:bold}
+*.noprint {background:transparent url(../_img/puce/puce_noprint.png) no-repeat top left;padding-left:19px;color:#C00}
+*.danger  {background:transparent url(../_img/puce/puce_danger.gif)  no-repeat top left;padding-left:19px;color:#C00}
+*.astuce  {background:transparent url(../_img/puce/puce_astuce.png)  no-repeat top left;padding-left:19px;padding-top:1px}
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px;padding-top:1px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+*.probleme {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
 
-a.cocher_tout {padding-left:19px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEUAAAD///+Oj48dmEJfWZMAAAAAAXRSTlMAQObYZgAAAENJREFUCNdjYNBatYqBQTU0jIFp1aplDEyhoWkgoTSQEIgoAxHf0hjUw0HE/WtA4n9YFoPq37AEBtXSsAUgdRBDwAAAyEQXW8NQMwkAAAAASUVORK5CYII=")} /*sacoche_check_cocher_tout */
-a.cocher_rien {padding-left:19px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEUAAACOj4/////vND5Ha/JWAAAAAXRSTlMAQObYZgAAAEBJREFUCNdjYBANDWVgkFq1koExNDSSgXHVqpkgoZkgoZkM0q9+AonfQELq/0sgsX8lmDUVJDYBJBsAUgcxBAwAYT0cIvD6ISgAAAAASUVORK5CYII=")} /* sacoche_check_cocher_rien */
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liens spéciaux                                                                                      */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-a[target=_blank] {padding-right:14px;background:transparent no-repeat     right url("data:image/gif;base64,R0lGODlhCgAKAKK+AABjzgBj/zGczmOczpzO/////wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQBCgAFACwAAAAACgAKAAADJVha0b5iLDaDWAFoEAgGSlcQV8Z4RDOYxJCCFzgGhVxPt7LtSwIAOw==");} /* puce_popup_onglet */
-a.pop_up         {padding-right:18px;background:transparent no-repeat top right url("data:image/gif;base64,R0lGODlhDgAPAKIEAABQzv///53K/77i/wCFAABIvuLy/wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAEADgAOAAADOQi6zPUwvlCaZSHrbYzaQUeMxPBpnTGQJhBYJCF8DSvT3aCXQo/rOkDP5wIAg8NZ0ZL8HAdJ4sWSAAA7");} /* puce_popup_window */
-a.lien_mail      {padding-left :15px;background:transparent no-repeat top left  url("data:image/gif;base64,R0lGODlhDAAOAMQAAJ2dzp3K+sby9u7eup2h1s7//6q23tb//66dstLm8r7u+v//5vbKlf/eler//52q3qre/66uyv//9v/ymbbm//rGgaHW/97//5226rLO7u7Gnc6+tqWlzr66vubm5gAAACH5BAEKAB8ALAAAAAAMAA4AAAVn4CeKQDmeXzdNTQecnNo0TFUho2bPjKYhr4hkSBwMEJwScbhYRAQGgCHikSwGmwjgEHVcEoCEwyEVPLaHA2DsAFPOhQLncogLFAACgALIKCgUEBYWASUWBoCCAQEYeiWLjVInJignIQA7");} /* puce_mail */
+a.cocher_tout {padding-left:19px;background:transparent url(../_img/check/cocher_tout.png) no-repeat top left}
+a.cocher_rien {padding-left:19px;background:transparent url(../_img/check/cocher_rien.png) no-repeat top left}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */
@@ -448,10 +447,10 @@ q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Affichage des message ajax */
-label.alerte {color:#A00;padding-left:19px;margin-left:5px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA8FBMVEUAAADouDnotjjZmSTmsjTotTfbnCbgpi3otjflsDPmtDbsvz3eoyvntTfotzjrvDzrvDzjrDHpuTrmszbUjh3mszbNgBPJeQ7lsDTDbQbjrTHiqi/BaAO/ZADWoj3+/O/+/PP02lzz11f13F356JT++uf12lj+++vRiBj110///vnx04T++u3puTn888X89uHx16D89tb147/y1lT12VP23WPeoyrIdAvCagTbnSbYliHlu2jtyHH36sjdsUf679XhqS/y2JT036nw04/6657nwH3w0ozry1f45Yvlv4j677Xov2Lgpy3Sk0TMfhHrzquByH+SAAAAHnRSTlMAA1rx/s5aDBIw+wPKad6V3pa4rIckJLhLS/Cj46PpUlYpAAAAsElEQVQY03XP1Q7CQBBA0cXd3bbbrcMidcHd4f//hgIBSgjzMMk9yTwM+DOJbMj3BZlOJ+XtaJeaBqMeyM8Rt8x9OtZtsysyi70hvSAQyoPkq/2jNgMhTYbhZ0fiY46GEPeUQOQBhY3A0hOImf66eO9SEPUYWt+qGtsXyy6EBtyOd09UTZL3FQCqR3TgeYwxL0m6cK6BuoIoQijKXURA1yZonAzDth1HFC+maVmtn79vaXwWBrYtRuMAAAAASUVORK5CYII=");} /* ajax_alerte */
-label.erreur {color:#A00;padding-left:19px;margin-left:5px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABCFBMVEUAAADjbG3YYlzeamfOW064SirJWEe6TTDPXU+1SynhaWq4Syq5TC6/UznCUjzPYVPRXlPGVULfamrgaWrWY1vUYFjhbGzibW3HV0XpWU3////sX1T5k372hGzmV031op72rKHjbmPwjHfnenLvhH3uko+9UDTvZVTmWVD93NbqW0/6nYvDTjP7qp3vj4D71M3aY2DzeGPcZmP6uq/OUD33r6XsaF3XXVHgZVzLWUm3Sivzc13WYFT8x7r4jHb1pqHyrar6mofgaWrzp6P4tqjMW0zbVkv2gmjwhXDnXVn0tKq8SzDpY1vqg334hnD4w775y8T6o5Hie3X0joHxnZbxnJbpf3jviHkpMtHkAAAAGXRSTlMAU+fnU/NTIiJTfX3n533y9PT08n1+IiPyYA6PqQAAALRJREFUGNNtjkUSwkAUBXF3DwwQBeKOu7vD/Y/CTEJW0Lvu+r/quf5SjHg1xZMLOe7OMBf5uidSvq/Pp6x+48URtQogL2QX7EwiARgviRL6ipxkHpBViGoaCRi8pkhWLNTHOw6DpoNt2QJrPxswKPh544QXCh4JDDALjr7HYMiv8WYTea1VF6IwhJIEXuGwFvShP4iG+HrdCX3c0fVOP2xPDaQNimEowQ/dJpiINw6xKLr/5QMq8hgf8baEVQAAAABJRU5ErkJggg==");} /* ajax_erreur */
-label.loader {color:#139;padding-left:19px;margin-left:5px;background:transparent no-repeat top left url("data:image/gif;base64,R0lGODlhEAAQALMDAExxuoGdzixZquLq9p223mGJxs7e9rLK5r7O7jhhrpGq2mmNxtbm9qW+5nGVxgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAAPACwAAAAAEAAQAAAEUPDJ+QyjmBo78hzdxnQHgoFgdR2l+aEUi7hvVlJC4k0E8Qg5nUfRawATwgyR0PglPT0KAJAJBDDTKcUaUEizj8LiwfV+w2IH+borpHcYsScCACH5BAUAAA8ALAAAAAAQABAAAARS8Mn5Br13WExFqttjMJfgfZsxho+ZfJPKsC1MjRQAcNOBPDod7+BDBHccIuIn5D18lMICQyBcClIHRVFtRLOPQODBJXijU3FA8ag61WznRMyJAAAh+QQFAAAPACwAAAAAEAAQAAAEUvDJ+USimAp7swRAxT1DBoLVNZTYGU6rh2LsVCzeZDBPcTs5w27gWwA9QkbplpPsKIFA5oDARAMKyoFanVyzBMJji+h6pYpwY2zOpAnr5iTsiQAAIfkEBQAADwAsAAAAABAAEAAABFHwyfkAoJham2dZ1fYICVZ8TjiSpYdSAmuCGEkFQTcNEh4ougHv4QN2hBOcTjKcEAgZAwOjeDYoBmnzUSVcD4hHlrF9PB8HcFi6TCPCywm4EwEAIfkEBQAADwAsAAAAABAAEAAABFHwyflWoZg6e7MMwbMVFwBgChhaj2lSKUi5JyVj70QQ3pQIj8ZO0Uv8BEIC0WMUAHc9yY+COHgGGETVihlgJ9qDlWGYeLPWAbn8+F7XUQrZEwEAIfkEBQAADwAsAAAAABAAEAAABFPwyflCoJgqe7MkxLNZz1JgDahUl2OeU0qsk1vAE5iZFHJ4EwDggfD9PEJh8XDMJIc+oERIYRgyCQFmYL1OElnthGvwDh5ggXhiHZ+zUsngHB97IgAh+QQFAAAPACwAAAAAEAAQAAAET/DJ+QihmDar8kTHsxFdEGAIGFqPYp6fSrkmGmL1xBjetBSPwY7ncfwKQgMxYywAdz3JDzPIAACeQXVyvWa0j4Tg0cVSw+Kxt5dIRyliTwQAIfkECQAADwAsAAAAABAAEAAABFHwyfnQoZgie7NkRsU9BIENYGg9TalQqBFOLfFSYFae3hQEk8Ggp/gBH0KiUTLsPX6UhCCzKGAS0unEUbVOsIIpAPDgFrxf8Zhcda7JzsnYEwEAOw==");} /* ajax_loader */
-label.valide {color:#080;padding-left:19px;margin-left:5px;background:transparent no-repeat top left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABLFBMVEUAAAAmjhwulhwxmBxbwjdTuiw8ox4fdRsfcBtfxjxgxz1ZwjZOtChexTtCqx9bwjlStytVvjQecRoebho9pB5CqR8fgxsfcRsfcRsfdxsfehsffhsmjxwgiBwfeBtJryu24a////+02qeXzIZvxmR1yWlvwmJ6y2xyyGec2JKi15X9/vxut1dvtViAy3Jyulu136ya0IuQzn9UvzJuxGGDzneu3KW/47d0t1t+umfY7dNwv1t8uWV2wmTz+vGIw3RNmT8ecRqr05t9wGiv16EdbBpquVB0wllSuy2LyHjt9+synR3A5Lmf0pGx3aev3KZCrR9LtCaa1I1ksEyHyXmZzYqDvm13vGB+x2+FxXUgihvm9OOWx4NSoEKayodeqUiax4cefxseehut1Z4Mpj07AAAAIHRSTlMAU/IifedTIlMiU/QjU/TnffLy9H7n9H3nfud9fufnIgOOe+MAAADGSURBVBjTbcpFssJQFEVRPvJxd62XhCghgru7u/v8B8EFih6nt1cdxc/p1dZkT2Mzfdtg7HKZDNex/H/anEwgNp1mUX/4Fr09gWiSIUlaqipVAOoioploNEVld9I1BKDhWBKSGmFHWQ4DzCcCgwpUFovJzdYdYDYVhAo2wGKE2Gw9ANzjRXlVgeZF4hYBcC2lcnFfWPPxHF7zA6iUVXwr8nHovEOrgP0dNjiRLxF4qa2DfInnfGk0TjUn9GfaYKBe93nh/2NPlJAec13WlaoAAAAASUVORK5CYII=");} /* ajax_valide */
+label.erreur {background:transparent url(../_img/ajax/ajax_erreur.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
+label.valide {background:transparent url(../_img/ajax/ajax_valide.png) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
+label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#139;padding-left:19px;margin-left:5px}
+label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
 form label.tab {line-height:1.6em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
@@ -647,7 +646,7 @@ table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Format des tableaux du socle : #tableau_validation                                                  */
+/* Format des tableaux du socle                                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #tableau_validation th {margin:0;padding:0;white-space:nowrap}
@@ -682,10 +681,9 @@ table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 #autocheckbox thead th {padding:2px 0;text-align:center;vertical-align:bottom;width:18px}
 #autocheckbox tbody th {padding:0 2px;text-align:left;vertical-align:middle;height:18px;font-weight:normal}
 #autocheckbox tbody td {padding:0;text-align:center;vertical-align:middle;height:18px;width:18px}
-/* Les 3 suivants s'appliquent aux [ #autocheckbox tbody td ] et [ table.affectation div ] */
-td.off  , div.off  {background:#BBF}
-td.on   , div.on   {background:#FF0}
-td.load , div.load {background:#FFF no-repeat center center url("data:image/gif;base64,R0lGODlhEAAQALMDAExxuoGdzixZquLq9p223mGJxs7e9rLK5r7O7jhhrpGq2mmNxtbm9qW+5nGVxgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAAPACwAAAAAEAAQAAAEUPDJ+QyjmBo78hzdxnQHgoFgdR2l+aEUi7hvVlJC4k0E8Qg5nUfRawATwgyR0PglPT0KAJAJBDDTKcUaUEizj8LiwfV+w2IH+borpHcYsScCACH5BAUAAA8ALAAAAAAQABAAAARS8Mn5Br13WExFqttjMJfgfZsxho+ZfJPKsC1MjRQAcNOBPDod7+BDBHccIuIn5D18lMICQyBcClIHRVFtRLOPQODBJXijU3FA8ag61WznRMyJAAAh+QQFAAAPACwAAAAAEAAQAAAEUvDJ+USimAp7swRAxT1DBoLVNZTYGU6rh2LsVCzeZDBPcTs5w27gWwA9QkbplpPsKIFA5oDARAMKyoFanVyzBMJji+h6pYpwY2zOpAnr5iTsiQAAIfkEBQAADwAsAAAAABAAEAAABFHwyfkAoJham2dZ1fYICVZ8TjiSpYdSAmuCGEkFQTcNEh4ougHv4QN2hBOcTjKcEAgZAwOjeDYoBmnzUSVcD4hHlrF9PB8HcFi6TCPCywm4EwEAIfkEBQAADwAsAAAAABAAEAAABFHwyflWoZg6e7MMwbMVFwBgChhaj2lSKUi5JyVj70QQ3pQIj8ZO0Uv8BEIC0WMUAHc9yY+COHgGGETVihlgJ9qDlWGYeLPWAbn8+F7XUQrZEwEAIfkEBQAADwAsAAAAABAAEAAABFPwyflCoJgqe7MkxLNZz1JgDahUl2OeU0qsk1vAE5iZFHJ4EwDggfD9PEJh8XDMJIc+oERIYRgyCQFmYL1OElnthGvwDh5ggXhiHZ+zUsngHB97IgAh+QQFAAAPACwAAAAAEAAQAAAET/DJ+QihmDar8kTHsxFdEGAIGFqPYp6fSrkmGmL1xBjetBSPwY7ncfwKQgMxYywAdz3JDzPIAACeQXVyvWa0j4Tg0cVSw+Kxt5dIRyliTwQAIfkECQAADwAsAAAAABAAEAAABFHwyfnQoZgie7NkRsU9BIENYGg9TalQqBFOLfFSYFae3hQEk8Ggp/gBH0KiUTLsPX6UhCCzKGAS0unEUbVOsIIpAPDgFrxf8Zhcda7JzsnYEwEAOw==");} /* ajax_loader */
+#autocheckbox tbody td.off  , table.affectation div.off  {background:#BBF}
+#autocheckbox tbody td.on   , table.affectation div.on   {background:#FF0}
+#autocheckbox tbody td.load , table.affectation div.load {background:#FFF url(../_img/ajax/ajax_loader.gif) no-repeat center center;}
 
 /* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
 /*
@@ -792,14 +790,18 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 #zone_information #items {margin-top:1ex;font-size:90%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liste à puce avec flèches bleues                                                                    */
-/* Liste à puce pour les étapes lors d'un import de fichier                                            */
+/* Liste à puce pour les étapes lors de l'import sconet                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ul.puce li  { margin-left:2em;}
-#step li    { margin-left:2em;color:#777;}
-#step li.on {font-weight:bold;color:#000;}
-ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAICAMAAAD+zz7+AAAARVBMVEUAAACBndSgtd9Lc8NVe8c7Y7R7mNOIoterveNDbcBcgMiSq9uvweRxkc89Zrhois2kueA2WqM+aLuNptiYr905X6wuTYtON3v6AAAAAXRSTlMAQObYZgAAAElJREFUCNdVjIEKgCAMRGduzqlZZvX/n9oFQXpwBw+OR38CTTGPUXVh3RL7I7EBS4lxX86cu1ol9wKo4yaVvqc0YblG1d1mM/oAgSUCQYxehQIAAAAASUVORK5CYII=");} /* puce_li */
+#step li {color:#777;margin-left:2em;}
+#step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce/puce_li.png);}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste à puce avec flèches bleues                                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png)} /* line-height:20px */
+*.li       {padding-left:2em;background:transparent url(../_img/puce/puce_li.png) no-repeat left;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste ordonnable par drag & drop                                                                    */
@@ -810,16 +812,11 @@ ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAAN
 .sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Puces pour masquer ou montrer des options                                                           */
+/* Puces des liens pour masquer ou montrer des options                                                 */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-a.puce_plus  {font-weight:normal;padding-left:12px;background:transparent no-repeat left url("data:image/gif;base64,R0lGODlhCQAJALMCAAAAAIiH0rq637u74NHR0dzc3OXl5ezs7PHx8fT09Pn5+f7+/gAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAACQAJAAAEKHCESYNcOK+5lALeFiwIApTiAqyrmBQFACfTQRDAfUxG7xsBQYUiiAAAOw==");} /* toggle_mini_plus */
-a.puce_moins {font-weight:normal;padding-left:12px;background:transparent no-repeat left url("data:image/gif;base64,R0lGODlhCQAJALO+AAAAAIiH0rq637u74NHR0dzc3OXl5ezs7PHx8fT09Pn5+f7+/gAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAACQAJAAAEJHCESYNcOK+5lPdbsCAkGS5AmoZJ4brJdBA0fUxGrhuBUFGCCAA7");} /* toggle_mini_moins */
-
-.toggle_plus , .toggle_moins , .toggle_none {display:inline-block;vertical-align:text-top;width:16px;height:16px;}
-.toggle_plus  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACMFSOmTbt/w6cTkIApn1Yh9lBmxNG34ClajZY69qMTVmdHGuCeK17FCX7tQyK4kFQAAA7");} /* toggle_maxi_plus */
-.toggle_moins {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACJlSOmTbt/w6cTtJpbwwa5j5YwEiWjVimJweurft+nazRV2Ao+iEUADs=");} /* toggle_maxi_moins */
-.toggle_none  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAMIFALW10cTC6Nzc7tzc/t3d/////////////ywAAAAAEAAQAAADNSix3K0kyjkXvdJSAK6enBdcIfVJZTUSXOt2hPa+0Rml2QrCKsnnkQEKJqzpMD2kSeFoLgQJADs=");} /* toggle_maxi_none */
+a.puce_plus  {background:transparent url(../_img/puce/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px}
+a.puce_moins {background:transparent url(../_img/puce/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone affichée pour le choix d'une note à la souris                                                  */

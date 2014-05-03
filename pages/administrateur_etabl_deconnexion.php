@@ -36,6 +36,6 @@ $TITRE = "Redirection après déconnexion";
 </p>
 
 <form id="form_adresse" action="#" method="post"><fieldset>
-  <label class="tab" for="url_deconnexion">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="De la forme http://... ou https://..." /> :</label><input id="url_deconnexion" name="url_deconnexion" size="30" type="text" value="<?php echo html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) ?>" />
+  <label class="tab" for="url_deconnexion">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="De la forme http://... ou https://..." /> :</label><input id="url_deconnexion" name="url_deconnexion" size="30" type="text" value="<?php echo html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) ?>" />
   <p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider cette adresse.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

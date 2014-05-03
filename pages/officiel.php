@@ -60,7 +60,7 @@ if($SECTION=='reglages')
   echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
   $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
   $s = ($nb_inconnu>1) ? 's' : '' ;
-  echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
+  echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
 }
 elseif($SECTION=='assiduite')
 {

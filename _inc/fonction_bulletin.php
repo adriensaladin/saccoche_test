@@ -310,11 +310,10 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 function texte_ligne_assiduite($tab_assiduite)
 {
   $intro = 'Assiduité et ponctualité : ';
-  extract($tab_assiduite); // $absence $absence_nj $retard $retard_nj
-  $nb_absence    = is_null($absence)    ? NULL : (int)$absence ;
-  $nb_absence_nj = is_null($absence_nj) ? NULL : (int)$absence_nj ;
-  $nb_retard     = is_null($retard)     ? NULL : (int)$retard ;
-  $nb_retard_nj  = is_null($retard_nj)  ? NULL : (int)$retard_nj ;
+  extract($tab_assiduite); // $nb_absence $non_justifie $retard
+  $nb_absence      = is_null($absence)      ? NULL : (int)$absence ;
+  $nb_non_justifie = is_null($non_justifie) ? NULL : (int)$non_justifie ;
+  $nb_retard       = is_null($retard)       ? NULL : (int)$retard ;
   // Quelques cas particuliers
   if( ($nb_absence===NULL) && ($nb_retard===NULL) )
   {
@@ -345,22 +344,22 @@ function texte_ligne_assiduite($tab_assiduite)
   {
     $s = ($nb_absence>1) ? 's' : '' ;
     $txt_absences = $nb_absence.' demi-journée'.$s.' d\'absence';
-    if($nb_absence_nj===NULL)
+    if($nb_non_justifie===NULL)
     {
       $txt_absences .= '' ;
     }
-    else if($nb_absence_nj===0)
+    else if($nb_non_justifie===0)
     {
       $txt_absences .= ($s) ? ', toutes justifiées' : ', justifiée' ;
     }
-    else if($nb_absence_nj==$nb_absence)
+    else if($nb_non_justifie==$nb_absence)
     {
       $txt_absences .= ($s) ? ', dont aucune justifiée' : ', non justifiée' ;
     }
     else
     {
-      $s = ($nb_absence_nj>1) ? 's' : '' ;
-      $txt_absences .= ', dont '.$nb_absence_nj.' non justifiée'.$s;
+      $s = ($nb_non_justifie>1) ? 's' : '' ;
+      $txt_absences .= ', dont '.$nb_non_justifie.' non justifiée'.$s;
     }
   }
   // Les retards
@@ -376,23 +375,6 @@ function texte_ligne_assiduite($tab_assiduite)
   {
     $s = ($nb_retard>1) ? 's' : '' ;
     $txt_retards = $nb_retard.' retard'.$s;
-    if($nb_retard_nj===NULL)
-    {
-      $txt_retards .= '' ;
-    }
-    else if($nb_retard_nj===0)
-    {
-      $txt_retards .= ($s) ? ', tous justifiés' : ', justifié' ;
-    }
-    else if($nb_retard_nj==$nb_retard)
-    {
-      $txt_retards .= ($s) ? ', dont aucun justifié' : ', non justifié' ;
-    }
-    else
-    {
-      $s = ($nb_retard_nj>1) ? 's' : '' ;
-      $txt_retards .= ', dont '.$nb_retard_nj.' non justifié'.$s;
-    }
   }
   // On assemble
   $txt_absences_et_retards = ( $txt_absences && $txt_retards ) ? $txt_absences.', et '.$txt_retards : $txt_absences.$txt_retards;

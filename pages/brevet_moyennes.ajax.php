@@ -121,7 +121,7 @@ if($action=='proposer')
   {
     $note_affichee = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $DB_ROW['saisie_note'] : (round($DB_ROW['saisie_note']*5)).'%' ;
     $tab_moyennes_bulletin[$DB_ROW['matiere_id']]['note'][$DB_ROW['periode_id']] = $DB_ROW['saisie_note'];
-    $tab_moyennes_bulletin[$DB_ROW['matiere_id']]['txt' ][$DB_ROW['periode_id']] = $note_affichee.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html($DB_ROW['periode_nom']).'" />';
+    $tab_moyennes_bulletin[$DB_ROW['matiere_id']]['txt' ][$DB_ROW['periode_id']] = $note_affichee.' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['periode_nom']).'" />';
   }
   // Récupérer les noms des matières
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
@@ -167,19 +167,19 @@ if($action=='proposer')
     // 1/4 Épreuve
     if(!$epreuve_note_comptee)
     {
-      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Présence d\'une note obligatoire, mais seulement à titre informatif, celle-ci n\'étant pas comptabilisée dans le total des points." />';
+      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" title="Présence d\'une note obligatoire, mais seulement à titre informatif, celle-ci n\'étant pas comptabilisée dans le total des points." />';
     }
     elseif(!$epreuve_note_chiffree)
     {
-      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pas de note chiffrée à saisir pour cette épreuve : uniquement un état de validation." />';
+      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" title="Pas de note chiffrée à saisir pour cette épreuve : uniquement un état de validation." />';
     }
     elseif($epreuve_point_sup_10)
     {
-      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Épreuve dont seuls les points supérieurs à la moyenne sont pris en compte." />';
+      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" title="Épreuve dont seuls les points supérieurs à la moyenne sont pris en compte." />';
     }
     elseif($epreuve_coefficient!=1)
     {
-      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Épreuve de coefficient '.$epreuve_coefficient.' (note sur '.($epreuve_coefficient*20).')." />';
+      $infobulle = ' <img alt="" src="./_img/bulle_aide.png" title="Épreuve de coefficient '.$epreuve_coefficient.' (note sur '.($epreuve_coefficient*20).')." />';
     }
     else
     {

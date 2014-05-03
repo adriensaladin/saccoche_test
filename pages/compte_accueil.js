@@ -34,12 +34,13 @@ $(document).ready
     // Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('a[href^=#toggle_]').click
+    $('a[href=#toggle_accueil]').click
     (
       function()
       {
-        var type  = $(this).attr('href').substring(8); // '#toggle_' + type
-        var symb1 = $(this).attr('class').substring(7); // 'toggle_' + état
+        var type = $(this).attr('class').substring(3); // 'to_' + type
+        var src  = $(this).children('img').attr('src');
+        var symb1 = ( src.indexOf("plus") > 0 ) ? 'plus' : 'moins' ;
         var symb2 = ( symb1=='moins' ) ? 'plus' : 'moins' ;
         $('#'+type+'_'+symb1).hide(0);
         $('#'+type+'_'+symb2).show(0);

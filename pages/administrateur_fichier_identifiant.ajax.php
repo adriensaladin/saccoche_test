@@ -154,8 +154,8 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   // Affichage du résultat
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL;
-  echo  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
   if($action=='generer_mdp')
   {
     echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>'.NL;
@@ -182,7 +182,7 @@ if($action=='user_export')
   // On archive dans un fichier tableur (csv tabulé)
   $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($fcontenu_csv) );
-  exit('<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>');
+  exit('<ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +359,7 @@ if($action=='import_loginmdp')
       $pdf -> Add_Label(To::pdf($text));
     }
     $pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
-    echo'<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
+    echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
     echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>'.NL;
   }
   // On affiche le bilan
@@ -568,7 +568,7 @@ if($action=='import_ent')
       {
         if(in_array($_SESSION['CONNEXION_NOM'],array('celia','lilie')))
         {
-          $id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@ & PCN, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
+          $id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
         }
         $tab_users_fichier['id_ent'][]    = Clean::id_ent($id_ent);
         $tab_users_fichier['nom'][]       = Clean::nom(Clean::accents($nom)); // En cas de comparaison sur nom / prénom, maieux vaut éviter les accents

@@ -48,7 +48,7 @@ public static function DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
   $DB_SQL.= 'WHERE groupe_id=:classe_id AND periode_id=:periode_id ';
-  $DB_VAR = array( ':classe_id'=>$classe_id , ':periode_id'=>$periode_id );
+  $DB_VAR = array(':classe_id'=>$classe_id,':periode_id'=>$periode_id);
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -104,12 +104,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves($officiel_type
   $DB_SQL.= ($with_rubrique_nom)   ? $rubrique_champ_ordre.' ASC, ' : '' ;
   $DB_SQL.= ($with_periodes_avant) ? 'periode_ordre ASC, ' : '' ;
   $DB_SQL.= 'prof_info ASC ';
-  $DB_VAR = array(
-    ':officiel_type' => $officiel_type,
-    ':periode_id'    => $periode_id,
-    ':prof_id'       => $prof_id,
-    ':saisie_type'   => 'eleve',
-  );
+  $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':prof_id'=>$prof_id,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -139,13 +134,7 @@ public static function DB_recuperer_bilan_officiel_saisies_classe($periode_id,$c
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, ';
   $DB_SQL.= ($with_periodes_avant) ? 'periode_ordre ASC, ' : '' ;
   $DB_SQL.= 'prof_info ASC ';
-  $DB_VAR = array(
-    ':officiel_type' => 'bulletin',
-    ':periode_id'    => $periode_id,
-    ':classe_id'     => $classe_id,
-    ':prof_id'       => $prof_id,
-    ':saisie_type'   => 'classe',
-  );
+  $DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':classe_id'=>$classe_id,':prof_id'=>$prof_id,':saisie_type'=>'classe');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -165,12 +154,7 @@ public static function DB_recuperer_bilan_officiel_notes_eleves_periode($periode
   $DB_SQL.= ($tri_matiere) ? 'LEFT JOIN sacoche_matiere ON sacoche_officiel_saisie.rubrique_id=sacoche_matiere.matiere_id ' : '' ;
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id IN ('.$liste_eleve_id.') AND prof_id=:prof_id AND saisie_type=:saisie_type ';
   $DB_SQL.= ($tri_matiere) ? 'ORDER BY matiere_ordre ASC ' : '' ;
-  $DB_VAR = array(
-    ':officiel_type' => 'bulletin',
-    ':periode_id'      => $periode_id,
-    ':prof_id'       => 0,
-    ':saisie_type'   => 'eleve',
-  );
+  $DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':prof_id'=>0,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -187,12 +171,7 @@ public static function DB_recuperer_bilan_officiel_notes_eleve_periodes($eleve_i
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND eleve_ou_classe_id=:eleve_id AND prof_id=:prof_id AND saisie_type=:saisie_type AND saisie_note IS NOT NULL ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC ';
-  $DB_VAR = array(
-    ':officiel_type' => 'bulletin',
-    ':eleve_id'      => $eleve_id,
-    ':prof_id'       => 0,
-    ':saisie_type'   => 'eleve',
-  );
+  $DB_VAR = array(':officiel_type'=>'bulletin',':eleve_id'=>$eleve_id,':prof_id'=>0,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -208,13 +187,7 @@ public static function DB_recuperer_bilan_officiel_notes_classe($periode_id,$cla
   $DB_SQL = 'SELECT rubrique_id, saisie_note ';
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:classe_id AND prof_id=:prof_id AND saisie_type=:saisie_type ';
-  $DB_VAR = array(
-    ':officiel_type' => 'bulletin',
-    ':periode_id'    => $periode_id,
-    ':classe_id'     => $classe_id,
-    ':prof_id'       => 0,
-    ':saisie_type'   => 'classe',
-  );
+  $DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':classe_id'=>$classe_id,':prof_id'=>0,':saisie_type'=>'classe');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -227,10 +200,10 @@ public static function DB_recuperer_bilan_officiel_notes_classe($periode_id,$cla
  */
 public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
 {
-  $DB_SQL = 'SELECT assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj ';
+  $DB_SQL = 'SELECT assiduite_absence, assiduite_non_justifie, assiduite_retard ';
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
   $DB_SQL.= 'WHERE periode_id=:periode_id AND user_id=:user_id ';
-  $DB_VAR = array( ':periode_id'=>$periode_id , ':user_id'=>$eleve_id );
+  $DB_VAR = array(':periode_id'=>$periode_id,':user_id'=>$eleve_id);
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -262,7 +235,7 @@ public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $peri
   $DB_SQL.= 'FROM sacoche_officiel_fichier '.$join_periode;
   $DB_SQL.= 'WHERE '.$where_type.$where_periode.$where_profil.'user_id IN ('.implode(',',$tab_eleve_id).') ';
   $DB_SQL.= ( $order_type || $order_user ) ? 'ORDER BY '.$order_type.$order_sep.$order_user : '' ;
-  $DB_VAR = array( ':officiel_type'=>$officiel_type , ':periode_id'=>$periode_id );
+  $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $key_eleve_id);
 }
 
@@ -275,7 +248,7 @@ public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $peri
  */
 public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
 {
-  $DB_SQL = 'SELECT user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj ';
+  $DB_SQL = 'SELECT user_id, assiduite_absence, assiduite_non_justifie, assiduite_retard ';
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
   $DB_SQL.= 'WHERE periode_id=:periode_id AND user_id IN ('.implode(',',$tab_eleve_id).') ';
   $DB_VAR = array(':periode_id'=>$periode_id);
@@ -295,7 +268,7 @@ public static function DB_lister_profs_principaux($classe_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND jointure_pp=:pp AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array( ':groupe_id'=>$classe_id , ':pp'=>1 );
+  $DB_VAR = array(':groupe_id'=>$classe_id,':pp'=>1);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -329,11 +302,7 @@ public static function DB_ajouter_bilan_officiel_fichier($user_id,$officiel_type
 {
   $DB_SQL = 'INSERT INTO sacoche_officiel_fichier (user_id, officiel_type, periode_id, fichier_date_generation) ';
   $DB_SQL.= 'VALUES(:user_id, :officiel_type, :periode_id, NOW() ) ';
-  $DB_VAR = array(
-    ':user_id'       => $user_id,
-    ':officiel_type' => $officiel_type,
-    ':periode_id'    => $periode_id,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -351,11 +320,7 @@ public static function DB_modifier_bilan_officiel_fichier_date($user_id,$officie
   $DB_SQL = 'UPDATE sacoche_officiel_fichier ';
   $DB_SQL.= 'SET fichier_date_'.$champ.'=NOW() ';
   $DB_SQL.= 'WHERE user_id=:user_id AND officiel_type=:officiel_type AND periode_id=:periode_id ';
-  $DB_VAR = array(
-    ':user_id'       => $user_id,
-    ':officiel_type' => $officiel_type,
-    ':periode_id'    => $periode_id,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -376,42 +341,25 @@ public static function DB_modifier_bilan_officiel_saisie($officiel_type,$periode
 {
   $DB_SQL = 'REPLACE INTO sacoche_officiel_saisie (officiel_type, periode_id, eleve_ou_classe_id, rubrique_id, prof_id, saisie_type, saisie_note, saisie_appreciation) ';
   $DB_SQL.= 'VALUES(:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
-  $DB_VAR = array(
-    ':officiel_type'       => $officiel_type,
-    ':periode_id'          => $periode_id,
-    ':eleve_ou_classe_id'  => $eleve_ou_classe_id,
-    ':rubrique_id'         => $rubrique_id,
-    ':prof_id'             => $prof_id,
-    ':saisie_type'         => $saisie_type,
-    ':saisie_note'         => $note,
-    ':saisie_appreciation' => $appreciation,
-  );
+  $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':rubrique_id'=>$rubrique_id,':prof_id'=>$prof_id,':saisie_type'=>$saisie_type,':saisie_note'=>$note,':saisie_appreciation'=>$appreciation);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
  * modifier_officiel_assiduite
  *
- * @param int      $periode_id
- * @param int      $user_id
- * @param int|null $nb_absence
- * @param int|null $nb_absence_nj
- * @param int|null $nb_retard
- * @param int|null $nb_retard_nj
+ * @param int     $periode_id
+ * @param int     $user_id
+ * @param int     $nb_absence
+ * @param int     $nb_non_justifie
+ * @param int     $nb_retard
  * @return void
  */
-public static function DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_absence_nj,$nb_retard,$nb_retard_nj)
+public static function DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard)
 {
-  $DB_SQL = 'REPLACE INTO sacoche_officiel_assiduite (periode_id, user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj) ';
-  $DB_SQL.= 'VALUES(:periode_id, :user_id, :assiduite_absence, :assiduite_absence_nj, :assiduite_retard, :assiduite_retard_nj) ';
-  $DB_VAR = array(
-    ':periode_id'           => $periode_id,
-    ':user_id'              => $user_id,
-    ':assiduite_absence'    => $nb_absence,
-    ':assiduite_absence_nj' => $nb_absence_nj,
-    ':assiduite_retard'     => $nb_retard,
-    ':assiduite_retard_nj'  => $nb_retard_nj,
-  );
+  $DB_SQL = 'REPLACE INTO sacoche_officiel_assiduite (periode_id, user_id, assiduite_absence, assiduite_non_justifie, assiduite_retard) ';
+  $DB_SQL.= 'VALUES(:periode_id, :user_id, :assiduite_absence, :assiduite_non_justifie, :assiduite_retard) ';
+  $DB_VAR = array(':periode_id'=>$periode_id,':user_id'=>$user_id,':assiduite_absence'=>$nb_absence,':assiduite_non_justifie'=>$nb_non_justifie,':assiduite_retard'=>$nb_retard);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -431,14 +379,7 @@ public static function DB_supprimer_bilan_officiel_saisie($officiel_type,$period
   $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND rubrique_id=:rubrique_id AND saisie_type=:saisie_type ';
   $DB_SQL.= ($rubrique_id>0) ? 'AND prof_id=:prof_id ' : '' ;
-  $DB_VAR = array(
-    ':officiel_type'      => $officiel_type,
-    ':periode_id'         => $periode_id,
-    ':eleve_ou_classe_id' => $eleve_ou_classe_id,
-    ':rubrique_id'        => $rubrique_id,
-    ':prof_id'            => $prof_id,
-    ':saisie_type'        => $saisie_type,
-  );
+  $DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':rubrique_id'=>$rubrique_id,':prof_id'=>$prof_id,':saisie_type'=>$saisie_type);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

@@ -176,7 +176,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   $si = ($nb_items>1)   ? 's' : '' ;
   $in = $only_positives ? '' : '(in)-' ;
   echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL;
-  echo'<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL;
+  echo'<li><a class="lien_ext" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL;
   if($action=='export_lpc')
   {
     echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>'.NL;

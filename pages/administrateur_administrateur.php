@@ -29,15 +29,15 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les administrateurs";
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var tab_login_modele      = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_mdp_longueur_mini = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
 foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
 {
-  Layout::add( 'js_inline_before' , 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
 }
 foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
 {
-  Layout::add( 'js_inline_before' , 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
 }
 ?>
 
@@ -94,8 +94,8 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   <h2>Ajouter | Modifier | Supprimer un utilisateur</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
-      <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" />
+      <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
+      <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" />
     </p>
     <p>
       <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />

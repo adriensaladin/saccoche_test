@@ -88,6 +88,7 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
     <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
     <label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?>
     <p><span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?>>Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label></p>
+    <!-- <button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button> -->
   </fieldset>
 
   <fieldset id="fieldset_export_sacoche" class="hide">

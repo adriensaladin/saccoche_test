@@ -493,7 +493,6 @@ if($type_individuel)
     $releve_HTML_individuel .= ($bouton_print_appr || $bouton_print_test) ? '<div class="ti">'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '' ;
     $bilan_colspan = $cases_nb + 2 ;
     $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />'.NL : '' ;
-    $releve_HTML_individuel_javascript = '';
   }
   if($make_pdf)
   {
@@ -582,7 +581,7 @@ if($type_individuel)
                   {
                     if($aff_lien)
                     {
-                      $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
+                      $texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
                       $texte_lien_apres = ($item_lien) ? '</a>' : '';
                     }
                     if($highlight_id)
@@ -707,7 +706,7 @@ if($type_individuel)
                 {
                   $releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.NL.$releve_HTML_table_foot.'</tfoot>'.NL : '';
                   $releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan hsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
-                  $releve_HTML_individuel_javascript .= '$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();';
+                  $releve_HTML_individuel .= '<script type="text/javascript">$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();</script>'.NL;
                 }
                 if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) )
                 {
@@ -725,7 +724,7 @@ if($type_individuel)
                         extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
                         $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                       }
-                      $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
+                      $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
                       $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
                     }
                     $appreciations_avant = '<tr><td class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
@@ -792,7 +791,7 @@ if($type_individuel)
                   extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
                   $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                 }
-                $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
+                $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
                 $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
               }
               $releve_HTML_individuel .= '<tr><td class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
@@ -911,8 +910,6 @@ if($type_individuel)
       }
     }
   }
-  // Ajout du javascript en fin de fichier
-  $releve_HTML_individuel .= '<script type="text/javascript">'.$releve_HTML_individuel_javascript.'</script>'.NL;
   // On enregistre les sorties HTML et PDF
   if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.html',$releve_HTML_individuel); }
   if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf','F'); }

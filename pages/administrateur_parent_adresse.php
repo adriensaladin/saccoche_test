@@ -124,7 +124,7 @@ elseif($levenshtein) // (forcément)
         $parent_id = ($DB_ROW['parent_id']) ? 'M' : 'A' ; // Indiquer si le parent a une adresse dans la base ou pas.
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$parent_id.$DB_ROW['user_id'].'">';
-        echo  ($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html($DB_ROW['enfants_liste']))).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Aucun lien de responsabilité !" /></td>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        echo  ($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html($DB_ROW['enfants_liste']))).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         echo  '<td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>';
         echo  '<td><span>'.html($DB_ROW['adresse_ligne1']).'</span> ; <span>'.html($DB_ROW['adresse_ligne2']).'</span> ; <span>'.html($DB_ROW['adresse_ligne3']).'</span> ; <span>'.html($DB_ROW['adresse_ligne4']).'</span></td>';
         echo  '<td>'.html($DB_ROW['adresse_postal_code']).'</td>';
@@ -155,7 +155,7 @@ if( $levenshtein && !empty($DB_TAB) )
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'extraction_ressemblances_adresses_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
-  echo'<p><ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+  echo'<p><ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }
 ?>
 

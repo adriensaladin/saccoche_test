@@ -33,7 +33,7 @@ define(  'CHROME_VERSION_LAST'           ,34  ); define(  'CHROME_URL_DOWNLOAD' 
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3.5); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3.5 minimum (sortie en 2009).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4  );
-define( 'FIREFOX_VERSION_LAST'           ,29  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,28  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
@@ -177,7 +177,7 @@ class Browser
     $tab_chaine = array();
     foreach(Browser::$tab_navigo as $navigo_ref => $navigo_name)
     {
-      $tab_chaine[$navigo_ref] = '<a target="_blank" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>';
+      $tab_chaine[$navigo_ref] = '<a class="lien_ext" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>';
     }
     // Affichage
     return $tab_chaine;

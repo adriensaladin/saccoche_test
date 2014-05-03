@@ -44,7 +44,7 @@ else
 ?>
 
 <p class="astuce">
-  Veuillez prendre connaissance des <a target="_blank" href="<?php echo SERVEUR_CNIL ?>">informations CNIL relatives à l'application <em>SACoche</em></a>.
+  Veuillez prendre connaissance des <a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">informations CNIL relatives à l'application <em>SACoche</em></a>.
 </p>
 <p>
   Sont précisés en particulier :

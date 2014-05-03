@@ -70,6 +70,7 @@ $(document).ready
                 $("button").prop('disabled',false);
                 $('#ajax_msg_sauvegarde').removeAttr("class").html('');
                 $('#ajax_info').append('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>');
+                format_liens('#ajax_info');
               }
             }
           }

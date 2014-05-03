@@ -73,7 +73,7 @@ else
     }
     $ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
     // Titre + boutons radio + bouton validation
-    echo'<h3>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h3>'.NL;
+    echo'<h4>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>'.NL;
     echo'<ul class="puce"><li>Traitement :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     foreach($tab_choix as $option_valeur => $option_texte)
     {

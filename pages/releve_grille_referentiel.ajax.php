@@ -499,7 +499,7 @@ if( $type_generique || $type_individuel )
                 }
                 if($aff_lien)
                 {
-                  $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
+                  $texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
                   $texte_lien_apres = ($item_lien) ? '</a>' : '';
                 }
                 $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
@@ -726,7 +726,7 @@ if($affichage_direct)
 {
   echo'<hr />'.NL;
   echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   echo'</ul>'.NL;
   echo $releve_HTML_individuel;
 }
@@ -736,8 +736,8 @@ else
   {
     echo'<h2>Synthèse collective</h2>'.NL;
     echo'<ul class="puce">'.NL;
-    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     echo'</ul>'.NL;
   }
   if( $type_generique || $type_individuel )
@@ -745,8 +745,8 @@ else
     $h2 = ($type_individuel) ? 'Relevé individuel' : 'Relevé générique' ;
     echo'<h2>'.$h2.'</h2>'.NL;
     echo'<ul class="puce">'.NL;
-    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     echo'</ul>'.NL;
   }
 }

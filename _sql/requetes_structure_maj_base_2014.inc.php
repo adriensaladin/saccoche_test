@@ -352,23 +352,4 @@ if($version_base_structure_actuelle=='2014-04-01')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-04-04 => 2014-05-03
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2014-04-04')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-05-03';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // Modification champs sacoche_officiel_assiduite
-    if(empty($reload_sacoche_officiel_assiduite))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_assiduite CHANGE assiduite_non_justifie assiduite_absence_nj TINYINT(3) UNSIGNED NULL DEFAULT NULL COMMENT "nombre d\'absences non justifiées" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_assiduite ADD assiduite_retard_nj TINYINT UNSIGNED NULL DEFAULT NULL COMMENT "nombre de retards non justifiés" ' );
-    }
-  }
-}
-
 ?>

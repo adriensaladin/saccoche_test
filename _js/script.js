@@ -136,6 +136,24 @@ function afficher_masquer_images_action(why)
 }
 
 /**
+ * Fonction pour formater les liens
+ *
+ * - vers l'extérieur (nouvel onglet)
+ * - vers l'aide en ligne (nouvelle fenêtre pop-up)
+ * - de type mailto
+ *
+ * @param element "body" ou un élément sur lequel restreindre la recherche
+ * @return void
+ */
+function format_liens(element)
+{
+  $(element).find("a.lien_ext" ).attr("target","_blank");
+  $(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/puce/puce_popup_onglet.gif) no-repeat right"});
+  $(element).find("a.pop_up"   ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
+  $(element).find("a.lien_mail").css({"padding-left" :"15px" , "background":"url(./_img/puce/puce_mail.gif)         no-repeat left" });
+}
+
+/**
  * Fonction pour appliquer une infobulle au survol de tous les éléments possédants un attribut "title"
  *
  * Remarque : attention, cela fait disparaitre le contenu de l'attribut alt"...
@@ -823,6 +841,7 @@ $(document).ready
     /**
      * Initialisation
      */
+    format_liens('body');
     infobulle();
 
     /**
@@ -831,7 +850,8 @@ $(document).ready
     if(top.frames.length!=0)
     {
       var endroit = ($('#titre_logo').length) ? '#titre_logo' : 'h1' ;
-      $(endroit).after('<div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
+      $(endroit).after('<div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" class="lien_ext">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
+      format_liens('div.probleme');
     }
     /**
      * Alerte si non acceptation des cookies
@@ -858,14 +878,20 @@ $(document).ready
     $(document).on
     (
       'click',
-      'a[href=#toggle]',
+      'img.toggle',
       function()
       {
-        var id   = $(this).attr('id').substring(3); // 'to_' + id
-        var class_old = $(this).attr('class');
-        var class_new = (class_old=='toggle_plus') ? 'toggle_moins' : 'toggle_plus' ;
-        $(this).removeAttr("class").addClass(class_new);
+        id = $(this).parent().attr('id').substring(3); // 'to_' + id
         $('#'+id).toggle('fast');
+        src = $(this).attr('src');
+        if( src.indexOf("plus") > 0 )
+        {
+          $(this).attr('src',src.replace('plus','moins'));
+        }
+        else
+        {
+          $(this).attr('src',src.replace('moins','plus'));
+        }
         return false;
       }
     );

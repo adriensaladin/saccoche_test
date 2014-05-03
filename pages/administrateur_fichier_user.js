@@ -485,6 +485,7 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").html('&nbsp;');
                 $('#form_bilan fieldset').html(responseHTML);
+                format_liens('#form_bilan fieldset');
               }
             }
           }

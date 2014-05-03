@@ -89,15 +89,15 @@ if($affichage_direct)
 {
   echo'<hr />'.NL;
   echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   echo'</ul>'.NL;
   echo $releve_HTML;
 }
 else
 {
   echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a class="lien_ext" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
   echo'</ul>'.NL;
 }
 

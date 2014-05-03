@@ -591,6 +591,7 @@ $(document).ready
             {
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
+              format_liens('#f_recherche_resultat');
               initialiser_compteur();
             }
             else
@@ -627,6 +628,7 @@ $(document).ready
             {
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_recherche_resultat').html(responseHTML).show();
+              format_liens('#f_recherche_resultat');
               initialiser_compteur();
             }
             else

@@ -140,7 +140,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
     $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
     $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
@@ -209,7 +209,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
     $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $boutons = (isset($tab_radio[$item_id])) ? $tab_radio[$item_id] : str_replace( 'value="X"' , 'value="X" checked' , $radio_boutons ) ;
     $boutons = str_replace( 'item_X' , 'item_'.$item_id , $boutons );

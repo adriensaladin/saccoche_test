@@ -71,8 +71,8 @@ if( ($make_html) || ($make_pdf) )
   if(!$aff_socle) { $texte_socle      = ''; }
   if(!$aff_lien)  { $texte_lien_avant = ''; }
   if(!$aff_lien)  { $texte_lien_apres = ''; }
-  $toggle_class = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
-  $toggle_etat  = ($aff_start) ? '' : ' class="hide"' ;
+  $toggle_img   = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
+  $toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +280,7 @@ foreach($tab_eleve as $tab)
                       }
                       if($aff_lien)
                       {
-                        $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
+                        $texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
                         $texte_lien_apres = ($item_lien) ? '</a>' : '';
                       }
                       $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
@@ -464,7 +464,7 @@ if($make_html)
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>'.NL;
-  $releve_HTML .= '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>'.NL;
+  $releve_HTML .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.'</div>'.NL;
   $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel , TRUE /*force_nb*/  ) : '' ;
@@ -568,15 +568,15 @@ foreach($tab_eleve as $tab)
                         if($make_html)
                         {
                           $socle_nom  = html($socle_nom);
-                          $socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" width="16" height="16" alt="" title="'.html($socle_nom).'" />'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+                          $socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.html($socle_nom).'" />'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
                           if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
                           {
-                            $lien_toggle = '<a href="#toggle" class="'.$toggle_class.'" title="Voir / masquer le détail des items associés." id="to_'.$socle_id.'_'.$eleve_id.'"></a> ';
-                            $div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'"'.$toggle_etat.'>'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+                            $lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+                            $div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'"'.$toggle_class.'>'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
                           }
                           else
                           {
-                            $lien_toggle = '<span class="toggle_none"></span> ';
+                            $lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
                             $div_competences = '';
                           }
                           $case_score = $test_affichage_Pourcentage ? Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
@@ -606,7 +606,7 @@ foreach($tab_eleve as $tab)
                     extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
                     $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                   }
-                  $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
+                  $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
                   $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$pilier_id.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
                 }
                 $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'.NL;
@@ -676,7 +676,7 @@ foreach($tab_eleve as $tab)
                 extract($tab);  // $periode_nom_avant $prof_info $appreciation $note
                 $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
               }
-              $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
+              $tab_periode_liens[]  = '<a href="#" id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer les informations de cette période." class="toggle" /></a> '.html($periode_nom_avant);
               $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.$periode_nom_avant.' :<br />'.implode('<br />',$tab_ligne).'</div>';
             }
             $releve_HTML .= '<tr>'.$case_score.'<td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$case_valid.'</tr>'.NL;

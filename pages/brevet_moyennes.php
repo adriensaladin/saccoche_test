@@ -144,7 +144,7 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
   </form>
   <hr />
   <form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">
-    <h3>Nom de la série</h3>
+    <h4>Nom de la série</h4>
     <table class="vm_nug notanet">
       <thead>
         <tr><th>Épreuve</th><th>Référentiel(s)</th><th>Note proposée</th><th>Note enregistrée</th></tr>

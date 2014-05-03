@@ -110,7 +110,7 @@ $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_coule
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></div>
@@ -125,10 +125,10 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
   </p>
   <div id="option_groupe" class="<?php echo $class_option_groupe ?>">
     <label class="tab">Restriction :</label><label for="f_only_presence"><input type="checkbox" id="f_only_presence" name="f_only_presence" value="1"<?php echo $check_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format html, le détail des items peut être affiché." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label><br />
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label><br />
     <label class="tab">Indications :</label><?php echo $socle_PA.'&nbsp;&nbsp;&nbsp;'.$socle_EV ?>
     <div id="option_mode" class="<?php echo $class_option_mode ?>">
-      <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
+      <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
       <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
     </div>
   </div>
@@ -137,7 +137,7 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
   </div>
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
   </div>
   <p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

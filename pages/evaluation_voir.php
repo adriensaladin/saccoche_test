@@ -83,10 +83,10 @@ else
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var tab_dates = new Array();' );
-Layout::add( 'js_inline_before' , 'var aff_nom_eleve = '.$js_aff_nom_eleve.';' );
-Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';' );
-Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_dates = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var aff_nom_eleve = '.$js_aff_nom_eleve.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var auto_mode = "'.$auto_mode.'";';
 ?>
 
 <form action="#" method="post" id="form"><fieldset>

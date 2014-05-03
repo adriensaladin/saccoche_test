@@ -556,12 +556,12 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
   $tab_affich[0][0] = '<td>';
   $tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
   $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
   $tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="arrow_continue_rigth">par item</span></label></span><br />';
-  $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
+  $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
   $tab_affich[0][0].= '</p><p>';
-  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur"'.$check_largeur.' /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur"'.$check_largeur.' /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
   $tab_affich[0][0].= '</p>';
   $tab_affich[0][0].= '</td>';
   // première ligne (noms prénoms des élèves)
@@ -584,7 +584,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $descriptio
     $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $tab_comp_id[$DB_ROW['item_id']] = $item_ref;
     $export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom']."\r\n";
   }
@@ -699,8 +699,8 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
   $tab_affich[0][0] = '<td>';
   $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <span class="retrecir_largeur">Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <span class="retrecir_largeur">Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
   $tab_affich[0][0].= '</p>';
   $tab_affich[0][0].= '</td>';
   // première ligne (noms prénoms des élèves)
@@ -722,9 +722,9 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $tab_comp_id[$DB_ROW['item_id']] = $item_ref;
     $csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
     $csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom'];
@@ -960,7 +960,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
   foreach($tab_item_id as $item_id=>$tab_infos_item)
   {
-    $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
+    $texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
     $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
     echo'<tr>';
     echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
@@ -977,7 +977,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
   foreach($tab_item_id as $item_id=>$tab_infos_item)
   {
-    $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
+    $texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
     $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
     echo'<tr>';
     echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
@@ -1263,9 +1263,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   }
   // On attaque l'élaboration des sorties HTML, CSV, TEX et PDF
   $sacoche_htm = '<hr />';
-  $sacoche_htm.= '<a target="_blank" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-  $sacoche_htm.= '<a target="_blank" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><br />';
-  $sacoche_htm.= '<a target="_blank" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.tex"><span class="file file_tex">Cartouches &rarr; Récupérer / Manipuler (fichier <em>LaTeX</em> pour connaisseurs).</span></a>';
+  $sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+  $sacoche_htm.= '<a class="lien_ext" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><br />';
+  $sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.tex"><span class="file file_tex">Cartouches &rarr; Récupérer / Manipuler (fichier <em>LaTeX</em> pour connaisseurs).</span></a>';
   $sacoche_csv = '';
   $sacoche_tex = '';
   $separateur  = ';';

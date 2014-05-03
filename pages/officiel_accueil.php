@@ -117,19 +117,19 @@ if($BILAN_TYPE=='bulletin')
   $li = '<li><span class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'.NL;
   $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
   $s = ($nb_inconnu>1) ? 's' : '' ;
-  $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>'.NL : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>'.NL ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+  $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>'.NL : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>'.NL ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var USER_ID           = '.$_SESSION['USER_ID'].';' );
-Layout::add( 'js_inline_before' , 'var TODAY_FR          = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var BILAN_TYPE        = "'.$BILAN_TYPE.'";' );
-Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'].';' );
-Layout::add( 'js_inline_before' , 'var APP_GENERALE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'].';' );
-Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20 = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_NA     = "'.$_SESSION['BACKGROUND_NA'].'";' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_VA     = "'.$_SESSION['BACKGROUND_VA'].'";' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_A      = "'.$_SESSION['BACKGROUND_A'].'";' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var USER_ID           = '.$_SESSION['USER_ID'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var TODAY_FR          = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BILAN_TYPE        = "'.$BILAN_TYPE.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var APP_RUBRIQUE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var APP_GENERALE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CONVERSION_SUR_20 = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_NA     = "'.$_SESSION['BACKGROUND_NA'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_VA     = "'.$_SESSION['BACKGROUND_VA'].'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var BACKGROUND_A      = "'.$_SESSION['BACKGROUND_A'].'";';
 ?>
 
 <ul class="puce">
@@ -279,10 +279,10 @@ foreach($DB_TAB as $DB_ROW)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Javascript : tableau utilisé pour désactiver des options d'un select.
-Layout::add( 'js_inline_before' , 'var tab_disabled = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["examiner"] = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"] = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"] = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_disabled = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"] = new Array();';
 
 $listing_classes_id = implode(',',array_keys($tab_classe));
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
@@ -415,9 +415,9 @@ foreach($DB_TAB as $DB_ROW)
     $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
     $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
     $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
-    Layout::add( 'js_inline_before' , 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';' );
-    Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';' );
-    Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';' );
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_examiner.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_imprimer.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'"]='.$disabled_voir_pdf.';';
   }
 }
 
@@ -446,7 +446,7 @@ if($affichage_formulaire_statut)
   }
   echo'
     <form action="#" method="post" id="cadre_statut">
-      <h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>
+      <h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>
       <div>'.implode('<br />',$tab_radio).'</div>
       <p><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
     </form>

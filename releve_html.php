@@ -50,41 +50,33 @@ else
   echo'Les relevés sont conservés sur le serveur pendant une durée limitée...';
 }
 // Affichage dans une variable
-$CONTENU_PAGE = trim(ob_get_contents());
+$CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
-// Extraire le css perso <style type="text/css">...</style> (de la session) pour le faire afficher par le Layout au bon endroit
-// Si présent, il est au tout début du contenu.
+// Extraire le css perso de la session <style type="text/css">...</style> pour le déplacer dans le head
 $position_css = mb_strpos($CONTENU_PAGE,'</style>');
 if($position_css)
 {
-  Layout::add( 'css_inline' , mb_substr($CONTENU_PAGE,23,$position_css-23) );
-  $CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
-}
-
-// Extraire le js perso <script type="text/javascript">...</script> (destiné à trier les tableaux) pour le faire afficher par le Layout au bon endroit
-// Si présent, il est à la toute fin du contenu.
-$position_js = mb_strpos($CONTENU_PAGE,'<script type="text/javascript">');
-if($position_js)
-{
-  Layout::add( 'js_inline_after' , mb_substr($CONTENU_PAGE,$position_js+31,-9) );
-  $CONTENU_PAGE = mb_substr($CONTENU_PAGE,0,$position_js);
+  $GLOBALS['HEAD']['css']['inline'][] = mb_substr($CONTENU_PAGE,23,$position_css-23);
+  $CONTENU_PAGE                       = mb_substr($CONTENU_PAGE,$position_css+8);
 }
 
 // Titre du navigateur
-Layout::add( 'browser_title' , 'SACoche - Relevé HTML' );
+$GLOBALS['HEAD']['title'] = 'SACoche - Relevé HTML';
 
 // Fichiers à inclure
-Layout::add( 'css_file' , './_css/style.css'           , 'mini' );
-Layout::add( 'js_file'  , './_js/jquery-librairies.js' , 'comm' ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
-Layout::add( 'js_file'  , './_js/script.js'            , 'pack' ); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
-Layout::add( 'js_file'  , './pages/releve_html.js'     , 'pack' );
+$GLOBALS['HEAD']['css']['file'][] = compacter('./_css/style.css','mini');
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/jquery-librairies.js','comm'); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/script.js','pack'); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
+$GLOBALS['HEAD']['js' ]['file'][] = compacter('./pages/releve_html.js','pack');
 
 // Ultimes constantes javascript
-Layout::add( 'js_inline_before' , 'var PAGE = "public_anti_maj_clock";' ); // Préfixe "public" pour indiquer que c'est une page accessible sans authentification.
+$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE = "public_anti_maj_clock";'; // Préfixe "public" pour indiquer que c'est une page accessible sans authentification.
 
 // Affichage
-echo Layout::afficher_page_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ );
-echo $CONTENU_PAGE.NL;
-echo Layout::afficher_page_pied();
+afficher_page_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ );
+echo  '<body>'.NL;
+echo    $CONTENU_PAGE.NL;
+echo  '</body>'.NL;
+echo'</html>'.NL;
 ?>

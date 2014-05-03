@@ -35,9 +35,9 @@ $tab_groupe_associe = array();
 $tab_niveau_groupe  = array();
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var tab_eleves       = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_profs        = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_eleves       = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_profs        = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_niveau_ordre = new Array();';
 
 // Lister les groupes de besoin auxquels le prof est rattaché, propriétaire ou pas.
 
@@ -94,7 +94,7 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";' );
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
   }
 }
 else
@@ -103,9 +103,9 @@ else
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , '// <![CDATA[' );
-Layout::add( 'js_inline_before' , 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";' );
-Layout::add( 'js_inline_before' , '// ]]>' );
+$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+$GLOBALS['HEAD']['js']['inline'][] = 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";';
+$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
@@ -115,9 +115,9 @@ $tab_users = array_filter($tab_users,'positif');
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
 $reception_todo = ($nb_users) ? 'true' : 'false' ;
-Layout::add( 'js_inline_before' , 'var reception_todo        = '.$reception_todo.';' );
-Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
-Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_todo        = '.$reception_todo.';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_texte = "'.$txt_users.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var reception_users_liste = "'.implode('_',$tab_users).'";';
 
 ?>
 
@@ -160,8 +160,8 @@ Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$t
         echo  '</td>';
         echo'</tr>'.NL;
         // Javascript
-        Layout::add( 'js_inline_before' , 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";' );
-        Layout::add( 'js_inline_before' , 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";' );
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_td['eleve']).'";';
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_td['professeur']).'";';
       }
     }
     else

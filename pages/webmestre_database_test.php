@@ -35,7 +35,9 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-Layout::add( 'css_inline' , 'pre.g{color:#333} pre.v{color:#080} pre.r{color:#A00}' );
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.g{color:#333}';
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.v{color:#080}';
+$GLOBALS['HEAD']['css']['inline'][] = 'pre.r{color:#A00}';
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__droits_mysql">DOC : Droits MySQL requis (multi-structures).</a></span></p>

@@ -138,12 +138,12 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 
   <fieldset id="fieldset_import_id_ent_cas" class="hide">
     <hr />
-    <h3>En important un fichier</h3>
+    <h4>En important un fichier</h4>
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__<?php echo $_SESSION['CONNEXION_NOM'] ?>">DOC : <?php echo $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']]['txt'] ?></a></span></li>
       <li>Importer le fichier <b>csv</b> provenant de l'ENT : <button id="import_ent" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
-    <h3>En dupliquant un autre champ</h3>
+    <h4>En dupliquant un autre champ</h4>
     <ul class="puce">
       <li><button name="dupliquer" id="COPY_id_gepi_TO_id_ent" type="button" class="mdp_groupe">Dupliquer l'identifiant de Gepi enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
       <li><button name="dupliquer" id="COPY_login_TO_id_ent" type="button" class="mdp_groupe">Dupliquer le login de SACoche enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
@@ -152,14 +152,14 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 
   <fieldset id="fieldset_import_id_gepi" class="hide">
     <hr />
-    <h3>En important un fichier</h3>
+    <h4>En important un fichier</h4>
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_identifiant_Gepi_SACoche">DOC : Import des identifiants de Gepi dans SACoche.</a></span></li>
       <li>Importer le fichier <b>base_professeur_gepi.csv</b> issu de Gepi : <button id="import_gepi_profs" type="button" class="fichier_import">Parcourir...</button></li>
       <li>Importer le fichier <b>base_responsable_gepi.csv</b> issu de Gepi : <button id="import_gepi_parents" type="button" class="fichier_import">Parcourir...</button></li>
       <li>Importer le fichier <b>base_eleve_gepi.csv</b> issu de Gepi : <button id="import_gepi_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
-    <h3>En dupliquant un autre champ</h3>
+    <h4>En dupliquant un autre champ</h4>
     <ul class="puce">
       <li><button name="dupliquer" id="COPY_id_ent_TO_id_gepi" type="button" class="mdp_groupe">Dupliquer l'identifiant de l'ENT enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
       <li><button name="dupliquer" id="COPY_login_TO_id_gepi" type="button" class="mdp_groupe">Dupliquer le login de SACoche enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>

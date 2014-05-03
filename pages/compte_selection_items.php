@@ -31,7 +31,7 @@ $TITRE = "Gérer ses regroupements d'items";
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var tab_items = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_items = new Array();';
 ?>
 
 <ul class="puce">
@@ -68,7 +68,7 @@ Layout::add( 'js_inline_before' , 'var tab_items = new Array();' );
         echo  '</td>';
         echo'</tr>'.NL;
         // Javascript
-        Layout::add( 'js_inline_before' , 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";' );
+        $GLOBALS['HEAD']['js']['inline'][] = 'tab_items["'.$DB_ROW['selection_item_id'].'"]="'.$items_liste.'";';
       }
     }
     else

@@ -40,7 +40,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';';
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_matieres">DOC : Matières</a></span></div>

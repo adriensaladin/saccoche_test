@@ -133,7 +133,7 @@ if(!empty($DB_TAB))
 
 // On construit et affiche le tableau résultant
 $affichage = '<table id="table_action" class="vm_nug"><thead>'.NL.'<tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu"></th></tr>'.NL.'</thead><tbody>'.NL;
-$infobulle = '<img src="./_img/bulle_aide.png" width="16" height="16" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
+$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 foreach($tab_matiere as $matiere_id => $tab)
 {
   $rowspan = (isset($tab_colonne[$matiere_id])) ? count($tab_colonne[$matiere_id]) : 1 ;

@@ -39,17 +39,17 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
 $select_f_statuts = Form::afficher_select(Form::$tab_select_statut                          , 'f_statut'  /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var input_date      = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var date_mysql      = "'.TODAY_MYSQL.'";' );
-Layout::add( 'js_inline_before' , 'var tab_login_modele      = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_mdp_longueur_mini = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date      = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
 foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
 {
-  Layout::add( 'js_inline_before' , 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
 }
 foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
 {
-  Layout::add( 'js_inline_before' , 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
 }
 ?>
 
@@ -145,11 +145,11 @@ if(empty($_POST['f_afficher']))
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Ajouter un utilisateur | Modifier un utilisateur</h2>
   <p>
-    <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
-    <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" /><br />
-    <label class="tab" for="f_sconet_id">Id Sconet <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Champ de Sconet ELEVE.ELEVE_ID (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_id" name="f_sconet_id" type="text" value="" size="15" maxlength="8" /><br />
-    <label class="tab" for="f_sconet_num">N° Sconet <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Champ de Sconet ELEVE.ELENOET (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_num" name="f_sconet_num" type="text" value="" size="15" maxlength="5" /><br />
-    <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sconet : champ ELEVE.ID_NATIONAL (laisser vide si inconnu).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
+    <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
+    <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" /><br />
+    <label class="tab" for="f_sconet_id">Id Sconet <img alt="" src="./_img/bulle_aide.png" title="Champ de Sconet ELEVE.ELEVE_ID (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_id" name="f_sconet_id" type="text" value="" size="15" maxlength="8" /><br />
+    <label class="tab" for="f_sconet_num">N° Sconet <img alt="" src="./_img/bulle_aide.png" title="Champ de Sconet ELEVE.ELENOET (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_num" name="f_sconet_num" type="text" value="" size="15" maxlength="5" /><br />
+    <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" title="Sconet : champ ELEVE.ID_NATIONAL (laisser vide si inconnu).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
   </p>
   <p>
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />

@@ -53,7 +53,7 @@ if(!$droit_voir_archives_pdf)
   foreach($tab_types as $BILAN_TYPE => $tab)
   {
     $titre = ($BILAN_TYPE!='palier1') ? $tab['titre'] : 'Maîtrise du socle' ;
-    echo'<h3>'.$titre.'</h3>'.NL;
+    echo'<h4>'.$titre.'</h4>'.NL;
     echo afficher_profils_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE'],'li');
     if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
   }
@@ -110,7 +110,7 @@ foreach($DB_TAB as $DB_ROW)
     if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
     {
       $_SESSION['tmp_droit_voir_archive'][$DB_ROW['user_id'].$DB_ROW['officiel_type']] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-      $tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="releve_pdf.php?fichier='.$DB_ROW['user_id'].'_'.$DB_ROW['officiel_type'].'_'.$DB_ROW['periode_id'].'" target="_blank">'.$tab_types[$DB_ROW['officiel_type']]['titre'].'</a>' ;
+      $tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="releve_pdf.php?fichier='.$DB_ROW['user_id'].'_'.$DB_ROW['officiel_type'].'_'.$DB_ROW['periode_id'].'" class="lien_ext">'.$tab_types[$DB_ROW['officiel_type']]['titre'].'</a>' ;
     }
   }
 }
@@ -125,7 +125,7 @@ if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'
     if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $user_id , $bilan_type , $annee_session_brevet )))
     {
       $_SESSION['tmp_droit_voir_archive'][$user_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-      $tab_tbody[$user_id]['+'.$annee_session_brevet][] = '<a href="releve_pdf.php?fichier='.$user_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">'.$tab_types['brevet']['titre'].'</a>' ;
+      $tab_tbody[$user_id]['+'.$annee_session_brevet][] = '<a href="releve_pdf.php?fichier='.$user_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" class="lien_ext">'.$tab_types['brevet']['titre'].'</a>' ;
       $tab_thead['+'.$annee_session_brevet] = '<th class="hc">Année</th>';
     }
   }

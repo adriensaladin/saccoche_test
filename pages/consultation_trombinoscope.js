@@ -80,6 +80,7 @@ $(document).ready
             {
               $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
               $('#bilan').html(responseHTML);
+              format_liens('#bilan');
             }
           }
         }

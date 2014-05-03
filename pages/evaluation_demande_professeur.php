@@ -47,13 +47,13 @@ else
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date     = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_autoeval = "'.$date_autoeval.'";';
 ?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
-  <li><span class="astuce">Tenez-vous au courant des demandes grace à <a target="_blank" href="<?php echo RSS::url_prof($_SESSION['USER_ID']); ?>"><span class="rss">un flux RSS dédié</span></a> !</span></li>
+  <li><span class="astuce">Tenez-vous au courant des demandes grace à <a class="lien_ext" href="<?php echo RSS::url_prof($_SESSION['USER_ID']); ?>"><span class="rss">un flux RSS dédié</span></a> !</span></li>
   <li><span class="astuce"><a title="<?php echo $infobulle ?>" href="#">Nombre de demandes autorisées par matière.</a></span></li>
 </ul>
 
@@ -134,7 +134,7 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
       <label class="tab" for="f_suite">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
     </fieldset>
     <fieldset id="step_message" class="hide">
-      <label class="tab" for="f_message">Message <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="facultatif" /> :</label><textarea id="f_message" name="f_message" rows="3" cols="75"></textarea><br />
+      <label class="tab" for="f_message">Message <img alt="" src="./_img/bulle_aide.png" title="facultatif" /> :</label><textarea id="f_message" name="f_message" rows="3" cols="75"></textarea><br />
       <span class="tab"></span><label id="f_message_reste"></label>
     </fieldset>
     <p id="step_valider" class="hide">

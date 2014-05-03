@@ -43,9 +43,9 @@ $jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
 $check_eleve      = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_ELEVES']      ) ? 'complet' : 'partiel' ;
 $check_parent     = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PARENTS']     ) ? 'complet' : 'partiel' ;
 $check_professeur = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PROFESSEURS'] ) ? 'complet' : 'partiel' ;
-Layout::add( 'js_inline_before' , 'var check_eleve      = "'.$check_eleve.'";' );
-Layout::add( 'js_inline_before' , 'var check_parent     = "'.$check_parent.'";' );
-Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'";' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_eleve      = "'.$check_eleve.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_parent     = "'.$check_parent.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var check_professeur = "'.$check_professeur.'";';
 
 ?>
 

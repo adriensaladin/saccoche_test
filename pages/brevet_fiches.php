@@ -29,9 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? "Fiches brevet" :  "Étape n°5 - Fiches brevet" ;
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var TODAY_FR   = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var USER_ID    = '.$_SESSION['USER_ID'].';' );
-Layout::add( 'js_inline_before' , 'var CODE_TOTAL = '.CODE_BREVET_EPREUVE_TOTAL.';' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var TODAY_FR   = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var USER_ID    = '.$_SESSION['USER_ID'].';';
+$GLOBALS['HEAD']['js']['inline'][] = 'var CODE_TOTAL = '.CODE_BREVET_EPREUVE_TOTAL.';';
 
 // Lister les séries de Brevet en place
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_series_etablissement();
@@ -251,10 +251,10 @@ if(!count($tab_classe))
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Javascript : tableau utilisé pour désactiver des options d'un select.
-Layout::add( 'js_inline_before' , 'var tab_disabled = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["examiner"] = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"] = new Array();' );
-Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"] = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_disabled = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"] = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"] = new Array();';
 
 $listing_classes_id = implode(',',array_keys($tab_classe));
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
@@ -374,9 +374,9 @@ foreach($tab_classe as $classe_id => $tab_groupes)
     $disabled_examiner = strpos($icone_verification,'detailler_non') ? 'true' : 'false' ;
     $disabled_imprimer = strpos($icone_impression  ,'imprimer_non')  ? 'true' : 'false' ;
     $disabled_voir_pdf = strpos($icone_voir_pdf    ,'archive_non')   ? 'true' : 'false' ;
-    Layout::add( 'js_inline_before' , 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_examiner.';' );
-    Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_imprimer.';' );
-    Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_voir_pdf.';' );
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_examiner.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_imprimer.';';
+    $GLOBALS['HEAD']['js']['inline'][] = 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'"]='.$disabled_voir_pdf.';';
   }
 }
 
@@ -404,7 +404,7 @@ if($affichage_formulaire_statut)
     $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
   }
   echo'<form action="#" method="post" id="cadre_statut">'.NL;
-  echo  '<h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>'.NL;
+  echo  '<h4>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" title="Pour les cases cochées du tableau (classes uniquement)." /></h4>'.NL;
   echo  '<div>'.implode('<br />',$tab_radio).'</div>'.NL;
   echo  '<p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>'.NL;
   echo'</form>'.NL;
@@ -424,7 +424,7 @@ $tab_matieres_id = explode(',',$listing_matieres_id);
 // Lister les épreuves par série de Brevet en place dans l'établissement
 foreach($tab_brevet_series as $brevet_serie_ref => $brevet_serie_nom)
 {
-  $tab_checkbox_rubriques[$brevet_serie_ref] = '<h3>'.$brevet_serie_nom.'</h3>';
+  $tab_checkbox_rubriques[$brevet_serie_ref] = '<h4>'.$brevet_serie_nom.'</h4>';
   $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_epreuves($brevet_serie_ref);
   foreach($DB_TAB as $DB_ROW)
   {

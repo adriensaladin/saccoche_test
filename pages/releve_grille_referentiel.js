@@ -509,13 +509,15 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
+        format_liens('#bilan');
       }
       else if(responseHTML.substring(0,4)=='<h2>')
       {
         $('#ajax_msg').removeAttr("class").html('');
-        // Mis dans le div bilan et pas balancé directement dans le fancybox sinon la mise en forme des liens nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
+        // Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
         // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
         $('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
+        format_liens('#bilan');
         $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
       }
       else

@@ -565,7 +565,6 @@ function __autoload($class_name)
     'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
     'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
     'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
-    'Layout'                      => '_inc'.DS.'class.Layout.php' ,
     'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
     'Mobile_Detect'               => '_inc'.DS.'class.MobileDetect.php' ,
     'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
@@ -821,4 +820,8 @@ function exit_json( $statut , $value=NULL )
   exit( json_encode( array_merge($tab_statut,$tab_valeur) ) );
 }
 
+/*
+ * Pour retenir les données qui seront à afficher dans la section <head></head> de la page.
+ */
+$GLOBALS['HEAD'] = array();
 ?>

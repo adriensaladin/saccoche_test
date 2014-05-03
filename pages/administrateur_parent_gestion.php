@@ -38,17 +38,17 @@ $find_doublon = (isset($_POST['f_doublon']))      ? TRUE                        
 $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var input_date      = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var date_mysql      = "'.TODAY_MYSQL.'";' );
-Layout::add( 'js_inline_before' , 'var tab_login_modele      = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_mdp_longueur_mini = new Array();' );
+$GLOBALS['HEAD']['js']['inline'][] = 'var input_date      = "'.TODAY_FR.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql      = "'.TODAY_MYSQL.'";';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_login_modele      = new Array();';
+$GLOBALS['HEAD']['js']['inline'][] = 'var tab_mdp_longueur_mini = new Array();';
 foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
 {
-  Layout::add( 'js_inline_before' , 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";';
 }
 foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => $mdp_longueur_mini)
 {
-  Layout::add( 'js_inline_before' , 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';' );
+  $GLOBALS['HEAD']['js']['inline'][] = 'tab_mdp_longueur_mini["'.$profil_sigle.'"] = '.$mdp_longueur_mini.';';
 }
 ?>
 
@@ -137,12 +137,12 @@ elseif($find_doublon) // (forcément)
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
-        echo  ($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html($DB_ROW['enfants_liste']))).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Aucun lien de responsabilité !" /></td>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        echo  ($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html($DB_ROW['enfants_liste']))).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         echo  '<td class="label">'.html($DB_ROW['user_id_ent']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_id_gepi']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
-        echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$DB_ROW['user_profil_sigle']].'" /></td>';
+        echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$DB_ROW['user_profil_sigle']].'" /></td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
@@ -174,7 +174,7 @@ if( $find_doublon && !empty($DB_TAB) )
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'extraction_doublons_responsables_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
-  echo'<p><ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+  echo'<p><ul class="puce"><li><a class="lien_ext" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }
 ?>
 
@@ -188,10 +188,10 @@ if( $find_doublon && !empty($DB_TAB) )
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Ajouter | Modifier un utilisateur</h2>
   <p>
-    <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
-    <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" /><br />
-    <label class="tab" for="f_sconet_id">Id Sconet <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Champ de Sconet PERSONNE.PERSONNE_ID (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_id" name="f_sconet_id" type="text" value="" size="15" maxlength="8" /><br />
-    <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sconet : champ inutilisé (laisser vide).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
+    <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
+    <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" /><br />
+    <label class="tab" for="f_sconet_id">Id Sconet <img alt="" src="./_img/bulle_aide.png" title="Champ de Sconet PERSONNE.PERSONNE_ID (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_id" name="f_sconet_id" type="text" value="" size="15" maxlength="8" /><br />
+    <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" title="Sconet : champ inutilisé (laisser vide).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
   </p>
   <p>
     <label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><?php echo $options ?></select>

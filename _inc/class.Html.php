@@ -446,7 +446,7 @@ class Html
       $retour .= '</div>'.NL;
     }
     // retour
-    return ($retour) ? '<h3>Légende</h3>'.NL.'<div class="legende">'.NL.$retour.'</div>'.NL : '' ;
+    return ($retour) ? '<h4>Légende</h4>'.NL.'<div class="legende">'.NL.$retour.'</div>'.NL : '' ;
   }
 
   /**
@@ -605,7 +605,7 @@ class Html
         switch($aff_lien)
         {
           case 'click' :
-            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
+            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
             $lien_texte_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
           case 'image' :
             $lien_image = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
@@ -805,7 +805,7 @@ class Html
       '</span>'.
     '</p>'.NL : 
     '<p>'.
-      '<label class="tab">Action <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher auparavant les cases adéquates." /> :</label>'.
+      '<label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label>'.
       '<button type="button" class="ajouter" name="evaluation_gestion">Préparer une évaluation.</button> '.
       '<button type="button" class="ajouter" name="professeur_groupe_besoin">Constituer un groupe de besoin.</button> '.
       '<label id="check_msg"></label>'.

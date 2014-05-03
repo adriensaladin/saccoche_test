@@ -63,7 +63,7 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
   foreach($DB_TAB as $DB_ROW)
   {
     echo'<p>'.NL;
-    echo  '<label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />'.NL;
+    echo  '<label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="20" maxlength="20" /><br />'.NL;
     echo  '<label class="tab"></label>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />'.NL;
     if($DB_ROW['user_profil_sigle']=='ELV')
     {

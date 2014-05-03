@@ -187,7 +187,7 @@ $(document).ready
 
 
     /** $releve_HTML_synthese .= ($affichage_checkbox) ? '<p>
-       <label class="tab">Action <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher auparavant les cases adéquates." /> :</label>
+       <label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label>
        <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button>
        <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button>
        </p></form>' : '';

@@ -244,7 +244,6 @@ $(document).ready
         $('#zone_messages').html(response_msg);
         $('#table_action tbody').html(response_tr);
         $('#tr_sans').html(response_td);
-        format_liens('#zone_messages');
         tableau_maj();
         var etat_disabled = ($("#f_groupe_id").val()>0) ? false : true ;
         $('#form_gestion').show();

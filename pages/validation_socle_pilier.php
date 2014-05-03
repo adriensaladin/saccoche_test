@@ -88,7 +88,7 @@ $select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ 
 </form>
 
 <div id="zone_information" class="hide" style="height:60ex">
-  <h4>Aide à la décision : états de validation des items d'une compétence du socle</h4>
+  <h3>Aide à la décision : états de validation des items d'une compétence du socle</h3>
   <ul class="puce">
     <li><span id="identite" class="socle_info eleve"></span></li>
     <li><span id="pilier" class="socle_info socle_n1"></span></li>

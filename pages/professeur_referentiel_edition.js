@@ -171,19 +171,19 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            new_li += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
+            new_li += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer une lettre référence et un nom de domaine." />';
             texte = 'ce domaine';
             break;
           case 'n2' :  // thème
-            new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom de thème." />';
+            new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom de thème." />';
             texte = 'ce thème';
             break;
           case 'n3' :  // item
-            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /><br />';
-            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="Hors-socle." readonly /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
-            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="2" class="sep" />';
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /><br />';
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="Hors-socle." readonly /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="2" class="sep" />';
             new_li += '<i>Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1" checked /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0" class="sep"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label>';
-            new_li += 'Lien <img alt="" src="./_img/bulle_aide.png" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
+            new_li += 'Lien <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
             new_li += '<i>Action</i> ';
             texte = 'cet item';
             break;
@@ -236,13 +236,13 @@ $(document).ready
             span = $(this).parent().children('span').text();
             ref = span.charAt(0);
             nom = span.substring(4);
-            new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
+            new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer une lettre référence et un nom de domaine." />';
             texte = 'ce domaine';
             break;
           case 'n2' :  // thème
             // On récupère le nom
             nom = $(this).parent().children('span').text();
-            new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom de thème." />';
+            new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom de thème." />';
             texte = 'ce thème';
             break;
           case 'n3' :  // item
@@ -260,11 +260,11 @@ $(document).ready
             socle_id  = $(this).parent().children('b').children('img:eq(2)').attr('lang').substring(3);
             socle_txt = $('label[for=socle_'+socle_id+']').text();
             // On assemble
-            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+escapeQuote(nom)+'" /><br />';
-            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
-            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" class="sep" />';
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+escapeQuote(nom)+'" /><br />';
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" class="sep" />';
             new_div += '<i>Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0" class="sep"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label>';
-            new_div += 'Lien <img alt="" src="./_img/bulle_aide.png" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
+            new_div += 'Lien <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
             new_div += '<i>Action</i>';
             texte = 'cet item';
             break;

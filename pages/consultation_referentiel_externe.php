@@ -49,7 +49,7 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
     <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option value="0">Tous les niveaux</option></select>
   </p>
   <fieldset>
-    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
+    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
     <span class="tab"></span><button id="rechercher" type="button" class="rechercher" disabled>Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label>
   </fieldset>
 </form>

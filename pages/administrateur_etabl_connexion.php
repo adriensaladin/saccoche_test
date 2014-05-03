@@ -45,9 +45,9 @@ else
 }
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var IS_HEBERGEMENT_SESAMATH = '.(int)IS_HEBERGEMENT_SESAMATH.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var CONVENTION_ENT_REQUISE  = '.(int)CONVENTION_ENT_REQUISE.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_param = new Array();';
+Layout::add( 'js_inline_before' , 'var IS_HEBERGEMENT_SESAMATH = '.(int)IS_HEBERGEMENT_SESAMATH.';' );
+Layout::add( 'js_inline_before' , 'var CONVENTION_ENT_REQUISE  = '.(int)CONVENTION_ENT_REQUISE.';' );
+Layout::add( 'js_inline_before' , 'var tab_param = new Array();' );
 
 // Séparer le sous-domaine et le domaine du HOST (besoin pour les ENT avec un serveur par établissement, comme ceux du projet ENVOLE sur serveur SCRIBE).
 $tab_host_part = explode('.',$_SESSION['CAS_SERVEUR']['HOST']);
@@ -62,7 +62,7 @@ $select_connexions = '';
 foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 {
   $select_connexions .= '<optgroup label="'.html($mode_texte).'">';
-  $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"] = new Array();';
+  Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"] = new Array();' );
   foreach($tab_connexion_info[$connexion_mode] as $connexion_ref => $tab_info)
   {
     $selected = ( ($connexion_mode==$_SESSION['CONNEXION_MODE']) && ($connexion_ref==$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']) ) ? ' selected' : '' ;
@@ -91,13 +91,13 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
           $tab_info['serveur_host_subdomain'] = ($tab_info['serveur_host_domain']==$SESSION_HOST_DOMAIN) ? $SESSION_HOST_SUBDOMAIN : '' ;
         }
 
-        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$domaine_edit.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host_subdomain'].']¤['.$tab_info['serveur_host_domain'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";';
+        Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$domaine_edit.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host_subdomain'].']¤['.$tab_info['serveur_host_domain'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";' );
         break;
       case 'shibboleth' :
-        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";';
+        Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";' );
         break;
       case 'gepi' :
-        $GLOBALS['HEAD']['js']['inline'][] = 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
+        Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";' );
         break;
     }
   }
@@ -116,20 +116,20 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 <form id="form_mode" action="#" method="post"><fieldset>
   <p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
   <div id="cas_options" class="hide">
-    <label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="40" type="text" value="" /><br />
-    <label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Parfois 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="" /><br />
-    <label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="20" type="text" value="" /><br />
-    <label class="tab" for="cas_serveur_url_login">URL Login <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/login'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_login" name="cas_serveur_url_login" size="60" type="text" value="" /><br />
-    <label class="tab" for="cas_serveur_url_logout">URL Logout <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/logout'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_logout" name="cas_serveur_url_logout" size="60" type="text" value="" /><br />
-    <label class="tab" for="cas_serveur_url_validate">URL Validate <img alt="" src="./_img/bulle_aide.png" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/serviceValidate'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_validate" name="cas_serveur_url_validate" size="60" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="40" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="En général 443.<br />Parfois 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="20" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_url_login">URL Login <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/login'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_login" name="cas_serveur_url_login" size="60" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_url_logout">URL Logout <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/logout'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_logout" name="cas_serveur_url_logout" size="60" type="text" value="" /><br />
+    <label class="tab" for="cas_serveur_url_validate">URL Validate <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Par défaut, laisser le champ vide.<br />Dans ce cas, construit sur le modèle 'https://[domaine]:[port]/[chemin]/serviceValidate'.<br />Indiquer une autre URL pour surcharger ce chemin automatique." /> :</label><input id="cas_serveur_url_validate" name="cas_serveur_url_validate" size="60" type="text" value="" /><br />
   </div>
   <div id="gepi_options" class="hide">
-    <label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="" /><br />
-    <label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="" /><br />
-    <label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="" /><br />
+    <label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="" /><br />
+    <label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="" /><br />
+    <label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="" /><br />
   </div>
   <div id="cas_domaine" class="hide">
-    <label class="tab" for="serveur_host_subdomain">Domaine <img alt="" src="./_img/bulle_aide.png" title="Indiquer le sous-domaine, par exemple<br />clg-truc (pour CEL ou ENOE)<br />icart.clg16-truc (pour i-Cart!)" /> :</label><input id="serveur_host_subdomain" name="serveur_host_subdomain" size="30" type="text" value="" /> . <input id="serveur_host_domain" name="serveur_host_domain" size="20" type="text" value="" readonly />
+    <label class="tab" for="serveur_host_subdomain">Domaine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le sous-domaine, par exemple<br />clg-truc (pour CEL ou ENOE)<br />icart.clg16-truc (pour i-Cart!)" /> :</label><input id="serveur_host_subdomain" name="serveur_host_subdomain" size="30" type="text" value="" /> . <input id="serveur_host_domain" name="serveur_host_domain" size="20" type="text" value="" readonly />
   </div>
   <p><span class="tab"></span><button id="bouton_valider_mode" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg_mode">&nbsp;</label></p>
 </fieldset></form>
@@ -175,7 +175,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 <div id="info_conv_etabl" class="hide">
   <p class="astuce">
     La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.<br />
-    Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" class="lien_ext">la documentation</a> pour davantage d'explications.
+    Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" target="_blank">la documentation</a> pour davantage d'explications.
   </p>
   <table id="table_action" class="form hsort">
     <thead>
@@ -267,7 +267,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   <h2>Récupérer / Imprimer les documents associés</h2>
   <p class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</p>
   <ul class="puce">
-    <li><a id="fichier_contrat" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
-    <li><a id="fichier_facture" class="lien_ext" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_contrat" target="_blank" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_facture" target="_blank" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
   </ul>
 </form>

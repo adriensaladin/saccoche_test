@@ -135,7 +135,7 @@ if($ACTION=='initialiser')
       elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet )))
       {
         $_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" class="lien_ext">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
+        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
       }
       else
       {
@@ -207,8 +207,8 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
   }
   echo'<ul class="puce">';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>';
-  echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>';
+  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>';
+  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>';
   echo'</ul>';
   unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
   exit();

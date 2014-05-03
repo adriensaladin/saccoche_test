@@ -322,7 +322,6 @@ $(document).ready
               $('#export_file_saisir_tableau_scores_csv'   ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
               $('#export_file_saisir_tableau_scores_vierge').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
               colorer_cellules();
-              format_liens('#table_saisir');
               $('#radio_'+memo_pilotage).click();
               $('#arrow_continue_'+memo_direction).click();
               nb_colonnes = $('#table_saisir thead th').length;
@@ -404,7 +403,6 @@ $(document).ready
               $('#ajax_msg_voir').removeAttr("class").html('&nbsp;');
               $('#table_voir').html(tab_response[0]);
               $('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-              format_liens('#table_voir');
               $('#export_file_voir_tableau_scores_csv'    ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
               $('#export_file_voir_tableau_scores_vierge' ).attr("href", url_export+'tableau_sans_notes_'           +tab_response[1]+'.pdf' );
               $('#export_file_voir_tableau_scores_couleur').attr("href", url_export+'tableau_avec_notes_couleur_'   +tab_response[1]+'.pdf' );
@@ -556,7 +554,6 @@ $(document).ready
               // Afficher la zone
               $('#table_voir_repart1').html(tab_response[0]);
               $('#table_voir_repart2').html(tab_response[1]);
-              format_liens('#zone_voir_repart');
               $('#export_voir_repart_quantitative_couleur').attr("href", url_export+'repartition_quantitative_couleur_'+tab_response[2]+'.pdf' );
               $('#export_voir_repart_quantitative_gris'   ).attr("href", url_export+'repartition_quantitative_monochrome_'+tab_response[2]+'.pdf' );
               $('#export_voir_repart_nominative_couleur'  ).attr("href", url_export+'repartition_nominative_couleur_'+tab_response[2]+'.pdf' );
@@ -984,7 +981,6 @@ $(document).ready
               {
                 $('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
                 $('#zone_imprimer_retour').html(responseHTML);
-                format_liens('#zone_imprimer_retour');
               }
             }
           }

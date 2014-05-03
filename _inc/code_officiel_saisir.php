@@ -303,7 +303,7 @@ $affichage_assiduite = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'
 if( $affichage_assiduite && $eleve_id )
 {
   $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_assiduite( $periode_id , $eleve_id );
-  $tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'non_justifie' => NULL , 'retard' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'non_justifie' => $DB_ROW['assiduite_non_justifie'] , 'retard' => $DB_ROW['assiduite_retard'] ) ;
+  $tab_assiduite[$eleve_id] = (empty($DB_ROW)) ? array( 'absence' => NULL , 'absence_nj' => NULL , 'retard' => NULL , 'retard_nj' => NULL ) : array( 'absence' => $DB_ROW['assiduite_absence'] , 'absence_nj' => $DB_ROW['assiduite_absence_nj'] , 'retard' => $DB_ROW['assiduite_retard'] , 'retard_nj' => $DB_ROW['assiduite_retard_nj'] ) ;
 }
 
 // Récupérer les professeurs principaux

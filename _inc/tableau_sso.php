@@ -236,17 +236,7 @@ $tab_connexion_info['gepi']['|saml']                         = array( 'txt'=>"S'
 unset( $tab_csv_format , $tab_saml_param );
 
 /*
-
-Toutatice DEV
-$tab_serveur_cas['toutatice']              = array( 'serveur_host'=>'pp.toutatice.fr'                        , 'serveur_port'=> 443 , 'serveur_root'=>'casshib/shib/toutatice' , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'https://www.toutatice.fr/casshib/shib/666666/serviceValidate' );
-
 Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/
-
-$tab_connexion_info['cas'][ '|ent_75']           = array('txt'=>'' , 'etat'=>1 , 'societe'=>'ItsLearning'         , 'serveur_host'=>'cas.paris.fr'                               , 'serveur_port'=> 443 , 'serveur_root'=>'cas-ent75'        , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>4 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Paris (département 75)." );
-$tab_connexion_info['cas'][ '|cartableenligne']  = array( 'txt'=>"' , 'etat'=>1 , 'societe'=>NULL                 , 'serveur_host'=>'A-CHANGER.ac-creteil.fr'                    , 'serveur_port'=>8443 , 'serveur_root'=>''                 , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Cartable en ligne de Créteil (EnvOLE Scribe)." );
-$tab_connexion_info['cas'][ '|place-test']       = array( 'txt'=>"' , 'etat'=>1 , 'societe'=>'iTOP'               , 'serveur_host'=>'www.preprod.place.e-lorraine.net'           , 'serveur_port'=> 443 , 'serveur_root'=>'cas'              , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Test Place (iTOP)." );
-$tab_connexion_info['cas'][ '|scolastance-test'] = array( 'txt'=>"' , 'etat'=>1 , 'societe'=>'ItsLearning'        , 'serveur_host'=>'preprod-cas.scolastance.com'                , 'serveur_port'=> 443 , 'serveur_root'=>'cas-recette1_616' , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Test Scolastance." );
-$tab_connexion_info['cas'][ '|logica-test']      = array( 'txt'=>"' , 'etat'=>1 , 'societe'=>'Logica / CGI'       , 'serveur_host'=>'projets2-eta.fr.logica.com'                 , 'serveur_port'=> 443 , 'serveur_root'=>'connexion'        , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    , 'txt'=>"ENT Test Logica (Celia, Lilie)." );
 
 https://cas.scolastance.com/cas-asp
 https://cas.scolastance.com/cas-ent74      http://ent74.scolastance.com/etablissements.aspx

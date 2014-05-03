@@ -434,12 +434,12 @@ if($action=='imprimer_donnees_eleves_moyennes')
 
 $fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf','F');
-echo'<a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
+echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')
 {
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($releve_CSV) );
-  echo'<br />'.NL.'<a class="lien_ext" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
+  echo'<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
 }
 exit();
 

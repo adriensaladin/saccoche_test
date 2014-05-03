@@ -32,7 +32,7 @@ $TITRE = "Niveaux";
 $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_niveaux' /*optgroup*/);
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTAGE_MAX.';';
+Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTAGE_MAX.';' );
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux</a></span></div>

@@ -96,7 +96,7 @@ else
   <fieldset id="lost_structure" class="hide">
     <div class="astuce">Le mot de passe, crypté, ne peut pas être renvoyé en cas d'oubli.</div>
     <ul class="puce">
-      <li class="p">Si vous aviez renseigné une adresse de courriel, alors indiquez-la pour obtenir de nouveaux identifiants :<br /><input id="f_courriel_lost" name="f_courriel" type="text" value="" size="30" maxlength="63" /> <button id="submit_lost" type="button" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_lost">&nbsp;</label></li>
+      <li class="p">Si vous aviez renseigné une adresse de courriel, alors <label for="f_courriel_lost">indiquez-la pour obtenir de nouveaux identifiants</label> :<br /><input id="f_courriel_lost" name="f_courriel" type="text" value="" size="30" maxlength="63" /> <button id="submit_lost" type="button" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_lost">&nbsp;</label></li>
       <li class="p">Sinon, suivre selon votre profil <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__identifiants#toggle_oubli_mdp">la procédure décrite dans la documentation</a></span>.</li>
     </ul>
   </fieldset>
@@ -105,7 +105,7 @@ else
     <p>En cas de perte de ce mot de passe, suivre <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__identifiants#toggle_oubli_mdp">la procédure décrite dans la documentation</a></span>.</p>
   </div>
   <div id="lost_partenaire" class="hide">
-    <p>Oh, sérieusement ?! Alors contactez Sésamath...</p> <!-- Les personnes concernées se comptent sur le doigt de la main et sauront nous trouver si besoin ! -->
+    <p>Oh, sérieusement ?! Alors contactez Sésamath...</p><?php /* Les personnes concernées se comptent sur le doigt de la main et sauront nous trouver si besoin ! */ ?>
   </div>
   <div id="lost_confirmation" class="hide">
     <p><label class="valide">Courriel envoyé à l'adresse indiquée : consultez votre boite aux lettres électronique.</label></p>
@@ -118,15 +118,15 @@ else
 <h1 class="hebergement">Hébergement</h1>
 <ul class="puce">
   <li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
-  <li><a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
+  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a target="_blank" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
+  <li><a target="_blank" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 
 <hr />
 
 <h1 class="informations">Informations</h1>
 <ul class="puce">
-  <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a class="lien_ext" href="<?php echo SERVEUR_ASSO ?>"><em>Sésamath</em></a>.</li>
-  <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
+  <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a target="_blank" href="<?php echo SERVEUR_ASSO ?>"><em>Sésamath</em></a>.</li>
+  <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" target="_blank">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
   <li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version"></label></li>
 </ul>

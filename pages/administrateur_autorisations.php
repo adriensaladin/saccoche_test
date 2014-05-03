@@ -32,8 +32,8 @@ $TITRE = "Réglage des autorisations";
 $tab_profils_libelles = array();
 $tab_profil_join_groupes  = array();
 $tab_profil_join_matieres = array();
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_profil_join_groupes  = new Array();';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_profil_join_matieres = new Array();';
+Layout::add( 'js_inline_before' , 'var tab_profil_join_groupes  = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_profil_join_matieres = new Array();' );
 
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_court_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
 $DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_COORD' , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />coordonnateurs<br />matières' );
@@ -45,11 +45,11 @@ foreach($DB_TAB as $DB_ROW)
   $is_profil_join_groupe = ( ($DB_ROW['user_profil_type']=='professeur') && ($DB_ROW['user_profil_join_groupes']=='config') ) ? TRUE : FALSE ;
   $tab_profil_join_groupes[$DB_ROW['user_profil_sigle']] = $is_profil_join_groupe;
   $is_profil_join_groupe = ($is_profil_join_groupe) ? 'true' : 'false' ;
-  $GLOBALS['HEAD']['js']['inline'][] = 'tab_profil_join_groupes["'.$DB_ROW['user_profil_sigle'].'" ] = '.$is_profil_join_groupe.';';
+  Layout::add( 'js_inline_before' , 'tab_profil_join_groupes["'.$DB_ROW['user_profil_sigle'].'" ] = '.$is_profil_join_groupe.';' );
   $is_profil_join_matiere = ( ($DB_ROW['user_profil_type']=='professeur') && ($DB_ROW['user_profil_join_matieres']=='config') ) ? TRUE : FALSE ;
   $tab_profil_join_matieres[$DB_ROW['user_profil_sigle']] = $is_profil_join_matiere;
   $is_profil_join_matiere = ($is_profil_join_matiere) ? 'true' : 'false' ;
-  $GLOBALS['HEAD']['js']['inline'][] = 'tab_profil_join_matieres["'.$DB_ROW['user_profil_sigle'].'"] = '.$is_profil_join_matiere.';';
+  Layout::add( 'js_inline_before' , 'tab_profil_join_matieres["'.$DB_ROW['user_profil_sigle'].'"] = '.$is_profil_join_matiere.';' );
 }
 
 // Tableau avec les sigles des profils pouvant être proposés, ou à cocher par défaut
@@ -68,7 +68,7 @@ $tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
 $tab_profils_possibles['personne']     = array();
 
 // Tableau avec les infos (titres, profils, options par défaut)
-$bulle_fiche_brevet = ' <img alt="" src="./_img/bulle_aide.png" title="Avis du conseil de classe (“doit faire ses preuves” ou “favorable”).<br />Avis circonstancié du chef d’établissement." />';
+$bulle_fiche_brevet = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Avis du conseil de classe (“doit faire ses preuves” ou “favorable”).<br />Avis circonstancié du chef d’établissement." />';
 $tab_droits  = array
 (
   "Mot de passe" => array
@@ -174,7 +174,7 @@ $tab_droits  = array
   ),
 );
 
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_init = new Array();';
+Layout::add( 'js_inline_before' , 'var tab_init = new Array();' );
 $affichage = '';
 
 foreach($tab_droits as $titre => $tab_infos_paragraphe)
@@ -197,7 +197,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
   foreach($tab_infos_paragraphe as $tab_infos_ligne)
   {
     list( $droit_key , $droit_txt , $i_profils_defaut ) = $tab_infos_ligne;
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_init["'.$droit_key.'"] = new Array();';
+    Layout::add( 'js_inline_before' , 'tab_init["'.$droit_key.'"] = new Array();' );
     $affichage .= '<tr id="tr_'.$droit_key.'"><th>'.$droit_txt.'</th>';
     $tab_check = explode(',',$_SESSION[strtoupper($droit_key)]);
     $check_pp    = (in_array('ONLY_PP'   ,$tab_check)) ? TRUE : FALSE ;
@@ -208,7 +208,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
       if(isset($tab_profils_libelles[$profil_sigle]))
       {
         $init = in_array($profil_sigle,$tab_profils_possibles[$i_profils_defaut]) ? 'true' : 'false' ;
-        $GLOBALS['HEAD']['js']['inline'][] = 'tab_init["'.$droit_key.'"]["'.$profil_sigle.'"] = '.$init.';';
+        Layout::add( 'js_inline_before' , 'tab_init["'.$droit_key.'"]["'.$profil_sigle.'"] = '.$init.';' );
         $checked = (in_array($profil_sigle,$tab_check)) ? ' checked' : '' ;
         $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) || ($check_lv && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
         $affichage .= '<td class="hc '.$color.'"><input type="checkbox" name="'.$droit_key.'" value="'.$profil_sigle.'"'.$checked.' /></td>';

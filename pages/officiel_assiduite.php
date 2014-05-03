@@ -58,7 +58,7 @@ $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_eta
 $select_groupe  = Form::afficher_select($tab_groupes                                 , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql = "'.TODAY_MYSQL.'";';
+Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
@@ -69,7 +69,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
 
 <h2>Import de fichier</h2>
 <form action="#" method="post" id="form_fichier">
-  <!-- Pour la gestion de plusieurs imports, prendre modèle sur les fichiers validation_socle_fichier.* -->
+  <?php /* Pour la gestion de plusieurs imports, prendre modèle sur les fichiers validation_socle_fichier.* */ ?>
   <p>
     <label class="tab" for="f_periode_import">Période :</label><select id="f_periode_import" name="f_periode_import"><?php echo $select_periode ?></select><br />
     <label class="tab" for="f_choix_principal">Origine :</label>
@@ -122,8 +122,8 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
     <b id="titre_saisir"></b>
   </p>
   <table id="table_saisir" class="bilan">
-    <thead><tr><th>Élève</th><th>Absences<br />nb &frac12; journées</th><th>dont &frac12; journées<br />non justifiées</th><th>Nb retards</th></tr></thead>
-    <tbody><tr><td colspan="4"></td></tr></tbody>
+    <thead><tr><th>Élève</th><th>Absences<br />nb &frac12; journées</th><th>dont &frac12; journées<br />non justifiées</th><th>Nb retards</th><th>dont retards<br />non justifiés</th></tr></thead>
+    <tbody><tr><td colspan="5"></td></tr></tbody>
   </table>
   <form action="#" method="post">
     <p>

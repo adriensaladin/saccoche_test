@@ -65,17 +65,17 @@ elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))  // si 
 }
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_methode          = "'.$_SESSION['CALCUL_METHODE'].'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_limite           = "'.$_SESSION['CALCUL_LIMITE'].'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_retroactif       = "'.$_SESSION['CALCUL_RETROACTIF'].'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var calcul_texte            = "'.$calcul_texte.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var ID_NIVEAU_PARTAGE_MAX   = '.ID_NIVEAU_PARTAGE_MAX.';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_partage_etat      = new Array();';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_methode    = new Array();';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_limite     = new Array();';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_calcul_retroactif = new Array();';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_information       = new Array();';
+Layout::add( 'js_inline_before' , 'var calcul_methode          = "'.$_SESSION['CALCUL_METHODE'].'";' );
+Layout::add( 'js_inline_before' , 'var calcul_limite           = "'.$_SESSION['CALCUL_LIMITE'].'";' );
+Layout::add( 'js_inline_before' , 'var calcul_retroactif       = "'.$_SESSION['CALCUL_RETROACTIF'].'";' );
+Layout::add( 'js_inline_before' , 'var calcul_texte            = "'.$calcul_texte.'";' );
+Layout::add( 'js_inline_before' , 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PARTAGEE_MAX.';' );
+Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX   = '.ID_NIVEAU_PARTAGE_MAX.';' );
+Layout::add( 'js_inline_before' , 'var tab_partage_etat      = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_calcul_methode    = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_calcul_limite     = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_calcul_retroactif = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_information       = new Array();' );
 ?>
 
 <form action="#" method="post" id="form_instance">
@@ -133,7 +133,7 @@ else
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
     if(!empty($DB_TAB))
     {
-      $GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
+      Layout::add( 'js_inline_before' , '// <![CDATA[' );
       foreach($DB_TAB as $DB_ROW)
       {
         // Définition de $methode_calcul_texte
@@ -164,13 +164,13 @@ else
           $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières '.$texte_retroactif.'.';
         }
         $tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
-        $GLOBALS['HEAD']['js']['inline'][] = '     tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_partage_etat'].'";';
-        $GLOBALS['HEAD']['js']['inline'][] = '   tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_methode'].'";';
-        $GLOBALS['HEAD']['js']['inline'][] = '    tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_limite'].'";';
-        $GLOBALS['HEAD']['js']['inline'][] = 'tab_calcul_retroactif["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_retroactif'].'";';
-        $GLOBALS['HEAD']['js']['inline'][] = '      tab_information["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.str_replace('"','\"',$DB_ROW['referentiel_information']).'";';
+        Layout::add( 'js_inline_before' , '     tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_partage_etat'].'";' );
+        Layout::add( 'js_inline_before' , '   tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_methode'].'";' );
+        Layout::add( 'js_inline_before' , '    tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_limite'].'";' );
+        Layout::add( 'js_inline_before' , 'tab_calcul_retroactif["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_retroactif'].'";' );
+        Layout::add( 'js_inline_before' , '      tab_information["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.str_replace('"','\"',$DB_ROW['referentiel_information']).'";' );
       }
-      $GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
+      Layout::add( 'js_inline_before' , '// ]]>' );
     }
     // Construction du formulaire select du nombre de demandes
     $select_demandes = '<select name="f_eleve_demandes" class="t9">';
@@ -180,7 +180,7 @@ else
       $select_demandes .= '<option value="'.$nb_demandes.'">'.$texte.'</option>';
     }
     $select_demandes .= '</select>';
-    $infobulle = ' <img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
+    $infobulle = ' <img src="./_img/bulle_aide.png" width="16" height="16" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
     $label = '<label>&nbsp;</label>';
     // On construit et affiche les tableaux résultants
     foreach($tab_matiere as $matiere_id => $tab)
@@ -272,7 +272,7 @@ $select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_fami
     <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option value="0">Tous les niveaux</option></select>
   </p>
   <fieldset>
-    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
+    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
     <span class="tab"></span><button id="rechercher" type="button" class="rechercher">Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label><br />
     <span class="tab"></span><button id="rechercher_annuler" type="button" class="annuler">Annuler la recherche d'un référentiel.</button>
   </fieldset>
@@ -330,7 +330,7 @@ foreach($tab_options as $val)
       </select>
     </div>
     <div id="ligne_information">
-      <label class="tab" for="f_information"><img alt="" src="./_img/bulle_aide.png" title="Ce commentaire sera visible dans le resultat d'une recherche de référentiels partagés.<br />Champ facultatif, à utiliser avec parcimonie : complétez-le seulement pour apporter un éclairage particulier." /> Commentaire :</label><input id="f_information" name="f_information" type="text" size="80" maxlength="120" />
+      <label class="tab" for="f_information"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Ce commentaire sera visible dans le resultat d'une recherche de référentiels partagés.<br />Champ facultatif, à utiliser avec parcimonie : complétez-le seulement pour apporter un éclairage particulier." /> Commentaire :</label><input id="f_information" name="f_information" type="text" size="80" maxlength="120" />
     </div>
   </div>
   <div id="gestion_calculer">

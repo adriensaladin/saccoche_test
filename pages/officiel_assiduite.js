@@ -416,7 +416,7 @@ $(document).ready
           function()
           {
             var user_id = $(this).attr('id').substring(3);
-            tab_infos.push( user_id + '.' + $('#td1_'+user_id).val() + '.' + $('#td2_'+user_id).val() + '.' + $('#td3_'+user_id).val() );
+            tab_infos.push( user_id + '.' + $('#td1_'+user_id).val() + '.' + $('#td2_'+user_id).val() + '.' + $('#td3_'+user_id).val() + '.' + $('#td4_'+user_id).val() );
           }
         );
         $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");

@@ -83,7 +83,7 @@ $(document).ready
               $('#go_selection_eleve option[value='+eleve_info+']').prop('selected',true);
               masquer_element_navigation_choix_eleve();
               $('#ajax_msg').removeAttr("class").html('');
-              $('#zone_resultat_eleve h4').html( $('#m_'+eleve_info).children('img').attr('title') );
+              $('#zone_resultat_eleve h3').html( $('#m_'+eleve_info).children('img').attr('title') );
               $('#zone_resultat_eleve table tbody').html(responseHTML);
             }
           }

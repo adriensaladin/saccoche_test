@@ -552,7 +552,6 @@ $(document).ready
               else
               {
                 $('#ajax_msg_archiver_imprimer').removeAttr("class").html(responseHTML);
-                format_liens('#ajax_msg_archiver_imprimer');
               }
             }
           }
@@ -596,8 +595,7 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<h4>Test impression PDF finale</h4><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a class="lien_ext" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
-                format_liens('#imprimer_liens');
+                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
               }
             }
           }
@@ -998,8 +996,7 @@ $(document).ready
                 $('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
               }
               $('#ajax_msg_imprimer').removeAttr("class").html("");
-              $.fancybox( '<h4>Bilans PDF imprimés</h4>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseHTML+'</div>' , {'centerOnScroll':true} );
-              format_liens('#imprimer_liens');
+              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseHTML+'</div>' , {'centerOnScroll':true} );
             }
           }
         }
@@ -1062,7 +1059,6 @@ $(document).ready
               $('#zone_'+memo_objet+' table tbody').html(responseHTML);
               $('#ajax_msg_'+memo_objet).removeAttr("class").html("");
               $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-              format_liens('#zone_voir_archive');
             }
           }
         }

@@ -271,7 +271,7 @@ $(document).ready
               {
                 $('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
                 // séparer lignes de résultat et légende
-                var position_legende = responseHTML.lastIndexOf('<h4>');
+                var position_legende = responseHTML.lastIndexOf('<h3>');
                 if(position_legende==-1)
                 {
                   var html_tableau = responseHTML;
@@ -284,7 +284,6 @@ $(document).ready
                 }
                 $('#table_voir tbody').html(html_tableau);
                 $('#report_legende'  ).html(html_legende);
-                format_liens('#table_voir');
                 tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );
               }
@@ -340,7 +339,6 @@ $(document).ready
                 $('#msg_saisir').removeAttr("class").html("");
                 $('#f_devoir').val(devoir_id);
                 $('#table_saisir tbody').html(responseHTML);
-                format_liens('#table_saisir');
                 tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_saisir' , onStart:function(){$('#zone_eval_saisir').css("display","block");} , onClosed:function(){$('#zone_eval_saisir').css("display","none");} , 'margin':0 , 'modal':true , 'centerOnScroll':true } );
               }

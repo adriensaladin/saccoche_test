@@ -77,7 +77,7 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       echo  '<td>'.html($DB_ROW['user_sconet_id']).'</td>';
       echo  '<td>'.html($DB_ROW['user_sconet_elenoet']).'</td>';
       echo  '<td>'.html($DB_ROW['user_reference']).'</td>';
-      echo  '<td>'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+      echo  '<td>'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
       echo  '<td>'.html($DB_ROW['user_nom']).'</td>';
       echo  '<td>'.html($DB_ROW['user_prenom']).'</td>';
       echo  '<td>'.html($DB_ROW['user_login']).'</td>';
@@ -184,7 +184,7 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && $login && ($bo
   echo'<td>'.html($sconet_id).'</td>';
   echo'<td>'.html($sconet_num).'</td>';
   echo'<td>'.html($reference).'</td>';
-  echo'<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
+  echo'<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
   echo'<td>'.html($nom).'</td>';
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';

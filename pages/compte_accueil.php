@@ -88,7 +88,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   if($alerte_novice)
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['alert']['contenu'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['alert']['contenu'] .= '<p><span class="manuel"><a target="_blank" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
 }
 
@@ -178,7 +178,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
           list($departement,$connexion_nom) = explode('|',$connexion_ref);
           if(isset($tab_connecteurs_convention[$connexion_ref]))
           {
-            $texte_ent_possibles .= '<br /><a class="lien_ext" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
+            $texte_ent_possibles .= '<br /><a target="_blank" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
           }
         }
       }
@@ -188,12 +188,12 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   if(!$tab_accueil['alert']['contenu'])
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
   if( $info_rentree || test_periode_rentree() )
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a class="lien_ext" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
   if( test_periode_sortie() )
   {
@@ -235,7 +235,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
     {
       $masque_recherche = '#\[([^\|]+)\|([^\|]+)\|([^\|]*)\]#' ;
       $masque_remplacement = '<a href="$2" target="$3">$1</a>';
-      return str_replace( array('target="_blank"','target=""') , array('class="lien_ext"','') , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
+      return str_replace( array('target="_blank"','target=""') , array('target="_blank"','') , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
     }
     foreach($DB_TAB as $key => $DB_ROW)
     {
@@ -504,8 +504,8 @@ foreach($tab_accueil as $type => $tab_type_infos)
       $info_nombre = ($nombre) ? ' <span class="fluo g">('.$nombre.')</span>' : '' ;
       $class_moins = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)!==FALSE) ? '' : ' hide' ;
       $class_plus  = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)===FALSE) ? '' : ' hide' ;
-      $toggle_moins = '<a href="#toggle_accueil" class="to_'.$type.'"><img src="./_img/toggle_moins.gif" alt="" title="Masquer" /></a>';
-      $toggle_plus  = '<div id="'.$type.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_accueil" class="to_'.$type.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir" /> '.$masque.'</a>'.$info_nombre.'</div>';
+      $toggle_moins = '<a href="#toggle_'.$type.'" class="toggle_moins" title="Masquer"></a>';
+      $toggle_plus  = '<div id="'.$type.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_'.$type.'" class="toggle_plus" title="Voir"></a> '.$masque.''.$info_nombre.'</div>';
     }
     else
     {
@@ -519,8 +519,8 @@ foreach($tab_accueil as $type => $tab_type_infos)
     {
       $class_moins = ( $tab_donnees_rubrique['visible']) ? '' : ' hide' ;
       $class_plus  = (!$tab_donnees_rubrique['visible']) ? '' : ' hide' ;
-      $toggle_moins = '<a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_moins.gif" alt="" title="Masquer" /></a>';
-      $toggle_plus  = '<div id="'.$type.$message_id.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_accueil" class="to_'.$type.$message_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir" /> '.$tab_donnees_rubrique['titre'].'</a></div>';
+      $toggle_moins = '<a href="#toggle_'.$type.$message_id.'" class="toggle_moins" title="Masquer"></a>';
+      $toggle_plus  = '<div id="'.$type.$message_id.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_'.$type.$message_id.'" class="toggle_plus" title="Voir"></a> '.$tab_donnees_rubrique['titre'].'</div>';
       echo $toggle_plus.'<div id="'.$type.$message_id.'_moins" class="p accueil64 '.$type.'64'.$class_moins.'">'.'<p><span class="b">'.$toggle_moins.' '.$tab_donnees_rubrique['titre'].'</span></p>'.'<p>'.$tab_donnees_rubrique['message'].'</p>'.'</div>'.NL.'<hr />'.NL;
     }
   }

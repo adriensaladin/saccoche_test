@@ -130,7 +130,7 @@ if($action=='tester_version')
   {
     // Compte approximativement le nombre de mois qui sépare ces 2 versions (sans s'occuper des jours).
     $class = ( (substr($version_last,0,4)-substr(VERSION_PROG,0,4))*12 - substr($version_last,5,2) + substr(VERSION_PROG,5,2) < 12 ) ? '' : ' class="probleme"' ;
-    $tab_retour = array( 'class'=>'alerte' , 'texte'=>'<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' , 'after' => ' &rarr; <a class="lien_ext" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' );
+    $tab_retour = array( 'class'=>'alerte' , 'texte'=>'<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' , 'after' => ' &rarr; <a target="_blank" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' );
   }
   exit_json( TRUE , $tab_retour );
 }

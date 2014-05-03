@@ -331,7 +331,6 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
-        format_liens('#bilan');
       }
       else
       {

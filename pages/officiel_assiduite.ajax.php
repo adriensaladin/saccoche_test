@@ -128,13 +128,13 @@ if( ($action=='import_gepi') && $periode_id )
     $tab_elements = array_slice($tab_elements,0,7);
     if(count($tab_elements)==7)
     {
-      list($elenoet,$nom,$prenom,$classe,$nb_absence,$nb_non_justifie,$nb_retard) = $tab_elements;
+      list($elenoet,$nom,$prenom,$classe,$nb_absence,$nb_absence_nj,$nb_retard) = $tab_elements;
       $tab_users_fichier[] = array(
         Clean::entier($elenoet),
         Clean::nom($nom),
         Clean::prenom($prenom),
         Clean::entier($nb_absence),
-        Clean::entier($nb_non_justifie),
+        Clean::entier($nb_absence_nj),
         Clean::entier($nb_retard),
       );
     }
@@ -179,12 +179,12 @@ if( in_array($action,array('traitement_import_siecle','traitement_import_gepi'))
   $lignes_ko = '';
   foreach ($tab_users_fichier as $tab_donnees_eleve)
   {
-    list($eleve_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_non_justifie,$nb_retard) = $tab_donnees_eleve;
+    list($eleve_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_absence_nj,$nb_retard) = $tab_donnees_eleve;
     if(isset($tab_users_base[$eleve_elenoet]))
     {
       $user_id = $tab_users_base[$eleve_elenoet];
-      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard);
-      $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_non_justifie.'</td><td>'.$nb_retard.'</td></tr>';
+      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , NULL /* nb_retard_nj */ );
+      $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_absence_nj.'</td><td>'.$nb_retard.'</td><td></td></tr>';
     }
     else
     {
@@ -218,9 +218,10 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_assiduite[$DB_ROW['user_id']] = array(
-      'absence'      => $DB_ROW['assiduite_absence'],
-      'non_justifie' => $DB_ROW['assiduite_non_justifie'],
-      'retard'       => $DB_ROW['assiduite_retard'],
+      'absence'    => $DB_ROW['assiduite_absence'],
+      'absence_nj' => $DB_ROW['assiduite_absence_nj'],
+      'retard'     => $DB_ROW['assiduite_retard'],
+      'retard_nj'  => $DB_ROW['assiduite_retard_nj'],
     );
   }
   // affichage du tableau
@@ -229,15 +230,16 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
   {
     if(isset($tab_assiduite[$user_id]))
     {
-      $nb_absence      = is_null($tab_assiduite[$user_id]['absence'])      ? '' : (int)$tab_assiduite[$user_id]['absence'] ;
-      $nb_non_justifie = is_null($tab_assiduite[$user_id]['non_justifie']) ? '' : (int)$tab_assiduite[$user_id]['non_justifie'] ;
-      $nb_retard       = is_null($tab_assiduite[$user_id]['retard'])       ? '' : (int)$tab_assiduite[$user_id]['retard'] ;
+      $nb_absence    = is_null($tab_assiduite[$user_id]['absence'])    ? '' : (int)$tab_assiduite[$user_id]['absence'] ;
+      $nb_absence_nj = is_null($tab_assiduite[$user_id]['absence_nj']) ? '' : (int)$tab_assiduite[$user_id]['absence_nj'] ;
+      $nb_retard     = is_null($tab_assiduite[$user_id]['retard'])     ? '' : (int)$tab_assiduite[$user_id]['retard'] ;
+      $nb_retard_nj  = is_null($tab_assiduite[$user_id]['retard_nj'])  ? '' : (int)$tab_assiduite[$user_id]['retard_nj'] ;
     }
     else
     {
-      $nb_absence = $nb_non_justifie = $nb_retard = '' ;
+      $nb_absence = $nb_absence_nj = $nb_retard = $nb_retard_nj = '' ;
     }
-    $lignes .= '<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_non_justifie.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td></tr>';
+    $lignes .= '<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_absence_nj.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td><td><input type="text" size="3" maxlength="3" id="td4_'.$user_id.'" value="'.$nb_retard_nj.'" /></td></tr>';
   }
   exit($lignes);
 }
@@ -252,12 +254,13 @@ if( ($action=='enregistrer_saisies') && $periode_id && $datas )
   $tab_eleves = explode('_',$datas);
   foreach($tab_eleves as $eleves_infos)
   {
-    list($user_id,$nb_absence,$nb_non_justifie,$nb_retard) = explode('.',$eleves_infos);
-    $user_id        = (int)$user_id;
-    $nb_absence      = ($nb_absence==='')      ? NULL : (int)$nb_absence ;
-    $nb_non_justifie = ($nb_non_justifie==='') ? NULL : (int)$nb_non_justifie ;
-    $nb_retard       = ($nb_retard==='')       ? NULL : (int)$nb_retard ;
-    DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_non_justifie,$nb_retard);
+    list($user_id,$nb_absence,$nb_absence_nj,$nb_retard,$nb_retard_nj) = explode('.',$eleves_infos);
+    $user_id       = (int)$user_id;
+    $nb_absence    = ($nb_absence==='')    ? NULL : (int)$nb_absence ;
+    $nb_absence_nj = ($nb_absence_nj==='') ? NULL : (int)$nb_absence_nj ;
+    $nb_retard     = ($nb_retard==='')     ? NULL : (int)$nb_retard ;
+    $nb_retard_nj  = ($nb_retard_nj==='')  ? NULL : (int)$nb_retard_nj ;
+    DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
   }
   exit('ok');
 }

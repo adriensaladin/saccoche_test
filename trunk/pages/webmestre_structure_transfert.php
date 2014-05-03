@@ -59,7 +59,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
   <p id="zone_actions_export" class="hide">
     <label class="alerte">Ces deux fichiers sont nécessaires pour toute importation ; vérifiez leur validité une fois récupérés.</label><br />
     <label class="alerte">Pour des raisons de sécurité et de confidentialité, ces fichiers seront effacés du serveur dans 1h.</label><br />
-    Pour les structures sélectionnées : <!-- input listing_ids plus bas -->
+    Pour les structures sélectionnées :<?php /* input listing_ids plus bas */ ?>
     <button id="bouton_newsletter_export" type="button" class="mail_ecrire">Écrire un courriel.</button>
     <button id="bouton_stats_export" type="button" class="stats">Calculer les statistiques.</button>
     <button id="bouton_supprimer_export" type="button" class="supprimer">Supprimer.</button>

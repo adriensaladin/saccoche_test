@@ -33,7 +33,7 @@ $TITRE = "Notation : codes, couleurs, légendes";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
 
 $dossier = './_img/note/';
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_notes_txt = new Array();';
+Layout::add( 'js_inline_before' , 'var tab_notes_txt = new Array();' );
 
 $simulation_lignes = array('','','','','');
 foreach($tab_notes_info as $note_code => $tab_note_info)
@@ -46,11 +46,11 @@ foreach($tab_notes_info as $note_code => $tab_note_info)
     $simulation_lignes[2] .=   '<td><img alt="'.$tab_note_info['R' ].'" src="'.$dossier.$note_code.'/h/R.gif"  /><br />'.$tab_note_info['R' ].'</td>';
     $simulation_lignes[3] .=   '<td><img alt="'.$tab_note_info['V' ].'" src="'.$dossier.$note_code.'/h/V.gif"  /><br />'.$tab_note_info['V' ].'</td>';
     $simulation_lignes[4] .=   '<td><img alt="'.$tab_note_info['VV'].'" src="'.$dossier.$note_code.'/h/VV.gif" /><br />'.$tab_note_info['VV'].'</td>';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.html($note_code).'"] = new Array();';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["RR"]="'.$tab_note_info['RR'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["R"]="'.$tab_note_info['R'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["V"]="'.$tab_note_info['V'].'";';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_notes_txt["'.$note_code.'"]["VV"]="'.$tab_note_info['VV'].'";';
+    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.html($note_code).'"] = new Array();' );
+    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["RR"]="'.$tab_note_info['RR'].'";' );
+    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["R"] ="'.$tab_note_info['R'].'";' );
+    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["V"] ="'.$tab_note_info['V'].'";' );
+    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["VV"]="'.$tab_note_info['VV'].'";' );
   }
 }
 
@@ -97,7 +97,7 @@ foreach($tab_acquis as $acquis => $class)
 
 <form action="#" method="post" id="form_acquis">
   <h2>Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende</h2>
-  <!-- Pas mis dans un tableau, sinon colorpicker bugue avec IE -->
+  <?php /* Pas mis dans un tableau, sinon colorpicker bugue avec IE */ ?>
   <?php echo $acquis_box; ?>
   <div id="colorpicker" class="hide"></div>
   <div style="clear:both"></div>

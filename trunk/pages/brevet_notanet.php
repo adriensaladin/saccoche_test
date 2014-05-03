@@ -149,9 +149,9 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 </form>
 
 <div id="ajax_info" class="hide">
-  <h4>Fichier à importer dans Notanet</h4>
+  <h3>Fichier à importer dans Notanet</h3>
   <ul class="puce">
-    <li><a id="lien_notanet" class="lien_ext" href=""><span class="file file_txt">Récupérer le fichier au format <em>txt</em>.</span></a></li>
+    <li><a id="lien_notanet" target="_blank" href=""><span class="file file_txt">Récupérer le fichier au format <em>txt</em>.</span></a></li>
   </ul>
   <p><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></p>
 </div>

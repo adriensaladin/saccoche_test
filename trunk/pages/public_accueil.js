@@ -219,10 +219,6 @@ $(document).ready
           success : function(responseJSON)
           {
             $('#ajax_version').addClass(responseJSON['class']).html(responseJSON['texte']).after(responseJSON['after']);
-            if(responseJSON['after'])
-            {
-              format_liens('#cadre_milieu');
-            }
           }
         }
       );

@@ -188,7 +188,6 @@ $(document).ready
                 $('#form_select button').prop('disabled',false);
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
                 $('#ajax_retour').html(responseHTML);
-                format_liens('#ajax_retour');
               }
             }
           }
@@ -252,7 +251,6 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html('Demande réalisée.');
                 $('#ajax_retour').html(responseHTML);
-                format_liens('#ajax_retour');
               }
             }
           }
@@ -372,7 +370,6 @@ $(document).ready
         initialiser_compteur();
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
         $('#ajax_retour').html(responseHTML);
-        format_liens('#ajax_retour');
       }
     }
 

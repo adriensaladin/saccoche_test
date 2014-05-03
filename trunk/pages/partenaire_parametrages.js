@@ -228,7 +228,6 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
         $('#resultat').html(responseHTML.substring(3,responseHTML.length));
-        format_liens('#resultat');
       }
       else
       {

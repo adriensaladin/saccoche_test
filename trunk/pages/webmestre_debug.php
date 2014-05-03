@@ -94,7 +94,7 @@ $listing_fichiers = count($tab_fichiers) ? implode('',$tab_fichiers) : '<li>Pas 
   <p class="astuce">Si des fichiers de logs phpCAS existent déjà, ils ne seront pas déplacés : penser à les supprimer avant.</p>
   <?php echo $alerte_dossier_invalide ?>
   <label class="tab" for="f_chemin_logs">Chemin</label><input type="text" size="100" id="f_chemin_logs" name="f_chemin_logs" value="<?php echo PHPCAS_CHEMIN_LOGS ?>" /><br />
-  <label class="tab" for="f_etabl_id_listing">Établissements <img alt="" src="./_img/bulle_aide.png" title="Si installation de type mono-structure, alors champ sans objet.<br />Sinon, identifiants à prendre dans la page de gestion des établissements (1e colonne).<br />Valeurs à séparer, faire précéder et terminer par des virgules.<br />Laisser le champ vide active les logs pour tous les établissements (déconseillé)." /></label><input type="text" size="100" id="f_etabl_id_listing" name="f_etabl_id_listing" value="<?php echo PHPCAS_ETABL_ID_LISTING ?>" /><br />
+  <label class="tab" for="f_etabl_id_listing">Établissements <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Si installation de type mono-structure, alors champ sans objet.<br />Sinon, identifiants à prendre dans la page de gestion des établissements (1e colonne).<br />Valeurs à séparer, faire précéder et terminer par des virgules.<br />Laisser le champ vide active les logs pour tous les établissements (déconseillé)." /></label><input type="text" size="100" id="f_etabl_id_listing" name="f_etabl_id_listing" value="<?php echo PHPCAS_ETABL_ID_LISTING ?>" /><br />
   <span class="tab"></span><button id="bouton_phpCAS" type="button" class="parametre">Enregistrer.</button><label id="ajax_phpCAS">&nbsp;</label>
 </fieldset></form>
 

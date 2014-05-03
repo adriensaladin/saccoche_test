@@ -77,7 +77,7 @@ if(!empty($DB_TAB))
 }
 // Génération de la sortie HTML (affichée directement) et de la sortie PDF (enregistrée dans un fichier)
 $fnom_pdf = 'trombinoscope_'.$_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-echo'<h2>'.html($groupe_nom).'</h2><p><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom_pdf.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a> &rarr; <span class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</span></p>';
+echo'<h2>'.html($groupe_nom).'</h2><p><a target="_blank" href="'.URL_DIR_EXPORT.$fnom_pdf.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a> &rarr; <span class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</span></p>';
 $sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 7 /*marge_bas*/ );
 $sacoche_pdf->trombinoscope_initialiser($groupe_nom);
 // On passe les élèves en revue (on a toutes les infos déjà disponibles)

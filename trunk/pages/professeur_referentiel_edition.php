@@ -95,7 +95,7 @@ else
   echo'<hr /><h2>Manipulations complémentaires</h2>'.NL;
   if(count($tab_matiere_droit))
   {
-    $GLOBALS['HEAD']['js']['inline'][] = 'var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";';
+    Layout::add( 'js_inline_before' , 'var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";' );
     echo'<p>'.NL;
     echo'<select id="select_action_groupe_choix" name="select_action_groupe">'
           .'<option value=""></option>'
@@ -155,7 +155,7 @@ else
   }
   else
   {
-    $GLOBALS['HEAD']['js']['inline'][] = 'var listing_id_matieres_autorisees = "";';
+    Layout::add( 'js_inline_before' , 'var listing_id_matieres_autorisees = "";' );
     echo'<p class="astuce">Droit d\'accès :<br />'.$texte_profil.'.</p>'.NL;
   }
 }

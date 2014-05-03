@@ -84,7 +84,7 @@ if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
   <h2>Ajouter | Modifier | Supprimer un partenaire conventionné</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_denomination">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Exemple : Académie de ..." /> :</label><input id="f_denomination" name="f_denomination" type="text" value="" size="50" maxlength="63" />
+      <label class="tab" for="f_denomination">Dénomination <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Exemple : Académie de ..." /> :</label><input id="f_denomination" name="f_denomination" type="text" value="" size="50" maxlength="63" />
     </p>
     <p>
       <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
@@ -92,7 +92,7 @@ if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
       <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="50" maxlength="63" />
     </p>
     <p>
-      <label class="tab" for="f_connecteurs">Connecteurs <img alt="" src="./_img/bulle_aide.png" title="Valeurs à prendre dans le fichier tableau_sso.php.<br />Valeurs à séparer, faire précéder et terminer par des virgules." /> :</label><input id="f_connecteurs" name="f_connecteurs" type="text" value="" size="50" maxlength="255" />
+      <label class="tab" for="f_connecteurs">Connecteurs <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Valeurs à prendre dans le fichier tableau_sso.php.<br />Valeurs à séparer, faire précéder et terminer par des virgules." /> :</label><input id="f_connecteurs" name="f_connecteurs" type="text" value="" size="50" maxlength="255" />
     </p>
   </div>
   <p id="gestion_delete">

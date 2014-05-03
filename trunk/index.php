@@ -202,104 +202,95 @@ ob_end_clean();
 Session::generer_jeton_anti_CSRF($PAGE);
 
 // Titre du navigateur
-$GLOBALS['HEAD']['title'] = 'SACoche » ';
-$GLOBALS['HEAD']['title'].= ($TITRE) ? $TITRE : 'Evaluer par compétences et valider le socle commun' ;
+$browser_title = ($TITRE) ? 'SACoche » '.$TITRE : 'SACoche » Évaluer par compétences et valider le socle commun' ;
+Layout::add( 'browser_title' , $browser_title );
 
 // Css personnalisé
-if(!empty($_SESSION['CSS'])) $GLOBALS['HEAD']['css']['inline'][] = $_SESSION['CSS'];
+if(!empty($_SESSION['CSS']))
+{
+  Layout::add( 'css_inline' , $_SESSION['CSS'] );
+}
 
-// Fichiers css & js en entête
+// Fichiers css & js
 $tab_pages_graphiques = array('brevet_fiches','officiel_accueil','releve_bilan_chronologique');
 $filename_js_normal = './pages/'.$PAGE.'.js';
 $jquery_version = ( ($_SESSION['BROWSER']['modele']!='explorer') || ($_SESSION['BROWSER']['version']>=9) ) ? '2' : '' ;
-$GLOBALS['HEAD']['css']['file'][] = compacter('./_css/style.css','mini');
-$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/jquery'.$jquery_version.'-librairies.js','comm'); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
-$GLOBALS['HEAD']['js' ]['file'][] = compacter('./_js/script.js','pack'); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
-if(in_array($PAGE,$tab_pages_graphiques)) $GLOBALS['HEAD']['js']['file'][] = compacter('./_js/highcharts.js','mini');
-if(is_file($filename_js_normal))          $GLOBALS['HEAD']['js']['file'][] = compacter($filename_js_normal,'pack');
+Layout::add( 'css_file' , './_css/style.css'                              , 'mini' );
+Layout::add( 'js_file'  , './_js/jquery'.$jquery_version.'-librairies.js' , 'comm' ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
+Layout::add( 'js_file'  , './_js/script.js'                               , 'pack' ); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
+if(in_array($PAGE,$tab_pages_graphiques)) Layout::add( 'js_file' , './_js/highcharts.js' , 'mini' );
+if(is_file($filename_js_normal))          Layout::add( 'js_file' , $filename_js_normal   , 'pack' );
 
 // Ultimes constantes javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var PAGE              = "'.$PAGE.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var CSRF              = "'.Session::$_CSRF_value.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var PROFIL_TYPE       = "'.$_SESSION['USER_PROFIL_TYPE'].'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var CONNEXION_USED    = "'.((isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal').'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';';
-$GLOBALS['HEAD']['js']['inline'][] = 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var isMobile          = '.(int)$_SESSION['BROWSER']['mobile'].';';
+Layout::add( 'js_inline_before' , 'var PAGE              = "'.$PAGE.'";' );
+Layout::add( 'js_inline_before' , 'var CSRF              = "'.Session::$_CSRF_value.'";' );
+Layout::add( 'js_inline_before' , 'var PROFIL_TYPE       = "'.$_SESSION['USER_PROFIL_TYPE'].'";' );
+Layout::add( 'js_inline_before' , 'var CONNEXION_USED    = "'.((isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal').'";' );
+Layout::add( 'js_inline_before' , 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUREE_INACTIVITE'].';' );
+Layout::add( 'js_inline_before' , 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';' );
+Layout::add( 'js_inline_before' , 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";' );
+Layout::add( 'js_inline_before' , 'var isMobile          = '.(int)$_SESSION['BROWSER']['mobile'].';' );
 
 // Affichage
-afficher_page_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ );
-echo  '<body class="'.( (!$_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ).'">'.NL;
+$body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;
+echo Layout::afficher_page_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , FALSE /*add_noscript*/ , $body_class );
 if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
-  echo    '<!-- cadre_haut début -->'.NL;
-  echo    '<div id="cadre_haut">'.NL;
-  echo      '<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'.NL;
-  echo      '<!-- top_info début -->'.NL;
-  echo      '<div id="top_info">'.NL;
-  echo        '<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'.NL;
-  echo        '<span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'.NL;
-  echo        '<span class="button profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].')</span>'.NL;
-  echo        '<span class="button clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span>'.NL;
-  echo        '<button id="deconnecter" class="deconnecter">Déconnexion</button>'.NL;
-  echo      '</div>'.NL;
-  echo      '<!-- top_info fin -->'.NL;
-  echo      '<!-- menu début -->'.NL;
-  echo      $_SESSION['MENU'];
-  echo      '<!-- menu fin -->'.NL;
-  echo      '<audio id="audio_bip" preload="none" class="hide">'.NL;
+  echo'<div id="cadre_haut">'.NL;
+  echo  '<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'.NL;
+  echo  '<div id="top_info">'.NL;
+  echo    '<span class="button favicon"><a target="_blank" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'.NL;
+  echo    '<span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'.NL;
+  echo    '<span class="button profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].')</span>'.NL;
+  echo    '<span class="button clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span>'.NL;
+  echo    '<button id="deconnecter" class="deconnecter">Déconnexion</button>'.NL;
+  echo  '</div>'.NL;
+  echo  $_SESSION['MENU'];
+  echo  '<audio id="audio_bip" preload="none" class="hide">'.NL;
   // On pourrait bien sur laisser le navigateur se débrouiller et prendre le format qui lui convient, il me semble que dans ce cas j'avais noté des avertissements dans Firebug.
   if(!in_array( $_SESSION['BROWSER']['modele'] , array('firefox','opera') ))
   {
-    echo        '<source src="./_audio/bip.mp3" type="audio/mpeg" />'.NL;
+    echo    '<source src="./_audio/bip.mp3" type="audio/mpeg" />'.NL;
   }
   if(!in_array( $_SESSION['BROWSER']['modele'] , array('explorer','safari') ))
   {
-    echo        '<source src="./_audio/bip.ogg" type="audio/ogg" />'.NL;
+    echo    '<source src="./_audio/bip.ogg" type="audio/ogg" />'.NL;
   }
-  echo      '</audio>'.NL;
-  echo    '</div>'.NL;
-  echo    '<!-- cadre_haut fin -->'.NL;
-  echo    '<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'.NL;
-  echo    '<!-- cadre_bas début -->'.NL;
-  echo    '<div id="cadre_bas">'.NL;
-  echo      '<h1>'.$TITRE.'</h1>'.NL;
+  echo  '</audio>'.NL;
+  echo'</div>'.NL;
+  echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'.NL;
+  echo'<div id="cadre_bas">'.NL;
+  echo  '<h1>'.$TITRE.'</h1>'.NL;
 }
 else
 {
   // Accueil (identification ou procédure d'installation ou génération de nouveaux identifiants) : cadre unique (avec image SACoche & image hébergeur).
-  echo    '<!-- cadre_milieu début -->'.NL;
-  echo    '<div id="cadre_milieu">'.NL;
+  echo'<div id="cadre_milieu">'.NL;
   if($PAGE=='public_accueil')
   {
     $tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO)) ) ? getimagesize(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO) : array() ;
     $hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="'.URL_DIR_LOGO.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
     $hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
     $SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
-    echo      '<div id="titre_logo">'.$SACoche_lien.$hebergeur_lien.'</div>'.NL;
+    echo  '<div id="titre_logo">'.$SACoche_lien.$hebergeur_lien.'</div>'.NL;
   }
   else
   {
-    echo      '<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
-    echo      '<h1>'.$TITRE.'</h1>'.NL;
+    echo  '<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
+    echo  '<h1>'.$TITRE.'</h1>'.NL;
   }
 }
 // Alerte si pas de javascript activé, et autres messages d'erreurs (ceux relatifs à l'acceptation des cookies et/ou l'usage d'iframe sont ajoutés par script.js)
-echo      '<noscript><div class="probleme">Pour utiliser <em>SACoche</em> vous devez activer JavaScript dans votre navigateur.</div></noscript>'.NL;
+echo  '<noscript>Pour utiliser <em>SACoche</em> vous devez activer JavaScript dans votre navigateur.</noscript>'.NL;
 if(count(Session::$tab_message_erreur))
 {
-  echo      '<div class="probleme">'.implode('</div><div class="probleme">',Session::$tab_message_erreur).'</div>'.NL;
+  echo  '<div class="probleme">'.implode('</div><div class="probleme">',Session::$tab_message_erreur).'</div>'.NL;
   Session::$tab_message_erreur = array();
 }
-echo      '<hr />'.NL;
-echo      '<!-- contenu début -->'.NL;
-echo       $CONTENU_PAGE;
-echo      '<!-- contenu fin -->'.NL;
-echo      '<div id="ancre_bas"></div>'.NL; // Il faut un div et pas seulement un span pour le navigateur Safari (sinon href="#ancre_bas" ne fonctionne pas).
-echo    '</div>'.NL;
-echo    '<!-- cadre_bas fin | cadre_milieu fin -->'.NL;
-echo  '</body>'.NL;
-echo'</html>'.NL;
+echo  '<hr />'.NL;
+echo   $CONTENU_PAGE;
+echo  '<div id="ancre_bas"></div>'.NL; // Il faut un div et pas seulement un span pour le navigateur Safari (sinon href="#ancre_bas" ne fonctionne pas).
+echo'</div>'.NL;
+echo Layout::afficher_page_pied();
 ?>

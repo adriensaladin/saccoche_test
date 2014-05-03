@@ -38,7 +38,7 @@ $TITRE = "Étape n°2 - Indiquer les référentiels à utiliser et la manière d
 <?php
 // Lister les matières utilisées dans l'établissement
 $tab_matiere = array();
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_matiere = new Array();';
+Layout::add( 'js_inline_before' , 'var tab_matiere = new Array();' );
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 if(is_string($DB_TAB))
 {
@@ -48,7 +48,7 @@ if(is_string($DB_TAB))
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_matiere[$DB_ROW['valeur']] = html($DB_ROW['texte']);
-  $GLOBALS['HEAD']['js']['inline'][] = 'tab_matiere['.$DB_ROW['valeur'].']="'.html($DB_ROW['texte']).'";';
+  Layout::add( 'js_inline_before' , 'tab_matiere['.$DB_ROW['valeur'].']="'.html($DB_ROW['texte']).'";' );
 }
 
 // Lister les séries de Brevet à configurer
@@ -80,7 +80,7 @@ foreach($DB_TAB_series as $DB_ROW)
   {
     // Id & Nom épreuve & Infos
     $id_start = ''.$DB_ROW['brevet_serie_ref'].'_'.$DB_ROW['brevet_epreuve_code'];
-    echo'<h4 id="h4_'.$id_start.'">'.html($DB_ROW['brevet_epreuve_nom']).'</h4>'.NL;
+    echo'<h3 id="h3_'.$id_start.'">'.html($DB_ROW['brevet_epreuve_nom']).'</h3>'.NL;
     if(!$DB_ROW['brevet_epreuve_note_comptee'])
     {
       echo'<p class="astuce">Présence d\'une note obligatoire, mais seulement à titre informatif, celle-ci n\'étant pas comptabilisée dans le total des points.</p>'.NL;
@@ -128,11 +128,11 @@ foreach($DB_TAB_series as $DB_ROW)
   <p>
     <button id="valider_ordre" type="button" class="valider">Valider ce choix ordonné</button> <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>
   </p>
-  <h4>Matière(s) à considérer</h4>
+  <h3>Matière(s) à considérer</h3>
   <ul id="sortable_oui" class="connectedSortable">
     <li></li>
   </ul>
-  <h4>Matière(s) à ne pas considérer</h4>
+  <h3>Matière(s) à ne pas considérer</h3>
   <ul id="sortable_non" class="connectedSortable">
     <li></li>
   </ul>

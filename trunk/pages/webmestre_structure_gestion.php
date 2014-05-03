@@ -46,12 +46,12 @@ $selected = ($geo_id===0) ? ' selected' : '' ;
 $select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""></option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var input_date = "'.TODAY_FR.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql = "'.TODAY_MYSQL.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var geo_defaut = '.$geo_id.';';
-$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
-$GLOBALS['HEAD']['js']['inline'][] = 'var options_geo = "'.str_replace('"','\"',$select_f_geo).'";';
-$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
+Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
+Layout::add( 'js_inline_before' , 'var geo_defaut = '.$geo_id.';' );
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var options_geo = "'.str_replace('"','\"',$select_f_geo).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures).</a></span></p>
@@ -116,7 +116,7 @@ if(empty($_POST['f_afficher']))
   <h2>Ajouter | Modifier | Supprimer un établissement</h2>
   <div id="gestion_edit">
     <p id="p_ajout">
-      <label class="tab" for="f_base_id">Id <img alt="" src="./_img/bulle_aide.png" title="Numéro de la base de l'établissement.<br />Saisie facultative et déconseillée.<br />Nombre entier auto-incrémenté par défaut." /> :</label><input id="f_base_id" name="f_base_id" type="text" value="" size="4" maxlength="8" />
+      <label class="tab" for="f_base_id">Id <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Numéro de la base de l'établissement.<br />Saisie facultative et déconseillée.<br />Nombre entier auto-incrémenté par défaut." /> :</label><input id="f_base_id" name="f_base_id" type="text" value="" size="4" maxlength="8" />
     </p>
     <p>
       <label class="tab" for="f_geo">Zone géographique :</label><select id="f_geo" name="f_geo"><option></option></select><br />

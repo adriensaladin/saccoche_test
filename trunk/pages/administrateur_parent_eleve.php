@@ -33,9 +33,9 @@ $select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupeme
 $select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
-$GLOBALS['HEAD']['js']['inline'][] = 'var select_parent = "'.str_replace('"','\"',$select_f_parents).'";';
-$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var select_parent = "'.str_replace('"','\"',$select_f_parents).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>

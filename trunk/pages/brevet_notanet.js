@@ -115,7 +115,6 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html('Fichier généré.');
                 $('#lien_notanet').attr('href','./force_download.php?fichier='+responseHTML);
-                format_liens('#ajax_info');
                 $.fancybox( { 'href':'#ajax_info' , onStart:function(){$('#ajax_info').css("display","block");} , onClosed:function(){$('#ajax_info').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
               }
             }

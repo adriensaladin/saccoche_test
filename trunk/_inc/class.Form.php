@@ -520,12 +520,12 @@ class Form
    * @param array     $tab_groupes          tableau des données [i] => [valeur texte optgroup]
    * @param bool      $tab_groupe_periode   charger ou non "tab_groupe_periode" pour les jointures groupes/périodes
    * @param bool      $tab_groupe_niveau    charger ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
-   * @return void     complète $GLOBALS['HEAD']['js']['inline'][]
+   * @return void     alimente Layout::$tab_js_inline[]
    */
   public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$tab_groupe_periode,$tab_groupe_niveau)
   {
-    $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_periode = new Array();';
-    $GLOBALS['HEAD']['js']['inline'][] = 'var tab_groupe_niveau  = new Array();';
+    Layout::add( 'js_inline_before' , 'var tab_groupe_periode = new Array();' );
+    Layout::add( 'js_inline_before' , 'var tab_groupe_niveau  = new Array();' );
     if(is_array($tab_groupes))
     {
       // On liste les ids des classes et groupes
@@ -550,9 +550,9 @@ class Form
             if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
             {
               $tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
-              $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+              Layout::add( 'js_inline_before' , 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();' );
             }
-            $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+            Layout::add( 'js_inline_before' , 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";' );
           }
         }
         // Charger le tableau js $tab_groupe_niveau de jointures groupes/périodes
@@ -561,7 +561,7 @@ class Form
           $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
           {
-            $GLOBALS['HEAD']['js']['inline'][] = 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
+            Layout::add( 'js_inline_before' , 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");' );
           }
         }
       }

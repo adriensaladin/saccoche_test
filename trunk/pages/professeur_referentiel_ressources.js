@@ -293,7 +293,6 @@ $(document).ready
                 // montrer le cadre
                 $('#sortable').html(responseHTML);
                 $('#zone_resultat_recherche_liens').html('');
-                format_liens('#sortable');
                 $('#zone_ressources q').show();
                 $('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
                 $.fancybox( { 'href':'#zone_ressources' , onStart:function(){$('#zone_ressources').css("display","block");} , onClosed:function(){$('#zone_ressources').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
@@ -420,8 +419,7 @@ $(document).ready
         {
           var lien_url = escapeHtml( $(this).parent().children('input[name=lien_url_old]').val() );
           var lien_nom = escapeHtml( $(this).parent().children('input[name=lien_nom_old]').val() );
-          $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]);
-          format_liens('#sortable');
+          $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]);
         }
         return false;
       }
@@ -479,8 +477,7 @@ $(document).ready
           }
           else
           {
-            $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</q>');
-            format_liens('#sortable');
+            $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</q>');
           }
         }
         initialiser_compteur();
@@ -548,9 +545,8 @@ $(document).ready
         $('label[for=lien_nom]').removeAttr("class").html('');
         // ok
         initialiser_compteur();
-        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
         $('#sortable li.i').remove();
-        format_liens('#sortable');
         $('#lien_url').val('');
         $('#lien_nom').val('');
       }
@@ -689,7 +685,6 @@ $(document).ready
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
                 responseHTML = responseHTML.replace(reg,'</a>'+images[3]);
                 $('#zone_resultat_recherche_liens').html('<ul>'+responseHTML+'</ul>');
-                format_liens('#zone_resultat_recherche_liens');
                 initialiser_compteur();
               }
             }
@@ -713,9 +708,8 @@ $(document).ready
         var lien_nom = $(this).prev().html();
         $(this).parent().remove();
         initialiser_compteur();
-        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
         $('#sortable li.i').remove();
-        format_liens('#sortable');
       }
     );
 
@@ -843,7 +837,6 @@ $(document).ready
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
                 responseHTML = responseHTML.replace(reg,'</a>'+images[4]);
                 $('#zone_resultat_recherche_ressources').html('<ul>'+responseHTML+'</ul>');
-                format_liens('#zone_resultat_recherche_ressources');
                 initialiser_compteur();
               }
             }

@@ -32,7 +32,7 @@ $TITRE = "Associer des ressources aux items";
 $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';';
+Layout::add( 'js_inline_before' , 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';' );
 
 if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {

@@ -119,8 +119,8 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
   echo  '<td>'.html($id_gepi).'</td>';
   echo  '<td>'.html($nom).'</td>';
   echo  '<td>'.html($prenom).'</td>';
-  echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le login !" /></td>';
-  echo  '<td class="new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
+  echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le login !" /></td>';
+  echo  '<td class="new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>';
   echo  '<td>'.html($courriel).'</td>';
   echo  '<td class="nu">';
   echo    '<q class="modifier" title="Modifier cet administrateur."></q>';
@@ -199,7 +199,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   echo'<td>'.html($nom).'</td>';
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';
-  echo ($box_password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+  echo ($box_password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>' ;
   echo'<td>'.html($courriel).'</td>';
   echo'<td class="nu">';
   echo  '<q class="modifier" title="Modifier ce administrateur."></q>';

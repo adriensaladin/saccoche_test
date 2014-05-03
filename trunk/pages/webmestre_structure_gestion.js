@@ -290,8 +290,6 @@ $(document).ready
         var objet   = $(this);
         var action  = $(this).attr('class');
         var base_id = $(this).parent().parent().next().next().html();
-        var img_src = $(this).attr('src');
-        $(this).removeAttr("class").attr('src','./_img/ajax/ajax_loader.gif');
         $.ajax
         (
           {
@@ -301,7 +299,7 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              objet.addClass(action).attr('src',img_src);
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
               return false;
             },
             success : function(responseHTML)
@@ -309,7 +307,7 @@ $(document).ready
               initialiser_compteur();
               if(responseHTML.substring(0,4)!='<img')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                objet.addClass(action).attr('src',img_src);
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {

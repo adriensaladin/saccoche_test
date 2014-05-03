@@ -392,7 +392,7 @@ if($connexion_mode=='cas')
         {
           require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
           $partenaire_logo_url = ($partenaire_logo_actuel_filename) ? URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename : URL_DIR_IMG.'auto.gif' ;
-          $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" class="lien_ext">' : '' ;
+          $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" target="_blank">' : '' ;
           $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>' : '' ;
           $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
         }

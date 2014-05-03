@@ -118,7 +118,7 @@ if( ($action=='supprimer') && $fichier_logs )
 if( ($action=='voir') && $fichier_logs )
 {
   FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_CHEMIN_LOGS.$fichier_logs.'.txt') );
-  exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
+  exit('<ul class="puce"><li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

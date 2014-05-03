@@ -78,7 +78,7 @@ $(document).ready
         $('#sortable_oui').html(li_oui);
         $('#sortable_non').html(li_non);
         // Afficher la zone associée après avoir chargé son contenu
-        $('#titre_ordonner').html( $('#h2_'+serie_ref).html() + ' | ' + $('#h4_'+serie_ref+'_'+epreuve_code).html() );
+        $('#titre_ordonner').html( $('#h2_'+serie_ref).html() + ' | ' + $('#h3_'+serie_ref+'_'+epreuve_code).html() );
         $('#fermer_zone_ordonner').removeAttr("class").addClass("retourner").html('Retour');
         modification = false;
         $('#sortable_oui , #sortable_non').sortable( { connectWith:'.connectedSortable' , cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );

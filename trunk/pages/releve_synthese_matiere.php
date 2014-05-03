@@ -98,8 +98,8 @@ $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_coule
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']    /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var date_mysql  = "'.TODAY_MYSQL.'";';
-$GLOBALS['HEAD']['js']['inline'][] = 'var is_multiple = '.$is_select_multiple.';';
+Layout::add( 'js_inline_before' , 'var date_mysql  = "'.TODAY_MYSQL.'";' );
+Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 // Fabrication du tableau javascript "tab_groupe_niveau" pour les jointures groupes/niveaux
@@ -111,7 +111,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
 <?php
 $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 $s = ($nb_inconnu>1) ? 's' : '' ;
-echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
+echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
 ?>
 
 <hr />
@@ -122,12 +122,12 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">
-    <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
+    <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
     <span id="dates_perso" class="show">
       du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
-    <span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
+    <span class="radio"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
       <label for="f_retroactif_auto"><input type="radio" id="f_retroactif_auto" name="f_retroactif" value="auto"<?php echo $check_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_retroactif_non"><input type="radio" id="f_retroactif_non" name="f_retroactif" value="non"<?php echo $check_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
       <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
@@ -144,10 +144,10 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
       <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
       <label class="tab">Mode de synthèse :</label><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
       <label class="tab"></label><label for="f_fusion_niveaux"><input type="checkbox" id="f_fusion_niveaux" name="f_fusion_niveaux" value="1"<?php echo $check_fusion_niveaux ?> /> Ne pas indiquer le niveau et fusionner les synthèses de même intitulé</label><br />
-      <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label><br />
+      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label><br />
       <label class="tab">Restrictions :</label><label for="f_restriction_socle"><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
       <label class="tab"></label><label for="f_restriction_niveau"><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
-      <label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
+      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
     </div>
   </div>
   <p>

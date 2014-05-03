@@ -130,14 +130,14 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $dest   = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? 'vous seul' : 'collègues concernés' ;
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
     $matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
-    $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $messages_html .= '<tr><td>'.html($matiere_nom).'<br />'.html($DB_ROW['item_ref']).'</td><td>'.html($tab_groupes[$DB_ROW['eleve_id']]).'<br />'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td><td>'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'</td></tr>';
     $fichier_csv .= '"'.$matiere_nom.'"'.$separateur.'"'.$DB_ROW['item_ref'].'"'.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.'"'.$tab_groupes[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$score.'"'.$separateur.'"'.$date.'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
     // Afficher une ligne du tableau 
     $retour .= '<tr'.$class.'>';
     $retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" /></td>';
     $retour .= '<td class="label">'.html($matiere_nom).'</td>';
-    $retour .= '<td class="label">'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $retour .= '<td class="label">'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
     $retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['eleve_id']]).'</td>';
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td>';

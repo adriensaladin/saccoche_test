@@ -153,16 +153,16 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
   // Afficher le retour
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
-  echo  '<td class="label">0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>';
+  echo  '<td class="label">0 <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Aucun lien de responsabilité !" /></td>';
   echo  '<td class="label">'.html($id_ent).'</td>';
   echo  '<td class="label">'.html($id_gepi).'</td>';
   echo  '<td class="label">'.html($sconet_id).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
-  echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
+  echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
-  echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le login généré !" /></td>';
-  echo  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>';
+  echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à relever le login généré !" /></td>';
+  echo  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>';
   echo  '<td class="label">'.html($courriel).'</td>';
   echo  '<td class="label">'.$sortie_date.'</td>';
   echo  '<td class="nu">';
@@ -268,11 +268,11 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
   echo'<td class="label">'.html($id_gepi).'</td>';
   echo'<td class="label">'.html($sconet_id).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
-  echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
+  echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';
-  echo ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+  echo ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>' ;
   echo'<td class="label">'.html($courriel).'</td>';
   echo'<td class="label">'.$sortie_date.'</td>';
   echo'<td class="nu">';

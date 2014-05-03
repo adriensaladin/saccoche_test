@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les groupes";
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = 'var tab_niveau_ordre = new Array();';
+Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );
 
 $select_niveau = '<option value=""></option>';
 
@@ -39,7 +39,7 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    $GLOBALS['HEAD']['js']['inline'][] = 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";' );
   }
 }
 else
@@ -48,9 +48,9 @@ else
 }
 
 // Javascript
-$GLOBALS['HEAD']['js']['inline'][] = '// <![CDATA[';
-$GLOBALS['HEAD']['js']['inline'][] = 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";';
-$GLOBALS['HEAD']['js']['inline'][] = '// ]]>';
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>

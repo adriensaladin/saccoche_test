@@ -85,7 +85,7 @@ $(document).ready
     var maj_eleve = function()
     {
       $("#f_eleve").html('');
-      groupe_id = $("#f_groupe option:selected").val();
+      groupe_id = $("#f_groupe").val();
       if(groupe_id)
       {
         groupe_type = $("#f_groupe option:selected").parent().attr('label');
@@ -299,7 +299,7 @@ $(document).ready
               }
               else
               {
-                $('#'+td_id).removeAttr("data-etat").removeAttr("class").addClass("v3");
+                $('#'+td_id).removeAttr("class").removeAttr("lang").addClass("v3");
                 $('#fermer_zone_validation').removeAttr("class").addClass("retourner").html('Retour');
                 $('#confirmation').css('opacity',0);
                 $('#ajax_msg_validation').removeAttr("class").html("&nbsp;");

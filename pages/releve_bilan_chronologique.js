@@ -334,7 +334,7 @@ $(document).ready
           $("#f_matiere").html('');
         }
         $("#f_eleve").html('<option value=""></option>').hide();
-        groupe_id = $("#f_groupe option:selected").val();
+        groupe_id = $("#f_groupe").val();
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

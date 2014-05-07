@@ -136,7 +136,7 @@ $(document).ready
     var maj_eleve = function()
     {
       $("#f_eleve").html('').parent().hide();
-      groupe_id = $("#f_groupe option:selected").val();
+      groupe_id = $("#f_groupe").val();
       if(groupe_id)
       {
         groupe_type = $("#f_groupe option:selected").parent().attr('label');

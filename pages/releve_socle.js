@@ -53,7 +53,7 @@ $(document).ready
     (
       function()
       {
-        var groupe_val = $("#f_groupe option:selected").val();
+        var groupe_val = $("#f_groupe").val();
         if(groupe_val!='0')
         {
           $("#option_groupe").show();
@@ -167,7 +167,7 @@ $(document).ready
       function()
       {
         $("#f_eleve").html('').parent().hide();
-        var groupe_id = parseInt( $("#f_groupe option:selected").val() , 10 );
+        var groupe_id = parseInt( $("#f_groupe").val() , 10 );
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

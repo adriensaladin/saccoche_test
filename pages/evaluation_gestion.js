@@ -593,8 +593,8 @@ $(document).ready
       var groupe        = objet_tds.eq(3).html();
       var description   = objet_tds.eq(5).html();
       // Sujet & Corrigé
-      var img_sujet     = (tab_sujets[ref])   ? '<a href="'+tab_sujets[ref]+'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-      var img_corrige   = (tab_corriges[ref]) ? '<a href="'+tab_corriges[ref]+'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+      var img_sujet     = (tab_sujets[ref])   ? '<a href="'+tab_sujets[ref]+'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+      var img_corrige   = (tab_corriges[ref]) ? '<a href="'+tab_corriges[ref]+'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       // Renseigner les champs dynamique affichés
       $('#titre_upload').html(groupe+' | '+date_fr+' | '+description);
       $('#ajax_document_upload').removeAttr("class").html("");
@@ -2028,7 +2028,7 @@ $(document).ready
         var url   = tab_infos[3];
         if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
         else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
-        var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
+        var lien        = '<a href="'+url+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
         $('#span_'+objet).html(lien);
         $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
         if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
@@ -2145,7 +2145,7 @@ $(document).ready
                   $('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document référencé.");
                   if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
                   else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
-                  var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
+                  var lien        = '<a href="'+url+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
                   $('#span_'+objet).html(lien);
                   $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
                 }

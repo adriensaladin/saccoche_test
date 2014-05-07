@@ -31,11 +31,7 @@ $(document).ready
   {
 
     // Initialisation
-    var modification     = false;
-    var navig_auto       = false;
-    var navig_sens       = false;
-    var navig_objet      = false;
-    var voir_pourcentage = false;
+    var modification = false;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher / masquer des éléments de formulaire
@@ -136,11 +132,6 @@ $(document).ready
               {
                 $('#ajax_maj_domaine').removeAttr("class").html('&nbsp;');
                 $('#f_domaine').html(responseHTML).parent().show();
-                if(navig_auto)
-                {
-                  navig_auto = false;
-                  formulaire0.submit();
-                }
               }
               else
               {
@@ -165,7 +156,7 @@ $(document).ready
     var maj_eleve = function()
     {
       $("#f_eleve").html('').parent().hide();
-      groupe_id  = $("#f_groupe option:selected").val();
+      groupe_id = $("#f_groupe").val();
       if(groupe_id)
       {
         groupe_type = $("#f_groupe option:selected").parent().attr('label');
@@ -189,11 +180,6 @@ $(document).ready
               {
                 $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
                 $('#f_eleve').html(responseHTML).parent().show();
-                if(navig_auto)
-                {
-                  navig_auto = false;
-                  formulaire0.submit();
-                }
               }
               else
               {
@@ -310,24 +296,10 @@ $(document).ready
       }
       else
       {
-        var objet_option_groupe = $("#f_groupe option:selected");
-        var objet_option_palier = $("#f_palier option:selected");
-        var objet_option_pilier = $("#f_pilier option:selected");
-        responseHTML = responseHTML.replace( '@GROUPE@' , objet_option_groupe.text() );
-        responseHTML = responseHTML.replace( '@PALIER@' , objet_option_palier.text() );
-        responseHTML = responseHTML.replace( '@PILIER@' , objet_option_pilier.text() );
-        if(!objet_option_groupe.prev().length || !objet_option_groupe.prev().val()) { responseHTML = responseHTML.replace( 'id="go_precedent_groupe"' , 'id="go_precedent_groupe" disabled' ); }
-        if(!objet_option_groupe.next().length)                                      { responseHTML = responseHTML.replace( 'id="go_suivant_groupe"'   , 'id="go_suivant_groupe" disabled'   ); }
-        if(!objet_option_palier.prev().length || !objet_option_palier.prev().val()) { responseHTML = responseHTML.replace( 'id="go_precedent_palier"' , 'id="go_precedent_palier" disabled' ); }
-        if(!objet_option_palier.next().length)                                      { responseHTML = responseHTML.replace( 'id="go_suivant_palier"'   , 'id="go_suivant_palier" disabled'   ); }
-        if(!objet_option_pilier.prev().length || !objet_option_pilier.prev().val()) { responseHTML = responseHTML.replace( 'id="go_precedent_pilier"' , 'id="go_precedent_pilier" disabled' ); }
-        if(!objet_option_pilier.next().length)                                      { responseHTML = responseHTML.replace( 'id="go_suivant_pilier"'   , 'id="go_suivant_pilier" disabled'   ); }
+        responseHTML = responseHTML.replace( '@PALIER@' , $("#f_palier option:selected").text() );
+        responseHTML = responseHTML.replace( '@PILIER@' , $("#f_pilier option:selected").text() );
         $('#tableau_validation').html(responseHTML);
         $('#zone_validation').show('fast');
-        if(voir_pourcentage)
-        {
-          $('#Afficher_pourcentage').click();
-        }
         $('#ajax_msg_choix').removeAttr("class").html('');
         $('#zone_choix').hide('fast');
         var texte = ($('#f_mode_manuel').is(':checked')) ? ' [matières resteintes]' : '';
@@ -362,13 +334,11 @@ $(document).ready
       {
         if($(this).is(':checked'))
         {
-          voir_pourcentage = true;
           color = '#000';
           cell_font_size = '50%';
         }
         else
         {
-          voir_pourcentage = false;
           color = '';
           cell_font_size = '1%'; /* 0% pour font-size pose problème au navigateur Safari. */
         }
@@ -560,29 +530,6 @@ $(document).ready
       $('#items').html('');
       $('#ajax_msg_information').removeAttr("class").html('');
       modification = false;
-      if(navig_auto)
-      {
-        if(navig_sens=='suivant')
-        {
-          $("#f_"+navig_objet+" option:selected").next().prop('selected',true);
-        }
-        else if(navig_sens=='precedent')
-        {
-          $("#f_"+navig_objet+" option:selected").prev().prop('selected',true);
-        }
-        if(navig_objet=='palier')
-        {
-          maj_pilier();
-        }
-        else if(navig_objet=='pilier')
-        {
-          maj_domaine();
-        }
-        else if(navig_objet=='groupe')
-        {
-          maj_eleve();
-        }
-      }
       return false;
     }
 
@@ -592,9 +539,6 @@ $(document).ready
       '#fermer_zone_validation',
       function()
       {
-        navig_auto  = false;
-        navig_sens  = false;
-        navig_objet = false;
         if(!modification)
         {
           fermer_zone_validation();
@@ -620,36 +564,7 @@ $(document).ready
     (
       function()
       {
-        navig_auto  = false;
-        navig_sens  = false;
-        navig_objet = false;
         $.fancybox.close();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Boutons de raccourcis pour recharger en modifiant une option du formulaire
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#tableau_validation').on
-    (
-      'click',
-      'button[class^=go_]',
-      function()
-      {
-        var tab_id = $(this).attr('id').split('_');
-        navig_auto  = true;
-        navig_sens  = tab_id[1];
-        navig_objet = tab_id[2];
-        if(!modification)
-        {
-          fermer_zone_validation();
-        }
-        else
-        {
-          $.fancybox( { 'href':'#zone_confirmer_fermer_validation' , onStart:function(){$('#zone_confirmer_fermer_validation').css("display","block");} , onClosed:function(){$('#zone_confirmer_fermer_validation').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-          return false;
-        }
       }
     );
 

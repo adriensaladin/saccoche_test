@@ -51,7 +51,7 @@ $(document).ready
         return false
       }
       // On récupère le regroupement
-      var groupe_val = $("#f_groupe option:selected").val();
+      var groupe_val = $("#f_groupe").val();
       if(!groupe_val)
       {
         $('#ajax_msg').removeAttr("class").html("&nbsp;");

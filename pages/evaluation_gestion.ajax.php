@@ -185,8 +185,8 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
         $profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' collègues';
       }
       $proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
-      $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-      $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+      $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+      $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       $effectif_eleve = ($type=='groupe') ? $tab_effectifs[$DB_ROW['groupe_id']] : $DB_ROW['users_nombre'] ;
       $nb_saisies_possibles = $DB_ROW['items_nombre']*$effectif_eleve;
       $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
@@ -329,8 +329,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $cs = ($nb_items>1)  ? 's' : '';
   $us = ($nb_eleves>1) ? 's' : '';
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = '0/'.$nb_saisies_possibles ;
   $remplissage_class    = 'br';
@@ -430,8 +430,8 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
   $cs = ($nb_items>1)  ? 's' : '';
   $us = ($nb_eleves>1) ? 's' : '';
   $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
   $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
@@ -1468,15 +1468,6 @@ if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini($devoir_id,$_SESSION['USER_ID'],$fini);
   // Retour
   exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Il se peut que rien n'ait été récupéré à cause de l'upload d'un fichier trop lourd
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(empty($_POST))
-{
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

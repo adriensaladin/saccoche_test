@@ -557,8 +557,8 @@ class SessionUser
     $_SESSION['CSS'] .= '#zone_information .v0 {background:'.$_SESSION['BACKGROUND_V0'].';padding:0 1em;margin-right:1ex}'.NL;
     $_SESSION['CSS'] .= '#zone_information .v1 {background:'.$_SESSION['BACKGROUND_V1'].';padding:0 1em;margin-right:1ex}'.NL;
     $_SESSION['CSS'] .= '#zone_information .v2 {background:'.$_SESSION['BACKGROUND_V2'].';padding:0 1em;margin-right:1ex}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[data-etat=lock] {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[data-etat=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;} /* pas background pour ne pas écraser background-color défini avant */'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=lock] {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */'.NL;
+    $_SESSION['CSS'] .= '#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;} /* pas background pour ne pas écraser background-color défini avant */'.NL;
   }
 
   /**

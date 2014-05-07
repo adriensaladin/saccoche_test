@@ -148,8 +148,7 @@ function infobulle()
   $(document).tooltip
   (
     {
-      track: true,
-      position: { my: "left+15 top+15", collision: "flipfit" },
+      items: "img[title] , th[title] , td[title] , a[title] , q[title]",
       content: function()
       {
         if( ($(this).hasClass('fancybox-nav')) || ($(this).hasClass('fancybox-item')) )

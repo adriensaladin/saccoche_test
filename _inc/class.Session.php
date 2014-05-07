@@ -478,6 +478,9 @@ class Session
    * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
    * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concernée au 10/2012).
    * On utilise REQUEST car c'est tranmis en POST si ajax maison mais en GET si utilisation de jquery.form.js.
+   * On teste aussi la présence de données en POST car s'il n'y en a pas alors :
+   * - ce peut être à cause de l'upload d'un trop gros fichier qui fait que les variables postées n'arrivent pas
+   * - dans ce cas, il n'y a pas vraiment de risque CSRF, puisque aucune (mauvaise) donnée postée n'est traitée
    * La session doit être ouverte.
    *
    * @param string $page
@@ -487,7 +490,7 @@ class Session
   {
     if(Session::page_avec_jeton_CSRF($page))
     {
-      if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) )
+      if( ( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) ) && !empty($_POST) )
       {
         exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ );
       }

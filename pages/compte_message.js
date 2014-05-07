@@ -238,7 +238,7 @@ $(document).ready
         return false
       }
       // On récupère le regroupement
-      var groupe_val = $("#f_groupe").val();
+      var groupe_val = $("#f_groupe option:selected").val();
       if(!groupe_val)
       {
         $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");

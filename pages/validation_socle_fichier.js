@@ -66,7 +66,7 @@ $(document).ready
     function changer_groupe()
     {
       $("#f_eleve").html('').parent().hide();
-      var groupe_val = $("#f_groupe").val();
+      var groupe_val = $("#f_groupe option:selected").val();
       if(groupe_val)
       {
         // type = $("#f_groupe option:selected").parent().attr('label');

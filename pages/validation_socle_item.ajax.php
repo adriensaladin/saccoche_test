@@ -28,13 +28,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])   : '';
-$palier_id   = (isset($_POST['f_palier']))  ? Clean::entier($_POST['f_palier'])  : 0;
-$pilier_id   = (isset($_POST['f_pilier']))  ? Clean::entier($_POST['f_pilier'])  : 0;
-$eleve_id    = (isset($_POST['f_user']))    ? Clean::entier($_POST['f_user'])    : 0;
-$entree_id   = (isset($_POST['f_item']))    ? Clean::entier($_POST['f_item'])    : 0;
-$mode        = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])     : '';
-$langue      = (isset($_POST['langue']))    ? Clean::entier($_POST['langue'])    : 0;
+$action      = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';
+$palier_id   = (isset($_POST['f_palier']))  ? Clean::entier($_POST['f_palier']) : 0;
+$pilier_id   = (isset($_POST['f_pilier']))  ? Clean::entier($_POST['f_pilier']) : 0;
+$eleve_id    = (isset($_POST['f_user']))    ? Clean::entier($_POST['f_user'])   : 0;
+$entree_id   = (isset($_POST['f_item']))    ? Clean::entier($_POST['f_item'])   : 0;
+$mode        = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])    : '';
+$langue      = (isset($_POST['langue']))    ? Clean::entier($_POST['langue'])   : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 // De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -65,7 +65,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
-  // Afficher la première ligne du tableau avec les étiquettes des élèves puis le nom du palier
+  // Afficher la première ligne du tableau avec les étiquettes des élèves puis le nom du groupe et du palier
   $tab_eleve_id     = array(); // listing des ids des élèves mis à jour au cas où la récupération dans la base soit différente des ids transmis...
   $tab_eleve_langue = array(); // listing des ids des langues, utile pour plus tard
   $affichage .= '<thead><tr>';
@@ -82,8 +82,9 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   $affichage .= '<th class="nu">';
   $affichage .=   '<p><label for="Afficher_pourcentage"><input type="checkbox" id="Afficher_pourcentage" /> <span for="Afficher_pourcentage" class="socle_info voir">Afficher / Masquer les pourcentages d\'items d\'enseignements acquis.</span></label></p>';
   $affichage .=   '<p><button id="Enregistrer_validation" type="button" class="valider">Enregistrer les validations</button> <button id="fermer_zone_validation" type="button" class="retourner">Retour</button><label id="ajax_msg_validation"></label></p>';
-  $affichage .=   '<div class="m1 b">@PALIER@</div>';
-  $affichage .=   '<div class="n1 b">@PILIER@</div>';
+  $affichage .=   '<div><button id="go_precedent_groupe" type="button" class="go_precedent" title="Classe / groupe précédent.">&nbsp;</button> <button id="go_suivant_groupe" type="button" class="go_suivant" title="Classe / groupe suivant.">&nbsp;</button> <span class="m1 b">@GROUPE@</span></div>';
+  $affichage .=   '<div><button id="go_precedent_palier" type="button" class="go_precedent" title="Palier précédent.">&nbsp;</button> <button id="go_suivant_palier" type="button" class="go_suivant" title="Palier suivant.">&nbsp;</button> <span class="m1 b">@PALIER@</span></div>';
+  $affichage .=   '<div><button id="go_precedent_pilier" type="button" class="go_precedent" title="Compétence précédente.">&nbsp;</button> <button id="go_suivant_pilier" type="button" class="go_suivant" title="Compétence suivante.">&nbsp;</button> <span class="n1 b">@PILIER@</span></div>';
   $affichage .= '</th>';
   $affichage .= '</tr></thead>';
   $affichage .= '<tbody>';
@@ -124,7 +125,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
       $affichage .= '<tr>';
       foreach($tab_eleve_id as $eleve_id)
       {
-        $affichage .= '<td id="S'.$section_id.'U'.$eleve_id.'E'.$entree_id.'"></td>'; // class/title + lang + contenu seront ajoutés ensuite 
+        $affichage .= '<td id="S'.$section_id.'U'.$eleve_id.'E'.$entree_id.'"></td>'; // class/title + data-etat + contenu seront ajoutés ensuite 
       }
       $affichage .= '<th id="E'.$entree_id.'" class="left1" title="Modifier la validation de cet item pour tous les élèves."></th>';
       $affichage .= '<th class="nu" colspan="2"><div class="n3">'.html($DB_ROW['entree_nom']).'</div></th>';
@@ -133,11 +134,11 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   }
   $affichage .= '</tbody>';
   // Ligne avec le drapeau de la LV, si compétence concernée choisie.
-  $affichage .= $test_pilier_langue ? '<tfoot>'.$tfoot.'<th class="nu" colspan="3"></th></tfoot>' : '' ;
+  $affichage .= $test_pilier_langue ? '<tfoot>'.$tfoot.'<th class="nu"></th><th class="nu" colspan="2"></th></tfoot>' : '' ;
   // - - - - - - - - - - - - - - - - - - - - - - - - -
   // Maintenant, on prépare pour adapter le contenu des cellules en fonction des validations d'items, des validations de piliers, des % des items matières acquis
   // - - - - - - - - - - - - - - - - - - - - - - - - -
-  $tab_modif_cellule = array();  // ['html'] , ['class'] , ['title'] , ['lang']
+  $tab_modif_cellule = array();  // ['html'] , ['class'] , ['title'] , ['data_etat']
   // Listing des élèves et des items
   $listing_eleve_id  = implode(',',$tab_eleve_id);
   $listing_entree_id = implode(',',$tab_entree_id);
@@ -175,7 +176,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
     // Pour chaque item du socle...
     foreach($tab_entree_id as $socle_id)
     {
-      $tab_modif_cellule[$eleve_id][$socle_id] = array( 'html'=>'-' , 'class'=>' class="v2"' , 'title'=>'' , 'lang'=>'' );
+      $tab_modif_cellule[$eleve_id][$socle_id] = array( 'html'=>'-' , 'class'=>' class="v2"' , 'title'=>'' , 'data_etat'=>'' );
       $tab_score_socle_eleve[$socle_id][$eleve_id] = $tab_init_compet;
       // Pour chaque item associé à cet item du socle, ayant été évalué pour cet élève...
       if(isset($tab_eval[$eleve_id][$socle_id]))
@@ -234,7 +235,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
     {
       foreach($tab_pilier_entree[$pilier_id] as $entree_id)
       {
-        $tab_modif_cellule[$DB_ROW['user_id']][$entree_id]['lang'] = ' lang="done"';
+        $tab_modif_cellule[$DB_ROW['user_id']][$entree_id]['data_etat'] = ' data-etat="done"';
       }
     }
   }
@@ -245,9 +246,9 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   {
     foreach($tab_entree_id as $socle_id)
     {
-      extract($tab_modif_cellule[$eleve_id][$socle_id]);  // $lang $class $title $html
+      extract($tab_modif_cellule[$eleve_id][$socle_id]);  // $data_etat $class $title $html
       $tab_bad[] = 'U'.$eleve_id.'E'.$socle_id.'"></td>';
-      $tab_bon[] = 'U'.$eleve_id.'E'.$socle_id.'"'.$lang.$class.$title.'>'.$html.'</td>';
+      $tab_bon[] = 'U'.$eleve_id.'E'.$socle_id.'"'.$data_etat.$class.$title.'>'.$html.'</td>';
     }
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);

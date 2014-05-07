@@ -101,34 +101,33 @@ if( ($action=='Voir') && $matiere_id )
       $cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
       $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
       $socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
-      $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
+      $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" data-id="'.$DB_ROW['entree_id'].'" />';
       $lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
       $lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
       $lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
       $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
     }
   }
-  // Attention : envoyer des balises vides sous la forme <q ... /> plante jquery 1.4 (ça marchait avec la 1.3.2).
   $images_niveau  = '';
-  $images_niveau .= '<q class="n1_add" lang="add" title="Ajouter un domaine au début de ce niveau."></q>';
+  $images_niveau .= '<q class="n1_add" data-action="add" title="Ajouter un domaine au début de ce niveau."></q>';
   $images_domaine  = '';
-  $images_domaine .= '<q class="n1_edit" lang="edit" title="Renommer ce domaine (avec sa référence)."></q>';
-  $images_domaine .= '<q class="n1_add" lang="add" title="Ajouter un domaine à la suite."></q>';
-  $images_domaine .= '<q class="n1_move" lang="move" title="Déplacer ce domaine."></q>';
-  $images_domaine .= '<q class="n1_del" lang="del" title="Supprimer ce domaine ainsi que tout son contenu."></q>';
-  $images_domaine .= '<q class="n2_add" lang="add" title="Ajouter un thème au début de ce domaine (et renuméroter)."></q>';
+  $images_domaine .= '<q class="n1_edit" data-action="edit" title="Renommer ce domaine (avec sa référence)."></q>';
+  $images_domaine .= '<q class="n1_add"  data-action="add"  title="Ajouter un domaine à la suite."></q>';
+  $images_domaine .= '<q class="n1_move" data-action="move" title="Déplacer ce domaine."></q>';
+  $images_domaine .= '<q class="n1_del"  data-action="del"  title="Supprimer ce domaine ainsi que tout son contenu."></q>';
+  $images_domaine .= '<q class="n2_add"  data-action="add"  title="Ajouter un thème au début de ce domaine (et renuméroter)."></q>';
   $images_theme  = '';
-  $images_theme .= '<q class="n2_edit" lang="edit" title="Renommer ce thème."></q>';
-  $images_theme .= '<q class="n2_add" lang="add" title="Ajouter un thème à la suite (et renuméroter)."></q>';
-  $images_theme .= '<q class="n2_move" lang="move" title="Déplacer ce thème (et renuméroter)."></q>';
-  $images_theme .= '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
-  $images_theme .= '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
+  $images_theme .= '<q class="n2_edit" data-action="edit" title="Renommer ce thème."></q>';
+  $images_theme .= '<q class="n2_add"  data-action="add"  title="Ajouter un thème à la suite (et renuméroter)."></q>';
+  $images_theme .= '<q class="n2_move" data-action="move" title="Déplacer ce thème (et renuméroter)."></q>';
+  $images_theme .= '<q class="n2_del"  data-action="del"  title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
+  $images_theme .= '<q class="n3_add"  data-action="add"  title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
   $images_item  = '';
-  $images_item .= '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, autoriser, lier cet item."></q>';
-  $images_item .= '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
-  $images_item .= '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
-  $images_item .= '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
-  $images_item .= '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
+  $images_item .= '<q class="n3_edit" data-action="edit" title="Renommer, coefficienter, autoriser, lier cet item."></q>';
+  $images_item .= '<q class="n3_add"  data-action="add"  title="Ajouter un item à la suite (et renuméroter)."></q>';
+  $images_item .= '<q class="n3_move" data-action="move" title="Déplacer cet item (et renuméroter)."></q>';
+  $images_item .= '<q class="n3_fus"  data-action="fus"  title="Fusionner avec un autre item (et renuméroter)."></q>';
+  $images_item .= '<q class="n3_del"  data-action="del"  title="Supprimer cet item (et renuméroter)."></q>';
   echo'<ul class="ul_m1">'.NL;
   if(count($tab_niveau))
   {

@@ -244,6 +244,8 @@ class Layout
   public static function afficher_page_entete( $is_meta_robots ,$is_favicon , $is_rss , $add_noscript=TRUE , $body_class=NULL )
   {
     header('Content-Type: text/html; charset='.CHARSET);
+    // @see http://www.alsacreations.com/astuce/lire/1437-comment-interdire-le-mode-de-compatibilite-sur-ie.html
+    header('X-UA-Compatible: IE=edge');
     $retour     = '';
     $body_class = ($body_class) ? ' class="'.$body_class.'"' : '' ;
     $retour.= '<!DOCTYPE html>'.NL;

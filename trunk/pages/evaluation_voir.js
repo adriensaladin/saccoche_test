@@ -83,7 +83,7 @@ $(document).ready
         $("#f_eleve").html('<option value=""></option>').parent().hide();
         $('#ajax_msg').removeAttr("class").html('');
         $('#zone_eval_choix').hide();
-        var groupe_id = $("#f_groupe").val();
+        var groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

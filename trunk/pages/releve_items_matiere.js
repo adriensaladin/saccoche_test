@@ -281,7 +281,7 @@ $(document).ready
           $("#f_matiere").html('<option value=""></option>').hide();
         }
         $("#f_eleve").html('').parent().hide();
-        groupe_id = $("#f_groupe").val();
+        groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');
@@ -562,7 +562,7 @@ if(auto_voir_releve)
   // Parent avec plusieurs enfants : d'abord charger la liste des enfants de la classe
   if(auto_select_eleve_id)
   {
-    groupe_id = $("#f_groupe").val();
+    groupe_id = $("#f_groupe option:selected").val();
     groupe_type = 'Classes';
     maj_eleve(groupe_id,groupe_type);
   }

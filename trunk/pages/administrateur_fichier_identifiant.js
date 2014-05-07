@@ -113,7 +113,7 @@ $(document).ready
       // On récupère le profil
       var profil = $('#f_profil option:selected').val();
       // On récupère le regroupement
-      var groupe_val = $("#f_groupe").val();
+      var groupe_val = $("#f_groupe option:selected").val();
       if( !profil || !groupe_val )
       {
         return false

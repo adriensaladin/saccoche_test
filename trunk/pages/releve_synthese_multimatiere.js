@@ -231,7 +231,7 @@ $(document).ready
         // Pour un directeur ou un professeur, on met à jour f_eleve
         // Pour un élève cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
         $("#f_eleve").html('').parent().hide();
-        var groupe_id = $("#f_groupe").val();
+        var groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

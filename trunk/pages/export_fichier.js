@@ -105,7 +105,7 @@ $(document).ready
       function()
       {
         // récupération du type et du nom du groupe
-        var groupe_val = $("#f_groupe").val();
+        var groupe_val = $("#f_groupe option:selected").val();
         if(groupe_val)
         {
           // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44

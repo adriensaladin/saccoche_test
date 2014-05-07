@@ -252,7 +252,7 @@ $(document).ready
       function()
       {
         $("#f_eleve").html('').parent().hide();
-        var groupe_val = $("#f_groupe").val();
+        var groupe_val = $("#f_groupe option:selected").val();
         if(groupe_val)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

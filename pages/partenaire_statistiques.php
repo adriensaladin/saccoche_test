@@ -47,20 +47,19 @@ $TITRE = "Statistiques d'utilisation (partenariat ENT)";
         <th>Géographie</th>
         <th>Structure</th>
         <th>connexion ENT</th>
-        <th>personnels<br />connectés</th>
+        <th>professeurs<br />connectés</th>
         <th>élèves<br />connectés</th>
-        <th>evaluations<br />récentes</th>
-        <th>validations<br />récentes</th>
+        <th>saisies<br />enregistrées</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="7"></td>
+        <td class="nu" colspan="6"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="7"></td>
+        <td class="nu" colspan="6"></td>
       </tr>
     </tbody>
   </table>

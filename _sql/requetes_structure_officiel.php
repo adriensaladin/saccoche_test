@@ -41,7 +41,7 @@ class DB_STRUCTURE_OFFICIEL extends DB
  * @param string $bilan_type
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_id , $bilan_type )
+public static function DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$bilan_type)
 {
   $DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin, officiel_'.$bilan_type.', periode_nom, groupe_nom ';
   $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
@@ -80,7 +80,7 @@ public static function DB_recuperer_pays_majoritaire()
  * @param bool   $only_synthese_generale Pour restreindre aux synthèses générales.
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_type , $periode_id , $liste_eleve_id , $prof_id , $with_rubrique_nom , $with_periodes_avant , $only_synthese_generale )
+public static function DB_recuperer_bilan_officiel_saisies_eleves($officiel_type,$periode_id,$liste_eleve_id,$prof_id,$with_rubrique_nom,$with_periodes_avant,$only_synthese_generale)
 {
   if($with_rubrique_nom)
   {
@@ -123,7 +123,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
  * @param bool   $only_synthese_generale Pour restreindre aux synthèses générales.
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , $prof_id , $with_periodes_avant , $only_synthese_generale )
+public static function DB_recuperer_bilan_officiel_saisies_classe($periode_id,$classe_id,$prof_id,$with_periodes_avant,$only_synthese_generale)
 {
   $periode_where = ($with_periodes_avant) ? '' : 'AND periode_id=:periode_id' ;
   $DB_SQL = 'SELECT prof_id, 0 AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
@@ -157,7 +157,7 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $periode_id ,
  * @param bool    $tri_matiere
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_notes_eleves_periode( $periode_id , $liste_eleve_id , $tri_matiere )
+public static function DB_recuperer_bilan_officiel_notes_eleves_periode($periode_id,$liste_eleve_id,$tri_matiere)
 {
   $DB_SQL = 'SELECT eleve_ou_classe_id AS eleve_id, rubrique_id, saisie_note, saisie_appreciation ';
   $DB_SQL.= ($tri_matiere)   ? ', matiere_nom as rubrique_nom ' : '' ;
@@ -203,7 +203,7 @@ public static function DB_recuperer_bilan_officiel_notes_eleve_periodes($eleve_i
  * @param int    $classe_id
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_notes_classe( $periode_id , $classe_id )
+public static function DB_recuperer_bilan_officiel_notes_classe($periode_id,$classe_id)
 {
   $DB_SQL = 'SELECT rubrique_id, saisie_note ';
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
@@ -225,7 +225,7 @@ public static function DB_recuperer_bilan_officiel_notes_classe( $periode_id , $
  * @param array  $eleve_id
  * @return array
  */
-public static function DB_recuperer_officiel_assiduite( $periode_id , $eleve_id )
+public static function DB_recuperer_officiel_assiduite($periode_id,$eleve_id)
 {
   $DB_SQL = 'SELECT assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj ';
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
@@ -273,7 +273,7 @@ public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $peri
  * @param array  $tab_eleve_id
  * @return array
  */
-public static function DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id )
+public static function DB_lister_officiel_assiduite($periode_id,$tab_eleve_id)
 {
   $DB_SQL = 'SELECT user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj ';
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
@@ -325,7 +325,7 @@ public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
  * @param int     $periode_id
  * @return void
  */
-public static function DB_ajouter_bilan_officiel_fichier( $user_id , $officiel_type , $periode_id )
+public static function DB_ajouter_bilan_officiel_fichier($user_id,$officiel_type,$periode_id)
 {
   $DB_SQL = 'INSERT INTO sacoche_officiel_fichier (user_id, officiel_type, periode_id, fichier_date_generation) ';
   $DB_SQL.= 'VALUES(:user_id, :officiel_type, :periode_id, NOW() ) ';
@@ -346,7 +346,7 @@ public static function DB_ajouter_bilan_officiel_fichier( $user_id , $officiel_t
  * @param string  $champ   "generation" | "consultation_eleve" | "consultation_parent"
  * @return void
  */
-public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $officiel_type , $periode_id , $champ )
+public static function DB_modifier_bilan_officiel_fichier_date($user_id,$officiel_type,$periode_id,$champ)
 {
   $DB_SQL = 'UPDATE sacoche_officiel_fichier ';
   $DB_SQL.= 'SET fichier_date_'.$champ.'=NOW() ';
@@ -372,7 +372,7 @@ public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $offi
  * @param string  $appreciation
  * @return void
  */
-public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , $note , $appreciation )
+public static function DB_modifier_bilan_officiel_saisie($officiel_type,$periode_id,$eleve_ou_classe_id,$rubrique_id,$prof_id,$saisie_type,$note,$appreciation)
 {
   $DB_SQL = 'REPLACE INTO sacoche_officiel_saisie (officiel_type, periode_id, eleve_ou_classe_id, rubrique_id, prof_id, saisie_type, saisie_note, saisie_appreciation) ';
   $DB_SQL.= 'VALUES(:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
@@ -400,7 +400,7 @@ public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $peri
  * @param int|null $nb_retard_nj
  * @return void
  */
-public static function DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj )
+public static function DB_modifier_officiel_assiduite($periode_id,$user_id,$nb_absence,$nb_absence_nj,$nb_retard,$nb_retard_nj)
 {
   $DB_SQL = 'REPLACE INTO sacoche_officiel_assiduite (periode_id, user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj) ';
   $DB_SQL.= 'VALUES(:periode_id, :user_id, :assiduite_absence, :assiduite_absence_nj, :assiduite_retard, :assiduite_retard_nj) ';
@@ -426,7 +426,7 @@ public static function DB_modifier_officiel_assiduite( $periode_id , $user_id , 
  * @param string  $saisie_type
  * @return void
  */
-public static function DB_supprimer_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type )
+public static function DB_supprimer_bilan_officiel_saisie($officiel_type,$periode_id,$eleve_ou_classe_id,$rubrique_id,$prof_id,$saisie_type)
 {
   $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND rubrique_id=:rubrique_id AND saisie_type=:saisie_type ';

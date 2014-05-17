@@ -85,7 +85,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_piliers($palier_id);
   foreach($DB_TAB as $DB_ROW)
   {
-    $pilier_id = $DB_ROW['rubrique_id'];
+    $pilier_id = $DB_ROW['pilier_id'];
     if(in_array($pilier_id,$tab_pilier))
     {
       $tab_pilier_id[] = $pilier_id;
@@ -95,7 +95,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
       {
         $affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v3"></td>';
       }
-      $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['rubrique_nom']).'</div></th>';
+      $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
       $affichage .= '</tr>';
     }
   }

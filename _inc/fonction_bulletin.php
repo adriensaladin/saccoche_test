@@ -399,31 +399,4 @@ function texte_ligne_assiduite($tab_assiduite)
   return $intro.$txt_absences_et_retards.'.';
 }
 
-/*
- * Fonction appelée par code_officiel_saisir.php pour un enregistrement simple et aussi lors de l'enregistrement d'un import CSV
- */
-function enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $prof_id , $appreciation )
-{
-  // élève ou classe
-  $saisie_type        = ($eleve_id) ? 'eleve'   : 'classe' ;
-  $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
-  if($rubrique_id==0)
-  {
-    // Dans le cas d'une appréciation générale, si c'est une autre personne en a saisi la version précédente, le REPLACE INTO ne la supprimera pas.
-    DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , 0 /*rubrique_id*/ , 0 /*prof_id*/ , $saisie_type );
-  }
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , NULL , $appreciation );
-}
-
-/*
- * Fonction appelée par code_officiel_saisir.php pour un enregistrement simple et aussi lors de l'enregistrement d'un import CSV
- */
-function enregistrer_note( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $moyenne )
-{
-  $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
-  $appreciation = 'Moyenne figée reportée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
-  return array( $note , $appreciation );
-}
-
 ?>

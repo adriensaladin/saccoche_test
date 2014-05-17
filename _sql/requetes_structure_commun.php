@@ -217,7 +217,6 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
  */
 public static function DB_OPT_arborescence($matiere_id,$niveau_id)
 {
-  $longueur_max = 125;
   $DB_SQL = 'SELECT item_id AS valeur, item_nom AS texte, CONCAT(domaine_id,"_",theme_id) AS optgroup, CONCAT(domaine_nom," || ",theme_nom) AS optgroup_info ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
@@ -230,14 +229,6 @@ public static function DB_OPT_arborescence($matiere_id,$niveau_id)
   $tab_optgroup = array();
   foreach($DB_TAB as $key => $DB_ROW)
   {
-    if(mb_strlen($DB_TAB[$key]['texte'])>$longueur_max)
-    {
-      $DB_TAB[$key]['texte'] = mb_substr($DB_TAB[$key]['texte'],0,$longueur_max-5).' [...]';
-    }
-    if(mb_strlen($DB_TAB[$key]['optgroup'])>$longueur_max)
-    {
-      $DB_TAB[$key]['optgroup'] = mb_substr($DB_TAB[$key]['optgroup'],0,$longueur_max-5).' [...]';
-    }
     $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
     unset($DB_TAB[$key]['optgroup_info']);
   }

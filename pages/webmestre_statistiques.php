@@ -37,20 +37,18 @@ $TITRE = "Statistiques d'utilisation";
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 
 <?php
-list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , FALSE /*info_connexion*/ );
+list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
 ?>
 
 <ul class="puce">
-  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?></b> personnel(s)          enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?></b> élève(s)               enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?></b> saisie(s) de notes     enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
-  <li>Il y a <b><?php echo number_format($validation_nb,0,'',' ') ?></b> validation(s) de socle enregistrée(s), dont <b><?php echo number_format($validation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b id="prof_nb"><?php echo number_format($prof_nb,0,'',' ') ?></b> professeurs enregistrés, dont <b id="prof_use"><?php echo number_format($prof_use,0,'',' ') ?></b> professeurs connectés.</li>
+  <li>Il y a <b id="eleve_nb"><?php echo number_format($eleve_nb,0,'',' ') ?></b> élèves enregistrés, dont <b id="eleve_use"><?php echo number_format($eleve_use,0,'',' ') ?></b> élèves connectés.</li>
+  <li>Il y a <b id="score_nb"><?php echo number_format($score_nb,0,'',' ') ?></b> saisies enregistrées.</li>
 </ul>
 <hr />
 <p id="expli">
   <span class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</span><br />
-  <span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span><br />
-  <span class="astuce">Les évaluations ou validations <b>récentes</b> sont celles effectuées au cours du dernier semestre.</span>
+  <span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span>
 </p>
 
 <?php endif /* * * * * * MONO-STRUCTURE FIN * * * * * */ ?>
@@ -80,7 +78,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
 
 <form action="#" method="post" id="structures" class="hide">
   <hr />
-  <table class="form t9 hsort" id="table_action">
+  <table class="form hsort" id="table_action">
     <thead>
       <tr>
         <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
@@ -88,25 +86,22 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
         <th>structure</th>
         <th>contact</th>
         <th>ancienneté</th>
-        <th>personnels<br />enregistrés</th>
-        <th>personnels<br />connectés</th>
+        <th>professeurs<br />enregistrés</th>
+        <th>professeurs<br />connectés</th>
         <th>élèves<br />enregistrés</th>
         <th>élèves<br />connectés</th>
-        <th>evaluations<br />enregistrées</th>
-        <th>evaluations<br />récentes</th>
-        <th>validations<br />enregistrées</th>
-        <th>validations<br />récentes</th>
+        <th>saisies<br />enregistrées</th>
         <th>connexion</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="14"></td>
+        <td class="nu" colspan="11"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="14"></td>
+        <td class="nu" colspan="11"></td>
       </tr>
     </tbody>
   </table>
@@ -119,7 +114,7 @@ $select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structure
   </p>
   <div class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</div>
   <div class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</div>
-  <div class="astuce">Les évaluations ou validations <b>récentes</b> sont celles effectuées au cours du dernier semestre.</div>
+  </p>
 </form>
 
 <?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>

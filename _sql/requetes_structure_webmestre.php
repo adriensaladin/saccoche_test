@@ -36,16 +36,11 @@ class DB_STRUCTURE_WEBMESTRE extends DB
 /**
  * Retourner au webmestre les statistiques d'un établissement (mono ou multi structures)
  *
- * @param bool $info_user_nb
- * @param bool $info_user_use
- * @param bool $info_action_nb
- * @param bool $info_action_use
- * @param bool $info_connexion
- * @return array()
+ * @param void
+ * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom)
  */
-public static function DB_recuperer_statistiques($info_user_nb,$info_user_use,$info_action_nb,$info_action_use,$info_connexion)
+public static function DB_recuperer_statistiques()
 {
-  $tab_retour = array();
   // La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
   $test_sortie = (!empty($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
@@ -53,72 +48,36 @@ public static function DB_recuperer_statistiques($info_user_nb,$info_user_use,$i
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_profil_sigle"' , NULL);
   $champ_profil = (!empty($DB_TAB)) ? 'user_profil_type' : 'user_profil' ;
   $left_join    = (!empty($DB_TAB)) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
-  // nb personnels enregistrés ; nb élèves enregistrés
-  if( $info_user_nb )
-  {
-    $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_user ';
-    $DB_SQL.= $left_join;
-    $DB_SQL.= 'WHERE '.$test_sortie.' ';
-    $DB_SQL.= 'GROUP BY '.$champ_profil;
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-    $nb_professeurs     = (isset($DB_TAB['professeur'    ])) ? $DB_TAB['professeur'    ]['nombre'] : 0 ;
-    $nb_directeurs      = (isset($DB_TAB['directeur'     ])) ? $DB_TAB['directeur'     ]['nombre'] : 0 ;
-    $nb_administrateurs = (isset($DB_TAB['administrateur'])) ? $DB_TAB['administrateur']['nombre'] : 0 ;
-    $nb_eleves          = (isset($DB_TAB['eleve'         ])) ? $DB_TAB['eleve'         ]['nombre'] : 0 ;
-    $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
-    $tab_retour[] = $nb_eleves;
-  }
-  // nb personnels connectés ; nb élèves connectés
-  if( $info_user_use )
-  {
-    $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_user ';
-    $DB_SQL.= $left_join;
-    $DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
-    $DB_SQL.= 'GROUP BY '.$champ_profil;
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
-    $nb_professeurs     = (isset($DB_TAB['professeur'    ])) ? $DB_TAB['professeur'    ]['nombre'] : 0 ;
-    $nb_directeurs      = (isset($DB_TAB['directeur'     ])) ? $DB_TAB['directeur'     ]['nombre'] : 0 ;
-    $nb_administrateurs = (isset($DB_TAB['administrateur'])) ? $DB_TAB['administrateur']['nombre'] : 0 ;
-    $nb_eleves          = (isset($DB_TAB['eleve'         ])) ? $DB_TAB['eleve'         ]['nombre'] : 0 ;
-    $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
-    $tab_retour[] = $nb_eleves;
-  }
-  // nb notes saisies aux évaluations ; nb validations saisies
-  if( $info_action_nb )
-  {
-    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_saisie';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL1.= 'FROM sacoche_jointure_user_entree';
-    $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL2.= 'FROM sacoche_jointure_user_pilier';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
-  }
-  // nb notes saisies aux évaluations récemment ; nb validations saisies récemment
-  if( $info_action_use )
-  {
-    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_saisie WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL1.= 'FROM sacoche_jointure_user_entree WHERE validation_entree_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-    $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL2.= 'FROM sacoche_jointure_user_pilier WHERE validation_pilier_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
-  }
+  // nb professeurs enregistrés ; nb élèves enregistrés
+  $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= $left_join;
+  $DB_SQL.= 'WHERE '.$test_sortie.' ';
+  $DB_SQL.= 'GROUP BY '.$champ_profil;
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+  $eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
+  // nb professeurs connectés ; nb élèves connectés
+  $DB_SQL = 'SELECT '.$champ_profil.', COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= $left_join;
+  $DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+  $DB_SQL.= 'GROUP BY '.$champ_profil;
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+  $eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
+  // nb notes saisies
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_saisie';
+  $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $score_nb = $DB_ROW['nombre'];
   // info de connexion
-  if( $info_connexion )
-  {
-    $DB_SQL = 'SELECT parametre_valeur ';
-    $DB_SQL.= 'FROM sacoche_parametre ';
-    $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';
-    $tab_retour[]= DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  }
+  $DB_SQL = 'SELECT parametre_valeur ';
+  $DB_SQL.= 'FROM sacoche_parametre ';
+  $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';
+  $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   // Retour
-  return $tab_retour;
+  return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom);
 }
 
 /**

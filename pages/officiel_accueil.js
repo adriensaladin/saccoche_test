@@ -260,7 +260,7 @@ $(document).ready
                   initialiser_compteur();
                   if(responseHTML.substring(0,4)!='<h2>')
                   {
-                    $('#zone_action_eleve').html('<label class="alerte">'+responseHTML+'</label> <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>');
+                    $('#zone_action_eleve').html('<label class="alerte">'+responseHTML+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
                   }
                   else
                   {
@@ -302,142 +302,9 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du clic sur le bouton pour envoyer un import csv (saisie déportée)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-    var uploader_csv = new AjaxUpload
-    ('#import_file',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: { 'csrf':CSRF , 'f_section':'officiel_importer' , 'f_action':'uploader_saisie_csv' , 'f_bilan_type':'maj_plus_tard' , 'f_classe':'maj_plus_tard' , 'f_groupe':'maj_plus_tard' , 'f_periode':'maj_plus_tard' , 'f_objet':'maj_plus_tard' , 'f_mode':'maj_plus_tard' },
-        autoSubmit: true,
-        responseType: "html",
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
-
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $('#msg_import').removeAttr("class").html('&nbsp;');
-      uploader_csv['_settings']['data']['f_bilan_type'] = BILAN_TYPE;
-      uploader_csv['_settings']['data']['f_classe']     = memo_classe;
-      uploader_csv['_settings']['data']['f_groupe']     = memo_groupe;
-      uploader_csv['_settings']['data']['f_periode']    = memo_periode;
-      uploader_csv['_settings']['data']['f_objet']      = $('#f_objet').val();
-      uploader_csv['_settings']['data']['f_mode']       = $('#f_mode').val();
-      return true;
-    }
-
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
-      {
-        $('#msg_import').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
-        return false;
-      }
-      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('#msg_import').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
-        return false;
-      }
-      else
-      {
-        $('#zone_action_deport button').prop('disabled',true);
-        $('#msg_import').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        return true;
-      }
-    }
-
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
-    {
-      if(responseHTML.substring(0,16)!='saisie_deportee_')
-      {
-        $('#msg_import').removeAttr("class").addClass("alerte").html(responseHTML);
-        $('#zone_action_deport button').prop('disabled',false);
-      }
-      else
-      {
-        $('#f_import_info').val(responseHTML);
-        // AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-        $.ajax
-        (
-          {
-            url : URL_IMPORT+responseHTML+'_rapport.txt',
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#msg_import').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
-              $('#zone_action_deport button').prop('disabled',false);
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('#msg_import').removeAttr("class").html('&nbsp;');
-              $('#table_import_analyse').html(responseHTML);
-              $.fancybox( { 'href':'#zone_action_import' , onStart:function(){$('#zone_action_import').css("display","block");} , onClosed:function(){$('#zone_action_import').css("display","none");} , 'modal':true , 'minHeight':300 , 'centerOnScroll':true } );
-              $('#zone_action_deport button').prop('disabled',false);
-            }
-          }
-        );
-      }
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du clic sur le bouton pour confirmer le traitement d'un import csv (saisie déportée)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_action_import').on
-    (
-      'click',
-      '#valider_importer',
-      function()
-      {
-        $('#zone_action_import button').prop('disabled',true);
-        $('#ajax_msg_importer').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#ajax_msg_importer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-              $('#zone_action_import button').prop('disabled',false);
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              var tab_infos = responseHTML.split(']¤[');
-              if( (tab_infos.length!=2) || (tab_infos[0]!='ok') )
-              {
-                $('#ajax_msg_importer').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-                $('#zone_action_import button').prop('disabled',false);
-              }
-              else
-              {
-                $('#table_import_analyse').html('');
-                $('#ajax_msg_importer').removeAttr("class").addClass("valide").html(tab_infos[1]);
-                $('#fermer_zone_importer').prop('disabled',false);
-              }
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Clic sur le bouton pour fermer la zone action_eleve
     // Clic sur le bouton pour fermer la zone de choix des rubriques
     // Clic sur le bouton pour fermer la zone zone_action_classe
-    // Clic sur le bouton pour fermer la zone zone_action_import
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -447,8 +314,6 @@ $(document).ready
       function()
       {
         $('#zone_action_eleve').html("&nbsp;").hide(0);
-        $('#zone_action_deport').hide(0);
-        $('#msg_import').removeAttr("class").html('&nbsp;');
         $('#cadre_photo').hide(0);
         $('#cadre_statut , #table_accueil').show(0);
         return false;
@@ -479,17 +344,6 @@ $(document).ready
       }
     );
 
-    $('#fermer_zone_importer').click
-    (
-      function()
-      {
-        $.fancybox.close();
-        $('#ajax_msg_importer').removeAttr("class").html('&nbsp;');
-        $('#zone_action_import button').prop('disabled',false);
-        return false;
-      }
-    );
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // [officiel_saisir|officiel_consulter] Navigation d'un élève à un autre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +357,6 @@ $(document).ready
       memo_eleve = eleve_id;
       $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
       $('#zone_resultat_eleve').html('<label class="loader">En cours&hellip;</label>');
-      $('#msg_import').removeAttr("class").html('&nbsp;');
       $.ajax
       (
         {
@@ -647,49 +500,6 @@ $(document).ready
         }
         var eleve_id = $('#go_selection_eleve option:selected').val();
         charger_nouvel_eleve(eleve_id,true);
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_saisir] Clic sur le bouton pour afficher le formulaire "Saisie déportée"
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      '#saisir_deport',
-      function()
-      {
-        $('#msg_import').removeAttr("class").html("");
-        $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'generer_csv_vierge'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,16)!='saisie_deportee_')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                $('#export_file_saisie_deportee').attr("href", './force_download.php?fichier='+responseHTML );
-                $.fancybox( { 'href':'#zone_action_deport' , onStart:function(){$('#zone_action_deport').css("display","block");} , onClosed:function(){$('#zone_action_deport').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
-              }
-            }
-          }
-        );
       }
     );
 

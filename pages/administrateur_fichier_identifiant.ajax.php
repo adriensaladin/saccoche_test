@@ -566,9 +566,10 @@ if($action=='import_ent')
       $id_sconet = ($tab_infos_csv['csv_id_sconet']==NULL) ? '' : $tab_elements[ $tab_infos_csv['csv_id_sconet'] ] ;
       if( ($id_ent!='') && ($nom!='') && ($prenom!='') )
       {
-        if(in_array($_SESSION['CONNEXION_NOM'],array('celia','lilie')))
+        if( (substr($_SESSION['CONNEXION_NOM'],0,7)=='logica_') || ($_SESSION['CONNEXION_NOM']=='parisclassenumerique') )
         {
-          $id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@ & PCN, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
+          // Dans les CSV de Lilie & Celi@ & PCN, il faut remplacer "ID : " par "UT" (exemple : "ID : 75185265" devient "UT75185265").
+          $id_ent = str_replace('ID : ','UT',$id_ent);
         }
         $tab_users_fichier['id_ent'][]    = Clean::id_ent($id_ent);
         $tab_users_fichier['nom'][]       = Clean::nom(Clean::accents($nom)); // En cas de comparaison sur nom / prénom, maieux vaut éviter les accents

@@ -36,6 +36,11 @@ class Layout
 
   // Titre du navigateur
   private static $head_browser_title = 'SACoche';
+  // Quelques constantes à adapter selon le domaine
+  const META_DESCRIPTION = 'SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun';
+  const META_KEYWORDS    = 'SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer';
+  const META_AUTHOR      = 'Thomas Crespin pour Sésamath';
+  const META_ROBOTS      = 'index,follow';
   // Tableaux
   private static $tab_css_file         = array(); // CSS fichiers
   private static $tab_css_file_ie      = array(); // CSS fichiers réservés à IE
@@ -84,16 +89,22 @@ class Layout
         if( ($fichier_original_extension=='js') && ($methode=='pack') )
         {
           $myPacker = new JavaScriptPacker($fichier_original_contenu, 62, TRUE, FALSE);
-          $fichier_compact_contenu = $myPacker->pack();
+          $fichier_compact_contenu = trim($myPacker->pack());
         }
         elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
         {
-          $fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
+          $fichier_compact_contenu = trim(JSMin::minify($fichier_original_contenu));
         }
         elseif( ($fichier_original_extension=='js') && ($methode=='comm') )
         {
-          // Retrait des /*! ... */ et /** ... */ ; option de recherche "s" (PCRE_DOTALL) pour inclure les retours à la lignes (@see http://fr.php.net/manual/fr/reference.pcre.pattern.modifiers.php).
-          $fichier_compact_contenu = preg_replace( '#'.'/\*!'.'(.*?)'.'\*/'.'#s' , '' , preg_replace( '#'.'/\*\*'.'(.*?)'.'\*/'.'#s' , '' , $fichier_original_contenu ) );
+          // Retrait des commentaires // ... et /** ... */ et /*! ... */
+          // Option de recherche "s" (PCRE_DOTALL) pour inclure les retours à la lignes (@see http://fr.php.net/manual/fr/reference.pcre.pattern.modifiers.php).
+          $fichier_compact_contenu = trim(
+            preg_replace( '#'.'(\n)+'.'#s' , "\n" , 
+            preg_replace( '#'.'// '.'(.*?)'.'\n'.'#s' , '' , 
+            preg_replace( '#'.'/\*!'.'(.*?)'.'\*/'.'#s' , '' , 
+            preg_replace( '#'.'/\*\*'.'(.*?)'.'\*/'.'#s' , '' , 
+            $fichier_original_contenu ) ) ) ) );
         }
         elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
         {
@@ -174,8 +185,9 @@ class Layout
     $string = '';
     if(!empty(Layout::$tab_css_inline))
     {
+      $string_css_inline = implode(NL,Layout::$tab_css_inline);
       $string .= '<style type="text/css">'.NL;
-      $string .= implode(NL,Layout::$tab_css_inline).NL;
+      $string .= (SERVEUR_TYPE == 'PROD') ? cssmin::minify($string_css_inline).NL : $string_css_inline.NL ;
       $string .= '</style>'.NL;
     }
     return $string;
@@ -192,8 +204,9 @@ class Layout
     $string = '';
     if(!empty(Layout::${'tab_js_inline_'.$position}))
     {
+      $string_js_inline = implode(NL,Layout::${'tab_js_inline_'.$position});
       $string .= '<script type="text/javascript">'.NL;
-      $string .= implode(NL,Layout::${'tab_js_inline_'.$position}).NL;
+      $string .= (SERVEUR_TYPE == 'PROD') ? trim(JSMin::minify($string_js_inline)).NL : $string_js_inline.NL ;
       $string .= '</script>'.NL;
     }
     return $string;
@@ -246,7 +259,7 @@ class Layout
     header('Content-Type: text/html; charset='.CHARSET);
     // @see http://www.alsacreations.com/astuce/lire/1437-comment-interdire-le-mode-de-compatibilite-sur-ie.html
     header('X-UA-Compatible: IE=edge');
-    $retour     = '';
+    $retour = '';
     $body_class = ($body_class) ? ' class="'.$body_class.'"' : '' ;
     $retour.= '<!DOCTYPE html>'.NL;
     $retour.= '<html lang="fr">'.NL;
@@ -254,10 +267,10 @@ class Layout
     $retour.=     '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
     if($is_meta_robots)
     {
-      $retour.=     '<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />'.NL;
-      $retour.=     '<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />'.NL;
-      $retour.=     '<meta name="author" content="Thomas Crespin pour Sésamath" />'.NL;
-      $retour.=     '<meta name="robots" content="index,follow" />'.NL;
+      $retour.=     '<meta name="description" content="'.Layout::META_DESCRIPTION.'" />'.NL;
+      $retour.=     '<meta name="keywords" content="'.Layout::META_KEYWORDS.'" />'.NL;
+      $retour.=     '<meta name="author" content="'.Layout::META_AUTHOR.'" />'.NL;
+      $retour.=     '<meta name="robots" content="'.Layout::META_ROBOTS.'" />'.NL;
     }
     if($is_favicon)
     {

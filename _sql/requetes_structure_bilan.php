@@ -61,7 +61,7 @@ public static function DB_recuperer_niveau_groupes($listing_groupe_id)
  * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public static function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
+public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme )
 {
   switch((string)$aff_domaine.(string)$aff_theme)
   {
@@ -85,7 +85,7 @@ public static function DB_recuperer_arborescence_selection($liste_eleve_id,$list
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_date>=:date_debut AND saisie_date<=:date_fin ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array( ':date_debut'=>$date_mysql_debut , ':date_fin'=>$date_mysql_fin );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   $tab_matiere = array();
   foreach($DB_TAB as $item_id => $tab)
@@ -113,7 +113,7 @@ public static function DB_recuperer_arborescence_selection($liste_eleve_id,$list
  * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public static function DB_recuperer_arborescence_professeur($liste_eleve_id,$prof_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
+public static function DB_recuperer_arborescence_professeur( $liste_eleve_id , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme )
 {
   $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
   $where_niveau     = 'AND niveau_actif=1 ' ;
@@ -142,7 +142,11 @@ public static function DB_recuperer_arborescence_professeur($liste_eleve_id,$pro
   $DB_SQL.= 'WHERE prof_id=:prof_id AND matiere_active=1 AND '.$where_eleve.$where_niveau.$where_socle.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(':prof_id'=>$prof_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array(
+    ':prof_id'    => $prof_id,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_matiere
   $tab_matiere = array();
@@ -171,7 +175,7 @@ public static function DB_recuperer_arborescence_professeur($liste_eleve_id,$pro
  * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
+public static function DB_recuperer_arborescence_bilan( $liste_eleve_id , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme )
 {
   $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
   $where_matiere    = ($matiere_id>0)               ? 'AND matiere_id=:matiere '             : 'AND matiere_active=1 ' ;
@@ -203,7 +207,11 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
   $DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_niveau.$where_socle.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
   $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array(
+    ':matiere'    => $matiere_id,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   if($matiere_id>0)
   {
@@ -236,7 +244,7 @@ public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_
  * @param string $date_mysql_fin
  * @return array
  */
-public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_items_travailles( $liste_eleve_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin )
 {
   $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
   $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
@@ -250,7 +258,7 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$where_matiere.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
-  $DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array( ':date_debut'=>$date_mysql_debut , ':date_fin'=>$date_mysql_fin );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_matiere
   $tab_matiere = array();
@@ -268,30 +276,37 @@ public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_mati
 /**
  * recuperer_matieres_travaillees
  * Retourner la liste des matières travaillées par les élèves d'une classe donnée, pour des matières données, durant une période donnée
- * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour les appréciations sur un groupe
+ * C'est une version simple de DB_recuperer_arborescence_bilan() qui sert pour les appréciations sur un groupe et l'import CSV d'un bilan officiel
  *
  * @param int    $classe_id   id de la classe (pas d'un sous-groupe)
  * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
+ * @param int    $prof_id   pour restreindre aux saisies d'un prof donné (facultatif)
  * @return array
  */
-public static function DB_recuperer_matieres_travaillees($classe_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin  ,$prof_id=NULL )
 {
+  $where_prof_id    = ($prof_id)          ? 'AND sacoche_saisie.prof_id=:prof_id '      : '';
   $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
-  $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
-  $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-  $DB_SQL = 'SELECT matiere_id, matiere_nom ';
+  $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut '             : '';
+  $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '               : '';
+  $DB_SQL = 'SELECT matiere_id as rubrique_id, matiere_nom as rubrique_nom ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id=sacoche_saisie.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'WHERE eleve_classe_id=:classe_id '.$where_matiere.$where_date_debut.$where_date_fin;
+  $DB_SQL.= 'WHERE eleve_classe_id=:classe_id '.$where_prof_id.$where_matiere.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY matiere_id ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC';
-  $DB_VAR = array(':classe_id'=>$classe_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array(
+    ':classe_id'  => $classe_id,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+    ':prof_id'    => $prof_id,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -310,7 +325,7 @@ public static function DB_recuperer_matieres_travaillees($classe_id,$liste_matie
  * @param string $date_mysql_fin
  * @return array
  */
-public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$fusion_niveaux,$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_arborescence_synthese( $liste_eleve_id , $matiere_id , $only_socle , $only_niveau , $mode_synthese='predefini' , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin )
 {
   $select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
   $select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
@@ -340,7 +355,11 @@ public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matie
   $DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_socle.$where_niveau.$where_date_debut.$where_date_fin.$where_synthese;
   $DB_SQL.= 'GROUP BY item_id ';
   $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array(
+    ':matiere'    => $matiere_id,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   // Traiter le résultat de la requête pour en extraire des sous-tableaux $tab_synthese et éventuellement $tab_matiere
   $tab_synthese = array();
@@ -421,7 +440,7 @@ public static function DB_recuperer_modes_synthese_inconnu()
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
  */
-public static function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
+public static function DB_lister_date_last_eleves_items( $liste_eleve_id , $liste_item_id )
 {
   $DB_SQL = 'SELECT eleve_id , item_id , MAX(saisie_date) AS date_last ';
   $DB_SQL.= 'FROM sacoche_saisie ';
@@ -445,7 +464,7 @@ public static function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_i
  * @param bool     $first_order_by_date
  * @return array
  */
-public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil_type,$onlyprof=FALSE,$onlynote=FALSE,$first_order_by_date=FALSE)
+public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , $matiere_id , $date_mysql_debut , $date_mysql_fin , $user_profil_type , $onlyprof=FALSE , $onlynote=FALSE , $first_order_by_date=FALSE )
 {
   $sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
   $sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
@@ -467,7 +486,11 @@ public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item
   $DB_SQL.= (!$first_order_by_date)
             ? 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '
             : 'ORDER BY saisie_date ASC, devoir_id ASC,'.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
-  $DB_VAR = array(':prof_id'=>$onlyprof,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+  $DB_VAR = array(
+    ':prof_id'    => $onlyprof,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -481,7 +504,7 @@ public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item
  * @param string $user_profil_type
  * @return array
  */
-public static function DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil_type)
+public static function DB_lister_result_eleves_palier_sans_infos_items( $liste_eleve_id , $liste_entree_id , $user_profil_type )
 {
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , ';
@@ -506,7 +529,7 @@ public static function DB_lister_result_eleves_palier_sans_infos_items($liste_el
  * @param bool     $with_brevet_serie
  * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
  */
-public static function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue,$with_brevet_serie)
+public static function DB_lister_eleves_cibles( $listing_eleve_id , $with_gepi , $with_langue , $with_brevet_serie )
 {
   $DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_naissance_date AS date_naissance ';
   $DB_SQL.= ($with_gepi)         ? ', user_id_gepi AS eleve_id_gepi ' : '' ;

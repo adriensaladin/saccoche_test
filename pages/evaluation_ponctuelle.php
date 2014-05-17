@@ -70,14 +70,14 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
     <label class="tab" for="f_classe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj_groupe">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève :</label><select id="f_eleve" name="f_eleve"><option></option></select></span>
   </p>
-  <p id="zone_validation" class="hide">
+  <div id="zone_validation" class="p hide">
     <label class="tab">Note :</label><?php echo $radio_boutons ?>
     <input id="f_devoir" name="f_devoir" type="hidden" value="0" />
     <input id="f_groupe" name="f_groupe" type="hidden" value="0" />
-  </p>
-  <p>
-    <span class="tab"></span><button id="bouton_valider" type="button" class="valider">Enregistrer.</button><label id="ajax_msg_enregistrement">&nbsp;</label>
-  </p>
+    <p>
+      <span class="tab"></span><button id="bouton_valider" type="button" class="valider">Enregistrer.</button><label id="ajax_msg_enregistrement">&nbsp;</label>
+    </p>
+  </div>
 </fieldset></form>
 <hr />
 <div id="bilan" class="hide">

@@ -12,7 +12,23 @@ Josselin Jacquard <josselin.jacquard@gmail.com> a travaillé le premier sur l'ut
 
 
 ========================================
-Modifications apportées à la source
+Modifications apportées à la source : configuration
+========================================
+
+
+##### Attention !!! #####
+
+L'autoload de SimpleSAMLphp (./_lib/SimpleSAMLphp/lib/_autoload.php)
+n'est pas chargé à cause de celui de SACoche ()./_inc/loader.php).
+
+Lors du passage de SimpleSAMLphp de la version 1.11.0 à 1.12.0
+l'autoload de SimpleSAMLphp s'est complexifié : @see ./SimpleSAMLphp/vendor/composer/
+
+Cela m'a fait renoncer à mettre à jour SimpleSAMLphp (qui a encore enflé : 6,77 Mo !).
+
+
+========================================
+Modifications apportées à la source : allègements
 ========================================
 
 
@@ -30,24 +46,29 @@ Pour alléger autant que possible cette librairie bien lourde :
   /metadata-templates/
   /schemas/
   /templates/
+  /vendor/
 
-- Dossier /lib/Auth/ retiré (inutilisé)
 - Dossier /modules/ vidé des dossiers inutilisés (tous sauf /core/ et /saml/)
 - Dossier /www/ vidé de tous ses sous-dossiers (dont /resources/ qui contient des sources js inutiles / obsolètes et un fichier _x_ qui est un jpg sans extension et qui fait râler TortoiseSVN, ...)
 
-On passe ainsi de 5,12Mo à 1,33Mo.
+On passe ainsi de 5,12 Mo à 1,33 Mo.
+
+
+========================================
+Modifications apportées à la source : configuration
+========================================
 
 
 Configuration de SimpleSAMLphp
-Modification complète du fichier /config/config.php
+Modification complète du fichier /config/config.php (##### Fichier à conserver lors des mises à jour #####)
 
 
 Configuration des sources d'authentification
-Modification complète du fichier /config/authsources.php
+Modification complète du fichier /config/authsources.php (##### Fichier à conserver lors des mises à jour #####)
 
 
 Ajout metadata du fournisseur d'identité Gepi
-Modification complète du fichier /metadata/saml20-idp-remote.php
+Modification complète du fichier /metadata/saml20-idp-remote.php (##### Fichier à conserver lors des mises à jour #####)
 
 
 ========================================

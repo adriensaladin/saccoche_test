@@ -598,7 +598,8 @@ table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;mar
 table.scor_eval tbody td input:focus {border:2px solid #00F}
 table.scor_eval tbody.h td input {width:22px;height:16px}
 table.scor_eval tbody.v td input {width:12px;height:22px}
-/* Pour les codes de notation (VV V R RR), défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+/* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+/*
 table.scor_eval tbody.h td input.ABS  {background:#FFF url(../_img/note/commun/h/ABS.gif)  no-repeat center center;}
 table.scor_eval tbody.v td input.ABS  {background:#FFF url(../_img/note/commun/v/ABS.gif)  no-repeat center center;}
 table.scor_eval tbody.h td input.DISP {background:#FFF url(../_img/note/commun/h/DISP.gif) no-repeat center center;}
@@ -615,6 +616,7 @@ table.scor_eval tbody.h td input.X    {background:#FFF url(../_img/note/commun/h
 table.scor_eval tbody.v td input.X    {background:#FFF url(../_img/note/commun/v/X.gif)    no-repeat center center;}
 table.scor_eval tbody.h td input.REQ  {background:#FFF url(../_img/note/commun/h/REQ.gif)  no-repeat center center;}
 table.scor_eval tbody.v td input.REQ  {background:#FFF url(../_img/note/commun/v/REQ.gif)  no-repeat center center;}
+*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */

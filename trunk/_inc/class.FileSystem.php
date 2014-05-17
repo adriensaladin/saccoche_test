@@ -478,7 +478,7 @@ class FileSystem
   }
 
   /**
-   * Enregistrer un fichier de rapport d'une action qui est ensuite affiché dans une fancybax au retour d'un appel ajax
+   * Enregistrer un fichier de rapport d'une action qui est ensuite affiché dans une fancybox au retour d'un appel ajax
    * 
    * @param string $fichier_nom
    * @param string $thead

@@ -51,7 +51,7 @@ $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : ''
     'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
   );
 
-if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer') ) )
+if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer','officiel_importer') ) )
 {
   if( ($section=='officiel_consulter') && ($action=='imprimer') )
   {
@@ -71,7 +71,7 @@ if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_c
 
 if( ($action=='signaler_faute') || ($action=='corriger_faute') )
 {
-  $_POST['f_action']='ajouter';
+  $_POST['f_action'] = 'ajouter';
   require(CHEMIN_DOSSIER_PAGES.'compte_message.ajax.php');
   exit(); // Normalement, on n'arrive pas jusque là.
 }
@@ -93,6 +93,15 @@ if( isset($tab_actions[$action]) )
 {
   require(CHEMIN_DOSSIER_INCLUDE.'code_officiel_archiver.php');
   exit(); // Normalement, on n'arrive pas jusque là.
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Il se peut que rien n'ait été récupéré à cause de l'upload d'un fichier trop lourd
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if(empty($_POST))
+{
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

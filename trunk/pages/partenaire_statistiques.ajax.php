@@ -41,7 +41,7 @@ $max  = (isset($_POST['max'])) ? (int)$_POST['max'] : 0 ;  // Nombre d'étapes �
 if((!$num)||(!$max))
 {
   // Pour mémoriser les totaux
-  $_SESSION['tmp']['totaux'] = array( 'prof_use'=>0 , 'eleve_use'=>0 , 'score_nb'=>0 );
+  $_SESSION['tmp']['totaux'] = array( 'personnel_use'=>0 , 'eleve_use'=>0 , 'evaluation_use'=>0 , 'validation_use'=>0 );
   // Mémoriser les données des structures concernées par les stats
   $_SESSION['tmp']['infos'] = array();
   $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
@@ -68,15 +68,25 @@ if( $num && $max && ($num<$max) )
   extract($_SESSION['tmp']['infos'][$num-1]);
   // Récupérer une série de stats
   charger_parametres_mysql_supplementaires($base_id);
-  list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
+  list($personnel_use,$eleve_use,$evaluation_use,$validation_use,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( FALSE /*info_user_nb*/ , TRUE /*info_user_use*/ , FALSE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   if( mb_strpos( $_SESSION['USER_CONNECTEURS'] , '|'.$connexion_nom.',' ) !== FALSE )
   {
     // maj les totaux
-    $_SESSION['tmp']['totaux']['prof_use']  += $prof_use;
-    $_SESSION['tmp']['totaux']['eleve_use'] += $eleve_use;
-    $_SESSION['tmp']['totaux']['score_nb']  += $score_nb;
+    $_SESSION['tmp']['totaux']['personnel_use']  += $personnel_use;
+    $_SESSION['tmp']['totaux']['eleve_use']      += $eleve_use;
+    $_SESSION['tmp']['totaux']['evaluation_use'] += $evaluation_use;
+    $_SESSION['tmp']['totaux']['validation_use'] += $validation_use;
     // Retour
-    exit('ok-<tr><td>'.html($geo).'</td><td>'.html($structure).'</td><td>'.html($connexion_nom).'</td><td>'.html($prof_use).'</td><td>'.html($eleve_use).'</td><td>'.html($score_nb).'</td></tr>');
+    $ligne_etabl = '<tr>'.
+      '<td>'.html($geo).'</td>'.
+      '<td>'.html($structure).'</td>'.
+      '<td>'.html($connexion_nom).'</td>'.
+      '<td>'.$personnel_use.'</td>'.
+      '<td>'.$eleve_use.'</td>'.
+      '<td>'.sprintf("%07u",$evaluation_use).'</i>'.number_format($evaluation_use,0,'',' ').'</td>'.
+      '<td>'.sprintf("%07u",$validation_use).'</i>'.number_format($validation_use,0,'',' ').'</td>'.
+      '</tr>';
+    exit('ok-'.$ligne_etabl);
   }
   else
   {
@@ -90,7 +100,13 @@ if( $num && $max && ($num<$max) )
 
 if( $num && $max && ($num==$max) )
 {
-  $ligne_total = '<tr><th colspan="3" class="nu">Totaux</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['score_nb'],0,'',' ').'</th></tr>';
+  $ligne_total = '<tr>'.
+    '<th colspan="3" class="nu">Totaux</th>'.
+    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['personnel_use'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use']     ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['evaluation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['validation_use'],0,'',' ').'</th>'.
+    '</tr>';
   unset($_SESSION['tmp']);
   exit('ok-'.$ligne_total);
 }

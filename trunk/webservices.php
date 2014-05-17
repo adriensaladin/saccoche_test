@@ -66,7 +66,7 @@ if($WS_qui=='AutoMaths')
 }
 
 /**
- * Place aux autres webservices à présent (pour l'instant seulement deux, qui se truovent sur le serveur de Bordeaux).
+ * Place aux autres webservices à présent (pour l'instant seuls ceux pour Bordeaux sont appelés depuis l'extérieur).
  * On ne vérifie dans un premier temps que le 1er paramètre (le service web prendra éventuellement en charge la suite).
  */
 $tab_ws = array('argos_parent','argos_ajout');

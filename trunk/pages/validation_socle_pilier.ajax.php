@@ -93,7 +93,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_piliers($palier_id);
   foreach($DB_TAB as $DB_ROW)
   {
-    $pilier_id = $DB_ROW['pilier_id'];
+    $pilier_id = $DB_ROW['rubrique_id'];
     if(in_array($pilier_id,$tab_pilier))
     {
       $tab_pilier_id[] = $pilier_id;
@@ -105,7 +105,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
         $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_v1'=>'0' , 'html_v0'=>'0' , 'class'=>' class="v2"' , 'title'=>'' , 'data_etat'=>'' );
       }
       $affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
-      $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
+      $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['rubrique_nom']).'</div></th>';
       $affichage .= '</tr>';
     }
   }

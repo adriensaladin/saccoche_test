@@ -130,6 +130,7 @@ Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20 = '.$_SESSION['OFFICIEL
 Layout::add( 'js_inline_before' , 'var BACKGROUND_NA     = "'.$_SESSION['BACKGROUND_NA'].'";' );
 Layout::add( 'js_inline_before' , 'var BACKGROUND_VA     = "'.$_SESSION['BACKGROUND_VA'].'";' );
 Layout::add( 'js_inline_before' , 'var BACKGROUND_A      = "'.$_SESSION['BACKGROUND_A'].'";' );
+Layout::add( 'js_inline_before' , 'var URL_IMPORT        = "'.URL_DIR_IMPORT.'";' );
 ?>
 
 <ul class="puce">
@@ -530,7 +531,8 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 
-<div id="zone_action_eleve"></div>
+<div id="zone_action_eleve">
+</div>
 
 <div id="zone_action_classe" class="hide">
   <h2>Recherche de saisies manquantes | Imprimer le bilan (PDF)</h2>
@@ -585,6 +587,41 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 
 <?php
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Formulaire pour afficher le résultat de l'analyse d'un fichier CSV et demander confirmation.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:grey}' ); // Pour le rapport d'analyse
+?>
+
+<form action="#" method="post" id="zone_action_deport" class="hide" onsubmit="return false">
+  <h2>Saisie déportée</h2>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></p>
+  <ul class="puce">
+    <li><a id="export_file_saisie_deportee" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
+    <li><button id="import_file" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
+  </ul>
+  <p class="ti">
+    <label id="msg_import">&nbsp;</label>
+  </p>
+</form>
+
+<form action="#" method="post" id="zone_action_import" class="hide" onsubmit="return false">
+  <h2>Analyse des données à importer</h2>
+  <p class="astuce">Les informations <span class="insert">en vert seront ajoutées</span>, <span class="update">celles en rouge modifiées</span>, et <span class="idem">celles en gris inchangées</span>.</p>
+  <table id="table_import_analyse" class="t9">
+    <thead>
+      <tr><td class="nu" colspan="3"></td></tr>
+    </thead>
+    <tbody>
+      <tr><td class="nu" colspan="3"></td></tr>
+    </tbody>
+  </table>
+  <p class="ti">
+    <input type="hidden" value="" name="f_import_info" id="f_import_info" /><button id="valider_importer" type="button" class="valider">Confirmer</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_importer" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_importer">&nbsp;</label>
+  </p>
+</form>
+
+<?php
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire pour signaler ou corriger une faute dans une appréciation.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
@@ -618,6 +655,7 @@ $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y')))
 
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</p>
   <ul class="puce">
     <?php if($BILAN_TYPE=='bulletin'): ?>

@@ -64,7 +64,7 @@ public static function DB_recuperer_associations_entrees_socle()
  */
 public static function DB_recuperer_piliers($palier_id)
 {
-  $DB_SQL = 'SELECT * ';
+  $DB_SQL = 'SELECT pilier_id as rubrique_id, pilier_nom as rubrique_nom ';
   $DB_SQL.= 'FROM sacoche_socle_pilier ';
   $DB_SQL.= 'WHERE palier_id=:palier_id ';
   $DB_SQL.= 'ORDER BY pilier_ordre ASC';
@@ -79,7 +79,7 @@ public static function DB_recuperer_piliers($palier_id)
  * @param string   $listing_domaine_id   id des domaines séparés par des virgules (facultatif, pour restreindre à des domaines précis)
  * @return array
  */
-public static function DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
+public static function DB_recuperer_arborescence_pilier( $pilier_id , $listing_domaine_id='' )
 {
   $where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
   $DB_SQL = 'SELECT * ';
@@ -116,7 +116,7 @@ public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
  * @param int $entree_id
  * @return array
  */
-public static function DB_lister_result_eleve_item($eleve_id,$entree_id)
+public static function DB_lister_result_eleve_item( $eleve_id , $entree_id )
 {
   $DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
   $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
@@ -131,7 +131,7 @@ public static function DB_lister_result_eleve_item($eleve_id,$entree_id)
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
+  $DB_VAR = array( ':eleve_id'=>$eleve_id , ':entree_id'=>$entree_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -142,7 +142,7 @@ public static function DB_lister_result_eleve_item($eleve_id,$entree_id)
  * @param string $listing_pilier_id   id des piliers séparés par des virgules
  * @return array
  */
-public static function DB_lister_nombre_validations_eleves_items($listing_eleve_id,$listing_pilier_id)
+public static function DB_lister_nombre_validations_eleves_items( $listing_eleve_id , $listing_pilier_id )
 {
   $DB_SQL = 'SELECT user_id, pilier_id, validation_entree_etat, COUNT(entree_id) AS nombre ';
   $DB_SQL.= 'FROM sacoche_jointure_user_entree ';
@@ -161,7 +161,7 @@ public static function DB_lister_nombre_validations_eleves_items($listing_eleve_
  * @param bool     $only_sconet_id     restreindre (ou pas) aux élèves ayant un id sconet
  * @return array
  */
-public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id)
+public static function DB_lister_eleves_cibles_actuels_avec_sconet_id( $listing_eleve_id , $only_sconet_id )
 {
   $DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
   $DB_SQL.= 'FROM sacoche_user ';
@@ -182,7 +182,7 @@ public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_e
  * @param bool   $detail
  * @return array
  */
-public static function DB_lister_infos_items($liste_item_id,$detail)
+public static function DB_lister_infos_items( $liste_item_id , $detail )
 {
   $DB_SQL = 'SELECT item_id , ';
   if($detail)
@@ -213,7 +213,7 @@ public static function DB_lister_infos_items($liste_item_id,$detail)
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-public static function DB_lister_jointure_user_entree($listing_eleves,$listing_entrees,$domaine_id,$pilier_id,$palier_id)
+public static function DB_lister_jointure_user_entree( $listing_eleves , $listing_entrees , $domaine_id , $pilier_id , $palier_id )
 {
   if($listing_entrees)
   {
@@ -263,7 +263,7 @@ public static function DB_lister_jointure_user_entree($listing_eleves,$listing_e
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-public static function DB_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
+public static function DB_lister_jointure_user_pilier( $listing_eleves , $listing_piliers , $palier_id )
 {
   if($palier_id)
   {
@@ -291,7 +291,7 @@ public static function DB_lister_jointure_user_pilier($listing_eleves,$listing_p
  * @param bool     $only_positives
  * @return array
  */
-public static function DB_lister_validations_items($listing_eleves,$only_positives)
+public static function DB_lister_validations_items( $listing_eleves , $only_positives )
 {
   $DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
   $DB_SQL.= 'FROM sacoche_jointure_user_entree ';
@@ -312,7 +312,7 @@ public static function DB_lister_validations_items($listing_eleves,$only_positiv
  * @param bool   $only_positives
  * @return array
  */
-public static function DB_lister_validations_competences($listing_eleves,$only_positives)
+public static function DB_lister_validations_competences( $listing_eleves , $only_positives )
 {
   $DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
   $DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
@@ -368,11 +368,17 @@ public static function DB_compter_eleves_actuels_sans_id_sconet()
  * @param string $validation_info
  * @return void
  */
-public static function DB_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+public static function DB_ajouter_validation( $type , $user_id , $element_id , $validation_etat , $validation_date_mysql , $validation_info )
 {
   $DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
   $DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
+  $DB_VAR = array(
+    ':user_id'=>$user_id,
+    ':'.$type.'_id'          => $element_id,
+    ':validation_etat'       => $validation_etat,
+    ':validation_date_mysql' => $validation_date_mysql,
+    ':validation_info'       => $validation_info,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -387,12 +393,18 @@ public static function DB_ajouter_validation($type,$user_id,$element_id,$validat
  * @param string $validation_info
  * @return void
  */
-public static function DB_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+public static function DB_modifier_validation( $type , $user_id , $element_id , $validation_etat , $validation_date_mysql , $validation_info )
 {
   $DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' ';
   $DB_SQL.= 'SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
   $DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
+  $DB_VAR = array(
+    ':user_id'               => $user_id,
+    ':'.$type.'_id'          => $element_id,
+    ':validation_etat'       => $validation_etat,
+    ':validation_date_mysql' => $validation_date_mysql,
+    ':validation_info'       => $validation_info,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -404,11 +416,14 @@ public static function DB_modifier_validation($type,$user_id,$element_id,$valida
  * @param int    $element_id
  * @return void
  */
-public static function DB_supprimer_validation($type,$user_id,$element_id)
+public static function DB_supprimer_validation( $type , $user_id , $element_id )
 {
   $DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
   $DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id);
+  $DB_VAR = array(
+    ':user_id'      => $user_id,
+    ':'.$type.'_id' => $element_id,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

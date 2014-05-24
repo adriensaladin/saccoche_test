@@ -371,4 +371,19 @@ if($version_base_structure_actuelle=='2014-04-04')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-05-03 => 2014-05-24
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-05-03')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-05-24';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Erreur champ sacoche_officiel_fichier
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_fichier CHANGE officiel_type officiel_type ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin" ' );
+  }
+}
+
 ?>

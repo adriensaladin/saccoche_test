@@ -40,7 +40,7 @@ $WS_qui  = (isset($_POST['qui']))  ? Clean::texte($_POST['qui']) : ( (isset($_GE
 $WS_cle  = (isset($_POST['cle']))  ? Clean::texte($_POST['cle']) : '';
 $WS_uai  = (isset($_POST['uai']))  ? Clean::uai($_POST['uai'])   : '';
 $WS_uid  = (isset($_POST['uid']))  ? Clean::texte($_POST['uid']) : '';
-$WS_data = (isset($_POST['data'])) ? $_POST['data']              : ''; // tableau sérialisé
+$WS_data = (isset($_POST['data'])) ? $_POST['data']              : ''; // tableau sérializé
 
 /**
  * Cas d'un service externe récupérant les données d'un user authentifié sur SACoche.

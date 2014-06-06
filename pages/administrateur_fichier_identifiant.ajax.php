@@ -569,6 +569,7 @@ if($action=='import_ent')
         if( (substr($_SESSION['CONNEXION_NOM'],0,7)=='logica_') || ($_SESSION['CONNEXION_NOM']=='parisclassenumerique') )
         {
           // Dans les CSV de Lilie & Celi@ & PCN, il faut remplacer "ID : " par "UT" (exemple : "ID : 75185265" devient "UT75185265").
+          // Dans PCN c'est bon, ils exportent un CSV propre.
           $id_ent = str_replace('ID : ','UT',$id_ent);
         }
         $tab_users_fichier['id_ent'][]    = Clean::id_ent($id_ent);

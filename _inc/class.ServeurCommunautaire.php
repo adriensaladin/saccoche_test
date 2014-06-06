@@ -404,6 +404,7 @@ class ServeurCommunautaire
 
   /**
    * Ajouter la signature au XML d'export des validations vers LPC.
+   * Timeout augmenté à 30s car il arrive que des XML pèsent 2 à 3Mo et cela a coincé sur un serveur avec un timeout de 15s.
    * 
    * @param int       $sesamath_id
    * @param string    $sesamath_key
@@ -423,7 +424,7 @@ class ServeurCommunautaire
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return cURL::get_contents( SERVEUR_LPC_SIGNATURE , $tab_post , 15 /*timeout*/ );
+    return cURL::get_contents( SERVEUR_LPC_SIGNATURE , $tab_post , 30 /*timeout*/ );
   }
 
   /**

@@ -278,36 +278,61 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
-.file_doc  {background-position: 0    0px}
-.file_docx {background-position: 0  -20px}
-.file_exe  {background-position: 0  -40px}
-.file_fla  {background-position: 0  -60px}
-.file_htm  {background-position: 0  -80px}
-.file_iso  {background-position: 0 -100px}
-.file_jpg  {background-position: 0 -120px}
-.file_mp4  {background-position: 0 -140px}
-.file_odg  {background-position: 0 -160px}
-.file_odp  {background-position: 0 -180px}
-.file_ods  {background-position: 0 -200px}
-.file_odt  {background-position: 0 -220px}
-.file_pdf  {background-position: 0 -240px}
-.file_php  {background-position: 0 -260px}
-.file_ppt  {background-position: 0 -280px}
-.file_pptx {background-position: 0 -300px}
-.file_rtf  {background-position: 0 -320px}
-.file_swf  {background-position: 0 -340px}
-.file_sxc  {background-position: 0 -360px}
-.file_sxd  {background-position: 0 -380px}
-.file_sxi  {background-position: 0 -400px}
-.file_sxw  {background-position: 0 -420px}
-.file_tep  {background-position: 0 -440px}
-.file_tex  {background-position: 0 -460px}
-.file_txt  {background-position: 0 -480px}
-.file_xls  {background-position: 0 -500px}
-.file_xlsx {background-position: 0 -520px}
-.file_xml  {background-position: 0 -540px}
-.file_zip  {background-position: 0 -560px}
+.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.file_aac  {background-position: 0  -20px}
+.file_mp3  {background-position: 0  -20px} /* attention : même décalage */
+.file_ogg  {background-position: 0  -20px} /* attention : même décalage */
+.file_wav  {background-position: 0  -20px} /* attention : même décalage */
+.file_dmg  {background-position: 0  -40px}
+.file_doc  {background-position: 0  -60px}
+.file_docx {background-position: 0  -80px}
+.file_bat  {background-position: 0 -100px}
+.file_exe  {background-position: 0 -100px} /* attention : même décalage */
+.file_fla  {background-position: 0 -120px}
+.file_g2w  {background-position: 0 -140px}
+.file_g3w  {background-position: 0 -140px} /* attention : même décalage */
+.file_ggb  {background-position: 0 -160px}
+.file_htm  {background-position: 0 -180px}
+.file_html {background-position: 0 -180px} /* attention : même décalage */
+.file_bmp  {background-position: 0 -200px}
+.file_gif  {background-position: 0 -200px} /* attention : même décalage */
+.file_jpe  {background-position: 0 -200px} /* attention : même décalage */
+.file_jpeg {background-position: 0 -200px} /* attention : même décalage */
+.file_jpg  {background-position: 0 -200px} /* attention : même décalage */
+.file_png  {background-position: 0 -200px} /* attention : même décalage */
+.file_gif  {background-position: 0 -200px} /* attention : même décalage */
+.file_iso  {background-position: 0 -220px}
+.file_mgj  {background-position: 0 -240px}
+.file_msi  {background-position: 0 -260px}
+.file_odg  {background-position: 0 -280px}
+.file_odp  {background-position: 0 -300px}
+.file_ods  {background-position: 0 -320px}
+.file_odt  {background-position: 0 -340px}
+.file_pdf  {background-position: 0 -360px}
+.file_php  {background-position: 0 -380px}
+.file_ppt  {background-position: 0 -400px}
+.file_pptx {background-position: 0 -420px}
+.file_rtf  {background-position: 0 -440px}
+.file_skp  {background-position: 0 -460px}
+.file_swf  {background-position: 0 -480px}
+.file_sxc  {background-position: 0 -500px}
+.file_sxd  {background-position: 0 -520px}
+.file_sxi  {background-position: 0 -540px}
+.file_sxw  {background-position: 0 -560px}
+.file_tep  {background-position: 0 -580px}
+.file_tex  {background-position: 0 -600px}
+.file_txt  {background-position: 0 -620px}
+.file_avi  {background-position: 0 -640px}
+.file_mpe  {background-position: 0 -640px} /* attention : même décalage */
+.file_mpeg {background-position: 0 -640px} /* attention : même décalage */
+.file_mpg  {background-position: 0 -640px} /* attention : même décalage */
+.file_mp4  {background-position: 0 -640px} /* attention : même décalage */
+.file_ogv  {background-position: 0 -640px} /* attention : même décalage */
+.file_wmv  {background-position: 0 -640px} /* attention : même décalage */
+.file_xls  {background-position: 0 -660px}
+.file_xlsx {background-position: 0 -680px}
+.file_xml  {background-position: 0 -700px}
+.file_zip  {background-position: 0 -720px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images relatives aux états des bilans officiels                                                     */

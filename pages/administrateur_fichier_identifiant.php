@@ -133,7 +133,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 
   <fieldset id="fieldset_import_id_ent_normal" class="hide">
     <hr />
-    <div class="astuce">Vous devez commencer par sélectionner votre ENT depuis la page "<a href="./index.php?page=administrateur_etabl_connexion">Mode d'identification</a>".</div>
+    <div class="astuce">Vous devez commencer par sélectionner votre ENT depuis la page "<a href="./index.php?page=administrateur_etabl_connexion">Mode d'identification / Connecteur ENT</a>".</div>
   </fieldset>
 
   <fieldset id="fieldset_import_id_ent_cas" class="hide">

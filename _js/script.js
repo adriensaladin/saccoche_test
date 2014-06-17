@@ -88,6 +88,21 @@ function replaceAll(find, replace, str)
 }
 
 /**
+ * Fonction pour extraire le hash (sans le dièse) d'une URL
+ * Mise en place car un substring() ne passe pas si 
+ * session.use_trans_sid = ON et session.use_only_cookies = OFF
+ * car alors PHP rajoute ?SACoche-session= dans les liens
+ *
+ * @param href
+ * @return string
+ */
+function extract_hash(href)
+{
+  var pos_hash = href.lastIndexOf('#');
+  return (pos_hash!==-1) ? href.substr(pos_hash+1) : '' ;
+}
+
+/**
  * Fonction pour interpréter une erreur d'extraction json
  *
  * @param jqXHR      l'objet retourné par ajax, contenant la réponse du serveur

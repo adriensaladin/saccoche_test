@@ -566,10 +566,10 @@ if($action=='import_ent')
       $id_sconet = ($tab_infos_csv['csv_id_sconet']==NULL) ? '' : $tab_elements[ $tab_infos_csv['csv_id_sconet'] ] ;
       if( ($id_ent!='') && ($nom!='') && ($prenom!='') )
       {
-        if( (substr($_SESSION['CONNEXION_NOM'],0,7)=='logica_') || ($_SESSION['CONNEXION_NOM']=='parisclassenumerique') )
+        if(substr($_SESSION['CONNEXION_NOM'],0,7)=='logica_')
         {
           // Dans les CSV de Lilie & Celi@ & PCN, il faut remplacer "ID : " par "UT" (exemple : "ID : 75185265" devient "UT75185265").
-          // Dans PCN c'est bon, ils exportent un CSV propre.
+          // 06/06/2014 - Dans PCN c'est maintenant bon, ils exportent un CSV propre et compatible avec tous les utilisateurs.
           $id_ent = str_replace('ID : ','UT',$id_ent);
         }
         $tab_users_fichier['id_ent'][]    = Clean::id_ent($id_ent);

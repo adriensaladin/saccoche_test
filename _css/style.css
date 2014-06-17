@@ -41,9 +41,9 @@ body {height:100%;width:100%;background:#FFF;font:13px "arial","helvetica","nimb
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
-#aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px}
+#aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #66F;margin-left:2em;margin-right:3px}
 .legende div {margin:2px 1em}
-.legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px;white-space:nowrap}
+.legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #66F;margin-left:2em;margin-right:3px;white-space:nowrap}
 /* td img {vertical-align:baseline} */
 /* label img {vertical-align:text-top} */
 a.anti_h2{padding-left:15px;margin-left:1em;font-size:75%;font-weight:normal;font-variant:normal;letter-spacing:0;background:transparent no-repeat left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAolBMVEUAAABMlURLlUQlZCFhsFhLlURLlURNlkUgXh1zx2gqaiUjYiAkYyBOl0ZtvmJZplBKkkI+gzgpaSUzdS1BhzpouF1wwmVyxGZxw2UubylsvWFXok44ezKw2alnpl+BwXiWzYxgn1gsbSeNyIIxcyttvmFnuF2QyoZerFQnZiN0tGyn1Z9amVOc0pSq1qJ0s2tqqWJYl1Fks1p4t287gDU2ejGi8UExAAAAHXRSTlMAr9yZyMHJAkBA7MbV6Ky+976sxgncmcbV3OwJydRtN/4AAAB7SURBVBjTY8AJ+NjRBERZEGxOcVVVNXl5fjhfQldWVk9PW4sXKiCmICuvoWGszwpTIaVmBNTPxMYugjAFaAMjqi2MKDxpdjYmBgYZFSUumAirgZyJqaGyIjOULyCnoKCurCzHwwFTIaioo6Kkyc2BMEVYEs0j7EK4fQ0AWWIIILX4+E4AAAAASUVORK5CYII=");} /* puce_actualiser_small */
@@ -61,10 +61,13 @@ kbd:hover{background-color:#CCC;border-color:#AAA}
 .breakafter{page-break-after:always}
 .fd{float:right;margin-right:1em}
 .avant{color:#666;background-color:#FFC;font-size:12px}
+.avant b{color:#333;}
 .notnow{color:#666}
 .now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
 .fluo{background:#FF0} /* pas de padding sinon pose souci pour du texte dans un tableau */
-div.appreciation {white-space:pre-wrap}
+div.appreciation{white-space:pre-wrap}
+div.bordertop{border-top:1px dashed #999;margin-top:2px}
+span.pourcentage{display:inline-block;width:3em;padding-right:3px;text-align:right}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 *.probleme, noscript {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
 
@@ -547,6 +550,7 @@ input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
 select[multiple],textarea {vertical-align:middle}
+textarea {white-space:pre-wrap}
 
 /* select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur) */
 span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
@@ -561,7 +565,7 @@ span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table {margin-left:1ex}
-th, td  {padding:0   2px;text-align:left;white-space:nowrap}
+th, td  {padding:2px 2px;text-align:left;white-space:nowrap}
 span.td {padding:1px 2px;text-align:center;white-space:nowrap}
 table tr {background:#EEF}
 table th {border:1px solid #66F;background:#DDF;font-weight:bold}

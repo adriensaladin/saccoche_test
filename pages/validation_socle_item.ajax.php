@@ -295,7 +295,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
         // on détermine si elle est acquise ou pas
         $indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
         // on enregistre les infos
-        $tab_infos_socle_eleve[] = html($item_ref.' || '.$item_nom).'<span class="'.$tab_etat[$indice].'">&nbsp;['.$score.'%]&nbsp;</span>';
+        $tab_infos_socle_eleve[] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$score.'%</span> '.html($item_ref.' - '.$item_nom);
         $tab_score_socle_eleve[$indice]++;
         $tab_score_socle_eleve['nb']++;
       }

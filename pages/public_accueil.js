@@ -162,10 +162,10 @@ $(document).ready
       'a.lost',
       function()
       {
-        var ancre = $(this).attr('href').substr(1); // #...
+        var ancre = extract_hash( $(this).attr('href') );
         $('#form_auth').hide();
         $('#'+ancre+', #form_lost').show();
-
+        return false;
       }
     );
 

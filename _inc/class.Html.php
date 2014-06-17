@@ -468,7 +468,7 @@ class Html
       elseif( !$avec_texte_nombre && !$avec_texte_code ) { $texte_complet = '&nbsp;'; }
       elseif(  $avec_texte_nombre && !$avec_texte_code ) { $texte_complet = $nb; }
       $texte = ( (5*strlen($texte_complet)<$span_width) || !$avec_texte_code ) ? $texte_complet : ( ($avec_texte_nombre) ? $nb : '&nbsp;' ) ;
-      $span .= '<span class="'.Html::$tab_couleur[$etat].'" style="display:inline-block;width:'.$span_width.'px">'.$texte.'</span>';
+      $span .= '<span class="'.Html::$tab_couleur[$etat].'" style="display:inline-block;width:'.$span_width.'px;padding:2px 0">'.$texte.'</span>';
     }
     return '<td style="padding:0;width:'.$td_width.'px" class="hc">'.$span.'</td>';
   }

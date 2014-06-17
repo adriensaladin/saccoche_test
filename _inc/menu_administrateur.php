@@ -45,14 +45,14 @@ $tab_menu = array
   ),
   "Paramétrages établissement" => array
   (
-    "Identité de l'établissement"            => array( 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
-    "Mode d'identification / Connecteur ENT" => array( 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
-    "Redirection après déconnexion"          => array( 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
-    "Niveaux"                                => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
-    "Matières"                               => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
-    "Paliers du socle"                       => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
-    "Notation : codes, couleurs, légendes"   => array( 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_codes_couleurs'     ),
-    "Algorithme de calcul"                   => array( 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' ),
+    "Identité de l'établissement"          => array( 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
+    "Mode d'identification"                => array( 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
+    "Redirection après déconnexion"        => array( 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
+    "Niveaux"                              => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
+    "Matières"                             => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
+    "Paliers du socle"                     => array( 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
+    "Notation : codes, couleurs, légendes" => array( 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_codes_couleurs'     ),
+    "Algorithme de calcul"                 => array( 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' ),
   ),
   "Paramétrages utilisateurs" => array
   (

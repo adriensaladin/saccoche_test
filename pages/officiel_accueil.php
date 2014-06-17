@@ -667,7 +667,6 @@ $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y')))
       <?php endif; ?>
       <?php if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']): ?>
         <li><button id="imprimer_donnees_eleves_moyennes" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des moyennes pour chaque élève.</li>
-        <li><button id="imprimer_donnees_eleves_recapitulatif" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des moyennes et appréciations par élève.</li>
       <?php endif; ?>
     <?php else: ?>
       <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève.</li>

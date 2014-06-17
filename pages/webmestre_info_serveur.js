@@ -34,7 +34,7 @@ $(document).ready
     (
       function()
       {
-        var module = extract_hash( $(this).attr('href') );
+        var module = $(this).attr('href').substr(1); // #...
         $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
         (

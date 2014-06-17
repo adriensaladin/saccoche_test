@@ -29,15 +29,15 @@
 
 define(  'CHROME_VERSION_MINI_REQUISE'   , 3  ); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2009).');
 define(  'CHROME_VERSION_MINI_CONSEILLEE', 5  );
-define(  'CHROME_VERSION_LAST'           ,35  ); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_LAST'           ,34  ); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3.5); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3.5 minimum (sortie en 2009).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4  );
-define( 'FIREFOX_VERSION_LAST'           ,30  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,29  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
-define(   'OPERA_VERSION_LAST'           ,22  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
+define(   'OPERA_VERSION_LAST'           ,21  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
 
 define(  'SAFARI_VERSION_MINI_REQUISE'   , 4  ); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 4 minimum (sortie en 2009).');
 define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5  );
@@ -115,12 +115,6 @@ class Browser
     {
       $tab_retour['modele']  = 'explorer';
       $tab_retour['version'] = (preg_match('#msie\s([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
-    }
-    // IE11 ne contient plus "MSIE" pour ne pas se faire repérer comme étant IE ! Alors on cherche aussi "Trident" (IE8+).
-    elseif( (!preg_match('#opera|webtv#', $UserAgent)) && (strstr($UserAgent,'trident')) )
-    {
-      $tab_retour['modele']  = 'explorer';
-      $tab_retour['version'] = (preg_match('#rv:([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
     }
     elseif(strstr($UserAgent,'firefox'))
     {

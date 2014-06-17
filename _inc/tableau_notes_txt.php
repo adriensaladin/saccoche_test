@@ -36,7 +36,6 @@ $tab_notes_info = array
   'Blaye'       => array( 'nom'=>'Blaye'       , 'RR' =>'NA' , 'R' =>'VA' , 'V' =>'AR' , 'VV' =>'A'  ),
   'CitesUnies'  => array( 'nom'=>'Cités Unies' , 'RR' =>'Rou', 'R' =>'Ora', 'V' =>'Ver', 'VV' =>'Dor'),
   'Courbet'     => array( 'nom'=>'Courbet'     , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'A'  , 'VV' =>'M'  ),
-  'Descartes'   => array( 'nom'=>'Descartes'   , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'A'  , 'VV' =>'E'  ),
   'Deutsch'     => array( 'nom'=>'Deutsch'     , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'V'  , 'VV' =>'B'  ),
   'Europe'      => array( 'nom'=>'Europe'      , 'RR' =>'D'  , 'R' =>'C'  , 'V' =>'B'  , 'VV' =>'A'  ),
   'Indonesie'   => array( 'nom'=>'Indonésie'   , 'RR' =>'D'  , 'R' =>'C'  , 'V' =>'B'  , 'VV' =>'A'  ),

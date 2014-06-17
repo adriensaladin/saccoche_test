@@ -41,9 +41,9 @@ body {height:100%;width:100%;background:#FFF;font:13px "arial","helvetica","nimb
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
-#aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #66F;margin-left:2em;margin-right:3px}
+#aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px}
 .legende div {margin:2px 1em}
-.legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #66F;margin-left:2em;margin-right:3px;white-space:nowrap}
+.legende span.cadre {font-size:90%;padding:0 3px;border:1px solid #6666FF;margin-left:2em;margin-right:3px;white-space:nowrap}
 /* td img {vertical-align:baseline} */
 /* label img {vertical-align:text-top} */
 a.anti_h2{padding-left:15px;margin-left:1em;font-size:75%;font-weight:normal;font-variant:normal;letter-spacing:0;background:transparent no-repeat left url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAolBMVEUAAABMlURLlUQlZCFhsFhLlURLlURNlkUgXh1zx2gqaiUjYiAkYyBOl0ZtvmJZplBKkkI+gzgpaSUzdS1BhzpouF1wwmVyxGZxw2UubylsvWFXok44ezKw2alnpl+BwXiWzYxgn1gsbSeNyIIxcyttvmFnuF2QyoZerFQnZiN0tGyn1Z9amVOc0pSq1qJ0s2tqqWJYl1Fks1p4t287gDU2ejGi8UExAAAAHXRSTlMAr9yZyMHJAkBA7MbV6Ky+976sxgncmcbV3OwJydRtN/4AAAB7SURBVBjTY8AJ+NjRBERZEGxOcVVVNXl5fjhfQldWVk9PW4sXKiCmICuvoWGszwpTIaVmBNTPxMYugjAFaAMjqi2MKDxpdjYmBgYZFSUumAirgZyJqaGyIjOULyCnoKCurCzHwwFTIaioo6Kkyc2BMEVYEs0j7EK4fQ0AWWIIILX4+E4AAAAASUVORK5CYII=");} /* puce_actualiser_small */
@@ -61,13 +61,10 @@ kbd:hover{background-color:#CCC;border-color:#AAA}
 .breakafter{page-break-after:always}
 .fd{float:right;margin-right:1em}
 .avant{color:#666;background-color:#FFC;font-size:12px}
-.avant b{color:#333;}
 .notnow{color:#666}
 .now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
 .fluo{background:#FF0} /* pas de padding sinon pose souci pour du texte dans un tableau */
-div.appreciation{white-space:pre-wrap}
-div.bordertop{border-top:1px dashed #999;margin-top:2px}
-span.pourcentage{display:inline-block;width:3em;padding-right:3px;text-align:right}
+div.appreciation {white-space:pre-wrap}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 *.probleme, noscript {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
 
@@ -281,61 +278,36 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
-.file_aac  {background-position: 0  -20px}
-.file_mp3  {background-position: 0  -20px} /* attention : même décalage */
-.file_ogg  {background-position: 0  -20px} /* attention : même décalage */
-.file_wav  {background-position: 0  -20px} /* attention : même décalage */
-.file_dmg  {background-position: 0  -40px}
-.file_doc  {background-position: 0  -60px}
-.file_docx {background-position: 0  -80px}
-.file_bat  {background-position: 0 -100px}
-.file_exe  {background-position: 0 -100px} /* attention : même décalage */
-.file_fla  {background-position: 0 -120px}
-.file_g2w  {background-position: 0 -140px}
-.file_g3w  {background-position: 0 -140px} /* attention : même décalage */
-.file_ggb  {background-position: 0 -160px}
-.file_htm  {background-position: 0 -180px}
-.file_html {background-position: 0 -180px} /* attention : même décalage */
-.file_bmp  {background-position: 0 -200px}
-.file_gif  {background-position: 0 -200px} /* attention : même décalage */
-.file_jpe  {background-position: 0 -200px} /* attention : même décalage */
-.file_jpeg {background-position: 0 -200px} /* attention : même décalage */
-.file_jpg  {background-position: 0 -200px} /* attention : même décalage */
-.file_png  {background-position: 0 -200px} /* attention : même décalage */
-.file_gif  {background-position: 0 -200px} /* attention : même décalage */
-.file_iso  {background-position: 0 -220px}
-.file_mgj  {background-position: 0 -240px}
-.file_msi  {background-position: 0 -260px}
-.file_odg  {background-position: 0 -280px}
-.file_odp  {background-position: 0 -300px}
-.file_ods  {background-position: 0 -320px}
-.file_odt  {background-position: 0 -340px}
-.file_pdf  {background-position: 0 -360px}
-.file_php  {background-position: 0 -380px}
-.file_ppt  {background-position: 0 -400px}
-.file_pptx {background-position: 0 -420px}
-.file_rtf  {background-position: 0 -440px}
-.file_skp  {background-position: 0 -460px}
-.file_swf  {background-position: 0 -480px}
-.file_sxc  {background-position: 0 -500px}
-.file_sxd  {background-position: 0 -520px}
-.file_sxi  {background-position: 0 -540px}
-.file_sxw  {background-position: 0 -560px}
-.file_tep  {background-position: 0 -580px}
-.file_tex  {background-position: 0 -600px}
-.file_txt  {background-position: 0 -620px}
-.file_avi  {background-position: 0 -640px}
-.file_mpe  {background-position: 0 -640px} /* attention : même décalage */
-.file_mpeg {background-position: 0 -640px} /* attention : même décalage */
-.file_mpg  {background-position: 0 -640px} /* attention : même décalage */
-.file_mp4  {background-position: 0 -640px} /* attention : même décalage */
-.file_ogv  {background-position: 0 -640px} /* attention : même décalage */
-.file_wmv  {background-position: 0 -640px} /* attention : même décalage */
-.file_xls  {background-position: 0 -660px}
-.file_xlsx {background-position: 0 -680px}
-.file_xml  {background-position: 0 -700px}
-.file_zip  {background-position: 0 -720px}
+.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
+.file_doc  {background-position: 0    0px}
+.file_docx {background-position: 0  -20px}
+.file_exe  {background-position: 0  -40px}
+.file_fla  {background-position: 0  -60px}
+.file_htm  {background-position: 0  -80px}
+.file_iso  {background-position: 0 -100px}
+.file_jpg  {background-position: 0 -120px}
+.file_mp4  {background-position: 0 -140px}
+.file_odg  {background-position: 0 -160px}
+.file_odp  {background-position: 0 -180px}
+.file_ods  {background-position: 0 -200px}
+.file_odt  {background-position: 0 -220px}
+.file_pdf  {background-position: 0 -240px}
+.file_php  {background-position: 0 -260px}
+.file_ppt  {background-position: 0 -280px}
+.file_pptx {background-position: 0 -300px}
+.file_rtf  {background-position: 0 -320px}
+.file_swf  {background-position: 0 -340px}
+.file_sxc  {background-position: 0 -360px}
+.file_sxd  {background-position: 0 -380px}
+.file_sxi  {background-position: 0 -400px}
+.file_sxw  {background-position: 0 -420px}
+.file_tep  {background-position: 0 -440px}
+.file_tex  {background-position: 0 -460px}
+.file_txt  {background-position: 0 -480px}
+.file_xls  {background-position: 0 -500px}
+.file_xlsx {background-position: 0 -520px}
+.file_xml  {background-position: 0 -540px}
+.file_zip  {background-position: 0 -560px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images relatives aux états des bilans officiels                                                     */
@@ -550,7 +522,6 @@ input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
 select[multiple],textarea {vertical-align:middle}
-textarea {white-space:pre-wrap}
 
 /* select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur) */
 span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
@@ -565,7 +536,7 @@ span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table {margin-left:1ex}
-th, td  {padding:2px 2px;text-align:left;white-space:nowrap}
+th, td  {padding:0   2px;text-align:left;white-space:nowrap}
 span.td {padding:1px 2px;text-align:center;white-space:nowrap}
 table tr {background:#EEF}
 table th {border:1px solid #66F;background:#DDF;font-weight:bold}

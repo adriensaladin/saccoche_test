@@ -1133,7 +1133,7 @@ $(document).ready
           var input_value = ( $('#avis_conseil_classe').text() == 'Avis favorable' ) ? 'F' : 'D' ;
           input_avis_conseil = '<input type="hidden" name="f_avis_conseil" id="f_avis_conseil" value="'+input_value+'" />';
         }
-        var message_contenu = $('h1').text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
+        var message_contenu = $('h1').text().substring(2)+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataires_liste').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation
         if(objet=='corriger')

@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        var type  = extract_hash( $(this).attr('href') ).substring(7); // 'toggle_' + type
+        var type  = $(this).attr('href').substring(8); // '#toggle_' + type
         var symb1 = $(this).attr('class').substring(7); // 'toggle_' + état
         var symb2 = ( symb1=='moins' ) ? 'plus' : 'moins' ;
         $('#'+type+'_'+symb1).hide(0);

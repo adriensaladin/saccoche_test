@@ -394,7 +394,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $texte.= 'La facture comporte les coordonnées bancaires de l\'association.'."\r\n";
     $texte.= 'Votre service gestionnaire peut régler par mandat administratif.'."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Ces documents vous resteront accessibles en vous connectant comme administrateur puis en vous rendant dans le menu [Paramétrages établissement] [Mode d\'identification / Connecteur ENT] (cliquer alors sur l\'icône en bout de ligne du tableau).'."\r\n";
+    $texte.= 'Ces documents vous resteront accessibles en vous connectant comme administrateur puis en vous rendant dans le menu [Paramétrages établissement] [Mode d\'identification] (cliquer alors sur l\'icône en bout de ligne du tableau).'."\r\n";
     $texte.= URL_DIR_SACOCHE.'?id='.$_SESSION['BASE']."\r\n";
     $texte.= "\r\n";
     if($DB_ROW['convention_date_debut']<TODAY_MYSQL)

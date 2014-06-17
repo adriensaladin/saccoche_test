@@ -40,7 +40,7 @@ $tab_csv_format['kosmos']               = array( 'csv_infos'=>TRUE  , 'csv_entet
 $tab_csv_format['liberscol']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['logica']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    );
 $tab_csv_format['netocentre']           = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['parisclassenumerique'] = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL ); // éventuellement 17 pour les élèves, mais pas pour les autres profils
+$tab_csv_format['parisclassenumerique'] = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>5 , 'csv_prenom'=>6 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>4    );
 $tab_csv_format['pentila']              = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>5 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['toutatice']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['atos']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>4    );

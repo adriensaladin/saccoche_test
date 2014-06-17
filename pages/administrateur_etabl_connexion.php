@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Mode d'identification / Connecteur ENT";
+$TITRE = "Mode d'identification";
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 

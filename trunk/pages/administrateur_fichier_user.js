@@ -291,8 +291,9 @@ $(document).ready
       '#passer_etape_suivante',
       function()
       {
-        var li_step = $(this).attr('href').substring(5,6);
-        var f_step  = $(this).attr('href').substring(5);
+        var hash = extract_hash( $(this).attr('href') );
+        var li_step = hash.substring(4,5); // 'step' + numero
+        var f_step  = hash.substring(4); // 'step' + numero
         $("#step li").removeAttr("class");
         $('#form_bilan fieldset table').remove();
         $("#step"+li_step).addClass("on");

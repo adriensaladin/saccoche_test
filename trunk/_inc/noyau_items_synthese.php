@@ -256,7 +256,7 @@ if(empty($is_appreciation_groupe))
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
             $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
+            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
           }
         }
       }
@@ -522,9 +522,9 @@ foreach($tab_eleve as $tab)
                     $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                   }
                 }
-                $tab_ligne[0] = html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0];
+                $tab_ligne[0] = '<b>'.html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0].'</b>';
                 $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
-                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
+                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
               }
               $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
             }
@@ -629,9 +629,9 @@ foreach($tab_eleve as $tab)
                   $tab_ligne[$prof_id] = html('['.$prof_info.'] '.$appreciation);
                 }
               }
-              $tab_ligne[0] = html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0];
+              $tab_ligne[0] = '<b>'.html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0].'</b>';
               $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
-              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation hide">'.implode('<br />',$tab_ligne).'</div>';
+              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
             }
             $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
           }

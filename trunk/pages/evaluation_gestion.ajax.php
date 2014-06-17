@@ -509,8 +509,8 @@ if( ($action=='ordonner') && $devoir_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Indiquer la liste des élèves associés à une évaluation de même nom( uniquement pour une sélection d'élèves)
-// Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
+// Indiquer la liste des élèves associés à une évaluation de même nom (uniquement pour une sélection d'élèves)
+// Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr> et publié le 08/02/2012
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='indiquer_eleves_deja') && $description && $date_debut )

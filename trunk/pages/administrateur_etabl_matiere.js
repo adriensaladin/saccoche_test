@@ -225,7 +225,7 @@ $(document).ready
         $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
         if(mode=='famille')
         {
-          $('#f_famille option[value=0]').prop('selected',true);
+          $('#f_famille').find('option:first').prop('selected',true);
           $("#f_recherche_motclef").hide();
           $("#f_recherche_famille").show();
         }

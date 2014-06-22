@@ -177,6 +177,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.<br />
     Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" target="_blank">la documentation</a> pour davantage d'explications.
   </p>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification#toggle_gestion_convention">DOC : Gestion d'une convention ENT-SACoche par un établissement</a></span></p>
   <table id="table_action" class="form hsort">
     <thead>
       <tr>
@@ -236,7 +237,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   </table>
   <p class="astuce">
     Les documents seront établis au nom de <b><?php echo html($contact_nom.' '.$contact_prenom); ?></b>, contact référent de l'établissement pour <em>SACoche</em>, qui recevra des informations sur l'avancement du dossier à son adresse <b><?php echo html($contact_courriel) ?></b>.<br />
-    Pour communiquer les coordonnées d'un nouveau contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.
+    Pour modifier les coordonnées du contact référent, voyez le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.
   </p>
 </div>
 

@@ -56,7 +56,8 @@ public static function DB_recuperer_structure_by_Id($base_id)
  */
 public static function DB_recuperer_convention_structure_info($convention_id)
 {
-  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, ';
+  $DB_SQL = 'SELECT sacoche_base, connexion_nom, convention_date_debut, convention_date_fin, ';
+  $DB_SQL.= 'convention_signature, convention_paiement, convention_relance, convention_activation, convention_mail_renouv, ';
   $DB_SQL.= 'structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel ';
   $DB_SQL.= 'FROM sacoche_convention ';
   $DB_SQL.= 'LEFT JOIN sacoche_structure USING (sacoche_base) ';
@@ -148,7 +149,8 @@ public static function DB_lister_partenaires_conventionnes()
  */
 public static function DB_lister_conventions_structures($where_string)
 {
-  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin, convention_signature, convention_paiement, convention_relance, convention_activation, convention_commentaire, ';
+  $DB_SQL = 'SELECT sacoche_base, convention_id, connexion_nom, convention_date_debut, convention_date_fin,  ';
+  $DB_SQL.= 'convention_signature, convention_paiement, convention_relance, convention_activation, convention_mail_renouv, convention_commentaire, ';
   $DB_SQL.= 'structure_uai, structure_localisation, structure_denomination, structure_contact_nom, structure_contact_prenom, structure_contact_courriel, ';
   $DB_SQL.= 'geo_ordre, geo_nom ';
   $DB_SQL.= 'FROM sacoche_convention ';
@@ -440,7 +442,7 @@ public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  * Modifier une date d'une convention
  *
  * @param int    convention_id
- * @param string objet         signature | paiement | relance
+ * @param string objet         signature | paiement | relance | mail_renouv
  * @param string date_mysql
  * @return void
  */

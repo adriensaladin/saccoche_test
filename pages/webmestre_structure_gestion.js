@@ -111,8 +111,9 @@ $(document).ready
     var ajouter = function()
     {
       mode = $(this).attr('class');
+      var geo = escapeHtml($('#f_geo_id option[value='+geo_defaut+']').text());
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*base_id*/ , $('#f_geo_id option[value='+geo_defaut+']').text() /*geo ; volontairement sans unescapeHtml() */ , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , input_date /*date_fr*/ , 'bloquer' /*acces*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*base_id*/ , geo , '' /*localisation*/ , '' /*denomination*/ , '' /*uai*/ , '' /*contact_nom*/ , '' /*contact_prenom*/ , '' /*contact_courriel*/ , input_date /*date_fr*/ , 'bloquer' /*acces*/ , '' /*check*/ );
     };
 
     /**

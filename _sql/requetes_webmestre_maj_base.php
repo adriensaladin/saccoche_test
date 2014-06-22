@@ -188,28 +188,6 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     }
   }
 
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MAJ 2014-04-22 => 2014-06-19
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  if($version_base_webmestre_actuelle=='2014-04-22')
-  {
-    // Actualisation date de version
-    $version_base_webmestre_actuelle = '2014-06-19';
-    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
-    // oubli d'une colonne à la table sacoche_convention sur certaines install
-    $DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , 'SHOW COLUMNS FROM sacoche_convention LIKE "convention_relance"');
-    if(empty($DB_TAB))
-    {
-      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_relance DATE DEFAULT NULL AFTER convention_paiement ');
-    }
-    // ajout d'une colonne à la table sacoche_convention
-    if(empty($reload_sacoche_convention))
-    {
-      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention ADD convention_mail_renouv DATE DEFAULT NULL AFTER convention_activation ');
-    }
-  }
-
 }
 
 }

@@ -119,8 +119,8 @@ public static function DB_tester_convention_precise($base_id,$connexion_nom,$con
  */
 public static function DB_ajouter_convention($base_id,$connexion_nom,$convention_date_debut,$convention_date_fin)
 {
-  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation,convention_mail_renouv,convention_commentaire) ';
-  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation,:convention_mail_renouv,:convention_commentaire)';
+  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation,convention_commentaire) ';
+  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation,:convention_commentaire)';
   $DB_VAR = array(
     ':base_id'                => $base_id,
     ':connexion_nom'          => $connexion_nom,
@@ -129,7 +129,6 @@ public static function DB_ajouter_convention($base_id,$connexion_nom,$convention
     ':convention_signature'   => NULL,
     ':convention_paiement'    => NULL,
     ':convention_activation'  => 0,
-    ':convention_mail_renouv' => NULL,
     ':convention_commentaire' => NULL,
   );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);

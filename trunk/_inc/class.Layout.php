@@ -42,10 +42,11 @@ class Layout
   const META_AUTHOR      = 'Thomas Crespin pour Sésamath';
   const META_ROBOTS      = 'index,follow';
   // Tableaux
-  private static $tab_css_file         = array(); // CSS fichiers
-  private static $tab_css_file_ie      = array(); // CSS fichiers réservés à IE
+  private static $tab_css_file         = array(); // CSS Fichiers
+  private static $tab_css_file_ie      = array(); // CSS Fichiers réservés à IE<9
   private static $tab_css_inline       = array(); // CSS Inline
   private static $tab_js_file          = array(); //  JS Fichiers
+  private static $tab_js_file_ie       = array(); //  JS Fichiers réservés à IE<9
   private static $tab_js_inline_before = array(); //  JS Inline avant fichiers JS
   private static $tab_js_inline_after  = array(); //  JS Inline après fichiers JS
 
@@ -66,6 +67,11 @@ class Layout
    */
   private static function compacter($chemin,$methode)
   {
+    if(substr($chemin,0,4)=='http')
+    {
+      // Cas d'un fichier distant
+      return $chemin;
+    }
     $fichier_original_chemin = $chemin;
     $fichier_original_date   = filemtime($fichier_original_chemin);
     $fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
@@ -171,6 +177,13 @@ class Layout
         $string .= '<script type="text/javascript" charset="'.CHARSET.'" src="'.$js_file.'"></script>'.NL;
       }
     }
+    if(!empty(Layout::$tab_js_file_ie))
+    {
+      foreach(Layout::$tab_js_file_ie as $js_ie_file)
+      {
+        $string .= '<!--[if lte IE 8]><script type="text/javascript" charset="'.CHARSET.'" src="'.$js_ie_file.'"></script><![endif]-->'.NL;
+      }
+    }
     return $string;
   }
 
@@ -219,7 +232,7 @@ class Layout
   /**
    * Méthode équivalent d'un __set()
    * 
-   * @param string $type      "browser_title" | "css_file" | "css_file_ie" | "css_inline" | "js_file" | "js_inline_before" | "js_inline_after"
+   * @param string $type      "browser_title" | "css_file" | "css_file_ie" | "css_inline" | "js_file" | "js_file_ie" | "js_inline_before" | "js_inline_after"
    * @param string $contenu   la chaine (si type "inline") ou le chemin du fichier (si type "file")
    * @param string $compress  "pack" | "mini" | "comm" | NULL (pour les fichiers seulements)
    * @return void
@@ -239,6 +252,7 @@ class Layout
       case 'css_file';
       case 'css_file_ie';
       case  'js_file';
+      case  'js_file_ie';
         Layout::${'tab_'.$type}[] = Layout::compacter($contenu,$compress);
         break;
     }

@@ -12,16 +12,17 @@ Josselin Jacquard <josselin.jacquard@gmail.com> a travaillé le premier sur l'ut
 
 
 ========================================
-Modifications apportées à la source : configuration
+Autoload
 ========================================
-
 
 ##### Attention !!! #####
 
 L'autoload de SimpleSAMLphp (./_lib/SimpleSAMLphp/lib/_autoload.php)
-n'est pas chargé à cause de celui de SACoche ()./_inc/loader.php).
+n'est pas chargé de façon simple par un unique appel de classe.
 
-Lors du passage de SimpleSAMLphp de la version 1.11.0 à 1.12.0
+Du coup on l'inclut directement dans les 2 fichiers concernés (public_log*_SSO.php).
+
+Par ailleurs, lors du passage de SimpleSAMLphp de la version 1.11.0 à 1.12.0
 l'autoload de SimpleSAMLphp s'est complexifié : @see ./SimpleSAMLphp/vendor/composer/
 
 Cela m'a fait renoncer à mettre à jour SimpleSAMLphp (qui a encore enflé : 6,77 Mo !).

@@ -31,11 +31,12 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
-// Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+// Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd
+// C'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...
 if(isset($_GET['memoget']))
 {
   $memoget = urldecode($_GET['memoget']);
-  setcookie( COOKIE_MEMOGET /*name*/ , $memoget /*value*/ , $_SERVER['REQUEST_TIME']+36000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60 */
+  setcookie( COOKIE_MEMOGET /*name*/ , $memoget /*value*/ , $_SERVER['REQUEST_TIME']+300 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 5*60 */
   $is_param_redir = mb_strpos($memoget,'&url_redirection');
   $param_length = ($is_param_redir) ? $is_param_redir : NULL ;
   $param_sans_redir = mb_substr( $memoget , 0 , $param_length ) ; // J'ai déjà eu un msg d'erreur car il n'aime pas les chaines trop longues + Pas la peine d'encombrer avec le paramètre de redirection qui sera retrouvé dans le cookie de toutes façons
@@ -152,7 +153,8 @@ if(Session::$_sso_redirect)
   require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
 }
 
-// Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd (c'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...).
+// Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
+// C'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...
 if(isset($_COOKIE[COOKIE_MEMOGET]))
 {
   setcookie( COOKIE_MEMOGET /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
@@ -202,7 +204,7 @@ ob_end_clean();
 Session::generer_jeton_anti_CSRF($PAGE);
 
 // Titre du navigateur
-$browser_title = ($TITRE) ? 'SACoche » '.$TITRE : 'SACoche » Évaluer par compétences et valider le socle commun' ;
+$browser_title = ($TITRE) ? $TITRE : 'Évaluer par compétences et valider le socle commun' ;
 Layout::add( 'browser_title' , $browser_title );
 
 // Css personnalisé
@@ -233,7 +235,7 @@ Layout::add( 'js_inline_before' , 'var isMobile          = '.(int)$_SESSION['BRO
 
 // Affichage
 $body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;
-echo Layout::afficher_page_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , FALSE /*add_noscript*/ , $body_class );
+echo Layout::afficher_page_entete('prog-'.$body_class);
 if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).

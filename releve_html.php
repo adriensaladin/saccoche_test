@@ -72,7 +72,7 @@ if($position_js)
 }
 
 // Titre du navigateur
-Layout::add( 'browser_title' , 'SACoche - Relevé HTML' );
+Layout::add( 'browser_title' , 'Relevé HTML' );
 
 // Fichiers à inclure
 Layout::add( 'css_file' , './_css/style.css'           , 'mini' );
@@ -84,7 +84,7 @@ Layout::add( 'js_file'  , './pages/releve_html.js'     , 'pack' );
 Layout::add( 'js_inline_before' , 'var PAGE = "public_anti_maj_clock";' ); // Préfixe "public" pour indiquer que c'est une page accessible sans authentification.
 
 // Affichage
-echo Layout::afficher_page_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ );
+echo Layout::afficher_page_entete('light');
 echo $CONTENU_PAGE.NL;
 echo Layout::afficher_page_pied();
 ?>

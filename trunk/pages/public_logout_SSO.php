@@ -153,6 +153,8 @@ if($connexion_mode=='shibboleth')
 
 if($connexion_mode=='gepi')
 {
+  // Charger l'autoload de la librairie SimpleSAMLphp (qui ne peut être intégré de façon simple dans le _loader par un unique appel de classe (comme phpCAS).
+  require(CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.'_autoload.php');
   // Mise en session d'informations dont SimpleSAMLphp a besoin ; utiliser des constantes ne va pas car Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
   $_SESSION['SACoche-SimpleSAMLphp'] = array(
     'GEPI_URL'                  => $gepi_url,

@@ -386,4 +386,33 @@ if($version_base_structure_actuelle=='2014-05-03')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-05-24 => 2014-07-08
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-05-24')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-07-08';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modification sacoche_parametre (paramètres CAS pour ENT)
+    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+    // Lille passe de Itop à Kosmos
+    if($connexion_nom=='itop_savoirsnumeriques5962')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_savoirsnumeriques5962" WHERE parametre_nom="connexion_nom" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas.savoirsnumeriques5962.fr" WHERE parametre_nom="cas_serveur_host" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=""                             WHERE parametre_nom="cas_serveur_root" ' );
+    }
+    // Le 76 passe de Logica à Kosmos mais l'ENT garde le même nom Arsène76
+    if($connexion_nom=='logica_arsene76')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_arsene76" WHERE parametre_nom="connexion_nom" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas.arsene76.fr" WHERE parametre_nom="cas_serveur_host" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=""                WHERE parametre_nom="cas_serveur_root" ' );
+    }
+  }
+}
+
 ?>

@@ -215,7 +215,7 @@ else
   }
   if($_SESSION['CONNEXION_MODE']!='normal')
   {
-    $get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
+    $get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
     $tab_accueil['user']['contenu'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
   }
 }

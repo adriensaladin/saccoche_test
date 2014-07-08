@@ -74,28 +74,25 @@ if(!function_exists('array_fill_keys'))
 
 /*
  * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- * @see http://fr.php.net/manual/fr/function.json-encode.php
- * @see http://json.org/json-fr.html
+ * @see http://fr.php.net/manual/fr/function.json-encode.php#107968
+ * @see http://fr.php.net/manual/fr/function.json-encode.php#113219
  */
 if (!function_exists('json_encode'))
 {
   function json_encode($data)
   {
-    $search  = array(  '\\',   '"',   '/',   '\b',   '\f',   '\n',  '\r',  '\t' );
-    $replace = array('\\\\', '\\"', '\\/',  '\\b',  '\\f',  '\\n', '\\r', '\\t' );
     switch ($type = gettype($data))
     {
       case 'NULL':
         return 'null';
       case 'boolean':
-        return $data ? 'true' : 'false' ;
+        return ($data ? 'true' : 'false');
       case 'integer':
       case 'double':
       case 'float':
         return $data;
       case 'string':
-        // Modification suggérée par Christophe MASSON <masson@kyxar.fr> en remplacement du addslashes() qui ne convenait pas vraiment.
-        return '"' . str_replace($search,$replace,$data) . '"';
+        return '"' . addslashes($data) . '"';
       case 'object':
         $data = get_object_vars($data);
       case 'array':
@@ -522,14 +519,33 @@ define('JPEG_QUALITY',90);
 // ============================================================================
 
 /**
- * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées suivant les besoins).
+ * Inclusion d'un fichier ou exit(message d'erreur)
+ * 
+ * @param string   $class_name   nom de la classe
+ * @param string   $chemin       chemin vers le fichier de la classe
+ * @return void
+ */
+function load_class($class_name,$chemin)
+{
+  if(is_file($chemin))
+  {
+    require($chemin);
+  }
+  else
+  {
+    exit_error( 'Classe introuvable' /*titre*/ , 'Le chemin de la classe '.$class_name.' est incorrect : '.$chemin /*contenu*/ );
+  }
+}
+
+/**
+ * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées par cette fonction suivant les besoins).
  * 
  * @param string   $class_name   nom de la classe
  * @return void
  */
-function SACoche_autoload($class_name)
+function __autoload($class_name)
 {
-  $tab_classes_appli = array(
+  $tab_classes = array(
     'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
     'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
     'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
@@ -537,7 +553,6 @@ function SACoche_autoload($class_name)
     'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
     'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
     'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
-    // Pour SimpleSAMLphp c'est plus compliqué, on fait un include directement dans les 2 fichiers concernés...
 
     'Browser'                     => '_inc'.DS.'class.Browser.php' ,
     'Clean'                       => '_inc'.DS.'class.Clean.php' ,
@@ -587,11 +602,6 @@ function SACoche_autoload($class_name)
     'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
     'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php' ,
   );
-  if( isset($tab_classes_appli[$class_name]) )
-  {
-    require(CHEMIN_DOSSIER_SACOCHE.$tab_classes_appli[$class_name]);
-  }
-  // Pour le portail sacoche.sesamath.net
   if(defined('APPEL_SITE_PROJET'))
   {
     $tab_classes_projet = array(
@@ -599,44 +609,46 @@ function SACoche_autoload($class_name)
       'ProjetAdmin'     => 'class.ProjetAdmin.php' ,
       'ServeurSesamath' => 'class.ServeurSesamath.php' ,
     );
-    if( isset($tab_classes_projet[$class_name]) )
-    {
-      require(CHEMIN_DOSSIER_PROJET_INCLUDE.$tab_classes_projet[$class_name]);
-    }
   }
-}
-
-/**
- * Le principe du code qui suit est inspiré de celui de phpCAS.
- */
-if(function_exists('spl_autoload_register'))
-{
-  // On peut utiliser une pile d'autoload ( PHP >= 5.1.2 ).
-  if( !(spl_autoload_functions()) || !in_array('SACoche_autoload', spl_autoload_functions()) )
+  if(isset($tab_classes[$class_name]))
   {
-    // On y ajoute notre autoload.
-    spl_autoload_register('SACoche_autoload');
-    if( function_exists('__autoload') && !in_array('__autoload', spl_autoload_functions()) )
-    {
-      // __autoload() a déjà été déclaré : pour ne pas l'ignorer on l'ajoute à la pile
-      spl_autoload_register('__autoload');
-    }
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.$tab_classes[$class_name]);
   }
-}
-else
-{
-  // Pas de pile d'autoload possible
-  if(!function_exists('__autoload'))
+  // Pour le portail sacoche.sesamath.net
+  elseif(isset($tab_classes_projet[$class_name]))
   {
-    // On définit notre autoload
-    function __autoload($class_name)
+    load_class($class_name,CHEMIN_DOSSIER_PROJET_INCLUDE.$tab_classes_projet[$class_name]);
+  }
+  // Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
+  // Voir le fichier ./_lib/phpCAS/CAS/autoload.php
+  elseif(mb_substr($class_name,0,4)=='CAS_')
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.str_replace('_',DS,$class_name).'.php');
+  }
+  // Remplacement de l'autoload de SimpleSAMLphp qui n'est pas chargé à cause de celui de SACoche
+  // Voir le fichier ./_lib/SimpleSAMLphp/lib/_autoload.php
+  else if(in_array($class_name, array('XMLSecurityKey', 'XMLSecurityDSig', 'XMLSecEnc'), TRUE))
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.'xmlseclibs.php');
+  }
+  else if(mb_substr($class_name,0,7)=='sspmod_')
+  {
+    $modNameEnd  = mb_strpos($class_name, '_', 7);
+    $module      = mb_substr($class_name, 7, $modNameEnd - 7);
+    $moduleClass = mb_substr($class_name, $modNameEnd + 1);
+    if(SimpleSAML_Module::isModuleEnabled($module))
     {
-        return SACoche_autoload($class_name);
+      load_class($class_name,SimpleSAML_Module::getModuleDir($module).'/lib/'.str_replace('_', DS, $moduleClass).'.php');
     }
   }
+  elseif( (mb_substr($class_name,0,5)=='SAML2') || (mb_substr($class_name,0,10)=='SimpleSAML') )
+  {
+    load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.str_replace('_','/',$class_name).'.php');
+  }
+  // La classe invoquée ne correspond pas à ce qui vient d'être passé en revue
   else
   {
-    exit('Erreur : l\'autoload ne peut être chargé car il a déjà été déclaré et PHP est en version < 5.1.2 !');
+    exit_error( 'Classe introuvable' /*titre*/ , 'La classe '.$class_name.' est inconnue.' /*contenu*/ );
   }
 }
 
@@ -758,6 +770,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     echo'<!DOCTYPE html>'.NL;
     echo'<html lang="fr">'.NL;
     echo  '<head>'.NL;
+    echo    '<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />'.NL;
     echo    '<link rel="stylesheet" type="text/css" href="'.URL_DIR_SACOCHE.'_css/style.css" />'.NL;
     echo    '<style type="text/css">#cadre_milieu{color:#D00}</style>'.NL;
     echo    '<title>SACoche » '.$titre.'</title>'.NL;

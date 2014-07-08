@@ -72,7 +72,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     switch($connexion_mode)
     {
       case 'cas' :
-        $convention = isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( isset($tab_connecteurs_convention[$connexion_ref]) ? 'conv_acad' : 'conv_etabl' ) ;
+        $convention = ($connexion_nom=='perso') ? 'hors_ent' : ( isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( isset($tab_connecteurs_convention[$connexion_ref]) ? 'conv_acad' : 'conv_etabl' ) ) ;
         $domaine_edit = ($tab_info['serveur_host_subdomain']=='*') ? 'oui' : 'non' ;
         if( ($connexion_nom=='perso') && $selected )
         {
@@ -105,7 +105,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 }
 
 // Modèle d'url SSO
-$get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
+$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
 $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 ?>
 

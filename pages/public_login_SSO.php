@@ -70,8 +70,8 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
   $BASE = (isset($_GET['base']))    ? Clean::entier($_GET['base']) : $BASE ;
   // Test si UAI d'établissement transmis dans l'URL
   // Nouveauté 07/2014 : pouvoir passer l'UAI de l'établissement comme valeur du paramètre SSO
-  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( preg_match('/^[0-9]{7}[a-zA-Z]{1}$/',$_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
-  $BASE = ($trans_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($trans_UAI) : $BASE ;
+  $trans_UAI = (isset($_GET['uai'])) ? $_GET['uai'] : ( ctype_alnum($_GET['sso']) ? $_GET['sso'] : NULL ) ;
+  $BASE = ($trans_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($trans_UAI)) : $BASE ;
   if(!$BASE)
   {
     if(isset($_GET['uai']))

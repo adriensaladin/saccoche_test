@@ -175,11 +175,11 @@ $(document).ready
       if(sortie_date_fr=='-')
       {
         $('#box_sortie_date').prop('checked',true).next().show(0);
-        $('#f_sortie_date').val(input_date).parent().hide(0);
+        $('#f_sortie_date').val(input_date).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
       }
       else
       {
-        $('#box_sortie_date').prop('checked',false).next().hide(0);
+        $('#box_sortie_date').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
         $('#f_sortie_date').val(sortie_date_fr).parent().show(0);
       }
       // pour finir

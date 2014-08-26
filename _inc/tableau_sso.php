@@ -1,33 +1,33 @@
 <?php
 /**
- * @version $Id$
- * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
- * 
- * ****************************************************************************************************
- * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
- * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
- * ****************************************************************************************************
- * 
- * Ce fichier est une partie de SACoche.
- * 
- * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
- * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
- * 
- * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
- * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
- * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
- * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
- * 
- */
+* @version $Id$
+* @author Thomas Crespin <thomas.crespin@sesamath.net>
+* @copyright Thomas Crespin 2010-2014
+* 
+* ****************************************************************************************************
+* SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+* © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+* Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+* ****************************************************************************************************
+* 
+* Ce fichier est une partie de SACoche.
+* 
+* SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+* de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+* soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+* 
+* SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+* sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+* Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+* 
+* Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+* si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+* 
+*/
 
-/**
- * Sous-tableau avec les différents formats de csv d'import
- */
+/*
+* Sous-tableau avec les différents formats de csv d'import
+*/
 $tab_csv_format = array();
 $tab_csv_format['']                     = array( 'csv_infos'=>FALSE , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['perso']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
@@ -40,14 +40,14 @@ $tab_csv_format['kosmos']               = array( 'csv_infos'=>TRUE  , 'csv_entet
 $tab_csv_format['liberscol']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['logica']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    );
 $tab_csv_format['netocentre']           = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['parisclassenumerique'] = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL ); // éventuellement 17 pour les élèves, mais pas pour les autres profils
 $tab_csv_format['pentila']              = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>5 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['sopra']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL ); // éventuellement 17 pour les élèves, mais pas pour les autres profils
 $tab_csv_format['toutatice']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
 $tab_csv_format['atos']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>4    );
 
-/**
- * Sous-tableau avec les différents paramétrages de serveurs CAS
- */
+/*
+* Sous-tableau avec les différents paramétrages de serveurs CAS
+*/
 $tab_serveur_cas = array();
 $tab_serveur_cas['']                             = array( 'serveur_secure'=> FALSE , 'serveur_host_subdomain'=>''             , 'serveur_host_domain'=>''                                   , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['cel_creteil']                  = array( 'serveur_secure'=> FALSE , 'serveur_host_subdomain'=>'*'            , 'serveur_host_domain'=>'ac-creteil.fr'                      , 'serveur_port'=>8443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
@@ -58,11 +58,9 @@ $tab_serveur_cas['entlibre_picardie']            = array( 'serveur_secure'=>  TR
 $tab_serveur_cas['esup_montpellier']             = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'environnementnumeriquedetravail.fr' , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['icart_poitiers']               = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'*'            , 'serveur_host_domain'=>'ac-poitiers.fr'                     , 'serveur_port'=>8443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['itop_alsace']                  = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'entea.fr'                           , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
-$tab_serveur_cas['itop_auvergne']                = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>''             , 'serveur_host_domain'=>'entauvergne.fr'                     , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['itop_agora06']                 = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'agora06.fr'                         , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['itop_enc92']                   = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'enc92.fr'                           , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['itop_enteduc']                 = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'enteduc.fr'                         , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
-$tab_serveur_cas['itop_isere']                   = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'colleges-isere.fr'                  , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 // Obsolète
 // $tab_serveur_cas['itop_lille']                   = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'savoirsnumeriques5962.fr'           , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['itop_oise']                    = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'ent'          , 'serveur_host_domain'=>'oise.fr'                            , 'serveur_port'=> 443 , 'serveur_root'=>'cas'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
@@ -77,13 +75,12 @@ $tab_serveur_cas['kosmos_arsene76']              = array( 'serveur_secure'=>  TR
 $tab_serveur_cas['kosmos_cybercolleges42']       = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'cybercolleges42.fr'                 , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['kosmos_ecollege31']            = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas.ecollege' , 'serveur_host_domain'=>'haute-garonne.fr'                   , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 // A prévoir, pas encore en fonctionnement
-// $tab_serveur_cas['kosmos_ecollege93']            = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'monecollege.fr'                     , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
+// $tab_serveur_cas['kosmos_ecollege93']            = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'ecollege93.fr'                      , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['kosmos_elyco']                 = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'e-lyco.fr'                          , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['kosmos_entmip']                = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'entmip.fr'                          , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['kosmos_savoirsnumeriques5962'] = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'savoirsnumeriques5962.fr'           , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['laclasse']                     = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'laclasse.com'                       , 'serveur_port'=> 443 , 'serveur_root'=>'sso'                    , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['lareunion']                    = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'seshat'       , 'serveur_host_domain'=>'ac-reunion.fr'                      , 'serveur_port'=>8443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
-$tab_serveur_cas['lea_hautenormandie']           = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'lea'          , 'serveur_host_domain'=>'hautenormandie.fr'                  , 'serveur_port'=> 443 , 'serveur_root'=>'connexion'              , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['liberscol']                    = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'ent-liberscol.fr'                   , 'serveur_port'=> 443 , 'serveur_root'=>''                       , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 // Obsolète
 // $tab_serveur_cas['logica_arsene76']              = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'ent'          , 'serveur_host_domain'=>'arsene76.fr'                        , 'serveur_port'=> 443 , 'serveur_root'=>'connexion'              , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
@@ -103,34 +100,28 @@ $tab_serveur_cas['scolastance_alsace']           = array( 'serveur_secure'=>  TR
 $tab_serveur_cas['scolastance_auvergne']         = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'cas'          , 'serveur_host_domain'=>'scolastance.com'                    , 'serveur_port'=> 443 , 'serveur_root'=>'cas-auvergne'           , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'' );
 $tab_serveur_cas['toutatice']                    = array( 'serveur_secure'=>  TRUE , 'serveur_host_subdomain'=>'www'          , 'serveur_host_domain'=>'toutatice.fr'                       , 'serveur_port'=> 443 , 'serveur_root'=>'casshib/shib/toutatice' , 'serveur_url_login'=>'' , 'serveur_url_logout'=>'' , 'serveur_url_validate'=>'https://www.toutatice.fr/casshib/shib/666666/serviceValidate' );
 
-/**
- * Sous-tableau avec les différents paramétrages SAML
- * 
- * Vérification de la définition de certaines variables de session car appel de ce fichier depuis la doc.
- */
+/*
+* Sous-tableau avec les différents paramétrages SAML
+*/
+// Vérification de la définition de certaines variables de session car appel de ce fichier depuis la doc.
 $saml_url    = !empty($_SESSION['GEPI_URL'])                  ? $_SESSION['GEPI_URL']                  : 'http://' ; 
 $saml_rne    = !empty($_SESSION['GEPI_RNE'])                  ? $_SESSION['GEPI_RNE']                  : ( !empty($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : '' ) ;
 $saml_certif = !empty($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ? $_SESSION['GEPI_CERTIFICAT_EMPREINTE'] : 'AA:FD:FF:98:48:18:A8:56:73:32:73:8F:33:53:04:8C:36:9B:E6:B2' ; 
 $tab_saml_param = array();
-$tab_saml_param['gepi'] = array(
-  'saml_url'    => $saml_url ,
-  'saml_rne'    => $saml_rne ,
-  'saml_certif' => $saml_certif ,
-);
+$tab_saml_param['gepi'] = array( 'saml_url'=>$saml_url , 'saml_rne'=>$saml_rne , 'saml_certif'=>$saml_certif );
 
-/**
- * Tableau avec les modes d'identification possibles
- */
-$tab_connexion_mode = array(
-  'normal'     => 'Local',
-  'cas'        => 'Serveur CAS',
-  'shibboleth' => 'Shibboleth',
-  'gepi'       => 'GEPI',
-);
+/*
+* Tableau avec les modes d'identification possibles
+*/
+$tab_connexion_mode = array();
+$tab_connexion_mode['normal']     = 'Local';
+$tab_connexion_mode['cas']        = 'Serveur CAS';
+$tab_connexion_mode['shibboleth'] = 'Shibboleth';
+$tab_connexion_mode['gepi']       = 'GEPI';
 
-/**
- * Tableau avec les informations relatives à chaque connecteur
- */
+/*
+* Tableau avec les informations relatives à chaque connecteur
+*/
 $tab_connexion_info = array();
 $tab_connexion_info['normal']['|sacoche']                      = array( 'txt'=>"Connexion avec les identifiants enregistrés dans SACoche." );
 $tab_connexion_info['cas'][   '|perso']                        = array( 'txt'=>"Configuration CAS manuelle."                                                          , 'etat'=>1 , 'societe'=>NULL                 ) + $tab_csv_format['perso']                + $tab_serveur_cas[''];
@@ -139,8 +130,7 @@ $tab_connexion_info['cas'][ '01|logica_rra']                   = array( 'txt'=>"
 $tab_connexion_info['cas'][ '02|scolastance_02']               = array( 'txt'=>"ENT département de l'Aisne sur Scolastance."                                          , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_02'];
 $tab_connexion_info['cas'][ '02|itslearning_02']               = array( 'txt'=>"ENT département de l'Aisne sur ItsLearning."                                          , 'etat'=>1 , 'societe'=>'ItsLearning'        ) + $tab_csv_format['itslearning']          + $tab_serveur_cas['itslearning_02'];
 // $tab_connexion_info['cas'][ '02|entlibre_picardie']            = array( 'txt'=>"ENT Libre LEO des lycées de Picardie."                                                , 'etat'=>0 , 'societe'=>'ATOS'               ) + $tab_csv_format['atos']                 + $tab_serveur_cas['entlibre_picardie'];
-$tab_connexion_info['cas'][ '03|itop_auvergne']                = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Itop."                                    , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_auvergne'];
-$tab_connexion_info['cas'][ '03|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Scolastance."                             , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
+$tab_connexion_info['cas'][ '03|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermond-Ferrand)."                                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
 $tab_connexion_info['cas'][ '04|scolastance_04']               = array( 'txt'=>"ENT département des Alpes de Haute-Provence sur Scolastance."                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_04'];
 $tab_connexion_info['cas'][ '04|itslearning_04']               = array( 'txt'=>"ENT département des Alpes de Haute-Provence sur ItsLearning."                         , 'etat'=>1 , 'societe'=>'ItsLearning'        ) + $tab_csv_format['itslearning']          + $tab_serveur_cas['itslearning_04'];
 $tab_connexion_info['cas'][ '06|itop_agora06']                 = array( 'txt'=>"ENT Agora 06 (collèges des Alpes-Maritimes)."                                         , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_agora06'];
@@ -150,8 +140,7 @@ $tab_connexion_info['cas'][ '09|kosmos_entmip']                = array( 'txt'=>"
 $tab_connexion_info['cas'][ '11|esup_montpellier']             = array( 'txt'=>"ENT Languedoc-Roussillon (académie de Montpellier)."                                  , 'etat'=>1 , 'societe'=>'ESUP Portail'       ) + $tab_csv_format['esup']                 + $tab_serveur_cas['esup_montpellier'];
 $tab_connexion_info['cas'][ '12|kosmos_entmip']                = array( 'txt'=>"ENT Midi-Pyrénées (académie de Toulouse)."                                            , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['kosmos']               + $tab_serveur_cas['kosmos_entmip'];
 $tab_connexion_info['cas'][ '14|itslearning_caen']             = array( 'txt'=>"ENT L'Educ de Normandie (académie de Caen)."                                          , 'etat'=>1 , 'societe'=>'ItsLearning'        ) + $tab_csv_format['itslearning']          + $tab_serveur_cas['itslearning_caen'];
-$tab_connexion_info['cas'][ '15|itop_auvergne']                = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Itop."                                    , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_auvergne'];
-$tab_connexion_info['cas'][ '15|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Scolastance."                             , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
+$tab_connexion_info['cas'][ '15|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermond-Ferrand)."                                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
 $tab_connexion_info['cas'][ '16|icart_poitiers']               = array( 'txt'=>"ENT i-Cart! (académie de Poitiers)."                                                  , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['icart_poitiers'];
 $tab_connexion_info['cas'][ '17|icart_poitiers']               = array( 'txt'=>"ENT i-Cart! (académie de Poitiers)."                                                  , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['icart_poitiers'];
 $tab_connexion_info['cas'][ '18|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
@@ -159,12 +148,10 @@ $tab_connexion_info['cas'][ '21|liberscol_dijon']              = array( 'txt'=>"
 $tab_connexion_info['cas'][ '21|cloe_dijon']                   = array( 'txt'=>"ENT CLOE (académie de Dijon)."                                                        , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['cloe_dijon'];
 $tab_connexion_info['cas'][ '22|toutatice']                    = array( 'txt'=>"ENT Toutatice (académie de Rennes)."                                                  , 'etat'=>1 , 'societe'=>'SERIA Rennes'       ) + $tab_csv_format['toutatice']            + $tab_serveur_cas['toutatice'];
 $tab_connexion_info['cas'][ '23|logica_elie']                  = array( 'txt'=>"ENT Elie (lycées du Limousin et collèges de la Creuse)."                              , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_elie'];
-$tab_connexion_info['cas'][ '23|itop_auvergne']                = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Itop."                                    , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_auvergne'];
-$tab_connexion_info['cas'][ '23|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Scolastance."                             , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
+$tab_connexion_info['cas'][ '23|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermond-Ferrand)."                                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
 $tab_connexion_info['cas'][ '25|enoe_besancon']                = array( 'txt'=>"ENT ENOE (académie de Besançon)."                                                     , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['enoe_besancon'];
 $tab_connexion_info['cas'][ '26|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
 $tab_connexion_info['cas'][ '27|itop_eure']                    = array( 'txt'=>"ENT département de l'Eure."                                                           , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_enteduc'];
-$tab_connexion_info['cas'][ '27|lea_hautenormandie']           = array( 'txt'=>"ENT Lycées Échanger Apprendre (Haute-Normandie)."                                     , 'etat'=>1 , 'societe'=>'SOPRA'              ) + $tab_csv_format['sopra']                + $tab_serveur_cas['lea_hautenormandie'];
 $tab_connexion_info['cas'][ '28|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
 $tab_connexion_info['cas'][ '29|toutatice']                    = array( 'txt'=>"ENT Toutatice (académie de Rennes)."                                                  , 'etat'=>1 , 'societe'=>'SERIA Rennes'       ) + $tab_csv_format['toutatice']            + $tab_serveur_cas['toutatice'];
 $tab_connexion_info['cas'][ '30|esup_montpellier']             = array( 'txt'=>"ENT Languedoc-Roussillon (académie de Montpellier)."                                  , 'etat'=>1 , 'societe'=>'ESUP Portail'       ) + $tab_csv_format['esup']                 + $tab_serveur_cas['esup_montpellier'];
@@ -175,14 +162,13 @@ $tab_connexion_info['cas'][ '34|esup_montpellier']             = array( 'txt'=>"
 $tab_connexion_info['cas'][ '35|toutatice']                    = array( 'txt'=>"ENT Toutatice (académie de Rennes)."                                                  , 'etat'=>1 , 'societe'=>'SERIA Rennes'       ) + $tab_csv_format['toutatice']            + $tab_serveur_cas['toutatice'];
 $tab_connexion_info['cas'][ '36|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
 $tab_connexion_info['cas'][ '37|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
-$tab_connexion_info['cas'][ '38|itop_isere']                   = array( 'txt'=>"ENT département de l'Isère."                                                          , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_isere'];
+$tab_connexion_info['cas'][ '38|itop_isere']                   = array( 'txt'=>"ENT département de l'Isère."                                                          , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_enteduc'];
 $tab_connexion_info['cas'][ '38|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
 $tab_connexion_info['cas'][ '39|enoe_besancon']                = array( 'txt'=>"ENT ENOE (académie de Besançon)."                                                     , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['enoe_besancon'];
 $tab_connexion_info['cas'][ '41|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
 $tab_connexion_info['cas'][ '42|kosmos_cybercolleges42']       = array( 'txt'=>"ENT Cybercollèges 42 (département de la Loire)."                                      , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['elyco']                + $tab_serveur_cas['kosmos_cybercolleges42'];
 $tab_connexion_info['cas'][ '42|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
-$tab_connexion_info['cas'][ '43|itop_auvergne']                = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Itop."                                    , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_auvergne'];
-$tab_connexion_info['cas'][ '43|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Scolastance."                             , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
+$tab_connexion_info['cas'][ '43|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermond-Ferrand)."                                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
 $tab_connexion_info['cas'][ '44|kosmos_elyco']                 = array( 'txt'=>"ENT e-lyco (académie de Nantes)."                                                     , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['elyco']                + $tab_serveur_cas['kosmos_elyco'];
 $tab_connexion_info['cas'][ '45|netocentre_orleanstours']      = array( 'txt'=>"ENT NetO'Centre (lycées de l'académie d'Orléans-Tours et collèges d'Indre-et-Loire)." , 'etat'=>1 , 'societe'=>'GIP'                ) + $tab_csv_format['netocentre']           + $tab_serveur_cas['netocentre_orleanstours'];
 $tab_connexion_info['cas'][ '46|kosmos_entmip']                = array( 'txt'=>"ENT Midi-Pyrénées (académie de Toulouse)."                                            , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['kosmos']               + $tab_serveur_cas['kosmos_entmip'];
@@ -204,15 +190,14 @@ $tab_connexion_info['cas'][ '60|itop_oise']                    = array( 'txt'=>"
 // $tab_connexion_info['cas'][ '60|entlibre_picardie']            = array( 'txt'=>"ENT Libre LEO des lycées de Picardie."                                                , 'etat'=>0 , 'societe'=>'ATOS'               ) + $tab_csv_format['atos']                 + $tab_serveur_cas['entlibre_picardie'];
 $tab_connexion_info['cas'][ '61|itslearning_caen']             = array( 'txt'=>"ENT L'Educ de Normandie (académie de Caen)."                                          , 'etat'=>1 , 'societe'=>'ItsLearning'        ) + $tab_csv_format['itslearning']          + $tab_serveur_cas['itslearning_caen'];
 $tab_connexion_info['cas'][ '62|kosmos_savoirsnumeriques5962'] = array( 'txt'=>"ENT Savoirs numériques 5962 (académie de Lille)."                                     , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['kosmos']               + $tab_serveur_cas['kosmos_savoirsnumeriques5962'];
-$tab_connexion_info['cas'][ '63|itop_auvergne']                = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Itop."                                    , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_auvergne'];
-$tab_connexion_info['cas'][ '63|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermont-Ferrand) Scolastance."                             , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
+$tab_connexion_info['cas'][ '63|scolastance_auvergne']         = array( 'txt'=>"ENT Auvergne (académie de Clermond-Ferrand)."                                         , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_auvergne'];
 $tab_connexion_info['cas'][ '65|kosmos_entmip']                = array( 'txt'=>"ENT Midi-Pyrénées (académie de Toulouse)."                                            , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['kosmos']               + $tab_serveur_cas['kosmos_entmip'];
 $tab_connexion_info['cas'][ '66|esup_montpellier']             = array( 'txt'=>"ENT Languedoc-Roussillon (académie de Montpellier)."                                  , 'etat'=>1 , 'societe'=>'ESUP Portail'       ) + $tab_csv_format['esup']                 + $tab_serveur_cas['esup_montpellier'];
 $tab_connexion_info['cas'][ '67|itop_alsace']                  = array( 'txt'=>"ENT Alsace (académie de Strasbourg) Itop."                                            , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_alsace'];
 $tab_connexion_info['cas'][ '67|scolastance_alsace']           = array( 'txt'=>"ENT Alsace (académie de Strasbourg) Scolastance."                                     , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_alsace'];
 $tab_connexion_info['cas'][ '68|itop_alsace']                  = array( 'txt'=>"ENT Alsace (académie de Strasbourg) Itop."                                            , 'etat'=>1 , 'societe'=>'iTOP'               ) + $tab_csv_format['itop']                 + $tab_serveur_cas['itop_alsace'];
 $tab_connexion_info['cas'][ '68|scolastance_alsace']           = array( 'txt'=>"ENT Alsace (académie de Strasbourg)) Scolastance."                                    , 'etat'=>1 , 'societe'=>'Infostance'         ) + $tab_csv_format['scolastance']          + $tab_serveur_cas['scolastance_alsace'];
-$tab_connexion_info['cas'][ '69|laclasse']                     = array( 'txt'=>"ENT laclasse.com (département du Rhône)."                                             , 'etat'=>1 , 'societe'=>'Erasme'             ) + $tab_csv_format['']                     + $tab_serveur_cas['laclasse'];
+$tab_connexion_info['cas'][ '69|laclasse']                     = array( 'txt'=>"ENT laclasse.com (département du Rhône)."                                             , 'etat'=>0 , 'societe'=>'Erasme'             ) + $tab_csv_format['']                     + $tab_serveur_cas['laclasse'];
 $tab_connexion_info['cas'][ '69|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
 $tab_connexion_info['cas'][ '70|enoe_besancon']                = array( 'txt'=>"ENT ENOE (académie de Besançon)."                                                     , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['enoe_besancon'];
 $tab_connexion_info['cas'][ '71|liberscol_dijon']              = array( 'txt'=>"ENT Liberscol (académie de Dijon)."                                                   , 'etat'=>1 , 'societe'=>'Tetra Informatique' ) + $tab_csv_format['liberscol']            + $tab_serveur_cas['liberscol'];
@@ -221,9 +206,8 @@ $tab_connexion_info['cas'][ '72|kosmos_elyco']                 = array( 'txt'=>"
 $tab_connexion_info['cas'][ '73|cartabledesavoie']             = array( 'txt'=>"ENT Cartable de Savoie."                                                              , 'etat'=>1 , 'societe'=>'Pentila'            ) + $tab_csv_format['pentila']              + $tab_serveur_cas['pentila'];
 $tab_connexion_info['cas'][ '73|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
 $tab_connexion_info['cas'][ '74|logica_rra']                   = array( 'txt'=>"ENT lycées région Rhône-Alpes."                                                       , 'etat'=>0 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_rra'];
-$tab_connexion_info['cas'][ '75|parisclassenumerique']         = array( 'txt'=>"ENT Paris Classe Numérique."                                                          , 'etat'=>1 , 'societe'=>'SOPRA'              ) + $tab_csv_format['sopra']                + $tab_serveur_cas['parisclassenumerique'];
+$tab_connexion_info['cas'][ '75|parisclassenumerique']         = array( 'txt'=>"ENT Paris Classe Numérique."                                                          , 'etat'=>1 , 'societe'=>'SOPRA'              ) + $tab_csv_format['parisclassenumerique'] + $tab_serveur_cas['parisclassenumerique'];
 $tab_connexion_info['cas'][ '76|kosmos_arsene76']              = array( 'txt'=>"ENT Arsene 76 (département de Seine-Maritime)."                                       , 'etat'=>1 , 'societe'=>'Kosmos'             ) + $tab_csv_format['kosmos']               + $tab_serveur_cas['kosmos_arsene76'];
-$tab_connexion_info['cas'][ '76|lea_hautenormandie']           = array( 'txt'=>"ENT Lycées Échanger Apprendre (Haute-Normandie)."                                     , 'etat'=>1 , 'societe'=>'SOPRA'              ) + $tab_csv_format['sopra']                + $tab_serveur_cas['lea_hautenormandie'];
 $tab_connexion_info['cas'][ '77|logica_ent77']                 = array( 'txt'=>"ENT département de Seine et Marne."                                                   , 'etat'=>1 , 'societe'=>'Logica / CGI'       ) + $tab_csv_format['logica']               + $tab_serveur_cas['logica_ent77'];
 $tab_connexion_info['cas'][ '77|cel_creteil']                  = array( 'txt'=>"ENT Cartable en ligne (académie de Créteil)."                                         , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['cel_creteil'];
 $tab_connexion_info['cas'][ '79|icart_poitiers']               = array( 'txt'=>"ENT i-Cart! (académie de Poitiers)."                                                  , 'etat'=>1 , 'societe'=>'Envole-Scribe'      ) + $tab_csv_format['perso']                + $tab_serveur_cas['icart_poitiers'];
@@ -254,21 +238,23 @@ $tab_connexion_info['shibboleth'][ '47|argos']                 = array( 'txt'=>"
 $tab_connexion_info['shibboleth'][ '64|argos64']               = array( 'txt'=>"ENT Argos64 (département des Pyrénées-Atlantiques)."                                  , 'etat'=>1 , 'societe'=>'DSI Bordeaux'       ) + $tab_csv_format['perso'];
 $tab_connexion_info['gepi']['|saml']                         = array( 'txt'=>"S'authentifier depuis GEPI (protocole SAML)." ) + $tab_saml_param['gepi'];
 
-/**
- * Certains sous-tableaux ne sont plus utiles.
- * Cependant $tab_serveur_cas peut ensuite être utilisé par l'application.
- */
+/*
+* Les sous-tableaux ne sont plus utiles.
+* edit : $tab_serveur_cas est maintenant utilisé
+*/
 unset( $tab_csv_format , $tab_saml_param );
 
-/**
- * Reliquats
- * 
- * Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/
- * 
- * https://cas.scolastance.com/cas-asp
- * https://cas.scolastance.com/cas-ent74      http://ent74.scolastance.com/etablissements.aspx
- * https://cas.scolastance.com/cas-client    http://client.scolastance.com/etablissements.aspx
- * https://cas.scolastance.com/cas-demo      http://demo.scolastance.com/etablissements.aspx
- */
+/*
+Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/
+
+https://cas.scolastance.com/cas-asp
+https://cas.scolastance.com/cas-ent74      http://ent74.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-entrouen  http://entrouen.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-ifsp      http://ifsp.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-client    http://client.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-sierra    http://sierra.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-demo      http://demo.scolastance.com/etablissements.aspx
+
+*/
 
 ?>

@@ -1,28 +1,10 @@
 <?php
 /**
- * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
- * 
- * ****************************************************************************************************
- * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
- * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
- * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
- * ****************************************************************************************************
- * 
- * Ce fichier est une partie de SACoche.
- * 
- * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
- * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
- * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
- * 
- * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
- * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
- * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
- * 
- * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
- * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
- * 
+ */
+
+/**
+ * L'environnement PHP (fichier _loader.php) doit avoir été appelé en amont pour définir plusieurs constantes et classes requises.
  */
 
 class Layout
@@ -97,7 +79,7 @@ class Layout
       Layout::$is_opengraph    = TRUE;
       Layout::$is_favicon      = TRUE;
       Layout::$is_rss          = TRUE;
-      Layout::$is_add_noscript = ($config=='portail') ? TRUE : FALSE ; // Pour l'appli la ligne est déjà incluse à un endroit plus approprié
+      Layout::$is_add_noscript = ($config=='portail') ? TRUE : FALSE ; // Pour l'appli la ligne est déjà incluse
       Layout::$body_class      = ($config=='portail') ? '' : ' class="'.substr($config,5).'"' ;
     }
   }
@@ -119,26 +101,21 @@ class Layout
   {
     $tab_CSP_directives = array();
     // Scripts JS ; "unsafe-eval" requis si usage de compression js avec la méthode "pack"
-    $tab_CSP_directives[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+    $tab_CSP_directives[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval' ".SERVEUR_PROJET.$URL_SSL;
     // Styles CSS
-    $tab_CSP_directives[] = "style-src 'self' 'unsafe-inline'";
+    $tab_CSP_directives[] = "style-src 'self' 'unsafe-inline' ".SERVEUR_PROJET.$URL_SSL;
     // Images
-    $tab_CSP_directives[] = "img-src 'self' 'unsafe-inline' data:";
+    $tab_CSP_directives[] = "img-src 'self' 'unsafe-inline' data: ".SERVEUR_PROJET.$URL_SSL;
     // Appels ajax
     $tab_CSP_directives[] = "connect-src 'self'";
-    // Cadres (frames) ; est requis pour le js AjaxUpload ; peut être requis pour le js Fancybox
+    // Peut être requis pour des appels fancybox
     $tab_CSP_directives[] = "frame-src 'self'";
     // Si audio ou vidéo
     $tab_CSP_directives[] = "media-src 'self'";
-    // Si object ou applet ; requis pour du flash (IEP, TEP, MEP...)
+    // Si object ou iframe ; requis pour du flash (IEP, TEP, MEP...)
     $tab_CSP_directives[] = "object-src 'none'";
     // Si font
     $tab_CSP_directives[] = "font-src 'none'";
-    // Adresse d'un parser des rapports de blocages
-    if(IS_HEBERGEMENT_SESAMATH)
-    {
-      $tab_CSP_directives[] = "report-uri ".SERVEUR_ASSO."/csp-alert.php";
-    }
     // on concatène
     return implode(' ; ',$tab_CSP_directives);
   }
@@ -278,7 +255,7 @@ class Layout
     $string = '';
     $string.= '<meta property="og:title" content="'.Layout::$head_browser_title.'" />'.NL;
     $string.= '<meta property="og:type" content="website" />'.NL;
-    $string.= '<meta property="og:url" content="'. $url . html($_SERVER['REQUEST_URI']) .'" />'.NL; /* /!\ modif classe Sésamath /!\ */
+    $string.= '<meta property="og:url" content="'. $url . $_SERVER['REQUEST_URI'] .'" />'.NL; /* /!\ modif classe Sésamath /!\ */
     $string.= '<meta property="og:image" content="'. SERVEUR_PROJET . Layout::OPENGRAPH_IMAGE .'" />'.NL; /* /!\ modif classe Sésamath /!\ */
     $string.= '<meta property="og:locale" content="fr_FR" />'.NL;
     $string.= '<meta property="og:site_name" content="'.Layout::SITE_NAME.'" />'.NL;

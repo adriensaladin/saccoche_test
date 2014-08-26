@@ -98,22 +98,22 @@ $(document).ready
       if(date_visible=='identique')
       {
         $('#box_visible').prop('checked',true).next().show(0);
-        $('#f_date_visible').val(date_fr).parent().hide(0);
+        $('#f_date_visible').val(date_fr).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
       }
       else
       {
-        $('#box_visible').prop('checked',false).next().hide(0);
+        $('#box_visible').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
         $('#f_date_visible').val(date_visible).parent().show(0);
       }
       // date fin auto-évaluation
       if(date_autoeval=='sans objet')
       {
         $('#box_autoeval').prop('checked',true).next().show(0);
-        $('#f_date_autoeval').val('00/00/0000').parent().hide(0);
+        $('#f_date_autoeval').val('00/00/0000').parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
       }
       else
       {
-        $('#box_autoeval').prop('checked',false).next().hide(0);
+        $('#box_autoeval').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
         $('#f_date_autoeval').val(date_autoeval).parent().show(0);
       }
       // pour finir
@@ -129,7 +129,7 @@ $(document).ready
         $('#gestion_edit').hide(0);
         $('#gestion_delete').show(0);
       }
-      $('#alerte_groupe').hide(0);
+      $('#alerte_groupe').css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
       $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
@@ -326,7 +326,7 @@ $(document).ready
               $('#arrow_continue_'+memo_direction).click();
               nb_colonnes = $('#table_saisir thead th').length;
               nb_lignes   = $('#table_saisir tbody tr').length;
-              $('#zone_saisir').show();
+              $('#zone_saisir').css("display","block");
               if(nb_lignes>nb_lignes_max)
               {
                 $('#table_saisir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
@@ -409,7 +409,7 @@ $(document).ready
               $('#export_file_voir_tableau_scores_gris'   ).attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
               $('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
               nb_lignes   = $('#table_voir tbody tr').length;
-              $('#zone_voir').show();
+              $('#zone_voir').css("display","block");
               if(nb_lignes>nb_lignes_max)
               {
                 $('#table_voir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
@@ -757,7 +757,7 @@ $(document).ready
       {
         $('#cadre_tactile').hide();
       }
-      $('#zone_saisir').hide();
+      $('#zone_saisir').css("display","none");
       $('#form_prechoix , #table_action').show('fast');
       return false;
     }
@@ -809,7 +809,7 @@ $(document).ready
         {
           $('#table_voir').thfloat('destroy'); /* jQuery TH Float Plugin */
         }
-        $('#zone_voir').hide();
+        $('#zone_voir').css("display","none");
         $('#form_prechoix , #table_action').show('fast');
         return false;
       }

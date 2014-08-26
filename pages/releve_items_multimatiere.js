@@ -246,7 +246,6 @@ $(document).ready
       {
         rules :
         {
-          f_individuel_format  : { required:true },
           f_etat_acquisition   : { required:false },
           f_moyenne_scores     : { required:false },
           f_pourcentage_acquis : { required:false },
@@ -273,7 +272,6 @@ $(document).ready
         },
         messages :
         {
-          f_individuel_format  : { required:"choix manquant" },
           f_etat_acquisition   : { },
           f_moyenne_scores     : { },
           f_pourcentage_acquis : { },

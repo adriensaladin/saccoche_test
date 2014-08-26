@@ -28,32 +28,32 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$remplissage       = (isset($_POST['f_remplissage']))   ? Clean::texte($_POST['f_remplissage'])            : '';
-$colonne_bilan     = (isset($_POST['f_colonne_bilan'])) ? Clean::texte($_POST['f_colonne_bilan'])          : '';
-$colonne_vide      = (isset($_POST['f_colonne_vide']))  ? Clean::entier($_POST['f_colonne_vide'])          : 0;
-$tableau_tri_objet = (isset($_POST['f_tri_objet']))     ? Clean::texte($_POST['f_tri_objet'])              : '';
-$tableau_tri_mode  = (isset($_POST['f_tri_mode']))      ? Clean::texte($_POST['f_tri_mode'])               : '';
-$matiere_id        = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])               : 0;
-$matiere_nom       = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])            : '';
-$groupe_id         = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])                : 0;
-$groupe_nom        = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])             : '';
-$niveau_id         = (isset($_POST['f_niveau']))        ? Clean::entier($_POST['f_niveau'])                : 0;
-$niveau_nom        = (isset($_POST['f_niveau_nom']))    ? Clean::texte($_POST['f_niveau_nom'])             : '';
-$periode_id        = (isset($_POST['f_periode']))       ? Clean::entier($_POST['f_periode'])               : 0;
-$date_debut        = (isset($_POST['f_date_debut']))    ? Clean::date_fr($_POST['f_date_debut'])           : '';
-$date_fin          = (isset($_POST['f_date_fin']))      ? Clean::date_fr($_POST['f_date_fin'])             : '';
-$retroactif        = (isset($_POST['f_retroactif']))    ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
-$only_socle        = (isset($_POST['f_restriction']))   ? 1                                                : 0;
-$aff_coef          = (isset($_POST['f_coef']))          ? 1                                                : 0;
-$aff_socle         = (isset($_POST['f_socle']))         ? 1                                                : 0;
-$aff_lien          = (isset($_POST['f_lien']))          ? 1                                                : 0;
-$orientation       = (isset($_POST['f_orientation']))   ? Clean::texte($_POST['f_orientation'])            : '';
-$couleur           = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])                : '';
-$legende           = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])                : '';
-$marge_min         = (isset($_POST['f_marge_min']))     ? Clean::texte($_POST['f_marge_min'])              : '';
-$pages_nb          = (isset($_POST['f_pages_nb']))      ? Clean::texte($_POST['f_pages_nb'])               : '';
-$cases_nb          = (isset($_POST['f_cases_nb']))      ? Clean::entier($_POST['f_cases_nb'])              : -1;
-$cases_largeur     = (isset($_POST['f_cases_larg']))    ? Clean::entier($_POST['f_cases_larg'])            : 0;
+$remplissage             = (isset($_POST['f_remplissage']))     ? Clean::texte($_POST['f_remplissage'])            : '';
+$colonne_bilan           = (isset($_POST['f_colonne_bilan']))   ? Clean::texte($_POST['f_colonne_bilan'])          : '';
+$colonne_vide            = (isset($_POST['f_colonne_vide']))    ? Clean::entier($_POST['f_colonne_vide'])          : 0;
+$tableau_synthese_format = (isset($_POST['f_synthese_format'])) ? Clean::texte($_POST['f_synthese_format'])        : '';
+$tableau_tri_mode        = (isset($_POST['f_tri_mode']))        ? Clean::texte($_POST['f_tri_mode'])               : '';
+$matiere_id              = (isset($_POST['f_matiere']))         ? Clean::entier($_POST['f_matiere'])               : 0;
+$matiere_nom             = (isset($_POST['f_matiere_nom']))     ? Clean::texte($_POST['f_matiere_nom'])            : '';
+$groupe_id               = (isset($_POST['f_groupe']))          ? Clean::entier($_POST['f_groupe'])                : 0;
+$groupe_nom              = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])             : '';
+$niveau_id               = (isset($_POST['f_niveau']))          ? Clean::entier($_POST['f_niveau'])                : 0;
+$niveau_nom              = (isset($_POST['f_niveau_nom']))      ? Clean::texte($_POST['f_niveau_nom'])             : '';
+$periode_id              = (isset($_POST['f_periode']))         ? Clean::entier($_POST['f_periode'])               : 0;
+$date_debut              = (isset($_POST['f_date_debut']))      ? Clean::date_fr($_POST['f_date_debut'])           : '';
+$date_fin                = (isset($_POST['f_date_fin']))        ? Clean::date_fr($_POST['f_date_fin'])             : '';
+$retroactif              = (isset($_POST['f_retroactif']))      ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
+$only_socle              = (isset($_POST['f_restriction']))     ? 1                                                : 0;
+$aff_coef                = (isset($_POST['f_coef']))            ? 1                                                : 0;
+$aff_socle               = (isset($_POST['f_socle']))           ? 1                                                : 0;
+$aff_lien                = (isset($_POST['f_lien']))            ? 1                                                : 0;
+$orientation             = (isset($_POST['f_orientation']))     ? Clean::texte($_POST['f_orientation'])            : '';
+$couleur                 = (isset($_POST['f_couleur']))         ? Clean::texte($_POST['f_couleur'])                : '';
+$legende                 = (isset($_POST['f_legende']))         ? Clean::texte($_POST['f_legende'])                : '';
+$marge_min               = (isset($_POST['f_marge_min']))       ? Clean::texte($_POST['f_marge_min'])              : '';
+$pages_nb                = (isset($_POST['f_pages_nb']))        ? Clean::texte($_POST['f_pages_nb'])               : '';
+$cases_nb                = (isset($_POST['f_cases_nb']))        ? Clean::entier($_POST['f_cases_nb'])              : -1;
+$cases_largeur           = (isset($_POST['f_cases_larg']))      ? Clean::entier($_POST['f_cases_larg'])            : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve_id = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
@@ -122,7 +122,7 @@ $tab_theme          = array();  // [domaine_id][theme_id] => array(theme_ref,the
 $tab_item           = array();  // [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien);
 $tab_item_synthese  = array();  // [item_id] => array(item_ref,item_nom);
 $tab_liste_item     = array();  // [i] => item_id
-$tab_eleve          = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom)
+$tab_eleve_infos    = array();  // [eleve_id] => array(eleve_nom,eleve_prenom)
 $tab_eval           = array();  // [eleve_id][item_id] => array(note,date,info)
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,21 +222,27 @@ $liste_item = implode(',',$tab_liste_item);
 
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM']);
+  $tab_eleve_infos[$_SESSION['USER_ID']] = array(
+    'eleve_nom'    => $_SESSION['USER_NOM'],
+    'eleve_prenom' => $_SESSION['USER_PRENOM'],
+  );
 }
 elseif(count($tab_eleve_id))
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
-  if(!is_array($tab_eleve))
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
 }
 else
 {
-  $tab_eleve[] = array('eleve_id'=>0,'eleve_nom'=>'','eleve_prenom'=>'');
+  $tab_eleve_infos[0] = array(
+    'eleve_nom'    => '',
+    'eleve_prenom' => '',
+  );
 }
-$eleve_nb = count($tab_eleve);
+$eleve_nb = count( $tab_eleve_infos , COUNT_NORMAL );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des résultats
@@ -457,12 +463,12 @@ if( $type_generique || $type_individuel )
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
   $releve_PDF->grille_referentiel_initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , $pages_nb );
-  $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
+  $separation = (count($tab_eleve_infos)>1) ? '<hr />'.NL : '' ;
 
   // Pour chaque élève...
-  foreach($tab_eleve as $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
+    extract($tab_eleve);  // $eleve_nom $eleve_prenom
     // On met le document au nom de l'élève, ou on établit un document générique
     $releve_PDF->grille_referentiel_entete( $matiere_nom , $niveau_nom , $eleve_id , $eleve_nom , $eleve_prenom );
     $releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>'.NL : $separation.'<h2>Grille générique</h2>'.NL ;
@@ -582,16 +588,16 @@ if($type_synthese)
   $releve_HTML_synthese .= '<h2>'.html($matiere_et_niveau).'</h2>'.NL;
   // Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
   // On définit l'orientation la plus adaptée
-  $orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_tri_objet=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_tri_objet=='item') ) ) ? 'portrait' : 'landscape' ;
+  $orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
   $releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , 'oui' /*legende*/ );
-  $releve_PDF->bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_tri_objet);
+  $releve_PDF->bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
   $releve_PDF->bilan_periode_synthese_entete($tab_titre,$matiere_et_niveau,''/*texte_periode*/);
   // 1ère ligne
   $releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '' , 0 , 0 , 'C' , FALSE , '');
   $releve_PDF->choisir_couleur_fond('gris_clair');
-  $th = ($tableau_tri_objet=='eleve') ? 'Elève' : 'Item' ;
+  $th = ($tableau_synthese_format=='eleve') ? 'Elève' : 'Item' ;
   $releve_HTML_table_head = '<thead><tr><th>'.$th.'</th>';
-  if($tableau_tri_objet=='eleve')
+  if($tableau_synthese_format=='eleve')
   {
     foreach($tab_liste_item as $item_id)  // Pour chaque item...
     {
@@ -601,9 +607,9 @@ if($type_synthese)
   }
   else
   {
-    foreach($tab_eleve as $tab)  // Pour chaque élève...
+    foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
-      extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
+      extract($tab_eleve);  // $eleve_nom $eleve_prenom
       $releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
       $releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
     }
@@ -616,11 +622,11 @@ if($type_synthese)
   $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'.NL;
   // lignes suivantes
   $releve_HTML_table_body = '';
-  if($tableau_tri_objet=='eleve')
+  if($tableau_synthese_format=='eleve')
   {
-    foreach($tab_eleve as $tab)  // Pour chaque élève...
+    foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
-      extract($tab);  // $eleve_id $eleve_nom $eleve_prenom
+      extract($tab_eleve);  // $eleve_nom $eleve_prenom
       $releve_PDF->choisir_couleur_fond('gris_clair');
       $releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , TRUE , '');
       $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
@@ -645,9 +651,8 @@ if($type_synthese)
       $releve_PDF->choisir_couleur_fond('gris_clair');
       $releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($tab_item_synthese[$item_id]['item_ref']) , 1 , 0 , 'L' , TRUE , '');
       $releve_HTML_table_body .= '<tr><td title="'.html(html($tab_item_synthese[$item_id]['item_nom'])).'">'.html($tab_item_synthese[$item_id]['item_ref']).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-      foreach($tab_eleve as $tab)  // Pour chaque élève...
+      foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
       {
-        $eleve_id = $tab['eleve_id'];
         $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
         $releve_PDF->afficher_score_bilan($score,$br=0);
         $checkbox_val = ($affichage_checkbox) ? $eleve_id.'x'.$item_id : '' ;
@@ -672,7 +677,7 @@ if($type_synthese)
   $checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;
   $memo_x = $releve_PDF->GetX();
   $releve_PDF->SetXY($memo_x,$memo_y);
-  if($tableau_tri_objet=='eleve')
+  if($tableau_synthese_format=='eleve')
   {
     foreach($tab_liste_item as $item_id)  // Pour chaque item...
     {
@@ -686,9 +691,8 @@ if($type_synthese)
   }
   else
   {
-    foreach($tab_eleve as $tab)  // Pour chaque élève...
+    foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
-      $eleve_id = $tab['eleve_id'];
       $valeur1 = (isset($tab_moyenne_scores_eleve[$eleve_id])) ? $tab_moyenne_scores_eleve[$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$eleve_id])) ? $tab_pourcentage_acquis_eleve[$eleve_id] : FALSE ;
       $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,TRUE,FALSE);
@@ -698,15 +702,15 @@ if($type_synthese)
     }
   }
   // les deux dernières cases (moyenne des moyennes)
-  $colspan = ($tableau_tri_objet=='eleve') ? $item_nb+4 : $eleve_nb+4 ;
-  $colspan+= ($affichage_checkbox) ? 1 : 0 ;
+  $colspan  = ($tableau_synthese_format=='eleve') ? $item_nb : $eleve_nb ;
+  $last_col = ($affichage_checkbox) ? '<td class="nu"></td>' : '' ;
   $releve_PDF->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
   $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL;
   $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$checkbox_vide.'</tr>'.NL;
   $checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL : '' ;
-  $releve_HTML_table_foot = '<tfoot>'.NL.'<tr><td class="nu" colspan="'.$colspan.'" style="font-size:0;height:9px">&nbsp;</td></tr>'.NL.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$checkbox.'</tfoot>'.NL;
+  $releve_HTML_table_foot = '<tfoot>'.NL.'<tr class="vide"><td class="nu" colspan="'.$colspan.'">&nbsp;</td><td class="nu"></td><td class="nu" colspan="2"></td>'.$last_col.'</tr>'.NL.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$checkbox.'</tfoot>'.NL;
   // pour la sortie HTML, on peut placer les tableaux de synthèse au début
-  $num_hide = ($tableau_tri_objet=='eleve') ? $item_nb+1 : $eleve_nb+1 ;
+  $num_hide = ($tableau_synthese_format=='eleve') ? $item_nb+1 : $eleve_nb+1 ;
   $num_hide_add = ($affichage_checkbox) ? ','.($num_hide+3).':{sorter:false}' : '' ;
   $releve_HTML_synthese .= '<hr />'.NL.'<h2>SYNTHESE (selon l\'objet et le mode de tri choisis)</h2>'.NL;
   $releve_HTML_synthese .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;

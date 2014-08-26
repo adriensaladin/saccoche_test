@@ -51,7 +51,7 @@ a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1ex 0;border-top:1px dotted #66F;}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
-del{text-decoration:line-through;color:#666}
+del{text-decoration:line-through;color:#999}
 kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
 kbd:hover{background-color:#CCC;border-color:#AAA}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}
@@ -673,7 +673,7 @@ table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
 table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
 table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
-
+tr.vide td{font-size:0;height:6px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle : #tableau_validation                                                  */
@@ -756,6 +756,7 @@ table.xdebug-error i {display:inline-block} /* pour éviter une répercussion su
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .ui-tooltip {position:absolute;z-index:9999;border:1px solid #333;border-radius:6px;background:#EEE;color:#222;font-size:12px;padding:0.5em} /* Contenu de l'infobulle ; pas réussi à faire fonctionner font-weight:bold => ajouter en js */
+.ui-helper-hidden , .ui-helper-hidden-accessible {display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Calque de recherche (uniquement le calendrier en fait)                                              */

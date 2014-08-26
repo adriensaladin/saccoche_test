@@ -288,8 +288,9 @@ define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF 
 define('CHEMIN_FICHIER_CONFIG_INSTALL' , CHEMIN_DOSSIER_CONFIG.'constantes.php');
 define('CHEMIN_FICHIER_DEBUG_CONFIG'   , CHEMIN_DOSSIER_TMP.'debug.txt');
 define('CHEMIN_FICHIER_CA_CERTS_FILE'  , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.'certificats'.DS.'certificats.txt');
-define('CHEMIN_FICHIER_WS_LCS'         , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_ARGOS'       , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
+define('CHEMIN_FICHIER_WS_LACLASSE'    , CHEMIN_DOSSIER_WEBSERVICES.'Laclasse-recup_id_ent.php');
+define('CHEMIN_FICHIER_WS_LCS'         , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_hebergements_conventions.php');
 
 // ============================================================================

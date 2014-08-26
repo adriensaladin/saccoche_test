@@ -86,7 +86,11 @@ if( $num && $max && ($num<$max) )
 if( $num && $max && ($num==$max) )
 {
   // Trier les lignes
-  array_multisort($_SESSION['tmp']['infos']['niveau_alerte'],SORT_DESC,SORT_NUMERIC,$_SESSION['tmp']['infos']['base_id'],SORT_ASC,SORT_NUMERIC,$_SESSION['tmp']['infos']['messages']);
+  array_multisort(
+    $_SESSION['tmp']['infos']['niveau_alerte'], SORT_DESC,SORT_NUMERIC,
+    $_SESSION['tmp']['infos']['base_id']      , SORT_ASC,SORT_NUMERIC,
+    $_SESSION['tmp']['infos']['messages']
+  );
   // Enregistrement du rapport
   $fichier_nom = 'rapport_analyser_et_reparer_tables_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   $thead = '<tr><td colspan="2">Analyse et réparation éventuelle des tables de bases de données par établissement - '.date('d/m/Y H:i:s').'</td></tr>';

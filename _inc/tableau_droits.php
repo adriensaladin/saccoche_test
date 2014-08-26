@@ -82,7 +82,8 @@ $tab_droits_par_page = array
   'releve_items_selection'                  => $tab_droits_profil_professeur,
   // Profil directeur
   '_maj_select_matieres'                    => $tab_droits_profil_directeur,
-  'consultation_statistiques'               => $tab_droits_profil_directeur,
+  'consultation_nombre_saisies'             => $tab_droits_profil_directeur,
+  'consultation_stats_globales'             => $tab_droits_profil_directeur,
   // Profil administrateur
   '_maj_select_directeurs'                  => $tab_droits_profil_administrateur,
   '_maj_select_parents'                     => $tab_droits_profil_administrateur,

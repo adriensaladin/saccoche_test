@@ -53,6 +53,7 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
       <option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
       <option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
       <option value="import_id_argos">Récupérer les identifiants d'ARGOS.</option>
+      <option value="import_id_laclasse">Récupérer les identifiants de Laclasse.com.</option>
       <option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants d'un ENT.</option>
       <option value="import_id_gepi">Récupérer les identifiants de Gepi.</option>
     </select><br />
@@ -124,9 +125,28 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
     }
     else
     {
-      echo'<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />'.NL;
-      echo'<button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />'.NL;
-      echo'<button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.'.NL;
+      echo'<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les professeurs &amp; directeurs.<br />'.NL;
+      echo'<button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les élèves.<br />'.NL;
+      echo'<button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les responsables légaux.'.NL;
+    }
+    ?>
+  </fieldset>
+
+  <fieldset id="fieldset_import_id_laclasse" class="hide">
+    <hr />
+    <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__laclasse">DOC : Intégration de SACoche dans Laclasse.com</a></span></p>
+    <?php
+    if(IS_HEBERGEMENT_SESAMATH)
+    {
+      echo'<div class="danger">Cette fonctionnalité, réservée à l\'installation départementale Laclasse.com, est sans objet sur le serveur Sésamath !</div>'.NL;
+    }
+    else if(!is_file(CHEMIN_FICHIER_WS_LACLASSE))
+    {
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'</b>&nbsp;&raquo; uniquement présent sur l\'installation départementale Laclasse.com n\'a pas été détecté !</div>'.NL;
+    }
+    else
+    {
+      echo'<button name="dupliquer" id="COPY_id_laclasse_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT de Laclasse.com</button> pour tous les utilisateurs.'.NL;
     }
     ?>
   </fieldset>

@@ -35,12 +35,12 @@ require('./_inc/_loader.php');
 // Fonctions
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 
-// On récupère les paramètres
-$WS_qui  = (isset($_POST['qui']))  ? Clean::texte($_POST['qui']) : ( (isset($_GET['qui'])) ? Clean::texte($_GET['qui']) : '' ) ;
-$WS_cle  = (isset($_POST['cle']))  ? Clean::texte($_POST['cle']) : '';
-$WS_uai  = (isset($_POST['uai']))  ? Clean::uai($_POST['uai'])   : '';
-$WS_uid  = (isset($_POST['uid']))  ? Clean::texte($_POST['uid']) : '';
-$WS_data = (isset($_POST['data'])) ? $_POST['data']              : ''; // tableau sérialisé
+// On récupère les paramètres ; on utilise REQUEST car selon les services les données sont reçues en POST en ou GET.
+$WS_qui  = (isset($_REQUEST['qui']))  ? Clean::texte($_REQUEST['qui']) : '' ;
+$WS_cle  = (isset($_REQUEST['cle']))  ? Clean::texte($_REQUEST['cle']) : '' ;
+$WS_uai  = (isset($_REQUEST['uai']))  ? Clean::uai($_REQUEST['uai'])   : '' ;
+$WS_uid  = (isset($_REQUEST['uid']))  ? Clean::texte($_REQUEST['uid']) : '' ;
+$WS_data = (isset($_REQUEST['data'])) ? $_REQUEST['data']              : '' ; // tableau sérialisé
 
 /**
  * Cas d'un service externe récupérant les données d'un user authentifié sur SACoche.
@@ -66,13 +66,13 @@ if($WS_qui=='AutoMaths')
 }
 
 /**
- * Place aux autres webservices à présent (pour l'instant seuls ceux pour Bordeaux sont appelés depuis l'extérieur).
+ * Place aux autres webservices appelés depuis l'extérieur.
  * On ne vérifie dans un premier temps que le 1er paramètre (le service web prendra éventuellement en charge la suite).
  */
-$tab_ws = array('argos_parent','argos_ajout');
+$tab_ws = array('argos_parent','argos_ajout','Laclasse-provisionning');
 if(!in_array($WS_qui,$tab_ws))
 {
-  exit('Erreur : nom du service web manquant ou incorrect !');
+  exit('Erreur : nom du service web manquant / incorrect ou service non autorisé !');
 }
 $fichier = CHEMIN_DOSSIER_WEBSERVICES.$WS_qui.'.php';
 if(!is_file($fichier))

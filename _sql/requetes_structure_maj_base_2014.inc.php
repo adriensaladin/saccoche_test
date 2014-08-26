@@ -415,4 +415,24 @@ if($version_base_structure_actuelle=='2014-05-24')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-07-08 => 2014-07-16
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-07-08')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-07-16';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modification sacoche_parametre (paramètres CAS pour ENT)
+    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+    // Le serveur CAS de ITOP pour l'Isère change
+    if($connexion_nom=='itop_isere')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="www.colleges-isere.fr" WHERE parametre_nom="cas_serveur_host" ' );
+    }
+  }
+}
+
 ?>

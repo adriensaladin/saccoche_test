@@ -84,6 +84,21 @@ $(document).ready
       function()
       {
         visibility_option_with_coef();
+        if($(this).is(':checked'))
+        {
+          $("#f_individuel_format option[value=eleve]").prop('selected',true);
+        }
+      }
+    );
+
+    $('#f_individuel_format').change
+    (
+      function()
+      {
+        if($(this).val()=='item')
+        {
+          $("#f_type_bulletin").prop('checked',false);
+        }
       }
     );
 
@@ -353,11 +368,12 @@ $(document).ready
         rules :
         {
           'f_type[]'           : { required:true },
+          f_individuel_format  : { required:true },
           f_etat_acquisition   : { required:false },
           f_moyenne_scores     : { required:false },
           f_pourcentage_acquis : { required:false },
           f_conversion_sur_20  : { required:false },
-          f_tri_objet          : { required:true },
+          f_synthese_format    : { required:true },
           f_tri_mode           : { required:true },
           f_groupe             : { required:true },
           'f_eleve[]'          : { required:true },
@@ -383,11 +399,12 @@ $(document).ready
         messages :
         {
           'f_type[]'           : { required:"type(s) manquant(s)" },
+          f_individuel_format  : { required:"choix manquant" },
           f_etat_acquisition   : { },
           f_moyenne_scores     : { },
           f_pourcentage_acquis : { },
           f_conversion_sur_20  : { },
-          f_tri_objet          : { required:"choix manquant" },
+          f_synthese_format    : { required:"choix manquant" },
           f_tri_mode           : { required:"choix manquant" },
           f_groupe             : { required:"groupe manquant" },
           'f_eleve[]'          : { required:"élève(s) manquant(s)" },

@@ -43,6 +43,7 @@ $tab_menu = array
     "Dates des périodes"         => array( 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
     "Référentiels en place"      => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
     "Référentiels partagés"      => array( 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
+    "Statistiques globales"      => array( 'class' => 'statistiques'     , 'href' => 'page=consultation_stats_globales'      ),
     "Date de dernière connexion" => array( 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     "Export de données"          => array( 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     "Trombinoscope"              => array( 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
@@ -58,8 +59,8 @@ $tab_menu = array
   ),
   "Évaluations" => array
   (
-    "Nombre de saisies"     => array( 'class' => 'statistiques'    , 'href' => 'page=consultation_statistiques' ),
-    "Liste des évaluations" => array( 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'           ),
+    "Nombre de saisies"     => array( 'class' => 'statistiques'    , 'href' => 'page=consultation_nombre_saisies' ),
+    "Liste des évaluations" => array( 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'             ),
   ),
   "Validation du socle" => array
   (

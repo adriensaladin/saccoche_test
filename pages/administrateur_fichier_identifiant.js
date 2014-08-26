@@ -64,6 +64,7 @@ $(document).ready
           case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
           case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
           case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
+          case 'import_id_laclasse'   : $('#fieldset_import_id_laclasse').show();   break;
           case 'import_id_ent_normal' : $('#fieldset_import_id_ent_normal').show(); break;
           case 'import_id_ent_cas'    : $('#fieldset_import_id_ent_cas').show();    break;
           case 'import_id_gepi'       : $('#fieldset_import_id_gepi').show();       break;
@@ -406,7 +407,7 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
               }
-              else if(responseHTML.substring(0,3)=='<ul') // pour le webservice argos ou lcs
+              else if(responseHTML.substring(0,3)=='<ul') // pour le webservice argos ou lcs ou laclasse
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
                 $('#ajax_retour').html(responseHTML);

@@ -568,7 +568,6 @@ function tester_compteur()
         // Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
         conserver_session_active();
       }
-      
     }
     else
     {
@@ -849,6 +848,7 @@ $(document).ready
       var endroit = ($('#titre_logo').length) ? '#titre_logo' : 'h1' ;
       $(endroit).after('<div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> est inapproprié et peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
     }
+
     /**
      * Alerte si non acceptation des cookies
      * Peut se tester directement en javascript (éxécuté par le client) alors qu'en PHP il faut recharger une page (info envoyée au serveur dans les en-têtes)
@@ -1002,7 +1002,7 @@ $(document).ready
       );
     }
     page_transparente();
-    
+
     /**
      * MENU - Déploiement au clic et plus seulement au survol pour les dispositifs tactiles.
      */
@@ -1030,7 +1030,6 @@ $(document).ready
      * - modifier le style du parent d'un chekbox coché (non réalisable en css)
      * - réagir aux clics pour tout cocher ou tout décocher
      */
-
     $('span.select_multiple').on
     (
       'change',

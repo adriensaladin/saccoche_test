@@ -472,7 +472,7 @@ $(document).ready
         $('#zone_resultat_classe').html("&nbsp;");
         var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
         $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
-        $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
+        $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').hide(0);
         $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
         $('#cadre_statut , #table_accueil').show(0);
         return false;

@@ -97,21 +97,21 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_tri_objet     = Form::afficher_select(Form::$tab_select_tri_objet     , 'f_tri_objet'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_objet'] /*selection*/ ,              '' /*optgroup*/);
-$select_tri_mode      = Form::afficher_select(Form::$tab_select_tri_mode      , 'f_tri_mode'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']  /*selection*/ ,              '' /*optgroup*/);
-$select_remplissage   = Form::afficher_select(Form::$tab_select_remplissage   , 'f_remplissage'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['remplissage']       /*selection*/ ,              '' /*optgroup*/);
-$select_colonne_bilan = Form::afficher_select(Form::$tab_select_colonne_bilan , 'f_colonne_bilan' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_bilan']     /*selection*/ ,              '' /*optgroup*/);
-$select_colonne_vide  = Form::afficher_select(Form::$tab_select_colonne_vide  , 'f_colonne_vide'  /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_vide']      /*selection*/ ,              '' /*optgroup*/);
-$select_matiere       = Form::afficher_select($tab_matieres                   , 'f_matiere'       /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']        /*selection*/ ,              '' /*optgroup*/);
-$select_groupe        = Form::afficher_select($tab_groupes                    , 'f_groupe'        /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                /*selection*/ , 'regroupements' /*optgroup*/);
-$select_periode       = Form::afficher_select($tab_periodes                   , 'f_periode'       /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                 /*selection*/ ,              '' /*optgroup*/);
-$select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , 'f_orientation'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']       /*selection*/ ,              '' /*optgroup*/);
-$select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']         /*selection*/ ,              '' /*optgroup*/);
-$select_pages_nb      = Form::afficher_select(Form::$tab_select_pages_nb      , 'f_pages_nb'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']          /*selection*/ ,              '' /*optgroup*/);
-$select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , 'f_couleur'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']           /*selection*/ ,              '' /*optgroup*/);
-$select_legende       = Form::afficher_select(Form::$tab_select_legende       , 'f_legende'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']           /*selection*/ ,              '' /*optgroup*/);
-$select_cases_nb      = Form::afficher_select(Form::$tab_select_cases_nb      , 'f_cases_nb'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']          /*selection*/ ,              '' /*optgroup*/);
-$select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , 'f_cases_larg'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']     /*selection*/ ,              '' /*optgroup*/);
+$select_synthese_format = Form::afficher_select(Form::$tab_select_synthese_format , 'f_synthese_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format'] /*selection*/ ,              '' /*optgroup*/);
+$select_tri_mode        = Form::afficher_select(Form::$tab_select_tri_mode        , 'f_tri_mode'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']        /*selection*/ ,              '' /*optgroup*/);
+$select_remplissage     = Form::afficher_select(Form::$tab_select_remplissage     , 'f_remplissage'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['remplissage']             /*selection*/ ,              '' /*optgroup*/);
+$select_colonne_bilan   = Form::afficher_select(Form::$tab_select_colonne_bilan   , 'f_colonne_bilan'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_bilan']           /*selection*/ ,              '' /*optgroup*/);
+$select_colonne_vide    = Form::afficher_select(Form::$tab_select_colonne_vide    , 'f_colonne_vide'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_vide']            /*selection*/ ,              '' /*optgroup*/);
+$select_matiere         = Form::afficher_select($tab_matieres                     , 'f_matiere'         /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']              /*selection*/ ,              '' /*optgroup*/);
+$select_groupe          = Form::afficher_select($tab_groupes                      , 'f_groupe'          /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                      /*selection*/ , 'regroupements' /*optgroup*/);
+$select_periode         = Form::afficher_select($tab_periodes                     , 'f_periode'         /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                       /*selection*/ ,              '' /*optgroup*/);
+$select_orientation     = Form::afficher_select(Form::$tab_select_orientation     , 'f_orientation'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']             /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min       = Form::afficher_select(Form::$tab_select_marge_min       , 'f_marge_min'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']               /*selection*/ ,              '' /*optgroup*/);
+$select_pages_nb        = Form::afficher_select(Form::$tab_select_pages_nb        , 'f_pages_nb'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                /*selection*/ ,              '' /*optgroup*/);
+$select_couleur         = Form::afficher_select(Form::$tab_select_couleur         , 'f_couleur'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']                 /*selection*/ ,              '' /*optgroup*/);
+$select_legende         = Form::afficher_select(Form::$tab_select_legende         , 'f_legende'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']                 /*selection*/ ,              '' /*optgroup*/);
+$select_cases_nb        = Form::afficher_select(Form::$tab_select_cases_nb        , 'f_cases_nb'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']                /*selection*/ ,              '' /*optgroup*/);
+$select_cases_larg      = Form::afficher_select(Form::$tab_select_cases_size      , 'f_cases_larg'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']           /*selection*/ ,              '' /*optgroup*/);
 
 // Affichage ou non du formulaire de période
 if($of_g == 'oui')
@@ -163,7 +163,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
         <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du relevé individuel." /> Opt. relevé :</label><?php echo $select_remplissage ?> <?php echo $select_colonne_bilan ?> <?php echo $select_colonne_vide ?><br />
       </span>
       <span id="options_synthese" class="<?php echo $class_form_synthese ?>">
-        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_tri_objet ?> <?php echo $select_tri_mode ?><br />
+        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
       </span>
     </span>
   </p>

@@ -34,6 +34,67 @@ class DB_STRUCTURE_DIRECTEUR extends DB
 {
 
 /**
+ * Retourner à un directeur (ou à un admin) les statistiques globales d'un établissement
+ *
+ * @param void
+ * @return array()
+ */
+public static function DB_recuperer_statistiques()
+{
+  $tab_retour = array();
+  // nb personnels enregistrés ; nb élèves enregistrés ; nb parents enregistrés
+  $DB_SQL = 'SELECT user_profil_type, COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_sortie_date>NOW() ';
+  $DB_SQL.= 'GROUP BY user_profil_type ';
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $nb_professeurs     = (isset($DB_TAB['professeur'    ])) ? $DB_TAB['professeur'    ]['nombre'] : 0 ;
+  $nb_directeurs      = (isset($DB_TAB['directeur'     ])) ? $DB_TAB['directeur'     ]['nombre'] : 0 ;
+  $nb_administrateurs = (isset($DB_TAB['administrateur'])) ? $DB_TAB['administrateur']['nombre'] : 0 ;
+  $nb_eleves          = (isset($DB_TAB['eleve'         ])) ? $DB_TAB['eleve'         ]['nombre'] : 0 ;
+  $nb_parents         = (isset($DB_TAB['parent'        ])) ? $DB_TAB['parent'        ]['nombre'] : 0 ;
+  $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
+  $tab_retour[] = $nb_eleves;
+  $tab_retour[] = $nb_parents;
+  // nb personnels connectés ; nb élèves connectés ; nb parents connectés
+  $DB_SQL = 'SELECT user_profil_type, COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_sortie_date>NOW() AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+  $DB_SQL.= 'GROUP BY user_profil_type ';
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
+  $nb_professeurs     = (isset($DB_TAB['professeur'    ])) ? $DB_TAB['professeur'    ]['nombre'] : 0 ;
+  $nb_directeurs      = (isset($DB_TAB['directeur'     ])) ? $DB_TAB['directeur'     ]['nombre'] : 0 ;
+  $nb_administrateurs = (isset($DB_TAB['administrateur'])) ? $DB_TAB['administrateur']['nombre'] : 0 ;
+  $nb_eleves          = (isset($DB_TAB['eleve'         ])) ? $DB_TAB['eleve'         ]['nombre'] : 0 ;
+  $nb_parents         = (isset($DB_TAB['parent'        ])) ? $DB_TAB['parent'        ]['nombre'] : 0 ;
+  $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
+  $tab_retour[] = $nb_eleves;
+  $tab_retour[] = $nb_parents;
+  // nb notes saisies aux évaluations ; nb validations saisies
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_saisie';
+  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL1.= 'FROM sacoche_jointure_user_entree';
+  $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL2.= 'FROM sacoche_jointure_user_pilier';
+  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
+  // nb notes saisies aux évaluations récemment ; nb validations saisies récemment
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_saisie WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL1.= 'FROM sacoche_jointure_user_entree WHERE validation_entree_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
+  $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL2.= 'FROM sacoche_jointure_user_pilier WHERE validation_pilier_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
+  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
+  // Retour
+  return $tab_retour;
+}
+
+/**
  * compter_saisies_prof_classe
  * Remarque : on passe par sacoche_devoir pour ne conserver que les évaluations de l'année scolaire en cours
  * Attention, renvoie aussi des lignes avec juste les noms des profs : il est plus rapide de les écarter a posteriori en PHP que d'ajouter un test groupe_nom IS NOT NULL ou de remplacer la jointure par un INNER JOIN car ces deux procédés allongent le temps de réponse MySQL

@@ -38,16 +38,16 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$synthese_modele.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Initialisation de tableaux
 
-$tab_item       = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,calcul_retroactif,synthese_ref);
-$tab_liste_item = array();  // [i] => item_id
-$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,date_naissance)
-$tab_matiere    = array();  // [matiere_id] => matiere_nom
-$tab_synthese   = array();  // [synthese_ref] => synthese_nom
-$tab_eval       = array();  // [eleve_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
+$tab_item        = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,calcul_retroactif,synthese_ref);
+$tab_liste_item  = array();  // [i] => item_id
+$tab_eleve_infos = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance)
+$tab_matiere     = array();  // [matiere_id] => matiere_nom
+$tab_synthese    = array();  // [synthese_ref] => synthese_nom
+$tab_eval        = array();  // [eleve_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
 
 // Initialisation de variables
 
@@ -110,12 +110,12 @@ $texte_precision = $tab_precision_retroactif[$retroactif].$precision_socle.$prec
 
 if(empty($is_appreciation_groupe))
 {
-  if($format=='matiere')
+  if($synthese_modele=='matiere')
   {
     list($tab_item,$tab_synthese) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
     $tab_matiere[$matiere_id] = $matiere_nom;
   }
-  elseif($format=='multimatiere')
+  elseif($synthese_modele=='multimatiere')
   {
     $matiere_id = 0;
     list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , 'predefini' /*mode_synthese*/ , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
@@ -145,17 +145,21 @@ $liste_item = implode(',',$tab_liste_item);
 
 if(empty($is_appreciation_groupe))
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
-  if(!is_array($tab_eleve))
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
 }
 else
 {
-  $tab_eleve[0] = array( 'eleve_id'=>0 , 'eleve_nom'=>'' , 'eleve_prenom'=>'' , 'date_naissance'=>NULL );
+  $tab_eleve_infos[0] = array(
+    'eleve_nom'      => '',
+    'eleve_prenom'   => '',
+    'date_naissance' => NULL,
+  );
 }
-$eleve_nb = count($tab_eleve);
+$eleve_nb = count( $tab_eleve_infos , COUNT_NORMAL );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres donnée(s), pour les élèves selectionnés, sur la période sélectionnée
@@ -223,9 +227,8 @@ $nb_syntheses_total = 0 ;
 // Pour chaque élève...
 if(empty($is_appreciation_groupe))
 {
-  foreach($tab_eleve as $key => $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
     // Si cet élève a été évalué...
     if(isset($tab_eval[$eleve_id]))
     {
@@ -313,9 +316,8 @@ $nb_lignes_matiere_marge    = 1 ;
 $nb_lignes_matiere_intitule = 2 ;
 $nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_matiere_intitule ;
 
-foreach($tab_eleve as $key => $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
   foreach($tab_matiere as $matiere_id => $matiere_nom)
   {
     if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
@@ -347,9 +349,9 @@ $nb_lignes_total = array_sum($tab_nb_lignes_total_eleve);
 // Nombre de boucles par élève (entre 1 et 3 pour les bilans officiels, dans ce cas $tab_destinataires[] est déjà complété ; une seule dans les autres cas).
 if(!isset($tab_destinataires))
 {
-  foreach($tab_eleve as $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    $tab_destinataires[$tab['eleve_id']][0] = TRUE ;
+    $tab_destinataires[$eleve_id][0] = TRUE ;
   }
 }
 
@@ -368,10 +370,10 @@ if( ($make_html) || ($make_graph) )
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
   $bouton_import_csv = ($make_action=='saisir')             ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
-  $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>'.NL;
+  $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$synthese_modele].'</h1>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'<br />'.html($texte_precision).'</h2>'.NL;
   $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique"></div>'.NL ;
-  $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />'.NL : '' ;
+  $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
   $width_barre = (!$make_officiel) ? 180 : 50 ;
@@ -380,12 +382,12 @@ if( ($make_html) || ($make_graph) )
 if($make_pdf)
 {
   $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->bilan_synthese_initialiser($format,$nb_lignes_total,$eleve_nb);
+  $releve_PDF->bilan_synthese_initialiser( $synthese_modele , $nb_lignes_total , $eleve_nb );
 }
 // Pour chaque élève...
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
@@ -412,8 +414,8 @@ foreach($tab_eleve as $tab)
           $releve_PDF->__set('couleur',$couleur_tirage);
         }
         $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$format] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
-        $releve_PDF->bilan_synthese_entete( $format , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$synthese_modele] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
+        $releve_PDF->bilan_synthese_entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
       }
       // On passe en revue les matières...
       foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
@@ -455,7 +457,7 @@ foreach($tab_eleve as $tab)
                 $moyenne_classe = $tab_saisie[0][$matiere_id][0]['note'];
               }
             }
-            $releve_PDF->bilan_synthese_ligne_matiere($format,$tab_matiere[$matiere_id],$tab_nb_lignes[$eleve_id][$matiere_id],$tab_infos_matiere['total'],$total,$moyenne_eleve,$moyenne_classe,$avec_texte_nombre,$avec_texte_code);
+            $releve_PDF->bilan_synthese_ligne_matiere( $tab_matiere[$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] , $tab_infos_matiere['total'] , $total , $moyenne_eleve , $moyenne_classe , $avec_texte_nombre , $avec_texte_code );
           }
           if($make_html)
           {
@@ -477,7 +479,7 @@ foreach($tab_eleve as $tab)
               $total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
               if($make_pdf)
               {
-                $releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total,$hauteur_ligne_synthese,$avec_texte_nombre,$avec_texte_code);
+                $releve_PDF->bilan_synthese_ligne_synthese( $tab_synthese[$synthese_ref] , $tab_infos_synthese , $total , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
               }
               if($make_html)
               {
@@ -495,7 +497,7 @@ foreach($tab_eleve as $tab)
           {
             // Il est possible qu'aucun item n'ait été évalué pour un élève (absent...) : il faut quand même dessiner un cadre pour ne pas provoquer un décalage, d'autant plus qu'il peut y avoir une appréciation à côté.
             $hauteur_ligne_synthese = $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ;
-            $releve_PDF->bilan_synthese_ligne_synthese('',array(),0,$hauteur_ligne_synthese,$avec_texte_nombre,$avec_texte_code);
+            $releve_PDF->bilan_synthese_ligne_synthese( '' , array() , 0 , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
           }
           if($make_html)
           {
@@ -747,7 +749,7 @@ foreach($tab_eleve as $tab)
       // Bulletin - Légende
       if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
       {
-        if($make_pdf)  { $releve_PDF->bilan_synthese_legende($format); }
+        if($make_pdf)  { $releve_PDF->bilan_synthese_legende(); }
         if($make_html) { $releve_HTML .= $legende_html; }
       }
       // Indiquer a posteriori le nombre de pages par élève

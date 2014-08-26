@@ -1040,29 +1040,104 @@ if( $step==20 )
   switch($import_origine.'+'.$import_profil)
   {
     case 'sconet+professeur' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
-      $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
-      $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+      $test1 = array_multisort(
+        $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
+        $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['sconet_id'],
+        $tab_users_fichier['sconet_num'],
+        $tab_users_fichier['reference'],
+        $tab_users_fichier['profil_sigle'],
+        $tab_users_fichier['classe'],
+        $tab_users_fichier['groupe'],
+        $tab_users_fichier['matiere']
+      );
+      $test2 = array_multisort(
+        $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
+      $test3 = array_multisort(
+        $tab_groupes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_groupes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_groupes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
       break;
     case 'tableur+professeur' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
-      $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
-      $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+      $test1 = array_multisort(
+        $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
+        $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['sconet_id'],
+        $tab_users_fichier['sconet_num'],
+        $tab_users_fichier['reference'],
+        $tab_users_fichier['profil_sigle'],
+        $tab_users_fichier['classe'],
+        $tab_users_fichier['groupe']
+      );
+      $test2 = array_multisort(
+        $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
+      $test3 = array_multisort(
+        $tab_groupes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_groupes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_groupes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
       break;
     case  'sconet+eleve' :
     case 'tableur+eleve' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
-      $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
-      $test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+      $test1 = array_multisort(
+        $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
+        $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['birth_date'],
+        $tab_users_fichier['sconet_id'],
+        $tab_users_fichier['sconet_num'],
+        $tab_users_fichier['reference'],
+        $tab_users_fichier['profil_sigle'],
+        $tab_users_fichier['classe'],
+        $tab_users_fichier['groupe']
+      );
+      $test2 = array_multisort(
+        $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
+      $test3 = array_multisort(
+        $tab_groupes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_groupes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_groupes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
       break;
     case 'base_eleves+eleve' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['birth_date'],$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['classe']);
-      $test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
+      $test1 = array_multisort(
+        $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
+        $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['birth_date'],
+        $tab_users_fichier['sconet_id'],
+        $tab_users_fichier['sconet_num'],
+        $tab_users_fichier['reference'],
+        $tab_users_fichier['profil_sigle'],
+        $tab_users_fichier['classe']
+      );
+      $test2 = array_multisort(
+        $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
+        $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
+        $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
+      );
       break;
     case      'sconet+parent' :
     case 'base_eleves+parent' :
     case     'tableur+parent' :
-      $test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil_sigle'],$tab_users_fichier['adresse'],$tab_users_fichier['enfant']);
+      $test1 = array_multisort(
+        $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
+        $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['sconet_id'],
+        $tab_users_fichier['sconet_num'],
+        $tab_users_fichier['reference'],
+        $tab_users_fichier['profil_sigle'],
+        $tab_users_fichier['adresse'],
+        $tab_users_fichier['enfant']
+      );
       break;
   }
   // Outil de résolution de bug ; le test1 provoque parfois l'erreur "Array sizes are inconsistent".

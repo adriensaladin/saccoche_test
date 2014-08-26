@@ -86,7 +86,7 @@ $(document).ready
       }
       else
       {
-        $('#p_ajout , #span_envoi').css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#p_ajout , #span_envoi').hide(0);
       }
       if(mode!='supprimer')
       {

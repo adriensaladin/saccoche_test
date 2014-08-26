@@ -97,16 +97,11 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 // Récupération de l'identité des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = array();
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
 
-if(!is_array($DB_TAB))
+if(!is_array($tab_eleve_infos))
 {
   exit('Aucun élève trouvé correspondant aux identifiants transmis !');
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  $tab_eleve[$DB_ROW['eleve_id']] = array( 'eleve_nom'=>$DB_ROW['eleve_nom'] , 'eleve_prenom'=>$DB_ROW['eleve_prenom'] , 'eleve_brevet_serie'=>$DB_ROW['eleve_brevet_serie'] );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,9 +109,9 @@ foreach($DB_TAB as $DB_ROW)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_brevet_serie = array();
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  $tab_brevet_serie[$tab['eleve_brevet_serie']] = $tab['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
+  $tab_brevet_serie[$tab_eleve['eleve_brevet_serie']] = $tab_eleve['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
@@ -152,9 +147,9 @@ $tab_resultat_examen = array();
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  if( (in_array($DB_ROW['brevet_serie_ref'].'_'.$DB_ROW['brevet_epreuve_code'],$tab_rubrique)) && (!$DB_ROW['saisie_appreciation']) && ($tab_eleve[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref']) )
+  if( (in_array($DB_ROW['brevet_serie_ref'].'_'.$DB_ROW['brevet_epreuve_code'],$tab_rubrique)) && (!$DB_ROW['saisie_appreciation']) && ($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref']) )
   {
-    $tab_resultat_examen[$tab_brevet_serie[$DB_ROW['brevet_serie_ref']].' - '.$tab_brevet_epreuve[$DB_ROW['brevet_serie_ref']][$DB_ROW['brevet_epreuve_code']]][] = 'Absence d\'appréciation pour '.html($tab_eleve[$DB_ROW['eleve_id']]['eleve_nom'].' '.$tab_eleve[$DB_ROW['eleve_id']]['eleve_prenom']);
+    $tab_resultat_examen[$tab_brevet_serie[$DB_ROW['brevet_serie_ref']].' - '.$tab_brevet_epreuve[$DB_ROW['brevet_serie_ref']][$DB_ROW['brevet_epreuve_code']]][] = 'Absence d\'appréciation pour '.html($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_nom'].' '.$tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_prenom']);
   }
 }
 

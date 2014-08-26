@@ -245,6 +245,7 @@ class Clean
   public static function ref($text)          { return Clean::perso_strtoupper( trim($text) ); }
   public static function nom($text)          { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 25); }
   public static function uai($text)          { return Clean::perso_strtoupper( trim($text) ); }
+  public static function upper($text)        { return Clean::perso_strtoupper($text); }
   public static function prenom($text)       { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 25); }
   public static function structure($text)    { return Clean::perso_ucwords( trim($text) ); }
   public static function adresse($text)      { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 50); }
@@ -252,9 +253,10 @@ class Clean
   public static function commune($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 45); }
   public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 35); }
   public static function code($text)         { return Clean::perso_strtolower( trim($text) ); }
-  public static function texte($text)        { return trim($text); }
+  public static function lower($text)        { return Clean::perso_strtolower($text); }
   public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( trim($text) ) ); }
-  public static function url($text)          { return Clean::perso_strtolower( trim($text) ); }
+  public static function texte($text)        { return trim($text); }
+  public static function url($text)          { return trim($text); }
   public static function id_ent($text)       { return mb_substr( Clean::texte( (string)$text ) ,0,63 ); }
   public static function entier($text)       { return intval($text); }
   public static function decimal($text)      { return floatval(str_replace(',','.',$text)); }

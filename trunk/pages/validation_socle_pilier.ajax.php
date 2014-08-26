@@ -53,17 +53,17 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $tfoot = '';
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
   // Récupérer les données des élèves
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
-  if(!is_array($tab_eleve))
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
   // Afficher la première ligne du tableau avec les étiquettes des élèves
   $tab_eleve_id = array(); // listing des ids des élèves mis à jour au cas où la récupération dans la base soit différente des ids transmis...
   $affichage .= '<thead><tr>';
-  foreach($tab_eleve as $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
+    extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_langue
     $affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
     $tfoot .= '<td class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
     $tab_eleve_id[] = $eleve_id;

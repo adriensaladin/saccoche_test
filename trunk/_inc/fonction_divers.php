@@ -486,7 +486,7 @@ function tester_domaine_courriel_valide($mail_adresse)
 function tester_UAI($uai)
 {
   // Il faut 7 chiffres suivis d'une lettre.
-  if(!preg_match('#^[0-9]{7}[A-Z]{1}$#',$uai))
+  if(!preg_match('#^[0-9]{7}[a-zA-Z]{1}$#',$uai))
   {
     return FALSE;
   }

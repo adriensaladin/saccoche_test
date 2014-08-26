@@ -48,7 +48,11 @@ function OPT_langues($tab_langues)
     $tab_optgroup[$id]    = $tab_langues[$id]['optgroup'];
     $tab_matiere_nom[$id] = $tab_langues[$id]['texte'];
   }
-  array_multisort($tab_optgroup, SORT_ASC, $tab_matiere_nom, SORT_ASC, $tab_langues);
+  array_multisort(
+    $tab_optgroup   , SORT_ASC,
+    $tab_matiere_nom, SORT_ASC,
+    $tab_langues
+  );
   return $tab_langues;
 }
 

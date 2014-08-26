@@ -40,7 +40,7 @@ $fichier_nom = 'fiche_brevet_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom
 
 // Initialisation de tableaux
 
-$tab_eleve          = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_brevet_serie,date_naissance)
+$tab_eleve_infos    = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_brevet_serie)
 $tab_matiere        = array();  // [matiere_id] => matiere_nom
 $tab_brevet_serie   = array();  // [serie_ref] => serie_nom
 $tab_brevet_epreuve = array();  // [serie_ref][epreuve_code] => epreuve_nom, epreuve_obligatoire, epreuve_note_chiffree, epreuve_point_sup_10, epreuve_note_comptee, epreuve_coefficient, choix_matieres
@@ -50,8 +50,8 @@ $tab_eleve_saisie   = array();  // [eleve_id][epreuve_code][prof_id] => array(pr
 // Récupération de l'identité des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
-if(!is_array($tab_eleve))
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
+if(!is_array($tab_eleve_infos))
 {
   exit('Aucun élève trouvé correspondant aux identifiants transmis !');
 }
@@ -74,9 +74,9 @@ foreach($DB_TAB as $DB_ROW)
 // Récupération de la liste des séries de brevet (probablement une seule)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  $tab_brevet_serie[$tab['eleve_brevet_serie']] = $tab['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
+  $tab_brevet_serie[$tab_eleve['eleve_brevet_serie']] = $tab_eleve['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
@@ -242,9 +242,9 @@ if($make_pdf)
   $pdf_coords_precision[113] = array( 'G'=>array(27,228,28,3) );
 }
 // Pour chaque élève...
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   $eleve_brevet_serie_initiale = $eleve_brevet_serie{0};
   // Initialisation / Intitulé

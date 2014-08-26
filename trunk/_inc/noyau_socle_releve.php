@@ -42,16 +42,15 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichie
 // Tableau des langues
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
-$tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
 // Initialisation de tableaux
 
-$tab_pilier       = array();  // [pilier_id] => array(pilier_nom);
+$tab_pilier       = array();  // [pilier_id] => pilier_nom;
 $tab_section      = array();  // [pilier_id][section_id] => section_nom;
 $tab_socle        = array();  // [section_id][socle_id] => socle_nom;
 $tab_entree_id    = array();  // [i] => entree_id
-$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,date_naissance,eleve_langue)
+$tab_eleve_infos  = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_langue)
 $tab_eval         = array();  // [eleve_id][socle_id][item_id][]['note'] => note
 $tab_item         = array();  // [item_id] => array(item_ref,item_nom,item_cart,matiere_id,calcul_methode,calcul_limite);
 $tab_user_entree  = array();  // [eleve_id][entree_id] => array(etat,date,info);
@@ -92,7 +91,7 @@ foreach($DB_TAB as $DB_ROW)
   if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
   {
     $pilier_id  = $DB_ROW['pilier_id'];
-    $tab_pilier[$pilier_id] = array('pilier_nom'=>$DB_ROW['pilier_nom']);
+    $tab_pilier[$pilier_id] = $DB_ROW['pilier_nom'];
   }
   if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
   {
@@ -118,23 +117,25 @@ $listing_entree_id = implode(',',$tab_entree_id);
 
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM'],'eleve_langue'=>$_SESSION['ELEVE_LANGUE']);
-  $tab_eleve_langue[$_SESSION['USER_ID']] = $_SESSION['ELEVE_LANGUE'];
+  $tab_eleve_infos[$_SESSION['USER_ID']] = array(
+    'eleve_nom'      => $_SESSION['USER_NOM'],
+    'eleve_prenom'   => $_SESSION['USER_PRENOM'],
+    'date_naissance' => NULL,
+    'eleve_langue'   => $_SESSION['ELEVE_LANGUE'],
+  );
 }
 elseif($groupe_id && count($tab_eleve_id))
 {
-  $tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
-  if($mode=='auto')
-  {
-    foreach($tab_eleve as $key => $tab)
-    {
-      $tab_eleve_langue[$tab['eleve_id']] = $tab['eleve_langue'];
-    }
-  }
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
 }
 else
 {
-  $tab_eleve[] = array( 'eleve_id'=>0 , 'eleve_nom'=>'' , 'eleve_prenom'=>'' , 'date_naissance'=>NULL , 'eleve_langue'=>0 );
+  $tab_eleve_infos[0] = array(
+    'eleve_nom'      => '',
+    'eleve_prenom'   => '',
+    'date_naissance' => NULL,
+    'eleve_langue'   => 0,
+  );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +147,7 @@ if($groupe_id && count($tab_eleve_id))
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL_TYPE']);
   foreach($DB_TAB as $DB_ROW)
   {
-    $test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
+    $test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_langue']]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
     if($test_comptabilise)
     {
       $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
@@ -169,8 +170,8 @@ else
   $only_presence = FALSE;
 }
 
-// Ces tableaux ne servent plus
-unset($tab_item_pilier,$tab_eleve_langue);
+// Ce tableau ne sert plus
+unset($tab_item_pilier);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des validations (si demandé)
@@ -195,7 +196,7 @@ if($test_affichage_Validation)
   // On commence par remplir tout le tableau des piliers pour ne pas avoir ensuite à tester tout le temps si le champ existe
   foreach($tab_eleve_id as $eleve_id)
   {
-    foreach($tab_pilier as $pilier_id => $tab)
+    foreach($tab_pilier as $pilier_id => $pilier_nom)
     {
       $tab_user_pilier[$eleve_id][$pilier_id] = array('etat'=>2,'date'=>'','info'=>'');
     }
@@ -232,15 +233,13 @@ $tab_score_socle_eleve   = array();  // [socle_id][eleve_id] => array(A,VA,NA,nb
 $tab_infos_socle_eleve   = array();  // [socle_id][eleve_id] => array()               // Retenir les infos sur les items travaillés et leurs scores / item du socle / élève
 
 // Pour chaque élève...
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance
   // Pour chaque pilier...
   if(count($tab_pilier))
   {
-    foreach($tab_pilier as $pilier_id => $tab)
+    foreach($tab_pilier as $pilier_id => $pilier_nom)
     {
-      extract($tab);  // $pilier_nom
       // $tab_score_pilier_eleve[$pilier_id][$eleve_id] = $tab_init_compet;
       // Pour chaque section...
       if(isset($tab_section[$pilier_id]))
@@ -341,12 +340,11 @@ if($test_affichage_Pourcentage)
 $tab_contenu_presence = array( 'pilier'=>array() , 'section'=>array() , 'item'=>array() );
 if($only_presence)
 {
-  foreach($tab_eleve as $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
     if(count($tab_pilier))
     {
-      foreach($tab_pilier as $pilier_id => $tab)
+      foreach($tab_pilier as $pilier_id => $pilier_nom)
       {
         if( ($test_affichage_Validation) && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=2) )
         {
@@ -388,12 +386,11 @@ $nb_lignes_prof_principal                      = ( $make_officiel && ($affichage
 $nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE'] )  ? 1.3 : 0 ;
 $nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + (2*$test_affichage_Pourcentage) + ($test_affichage_Validation) : 0 ;
 
-foreach($tab_eleve as $key => $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
   if(count($tab_pilier))
   {
-    foreach($tab_pilier as $pilier_id => $tab)
+    foreach($tab_pilier as $pilier_id => $pilier_nom)
     {
       if($only_presence)
       {
@@ -443,9 +440,9 @@ foreach($tab_nb_lignes as $eleve_id => $tab)
 // Nombre de boucles par élève (entre 1 et 3 pour les bilans officiels, dans ce cas $tab_destinataires[] est déjà complété ; une seule dans les autres cas).
 if(!isset($tab_destinataires))
 {
-  foreach($tab_eleve as $tab)
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    $tab_destinataires[$tab['eleve_id']][0] = TRUE ;
+    $tab_destinataires[$eleve_id][0] = TRUE ;
   }
 }
 
@@ -466,7 +463,7 @@ if($make_html)
   $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>'.NL;
   $releve_HTML .= '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL;
-  $separation = (count($tab_eleve)>1) ? '<hr />'.NL : '' ;
+  $separation = (count($tab_eleve_infos)>1) ? '<hr />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
   $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel , TRUE /*force_nb*/  ) : '' ;
 }
@@ -479,9 +476,9 @@ if($make_pdf)
 }
 
 // Pour chaque élève...
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $date_naissance $eleve_langue
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_langue
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
@@ -516,11 +513,10 @@ foreach($tab_eleve as $tab)
     // Pour chaque pilier...
     if(count($tab_pilier))
     {
-      foreach($tab_pilier as $pilier_id => $tab)
+      foreach($tab_pilier as $pilier_id => $pilier_nom)
       {
         if( !$only_presence || isset($tab_contenu_presence['pilier'][$eleve_id][$pilier_id]) )
         {
-          extract($tab);  // $pilier_nom
           if( ($make_html) || ($make_pdf) )
           {
             $drapeau_langue = (in_array($pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;

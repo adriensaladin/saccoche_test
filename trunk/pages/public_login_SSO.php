@@ -70,17 +70,17 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
   $BASE = (isset($_GET['base']))    ? Clean::entier($_GET['base']) : $BASE ;
   // Test si UAI d'établissement transmis dans l'URL
   // Nouveauté 07/2014 : pouvoir passer l'UAI de l'établissement comme valeur du paramètre SSO
-  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( preg_match('/^[0-9]{7}[a-zA-Z]{1}$/',$_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
+  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( tester_UAI($_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
   $BASE = ($trans_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($trans_UAI) : $BASE ;
   if(!$BASE)
   {
-    if(isset($_GET['uai']))
+    if($trans_UAI)
     {
-      exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
+      exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis '.$trans_UAI.' n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
     }
     else
     {
-      exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
+      exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" ou "sso" n\'a pas été transmis ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
     }
   }
   charger_parametres_mysql_supplementaires($BASE);

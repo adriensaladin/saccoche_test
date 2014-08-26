@@ -28,34 +28,35 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$format                 = 'multimatiere';
-$aff_etat_acquisition   = (isset($_POST['f_etat_acquisition']))   ? 1                                                : 0;
-$aff_moyenne_scores     = (isset($_POST['f_moyenne_scores']))     ? 1                                                : 0;
-$aff_pourcentage_acquis = (isset($_POST['f_pourcentage_acquis'])) ? 1                                                : 0;
-$conversion_sur_20      = (isset($_POST['f_conversion_sur_20']))  ? 1                                                : 0;
-$with_coef              = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-$matiere_id             = TRUE;
-$matiere_nom            = '';
-$groupe_id              = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
-$groupe_nom             = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
-$periode_id             = (isset($_POST['f_periode']))            ? Clean::entier($_POST['f_periode'])               : 0;
-$date_debut             = (isset($_POST['f_date_debut']))         ? Clean::date_fr($_POST['f_date_debut'])           : '';
-$date_fin               = (isset($_POST['f_date_fin']))           ? Clean::date_fr($_POST['f_date_fin'])             : '';
-$retroactif             = (isset($_POST['f_retroactif']))         ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
-$only_socle             = (isset($_POST['f_restriction']))        ? 1                                                : 0;
-$aff_coef               = (isset($_POST['f_coef']))               ? 1                                                : 0;
-$aff_socle              = (isset($_POST['f_socle']))              ? 1                                                : 0;
-$aff_lien               = (isset($_POST['f_lien']))               ? 1                                                : 0;
-$aff_domaine            = (isset($_POST['f_domaine']))            ? 1                                                : 0;
-$aff_theme              = (isset($_POST['f_theme']))              ? 1                                                : 0;
-$orientation            = (isset($_POST['f_orientation']))        ? Clean::texte($_POST['f_orientation'])            : '';
-$couleur                = (isset($_POST['f_couleur']))            ? Clean::texte($_POST['f_couleur'])                : '';
-$legende                = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])                : '';
-$marge_min              = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])             : 0;
-$pages_nb               = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])               : '';
-$cases_nb               = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])              : -1;
-$cases_largeur          = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg'])            : 0;
-$highlight_id           = 0; // Ne sert que pour le relevé d'items d'une matière
+$releve_modele            = 'multimatiere';
+$releve_individuel_format = (isset($_POST['f_individuel_format']))  ? Clean::texte($_POST['f_individuel_format'])      : '';
+$aff_etat_acquisition     = (isset($_POST['f_etat_acquisition']))   ? 1                                                : 0;
+$aff_moyenne_scores       = (isset($_POST['f_moyenne_scores']))     ? 1                                                : 0;
+$aff_pourcentage_acquis   = (isset($_POST['f_pourcentage_acquis'])) ? 1                                                : 0;
+$conversion_sur_20        = (isset($_POST['f_conversion_sur_20']))  ? 1                                                : 0;
+$with_coef                = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
+$matiere_id               = TRUE;
+$matiere_nom              = '';
+$groupe_id                = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
+$groupe_nom               = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
+$periode_id               = (isset($_POST['f_periode']))            ? Clean::entier($_POST['f_periode'])               : 0;
+$date_debut               = (isset($_POST['f_date_debut']))         ? Clean::date_fr($_POST['f_date_debut'])           : '';
+$date_fin                 = (isset($_POST['f_date_fin']))           ? Clean::date_fr($_POST['f_date_fin'])             : '';
+$retroactif               = (isset($_POST['f_retroactif']))         ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
+$only_socle               = (isset($_POST['f_restriction']))        ? 1                                                : 0;
+$aff_coef                 = (isset($_POST['f_coef']))               ? 1                                                : 0;
+$aff_socle                = (isset($_POST['f_socle']))              ? 1                                                : 0;
+$aff_lien                 = (isset($_POST['f_lien']))               ? 1                                                : 0;
+$aff_domaine              = (isset($_POST['f_domaine']))            ? 1                                                : 0;
+$aff_theme                = (isset($_POST['f_theme']))              ? 1                                                : 0;
+$orientation              = (isset($_POST['f_orientation']))        ? Clean::texte($_POST['f_orientation'])            : '';
+$couleur                  = (isset($_POST['f_couleur']))            ? Clean::texte($_POST['f_couleur'])                : '';
+$legende                  = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])                : '';
+$marge_min                = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])             : 0;
+$pages_nb                 = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])               : '';
+$cases_nb                 = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])              : -1;
+$cases_largeur            = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg'])            : 0;
+$highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
 
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
@@ -66,9 +67,10 @@ $type_individuel = 1;
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $aff_moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $aff_moyenne_scores     : 0 ;
-  $aff_pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $aff_pourcentage_acquis : 0 ;
-  $conversion_sur_20      = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $conversion_sur_20      : 0 ;
+  $releve_individuel_format = 'eleve';
+  $aff_moyenne_scores       = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $aff_moyenne_scores     : 0 ;
+  $aff_pourcentage_acquis   = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $aff_pourcentage_acquis : 0 ;
+  $conversion_sur_20        = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $conversion_sur_20      : 0 ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {

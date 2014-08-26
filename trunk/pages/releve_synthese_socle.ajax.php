@@ -60,7 +60,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 $tab_pilier       = array();  // [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();  // [pilier_id][socle_id] => array(section_nom,socle_nom);
 $tab_entree_id    = array();  // [i] => entree_id
-$tab_eleve        = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_langue)
+$tab_eleve_infos  = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,eleve_langue)
 $tab_eval         = array();  // [eleve_id][socle_id][item_id][]['note'] => note   [type "pourcentage" uniquement]
 $tab_item         = array();  // [item_id] => array(calcul_methode,calcul_limite); [type "pourcentage" uniquement]
 $tab_user_entree  = array();  // [eleve_id][entree_id] => array(etat,date,info);   [type "validation" uniquement]
@@ -68,7 +68,6 @@ $tab_user_pilier  = array();  // [eleve_id][pilier_id] => array(etat,date,info);
 
 // Tableau des langues
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
-$tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,14 +110,7 @@ $listing_entree_id = implode(',',$tab_entree_id);
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
-if( ($type=='pourcentage') && ($mode=='auto') )
-{
-  foreach($tab_eleve as $key => $tab)
-  {
-    $tab_eleve_langue[$tab['eleve_id']] = $tab['eleve_langue'];
-  }
-}
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des résultats [type "pourcentage" uniquement]
@@ -129,7 +121,7 @@ if($type=='pourcentage')
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL_TYPE']);
   foreach($DB_TAB as $DB_ROW)
   {
-    $test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
+    $test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_langue']]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
     if($test_comptabilise)
     {
       $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
@@ -147,8 +139,8 @@ if($type=='pourcentage')
   }
 }
 
-// Ces tableaux ne servent plus
-unset($tab_item_pilier,$tab_eleve_langue);
+// Ce tableau ne sert plus
+unset($tab_item_pilier);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des validations [type "validation" uniquement]
@@ -286,9 +278,9 @@ $releve_PDF->releve_synthese_socle_entete($tab_pilier);
 // - - - - - - - - - -
 $releve_HTML_body = '';
 // Pour chaque élève...
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab);  // $eleve_id $eleve_nom $eleve_prenom $eleve_langue
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_langue
   $drapeau_langue = count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
   $image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
   $releve_HTML_body .= '<tr><td class="nu2" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>'.NL;

@@ -76,30 +76,25 @@ foreach($DB_TAB as $DB_ROW)
 {
   if(in_array($DB_ROW['user_id'],$tab_id_eleves_avec_notes))
   {
-    $tab_eleve_id[$DB_ROW['user_id']] = array( 'eleve_nom' => $DB_ROW['user_nom'] ,  'eleve_prenom' => $DB_ROW['user_prenom'] );
+    $tab_eleve_id[] = $DB_ROW['user_id'];
   }
 }
-if(!count($tab_eleve_id))
+if(empty($tab_eleve_id))
 {
   exit('Aucun élève concerné dans ce regroupement !');
 }
-$liste_eleve_id = implode(',',array_keys($tab_eleve_id));
+$liste_eleve_id = implode(',',$tab_eleve_id);
 $nb_eleves = count($tab_eleve_id);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de l'identité des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = array();
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
+$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
 
-if(!is_array($DB_TAB))
+if(!is_array($tab_eleve_infos))
 {
   exit('Aucun élève trouvé correspondant aux identifiants transmis !');
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  $tab_eleve[$DB_ROW['eleve_id']] = array( 'eleve_nom'=>$DB_ROW['eleve_nom'] , 'eleve_prenom'=>$DB_ROW['eleve_prenom'] , 'eleve_brevet_serie'=>$DB_ROW['eleve_brevet_serie'] );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,9 +102,9 @@ foreach($DB_TAB as $DB_ROW)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_brevet_serie = array();
-foreach($tab_eleve as $tab)
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  $tab_brevet_serie[$tab['eleve_brevet_serie']] = $tab['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
+  $tab_brevet_serie[$tab_eleve['eleve_brevet_serie']] = $tab_eleve['eleve_brevet_serie']; // Sera remplacé par le nom de la série après
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
@@ -161,7 +156,7 @@ if($action=='imprimer_donnees_eleves_epreuves')
   $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    if($tab_eleve[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
+    if($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
     {
       $note = is_numeric($DB_ROW['saisie_note']) ? number_format($DB_ROW['saisie_note'],1,',','') : $DB_ROW['saisie_note'] ;
       if( ($DB_ROW['brevet_epreuve_code']!=CODE_BREVET_EPREUVE_TOTAL) || !$DB_ROW['saisie_appreciation'] )
@@ -183,17 +178,16 @@ if($action=='imprimer_donnees_eleves_epreuves')
   $releve_PDF->tableau_appreciation_initialiser_eleves_collegues( $nb_eleves , $nb_lignes_epreuves );
   $releve_PDF->tableau_appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Appréciations par élève' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  foreach($tab_eleve_id as $eleve_id => $tab)
+  foreach($tab_eleve_id as $eleve_id)
   {
-    extract($tab);  // $eleve_nom $eleve_prenom
-    $serie_ref = $tab_eleve[$eleve_id]['eleve_brevet_serie'];
-    $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_thead($eleve_nom,$eleve_prenom,$tab_brevet_serie[$serie_ref]);
+    extract($tab_eleve_infos[$eleve_id]);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
+    $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_thead($eleve_nom,$eleve_prenom,$tab_brevet_serie[$eleve_brevet_serie]);
     if(isset($tab_saisie[$eleve_id]))
     {
       foreach($tab_saisie[$eleve_id] as $epreuve_code =>$tab)
       {
         extract($tab);  // $note $appreciation
-        $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_tbody( $tab_brevet_epreuve[$serie_ref][$epreuve_code] , $note , $appreciation );
+        $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_tbody( $tab_brevet_epreuve[$eleve_brevet_serie][$epreuve_code] , $note , $appreciation );
       }
     }
   }
@@ -211,7 +205,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
   $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , TRUE /*only_total*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    if($tab_eleve[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
+    if($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
     {
       $note = is_numeric($DB_ROW['saisie_note']) ? number_format($DB_ROW['saisie_note'],1,',','') : $DB_ROW['saisie_note'] ;
       if( ($DB_ROW['brevet_epreuve_code']!=CODE_BREVET_EPREUVE_TOTAL) || !$DB_ROW['saisie_appreciation'] )
@@ -233,10 +227,9 @@ if($action=='imprimer_donnees_eleves_syntheses')
   $releve_PDF->tableau_appreciation_initialiser_eleves_syntheses( $nb_eleves , $nb_lignes_epreuves , TRUE /*with_moyenne*/ );
   $releve_PDF->tableau_appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Avis de synthèse' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  foreach($tab_eleve_id as $eleve_id => $tab)
+  foreach($tab_eleve_id as $eleve_id)
   {
-    extract($tab);  // $eleve_nom $eleve_prenom
-    $serie_ref = $tab_eleve[$eleve_id]['eleve_brevet_serie'];
+    extract($tab_eleve_infos[$eleve_id]);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
     if(isset($tab_saisie[$eleve_id]))
     {
       extract($tab_saisie[$eleve_id]);  // $note $appreciation
@@ -261,7 +254,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
   $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    if($tab_eleve[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
+    if($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref'])
     {
       $note = is_numeric($DB_ROW['saisie_note']) ? number_format($DB_ROW['saisie_note'],1,',','') : $DB_ROW['saisie_note'] ;
       $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['brevet_serie_ref'].$DB_ROW['brevet_epreuve_code']] = $note;
@@ -276,8 +269,9 @@ if($action=='imprimer_donnees_eleves_moyennes')
     $tab_saisie[0][$DB_ROW['brevet_serie_ref'].$DB_ROW['brevet_epreuve_code']] = $note;
   }
 
-  // ( mettre le groupe classe en dernier )
-  $tab_eleve_id[0] = array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' );
+  // Pour insérer le groupe classe en dernier
+  $tab_eleve_id[] = 0;
+  $tab_eleve_infos[0] = array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' );
 
   // Fabrication du PDF ; on a besoin de tourner du texte à 90°
   // Fabrication d'un CSV en parallèle
@@ -302,9 +296,9 @@ if($action=='imprimer_donnees_eleves_moyennes')
   // ligne suivantes : élèves, notes
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->marge_haut+$releve_PDF->etiquette_hauteur );
-  foreach($tab_eleve_id as $eleve_id => $tab_eleve)
+  foreach($tab_eleve_id as $eleve_id)
   {
-    extract($tab_eleve);  // $eleve_nom $eleve_prenom
+    extract($tab_eleve_infos[$eleve_id]);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
     $releve_PDF->tableau_moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
     $releve_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
     foreach($tab_brevet_serie as $serie_ref => $serie_nom)

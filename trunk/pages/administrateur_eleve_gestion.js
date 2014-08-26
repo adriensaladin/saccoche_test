@@ -118,32 +118,32 @@ $(document).ready
       // login
       memo_login = login;
       var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
-      $('#f_login').val(login).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+      $('#f_login').val(login).parent().hide(0);
       $('#box_login').prop('checked',true).next().show(0).html(texte_box);
       // mot de passe
       var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
-      $('#f_password').val('').parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+      $('#f_password').val('').parent().hide(0);
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
       // date de naissance
       if(birth_date_fr=='-')
       {
         $('#box_birth_date').prop('checked',true).next().show(0);
-        $('#f_birth_date').val('').parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#f_birth_date').val('').parent().hide(0);
       }
       else
       {
-        $('#box_birth_date').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#box_birth_date').prop('checked',false).next().hide(0);
         $('#f_birth_date').val(birth_date_fr).parent().show(0);
       }
       // date de sortie
       if(sortie_date_fr=='-')
       {
         $('#box_sortie_date').prop('checked',true).next().show(0);
-        $('#f_sortie_date').val(input_date).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#f_sortie_date').val(input_date).parent().hide(0);
       }
       else
       {
-        $('#box_sortie_date').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#box_sortie_date').prop('checked',false).next().hide(0);
         $('#f_sortie_date').val(sortie_date_fr).parent().show(0);
       }
       // pour finir

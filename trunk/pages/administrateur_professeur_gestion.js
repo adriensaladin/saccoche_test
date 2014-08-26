@@ -124,20 +124,20 @@ $(document).ready
       // login
       memo_login = login;
       var texte_box  = (mode=='modifier') ? "inchangé" : "automatique (modèle "+tab_login_modele[profil]+")" ;
-      $('#f_login').val(login).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+      $('#f_login').val(login).parent().hide(0);
       $('#box_login').prop('checked',true).next().show(0).html(texte_box);
       // mot de passe
       var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
-      $('#f_password').val('').parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+      $('#f_password').val('').parent().hide(0);
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
       if(date_fr=='-')
       {
         $('#box_date').prop('checked',true).next().show(0);
-        $('#f_sortie_date').val(input_date).parent().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#f_sortie_date').val(input_date).parent().hide(0);
       }
       else
       {
-        $('#box_date').prop('checked',false).next().css('display','none'); // plutôt que .hide(0) car suite au passage vers jQuery 1.11.0 un hide() sur un élément déjà caché provoque ici sa réapparition...
+        $('#box_date').prop('checked',false).next().hide(0);
         $('#f_sortie_date').val(date_fr).parent().show(0);
       }
       // pour finir

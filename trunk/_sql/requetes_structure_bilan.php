@@ -527,7 +527,7 @@ public static function DB_lister_result_eleves_palier_sans_infos_items( $liste_e
  * @param bool     $with_gepi
  * @param bool     $with_langue
  * @param bool     $with_brevet_serie
- * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
+ * @return array|string                le tableau est de la forme [eleve_id] => array('eleve_nom'=>...,'eleve_prenom'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
  */
 public static function DB_lister_eleves_cibles( $listing_eleve_id , $with_gepi , $with_langue , $with_brevet_serie )
 {
@@ -540,7 +540,7 @@ public static function DB_lister_eleves_cibles( $listing_eleve_id , $with_gepi ,
   $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
   $DB_VAR = array(':profil_type'=>'eleve');
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève ne correspond aux identifiants transmis.' ;
 }
 

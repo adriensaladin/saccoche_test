@@ -41,10 +41,10 @@ list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validatio
 ?>
 
 <ul class="puce">
-  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?></b> personnel(s)          enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?></b> élève(s)               enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?></b> saisie(s) de notes     enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
-  <li>Il y a <b><?php echo number_format($validation_nb,0,'',' ') ?></b> validation(s) de socle enregistrée(s), dont <b><?php echo number_format($validation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?> personnel(s)</b>           enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?> élève(s)</b>               enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?> saisie(s)</b> de notes     enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($validation_nb,0,'',' ') ?> validation(s)</b> de socle enregistrée(s), dont <b><?php echo number_format($validation_use,0,'',' ') ?></b> récemment.</li>
 </ul>
 <hr />
 <p id="expli">

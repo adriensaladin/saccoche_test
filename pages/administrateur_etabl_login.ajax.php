@@ -65,8 +65,8 @@ if($profil && $login && $mdp && ($birth!=-1))
   // Mettre aussi à jour la session
   if($profil=='ALL')
   {
-    $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      = array_fill_keys ( $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      , $login );
-    $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] = array_fill_keys ( $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] , $mdp );
+    $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']      = array_fill_keys ( array_keys($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE']     ) , $login );
+    $_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] = array_fill_keys ( array_keys($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI']) , $mdp   );
   }
   else
   {

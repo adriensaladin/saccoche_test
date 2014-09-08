@@ -382,7 +382,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $titre = 'Convention connecteur ENT établissement - Documents générés';
     $texte = 'Bonjour '.$DB_ROW2['structure_contact_prenom'].' '.$DB_ROW2['structure_contact_nom'].','."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Vous venez de générez les documents associés à une convention pour un connecteur ENT :'."\r\n";
+    $texte.= 'Vous venez de générer les documents associés à une convention pour un connecteur ENT :'."\r\n";
     $texte.= 'Référence : '.$connecteur_ref."\r\n";
     $texte.= 'Établissement : '.$_SESSION['ETABLISSEMENT']['DENOMINATION']."\r\n";
     $texte.= 'Période : du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin'])."\r\n";

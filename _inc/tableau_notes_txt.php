@@ -42,7 +42,6 @@ $tab_notes_info = array
   'Indonesie'   => array( 'nom'=>'Indonésie'   , 'RR' =>'D'  , 'R' =>'C'  , 'V' =>'B'  , 'VV' =>'A'  ),
   'JeanZay'     => array( 'nom'=>'Jean Zay'    , 'RR' =>'CNA', 'R' =>'CIA', 'V' =>'CVA', 'VV' =>'CA' ),
   'Koeberle'    => array( 'nom'=>'Koeberlé'    , 'RR' =>'NA' , 'R' =>'CA' , 'V' =>'RF' , 'VV' =>'Ex' ),
-  'LaFontaine'  => array( 'nom'=>'La Fontaine' , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'PA' , 'VV' =>'A'  ),
   'Leon'        => array( 'nom'=>'Léon'        , 'RR' =>'N'  , 'R' =>'R'  , 'V' =>'O'  , 'VV' =>'V'  ),
   'Lomer'       => array( 'nom'=>'Lomer'       , 'RR' =>'RR' , 'R' =>'R'  , 'V' =>'V'  , 'VV' =>'VV' ),
   'LomerBiseau' => array( 'nom'=>'Lomer Biseau', 'RR' =>'RR' , 'R' =>'R'  , 'V' =>'V'  , 'VV' =>'VV' ),

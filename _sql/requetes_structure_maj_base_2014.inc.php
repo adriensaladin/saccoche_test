@@ -435,26 +435,4 @@ if($version_base_structure_actuelle=='2014-07-08')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-07-16 => 2014-09-08
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2014-07-16')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-09-08';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification sacoche_parametre (paramètres CAS pour ENT)
-    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-    // Le 93 passe de Logica à Kosmos
-    if($connexion_nom=='logica_celia')
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="kosmos_monecollege93" WHERE parametre_nom="connexion_nom" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas.monecollege.fr"   WHERE parametre_nom="cas_serveur_host" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=""                     WHERE parametre_nom="cas_serveur_root" ' );
-    }
-  }
-}
-
 ?>

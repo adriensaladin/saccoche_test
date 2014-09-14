@@ -256,7 +256,6 @@ class Form
   {
     Form::init_variables();
     $check_type_individuel    = (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ? 1 : 0 ;
-    $select_individuel_format = (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ? 'eleve' : 'item' ;
     $check_etat_acquisition   = ( in_array($_SESSION['USER_PROFIL_TYPE'],array('directeur','professeur')) || test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION'])   ) ? 1 : 0 ;
     $check_moyenne_score      = ( in_array($_SESSION['USER_PROFIL_TYPE'],array('directeur','professeur')) || test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ) ? 1 : 0 ;
     $check_pourcentage_acquis = ( in_array($_SESSION['USER_PROFIL_TYPE'],array('directeur','professeur')) || test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ) ? 1 : 0 ;
@@ -291,7 +290,7 @@ class Form
       'type_individuel'           => $check_type_individuel ,
       'type_synthese'             => 0 ,
       'type_bulletin'             => 0 ,
-      'releve_individuel_format'  => $select_individuel_format,
+      'releve_individuel_format'  => 'eleve',
       'aff_etat_acquisition'      => $check_etat_acquisition ,
       'aff_moyenne_scores'        => $check_moyenne_score ,
       'aff_pourcentage_acquis'    => $check_pourcentage_acquis ,

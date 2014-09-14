@@ -262,7 +262,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   $contrat_PDF->setSourceFile(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_convention_sacoche_etablissement_contrat.pdf');
   $hauteur_ligne = 5.5;
   $marge_bordure = 1;
-  $taille_police = 13;
+  $taille_police = 14;
   // Boucle pour l'exemplaire à conserver et l'exemplaire à renvoyer
   for( $numero_exemplaire=0 ; $numero_exemplaire<2 ; $numero_exemplaire++ )
   {
@@ -335,21 +335,21 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   }
   // date création
-  $facture_PDF->SetXY(14,75);
+  $facture_PDF->SetXY(14,99);
   $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('À Plachy Buyon, le '.convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // référence du connecteur
   $facture_PDF->SetFont('Arial','B',$taille_police);
-  $facture_PDF->SetXY(17,123);
+  $facture_PDF->SetXY(17,138);
   $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($connecteur_ref) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   // période du connecteur
   $facture_PDF->SetFont('Arial','B',$taille_police);
-  $facture_PDF->SetXY(17,129);
+  $facture_PDF->SetXY(17,144);
   $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf('du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin'])) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
   // date de mise en service
   $connecteur_date_debut_mise_en_service = ($DB_ROW['convention_signature']!==NULL) ? max($DB_ROW['convention_date_debut'],$DB_ROW['convention_signature']) : $DB_ROW['convention_date_debut'] ;
   $texte = ($DB_ROW['convention_signature']!==NULL) ? 'du '.convert_date_mysql_to_french($connecteur_date_debut_mise_en_service) : 'de la réception du contrat' ;
   $texte.= ' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'.';
-  $facture_PDF->SetXY(78,151);
+  $facture_PDF->SetXY(78,166);
   $facture_PDF->CellFit( 100 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // date de règlement
   if($DB_ROW['convention_paiement']!==NULL)
@@ -369,7 +369,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   {
     $texte = 'Date limite de règlement : 2 mois après la mise en service effective du connecteur.';
   }
-  $facture_PDF->SetXY(20,159);
+  $facture_PDF->SetXY(20,174);
   $facture_PDF->CellFit( 180 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // On enregistre la sortie PDF
   $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
@@ -405,6 +405,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     {
       $texte.= 'La réception du contrat (ou la perception du règlement) entrainera l\'activation automatique de votre connecteur ENT au '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' (changement d\'année scolaire).'."\r\n";
     }
+    $texte.= 'Un courriel est alors envoyé au contact référent pour l\'en informer.'."\r\n";
     $texte.= 'Vous disposez de 2 mois à compter de l\'activation du connecteur ENT pour le tester et nous faire parvenir votre règlement (ou le contrat).'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Nous vous remercions de votre confiance et de votre soutien.'."\r\n";

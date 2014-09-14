@@ -32,7 +32,7 @@ $action      = (isset($_GET['f_action']))       ? $_GET['f_action']             
 $groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
 $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
 $user_id     = (isset($_POST['f_user_id']))     ? Clean::entier($_POST['f_user_id'])    : 0;
-$masque      = (isset($_POST['f_masque']))      ? Clean::login($_POST['f_masque'])      : '';
+$masque      = (isset($_POST['f_masque']))      ? Clean::texte($_POST['f_masque'])      : '';
 
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
@@ -179,7 +179,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_bon = array( $DB_ROW['user_sconet_id'] , $DB_ROW['user_sconet_elenoet'] , Clean::fichier($DB_ROW['user_reference']) , Clean::fichier($DB_ROW['user_nom']) , Clean::fichier($DB_ROW['user_prenom']) , Clean::fichier($DB_ROW['user_login']) , Clean::fichier($DB_ROW['user_id_ent']) );
-      $tab_fichier_masque[$DB_ROW['user_id']] = str_replace( $tab_bad , $tab_bon , $masque );
+      $tab_fichier_masque[$DB_ROW['user_id']] = Clean::fichier(str_replace( $tab_bad , $tab_bon , $masque ));
     }
   }
   // Pour l'affichage du retour
@@ -189,7 +189,8 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   $tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
   foreach($tab_fichier as $fichier_nom)
   {
-    $tab_user_id = array_keys( $tab_fichier_masque , Clean::fichier($fichier_nom) );
+    // echo'*'.$fichier_nom;
+    $tab_user_id = array_keys( $tab_fichier_masque , $fichier_nom );
     $nb_user_find = count($tab_user_id);
     if($nb_user_find == 0)
     {

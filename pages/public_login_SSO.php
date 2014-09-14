@@ -374,7 +374,7 @@ if($connexion_mode=='cas')
       exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
     }
     // Pas besoin de vérification si convention signée à un plus haut niveau
-    if( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] )
+    if( isset($tab_connecteurs_convention[$connexion_ref]) )
     {
       // Cas d'une convention signée par un partenaire ENT => Mettre en session l'affichage de sa communication en page d'accueil.
       $partenaire_id = DB_WEBMESTRE_PUBLIC::DB_recuperer_id_partenaire_for_connecteur($connexion_ref);
@@ -384,7 +384,7 @@ if($connexion_mode=='cas')
         require(CHEMIN_DOSSIER_PARTENARIAT.$fichier_chemin);
         $partenaire_logo_url = ($partenaire_logo_actuel_filename) ? URL_DIR_PARTENARIAT.$partenaire_logo_actuel_filename : URL_DIR_IMG.'auto.gif' ;
         $partenaire_lien_ouvrant = ($partenaire_adresse_web) ? '<a href="'.html($partenaire_adresse_web).'" target="_blank">' : '' ;
-        $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>'                                                         : '' ;
+        $partenaire_lien_fermant = ($partenaire_adresse_web) ? '</a>' : '' ;
         $_SESSION['CONVENTION_PARTENAIRE_ENT_COMMUNICATION'] = $partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($partenaire_message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />';
       }
     }
@@ -392,9 +392,7 @@ if($connexion_mode=='cas')
     {
       if(!DB_WEBMESTRE_PUBLIC::DB_tester_convention_active( $BASE , $connexion_nom ))
       {
-        $message_introduction = ( isset($tab_connecteurs_convention[$connexion_ref]) && !$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] ) ? $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'<br />L\'usage de ce service sur ce serveur est donc désormais soumis à la signature et au règlement d\'une convention avec l\'établissement.' : 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention.' ;
-        $message_explication  = '<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats" target="_blank">cette documentation pour davantage d\'explications</a> et <a href="'.SERVEUR_GUIDE_ENT.'#toggle_gestion_convention" target="_blank">cette documentation pour la marche à suivre</a>.' ;
-        exit_error( 'Absence de convention valide' /*titre*/ , $message_introduction.$message_explication /*contenu*/ );
+        exit_error( 'Absence de convention valide' /*titre*/ , 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention (depuis le '.CONVENTION_ENT_START_DATE_FR.').<br />Un courriel informatif a été envoyé à tous les contacts SACoche des établissements en juin 2013.<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats" target="_blank">cette documentation</a> pour davantage d\'explications.' /*contenu*/ );
       }
     }
   }

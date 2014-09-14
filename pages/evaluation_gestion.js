@@ -605,7 +605,7 @@ $(document).ready
       uploader_sujet['_settings']['data']['f_ref']   = ref;
       uploader_corrige['_settings']['data']['f_ref'] = ref;
       // Afficher la zone
-      $.fancybox( { 'href':'#zone_upload' , onStart:function(){$('#zone_upload').css("display","block");} , onClosed:function(){$('#zone_upload').css("display","none");} , 'minWidth':800 , 'modal':true , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#zone_upload' , onStart:function(){$('#zone_upload').css("display","block");} , onClosed:function(){$('#zone_upload').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
     };
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////

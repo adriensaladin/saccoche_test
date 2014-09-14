@@ -176,7 +176,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
         foreach($tab_memo_ent_possible as $connexion_ref => $connexion_nom)
         {
           list($departement,$connexion_nom) = explode('|',$connexion_ref);
-          if( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] )
+          if(isset($tab_connecteurs_convention[$connexion_ref]))
           {
             $texte_ent_possibles .= '<br /><a target="_blank" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
           }

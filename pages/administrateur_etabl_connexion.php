@@ -72,7 +72,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     switch($connexion_mode)
     {
       case 'cas' :
-        $convention = isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( ( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] ) ? 'conv_acad' : 'conv_etabl' ) ;
+        $convention = isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( isset($tab_connecteurs_convention[$connexion_ref]) ? 'conv_acad' : 'conv_etabl' ) ;
         $domaine_edit = ($tab_info['serveur_host_subdomain']=='*') ? 'oui' : 'non' ;
         if( ($connexion_nom=='perso') && $selected )
         {

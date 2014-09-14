@@ -479,12 +479,9 @@ if( $type_individuel && ($releve_individuel_format=='item') )
   // On commence par recenser les items
   foreach($tab_matiere as $matiere_id => $matiere_nom)
   {
-    if(isset($tab_matiere_item[$matiere_id]))
+    foreach($tab_matiere_item[$matiere_id] as $item_id => $item_nom)
     {
-      foreach($tab_matiere_item[$matiere_id] as $item_id => $item_nom)
-      {
-        $tab_nb_lignes_total_item[$item_id] = $nb_lignes_item_intitule_et_marge + $nb_lignes_item_synthese ;
-      }
+      $tab_nb_lignes_total_item[$item_id] = $nb_lignes_item_intitule_et_marge + $nb_lignes_item_synthese ;
     }
   }
   // Puis on passe en revue les notes pour avoir le nombre d'élève par item
@@ -987,108 +984,82 @@ if($type_individuel)
     // Pour chaque matiere...
     foreach($tab_matiere as $matiere_id => $matiere_nom)
     {
-      if(isset($tab_matiere_item[$matiere_id]))
+      if($make_html) { $releve_HTML_individuel .= $separation.'<h2>'.html($groupe_nom.' - '.$matiere_nom).'</h2>'.NL; }
+      // Pour chaque item...
+      foreach($tab_matiere_item[$matiere_id] as $item_id => $item_nom)
       {
-        if($make_html) { $releve_HTML_individuel .= $separation.'<h2>'.html($groupe_nom.' - '.$matiere_nom).'</h2>'.NL; }
-        // Pour chaque item...
-        foreach($tab_matiere_item[$matiere_id] as $item_id => $item_nom)
+        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif
+        if($aff_coef)
         {
-          extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif
-          if($aff_coef)
+          $texte_coef = '['.$item_coef.'] ';
+        }
+        if($aff_socle)
+        {
+          $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+        }
+        if($make_html)
+        {
+          if($aff_lien)
           {
-            $texte_coef = '['.$item_coef.'] ';
+            $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
+            $texte_lien_apres = ($item_lien) ? '</a>' : '';
           }
-          if($aff_socle)
+          if($highlight_id)
           {
-            $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+            $texte_fluo_avant = ($highlight_id!=$item_id) ? '' : '<span class="fluo">';
+            $texte_fluo_apres = ($highlight_id!=$item_id) ? '' : '</span>';
           }
-          if($make_html)
+          $texte_demande_eval = ''; // sans objet car un élève ne peut pas passer par ici
+        }
+        // Intitulé
+        if($make_pdf)
+        {
+          $releve_PDF->bilan_item_individuel_format_item_ligne_item( $item_ref.' - '.$texte_coef.$texte_socle.$item_nom , $tab_nb_lignes_total_item[$item_id] /*lignes_nb*/ );
+        }
+        if($make_html)
+        {
+          $releve_HTML_individuel .= $separation.'<h3>'.$item_ref.' - '.$texte_coef.$texte_socle.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</h3>'.NL;
+          // On passe au tableau
+          $releve_HTML_table_head = '<thead><tr><th>Élève</th>';
+          if($cases_nb)
           {
-            if($aff_lien)
+            for($num_case=0;$num_case<$cases_nb;$num_case++)
             {
-              $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
-              $texte_lien_apres = ($item_lien) ? '</a>' : '';
+              $releve_HTML_table_head .= '<th></th>';  // Pas de colspan sinon pb avec le tri
             }
-            if($highlight_id)
+          }
+          $releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
+          $releve_HTML_table_head .= '</tr></thead>'.NL;
+          $releve_HTML_table_body = '<tbody>'.NL;
+        }
+        // Pour chaque élève...
+        foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
+        {
+          // Si cet élève a été évalué sur cet item...
+          if(isset($tab_eval[$eleve_id][$matiere_id][$item_id]))
+          {
+            extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
+            $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
+            if($make_pdf)
             {
-              $texte_fluo_avant = ($highlight_id!=$item_id) ? '' : '<span class="fluo">';
-              $texte_fluo_apres = ($highlight_id!=$item_id) ? '' : '</span>';
+              $releve_PDF->bilan_item_individuel_debut_ligne_eleve($eleve_nom.' '.$eleve_prenom);
             }
-            $texte_demande_eval = ''; // sans objet car un élève ne peut pas passer par ici
-          }
-          // Intitulé
-          if($make_pdf)
-          {
-            $releve_PDF->bilan_item_individuel_format_item_ligne_item( $item_ref.' - '.$texte_coef.$texte_socle.$item_nom , $tab_nb_lignes_total_item[$item_id] /*lignes_nb*/ );
-          }
-          if($make_html)
-          {
-            $releve_HTML_individuel .= $separation.'<h3>'.$item_ref.' - '.$texte_coef.$texte_socle.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</h3>'.NL;
-            // On passe au tableau
-            $releve_HTML_table_head = '<thead><tr><th>Élève</th>';
+            // cases d'évaluations
+            $tab_devoirs = $tab_eval[$eleve_id][$matiere_id][$item_id];
+            $devoirs_nb = count($tab_devoirs);
+            // on passe en revue les cases disponibles et on remplit en fonction des évaluations disponibles
             if($cases_nb)
             {
-              for($num_case=0;$num_case<$cases_nb;$num_case++)
+              $decalage = $devoirs_nb - $cases_nb;
+              for($i=0;$i<$cases_nb;$i++)
               {
-                $releve_HTML_table_head .= '<th></th>';  // Pas de colspan sinon pb avec le tri
-              }
-            }
-            $releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
-            $releve_HTML_table_head .= '</tr></thead>'.NL;
-            $releve_HTML_table_body = '<tbody>'.NL;
-          }
-          // Pour chaque élève...
-          foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
-          {
-            // Si cet élève a été évalué sur cet item...
-            if(isset($tab_eval[$eleve_id][$matiere_id][$item_id]))
-            {
-              extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
-              $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
-              if($make_pdf)
-              {
-                $releve_PDF->bilan_item_individuel_debut_ligne_eleve($eleve_nom.' '.$eleve_prenom);
-              }
-              // cases d'évaluations
-              $tab_devoirs = $tab_eval[$eleve_id][$matiere_id][$item_id];
-              $devoirs_nb = count($tab_devoirs);
-              // on passe en revue les cases disponibles et on remplit en fonction des évaluations disponibles
-              if($cases_nb)
-              {
-                $decalage = $devoirs_nb - $cases_nb;
-                for($i=0;$i<$cases_nb;$i++)
+                // on doit remplir une case
+                if($decalage<0)
                 {
-                  // on doit remplir une case
-                  if($decalage<0)
+                  // il y a moins d'évaluations que de cases à remplir : on met un score dispo ou une case blanche si plus de score dispo
+                  if($i<$devoirs_nb)
                   {
-                    // il y a moins d'évaluations que de cases à remplir : on met un score dispo ou une case blanche si plus de score dispo
-                    if($i<$devoirs_nb)
-                    {
-                      extract($tab_devoirs[$i]);  // $note $date $info
-                      $pdf_bg = ''; $td_class = '';
-                      if($date<$jour_debut_annee_scolaire)
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
-                      }
-                      elseif($date<$date_mysql_debut)
-                      {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
-                        $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
-                      }
-                      if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
-                      if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
-                    }
-                    else
-                    {
-                      if($make_html) { $releve_HTML_table_body .= '<td>&nbsp;</td>'; }
-                      if($make_pdf)  { $releve_PDF->afficher_note_lomer( '' /*note*/ , 1 /*border*/ , 0 /*br*/ ); }
-                    }
-                  }
-                  // il y a plus d'évaluations que de cases à remplir : on ne prend que les dernières (décalage d'indice)
-                  else
-                  {
-                    extract($tab_devoirs[$i+$decalage]);  // $note $date $info
+                    extract($tab_devoirs[$i]);  // $note $date $info
                     $pdf_bg = ''; $td_class = '';
                     if($date<$jour_debut_annee_scolaire)
                     {
@@ -1103,73 +1074,96 @@ if($type_individuel)
                     if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
                     if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                   }
+                  else
+                  {
+                    if($make_html) { $releve_HTML_table_body .= '<td>&nbsp;</td>'; }
+                    if($make_pdf)  { $releve_PDF->afficher_note_lomer( '' /*note*/ , 1 /*border*/ , 0 /*br*/ ); }
+                  }
+                }
+                // il y a plus d'évaluations que de cases à remplir : on ne prend que les dernières (décalage d'indice)
+                else
+                {
+                  extract($tab_devoirs[$i+$decalage]);  // $note $date $info
+                  $pdf_bg = ''; $td_class = '';
+                  if($date<$jour_debut_annee_scolaire)
+                  {
+                    $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
+                    $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+                  }
+                  elseif($date<$date_mysql_debut)
+                  {
+                    $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
+                    $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
+                  }
+                  if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                  if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                 }
               }
-              // affichage du bilan de l'item
-              if($aff_etat_acquisition)
-              {
-                if($make_html) { $releve_HTML_table_body .= Html::td_score($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score','' /*pourcent*/ ,'' /*checkbox_val*/ ,$make_officiel).'</tr>'.NL; }
-                if($make_pdf)  { $releve_PDF->afficher_score_bilan( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ); }
-              }
-              else
-              {
-                if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
-                if($make_pdf)  { $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur ); }
-              }
             }
-          }
-          if($make_html)
-          {
-            $releve_HTML_table_body .= '</tbody>'.NL;
-            $releve_HTML_table_foot = '';
-          }
-          // affichage des bilans des scores
-          if($aff_etat_acquisition)
-          {
-            // ... un pour la moyenne des pourcentages d'acquisition
-            if( $aff_moyenne_scores )
+            // affichage du bilan de l'item
+            if($aff_etat_acquisition)
             {
-              if($tab_moyenne_scores_item[$item_id] !== FALSE)
-              {
-                $texte_bilan  = $tab_moyenne_scores_item[$item_id].'%';
-                $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_moyenne_scores_item[$item_id]/5).'/20' : '' ;
-              }
-              else
-              {
-                $texte_bilan = '---';
-              }
-              if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Moyenne des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; } // indication de pondération inopportune
-              if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Moyenne des scores d\'acquisitions : '.$texte_bilan); } // indication de pondération inopportune
+              if($make_html) { $releve_HTML_table_body .= Html::td_score($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score','' /*pourcent*/ ,'' /*checkbox_val*/ ,$make_officiel).'</tr>'.NL; }
+              if($make_pdf)  { $releve_PDF->afficher_score_bilan( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ); }
             }
-            // ... un pour le nombre d'items considérés acquis ou pas
-            if( $aff_pourcentage_acquis )
+            else
             {
-              if($tab_pourcentage_acquis_item[$item_id] !== FALSE)
-              {
-                $texte_bilan  = '('.$tab_infos_acquis_item[$item_id].') : '.$tab_pourcentage_acquis_item[$item_id].'%';
-                $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_pourcentage_acquis_item[$item_id]/5).'/20' : '' ;
-              }
-              else
-              {
-                $texte_bilan = '---';
-              }
-              if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
-              if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+              if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
+              if($make_pdf)  { $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur ); }
             }
-          }
-          if($make_html)
-          {
-            $releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.NL.$releve_HTML_table_foot.'</tfoot>'.NL : '';
-            $releve_HTML_individuel .= '<table id="table'.$matiere_id.'x'.$item_id.'" class="bilan hsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
-            $releve_HTML_individuel_javascript .= '$("#table'.$matiere_id.'x'.$item_id.'").tablesorter();';
           }
         }
-        // Relevé de notes - Légende
-        if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+        if($make_html)
         {
-          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
-          if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
+          $releve_HTML_table_body .= '</tbody>'.NL;
+          $releve_HTML_table_foot = '';
         }
+        // affichage des bilans des scores
+        if($aff_etat_acquisition)
+        {
+          // ... un pour la moyenne des pourcentages d'acquisition
+          if( $aff_moyenne_scores )
+          {
+            if($tab_moyenne_scores_item[$item_id] !== FALSE)
+            {
+              $texte_bilan  = $tab_moyenne_scores_item[$item_id].'%';
+              $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_moyenne_scores_item[$item_id]/5).'/20' : '' ;
+            }
+            else
+            {
+              $texte_bilan = '---';
+            }
+            if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Moyenne des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; } // indication de pondération inopportune
+            if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Moyenne des scores d\'acquisitions : '.$texte_bilan); } // indication de pondération inopportune
+          }
+          // ... un pour le nombre d'items considérés acquis ou pas
+          if( $aff_pourcentage_acquis )
+          {
+            if($tab_pourcentage_acquis_item[$item_id] !== FALSE)
+            {
+              $texte_bilan  = '('.$tab_infos_acquis_item[$item_id].') : '.$tab_pourcentage_acquis_item[$item_id].'%';
+              $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_pourcentage_acquis_item[$item_id]/5).'/20' : '' ;
+            }
+            else
+            {
+              $texte_bilan = '---';
+            }
+            if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
+            if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+          }
+        }
+        if($make_html)
+        {
+          $releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.NL.$releve_HTML_table_foot.'</tfoot>'.NL : '';
+          $releve_HTML_individuel .= '<table id="table'.$matiere_id.'x'.$item_id.'" class="bilan hsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
+          $releve_HTML_individuel_javascript .= '$("#table'.$matiere_id.'x'.$item_id.'").tablesorter();';
+        }
+      }
+      // Relevé de notes - Légende
+      if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+      {
+        if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
+        if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
       }
     }
   }

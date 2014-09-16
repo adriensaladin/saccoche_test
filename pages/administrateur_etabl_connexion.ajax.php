@@ -270,12 +270,8 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $contrat_PDF->AddPage();
     $tplIdx = $contrat_PDF->importPage(1);
     $contrat_PDF->useTemplate($tplIdx);
-    // numéro
-    $contrat_PDF->SetFont('Arial','',$taille_police);
-    $contrat_PDF->choisir_couleur_fond('gris_clair');
-    $contrat_PDF->SetXY(130,10);
-    $contrat_PDF->CellFit( 50 , $hauteur_ligne , To::pdf('Convention n°'.$f_convention_id) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
     // établissement
+    $contrat_PDF->SetFont('Arial','',$taille_police);
     $contrat_PDF->Rect( 120-$marge_bordure , 20-$marge_bordure , 70+2*$marge_bordure , $hauteur_ligne*count($tab_etabl_coords)+2*$marge_bordure , 'D' );
     $contrat_PDF->SetXY(120,20);
     foreach($tab_etabl_coords as $ligne)
@@ -330,12 +326,8 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   $facture_PDF->AddPage();
   $tplIdx = $facture_PDF->importPage(1);
   $facture_PDF->useTemplate($tplIdx);
-  // numéro
-  $facture_PDF->SetFont('Arial','',$taille_police);
-  $facture_PDF->choisir_couleur_fond('gris_clair');
-  $facture_PDF->SetXY(130,10);
-  $facture_PDF->CellFit( 50 , $hauteur_ligne , To::pdf('Convention n°'.$f_convention_id) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
   // établissement
+  $facture_PDF->SetFont('Arial','',$taille_police);
   $facture_PDF->Rect( 120-$marge_bordure , 20-$marge_bordure , 70+2*$marge_bordure , $hauteur_ligne*count($tab_etabl_coords)+2*$marge_bordure , 'D' );
   $facture_PDF->SetXY(120,20);
   foreach($tab_etabl_coords as $ligne)

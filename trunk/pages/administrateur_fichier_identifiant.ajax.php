@@ -238,14 +238,30 @@ if($action=='import_loginmdp')
   $tab_users_base['nom']    = array();
   $tab_users_base['prenom'] = array();
   $tab_users_base['info']   = array();
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur','inspecteur') , 2 /*actuels_et_anciens*/ , 'user_id,user_login,user_password,user_nom,user_prenom,user_profil_type,user_profil_nom_court_singulier' /*liste_champs*/ , TRUE /*with_classe*/ );
+  $tab_parents = array();
+  $listing_champs = 'user_id, user_login, user_password, user_nom, user_prenom, user_profil_type, user_profil_nom_court_singulier';
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur','inspecteur') , 2 /*actuels_et_anciens*/ , $listing_champs , TRUE /*with_classe*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];
     $tab_users_base['mdp'][$DB_ROW['user_id']]    = $DB_ROW['user_password'];
     $tab_users_base['nom'][$DB_ROW['user_id']]    = $DB_ROW['user_nom'];
     $tab_users_base['prenom'][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
-    $tab_users_base['info'][$DB_ROW['user_id']]   = ($DB_ROW['user_profil_type']=='eleve') ? $DB_ROW['groupe_nom'] : $DB_ROW['user_profil_nom_court_singulier'] ;
+    $tab_users_base['info'][$DB_ROW['user_id']]   = ($DB_ROW['user_profil_type']=='eleve') ? 'élève '.$DB_ROW['groupe_nom'] : $DB_ROW['user_profil_nom_court_singulier'] ;
+    if($DB_ROW['user_profil_type']=='parent')
+    {
+      $tab_parents[$DB_ROW['user_id']] = $DB_ROW['user_id'];
+    }
+  }
+  // Une 2e requête pour récupérer classe et enfants des parents
+  if(count($tab_parents))
+  {
+    $listing_parent_id = implode(',',$tab_parents);
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_info_enfants_par_parent($listing_parent_id);
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_users_base['info'][$DB_ROW['parent_id']] .= ' '.$DB_ROW['info'] ;
+    }
   }
   // Observer le contenu du fichier et comparer avec le contenu de la base
   $fcontenu_pdf_tab = array();
@@ -331,7 +347,7 @@ if($action=='import_loginmdp')
           $login = $tab_users_fichier['login'][$i_fichier];
           DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login) );
           $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Mot de passe : inchangé</td></tr>'.NL;
-          $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : <span class="i">inchangé</span>';
+          $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : inchangé';
           $tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
         }
         else

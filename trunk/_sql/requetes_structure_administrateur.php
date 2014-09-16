@@ -397,6 +397,28 @@ public static function DB_lister_users_cibles($listing_user_id,$listing_champs,$
 }
 
 /**
+ * lister_info_enfants_par_parent
+ *
+ * @param string   $listing_parent_id   id des parents séparés par des virgules
+ * @return array
+ */
+public static function DB_lister_info_enfants_par_parent($listing_parent_id)
+{
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
+  $DB_SQL = 'SELECT parent.user_id as parent_id, GROUP_CONCAT( CONCAT(groupe_ref," ",enfant.user_nom) SEPARATOR " - ") AS info ';
+  $DB_SQL.= 'FROM sacoche_user AS parent ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe ON enfant.eleve_classe_id=sacoche_groupe.groupe_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'WHERE parent.user_id IN('.$listing_parent_id.') AND enfant.user_sortie_date>NOW() ';
+  $DB_SQL.= 'GROUP BY parent.user_id ' ;
+  $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, enfant.user_nom ASC, enfant.user_prenom ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_adresses_parents
  *
  * @param void

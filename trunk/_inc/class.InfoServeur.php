@@ -106,10 +106,13 @@ class InfoServeur
       case 'register_globals'               : return 'Enregistrer les variables environnement Get/Post/Cookie/Server comme des variables globales.<br />Par défaut désactivé depuis PHP 4.2.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
       case 'magic_quotes_gpc'               : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
       case 'magic_quotes_sybase'            : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Remplace la directive magic_quotes_gpc en cas d\'activation.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_runtime'           : return 'Échapper les apostrophes pour toutes les données externes, y compris les bases de données et les fichiers texte.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
       case 'session_gc_maxlifetime'         : return 'Durée de vie des données (session) sur le serveur, en nombre de secondes.<br />Par défaut 1440s soit 24min.<br />SACoche permet de régler une conservation de session plus longue.<br />Mais cela ne fonctionnera que si le serveur est configuré pour une durée minimum de 10min.';
       case 'session_use_trans_sid'          : return 'Par défaut désactivé, ce qui rend le support de l\'identifiant de session transparent.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
+      case 'server_protocole'               : return 'Variable serveur indiquant le protocole ; on regarde dans l\'ordre :<br />- HTTPS si définie correctement<br />- HTTP_X_FORWARDED_PROTO si définie correctement<br />- c\'est HTTP sinon';
+      case 'server_IP_serveur'              : return 'IP du serveur ; on regarde dans l\'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon';
       case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.';
       case 'suhosin'                        : return 'Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).';
       default                               : return '';
@@ -479,9 +482,9 @@ class InfoServeur
 
   /**
    * magic_quotes_gpc
-   * Ne pas échapper les apostrophes pour Get/Post/Cookie.
+   * Échapper les apostrophes pour Get/Post/Cookie.
    * Voir http://fr.php.net/manual/fr/info.configuration.php#ini.magic-quotes-gpc
-   * Par défaut à 1 !!!
+   * Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4. Par défaut à 1 avant !
    *
    * @param void
    * @return string
@@ -494,9 +497,9 @@ class InfoServeur
 
   /**
    * magic_quotes_sybase
-   * Ne pas échapper les apostrophes pour Get/Post/Cookie.
+   * Échapper les apostrophes pour Get/Post/Cookie. Remplace la directive magic_quotes_gpc en cas d'activation.
    * Voir http://fr.php.net/manual/fr/sybase.configuration.php#ini.magic-quotes-sybase
-   * Par défaut à 0.
+   * Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4. Par défaut à 0 avant.
    *
    * @param void
    * @return string
@@ -504,6 +507,21 @@ class InfoServeur
   private static function magic_quotes_sybase()
   {
     $valeur = (int)ini_get('magic_quotes_sybase');
+    return ($valeur==0) ? InfoServeur::cellule_coloree_centree('OFF','vert') : InfoServeur::cellule_coloree_centree('ON','rouge') ;
+  }
+
+  /**
+   * magic_quotes_runtime
+   * Échapper les apostrophes pour toutes les données externes, y compris les bases de données et les fichiers texte.
+   * Voir http://php.net/manual/fr/info.configuration.php#ini.magic-quotes-runtime
+   * Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.
+   *
+   * @param void
+   * @return string
+   */
+  private static function magic_quotes_runtime()
+  {
+    $valeur = (int)ini_get('magic_quotes_runtime');
     return ($valeur==0) ? InfoServeur::cellule_coloree_centree('OFF','vert') : InfoServeur::cellule_coloree_centree('ON','rouge') ;
   }
 
@@ -567,6 +585,56 @@ class InfoServeur
     $valeur = (int)ini_get('zend.ze1_compatibility_mode');
     return ($valeur==0) ? InfoServeur::cellule_coloree_centree('OFF','vert') : InfoServeur::cellule_coloree_centree('ON','rouge') ;
   }
+
+  /**
+   * server_protocole
+   * Retourne si le protocole est http ou https.
+   * Utilise la fonction getServerProtocole() définie dans le loader.
+   *
+   * @param void
+   * @return string
+   */
+  private static function server_protocole()
+  {
+    $valeur = (getServerProtocole()=='https://') ? 'HTTPS' : 'HTTP' ;
+    return InfoServeur::cellule_coloree_centree($valeur,'jaune');
+  }
+
+  /**
+   * server_IP_serveur
+   * Retourne l'IP du client.
+   * Utilise la méthode get_IP() définie dans la classe Session.
+   *
+   * @param void
+   * @return string
+   */
+  private static function server_IP_serveur()
+  {
+    $valeur = Session::get_IP();
+    return InfoServeur::cellule_coloree_centree($valeur,'jaune');
+  }
+  
+/**
+ * getServerProtocole
+ *
+ * @param void
+ * @return string
+ */
+function getServerProtocole()
+{
+  // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
+  if ( isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS'])=='on') )
+  {
+    return 'https://';
+  }
+  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_headers)
+  if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO']=='https') )
+  {
+    return 'https://';
+  }
+  return 'http://';
+}
+
 
   // //////////////////////////////////////////////////
   // Méthodes publiques génériques
@@ -674,12 +742,36 @@ class InfoServeur
       'register_globals'            => 'register_globals',
       'magic_quotes_gpc'            => 'magic_quotes_gpc',
       'magic_quotes_sybase'         => 'magic_quotes_sybase',
+      'magic_quotes_runtime'        => 'magic_quotes_runtime',
       'session_gc_maxlifetime'      => 'session.gc_maxlifetime',
       'session_use_trans_sid'       => 'session.use_trans_sid',
       'session_use_only_cookies'    => 'session.use_only_cookies',
       'zend_ze1_compatibility_mode' => 'zend.ze1_compatibility_mode',
     );
     return InfoServeur::tableau_deux_colonnes( 'Configuration de PHP' , $tab_objets );
+  }
+
+  public static function tableau_verification_variables()
+  {
+    $tab_objets = array(
+      'safe_mode'                => 'safe_mode',
+      'open_basedir'             => 'open_basedir',
+      'magic_quotes_gpc'         => 'magic_quotes_gpc',
+      'magic_quotes_sybase'      => 'magic_quotes_sybase',
+      'magic_quotes_runtime'     => 'magic_quotes_runtime',
+      'session_use_trans_sid'    => 'session.use_trans_sid',
+      'session_use_only_cookies' => 'session.use_only_cookies',
+    );
+    return InfoServeur::tableau_deux_colonnes( 'Configuration de PHP' , $tab_objets );
+  }
+
+  public static function tableau_verification_serveur()
+  {
+    $tab_objets = array(
+      'server_protocole'  => 'protocole',
+      'server_IP_serveur' => 'adresse IP',
+    );
+    return InfoServeur::tableau_deux_colonnes( 'Connexion au serveur' , $tab_objets );
   }
 
   public static function tableau_modules_PHP($nb_lignes)

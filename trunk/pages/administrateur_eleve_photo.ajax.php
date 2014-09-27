@@ -209,15 +209,18 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
       {
         $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Erreur : '.$result.' !</td></tr>';
       }
-      $tbody .= '<tr><td class="v">'.html($fichier_nom).'</td><td>Image prise en compte.</td></tr>';
+      else
+      {
+        $tbody .= '<tr><td class="v">'.html($fichier_nom).'</td><td>Image prise en compte.</td></tr>';
+      }
     }
   }
   // Supprimer le dossier temporaire
   FileSystem::supprimer_dossier($dossier_temp);
   // Enregistrement du rapport
   $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
-  // Javascript
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
+  // retour
   exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
 }
 

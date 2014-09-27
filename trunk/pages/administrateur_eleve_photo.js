@@ -182,7 +182,7 @@ $(document).ready
       var tab_infos = responseHTML.split(']¤[');
       if( (tab_infos.length!=2) || (tab_infos[0]!='') )
       {
-        $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+        $('#ajax_msg_zip').removeAttr("class").addClass("alerte").html(tab_infos[0]);
         return false;
       }
       else

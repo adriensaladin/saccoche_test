@@ -542,7 +542,7 @@ $(document).ready
       {
         // Récup des infos
         var matiere_id = $('#matiere_id').val();
-        var niveau_id  = $('#f_niveau_create option:selected').val();
+        var niveau_id  = parseInt( $('#f_niveau_create option:selected').val() ,10); // parseInt() évite ensuite une erreur si aucun niveau n'est sélectionné
         // MAJ et affichage du formulaire
         $('#ajax_msg_choisir').removeAttr("class").html('');
         if( $('#f_structure option').length == 1 )

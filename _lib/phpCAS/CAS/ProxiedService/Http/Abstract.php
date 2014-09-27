@@ -38,8 +38,9 @@
  * @license  http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  * @link     https://wiki.jasig.org/display/CASC/phpCAS
  */
-abstract class CAS_ProxiedService_Http_Abstract extends
-CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
+abstract class CAS_ProxiedService_Http_Abstract
+extends CAS_ProxiedService_Abstract
+implements CAS_ProxiedService_Http
 {
     /**
      * The HTTP request mechanism talking to the target service.
@@ -63,9 +64,8 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      *
      * @return void
      */
-    public function __construct(CAS_Request_RequestInterface $requestHandler,
-        CAS_CookieJar $cookieJar
-    ) {
+    public function __construct (CAS_Request_RequestInterface $requestHandler, CAS_CookieJar $cookieJar)
+    {
         $this->requestHandler = $requestHandler;
         $this->_cookieJar = $cookieJar;
     }
@@ -82,12 +82,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @return string
      * @throws Exception If no service url is available.
      */
-    public function getServiceUrl()
+    public function getServiceUrl ()
     {
         if (empty($this->_url)) {
-            throw new CAS_ProxiedService_Exception(
-                'No URL set via ' . get_class($this) . '->setUrl($url).'
-            );
+            throw new CAS_ProxiedService_Exception('No URL set via '.get_class($this).'->setUrl($url).');
         }
 
         return $this->_url;
@@ -95,7 +93,7 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
 
     /*********************************************************
      * Configure the Request
-     *********************************************************/
+    *********************************************************/
 
     /**
      * Set the URL of the Request
@@ -105,12 +103,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @return void
      * @throws CAS_OutOfSequenceException If called after the Request has been sent.
      */
-    public function setUrl($url)
+    public function setUrl ($url)
     {
         if ($this->hasBeenSent()) {
-            throw new CAS_OutOfSequenceException(
-                'Cannot set the URL, request already sent.'
-            );
+            throw new CAS_OutOfSequenceException('Cannot set the URL, request already sent.');
         }
         if (!is_string($url)) {
             throw new CAS_InvalidArgumentException('$url must be a string.');
@@ -121,7 +117,7 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
 
     /*********************************************************
      * 2. Send the Request
-     *********************************************************/
+    *********************************************************/
 
     /**
      * Perform the request.
@@ -136,12 +132,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @throws CAS_ProxiedService_Exception If there is a failure sending the
      * request to the target service.
      */
-    public function send()
+    public function send ()
     {
         if ($this->hasBeenSent()) {
-            throw new CAS_OutOfSequenceException(
-                'Cannot send, request already sent.'
-            );
+            throw new CAS_OutOfSequenceException('Cannot send, request already sent.');
         }
 
         phpCAS::traceBegin();
@@ -150,9 +144,9 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
         $this->initializeProxyTicket();
         $url = $this->getServiceUrl();
         if (strstr($url, '?') === false) {
-            $url = $url . '?ticket=' . $this->getProxyTicket();
+            $url = $url.'?ticket='.$this->getProxyTicket();
         } else {
-            $url = $url . '&ticket=' . $this->getProxyTicket();
+            $url = $url.'&ticket='.$this->getProxyTicket();
         }
 
         try {
@@ -205,7 +199,7 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @throws CAS_ProxiedService_Exception If there is a failure sending the
      * request to the target service.
      */
-    protected function makeRequest($url)
+    protected function makeRequest ($url)
     {
         // Verify that we are not in a redirect loop
         $this->_numRequests++;
@@ -226,10 +220,9 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
         $this->populateRequest($request);
 
         // Perform the request.
-        phpCAS::trace('Performing proxied service request to \'' . $url . '\'');
+        phpCAS::trace('Performing proxied service request to \''.$url.'\'');
         if (!$request->send()) {
-            $message = 'Could not perform proxied service request to URL`'
-            . $url . '\'. ' . $request->getErrorMessage();
+            $message = 'Could not perform proxied service request to URL`'.$url.'\'. '.$request->getErrorMessage();
             phpCAS::trace($message);
             throw new CAS_ProxiedService_Exception($message);
         }
@@ -238,9 +231,8 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
         $this->_cookieJar->storeCookies($url, $request->getResponseHeaders());
 
         // Follow any redirects
-        if ($redirectUrl = $this->getRedirectUrl($request->getResponseHeaders())
-        ) {
-            phpCAS::trace('Found redirect:' . $redirectUrl);
+        if ($redirectUrl = $this->getRedirectUrl($request->getResponseHeaders())) {
+            phpCAS :: trace('Found redirect:'.$redirectUrl);
             $this->makeRequest($redirectUrl);
         } else {
 
@@ -257,9 +249,7 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      *
      * @return void
      */
-    abstract protected function populateRequest(
-        CAS_Request_RequestInterface $request
-    );
+    abstract protected function populateRequest (CAS_Request_RequestInterface $request);
 
     /**
      * Answer a redirect URL if a redirect header is found, otherwise null.
@@ -268,12 +258,11 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      *
      * @return string or null
      */
-    protected function getRedirectUrl(array $responseHeaders)
+    protected function getRedirectUrl (array $responseHeaders)
     {
         // Check for the redirect after authentication
         foreach ($responseHeaders as $header) {
-            if ( preg_match('/^(Location:|URI:)\s*([^\s]+.*)$/', $header, $matches)
-            ) {
+            if (preg_match('/^(Location:|URI:)\s*([^\s]+.*)$/', $header, $matches)) {
                 return trim(array_pop($matches));
             }
         }
@@ -282,14 +271,14 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
 
     /*********************************************************
      * 3. Access the response
-     *********************************************************/
+    *********************************************************/
 
     /**
      * Answer true if our request has been sent yet.
      *
      * @return bool
      */
-    protected function hasBeenSent()
+    protected function hasBeenSent ()
     {
         return ($this->_numRequests > 0);
     }
@@ -300,12 +289,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @return array An array of header strings.
      * @throws CAS_OutOfSequenceException If called before the Request has been sent.
      */
-    public function getResponseHeaders()
+    public function getResponseHeaders ()
     {
         if (!$this->hasBeenSent()) {
-            throw new CAS_OutOfSequenceException(
-                'Cannot access response, request not sent yet.'
-            );
+            throw new CAS_OutOfSequenceException('Cannot access response, request not sent yet.');
         }
 
         return $this->_responseHeaders;
@@ -317,12 +304,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @return int
      * @throws CAS_OutOfSequenceException If called before the Request has been sent.
      */
-    public function getResponseStatusCode()
+    public function getResponseStatusCode ()
     {
         if (!$this->hasBeenSent()) {
-            throw new CAS_OutOfSequenceException(
-                'Cannot access response, request not sent yet.'
-            );
+            throw new CAS_OutOfSequenceException('Cannot access response, request not sent yet.');
         }
 
         return $this->_responseStatusCode;
@@ -334,12 +319,10 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      * @return string
      * @throws CAS_OutOfSequenceException If called before the Request has been sent.
      */
-    public function getResponseBody()
+    public function getResponseBody ()
     {
         if (!$this->hasBeenSent()) {
-            throw new CAS_OutOfSequenceException(
-                'Cannot access response, request not sent yet.'
-            );
+            throw new CAS_OutOfSequenceException('Cannot access response, request not sent yet.');
         }
 
         return $this->_responseBody;
@@ -351,7 +334,7 @@ CAS_ProxiedService_Abstract implements CAS_ProxiedService_Http
      *
      * @return array An array containing cookies. E.g. array('name' => 'val');
      */
-    public function getCookies()
+    public function getCookies ()
     {
         return $this->_cookieJar->getCookies($this->getServiceUrl());
     }

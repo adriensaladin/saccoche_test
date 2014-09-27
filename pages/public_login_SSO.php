@@ -150,29 +150,33 @@ if($connexion_mode=='cas')
     exit();
   }
   /**
-   * Renvoie les traces d'une exception sous forme d'une chaîne
+   * Renvoie les traces d'une exception sous forme de chaîne
    *
    * @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
-   * @param  Exception $e L'exception dont on veut les traces
-   * @return string Les traces (liste à puces)
+   * @param Exception $e L'exception dont on veut les traces
+   * @return string Les traces (une par ligne sous la forme "clé : valeur")
    * @throws Exception 
    */
   function get_string_traces($e)
   {
-    $tab_traces = $e->getTrace();
-    $str_traces = '<ul>';
-    $indice = 0;
-    foreach ($tab_traces as $trace)
+    if (!is_a($e, 'Exception'))
+    {
+      throw new Exception('get_string_traces() veut une exception en paramètre');
+    }
+    $traces = $e->getTrace();
+    $str_traces = '';
+    $i = 0;
+    foreach ($traces as $trace)
     {
       // init
-      $str_traces .= '<li>'.$indice.' &rArr; ';
+      $str_traces .= "\n\t".'trace '.$i.' => ';
       // class
       if (isset($trace['class']))
       {
-        $str_traces .= $trace['class'].' &rarr; ';
+        $str_traces .= $trace['class'].' :->: ';
         unset($trace['class']);
       }
-      // function
+
       if (isset($trace['function']))
       {
         // le nom de la fct concernée
@@ -209,36 +213,35 @@ if($connexion_mode=='cas')
           unset($trace['args']);
         }
         else
-        {
-          // pas d'args, on ajoute les () pour mieux voir que c'est une fct
+        { // pas d'args, on ajoute les () pour mieux voir que c'est une fct
           $str_traces .= '()';
         }
       }
       // line
       if (isset($trace['line']))
       {
-        $str_traces .= ' ligne '.$trace['line'];
+        $str_traces .= ' on line '.$trace['line'];
         unset($trace['line']);
       }
       // file
       if (isset($trace['file']))
       {
-        $str_traces .= ' dans '.$trace['file'];
+        $str_traces .= ' in '.$trace['file'];
         unset($trace['file']);
       }
       // type
       if (isset($trace['type']))
       {
-        if ( ($trace['type']!='') && ($trace['type']!='->') && ($trace['type']!='::') )
+        if ( ($trace['type']!='') && ($trace['type']!='->') )
         {
-          $str_traces .= ' type : '.$trace['type'];
+          $str_traces .=  ' type : '.$trace['type'];
         }
-        unset($trace['type']);
+        unset($trace['file']);
       }
       // si jamais il reste des trucs...
       if (count($trace))
       {
-        $str_traces .= ' autres infos :';
+        $str_traces .= ' et il reste les infos :';
         foreach ($trace as $key => $value)
         {
           $str_traces .= " ".$key.' : ';
@@ -252,8 +255,7 @@ if($connexion_mode=='cas')
           }
         }
       }
-      $indice++;
-      $str_traces .= '</li>'."\n";
+      $i++;
     }
     return $str_traces;
   }
@@ -269,7 +271,9 @@ if($connexion_mode=='cas')
         phpCAS::setDebug(PHPCAS_CHEMIN_LOGS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
       }
     }
-    // Initialiser la connexion avec CAS ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+    // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+    // $cas_protocole = ($BASE!=100500) ? '2.0' /* CAS_VERSION_2_0 */ : 'S1' /*SAML_VERSION_1_1*/ ;
+    // phpCAS::client($cas_protocole, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
     phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
     phpCAS::setLang(PHPCAS_LANG_FRENCH);
     // Surcharge éventuelle des URL
@@ -310,25 +314,25 @@ if($connexion_mode=='cas')
   catch(Exception $e)
   {
     // @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
-    $msg_log = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
-    $msg_log .= $e->getMessage();
+    $msg  = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
+    $msg .= $e->getMessage();
     // on ajoute les traces dans le log
-    $puces_traces = get_string_traces($e);
-    if ($puces_traces != '')
+    $traces = get_string_traces($e);
+    if ($traces != '')
     {
-      $msg_log .= ' avec la trace :'."\n".$puces_traces;
+      $msg .= ' avec la trace :'."\n".$traces;
     }
-    trigger_error($msg_log);
-    $msg_screen = '<p>Cette erreur peut être due à des données invalides renvoyées par le serveur CAS.</p>'.$puces_traces;
+    trigger_error($msg);
+    $msg_sup = '<p>Cette erreur peut être due à des paramètres de serveur CAS incorrects, ou un XML renvoyé par le serveur CAS syntaxiquement invalide.</p>';
     if (is_a($e, 'CAS_AuthenticationException'))
     {
-      exit_CAS_Exception($msg_screen);
+      exit_CAS_Exception($msg_sup);
     }
     else
     {
       // peut-on passer là ?
       trigger_error('phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté mais ce n\'est pas une CAS_AuthenticationException');
-      exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_screen /*contenu*/ );
+      exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_sup /*contenu*/ );
     }
   }
   // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.

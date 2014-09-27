@@ -632,7 +632,7 @@ else
     // On définit notre autoload
     function __autoload($class_name)
     {
-      return SACoche_autoload($class_name);
+        return SACoche_autoload($class_name);
     }
   }
   else

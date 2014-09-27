@@ -441,7 +441,7 @@ function cocher_eleves(eleve_liste)
 }
 
 /**
- * Fonction pour afficher le nombre de caractères restants autorisés dans un textarea.
+ * Fonction pour afficher le nombre de caractères restant autorisés dans un textarea.
  * A appeler avec l'événement onkeyup.
  *
  * Inspiration : http://www.paperblog.fr/349086/limiter-le-nombre-de-caractere-d-un-textarea/

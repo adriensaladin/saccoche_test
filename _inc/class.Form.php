@@ -136,20 +136,15 @@ class Form
     array('valeur' => 90  , 'texte' => 'avec une colonne vide de 9cm') ,
   );
 
-  public static $tab_select_cart_detail = array(
-    array('valeur' => 'complet' , 'texte' => 'avec la dénomination complète de chaque item') ,
-    array('valeur' => 'minimal' , 'texte' => 'minimal avec uniquement les références des items') ,
-  );
-
-  public static $tab_select_cart_cases_nb = array(
-    array('valeur' => 1 , 'texte' => 'avec une seule case par item pour la notation (à remplir)') ,
-    array('valeur' => 5 , 'texte' => 'avec plusieurs cases par item pour la notation (à cocher)') ,
-  );
-
   public static $tab_select_cart_contenu = array(
-    array('valeur' => 'SANS_nom_SANS_result' , 'texte' => 'SANS les noms d\'élèves et SANS les résultats') ,
-    array('valeur' => 'AVEC_nom_SANS_result' , 'texte' => 'AVEC les noms d\'élèves mais SANS les résultats') ,
-    array('valeur' => 'AVEC_nom_AVEC_result' , 'texte' => 'AVEC les noms d\'élèves et AVEC les résultats (si saisis)') ,
+    array('valeur' => 'SANS_nom_SANS_result' , 'texte' => 'cartouche SANS les noms d\'élèves et SANS les résultats') ,
+    array('valeur' => 'AVEC_nom_SANS_result' , 'texte' => 'cartouche AVEC les noms d\'élèves mais SANS les résultats') ,
+    array('valeur' => 'AVEC_nom_AVEC_result' , 'texte' => 'cartouche AVEC les noms d\'élèves et AVEC les résultats (si saisis)') ,
+  );
+
+  public static $tab_select_cart_detail = array(
+    array('valeur' => 'complet' , 'texte' => 'cartouche avec la dénomination complète de chaque item') ,
+    array('valeur' => 'minimal' , 'texte' => 'cartouche minimal avec uniquement les références des items') ,
   );
 
   public static $tab_select_recherche_objet = array(
@@ -275,9 +270,8 @@ class Form
       'legende'                   => 'oui' , 
       'marge_min'                 => 5 ,
       'pages_nb'                  => 'optimise' ,
-      'cart_detail'               => 'complet' ,
-      'cart_cases_nb'             => 1 ,
       'cart_contenu'              => 'AVEC_nom_SANS_result' ,
+      'cart_detail'               => 'complet' ,
       'only_niveau'               => 0 ,
       'only_presence'             => 0 ,
       'only_socle'                => 0 ,
@@ -352,8 +346,8 @@ class Form
     switch($page)
     {
       case 'cartouche' :
-        global $orientation,$couleur,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu;
-        $tab_choix_new = compact('orientation','couleur','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu');
+        global $orientation,$couleur,$legende,$marge_min,$cart_contenu,$cart_detail;
+        $tab_choix_new = compact('orientation','couleur','legende','marge_min','cart_contenu','cart_detail');
         break;
       case 'grille_referentiel' :
         global $matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_synthese_format,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min,$pages_nb;

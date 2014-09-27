@@ -298,20 +298,18 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 <?php
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
-$select_cart_detail   = Form::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/);
-$select_cart_cases_nb = Form::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/);
-$select_cart_contenu  = Form::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
-$select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
-$select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
-$select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
+$select_cart_contenu = Form::afficher_select(Form::$tab_select_cart_contenu , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu'] /*selection*/ , '' /*optgroup*/);
+$select_cart_detail  = Form::afficher_select(Form::$tab_select_cart_detail  , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']  /*selection*/ , '' /*optgroup*/);
+$select_orientation  = Form::afficher_select(Form::$tab_select_orientation  , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']  /*selection*/ , '' /*optgroup*/);
+$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ , '' /*optgroup*/);
+$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ , '' /*optgroup*/);
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
   <h2>Imprimer le cartouche d'une évaluation</h2>
   <p class="b" id="titre_imprimer"></p>
-  <label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />
-  <label class="tab" for="f_detail">Nombre de cases :</label><?php echo $select_cart_cases_nb ?><br />
   <label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
+  <label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
   </div>

@@ -41,7 +41,7 @@ $select_groupe = Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupement
 
 <form action="#" method="post" id="form2"><fieldset>
   <p class="astuce">
-    Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> (<a href="./index.php?page=compte_info_serveur">voir les caractéristiques du serveur</a>).
+    Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le webmestre du serveur a accès au détail de la configuration PHP expliquant cette limite." />.
   </p>
   <label class="tab" for="f_masque">Forme noms fichiers :</label><input id="f_masque" name="f_masque" size="50" maxlength="50" type="text" value="" /><br />
   <label class="tab" for="bouton_zip">Upload fichier <em>zip</em> :</label><button id="bouton_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>

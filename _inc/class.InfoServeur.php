@@ -112,7 +112,7 @@ class InfoServeur
       case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
       case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
       case 'server_protocole'               : return 'Variable serveur indiquant le protocole ; on regarde dans l\'ordre :<br />- HTTPS si définie correctement<br />- HTTP_X_FORWARDED_PROTO si définie correctement<br />- c\'est HTTP sinon';
-      case 'server_IP_serveur'              : return 'IP du serveur ; on regarde dans l\'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon';
+      case 'server_IP_client'               : return 'IP cliente présentée au serveur ; on regarde dans l\'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon';
       case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.';
       case 'suhosin'                        : return 'Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).';
       default                               : return '';
@@ -601,14 +601,14 @@ class InfoServeur
   }
 
   /**
-   * server_IP_serveur
+   * server_IP_client
    * Retourne l'IP du client.
    * Utilise la méthode get_IP() définie dans la classe Session.
    *
    * @param void
    * @return string
    */
-  private static function server_IP_serveur()
+  private static function server_IP_client()
   {
     $valeur = Session::get_IP();
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
@@ -768,8 +768,8 @@ function getServerProtocole()
   public static function tableau_verification_serveur()
   {
     $tab_objets = array(
-      'server_protocole'  => 'protocole',
-      'server_IP_serveur' => 'adresse IP',
+      'server_protocole' => 'protocole',
+      'server_IP_client' => 'adresse IP',
     );
     return InfoServeur::tableau_deux_colonnes( 'Connexion au serveur' , $tab_objets );
   }

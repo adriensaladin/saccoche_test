@@ -45,8 +45,9 @@ $doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_
 $doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $groupe         = (isset($_POST['f_groupe']))          ? Clean::texte($_POST['f_groupe'])                : '';
 $groupe_nom     = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])            : '';
-$cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
 $cart_detail    = (isset($_POST['f_detail']))          ? Clean::texte($_POST['f_detail'])                : '';
+$cart_cases_nb  = (isset($_POST['f_cases_nb']))        ? Clean::entier($_POST['f_cases_nb'])             : '';
+$cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
 $orientation    = (isset($_POST['f_orientation']))     ? Clean::texte($_POST['f_orientation'])           : '';
 $marge_min      = (isset($_POST['f_marge_min']))       ? Clean::texte($_POST['f_marge_min'])             : '';
 $couleur        = (isset($_POST['f_couleur']))         ? Clean::texte($_POST['f_couleur'])               : '';
@@ -739,27 +740,13 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
     }
   }
   // ajouter le contenu
-  $tab_dossier = array(
-    ''     => '' ,
-    'RR'   => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'R'    => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'V'    => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'VV'   => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'ABS'  => 'commun/h/' ,
-    'DISP' => 'commun/h/' ,
-    'NE'   => 'commun/h/' ,
-    'NF'   => 'commun/h/' ,
-    'NN'   => 'commun/h/' ,
-    'NR'   => 'commun/h/' ,
-    'REQ'  => 'commun/h/' ,
-  );
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
     if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
     {
-      $tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/'.$tab_dossier[$DB_ROW['saisie_note']].$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
+      $tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','>'.Html::note($DB_ROW['saisie_note'],'','',FALSE).'<',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
       $csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
     }
   }
@@ -908,14 +895,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
-  $tab_dossier = array(
-    'X'  => 'commun/h/' ,
-    'RR' => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'R'  => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'V'  => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-    'VV' => $_SESSION['NOTE_DOSSIER'].'/h/' ,
-  );
-  $tab_init_nominatif   = array(
+  $tab_init_nominatif = array(
     'RR' => array() ,
     'R'  => array() ,
     'V'  => array() ,
@@ -941,7 +921,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   $affichage_repartition_head = '<th class="nu"></th>';
   foreach($tab_init_quantitatif as $note=>$vide)
   {
-    $affichage_repartition_head .= ($note!='X') ? '<th><img alt="'.$note.'" src="./_img/note/'.$tab_dossier[$note].$note.'.gif" /></th>' : '<th>Autre</th>' ;
+    $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
   }
   // ligne suivantes
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , FALSE /*with_REQ*/ );
@@ -1199,7 +1179,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
 // Imprimer un cartouche d'une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
+if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur )
 {
   Form::save_choix('cartouche');
   $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
@@ -1269,6 +1249,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $sacoche_csv = '';
   $sacoche_tex = '';
   $separateur  = ';';
+  $tab_codes = array(
+    'RR' => TRUE ,
+    'R'  => TRUE ,
+    'V'  => TRUE ,
+    'VV' => TRUE ,
+    'X'  => FALSE ,
+  );
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $item_nb = count($tab_comp_id);
   if(!$only_req)
@@ -1276,66 +1263,166 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     $tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
   }
   $sacoche_pdf = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , 'oui' /*legende*/ );
-  $sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb);
+  $sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb,$cart_cases_nb);
   if($cart_detail=='minimal')
   {
-    // dans le cas d'un cartouche minimal
+    // dans le cas d'un cartouche minimal...
     foreach($tab_user_id as $user_id=>$val_user)
     {
       if($tab_user_nb_req[$user_id])
       {
+        $colonnes_nb = $tab_user_nb_req[$user_id];
+        $lignes_nb   = 1 + 2 + $cart_cases_nb; // marge incluse
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
-        $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$tab_user_nb_req[$user_id].'">'.html($texte_entete).'</th></tr></thead><tbody>';
+        $case_vide    = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
+        $sacoche_htm .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
         $sacoche_csv .= $texte_entete."\r\n";
         $sacoche_tex .= $texte_entete."\r\n";
-        $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=4 );
-        $ligne0_tex = ''; 
-        $ligne1_csv = ''; $ligne1_html = ''; $ligne1_tex = ''; 
-        $ligne2_csv = ''; $ligne2_html = ''; $ligne2_tex = ''; 
-        foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+        $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
+        if($cart_cases_nb==1)
+        {
+          // ... avec une case à remplir
+          $rows_htm = array( 'item' => '' , 'note'=> '' );
+          $rows_csv = array( 'item' => '' , 'note'=> '' );
+          $rows_tex = array( 'item' => '' , 'note'=> '' );
+          $cols_tex_nb = 0;
+        }
+        else
+        {
+          // ... avec 5 cases dont une à cocher
+          $rows_htm = array( 'item' => '<td class="nu"></td>' );
+          $rows_csv = array( 'item' => $separateur );
+          $rows_tex = array( 'item' => ' & ' );
+          $cols_tex_nb = 1;
+          foreach($tab_codes as $note_code => $is_note )
+          {
+            $rows_htm[$note_code] = ($is_note) ? '<td class="hc">'.Html::note($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
+            $rows_csv[$note_code] = ($is_note) ? '"'.$note_code.'"'.$separateur                               : '"autre"'.$separateur;
+            $rows_tex[$note_code] = ($is_note) ? '\begin{tabular}{c}'.$note_code.'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+          }
+        }
+        foreach($tab_comp_id as $comp_id => $tab_val_comp)
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
+            $cols_tex_nb++;
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
-            $ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
-            $ligne2_html .= '<td class="hc">'.Html::note($note,$date_fr,$description,FALSE).'</td>';
-            $ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
-            $ligne2_csv .= '"'.$note.'"'.$separateur;
-            $ligne0_tex .= 'c|';
-            $ligne1_tex .= '\begin{tabular}{c}'.To::latex($ref_matiere).'\\\\'.To::latex($ref_suite).'\end{tabular}'.' & ';
-            $ligne2_tex .= ' &';
-            $sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $note);
+            $rows_htm['item'] .= '<td class="hc">'.html($tab_val_comp[0]).'</td>';
+            $rows_csv['item'] .= '"'.$tab_val_comp[0].'"'.$separateur;
+            $rows_tex['item'] .= '\begin{tabular}{c}'.To::latex($ref_matiere).'\\\\'.To::latex($ref_suite).'\end{tabular} & ';
+            if($cart_cases_nb==1)
+            {
+              // ... avec une case à remplir
+              $rows_htm['note'] .= '<td class="hc">'.Html::note($note,$date_fr,$description,FALSE).'</td>';
+              $rows_csv['note'] .= '"'.$note.'"'.$separateur;
+              $rows_tex['note'] .= '\begin{tabular}{c}'.$note.'\end{tabular} & ';
+            }
+            else
+            {
+              // ... avec 5 cases dont une à cocher
+              foreach($tab_codes as $note_code => $is_note )
+              {
+                if($is_note)
+                {
+                  $coche = ($note_code==$note) ? 'XXX' : NULL ;
+                }
+                else
+                {
+                  $coche = ( $note && !isset($tab_codes[$note]) ) ? $note : NULL ;
+                }
+                $rows_htm[$note_code] .= ($coche) ? '<td class="hc">'.$coche.'</td>'               : '<td class="hc">&nbsp;</td>';
+                $rows_csv[$note_code] .= ($coche) ? '"'.$coche.'"'.$separateur                     : $separateur;
+                $rows_tex[$note_code] .= ($coche) ? '\begin{tabular}{c}'.$coche.'\end{tabular} & ' : '& ';
+              }
+            }
+            $sacoche_pdf->cartouche_minimal_competence( $tab_val_comp[0] , $note , $cart_cases_nb );
           }
         }
-        $sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table>';
-        $sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
-        $sacoche_tex .= '\begin{center}'."\r\n".'\begin{tabular}{|'.$ligne0_tex.'}'."\r\n".'\hline'."\r\n".mb_substr($ligne1_tex,0,-2).' \\\\'."\r\n".'\hline'."\r\n".mb_substr($ligne2_tex,0,-1).' \\\\'."\r\n".'\hline'."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
-        $sacoche_pdf->cartouche_interligne(4);
+        // Enlever un '& ' surnuméraire
+        foreach($rows_tex as $note_code => $tex_contenu)
+        {
+          $rows_tex[$note_code] = mb_substr($tex_contenu,0,-2);
+        }
+        $sacoche_htm .= '<tr>'.implode('</tr><tr>',$rows_htm).'</tr></tbody></table>';
+        $sacoche_csv .= implode("\r\n",$rows_csv)."\r\n\r\n";
+        $sacoche_tex .= '\begin{center}'."\r\n".'\begin{tabular}{|'.str_repeat('c|',$cols_tex_nb).'}'."\r\n".'\hline'."\r\n".implode(' \\\\'."\r\n".'\hline'."\r\n",$rows_tex).' \\\\'."\r\n".'\hline'."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
+        $sacoche_pdf->cartouche_interligne(3+$cart_cases_nb);
       }
     }
   }
   elseif($cart_detail=='complet')
   {
-    // dans le cas d'un cartouche complet
+    // dans le cas d'un cartouche complet...
     foreach($tab_user_id as $user_id=>$val_user)
     {
       if($tab_user_nb_req[$user_id])
       {
+        $colonnes_nb = ($cart_cases_nb==1) ? 3 : 2 ;
+        $lignes_nb   = 1 + 1 + $tab_user_nb_req[$user_id] ; // marge incluse
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
-        $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="3">'.html($texte_entete).'</th></tr></thead><tbody>';
-        $sacoche_csv .= $texte_entete."\r\n";
-        $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
-        $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
+        if($cart_cases_nb==1)
+        {
+          // ... avec une case à remplir
+          $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
+          $sacoche_csv .= $texte_entete."\r\n";
+          $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
+        }
+        else
+        {
+          // ... avec 5 cases dont une à cocher
+          $cols_htm = '';
+          $cols_csv = '';
+          $cols_tex = '';
+          foreach($tab_codes as $note_code => $is_note )
+          {
+            $cols_htm .= ($is_note) ? '<td class="hc">'.Html::note($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
+            $cols_csv .= ($is_note) ? '"'.$note_code.'"'.$separateur                               : '"autre"'.$separateur;
+            $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.$note_code.'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+          }
+          $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
+          $sacoche_csv .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
+          $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
+          $sacoche_tex .= ' & & '.$cols_tex."\r\n".'\hline'."\r\n";
+        }
+        $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
-            $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($note,$date_fr,$description,FALSE).'</td></tr>';
-            $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$note.'"'."\r\n";
-            $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.$note.' \\\\'."\r\n".'\hline'."\r\n";
-            $sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $note);
+            if($cart_cases_nb==1)
+            {
+              // ... avec une case à remplir
+              $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($note,$date_fr,$description,FALSE).'</td></tr>';
+              $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$note.'"'."\r\n";
+              $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.$note.' \\\\'."\r\n".'\hline'."\r\n";
+            }
+            else
+            {
+              // ... avec 5 cases dont une à cocher
+              $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td>';
+              $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur;
+              $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]);
+              foreach($tab_codes as $note_code => $is_note )
+              {
+                if($is_note)
+                {
+                  $coche = ($note_code==$note) ? 'XXX' : NULL ;
+                }
+                else
+                {
+                  $coche = ( $note && !isset($tab_codes[$note]) ) ? $note : NULL ;
+                }
+                $sacoche_htm .= ($coche) ? '<td class="hc">'.$coche.'</td>'               : '<td class="hc">&nbsp;</td>';
+                $sacoche_csv .= ($coche) ? '"'.$coche.'"'.$separateur                     : $separateur;
+                $sacoche_tex .= ($coche) ? ' & \begin{tabular}{c}'.$coche.'\end{tabular}' : ' &';
+              }
+              $sacoche_htm .= '</tr>';
+              $sacoche_csv .= "\r\n";
+              $sacoche_tex .= ' \\\\'."\r\n".'\hline'."\r\n";
+            }
+            $sacoche_pdf->cartouche_complet_competence( $tab_val_comp[0] , $tab_val_comp[1] , $note , $cart_cases_nb );
           }
         }
         $sacoche_htm .= '</tbody></table>';

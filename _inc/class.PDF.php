@@ -2906,19 +2906,22 @@ class PDF extends FPDF
   // cartouche_interligne()
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function cartouche_initialiser( $detail , $item_nb )
+  public function cartouche_initialiser( $detail , $item_nb , $cases_nb )
   {
-    $this->cases_largeur     = ($detail=='minimal') ? ($this->page_largeur_moins_marges) / $item_nb : 10 ;
+    $colonne_codes = ($cases_nb==1) ? 0 : 15 ;
+    $this->cases_largeur     = ($detail=='minimal') ? ($this->page_largeur_moins_marges - $colonne_codes) / $item_nb : 10 ;
     $this->cases_hauteur     = 5 ;
+    $this->cases_nb          = $cases_nb ;
     $this->reference_largeur = 15 ;
-    $this->intitule_largeur  = ($detail=='minimal') ? 0 : $this->page_largeur_moins_marges - $this->reference_largeur - $this->cases_largeur ;
+    $this->intitule_largeur  = ($detail=='minimal') ? 0 : $this->page_largeur_moins_marges - $this->reference_largeur - ($this->cases_largeur*$this->cases_nb) ;
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
     $this->SetAutoPageBreak(FALSE);
-    $this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);
+    $largeur = ( ($detail=='complet') || ($cases_nb==1) ) ? $this->cases_largeur : 15 ;
+    $this->calculer_dimensions_images( $largeur , $this->cases_hauteur );
   }
 
-  public function cartouche_entete( $texte_entete , $lignes_nb )
+  public function cartouche_entete( $texte_entete , $lignes_nb , $detail , $cases_nb )
   {
     // On prend une nouvelle page PDF si besoin
     $hauteur_requise = $this->cases_hauteur * $lignes_nb;
@@ -2927,28 +2930,120 @@ class PDF extends FPDF
     {
       $this->AddPage($this->orientation , 'A4');
     }
-    // Intitulé
     $this->SetFont('Arial' , '' , 10);
-    $this->Cell(0 , $this->cases_hauteur , To::pdf($texte_entete) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->choisir_couleur_fond('gris_clair');
+    // Intitulé
+    if($cases_nb==1)
+    {
+      // Avec une case à remplir
+      $this->SetX($this->marge_gauche);
+      $this->CellFit( $this->page_largeur_moins_marges , $this->cases_hauteur , To::pdf($texte_entete) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+    }
+    else
+    {
+      // Avec 5 cases dont une à cocher...
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
+      if($detail=='minimal')
+      {
+        // ... dans le cas d'un cartouche minimal
+        $this->SetX( $this->marge_gauche + 15 );
+        $this->CellFit( $this->page_largeur_moins_marges - 15 , $this->cases_hauteur , To::pdf($texte_entete) , 1 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+        $memo_x = $this->GetX();
+        $memo_y = $this->GetY();
+        $this->SetXY( $this->marge_gauche , $memo_y + $this->cases_hauteur );
+        foreach($tab_codes as $note_code => $is_note )
+        {
+          if($is_note)
+          {
+            $this->afficher_note_lomer( $note_code , 1 /*border*/ , 2 /*br*/ );
+          }
+          else
+          {
+            $this->CellFit( 15 , $this->cases_hauteur , To::pdf('Autre') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+          }
+        }
+        $this->SetXY($memo_x , $memo_y);
+      }
+      else
+      {
+        // ... dans le cas d'un cartouche complet
+        $this->SetX($this->marge_gauche);
+        $this->CellFit( $this->reference_largeur + $this->intitule_largeur , $this->cases_hauteur , To::pdf($texte_entete) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+        foreach($tab_codes as $note_code => $is_note )
+        {
+          if($is_note)
+          {
+            $this->afficher_note_lomer( $note_code , 1 /*border*/ , 0 /*br*/ );
+          }
+          else
+          {
+            $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf('Autre') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+          }
+        }
+      }
+    }
+    $this->choisir_couleur_fond('gris_clair');
     $this->SetFont('Arial' , '' , 8);
   }
 
-  public function cartouche_minimal_competence( $item_ref , $note )
+  public function cartouche_minimal_competence( $item_ref , $note , $cases_nb )
   {
     $memo_x = $this->GetX();
     $memo_y = $this->GetY();
-    list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-    $this->SetFont('Arial' , '' , 7);
-    $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->SetFont('Arial' , '' , 8);
-    $this->SetXY($memo_x , $memo_y);
-    $this->Cell( $this->cases_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
-    $this->SetXY($memo_x+$this->cases_largeur , $memo_y);
+    if($this->cases_largeur>30)
+    {
+      $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($item_ref) , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    }
+    else
+    {
+      list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
+      $this->SetFont('Arial' , '' , 7);
+      $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit( $this->cases_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->SetFont('Arial' , '' , 8);
+      $this->SetXY($memo_x , $memo_y);
+      $this->Cell( $this->cases_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+    }
+    if($cases_nb==1)
+    {
+      // Avec une case à remplir
+      $this->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ );
+    }
+    else
+    {
+      // Avec 5 cases dont une à cocher
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
+      foreach($tab_codes as $note_code => $is_note )
+      {
+        if($is_note)
+        {
+          $coche = ($note_code==$note) ? 'XXX' : '' ;
+          $fill  = ($note_code==$note) ? TRUE  : FALSE ;
+        }
+        else
+        {
+          $coche = ( $note && !isset($tab_codes[$note]) ) ? $note : '' ;
+          $fill  = ( $note && !isset($tab_codes[$note]) ) ? TRUE  : FALSE ;
+        }
+        $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($coche) , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , $fill /*remplissage*/ );
+      }
+    }
+    $this->SetXY( $memo_x + $this->cases_largeur , $memo_y );
   }
 
-  public function cartouche_complet_competence( $item_ref , $item_intitule , $note )
+  public function cartouche_complet_competence( $item_ref , $item_intitule , $note , $cases_nb )
   {
     $memo_x = $this->GetX();
     $memo_y = $this->GetY();
@@ -2960,7 +3055,38 @@ class PDF extends FPDF
     $this->SetXY($memo_x , $memo_y);
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                         , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_intitule) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->afficher_note_lomer( $note , 1 /*border*/ , 1 /*br*/ );
+    if($cases_nb==1)
+    {
+      // Avec une case à remplir
+      $this->afficher_note_lomer( $note , 1 /*border*/ , 1 /*br*/ );
+    }
+    else
+    {
+      // Avec 5 cases dont une à cocher
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
+      foreach($tab_codes as $note_code => $is_note )
+      {
+        if($is_note)
+        {
+          $coche = ($note_code==$note) ? 'XXX' : '' ;
+          $fill  = ($note_code==$note) ? TRUE  : FALSE ;
+          $br = 0;
+        }
+        else
+        {
+          $coche = ( $note && !isset($tab_codes[$note]) ) ? $note : '' ;
+          $fill  = ( $note && !isset($tab_codes[$note]) ) ? TRUE  : FALSE ;
+          $br = 1;
+        }
+        $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($coche) , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , $fill /*remplissage*/ );
+      }
+    }
   }
 
   public function cartouche_interligne($nb_lignes)

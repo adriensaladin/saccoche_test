@@ -40,12 +40,12 @@ if(!test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*ma
 
 Form::load_choix_memo();
 
-if($_SESSION['USER_JOIN_GROUPES']=='all') // Directeurs et CPE, ces derniers ayant un 'USER_PROFIL_TYPE' à 'professeur'.
+if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $of_g = '';
 }
-else // Ne passent ici que les professeurs
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   if(test_droit_specifique_restreint($_SESSION['DROIT_VALIDATION_PILIER'],'ONLY_PP'))
   {
@@ -54,7 +54,7 @@ else // Ne passent ici que les professeurs
   }
   else
   {
-    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
     $of_g = '';
   }
 }

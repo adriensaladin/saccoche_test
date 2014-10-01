@@ -189,7 +189,7 @@ if($connexion_mode=='cas')
           {
             if (is_scalar($arg))
             {
-              $args_aff[] = str_replace(CHEMIN_DOSSIER_SACOCHE,'',$arg);
+              $args_aff[] = $arg;
             }
             elseif (is_array($arg))
             {
@@ -223,7 +223,7 @@ if($connexion_mode=='cas')
       // file
       if (isset($trace['file']))
       {
-        $str_traces .= ' dans '.str_replace(CHEMIN_DOSSIER_SACOCHE,'',$trace['file']);
+        $str_traces .= ' dans '.$trace['file'];
         unset($trace['file']);
       }
       // type
@@ -259,12 +259,6 @@ if($connexion_mode=='cas')
   }
   try
   {
-    // Pour la méthode error() de phpCAS qui comporte un echo
-    ob_start();
-    // Appeler getVersion() est juste une ruse pour charger l'autoload de phpCAS avant l'appel client()
-    phpCAS::getVersion();
-    // Maintenant que l'autoload est chargé on peut appeler cette méthode avant l'appel client()
-    CAS_GracefullTerminationException::throwInsteadOfExiting();
     // Si besoin, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
     if(DEBUG_PHPCAS)
     {
@@ -312,13 +306,9 @@ if($connexion_mode=='cas')
     // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
     // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
     $id_ENT = phpCAS::getUser();
-    // Pour mettre fin au ob_start() ; cas 1/2 où il n'y a pas eu d'erreur.
-    ob_end_clean();
   }
-  catch(CAS_Exception $e)
+  catch(Exception $e)
   {
-    // Pour mettre fin au ob_start() ; cas 2/2 où il y a eu une erreur.
-    ob_end_clean();
     // @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
     $msg_log = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
     $msg_log .= $e->getMessage();

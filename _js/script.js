@@ -828,62 +828,6 @@ jQuery.validator.addMethod
 ); 
 
 /**
- * Ajout d'une alerte dans le DOM sans jQuery.
- * Utilisé par les deux tests qui suivent cette fonction.
- */
-function ajout_alerte(texte)
-{
-  // Contenu
-  var paragraphe = document.createElement('div');
-  paragraphe.setAttribute('class', 'probleme');
-  paragraphe.innerHTML = texte;
-  // Emplacement
-  var endroit = false;
-  if( document.getElementById('titre_logo') !== null )
-  {
-    endroit = document.getElementById('titre_logo');
-  }
-  else if( document.getElementsByTagName('h1').length )
-  {
-    endroit = document.getElementsByTagName('h1').item(0);
-  }
-  // Insertion
-  if(endroit)
-  {
-    // Il n'existe pas de méthode insertAfter pour insérer un nœud après un autre, cependant on peut l'émuler avec une combinaison de insertBefore et nextSibling.
-    // @see https://developer.mozilla.org/fr/docs/DOM/element.insertBefore
-    endroit.parentNode.insertBefore( paragraphe , endroit.nextSibling );
-  }
-}
-
-/**
- * Alerte si usage frame / iframe
- * Écrit sans nécessiter jQuery car l'ENT d'Itop fait planter la bibliothèque sous IE (SACoche mis dans un iframe lui-même imbriqué récursivement dans 4 tableaux et 5 div, avec des scripts en pagaille).
- */
-if(top.frames.length!=0)
-{
-  ajout_alerte('L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> est inapproprié et peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a>');
-}
-
-/**
- * Alerte si non acceptation des cookies
- * Peut se tester directement en javascript (éxécuté par le client) alors qu'en PHP il faut recharger une page (info envoyée au serveur dans les en-têtes)
- */
-if(typeof(navigator.cookieEnabled)!="undefined")
-{
-  var accepteCookies = (navigator.cookieEnabled) ? true : false ;
-}
-else
-{
-  document.cookie = "test";
-  var accepteCookies = (document.cookie.indexOf("test") != -1) ? true : false ;
-}
-if(!accepteCookies)
-{
-  ajout_alerte('Pour utiliser <em>SACoche</em> vous devez configurer l\'acceptation des cookies par votre navigateur.');
-}
-
-/**
  * jQuery !
  */
 $(document).ready
@@ -895,6 +839,34 @@ $(document).ready
      * Initialisation
      */
     infobulle();
+
+    /**
+     * Alerte si usage frame / iframe
+     */
+    if(top.frames.length!=0)
+    {
+      var endroit = ($('#titre_logo').length) ? '#titre_logo' : 'h1' ;
+      $(endroit).after('<div class="probleme">L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> est inapproprié et peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a></div>');
+    }
+
+    /**
+     * Alerte si non acceptation des cookies
+     * Peut se tester directement en javascript (éxécuté par le client) alors qu'en PHP il faut recharger une page (info envoyée au serveur dans les en-têtes)
+     */
+    if(typeof(navigator.cookieEnabled)!="undefined")
+    {
+      var accepteCookies = (navigator.cookieEnabled) ? true : false ;
+    }
+    else
+    {
+      document.cookie = "test";
+      var accepteCookies = (document.cookie.indexOf("test") != -1) ? true : false ;
+    }
+    if(!accepteCookies)
+    {
+      var endroit = ($('#titre_logo').length) ? '#titre_logo' : 'h1' ;
+      $(endroit).after('<div class="probleme">Pour utiliser <em>SACoche</em> vous devez configurer l\'acceptation des cookies par votre navigateur.</div>');
+    }
 
     /**
      * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle

@@ -38,13 +38,20 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specif
 
 // Formulaire de choix d'une période (utilisé deux fois)
 // Formulaire des classes
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_JOIN_GROUPES']=='all') ) // Ce dernier test laisse par exemple passer les directeurs et les CPE, ces derniers ayant un 'USER_PROFIL_TYPE' à 'professeur'.
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') )
 {
   $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/);
 }
-else // Ne passent ici que les professeurs
+elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-  $tab_groupes = (test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP')) ? DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) ;
+  if(test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP'))
+  {
+    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
+  }
+  else
+  {
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/) ;
+  }
 }
 
 $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);

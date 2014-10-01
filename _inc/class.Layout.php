@@ -167,7 +167,7 @@ class Layout
     $string.= '<meta name="msapplication-wide310x150logo"   content="/_img/favicon/microsoft-tile-wide-310x150.png" />'.NL;
     $string.= '<link rel="icon" type="image/png" href="./favicon.png" />'.NL;
     $string.= '<link rel="shortcut icon"  type="images/x-icon" href="./_img/favicon/favicon.ico" />'.NL;
-    $string.= '<link rel="apple-touch-icon-precomposed"     href="./_img/apple-touch-icon-114x114.png" />'.NL;
+    $string.= '<link rel="apple-touch-icon-precomposed"     href="./_img/favicon/apple-touch-icon-114x114.png" />'.NL;
     $string.= '<link rel="apple-touch-icon" sizes="57x57"   href="./_img/favicon/apple-touch-icon-57x57.png" />'.NL;
     $string.= '<link rel="apple-touch-icon" sizes="114x114" href="./_img/favicon/apple-touch-icon-114x114.png" />'.NL;
     $string.= '<link rel="apple-touch-icon" sizes="72x72"   href="./_img/favicon/apple-touch-icon-72x72.png" />'.NL;

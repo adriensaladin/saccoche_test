@@ -177,16 +177,16 @@ public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
  */
 public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
 {
-  $select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
-  $join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
-  $join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
-  $where_user        = ($prof_id)    ? 'AND user_id=:user_id ' : '' ;
-  $where_matiere     = ($matiere_id) ? 'AND matiere_id=:matiere_id ' : '' ;
-  $where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
-  $where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
-  $where_socle       = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
-  $order_matiere     = ($matiere_id) ? 'matiere_nom ASC, ' : '' ;
-  $order_niveau      = (!$niveau_id) ? 'niveau_ordre ASC, ' : '' ;
+  $select_socle_nom  = ($socle_nom)   ? 'entree_id,entree_nom ' : 'entree_id ' ;
+  $join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
+  $join_socle_item   = ($socle_nom)   ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
+  $where_user        = ($prof_id)     ? 'AND user_id=:user_id ' : '' ;
+  $where_matiere     = ($matiere_id)  ? 'AND matiere_id=:matiere_id ' : '' ;
+  $where_niveau      = ($niveau_id)   ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
+  $where_item        = ($only_item)   ? 'AND item_id IS NOT NULL ' : '' ;
+  $where_socle       = ($only_socle)  ? 'AND entree_id !=0 ' : '' ;
+  $order_matiere     = (!$matiere_id) ? 'matiere_nom ASC, '  : '' ;
+  $order_niveau      = (!$niveau_id)  ? 'niveau_ordre ASC, ' : '' ;
   $DB_SQL = 'SELECT ';
   $DB_SQL.= 'matiere_id, matiere_ref, matiere_nom, ';
   $DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';

@@ -227,6 +227,7 @@ $nb_syntheses_total = 0 ;
 // Pour chaque élève...
 if(empty($is_appreciation_groupe))
 {
+  $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // Si cet élève a été évalué...
@@ -259,7 +260,8 @@ if(empty($is_appreciation_groupe))
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
             $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
+            $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
+            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
           }
         }
       }

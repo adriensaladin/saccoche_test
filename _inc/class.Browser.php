@@ -33,7 +33,7 @@ define(  'CHROME_VERSION_LAST'           ,37  ); define(  'CHROME_URL_DOWNLOAD' 
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3.5); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3.5 minimum (sortie en 2009).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4  );
-define( 'FIREFOX_VERSION_LAST'           ,32  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'https://www.mozilla.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,32  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );

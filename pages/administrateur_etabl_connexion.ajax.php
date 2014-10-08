@@ -309,10 +309,10 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $contrat_PDF->SetXY(90,211);
     $contrat_PDF->CellFit( 100 , $hauteur_ligne , To::pdf(convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // date création
-    $contrat_PDF->SetXY(121,232);
+    $contrat_PDF->SetXY(121,226.5);
     $contrat_PDF->CellFit( 80 , $hauteur_ligne , To::pdf(convert_date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     // signature
-    $contrat_PDF->Image( CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_signature.png' , 30 /*x*/ , 250 /*y*/ , 200*0.25 /*largeur*/ , 120*0.25 /*hauteur*/ , 'PNG' );
+    $contrat_PDF->Image( CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_signature.png' , 30 /*x*/ , 247 /*y*/ , 200*0.25 /*largeur*/ , 120*0.25 /*lomer_image_hauteur*/ , 'PNG' );
     // ajouter une page ; y importer la page 2 ; l'utiliser comme support
     $contrat_PDF->AddPage();
     $tplIdx = $contrat_PDF->importPage(2);

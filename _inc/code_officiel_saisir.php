@@ -349,6 +349,7 @@ if($BILAN_TYPE=='releve')
   $matiere_nom              = '';
   $groupe_id                = $groupe_id;  // Le groupe   = la classe (par défaut) ou le groupe transmis
   $groupe_nom               = $groupe_nom; // Déjà défini avant car on en avait besoin
+  $groupe_type              = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $date_debut               = '';
   $date_fin                 = '';
   $retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
@@ -368,6 +369,7 @@ if($BILAN_TYPE=='releve')
   $pages_nb                 = $_SESSION['OFFICIEL']['RELEVE_PAGES_NB'];
   $cases_nb                 = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
   $cases_largeur            = 5; // pas jugé utile de le mettre en option...
+  $eleves_ordre             = 'alpha';
   $highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
   $tab_eleve                = array($eleve_id); // tableau de l'unique élève à considérer
   $liste_eleve              = (string)$eleve_id;
@@ -384,6 +386,7 @@ elseif($BILAN_TYPE=='bulletin')
   $synthese_modele = 'multimatiere' ;
   $groupe_id       = $groupe_id;  // Le groupe = la classe (par défaut) ou le groupe transmis
   $groupe_nom      = $groupe_nom; // Déjà défini avant car on en avait besoin
+  $groupe_type     = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $date_debut      = '';
   $date_fin        = '';
   $retroactif      = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
@@ -401,6 +404,7 @@ elseif($BILAN_TYPE=='bulletin')
   $marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
   $marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
   $marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
+  $eleves_ordre    = 'alpha';
   $tab_eleve       = array($eleve_id); // tableau de l'unique élève à considérer
   $liste_eleve     = (string)$eleve_id;
   $tab_matiere_id  = $tab_matiere_id;
@@ -416,6 +420,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
   $groupe_id      = $groupe_id;  // Le groupe = la classe (par défaut) ou le groupe transmis
   $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin
+  $groupe_type    = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $mode           = 'auto';
   $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
   $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
@@ -427,6 +432,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
   $marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
   $marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
   $marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
+  $eleves_ordre   = 'alpha';
   $tab_pilier_id  = $tab_pilier_id;
   $tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
   $tab_matiere_id = array();

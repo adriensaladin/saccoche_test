@@ -35,6 +35,11 @@ class Form
   // Tableaux prédéfinis
   // //////////////////////////////////////////////////
 
+  public static $tab_select_eleves_ordre = array(
+    array('valeur' => 'alpha'  , 'texte' => 'ordonnés alphabétiquement') ,
+    array('valeur' => 'classe' , 'texte' => 'ordonnés par classe d\'origine') ,
+  );
+
   public static $tab_select_individuel_format = array(
     array('valeur' => 'eleve' , 'texte' => 'présenté par élève') ,
     array('valeur' => 'item'  , 'texte' => 'présenté par item') ,
@@ -267,51 +272,52 @@ class Form
     $check_conversion_sur_20  = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20']) ? 1 : 0 ;
     $check_aff_lien           = (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ? 1 : 0 ;
     Form::$tab_choix = array(
-      'matiere_id'                => 0 ,
-      'niveau_id'                 => 0 ,
-      'palier_id'                 => 0 ,
-      'orientation'               => 'portrait' ,
-      'couleur'                   => 'oui' ,
-      'legende'                   => 'oui' , 
-      'marge_min'                 => 5 ,
-      'pages_nb'                  => 'optimise' ,
-      'cart_detail'               => 'complet' ,
-      'cart_cases_nb'             => 1 ,
-      'cart_contenu'              => 'AVEC_nom_SANS_result' ,
-      'only_niveau'               => 0 ,
-      'only_presence'             => 0 ,
-      'only_socle'                => 0 ,
-      'aff_coef'                  => 0 ,
-      'aff_socle'                 => 1 ,
-      'aff_lien'                  => $check_aff_lien ,
-      'aff_start'                 => 0 ,
-      'aff_domaine'               => 0 ,
-      'aff_theme'                 => 0 ,
-      'cases_nb'                  => 4 ,
-      'cases_largeur'             => 5 ,
-      'remplissage'               => 'plein' ,
-      'colonne_bilan'             => 'oui' ,
-      'colonne_vide'              => 0 ,
-      'type_generique'            => 0 ,
-      'type_individuel'           => $check_type_individuel ,
-      'type_synthese'             => 0 ,
-      'type_bulletin'             => 0 ,
-      'releve_individuel_format'  => 'eleve',
-      'aff_etat_acquisition'      => $check_etat_acquisition ,
-      'aff_moyenne_scores'        => $check_moyenne_score ,
-      'aff_pourcentage_acquis'    => $check_pourcentage_acquis ,
-      'conversion_sur_20'         => $check_conversion_sur_20 ,
-      'indicateur'                => 'moyenne_scores' ,
-      'tableau_synthese_format'   => 'eleve',
-      'tableau_tri_mode'          => 'score',
-      'with_coef'                 => 1 ,
-      'retroactif'                => 'auto' ,
-      'mode_synthese'             => 'predefini' ,
-      'fusion_niveaux'            => 1 ,
-      'aff_socle_PA'              => 1 ,
-      'aff_socle_EV'              => 1 ,
-      'type'                      => '' ,
-      'mode'                      => 'auto' ,
+      'eleves_ordre'             => 'alpha' ,
+      'matiere_id'               => 0 ,
+      'niveau_id'                => 0 ,
+      'palier_id'                => 0 ,
+      'orientation'              => 'portrait' ,
+      'couleur'                  => 'oui' ,
+      'legende'                  => 'oui' , 
+      'marge_min'                => 5 ,
+      'pages_nb'                 => 'optimise' ,
+      'cart_detail'              => 'complet' ,
+      'cart_cases_nb'            => 1 ,
+      'cart_contenu'             => 'AVEC_nom_SANS_result' ,
+      'only_niveau'              => 0 ,
+      'only_presence'            => 0 ,
+      'only_socle'               => 0 ,
+      'aff_coef'                 => 0 ,
+      'aff_socle'                => 1 ,
+      'aff_lien'                 => $check_aff_lien ,
+      'aff_start'                => 0 ,
+      'aff_domaine'              => 0 ,
+      'aff_theme'                => 0 ,
+      'cases_nb'                 => 4 ,
+      'cases_largeur'            => 5 ,
+      'remplissage'              => 'plein' ,
+      'colonne_bilan'            => 'oui' ,
+      'colonne_vide'             => 0 ,
+      'type_generique'           => 0 ,
+      'type_individuel'          => $check_type_individuel ,
+      'type_synthese'            => 0 ,
+      'type_bulletin'            => 0 ,
+      'releve_individuel_format' => 'eleve',
+      'aff_etat_acquisition'     => $check_etat_acquisition ,
+      'aff_moyenne_scores'       => $check_moyenne_score ,
+      'aff_pourcentage_acquis'   => $check_pourcentage_acquis ,
+      'conversion_sur_20'        => $check_conversion_sur_20 ,
+      'indicateur'               => 'moyenne_scores' ,
+      'tableau_synthese_format'  => 'eleve',
+      'tableau_tri_mode'         => 'score',
+      'with_coef'                => 1 ,
+      'retroactif'               => 'auto' ,
+      'mode_synthese'            => 'predefini' ,
+      'fusion_niveaux'           => 1 ,
+      'aff_socle_PA'             => 1 ,
+      'aff_socle_EV'             => 1 ,
+      'type'                     => '' ,
+      'mode'                     => 'auto' ,
     );
   }
 
@@ -356,43 +362,51 @@ class Form
         $tab_choix_new = compact('orientation','couleur','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu');
         break;
       case 'grille_referentiel' :
-        global $matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_synthese_format,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('matiere_id','niveau_id','type_generique','type_individuel','type_synthese','retroactif','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','legende','marge_min','pages_nb');
+        global $eleves_ordre,$matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_synthese_format,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','matiere_id','niveau_id','type_generique','type_individuel','type_synthese','retroactif','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_matiere' :
-        global $matiere_id,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('matiere_id','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $eleves_ordre,$matiere_id,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','matiere_id','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_selection' :
-        global $type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$with_coef,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','with_coef','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $eleves_ordre,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$with_coef,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','with_coef','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_professeur' :
-        global $type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$with_coef,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','with_coef','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $eleves_ordre,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$with_coef,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','with_coef','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'items_multimatiere' :
-        global $releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+        global $eleves_ordre,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
         break;
       case 'bilan_chronologique' :
-        global $indicateur,$conversion_sur_20,$retroactif,$only_socle;
-        $tab_choix_new = compact('indicateur','conversion_sur_20','retroactif','only_socle');
+        global $eleves_ordre,$indicateur,$conversion_sur_20,$retroactif,$only_socle;
+        $tab_choix_new = compact('eleves_ordre','indicateur','conversion_sur_20','retroactif','only_socle');
         break;
       case 'synthese_matiere' :
-        global $matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
+        global $eleves_ordre,$matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('eleves_ordre','matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
         break;
       case 'synthese_multimatiere' :
-        global $fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
+        global $eleves_ordre,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('eleves_ordre','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','legende','marge_min');
         break;
       case 'releve_socle' :
-        global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_start','aff_socle_PA','aff_socle_EV','mode','couleur','legende','marge_min');
-      case 'synthese_socle' :
-        global $palier_id,$type,$mode,$couleur,$legende,$marge_min;
-        $tab_choix_new = compact('palier_id','type','mode','couleur','legende','marge_min');
+        global $eleves_ordre,$palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('eleves_ordre','palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_start','aff_socle_PA','aff_socle_EV','mode','couleur','legende','marge_min');
+      case 'releve_synthese_socle' :
+        global $eleves_ordre,$palier_id,$type,$mode,$couleur,$legende,$marge_min;
+        $tab_choix_new = compact('eleves_ordre','palier_id','type','mode','couleur','legende','marge_min');
+        break;
+      case 'validation_socle_item' :
+        global $eleves_ordre,$palier_id,$mode;
+        $tab_choix_new = compact('eleves_ordre','palier_id','mode');
+        break;
+      case 'validation_socle_pilier' :
+        global $eleves_ordre,$palier_id;
+        $tab_choix_new = compact('eleves_ordre','palier_id');
         break;
       case 'matiere' :
         global $matiere_id;
@@ -401,10 +415,6 @@ class Form
       case 'palier' :
         global $palier_id;
         $tab_choix_new = compact('palier_id');
-        break;
-      case 'validation_socle_item' :
-        global $palier_id,$mode;
-        $tab_choix_new = compact('palier_id','mode');
         break;
       default :
         $tab_choix_new = array();

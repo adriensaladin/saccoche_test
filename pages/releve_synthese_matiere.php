@@ -90,12 +90,13 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe    = Form::afficher_select($tab_groupes                , 'f_groupe'    /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                         /*selection*/ , 'regroupements' /*optgroup*/);
-$select_matiere   = Form::afficher_select($tab_matieres               , 'f_matiere'   /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id'] /*selection*/ ,              '' /*optgroup*/);
-$select_periode   = Form::afficher_select($tab_periodes               , 'f_periode'   /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                          /*selection*/ ,              '' /*optgroup*/);
-$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , 'f_marge_min' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']  /*selection*/ ,              '' /*optgroup*/);
-$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_couleur'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']    /*selection*/ ,              '' /*optgroup*/);
-$select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']    /*selection*/ ,              '' /*optgroup*/);
+$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
+$select_matiere      = Form::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']   /*selection*/ ,              '' /*optgroup*/);
+$select_periode      = Form::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ ,              '' /*optgroup*/);
+$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , 'f_couleur'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ ,              '' /*optgroup*/);
+$select_legende      = Form::afficher_select(Form::$tab_select_legende      , 'f_legende'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']      /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql  = "'.TODAY_MYSQL.'";' );
@@ -118,7 +119,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 
 <form action="#" method="post" id="form_select"><fieldset>
   <p class="<?php echo $class_form_eleve ?>">
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">

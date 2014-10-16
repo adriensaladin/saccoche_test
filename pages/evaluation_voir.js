@@ -30,6 +30,13 @@ $(document).ready
   function()
   {
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var groupe_id   = 0;
+    var groupe_type = '';
+
     // tri des tableaux (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},3:{sorter:false},4:{sorter:false}} });
     $('#table_voir'  ).tablesorter({ headers:{} });
@@ -51,7 +58,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=0',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre=alpha'+'&f_statut=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -83,7 +90,7 @@ $(document).ready
         $("#f_eleve").html('<option value=""></option>').parent().hide();
         $('#ajax_msg').removeAttr("class").html('');
         $('#zone_eval_choix').hide();
-        var groupe_id = $("#f_groupe option:selected").val();
+        groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
           groupe_type = $("#f_groupe option:selected").parent().attr('label');

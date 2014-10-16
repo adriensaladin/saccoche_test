@@ -170,6 +170,7 @@ if($BILAN_TYPE=='releve')
   $matiere_nom              = '';
   $groupe_id                = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe   = la classe (par défaut) ou le groupe transmis
   $groupe_nom               = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_type              = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $date_debut               = '';
   $date_fin                 = '';
   $retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
@@ -177,6 +178,7 @@ if($BILAN_TYPE=='releve')
   $aff_domaine              = 0;
   $aff_theme                = 0;
   $legende                  = 0;
+  $eleves_ordre             = 'alpha';
   $tab_eleve                = $tab_eleve_id;
   $liste_eleve              = $liste_eleve_id;
   $tab_type[]               = 'individuel';
@@ -191,6 +193,7 @@ elseif($BILAN_TYPE=='bulletin')
   $synthese_modele = 'multimatiere' ;
   $groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
   $groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_type     = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $date_debut      = '';
   $date_fin        = '';
   $retroactif      = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
@@ -199,6 +202,7 @@ elseif($BILAN_TYPE=='bulletin')
   $only_socle      = $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'];
   $only_niveau     = 0; // pas jugé utile de le mettre en option...
   $legende         = 0;
+  $eleves_ordre    = 'alpha';
   $tab_eleve       = $tab_eleve_id;
   $liste_eleve     = $liste_eleve_id;
   $tab_matiere_id  = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
@@ -206,18 +210,20 @@ elseif($BILAN_TYPE=='bulletin')
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 {
-  $palier_id       = (int)substr($BILAN_TYPE,-1);
-  $palier_nom      = 'Palier '.$palier_id;
-  $only_presence   = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
-  $aff_socle_PA    = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
-  $aff_socle_EV    = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
-  $groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-  $mode            = 'auto';
-  $legende         = 0;
-  $tab_pilier_id   = $tab_pilier_id; // Pas $tab_rubrique_id car il ne faut pas juste restreindre à la liste des rubriques dont on souhaite vérifier l'appréciation afin de récupérer les bilans de tous les élèves concernés.
-  $tab_eleve_id    = $tab_eleve_id;
-  $tab_matiere_id  = array();
+  $palier_id      = (int)substr($BILAN_TYPE,-1);
+  $palier_nom     = 'Palier '.$palier_id;
+  $only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
+  $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
+  $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
+  $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_type    = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
+  $mode           = 'auto';
+  $legende        = 0;
+  $eleves_ordre   = 'alpha';
+  $tab_pilier_id  = $tab_pilier_id; // Pas $tab_rubrique_id car il ne faut pas juste restreindre à la liste des rubriques dont on souhaite vérifier l'appréciation afin de récupérer les bilans de tous les élèves concernés.
+  $tab_eleve_id   = $tab_eleve_id;
+  $tab_matiere_id = array();
   require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
 }
 

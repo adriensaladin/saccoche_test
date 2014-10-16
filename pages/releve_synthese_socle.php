@@ -53,12 +53,13 @@ $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
-$select_matiere   = Form::afficher_select($tab_matieres               , 'f_matiere'   /*select_nom*/ , FALSE /*option_first*/ , TRUE                          /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
-$select_palier    = Form::afficher_select($tab_paliers                , 'f_palier'    /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id'] /*selection*/ ,              '' /*optgroup*/);
-$select_groupe    = Form::afficher_select($tab_groupes                , 'f_groupe'    /*select_nom*/ ,    '' /*option_first*/ , FALSE                         /*selection*/ , 'regroupements' /*optgroup*/);
-$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , 'f_marge_min' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min'] /*selection*/ ,              '' /*optgroup*/);
-$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , 'f_couleur'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']   /*selection*/ ,              '' /*optgroup*/);
-$select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legende'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']   /*selection*/ ,              '' /*optgroup*/);
+$select_matiere      = Form::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ , FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
+$select_palier       = Form::afficher_select($tab_paliers                   , 'f_palier'       /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']    /*selection*/ ,              '' /*optgroup*/);
+$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,    '' /*option_first*/ , FALSE                            /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ ,              '' /*optgroup*/);
+$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , 'f_couleur'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ ,              '' /*optgroup*/);
+$select_legende      = Form::afficher_select(Form::$tab_select_legende      , 'f_legende'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']      /*selection*/ ,              '' /*optgroup*/);
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_socle">DOC : Synthèse de maîtrise du socle.</a></span></div>
@@ -74,7 +75,7 @@ $select_legende   = Form::afficher_select(Form::$tab_select_legende   , 'f_legen
     <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
     <label class="tab" for="f_pilier">Compétence(s) :</label><span id="f_pilier" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>
   </p>
-  <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
+  <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj_eleve">&nbsp;</label><br />
   <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

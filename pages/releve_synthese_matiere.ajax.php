@@ -37,6 +37,7 @@ $matiere_id      = (isset($_POST['f_matiere']))            ? Clean::entier($_POS
 $matiere_nom     = (isset($_POST['f_matiere_nom']))        ? Clean::texte($_POST['f_matiere_nom'])            : '';
 $groupe_id       = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom      = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
+$groupe_type     = (isset($_POST['f_groupe_type']))        ? Clean::texte($_POST['f_groupe_type'])            : '';
 $periode_id      = (isset($_POST['f_periode']))            ? Clean::entier($_POST['f_periode'])               : 0;
 $date_debut      = (isset($_POST['f_date_debut']))         ? Clean::date_fr($_POST['f_date_debut'])           : '';
 $date_fin        = (isset($_POST['f_date_fin']))           ? Clean::date_fr($_POST['f_date_fin'])             : '';
@@ -53,13 +54,14 @@ $mode_synthese   = (isset($_POST['f_mode_synthese']))      ? Clean::texte($_POST
 $couleur         = (isset($_POST['f_couleur']))            ? Clean::texte($_POST['f_couleur'])                : '';
 $legende         = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])                : '';
 $marge_min       = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])             : 0;
+$eleves_ordre    = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende || !$marge_min )
+if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

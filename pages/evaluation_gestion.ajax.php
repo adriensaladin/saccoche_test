@@ -1383,7 +1383,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
           $sacoche_csv .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
           $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
-          $sacoche_tex .= ' & & '.$cols_tex."\r\n".'\hline'."\r\n";
+          $sacoche_tex .= ' & & '.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
         }
         $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)

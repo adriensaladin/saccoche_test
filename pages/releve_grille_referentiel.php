@@ -104,6 +104,7 @@ $select_colonne_bilan   = Form::afficher_select(Form::$tab_select_colonne_bilan 
 $select_colonne_vide    = Form::afficher_select(Form::$tab_select_colonne_vide    , 'f_colonne_vide'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_vide']            /*selection*/ ,              '' /*optgroup*/);
 $select_matiere         = Form::afficher_select($tab_matieres                     , 'f_matiere'         /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']              /*selection*/ ,              '' /*optgroup*/);
 $select_groupe          = Form::afficher_select($tab_groupes                      , 'f_groupe'          /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                      /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleves_ordre    = Form::afficher_select(Form::$tab_select_eleves_ordre    , 'f_eleves_ordre'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']            /*selection*/ ,              '' /*optgroup*/);
 $select_periode         = Form::afficher_select($tab_periodes                     , 'f_periode'         /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                       /*selection*/ ,              '' /*optgroup*/);
 $select_orientation     = Form::afficher_select(Form::$tab_select_orientation     , 'f_orientation'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']             /*selection*/ ,              '' /*optgroup*/);
 $select_marge_min       = Form::afficher_select(Form::$tab_select_marge_min       , 'f_marge_min'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']               /*selection*/ ,              '' /*optgroup*/);
@@ -170,7 +171,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
   <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><label id="ajax_maj_matiere">&nbsp;</label><br />
   <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option></option></select><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" />
   <p id="generique_non_3" class="<?php echo $class_form_eleve ?>">
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj_groupe">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj_groupe">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">

@@ -115,9 +115,10 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE   /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
-$select_periode = Form::afficher_select($tab_periodes , 'f_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE  /*selection*/ ,              '' /*optgroup*/);
+$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
+$select_matiere      = Form::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
+$select_periode      = Form::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
@@ -134,7 +135,7 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
     <label class="tab">Indicateur :</label><?php echo $moyenne_scores.'&nbsp;&nbsp;&nbsp;'.$pourcentage_acquis.'&nbsp;&nbsp;&nbsp;'.$conversion_sur_20 ?>
   </p>
   <p class="<?php echo $class_form_eleve ?>">
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj">&nbsp;</label><br />
     <label class="tab" for="f_eleve">Élève :</label><select id="f_eleve" name="f_eleve"><?php echo $select_eleve ?></select>
   </p>
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">

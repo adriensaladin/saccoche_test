@@ -30,9 +30,15 @@ $(document).ready
   function()
   {
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Rechercher automatiquement la meilleure période et le niveau du groupe au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-    var groupe_id   = $('#f_groupe option:selected').val();
-    var groupe_type = $("#f_groupe option:selected").parent().attr('label');
+    var groupe_id    = $('#f_groupe option:selected').val();
+    var groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+    var eleves_ordre = $("#f_eleves_ordre option:selected").val();
+
     selectionner_periode_adaptee();
     reporter_niveau_groupe();
 
@@ -194,14 +200,14 @@ $(document).ready
     // Charger le select f_eleve en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_eleve(groupe_id,groupe_type)
+    function maj_eleve(groupe_id,groupe_type,eleves_ordre)
     {
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple='+is_multiple+'&f_selection=1',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple='+is_multiple+'&f_selection=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -210,6 +216,14 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
+            if(groupe_type=='Classes')
+            {
+              $("#bloc_ordre").hide();
+            }
+            else
+            {
+              $("#bloc_ordre").show();
+            }
             if( ( is_multiple && (responseHTML.substring(0,6)=='<label') ) || ( !is_multiple && (responseHTML.substring(0,7)=='<option') ) ) // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_maj').removeAttr("class").html("&nbsp;");
@@ -230,18 +244,33 @@ $(document).ready
       {
         // Pour un directeur ou un professeur, on met à jour f_eleve
         // Pour un élève cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
-        $("#f_eleve").html('').parent().hide();
-        var groupe_id = $("#f_groupe option:selected").val();
+        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
-          groupe_type = $("#f_groupe option:selected").parent().attr('label');
+          groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+          eleves_ordre = $("#f_eleves_ordre option:selected").val();
           $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          maj_eleve(groupe_id,groupe_type);
+          maj_eleve(groupe_id,groupe_type,eleves_ordre);
         }
         else
         {
+          $("#bloc_ordre").hide();
           $('#ajax_maj').removeAttr("class").html("&nbsp;");
         }
+      }
+    );
+
+    $("#f_eleves_ordre").change
+    (
+      function()
+      {
+        groupe_id    = $("#f_groupe option:selected").val();
+        groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+        eleves_ordre = $("#f_eleves_ordre option:selected").val();
+        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
 
@@ -260,6 +289,7 @@ $(document).ready
         {
           f_groupe             : { required:true },
           'f_eleve[]'          : { required:true },
+          f_eleves_ordre       : { required:true },
           f_periode            : { required:true },
           f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
@@ -279,6 +309,7 @@ $(document).ready
         {
           f_groupe             : { required:"groupe manquant" },
           'f_eleve[]'          : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre       : { required:"ordre manquant" },
           f_periode            : { required:"période manquante" },
           f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
@@ -329,8 +360,9 @@ $(document).ready
     (
       function()
       {
-        // récupération du nom du groupe
-        $('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
+        // récupération d'éléments
+        $('#f_groupe_nom' ).val( $("#f_groupe option:selected").text() );
+        $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;
       }

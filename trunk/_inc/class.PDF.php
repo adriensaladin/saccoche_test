@@ -1633,13 +1633,13 @@ class PDF extends FPDF
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       // Période / Classe - élève
       $this->SetFont('Arial' , '' , $this->taille_police);
-      $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom.' ('.$groupe_nom.')') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
       if( ($this->releve_modele!='multimatiere') )
       {
         $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
@@ -1660,13 +1660,13 @@ class PDF extends FPDF
     // Intitulé (dont éventuellement matière) / structure
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
     // Période / Classe
     $this->SetFont('Arial' , '' , $this->taille_police);
-    $this->Cell($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($groupe_nom) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($groupe_nom) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
     $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*0.5);
   }
 
@@ -1805,7 +1805,7 @@ class PDF extends FPDF
   {
     $this->SetFont('Arial' , '' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
-    if($releve_individuel_format=='eleve') // Parce que sinon $this->reference_largeur = 0 et ça ne plait pas.à Cell().
+    if($this->releve_format=='eleve') // Parce que sinon $this->reference_largeur = 0 et ça ne plait pas.à Cell().
     {
       $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                    , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
     }

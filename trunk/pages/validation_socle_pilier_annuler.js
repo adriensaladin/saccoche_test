@@ -30,6 +30,14 @@ $(document).ready
   function()
   {
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialisation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var groupe_id    = 0;
+    var groupe_type  = '';
+    var eleves_ordre = 'alpha';
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Charger le select f_pilier en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,11 +92,12 @@ $(document).ready
 
     var maj_eleve = function()
     {
-      $("#f_eleve").html('');
+      $("#f_eleve").html('<option value=""></option>').parent().hide();
       groupe_id = $("#f_groupe option:selected").val();
       if(groupe_id)
       {
-        groupe_type = $("#f_groupe option:selected").parent().attr('label');
+        eleves_ordre = $("#f_eleves_ordre option:selected").val();
+        groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
         $('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -96,7 +105,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_eleves',
-            data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+            data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -105,6 +114,14 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
+              if(groupe_type=='Classes')
+              {
+                $("#bloc_ordre").hide();
+              }
+              else
+              {
+                $("#bloc_ordre").show();
+              }
               if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
@@ -120,11 +137,13 @@ $(document).ready
       }
       else
       {
+        $("#bloc_ordre").hide();
         $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
       }
     };
 
     $("#f_groupe").change( maj_eleve );
+    $("#f_eleves_ordre").change( maj_eleve );
 
     maj_eleve(); // Dans le cas d'un P.P.
 
@@ -141,15 +160,17 @@ $(document).ready
       {
         rules :
         {
-          'f_pilier[]' : { required:true },
-          f_groupe     : { required:true },
-          'f_eleve[]'  : { required:true }
+          'f_pilier[]'   : { required:true },
+          f_groupe       : { required:true },
+          'f_eleve[]'    : { required:true },
+          f_eleves_ordre : { required:true }
         },
         messages :
         {
-          'f_pilier[]' : { required:"compétence(s) manquante(s)" },
-          f_groupe     : { required:"classe / groupe manquant" },
-          'f_eleve[]'  : { required:"élève(s) manquant(s)" }
+          'f_pilier[]'   : { required:"compétence(s) manquante(s)" },
+          f_groupe       : { required:"classe / groupe manquant" },
+          'f_eleve[]'    : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre : { required:"ordre manquant" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -180,6 +201,8 @@ $(document).ready
     (
       function()
       {
+        // récupération d'éléments
+        $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions0);
         return false;
       }

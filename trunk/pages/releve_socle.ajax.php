@@ -28,21 +28,23 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$palier_id     = (isset($_POST['f_palier']))        ? Clean::entier($_POST['f_palier'])    : 0;
-$palier_nom    = (isset($_POST['f_palier_nom']))    ? Clean::texte($_POST['f_palier_nom']) : '';
-$only_presence = (isset($_POST['f_only_presence'])) ? 1                                   : 0;
-$aff_socle_PA  = (isset($_POST['f_socle_PA']))      ? 1                                   : 0;
-$aff_socle_EV  = (isset($_POST['f_socle_EV']))      ? 1                                   : 0;
-$groupe_id     = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])    : 0;
-$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom']) : '';
-$mode          = (isset($_POST['f_mode']))          ? Clean::texte($_POST['f_mode'])       : '';
-$aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
-$aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
-$aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
-$aff_start     = (isset($_POST['f_start']))         ? 1                                   : 0;
-$couleur       = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])    : '';
-$legende       = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])    : '';
-$marge_min     = (isset($_POST['f_marge_min']))     ? Clean::entier($_POST['f_marge_min']) : 0;
+$palier_id     = (isset($_POST['f_palier']))        ? Clean::entier($_POST['f_palier'])      : 0;
+$palier_nom    = (isset($_POST['f_palier_nom']))    ? Clean::texte($_POST['f_palier_nom'])   : '';
+$only_presence = (isset($_POST['f_only_presence'])) ? 1                                      : 0;
+$aff_socle_PA  = (isset($_POST['f_socle_PA']))      ? 1                                      : 0;
+$aff_socle_EV  = (isset($_POST['f_socle_EV']))      ? 1                                      : 0;
+$groupe_id     = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])      : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])   : '';
+$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])  : '';
+$mode          = (isset($_POST['f_mode']))          ? Clean::texte($_POST['f_mode'])         : '';
+$aff_coef      = (isset($_POST['f_coef']))          ? 1                                      : 0;
+$aff_socle     = (isset($_POST['f_socle']))         ? 1                                      : 0;
+$aff_lien      = (isset($_POST['f_lien']))          ? 1                                      : 0;
+$aff_start     = (isset($_POST['f_start']))         ? 1                                      : 0;
+$couleur       = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])      : '';
+$legende       = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])      : '';
+$marge_min     = (isset($_POST['f_marge_min']))     ? Clean::entier($_POST['f_marge_min'])   : 0;
+$eleves_ordre  = (isset($_POST['f_eleves_ordre']))  ? Clean::texte($_POST['f_eleves_ordre']) : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -64,7 +66,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
-if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende || !$marge_min )
+if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

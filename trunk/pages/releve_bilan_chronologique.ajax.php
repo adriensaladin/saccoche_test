@@ -36,12 +36,14 @@ $indicateur        = (isset($_POST['f_indicateur']))        ? Clean::texte($_POS
 $conversion_sur_20 = (isset($_POST['f_conversion_sur_20'])) ? 1                                                : 0;
 $with_coef         = 1; // Il n'y a que des courbes par matière et pas de courbe commune : on prend en compte les coefficients pour chaque courbe matière.
 $groupe_id         = (isset($_POST['f_groupe']))            ? Clean::entier($_POST['f_groupe'])                : 0;
+$groupe_type       = (isset($_POST['f_groupe_type']))       ? Clean::texte($_POST['f_groupe_type'])            : ''; // En vérité, ne sert pas ici.
 $eleve_id          = (isset($_POST['f_eleve']))             ? Clean::entier($_POST['f_eleve'])                 : 0;
 $periode_id        = (isset($_POST['f_periode']))           ? Clean::entier($_POST['f_periode'])               : 0;
 $date_debut        = (isset($_POST['f_date_debut']))        ? Clean::date_fr($_POST['f_date_debut'])           : '';
 $date_fin          = (isset($_POST['f_date_fin']))          ? Clean::date_fr($_POST['f_date_fin'])             : '';
 $retroactif        = (isset($_POST['f_retroactif']))        ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
 $only_socle        = (isset($_POST['f_restriction']))       ? 1                                                : 0;
+$eleves_ordre      = (isset($_POST['f_eleves_ordre']))      ? Clean::texte($_POST['f_eleves_ordre'])           : ''; // En vérité, ne sert pas ici.
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
@@ -62,7 +64,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $eleve_id  = $_SESSION['USER_ID'];
 }
 
-if( !in_array($indicateur,array('moyenne_scores','pourcentage_acquis')) || !$groupe_id || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !count($tab_matiere) )
+if( !in_array($indicateur,array('moyenne_scores','pourcentage_acquis')) || !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !count($tab_matiere) || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

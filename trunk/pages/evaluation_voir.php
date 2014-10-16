@@ -89,6 +89,9 @@ Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id = '.$auto_voir_devoir
 Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
 ?>
 
+<p class="astuce">Les "évaluations" sont les "blocs-conteneurs" utilisés pour renseigner les résultats <span class="u">de l'année scolaire en cours</span>.</p>
+<hr />
+
 <form action="#" method="post" id="form"><fieldset>
   <div class="<?php echo $class_form_groupe ?>">
     <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label>

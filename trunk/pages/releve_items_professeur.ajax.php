@@ -52,6 +52,7 @@ $tableau_tri_mode         = (isset($_POST['f_tri_mode']))           ? Clean::tex
 $with_coef                = (isset($_POST['f_with_coef']))          ? 1                                                : 0;
 $groupe_id                = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom               = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
+$groupe_type              = (isset($_POST['f_groupe_type']))        ? Clean::texte($_POST['f_groupe_type'])            : '';
 $matiere_id               = TRUE;
 $matiere_nom              = '';
 $periode_id               = (isset($_POST['f_periode']))            ? Clean::entier($_POST['f_periode'])               : 0;
@@ -73,6 +74,7 @@ $cases_nb                 = (isset($_POST['f_cases_nb']))           ? Clean::ent
 $cases_largeur            = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg'])            : 0;
 $prof_id                  = (isset($_POST['f_prof']))               ? Clean::entier($_POST['f_prof'])                  : 0;
 $prof_nom                 = (isset($_POST['f_prof_nom']))           ? Clean::texte($_POST['f_prof_nom'])               : '';
+$eleves_ordre             = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 $highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
@@ -106,7 +108,7 @@ $type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve = implode(',',$tab_eleve);
 
-if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) || !$prof_id )
+if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$prof_id || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

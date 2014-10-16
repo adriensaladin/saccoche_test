@@ -35,8 +35,8 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var groupe_id    = 0;
-    var groupe_type  = '';
-    var eleves_ordre = 'alpha';
+    var groupe_type  = $("#f_groupe option:selected").parent().attr('label'); // Il faut indiquer une valeur initiale au moins pour le profil élève
+    var eleves_ordre = '';
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Enlever le message ajax et le résultat précédent au changement d'un élément de formulaire

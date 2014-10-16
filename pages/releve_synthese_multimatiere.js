@@ -36,8 +36,8 @@ $(document).ready
 
     // Rechercher automatiquement la meilleure période et le niveau du groupe au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
     var groupe_id    = $('#f_groupe option:selected').val();
-    var groupe_type  = $("#f_groupe option:selected").parent().attr('label'); // Il faut indiquer une valeur initiale au moins pour le profil élève
-    var eleves_ordre = '';
+    var groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+    var eleves_ordre = $("#f_eleves_ordre option:selected").val();
 
     selectionner_periode_adaptee();
     reporter_niveau_groupe();

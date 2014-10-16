@@ -65,10 +65,9 @@ $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
-$select_palier       = Form::afficher_select($tab_paliers                   , 'f_palier'       /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']    /*selection*/ ,              '' /*optgroup*/);
-$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ , $of_g /*option_first*/ , FALSE                            /*selection*/ , 'regroupements' /*optgroup*/);
-$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
-$select_matiere      = Form::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ , FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
+$select_palier  = Form::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id'] /*selection*/ ,              '' /*optgroup*/);
+$select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , $of_g /*option_first*/ , FALSE                         /*selection*/ , 'regroupements' /*optgroup*/);
+$select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , FALSE /*option_first*/ , TRUE                          /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var seuil_R = parseInt("'.$_SESSION['CALCUL_SEUIL']['R'].'",10);' );
@@ -88,7 +87,7 @@ Layout::add( 'js_inline_before' , 'var seuil_V = parseInt("'.$_SESSION['CALCUL_S
     <span id="bloc_domaine" class="hide"><label class="tab" for="f_domaine">Domaine(s) :</label><span id="f_domaine" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   </p>
   <p>
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj_eleve">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   </p>
   <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>

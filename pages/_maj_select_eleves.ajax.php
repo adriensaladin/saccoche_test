@@ -35,17 +35,7 @@ $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe
 
 // Le code n'est pas exactement le même pour un administrateur que pour un professeur / directeur / parent.
 
-$tab_types = array(
-    'd' => 'Divers' ,
-    'n' => 'niveau' ,
-    'c' => 'classe' ,
-    'g' => 'groupe' ,
-    'b' => 'besoin' ,
-  ) + array(
-    'Classes' => 'classe' ,
-    'Groupes' => 'groupe' ,
-    'Besoins' => 'besoin' ,
-  ) ;
+$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin') + array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe') ;
 
 if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {
@@ -59,19 +49,17 @@ if($groupe_type=='Divers')
 
 // Autres valeurs à récupérer ou à définir.
 
-$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : 'alpha' ;
-$statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_statut'])      : 0 ;
-$select_nom   = (isset($_POST['f_nom']))          ? Clean::texte($_POST['f_nom'])          : 'f_eleve' ;
-$multiple     = (empty($_POST['f_multiple']))     ? FALSE                                  : TRUE ;
-$selection    = (empty($_POST['f_selection']))    ? FALSE                                  : ( ($_POST['f_selection']==1) ? TRUE : explode(',',$_POST['f_selection']) ) ;
+$statut       = (isset($_POST['f_statut']))    ? Clean::entier($_POST['f_statut']) : 0;
+$select_nom   = (isset($_POST['f_nom']))       ? Clean::texte($_POST['f_nom'])     : 'f_eleve';
+$multiple     = (empty($_POST['f_multiple']))  ? FALSE                             : TRUE ;
+$selection    = (empty($_POST['f_selection'])) ? FALSE                             : ( ($_POST['f_selection']==1) ? TRUE : explode(',',$_POST['f_selection']) ) ;
 
-$eleves_ordre = (($groupe_type=='groupe')||($groupe_type=='besoin')) ? $eleves_ordre : 'alpha' ;
 $select_nom   = ($multiple) ? $select_nom : FALSE ;
 $option_first = ($multiple) ? FALSE       : ''    ;
 $selection    = ($multiple) ? $selection  : FALSE ;
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

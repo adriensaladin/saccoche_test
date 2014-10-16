@@ -28,17 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$type           = (isset($_POST['f_type']))         ? Clean::texte($_POST['f_type'])         : '';
-$mode           = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$palier_id      = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])      : 0;
-$palier_nom     = (isset($_POST['f_palier_nom']))   ? Clean::texte($_POST['f_palier_nom'])   : '';
-$groupe_id      = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
-$groupe_nom     = (isset($_POST['f_groupe_nom']))   ? Clean::texte($_POST['f_groupe_nom'])   : '';
-$groupe_type    = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
-$couleur        = (isset($_POST['f_couleur']))      ? Clean::texte($_POST['f_couleur'])      : '';
-$legende        = (isset($_POST['f_legende']))      ? Clean::texte($_POST['f_legende'])      : '';
-$marge_min      = (isset($_POST['f_marge_min']))    ? Clean::entier($_POST['f_marge_min'])   : 0;
-$eleves_ordre   = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
+$type          = (isset($_POST['f_type']))       ? Clean::texte($_POST['f_type'])       : '';
+$mode          = (isset($_POST['f_mode']))       ? Clean::texte($_POST['f_mode'])       : '';
+$palier_id     = (isset($_POST['f_palier']))     ? Clean::entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom'])) ? Clean::texte($_POST['f_palier_nom']) : '';
+$groupe_id     = (isset($_POST['f_groupe']))     ? Clean::entier($_POST['f_groupe'])    : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? Clean::texte($_POST['f_groupe_nom']) : '';
+$couleur       = (isset($_POST['f_couleur']))    ? Clean::texte($_POST['f_couleur'])    : '';
+$legende       = (isset($_POST['f_legende']))    ? Clean::texte($_POST['f_legende'])    : '';
+$marge_min     = (isset($_POST['f_marge_min']))  ? Clean::entier($_POST['f_marge_min']) : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -50,12 +48,12 @@ $tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' )
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( !$palier_id || !$palier_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) || !count($tab_pilier_id) || !in_array($type,array('pourcentage','validation')) || !in_array($mode,array('auto','manuel')) || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende || !$marge_min )
 {
   exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('releve_synthese_socle');
+Form::save_choix('synthese_socle');
 
 Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
@@ -112,8 +110,7 @@ $listing_entree_id = implode(',',$tab_entree_id);
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des résultats [type "pourcentage" uniquement]

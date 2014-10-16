@@ -34,15 +34,7 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var matiere_id   = 0;
-    var groupe_id    = 0;
-    var groupe_type  = '';
-    var eleves_ordre = 'alpha';
-
     $("#f_eleve").hide();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +257,11 @@ $(document).ready
     // Charger les selects f_eleve (pour le professeur et le directeur et les parents de plusieurs enfants) et f_matiere (pour le directeur) en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_matiere(groupe_id,matiere_id,eleves_ordre) // Uniquement pour un directeur
+    var matiere_id  = 0;
+    var groupe_id   = 0;
+    var groupe_type = '';
+
+    function maj_matiere(groupe_id,matiere_id) // Uniquement pour un directeur
     {
       $.ajax
       (
@@ -284,7 +280,7 @@ $(document).ready
             if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#f_matiere').html(responseHTML);
-              maj_eleve(groupe_id,groupe_type,eleves_ordre);
+              maj_eleve(groupe_id,groupe_type);
             }
           else
             {
@@ -295,14 +291,14 @@ $(document).ready
       );
     }
 
-    function maj_eleve(groupe_id,groupe_type,eleves_ordre)
+    function maj_eleve(groupe_id,groupe_type)
     {
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple=0',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=0',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -311,14 +307,6 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-            if(groupe_type=='Classes')
-            {
-              $("#bloc_ordre").hide();
-            }
-            else
-            {
-              $("#bloc_ordre").show();
-            }
             if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_maj').removeAttr("class").html("&nbsp;");
@@ -349,71 +337,21 @@ $(document).ready
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
-          eleves_ordre = $("#f_eleves_ordre option:selected").val();
-          groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+          groupe_type = $("#f_groupe option:selected").parent().attr('label');
           $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
           if(PROFIL_TYPE=='directeur')
           {
-            maj_matiere(groupe_id,matiere_id,eleves_ordre);
+            maj_matiere(groupe_id,matiere_id);
           }
           else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
           {
-            maj_eleve(groupe_id,groupe_type,eleves_ordre);
-          }
-        }
-        else
-        {
-          $("#bloc_ordre").hide();
-          $('#ajax_maj').removeAttr("class").html("&nbsp;");
-        }
-      }
-    );
-
-    $("#f_groupe").change
-    (
-      function()
-      {
-        // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
-        // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
-        // Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
-        if(PROFIL_TYPE=='directeur')
-        {
-          matiere_id = $("#f_matiere").val();
-          $("#f_matiere").html('');
-        }
-        $("#f_eleve").html('<option value=""></option>').hide();
-        groupe_id = $("#f_groupe option:selected").val();
-        if(groupe_id)
-        {
-          groupe_type  = $("#f_groupe option:selected").parent().attr('label');
-          eleves_ordre = $("#f_eleves_ordre option:selected").val();
-          $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          if(PROFIL_TYPE=='directeur')
-          {
-            maj_matiere(groupe_id,matiere_id,eleves_ordre);
-          }
-          else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
-          {
-            maj_eleve(groupe_id,groupe_type,eleves_ordre);
+            maj_eleve(groupe_id,groupe_type);
           }
         }
         else
         {
           $('#ajax_maj').removeAttr("class").html("&nbsp;");
         }
-      }
-    );
-
-    $("#f_eleves_ordre").change
-    (
-      function()
-      {
-        groupe_id    = $("#f_groupe option:selected").val();
-        groupe_type  = $("#f_groupe option:selected").parent().attr('label');
-        eleves_ordre = $("#f_eleves_ordre option:selected").val();
-        $("#f_eleve").html('<option value=""></option>').hide();
-        $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
 
@@ -427,7 +365,7 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        matiere_id = $("#f_matiere input:checked").val();
+        var matiere_id = $("#f_matiere input:checked").val();
         $.ajax
         (
           {
@@ -473,7 +411,6 @@ $(document).ready
           f_groupe             : { required:true },
           f_groupe             : { required:true },
           f_eleve              : { required:true },
-          f_eleves_ordre       : { required:true },
           f_periode            : { required:true },
           f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
@@ -489,7 +426,6 @@ $(document).ready
           f_groupe             : { required:"groupe manquant" },
           f_groupe             : { required:"groupe manquant" },
           f_eleve              : { required:"élève manquant" },
-          f_eleves_ordre       : { required:"ordre manquant" },
           f_periode            : { required:"période manquante" },
           f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
@@ -532,8 +468,6 @@ $(document).ready
     (
       function()
       {
-        // récupération d'éléments
-        $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;
       }

@@ -524,13 +524,12 @@ public static function DB_lister_result_eleves_palier_sans_infos_items( $liste_e
  * lister_eleves_cibles
  *
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
- * @param string   $eleves_ordre       valeur parmi [alpha] [classe]
  * @param bool     $with_gepi
  * @param bool     $with_langue
  * @param bool     $with_brevet_serie
  * @return array|string                le tableau est de la forme [eleve_id] => array('eleve_nom'=>...,'eleve_prenom'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
  */
-public static function DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , $with_gepi , $with_langue , $with_brevet_serie )
+public static function DB_lister_eleves_cibles( $listing_eleve_id , $with_gepi , $with_langue , $with_brevet_serie )
 {
   $DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_naissance_date AS date_naissance ';
   $DB_SQL.= ($with_gepi)         ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
@@ -538,13 +537,8 @@ public static function DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordr
   $DB_SQL.= ($with_brevet_serie) ? ', eleve_brevet_serie '            : '' ;
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  if($eleves_ordre=='classe')
-  {
-    $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-    $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  }
   $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type ';
-  $DB_SQL.= ($eleves_ordre=='classe') ? 'ORDER BY niveau_ordre ASC, groupe_nom ASC, user_nom ASC, user_prenom ASC' : 'ORDER BY user_nom ASC, user_prenom ASC' ;
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
   $DB_VAR = array(':profil_type'=>'eleve');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève ne correspond aux identifiants transmis.' ;

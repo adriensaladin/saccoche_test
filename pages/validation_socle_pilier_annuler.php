@@ -61,9 +61,8 @@ else // Ne passent ici que les professeurs
 $tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
-$select_palier       = Form::afficher_select($tab_paliers                   , 'f_palier'       /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']    /*selection*/ ,              '' /*optgroup*/);
-$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ , $of_g /*option_first*/ , FALSE                            /*selection*/ , 'regroupements' /*optgroup*/);
-$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
+$select_palier = Form::afficher_select($tab_paliers , 'f_palier' /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id'] /*selection*/ ,              '' /*optgroup*/);
+$select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_g /*option_first*/ , FALSE                         /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <ul class="puce">
@@ -76,7 +75,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
   <label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
   <span id="bloc_pilier" class="hide"><label class="tab" for="f_pilier">Compétence(s) :</label><span id="f_pilier" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   <p>
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj_eleve">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
   </p>
   <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider">Afficher le tableau des validations positives.</button><label id="ajax_msg_choix">&nbsp;</label>

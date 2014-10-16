@@ -31,14 +31,6 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var groupe_id    = 0;
-    var groupe_type  = '';
-    var eleves_ordre = 'alpha';
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Enlever le message ajax et le résultat précédent au changement d'un élément de formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -143,12 +135,11 @@ $(document).ready
 
     var maj_eleve = function()
     {
-      $("#f_eleve").html('<option value=""></option>').parent().hide();
+      $("#f_eleve").html('').parent().hide();
       groupe_id = $("#f_groupe option:selected").val();
       if(groupe_id)
       {
-        groupe_type  = $("#f_groupe option:selected").parent().attr('label');
-        eleves_ordre = $("#f_eleves_ordre option:selected").val();
+        groupe_type = $("#f_groupe option:selected").parent().attr('label');
         if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
         $('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -156,7 +147,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_eleves',
-            data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+            data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -165,14 +156,6 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(groupe_type=='Classes')
-              {
-                $("#bloc_ordre").hide();
-              }
-              else
-              {
-                $("#bloc_ordre").show();
-              }
               if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
@@ -188,13 +171,11 @@ $(document).ready
       }
       else
       {
-        $("#bloc_ordre").hide();
         $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
       }
     };
 
     $("#f_groupe").change( maj_eleve );
-    $("#f_eleves_ordre").change( maj_eleve );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
@@ -209,31 +190,29 @@ $(document).ready
       {
         rules :
         {
-          f_type         : { required:true },
-          f_mode         : { required:function(){return $('#f_type_pourcentage').is(':checked');} },
-          'f_matiere[]'  : { required:function(){return $('#f_mode_manuel').is(':checked');} },
-          f_palier       : { required:true },
-          'f_pilier[]'   : { required:true },
-          f_groupe       : { required:true },
-          'f_eleve[]'    : { required:true },
-          f_eleves_ordre : { required:true },
-          f_couleur      : { required:true },
-          f_legende      : { required:true },
-          f_marge_min    : { required:true }
+          f_type        : { required:true },
+          f_mode        : { required:function(){return $('#f_type_pourcentage').is(':checked');} },
+          'f_matiere[]' : { required:function(){return $('#f_mode_manuel').is(':checked');} },
+          f_palier      : { required:true },
+          'f_pilier[]'  : { required:true },
+          f_groupe      : { required:true },
+          'f_eleve[]'   : { required:true },
+          f_couleur     : { required:true },
+          f_legende     : { required:true },
+          f_marge_min   : { required:true }
         },
         messages :
         {
-          f_type         : { required:"type manquant" },
-          f_mode         : { required:"choix manquant" },
-          'f_matiere[]'  : { required:"matière(s) manquante(s)" },
-          f_palier       : { required:"palier manquant" },
-          'f_pilier[]'   : { required:"compétence(s) manquante(s)" },
-          f_groupe       : { required:"groupe manquant" },
-          'f_eleve[]'    : { required:"élève(s) manquant(s)" },
-          f_eleves_ordre : { required:"ordre manquant" },
-          f_couleur      : { required:"couleur manquante" },
-          f_legende      : { required:"légende manquante" },
-          f_marge_min    : { required:"marge mini manquante" }
+          f_type        : { required:"type manquant" },
+          f_mode        : { required:"choix manquant" },
+          'f_matiere[]' : { required:"matière(s) manquante(s)" },
+          f_palier      : { required:"palier manquant" },
+          'f_pilier[]'  : { required:"compétence(s) manquante(s)" },
+          f_groupe      : { required:"groupe manquant" },
+          'f_eleve[]'   : { required:"élève(s) manquant(s)" },
+          f_couleur     : { required:"couleur manquante" },
+          f_legende     : { required:"légende manquante" },
+          f_marge_min   : { required:"marge mini manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -266,10 +245,9 @@ $(document).ready
     (
       function()
       {
-        // récupération d'éléments
+        // récupération du nom du palier et du nom du groupe
         $('#f_palier_nom').val( $("#f_palier option:selected").text() );
         $('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
-        $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;
       }

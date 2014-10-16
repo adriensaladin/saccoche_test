@@ -28,18 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')){exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])      : 0;
-$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])      : 0;
-$delete_id    = (isset($_POST['delete_id']))      ? Clean::texte($_POST['delete_id'])      : '';
-$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
-$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
+$action     = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
+$eleve_id   = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0;
+$palier_id  = (isset($_POST['f_palier'])) ? Clean::entier($_POST['f_palier']) : 0;
+$pilier_id  = (isset($_POST['f_pilier'])) ? Clean::entier($_POST['f_pilier']) : 0;
+$delete_id  = (isset($_POST['delete_id'])) ? Clean::texte($_POST['delete_id']) : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_pilier   = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
-$tab_eleve    = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
-$tab_pilier   = array_filter( Clean::map_entier($tab_pilier) , 'positif' );
-$tab_eleve    = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
+$tab_pilier = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
+$tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
+$tab_pilier = array_filter( Clean::map_entier($tab_pilier) , 'positif' );
+$tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
 
 $listing_eleve_id = implode(',',$tab_eleve);
 
@@ -47,16 +45,15 @@ $listing_eleve_id = implode(',',$tab_eleve);
 // Afficher le tableau avec les états de validations ET NE CONSERVER QUE LES VALIDATIONS POSITIVES
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) && $groupe_type && $eleves_ordre )
+if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
-  Form::save_choix('validation_socle_pilier');
+  Form::save_choix('palier');
   $affichage = '';
   // Tableau des langues
   $tfoot = '';
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
   // Récupérer les données des élèves
-  $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -127,7 +124,6 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une validation positive
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 elseif( ($action=='Enregistrer_validation') && ($delete_id) )
 {
   // Récupérer le duo {eleve;pilier}
@@ -138,9 +134,8 @@ elseif( ($action=='Enregistrer_validation') && ($delete_id) )
   exit('OK');
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-exit('Erreur avec les données transmises !');
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

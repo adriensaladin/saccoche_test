@@ -91,7 +91,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
 {
   $retour = '';
   // Récupérer la liste des élèves concernés
-  $DB_TAB = ($selection_groupe) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1,$eleves_ordre='alpha') : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']) ;
+  $DB_TAB = ($selection_groupe) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1) : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']) ;
   if(!is_array($DB_TAB))
   {
     exit($DB_TAB);  // Aucun élève trouvé. | Aucun élève ne vous est affecté.

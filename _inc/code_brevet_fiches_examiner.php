@@ -97,7 +97,7 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 // Récupération de l'identité des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , 'alpha' /*eleves_ordre*/ , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
 
 if(!is_array($tab_eleve_infos))
 {

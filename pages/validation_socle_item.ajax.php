@@ -28,15 +28,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])      : 0;
-$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$entree_id    = (isset($_POST['f_item']))         ? Clean::entier($_POST['f_item'])        : 0;
-$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$langue       = (isset($_POST['langue']))         ? Clean::entier($_POST['langue'])        : 0;
-$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
-$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
+$action      = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';
+$palier_id   = (isset($_POST['f_palier']))  ? Clean::entier($_POST['f_palier']) : 0;
+$pilier_id   = (isset($_POST['f_pilier']))  ? Clean::entier($_POST['f_pilier']) : 0;
+$eleve_id    = (isset($_POST['f_user']))    ? Clean::entier($_POST['f_user'])   : 0;
+$entree_id   = (isset($_POST['f_item']))    ? Clean::entier($_POST['f_item'])   : 0;
+$mode        = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])    : '';
+$langue      = (isset($_POST['langue']))    ? Clean::entier($_POST['langue'])   : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 // De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -53,7 +51,7 @@ $listing_domaine_id = implode(',',$tab_domaine);
 // Afficher le tableau avec les états de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) && $groupe_type && $eleves_ordre )
+if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
 {
   Form::save_choix('validation_socle_item');
   $affichage = '';
@@ -62,8 +60,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
   $test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
   // Récupérer les données des élèves
-  $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -323,7 +320,6 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer les états de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 elseif($action=='Enregistrer_validation')
 {
   // Récupérer les triplets {item;eleve;valid}
@@ -398,9 +394,8 @@ elseif($action=='Enregistrer_validation')
   exit('OK');
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-exit('Erreur avec les données transmises !');
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

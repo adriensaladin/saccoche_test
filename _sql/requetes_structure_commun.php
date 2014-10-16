@@ -1497,13 +1497,12 @@ public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_i
 /**
  * Retourner un tableau [valeur texte] des élèves d'un regroupement préselectionné
  *
- * @param string $groupe_type    valeur parmi [sdf] [all] [niveau] [classe] [groupe] [besoin] 
- * @param int    $groupe_id      id du niveau ou de la classe ou du groupe
- * @param int    $statut         statut des utilisateurs (1 pour actuel, 0 pour ancien)
- * @param string $eleves_ordre   valeur parmi [alpha] [classe]
+ * @param string $groupe_type   valeur parmi [sdf] [all] [niveau] [classe] [groupe] [besoin] 
+ * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
+ * @param int    $statut        statut des utilisateurs (1 pour actuel, 0 pour ancien)
  * @return array|string
  */
-public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre)
+public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut)
 {
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   if($_SESSION['USER_PROFIL_TYPE']=='parent')
@@ -1544,17 +1543,11 @@ public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statu
       case 'groupe' :  // On veut tous les élèves d'un groupe (on utilise la jointure de "sacoche_jointure_user_groupe")
       case 'besoin' :  // On veut tous les élèves d'un groupe de besoin (on utilise la jointure de "sacoche_jointure_user_groupe")
         $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-        if($eleves_ordre=='classe')
-        {
-          $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-          $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-        }
-        $DB_SQL.= 'WHERE user_profil_type=:profil_type AND '.$test_date_sortie.' AND sacoche_jointure_user_groupe.groupe_id=:groupe ';
+        $DB_SQL.= 'WHERE user_profil_type=:profil_type AND '.$test_date_sortie.' AND groupe_id=:groupe ';
         $DB_VAR = array(':profil_type'=>'eleve',':groupe'=>$groupe_id);
         break;
     }
-    // Ordonner par ordre alphabétique ou par classe d'origine les élèves d'un groupe
-    $DB_SQL.= ( ( ($groupe_type!='groupe') && ($groupe_type!='besoin') ) || ($eleves_ordre!='classe') ) ? 'ORDER BY user_nom ASC, user_prenom ASC' : 'ORDER BY niveau_ordre ASC, groupe_nom ASC, user_nom ASC, user_prenom ASC' ;
+    $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
     $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève trouvé.' ;

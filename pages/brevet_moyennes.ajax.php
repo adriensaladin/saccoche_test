@@ -140,7 +140,6 @@ if($action=='proposer')
   $matiere_nom              = '';
   $with_coef                = 1; // Il n'y a qu'une matière, on prend en compte les coefficients.
   $groupe_nom               = '';
-  $groupe_type              = '';
   $periode_id               = 0;
   $date_debut               = jour_debut_annee_scolaire('french');
   $date_fin                 = TODAY_FR;
@@ -149,7 +148,6 @@ if($action=='proposer')
   $aff_domaine              = 0;
   $aff_theme                = 0;
   $legende                  = 'non';
-  $eleves_ordre             = 'alpha';
   $tab_eleve                = array($eleve_id); // tableau de l'unique élève à considérer
   $liste_eleve              = (string)$eleve_id;
   $tab_type[]               = 'bulletin';

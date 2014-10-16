@@ -37,7 +37,6 @@ $matiere_id              = (isset($_POST['f_matiere']))         ? Clean::entier(
 $matiere_nom             = (isset($_POST['f_matiere_nom']))     ? Clean::texte($_POST['f_matiere_nom'])            : '';
 $groupe_id               = (isset($_POST['f_groupe']))          ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom              = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])             : '';
-$groupe_type             = (isset($_POST['f_groupe_type']))     ? Clean::texte($_POST['f_groupe_type'])            : '';
 $niveau_id               = (isset($_POST['f_niveau']))          ? Clean::entier($_POST['f_niveau'])                : 0;
 $niveau_nom              = (isset($_POST['f_niveau_nom']))      ? Clean::texte($_POST['f_niveau_nom'])             : '';
 $periode_id              = (isset($_POST['f_periode']))         ? Clean::entier($_POST['f_periode'])               : 0;
@@ -55,7 +54,6 @@ $marge_min               = (isset($_POST['f_marge_min']))       ? Clean::texte($
 $pages_nb                = (isset($_POST['f_pages_nb']))        ? Clean::texte($_POST['f_pages_nb'])               : '';
 $cases_nb                = (isset($_POST['f_cases_nb']))        ? Clean::entier($_POST['f_cases_nb'])              : -1;
 $cases_largeur           = (isset($_POST['f_cases_larg']))      ? Clean::entier($_POST['f_cases_larg'])            : 0;
-$eleves_ordre            = (isset($_POST['f_eleves_ordre']))    ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve_id = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
@@ -98,7 +96,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
 
-if( !$matiere_id || ( !$type_generique && (!$groupe_id || !$groupe_nom || !$groupe_type) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
+if( !$matiere_id || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -231,8 +229,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 elseif(count($tab_eleve_id))
 {
-  $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
     exit('Aucun élève trouvé correspondant aux identifiants transmis !');

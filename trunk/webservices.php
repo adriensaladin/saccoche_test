@@ -49,8 +49,8 @@ $WS_data = (isset($_REQUEST['data'])) ? $_REQUEST['data']              : '' ; //
  */
 if($WS_qui=='AutoMaths')
 {
-  // Attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-  $WS_cle = str_replace(array('.','/','\\'),'',$WS_cle);
+  
+  $WS_cle = Clean::param_chemin($WS_cle);
   if(!$WS_cle)
   {
     exit('Erreur : clef non transmise !');

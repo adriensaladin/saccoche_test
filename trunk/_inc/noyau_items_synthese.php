@@ -310,7 +310,7 @@ else
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
 $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 / 2 ;
-$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] ) ? 1+6 : 0 ;
+$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']/100) : 0 ;
 $nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                  ? 1.3 : 0 ;
 $nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                             ? 1.3 : 0 ;
 $nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )  ? 1.3 : 0 ;

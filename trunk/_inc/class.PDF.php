@@ -802,8 +802,13 @@ class PDF extends FPDF
     $texte = $this->correction_espaces($texte);
     // Traiter un éventuel nombre de retours à la ligne saisis excessifs
     $texte = str_replace( array("\r\n","\r","\n") , "\n" , $texte ); // Le dénombrement n'est pas effectué ici mais à la ligne suivante sinon un "\r\n" compte double...
-    $nombre_lignes_actuelles = substr_count($texte,"\n") + 1 ;
     $nombre_lignes_tolerees  = max( 1 , floor($hauteur_autorisee / $taille_interligne) );
+    $nombre_lignes_actuelles = substr_count($texte,"\n") + 1 ;
+    if($nombre_lignes_actuelles>$nombre_lignes_tolerees)
+    {
+      $texte = str_replace( "\n\n" , "\n" , $texte );
+    }
+    $nombre_lignes_actuelles = substr_count($texte,"\n") + 1 ;
     if($nombre_lignes_actuelles>$nombre_lignes_tolerees)
     {
       $tab_lignes = explode("\n",$texte);
@@ -2227,7 +2232,7 @@ class PDF extends FPDF
     $memoX = $this->GetX();
     $memoY = $this->GetY();
     // signature
-    $largeur_signature = ($tab_image_tampon_signature) ? $this->afficher_image( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature , 'signature' ) : $hauteur_autorisee ;
+    $largeur_signature = ($tab_image_tampon_signature) ? $this->afficher_image( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature , 'signature' ) : min(50,$hauteur_autorisee) ;
     // contour cadre
     $this->SetXY($memoX,$memoY);
     $this->Cell( $largeur_autorisee , $hauteur_autorisee , '' , 1 /*bordure*/ , 2 /*br*/ , '' /*alignement*/ , FALSE /*remplissage*/ );

@@ -68,7 +68,7 @@ $(document).ready
     function actualiser_formulaire()
     {
       // on masque
-      $('#cas_options , #gepi_options ,#cas_domaine , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
+      $('#cas_options , #gepi_options ,#cas_domaine ,#cas_port , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
       if(!IS_HEBERGEMENT_SESAMATH)
       {
         $('#info_hors_sesamath').show();
@@ -88,18 +88,21 @@ $(document).ready
         var tab_infos = valeur.split(']¤[');
         var type_convention = tab_infos[0];
         var is_domaine_edit = tab_infos[1];
-        var is_operationnel = tab_infos[2];
-        var host_subdomain  = tab_infos[3];
-        var host_domain     = tab_infos[4];
+        var is_port_edit    = tab_infos[2];
+        var is_operationnel = tab_infos[3];
+        var host_subdomain  = tab_infos[4];
+        var host_domain     = tab_infos[5];
         var serveur_host    = (host_subdomain!='') ? host_subdomain+'.'+host_domain : host_domain ;
+        var serveur_port    = (tab_infos[6]) ? tab_infos[6] : 8443 ;
         $('#cas_serveur_host').val( serveur_host );
-        $('#cas_serveur_port').val( tab_infos[5] );
-        $('#cas_serveur_root').val( tab_infos[6] );
-        $('#cas_serveur_url_login'   ).val( tab_infos[7] );
-        $('#cas_serveur_url_logout'  ).val( tab_infos[8] );
-        $('#cas_serveur_url_validate').val( tab_infos[9] );
+        $('#cas_serveur_port').val( tab_infos[6] );
+        $('#cas_serveur_root').val( tab_infos[7] );
+        $('#cas_serveur_url_login'   ).val( tab_infos[8] );
+        $('#cas_serveur_url_logout'  ).val( tab_infos[9] );
+        $('#cas_serveur_url_validate').val( tab_infos[10] );
         $('#serveur_host_subdomain').val( host_subdomain );
         $('#serveur_host_domain'   ).val( host_domain );
+        $('#serveur_port'          ).val( serveur_port );
         if(IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE)
         {
           $('#info_'+type_convention).show();
@@ -111,6 +114,10 @@ $(document).ready
         if(is_domaine_edit=='oui')
         {
           $('#cas_domaine').show();
+        }
+        if(is_port_edit=='oui')
+        {
+          $('#cas_port').show();
         }
         if(is_operationnel=='1')
         {

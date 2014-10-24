@@ -55,9 +55,7 @@ class Clean
 
   
   /**
-   * Pour supprimer les caractères NULL dans une chaîne.
-   * Il m'est arrivé d'en trouver dans des chaînes copiées-collées et ça pose pb par exemple pour les noms de fichiers :
-   * "PHP Warning : is_file() expects parameter 1 to be a valid path, string given"
+   * Pour supprimer les caractères NULL dans une chaîne : il m'est arrivé d'en trouver dans des chaînes copiées-collées et ça pose pb par exemple pour les noms de fichiers...
    *
    * @param string
    * @return string
@@ -254,7 +252,6 @@ class Clean
   public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( Clean::nul( trim($text) ) ) ) ) ) ); }
   public static function fichier($text)      { return Clean::only_filechars( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
   public static function id($text)           { return Clean::only_letters(   Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
-  public static function param_chemin($text) { return str_replace(array('.','/','\\'),'', Clean::nul( trim($text) ) ); } // Contre l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
   public static function zip_filename($text) { return Clean::fichier(iconv('CP850','UTF-8',$text)); } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
   public static function password($text)     { return Clean::nul( trim($text) ); }
   public static function ref($text)          { return Clean::perso_strtoupper( Clean::nul( trim($text) ) ); }

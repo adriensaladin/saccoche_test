@@ -37,11 +37,11 @@ $TITRE = "Connexion SSO";
  * En cas d'installation de type multi-structures, SACoche doit connaître la structure concernée AVANT de lancer SAML ou CAS pour savoir si l'établissement l'a configuré ou pas, et avec quels paramètres !
  * Si on ne sait pas de quel établissement il s'agit, on ne peut pas savoir s'il y a un CAS, un SAML-GEPI, et si oui quelle URL appeler, etc.
  * (sur un même serveur il peut y avoir un SACoche avec authentification reliée à l'ENT de Nantes, un SACoche relié à un LCS, un SACoche relié à un SAML-GEPI, ...)
- * D'autre part on ne peut pas se fier à une éventuelle info transmise par SAML ou CAS ; non seulement car elle arrive trop tard comme je viens de l'expliquer, mais aussi car ce n'est pas le même schéma partout.
+ * D'autre part on ne peut pas me fier à une éventuelle info transmise par SAML ou CAS ; non seulement car elle arrive trop tard comme je viens de l'expliquer, mais aussi car ce n'est pas le même schéma partout.
  * (CAS, par exemple, peut renvoyer le RNE en attribut APRES authentification à une appli donnée, dans une acad donnée, mais pas pour autant à une autre appli, ou dans une autre acad)
  * 
- * Normalement on passe en GET le numéro de la base, mais il se peut qu'une connection directe ne puisse être établie qu'avec l'UAI (connu de l'ENT) et non avec le numéro de la base SACoche (inconnu de l'ENT).
- * Dans ce cas, on récupère le numéro de la base et on le remplace dans les variables PHP, pour ne pas avoir à recommencer ce petit jeu à chaque échange avec le serveur SSO pendant l'authentification.
+ * Normalement on passe en GET le numéro de la base, mais il se peut qu'une connection directe ne puisse être établie qu'avec l'UAI (connu de l'ENT) en non avec le numéro de la base SACoche (inconnu de l'ENT).
+ * Dans ce cas, on récupère le numéro de la base et on le remplace dans les variable PHP, pour ne pas avoir à recommencer ce petit jeu à chaque échange avec le serveur SSO pendant l'authentification.
  * 
  * URL directe mono-structure             : http://adresse.com/?sso
  * URL directe multi-structures normale   : http://adresse.com/?sso&base=[BASE] | http://adresse.com/?sso&id=[BASE] | http://adresse.com/?sso=[BASE]
@@ -364,7 +364,7 @@ if($connexion_mode=='cas')
     $tab_info = $tab_connexion_info[$connexion_mode][$connexion_ref];
     if($connexion_nom!='perso')
     {
-      if( (strpos($cas_serveur_host,$tab_info['serveur_host_domain'])===FALSE) || ( ($tab_info['serveur_port']!=$cas_serveur_port) && ($tab_info['serveur_port']!='*') ) || ($tab_info['serveur_root']!=$cas_serveur_root) || ($tab_info['serveur_url_login']!=$cas_serveur_url_login) || ($tab_info['serveur_url_logout']!=$cas_serveur_url_logout) || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate) )
+      if( (strpos($cas_serveur_host,$tab_info['serveur_host_domain'])===FALSE) || ($tab_info['serveur_port']!=$cas_serveur_port) || ($tab_info['serveur_root']!=$cas_serveur_root) || ($tab_info['serveur_url_login']!=$cas_serveur_url_login) || ($tab_info['serveur_url_logout']!=$cas_serveur_url_logout) || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate) )
       {
         exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
       }
@@ -473,6 +473,7 @@ ProxyPassReverse /sacoche/ https://ent2d.ac-bordeaux.fr/sacoche/
 [HTTP_UID]
 [HTTP_UNSCOPED_AFFILIATION]
 
+
 */
 
 if($connexion_mode=='shibboleth')
@@ -509,7 +510,7 @@ if($connexion_mode=='shibboleth')
     }
     if($auth_resultat_siecle!='ok')
     {
-      // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on a même que ça...).
+      // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on n'a même que ça...).
       // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » (je ne m'embête pas, je prends la première valeur, inutile de tester tous les enfants, les associations doivent avoir été faites dans SACoche).
       $fr_edu_vecteur = (!empty($_SERVER['HTTP_FREDUVECTEUR'])) ? $_SERVER['HTTP_FREDUVECTEUR'] : '' ;
       $tab_vecteur = explode( ';' , $fr_edu_vecteur );

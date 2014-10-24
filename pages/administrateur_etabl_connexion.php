@@ -74,6 +74,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
       case 'cas' :
         $convention = isset($tab_connecteurs_hebergement[$connexion_ref]) ? 'heberg_acad' : ( ( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] ) ? 'conv_acad' : 'conv_etabl' ) ;
         $domaine_edit = ($tab_info['serveur_host_subdomain']=='*') ? 'oui' : 'non' ;
+        $port_edit    = ($tab_info['serveur_port']=='*')           ? 'oui' : 'non' ;
         if( ($connexion_nom=='perso') && $selected )
         {
           // Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
@@ -85,13 +86,20 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
           $tab_info['serveur_url_logout']     = $_SESSION['CAS_SERVEUR']['URL_LOGOUT'];
           $tab_info['serveur_url_validate']   = $_SESSION['CAS_SERVEUR']['URL_VALIDATE'];
         }
-        elseif($tab_info['serveur_host_subdomain']=='*')
+        else
         {
-          // Sous-domaine reporté si en session, vide sinon
-          $tab_info['serveur_host_subdomain'] = ($tab_info['serveur_host_domain']==$SESSION_HOST_DOMAIN) ? $SESSION_HOST_SUBDOMAIN : '' ;
+          if($tab_info['serveur_host_subdomain']=='*')
+          {
+            // Sous-domaine reporté si en session, vide sinon
+            $tab_info['serveur_host_subdomain'] = ($tab_info['serveur_host_domain']==$SESSION_HOST_DOMAIN) ? $SESSION_HOST_SUBDOMAIN : '' ;
+          }
+          if($tab_info['serveur_port']=='*')
+          {
+            // Port reporté si en session, vide sinon
+            $tab_info['serveur_port'] = ($tab_info['serveur_port']=='*') ? ( ($_SESSION['CAS_SERVEUR']['PORT']) ? $_SESSION['CAS_SERVEUR']['PORT'] : 8443 ) : $_SESSION['CAS_SERVEUR']['PORT'] ;
+          }
         }
-
-        Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$domaine_edit.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host_subdomain'].']¤['.$tab_info['serveur_host_domain'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";' );
+        Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($convention.']¤['.$domaine_edit.']¤['.$port_edit.']¤['.$tab_info['etat'].']¤['.$tab_info['serveur_host_subdomain'].']¤['.$tab_info['serveur_host_domain'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root'].']¤['.$tab_info['serveur_url_login'].']¤['.$tab_info['serveur_url_logout'].']¤['.$tab_info['serveur_url_validate']).'";' );
         break;
       case 'shibboleth' :
         Layout::add( 'js_inline_before' , 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat']).'";' );
@@ -130,6 +138,9 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   </div>
   <div id="cas_domaine" class="hide">
     <label class="tab" for="serveur_host_subdomain">Domaine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le sous-domaine, par exemple<br />clg-truc (pour CEL ou ENOE)<br />icart.clg16-truc (pour i-Cart!)" /> :</label><input id="serveur_host_subdomain" name="serveur_host_subdomain" size="30" type="text" value="" /> . <input id="serveur_host_domain" name="serveur_host_domain" size="20" type="text" value="" readonly />
+  </div>
+  <div id="cas_port" class="hide">
+    <label class="tab" for="serveur_port">Port <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le port,<br />en général 8443 (pour i-Cart!),<br />mais déjà vu à 4443 dans un cas particulier." /> :</label><input id="serveur_port" name="serveur_port" size="5" type="text" value="" />
   </div>
   <p><span class="tab"></span><button id="bouton_valider_mode" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg_mode">&nbsp;</label></p>
 </fieldset></form>

@@ -39,7 +39,7 @@ $palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV des données des élèves d'un regroupement
+// Export CSV des données des élèves d'une classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
@@ -51,7 +51,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   // Préparation de l'export HTML
   $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
   // Récupérer les élèves de la classe ou du groupe
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_login,user_nom,user_prenom' );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_login,user_nom,user_prenom' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -513,7 +513,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des élèves
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,eleve_classe_id' );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,eleve_classe_id' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -557,7 +557,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des responsables
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'parent.user_id AS parent_id,parent.user_id_ent AS parent_id_ent,parent.user_id_gepi AS parent_id_gepi,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login,enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'parent.user_id AS parent_id,parent.user_id_ent AS parent_id_ent,parent.user_id_gepi AS parent_id_gepi,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login,enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -596,7 +596,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   $tab_profil = array('professeur','personnel');
   foreach($tab_profil as $profil)
   {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil  , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,user_profil_sigle' );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil  , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,user_profil_sigle' );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

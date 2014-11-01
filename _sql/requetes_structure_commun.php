@@ -158,10 +158,7 @@ public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
   $DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
   $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
-  $DB_VAR = array(
-    ':groupe_id'  => $groupe_id,
-    ':periode_id' => $periode_id,
-  );
+  $DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -207,11 +204,7 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
   $DB_SQL.= $join_socle_item;
   $DB_SQL.= 'WHERE matiere_active=1 '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
   $DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(
-    ':user_id'    => $prof_id,
-    ':matiere_id' => $matiere_id,
-    ':niveau_id'  => $niveau_id,
-  );
+  $DB_VAR = array(':user_id'=>$prof_id,':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -232,10 +225,7 @@ public static function DB_OPT_arborescence($matiere_id,$niveau_id)
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
   $DB_SQL.= 'ORDER BY domaine_ordre ASC, theme_ordre ASC, item_ordre ASC ';
-  $DB_VAR = array(
-    ':matiere_id' => $matiere_id,
-    ':niveau_id'  => $niveau_id,
-  );
+  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   $tab_optgroup = array();
   foreach($DB_TAB as $key => $DB_ROW)
@@ -380,11 +370,10 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
  * @param int    $statut        1 pour actuel, 0 pour ancien
  * @param string $groupe_type   all | sdf | niveau | classe | groupe | besoin
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
- * @param string $eleves_ordre  valeur parmi [alpha] [classe]
  * @param string $champs        par défaut user_id,user_nom,user_prenom
  * @return array
  */
-public static function DB_lister_users_regroupement($profil,$statut,$groupe_type,$groupe_id,$eleves_ordre,$champs='user_id,user_nom,user_prenom')
+public static function DB_lister_users_regroupement($profil,$statut,$groupe_type,$groupe_id,$champs='user_id,user_nom,user_prenom')
 {
   $as      = ($profil!='parent') ? '' : ' AS enfant' ;
   $prefixe = ($profil!='parent') ? 'sacoche_user.' : 'enfant.' ;
@@ -393,7 +382,6 @@ public static function DB_lister_users_regroupement($profil,$statut,$groupe_type
   $ljoin = '';
   $where = 'WHERE sacoche_user_profil.user_profil_type=:profil_type AND '.$prefixe.$test_date_sortie.' ';
   $group = ($profil!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id ' ;
-  $order = 'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC'; // Peut être modifié ensuite (si besoin de tri des élèves par classe d'origine)
   if(in_array($profil,array('directeur','administrateur')))
   {
     $ljoin .= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
@@ -474,14 +462,8 @@ public static function DB_lister_users_regroupement($profil,$statut,$groupe_type
             $from   = 'FROM sacoche_jointure_user_groupe ';
             $ljoin .= 'LEFT JOIN sacoche_user'.$as.' USING (user_id) ';
             $ljoin .= 'LEFT JOIN sacoche_user_profil ON '.$prefixe.'user_profil_sigle=sacoche_user_profil.user_profil_sigle ';
-            $where .= 'AND sacoche_jointure_user_groupe.groupe_id=:groupe ';
+            $where .= 'AND groupe_id=:groupe ';
             $where .= 'AND sacoche_user_profil.user_profil_join_groupes=:join_groupes ';
-            if( ($profil=='eleve') && ($eleves_ordre=='classe') )
-            {
-              $ljoin .= 'LEFT JOIN sacoche_groupe AS classe_origine ON sacoche_user.eleve_classe_id=classe_origine.groupe_id ';
-              $ljoin .= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-              $order = 'ORDER BY niveau_ordre ASC, classe_origine.groupe_nom ASC, '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC';
-            }
             break;
           case 'personnel' :
             $ljoin .= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
@@ -499,14 +481,8 @@ public static function DB_lister_users_regroupement($profil,$statut,$groupe_type
     $where .= 'AND parent.user_sortie_date>NOW() ';
   }
   // On peut maintenant assembler les morceaux de la requête !
-  $DB_SQL = 'SELECT '.$champs.' '.$from.$ljoin.$where.$group.$order;
-  $DB_VAR = array(
-    ':profil_type'  => str_replace( array('parent','personnel') , array('eleve','professeur') , $profil ),
-    ':join_groupes' => 'config',
-    ':groupe'       => $groupe_id,
-    ':niveau'       => $groupe_id,
-    ':classe'       => 0,
-  ) ;
+  $DB_SQL = 'SELECT '.$champs.' '.$from.$ljoin.$where.$group.'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC';
+  $DB_VAR = array( ':profil_type'=>str_replace(array('parent','personnel'),array('eleve','professeur'),$profil) , ':join_groupes'=>'config' , ':groupe'=>$groupe_id , ':niveau'=>$groupe_id , ':classe'=>0 ) ;
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -526,11 +502,7 @@ public static function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe AND eleve_classe_id=:classe AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':groupe'      => $groupe_id,
-    ':classe'      => $classe_id,
-    ':profil_type' => 'eleve',
-  );
+  $DB_VAR = array( ':groupe'=>$groupe_id , ':classe'=>$classe_id , ':profil_type'=>'eleve' );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -582,7 +554,7 @@ public static function DB_lister_messages_user_destinataire($user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
   $DB_SQL.= 'ORDER BY message_debut_date DESC, message_fin_date ASC';
-  $DB_VAR = array( ':user_id_like' => '%,'.$user_id.',%' );
+  $DB_VAR = array(':user_id_like'=>'%,'.$user_id.',%');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -673,16 +645,9 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
 public static function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
 {
   $listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_message( user_id, message_debut_date, message_fin_date, message_destinataires, message_contenu, message_dests_cache) ';
-  $DB_SQL.= 'VALUES                     (:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu,:message_dests_cache)';
-  $DB_VAR = array(
-    ':user_id'               => $user_id,
-    ':message_debut_date'    => $date_debut_mysql,
-    ':message_fin_date'      => $date_fin_mysql,
-    ':message_destinataires' => $listing_destinataires,
-    ':message_contenu'       => $message_contenu,
-    ':message_dests_cache'   => ',',
-  );
+  $DB_SQL = 'INSERT INTO sacoche_message(user_id,message_debut_date,message_fin_date,message_destinataires,message_contenu,message_dests_cache) ';
+  $DB_SQL.= 'VALUES(:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu,:message_dests_cache)';
+  $DB_VAR = array(':user_id'=>$user_id,':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_dests_cache'=>',');
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -709,10 +674,7 @@ public static function DB_modifier_parametres($tab_parametres)
   $DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
   foreach($tab_parametres as $parametre_nom => $parametre_valeur)
   {
-    $DB_VAR = array(
-      ':parametre_nom'    => $parametre_nom,
-      ':parametre_valeur' => $parametre_valeur,
-    );
+    $DB_VAR = array(':parametre_nom'=>$parametre_nom,':parametre_valeur'=>$parametre_valeur);
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
 }
@@ -731,10 +693,7 @@ public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET '.$champ_nom.'=:champ_val ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(
-    ':user_id'   => $user_id,
-    ':champ_val' => $champ_val,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':champ_val'=>$champ_val);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -752,10 +711,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
   $DB_SQL = 'SELECT user_id ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'WHERE user_id=:user_id AND user_password=:password_crypte ';
-  $DB_VAR = array(
-    ':user_id'         => $user_id,
-    ':password_crypte' => $password_ancien_crypte,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':password_crypte'=>$password_ancien_crypte);
   $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if(empty($DB_ROW))
   {
@@ -765,10 +721,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET user_password=:password_crypte ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(
-    ':user_id'         => $user_id,
-    ':password_crypte' => $password_nouveau_crypte,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':password_crypte'=>$password_nouveau_crypte);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return 'ok';
 }
@@ -791,15 +744,7 @@ public static function DB_modifier_message($message_id,$user_id,$date_debut_mysq
   $DB_SQL = 'UPDATE sacoche_message ';
   $DB_SQL.= 'SET message_debut_date=:message_debut_date, message_fin_date=:message_fin_date, message_destinataires=:message_destinataires, message_contenu=:message_contenu, message_dests_cache=:message_dests_cache ';
   $DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
-  $DB_VAR = array(
-    ':message_debut_date'    => $date_debut_mysql,
-    ':message_fin_date'      => $date_fin_mysql,
-    ':message_destinataires' => $listing_destinataires,
-    ':message_contenu'       => $message_contenu,
-    ':message_dests_cache'   => ',',
-    ':message_id'            => $message_id,
-    ':user_id'               => $user_id,
-  );
+  $DB_VAR = array(':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_dests_cache'=>',',':message_id'=>$message_id,':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -817,10 +762,7 @@ public static function DB_modifier_message_dests_cache($message_id,$user_id,$eta
   $DB_SQL = 'UPDATE sacoche_message ';
   $DB_SQL.= 'SET message_dests_cache = '.$commande.' ';
   $DB_SQL.= 'WHERE message_id=:message_id ';
-  $DB_VAR = array(
-    ':message_id' => $message_id,
-    ':user_id'    => $user_id,
-  );
+  $DB_VAR = array(':message_id'=>$message_id,':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -835,10 +777,7 @@ public static function DB_supprimer_message($message_id,$user_id)
 {
   $DB_SQL = 'DELETE FROM sacoche_message ';
   $DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
-  $DB_VAR = array(
-    ':message_id' => $message_id,
-    ':user_id'    => $user_id,
-  );
+  $DB_VAR = array(':message_id'=>$message_id,':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -906,7 +845,7 @@ public static function DB_OPT_familles_matieres()
  */
 public static function DB_OPT_matieres_famille($matiere_famille_id)
 {
-  Form::$tab_select_option_first['matieres_famille'] = array( ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id , 'Toutes les matières de cette famille' );
+  Form::$tab_select_option_first['matieres_famille'] = array(ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id,'Toutes les matières de cette famille');
   $DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_matiere ';
   $DB_SQL.= ($matiere_famille_id==ID_FAMILLE_MATIERE_USUELLE) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$matiere_famille_id.' ' ;
@@ -948,10 +887,7 @@ public static function DB_OPT_matieres_eleve($user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
   $DB_SQL.= 'GROUP BY user_id ';
-  $DB_VAR = array(
-    ':user_id' => $user_id,
-    ':type2'   => 'groupe',
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':type2'=>'groupe');
   $liste_groupes_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!$liste_groupes_id) )
   {
@@ -1002,10 +938,7 @@ public static function DB_OPT_matieres_groupe($groupe_id)
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil_type=:profil_type AND matiere_id IS NOT NULL ';
   $DB_SQL.= 'GROUP BY matiere_id ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC';
-  $DB_VAR = array(
-    ':groupe_id'   => $groupe_id,
-    ':profil_type' => 'professeur',
-  );
+  $DB_VAR = array(':groupe_id'=>$groupe_id,':profil_type'=>'professeur');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur du groupe est rattaché à une matière.' ;
 }
@@ -1193,19 +1126,11 @@ public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
   $DB_TAB_divers = array();
   if($sans)
   {
-    $DB_TAB_divers[] = array(
-      'valeur'   => 'd1',
-      'texte'    => 'Sans classe affectée',
-      'optgroup' => 'divers',
-    );
+    $DB_TAB_divers[] = array('valeur'=>'d1','texte'=>'Sans classe affectée' ,'optgroup'=>'divers');
   }
   if($tout)
   {
-    $DB_TAB_divers[] = array(
-      'valeur'   => 'd2',
-      'texte'    => 'Tout l\'établissement',
-      'optgroup' => 'divers',
-    );
+    $DB_TAB_divers[] = array('valeur'=>'d2','texte'=>'Tout l\'établissement','optgroup'=>'divers');
   }
   // Options du select : catégorie "Niveaux" (contenant des classes ou des groupes)
   $DB_SQL = 'SELECT CONCAT("n",niveau_id) AS valeur, niveau_nom AS texte, "niveau" AS optgroup ';
@@ -1222,10 +1147,7 @@ public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
   $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':type1' => 'classe',
-    ':type2' => 'groupe',
-  );
+  $DB_VAR = array(':type1'=>'classe',':type2'=>'groupe');
   $DB_TAB_classe_groupe = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // On assemble tous ces tableaux à la suite
   $DB_TAB = array_merge($DB_TAB_divers,$DB_TAB_niveau,$DB_TAB_classe_groupe);
@@ -1266,10 +1188,7 @@ public static function DB_OPT_groupes_professeur($user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type!=:type4 ';
   $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':user_id' => $user_id,
-    ':type4'   => 'eval',
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':type4'=>'eval');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
 }
@@ -1289,10 +1208,7 @@ public static function DB_OPT_classes_professeur($user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type1 ';
   $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':user_id' => $user_id,
-    ':type1'   => 'classe',
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':type1'=>'classe');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
 }
@@ -1330,10 +1246,7 @@ public static function DB_OPT_classes_groupes_etabl()
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
   $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':type1' => 'classe',
-    ':type2' => 'groupe',
-  );
+  $DB_VAR = array(':type1'=>'classe',':type2'=>'groupe');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne sont enregistrés.' ;
 }
@@ -1353,11 +1266,7 @@ public static function DB_OPT_classes_prof_principal($user_id)
   $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type1 AND jointure_pp=:pp ';
   $DB_SQL.= 'GROUP BY groupe_id ';
   $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':user_id' => $user_id,
-    ':type1'   => 'classe',
-    ':pp'      => 1,
-  );
+  $DB_VAR = array(':user_id'=>$user_id,':type1'=>'classe',':pp'=>1);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'êtes professeur principal d\'aucune classe.' ;
 }
@@ -1378,10 +1287,7 @@ public static function DB_OPT_classes_parent($parent_id)
   $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() AND groupe_id IS NOT NULL '; // Not NULL sinon pb qd un parent est rattaché à un enfant affecté dans aucune classe.
   $DB_SQL.= 'GROUP BY groupe_id ';
   $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':parent_id'   => $parent_id,
-    ':profil_type' => 'eleve',
-  );
+  $DB_VAR = array(':parent_id'=>$parent_id,':profil_type'=>'eleve');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe ne comporte un élève associé à ce compte.' ;
 }
@@ -1474,11 +1380,7 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
   }
   // On peut maintenant assembler les morceaux de la requête !
   $DB_SQL = $select.$from.$ljoin.$where.$group.$order;
-  $DB_VAR = array(
-    ':profil_type' => 'professeur',
-    ':niveau'      => $groupe_id,
-    ':groupe'      => $groupe_id,
-  );
+  $DB_VAR = array(':profil_type'=>'professeur',':niveau'=>$groupe_id,':groupe'=>$groupe_id);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur enregistré.' ;
 }
@@ -1509,7 +1411,7 @@ public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
   }
   $DB_SQL.= 'LEFT JOIN sacoche_saisie ON eleve.user_id=sacoche_saisie.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_devoir.proprio_id=prof.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_devoir.prof_id=prof.user_id ';
   $DB_SQL.= $WHERE.'AND prof.user_id IS NOT NULL ';
   $DB_SQL.= 'GROUP BY prof.user_id ';
   $DB_SQL.= 'ORDER BY texte ASC ';
@@ -1531,10 +1433,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_profil_type IN(:profil_type1,:profil_type2) AND '.$test_date_sortie.' ';
   $DB_SQL.= 'ORDER BY user_profil_type DESC, user_nom ASC, user_prenom ASC';
-  $DB_VAR = array(
-    ':profil_type1' => 'professeur',
-    ':profil_type2' => 'directeur',
-  );
+  $DB_VAR = array(':profil_type1'=>'professeur',':profil_type2'=>'directeur');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
 }
@@ -1590,12 +1489,7 @@ public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_i
   }
   // On peut maintenant assembler les morceaux de la requête !
   $DB_SQL = $select.$from.$ljoin.$where.$group.$order;
-  $DB_VAR = array(
-    ':profil_type' => 'parent',
-    ':niveau'      => $groupe_id,
-    ':classe'      => $groupe_id,
-    ':groupe'      => $groupe_id,
-  );
+  $DB_VAR = array(':profil_type'=>'parent',':niveau'=>$groupe_id,':classe'=>$groupe_id,':groupe'=>$groupe_id);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun responsable trouvé.' ;
 }
@@ -1680,10 +1574,7 @@ public static function DB_OPT_enfants_parent($parent_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':parent_id'   => $parent_id,
-    ':profil_type' => 'eleve',
-  );
+  $DB_VAR = array(':parent_id'=>$parent_id,':profil_type'=>'eleve');
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève n\'est associé à votre compte !' ;
 }

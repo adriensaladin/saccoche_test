@@ -238,11 +238,11 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   {
     exit('Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !');
   }
-  $devoir_prof_id     = $DB_ROW['proprio_id'];
+  $devoir_prof_id     = $DB_ROW['prof_id'];
   $devoir_date_mysql  = $DB_ROW['devoir_date'];
   $devoir_description = $DB_ROW['devoir_info'];
   $date_visible_mysql = $DB_ROW['devoir_visible_date'];
-  $tab_profs_rss      = ($DB_ROW['partage_id_listing']) ? explode(',',$DB_ROW['proprio_id'].','.$DB_ROW['partage_id_listing']) : array($DB_ROW['proprio_id']) ;
+  $tab_profs_rss      = ($DB_ROW['devoir_partage']) ? explode(',',$DB_ROW['devoir_partage']) : array($DB_ROW['prof_id']) ;
   // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
   // On récupère les notes transmises dans $tab_post
   $tab_post = array();
@@ -261,7 +261,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
   // $tab_demande_supprimer sert à supprimer des demandes d'élèves dont on met une note.
-  $tab_nouveau_modifier  = array();
+  $tab_nouveau_modifier = array();
   $tab_nouveau_supprimer = array();
   $tab_demande_supprimer = array();
   $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $_SESSION['USER_ID'] , $_SESSION['USER_PROFIL_TYPE'] , TRUE /*with_REQ*/ );

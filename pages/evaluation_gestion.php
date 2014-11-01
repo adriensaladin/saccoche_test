@@ -95,7 +95,6 @@ Layout::add( 'js_inline_before' , 'var tab_sujets     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_corriges   = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_niveau     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_groupe     = new Array();' );
-Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );
 Layout::add( 'js_inline_before' , 'var reception_items_texte = "'.$txt_items.'";' );
 Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
@@ -103,6 +102,8 @@ Layout::add( 'js_inline_before' , 'var reception_items_liste = "'.implode('_',$t
 Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
 Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';' );
 Layout::add( 'js_inline_before' , 'var auto_voir_groupe_id = '.$auto_voir_groupe_id.';' );
+
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 // Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
 $select_eleve   = '';
@@ -144,9 +145,6 @@ Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value=""></option>'.$select_eleve).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
-
-Form::load_choix_memo();
-$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
 ?>
 
 <ul class="puce">
@@ -177,7 +175,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
       <th>Date visible</th>
       <th>Fin auto-éval.</th>
       <th><?php echo($TYPE=='groupe')?'Classe / Groupe':'Élèves'; ?></th>
-      <th>Partage</th>
+      <th>Collègues</th>
       <th>Description</th>
       <th>Items</th>
       <th>Fichiers</th>
@@ -202,14 +200,13 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
     </p>
     <p>
       <?php if($TYPE=='groupe'): ?>
-        <label class="tab" for="f_groupe">Classe / groupe :</label><select id="f_groupe" name="f_groupe"><option></option></select> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><br />
+        <label class="tab" for="f_groupe">Classe / groupe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
         <span id="alerte_groupe" class="hide danger b">Attention : si vous modifiez le groupe, alors les notes de l'évaluation seront effacées !<br />En cas de même évaluation sur plusieurs groupes, il faut la <span class="u">dupliquer</span> et non la <span class="u">modifier</span>.</span><br />
       <?php endif; ?>
       <?php if($TYPE=='selection'): ?>
-        <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /> <?php echo $select_eleves_ordre ?><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><br />
+        <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><br />
       <?php endif; ?>
-      <label class="tab" for="f_prof_nombre">Partage collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q id="choisir_prof" class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" />
-      <span id="choisir_prof_non" class="astuce">Choix restreint au propriétaire de l'évaluation.</span>
+      <label class="tab" for="f_prof_nombre">Collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" />
     <p>
       <label class="tab" for="f_description">Description :</label><input id="f_description" name="f_description" type="text" value="" size="50" maxlength="60" /><br />
       <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><q class="choisir_compet" title="Voir ou choisir les items."></q><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" />
@@ -255,17 +252,8 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
 </form>
 
 <form action="#" method="post" id="zone_profs" class="hide">
-  <div class="astuce">Résumé des différents niveaux de droits (les plus élevés incluent les plus faibles)&nbsp;:</div>
-  <ul class="puce">
-    <li>0 &rarr; <span class="select_img droit_x">&nbsp;</span> aucun droit</li>
-    <li>1 &rarr; <span class="select_img droit_v">&nbsp;</span> visualiser le devoir (et le dupliquer)</li>
-    <li>2 &rarr; <span class="select_img droit_s">&nbsp;</span> co-saisir les notes du devoir</li>
-    <li>3 &rarr; <span class="select_img droit_m">&nbsp;</span> modifier les paramètres (élèves, items, &hellip;) <span class="danger">Risqué : à utiliser en connaissance de cause&nbsp;!</span></li>
-  </ul>
-  <hr />
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Gestion des évaluations &rarr; Associer des collègues à une évaluation.</a></span>
-  <hr />
-  <?php echo Html::afficher_form_element_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
+  <div class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</div>
+  <?php echo afficher_form_element_checkbox_collegues() ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
@@ -273,7 +261,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
   <div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french'); ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <?php echo Html::afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
+  <?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
   <p id="alerte_eleves" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</span></p>
   <div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
@@ -322,7 +310,7 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   <h2>Imprimer le cartouche d'une évaluation</h2>
   <p class="b" id="titre_imprimer"></p>
   <label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />
-  <label class="tab" for="f_cases_nb">Nombre de cases :</label><?php echo $select_cart_cases_nb ?><br />
+  <label class="tab" for="f_detail">Nombre de cases :</label><?php echo $select_cart_cases_nb ?><br />
   <label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
@@ -336,7 +324,6 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   <input id="imprimer_ref" name="f_ref" type="hidden" value="" />
   <input id="imprimer_date_fr" name="f_date_fr" type="hidden" value="" />
   <input id="imprimer_groupe_nom" name="f_groupe_nom" type="hidden" value="" />
-  <input id="imprimer_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
   <input id="imprimer_description" name="f_description" type="hidden" value="" />
   <p id="zone_imprimer_retour"></p>
 </fieldset></form>
@@ -373,7 +360,6 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
     <input id="saisir_ref" name="f_ref" type="hidden" value="" />
     <input id="saisir_date_fr" name="f_date_fr" type="hidden" value="" />
     <input id="saisir_date_visible" name="f_date_visible" type="hidden" value="" />
-    <input id="saisir_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
     <input id="saisir_description" name="f_description" type="hidden" value="" />
     <input id="saisir_fini" name="f_fini" type="hidden" value="" />
   </p>

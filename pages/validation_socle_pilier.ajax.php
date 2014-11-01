@@ -114,7 +114,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   }
   $affichage .= '</tbody>';
   // Ligne avec le drapeau de la LV, si compétence concernée sélectionnée.
-  $affichage .= count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? '<tfoot>'.$tfoot.'<th class="nu"></th><th class="nu" colspan="2"></th></tfoot>' : '' ;
+  $affichage .= count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? '<tfoot>'.$tfoot.'<th class="nu" colspan="3"></th></tfoot>' : '' ;
   // Récupérer la liste des jointures (validations)
   $listing_eleve_id  = implode(',',$tab_eleve_id);
   $listing_pilier_id = implode(',',$tab_pilier_id);

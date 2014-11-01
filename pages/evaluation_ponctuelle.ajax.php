@@ -100,7 +100,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && isset($tab_notes[$
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
     $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof( 'eval' /*groupe_type*/ , '' /*groupe_nom*/ , 0 /*niveau_id*/ );
     // Insèrer l'enregistrement de l'évaluation
-    $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , TODAY_MYSQL , $description , TODAY_MYSQL /*date_visible_mysql*/ ,NULL /*date_autoeval_mysql*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , 'alpha' /*eleves_ordre*/ );
+    $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , TODAY_MYSQL , $description , TODAY_MYSQL /*date_visible_mysql*/ ,NULL /*date_autoeval_mysql*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ );
   }
   // Maintenant on recupère le contenu de la base déjà enregistré pour le comparer avec la saisie envoyée.
   $presence_item   = FALSE;
@@ -133,7 +133,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && isset($tab_notes[$
   if(!$presence_eleve)
   {
     // 'ajouter' plutôt que 'creer' car en cas d'ajout puis de suppression d'une note à un élève, un élève peut se retrouver déjà affecté à un devoir sans qu'il n'y ait de note trouvée
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve( $devoir_id , $groupe_id , array($eleve_id) , 'ajouter' );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user( $devoir_id , $groupe_id , array($eleve_id) , 'ajouter' );
   }
   if($presence_saisie==FALSE)
   {

@@ -2170,7 +2170,7 @@ if( $step==53 )
   echo  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$archive.'.pdf"><span class="file file_pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</span></a></li>'.NL;
   echo  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$archive.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
   echo'</ul>'.NL;
-  echo'<p class="danger">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</p>'.NL;
+  echo'<p class="danger">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>'.NL;
   switch($import_origine.'+'.$import_profil)
   {
     case 'sconet+eleve'       : $etape = 6; $step = 61; break;

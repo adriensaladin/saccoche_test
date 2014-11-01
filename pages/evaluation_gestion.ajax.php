@@ -45,7 +45,6 @@ $doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_
 $doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $groupe         = (isset($_POST['f_groupe']))          ? Clean::texte($_POST['f_groupe'])                : '';
 $groupe_nom     = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])            : '';
-$eleves_ordre   = (isset($_POST['f_eleves_ordre']))    ? Clean::texte($_POST['f_eleves_ordre'])          : '';
 $cart_detail    = (isset($_POST['f_detail']))          ? Clean::texte($_POST['f_detail'])                : '';
 $cart_cases_nb  = (isset($_POST['f_cases_nb']))        ? Clean::entier($_POST['f_cases_nb'])             : '';
 $cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
@@ -90,38 +89,23 @@ else
 }
 
 // Contrôler la liste des items transmis
-$tab_id      = (isset($_POST['tab_id'])) ? explode(',',$_POST['tab_id']) : array() ;
-$tab_id      = Clean::map_entier($tab_id);
-$tab_id      = array_filter($tab_id,'positif');
+$tab_id     = (isset($_POST['tab_id'])) ? explode(',',$_POST['tab_id']) : array() ;
+$tab_id     = Clean::map_entier($tab_id);
+$tab_id     = array_filter($tab_id,'positif');
 // Contrôler la liste des items transmis
-$tab_items   = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items   = Clean::map_entier($tab_items);
-$tab_items   = array_filter($tab_items,'positif');
-$nb_items    = count($tab_items);
+$tab_items  = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
+$tab_items  = Clean::map_entier($tab_items);
+$tab_items  = array_filter($tab_items,'positif');
+$nb_items   = count($tab_items);
 // Contrôler la liste des élèves transmis (sur des élèves sélectionnés uniquement)
-$tab_eleves  = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
-$tab_eleves  = Clean::map_entier($tab_eleves);
-$tab_eleves  = array_filter($tab_eleves,'positif');
-$nb_eleves   = count($tab_eleves);
+$tab_eleves = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
+$tab_eleves = Clean::map_entier($tab_eleves);
+$tab_eleves = array_filter($tab_eleves,'positif');
+$nb_eleves  = count($tab_eleves);
 // Contrôler la liste des profs transmis
-$tab_profs   = array();
-$tab_droits  = array( 'v'=>'voir' , 's'=>'saisir' , 'm'=>'modifier' );
-$profs_liste = (isset($_POST['f_prof_liste'])) ? $_POST['f_prof_liste'] : '' ;
-$tmp_tab     = ($profs_liste) ? explode('_',$profs_liste) : array() ;
-foreach($tmp_tab as $valeur)
-{
-  $droit   = $valeur{0};
-  $id_prof = (int)substr($valeur,1);
-  if( isset($tab_droits[$droit]) && ($id_prof>0) && ( ($action!='dupliquer') || ($id_prof!=$_SESSION['USER_ID']) ) )
-  {
-    $tab_profs[$id_prof] = $tab_droits[$droit];
-  }
-  else
-  {
-    $profs_liste = str_replace( array( '_'.$valeur , $valeur.'_' , $valeur ) , '' , $profs_liste );
-  }
-}
-$nb_profs   = count($tab_profs);
+$tab_profs  = (isset($_POST['f_prof_liste'])) ? explode('_',$_POST['f_prof_liste']) : array() ;
+$tab_profs  = Clean::map_entier($tab_profs);
+$tab_profs  = array_filter($tab_profs,'positif');
 // Liste des notes transmises
 $tab_notes  = (isset($_POST['f_notes'])) ? explode(',',$_POST['f_notes']) : array() ;
 
@@ -146,7 +130,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   // Restreindre la recherche à une période donnée, cas d'une période associée à une classe ou à un groupe
   else
   {
-    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode( $aff_classe_id , $aff_periode );
+    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($aff_classe_id,$aff_periode);
     if(empty($DB_ROW))
     {
       exit('Erreur : cette classe et cette période ne sont pas reliées !');
@@ -158,7 +142,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   // Lister les évaluations
   $script = '';
   $classe_id = ($aff_classe_txt!='d2') ? $aff_classe_id : -1 ; // 'd2' est transmis si on veut toutes les classes / tous les groupes ; classe_id vaut 0 si selection d'élèves
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof( $_SESSION['USER_ID'] , $classe_id , $date_debut_mysql , $date_fin_mysql );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof($_SESSION['USER_ID'],$classe_id,$date_debut_mysql,$date_fin_mysql);
   if(!empty($DB_TAB))
   {
     // Récupérer le nb de saisies déjà effectuées par évaluation (ça posait trop de problème dans la requête précédente : saisies comptées plusieurs fois, évaluations sans saisies non retournées...)
@@ -185,56 +169,23 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
     }
     foreach($DB_TAB as $DB_ROW)
     {
-      // Profs avec qui on partage des droits
-      if(!$DB_ROW['partage_listing'])
-      {
-        $profs_liste = '';
-        $profs_nombre = 'non';
-        $profs_bulle  = '';
-      }
-      else
-      {
-        $profs_liste  = $DB_ROW['partage_listing'];
-        $nb_profs = mb_substr_count($profs_liste,'_')+1;
-        $profs_nombre = ($nb_profs+1).' profs';
-        $profs_bulle  = ($nb_profs<10) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-      }
-      // Droit sur cette évaluation
-      if($DB_ROW['proprio_id']==$_SESSION['USER_ID'])
-      {
-        $niveau_droit = 4; // propriétaire
-      }
-      elseif($profs_liste) // forcément
-      {
-        $search_liste = '_'.$profs_liste.'_';
-        if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-        {
-          $niveau_droit = 3; // modifier
-        }
-        elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-        {
-          $niveau_droit = 2; // saisir
-        }
-        elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-        {
-          $niveau_droit = 1; // voir
-        }
-        else
-        {
-          exit('Erreur : droit attribué sur le devoir n°'.$DB_ROW['devoir_id'].' non trouvé !');
-        }
-      }
-      else
-      {
-        exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$DB_ROW['devoir_id'].' !');
-      }
       $date_affich   = convert_date_mysql_to_french($DB_ROW['devoir_date']);
       $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
       $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
       $ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
       $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
       $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
-      $eleves_bulle = (($type=='selection') && ($DB_ROW['users_nombre']<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
+      if(!$DB_ROW['devoir_partage'])
+      {
+        $profs_liste = '';
+        $profs_nombre = 'moi seul';
+      }
+      else
+      {
+        $profs_liste  = str_replace(',','_',mb_substr($DB_ROW['devoir_partage'],1,-1));
+        $profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' collègues';
+      }
+      $proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
       $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
       $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       $effectif_eleve = ($type=='groupe') ? $tab_effectifs[$DB_ROW['groupe_id']] : $DB_ROW['users_nombre'] ;
@@ -243,29 +194,29 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $remplissage_class    = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
       $remplissage_class2   = ($DB_ROW['devoir_fini']) ? ' bf' : '' ;
       $remplissage_contenu  = ($DB_ROW['devoir_fini']) ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
-      $remplissage_lien1    = ($niveau_droit<4)  ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
-      $remplissage_lien2    = ($niveau_droit<4)  ? '' : '</a>' ;
-      $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."' ;
+      $remplissage_lien1    = (!$proprio) ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
+      $remplissage_lien2    = (!$proprio) ? '' : '</a>' ;
+      $remplissage_td_title = ( $proprio) ? '' : ' title="Non cliquable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."' ;
       // Afficher une ligne du tableau
       echo'<tr>';
       echo  '<td>'.$date_affich.'</td>';
       echo  '<td>'.$date_visible.'</td>';
       echo  '<td>'.$date_autoeval.'</td>';
-      echo  ($type=='groupe') ? '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.html($DB_ROW['groupe_nom']).'</td>' : '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.$DB_ROW['users_nombre'].' élève'.$us.$eleves_bulle.'</td>' ;
-      echo  '<td id="proprio_'.$DB_ROW['proprio_id'].'">'.$profs_nombre.$profs_bulle.'</td>';
+      echo  ($type=='groupe') ? '<td>'.html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
+      echo  '<td>'.$profs_nombre.'</td>';
       echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
       echo  '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
       echo  '<td>'.$image_sujet.$image_corrige;
-      echo  ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo  ($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
       echo  '</td>';
       echo  '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
       echo  '<td class="nu" id="devoir_'.$ref.'">';
-      echo    ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
-      echo    ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    ($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    ($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
       echo    '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-      echo    ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    ($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
       echo    '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
-      echo    ($niveau_droit>=2) ? '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' : '<q class="saisir_non" title="Action nécessitant le droit de saisie (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
       echo    '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
       echo    '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
       echo  '</td>';
@@ -290,7 +241,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 // Ajouter une nouvelle évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $date && $date_visible && $date_autoeval && ( ($groupe_type && $groupe_id) || $nb_eleves ) && $nb_items && in_array($eleves_ordre,array('alpha','classe')) )
+if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $date && $date_visible && $date_autoeval && ( ($groupe_type && $groupe_id) || $nb_eleves ) && $nb_items )
 {
   $date_mysql          = convert_date_french_to_mysql($date);
   $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
@@ -318,14 +269,13 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   {
     exit('Date fin auto-éval. avant date visible !');
   }
-  // Ordre des élèves
-  if($groupe_type=='classe')
+  // Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde dans le cas d'élèves sélectionnés]
+  if(count($tab_profs))
   {
-    $eleves_ordre = 'alpha';
-  }
-  else
-  {
-    Form::save_choix('evaluation_gestion');
+    if(!in_array($_SESSION['USER_ID'],$tab_profs))
+    {
+      exit('Erreur : absent de la liste des professeurs !');
+    }
   }
   // En cas de duplication d'une évaluation comportant un fichier d'énoncé ou de corrigé, il faut aussi en dupliquer ces documents sous un autre nom.
   // Sinon, lors de la suppression de l'un des devoirs, l'autre perd ses documents associés.
@@ -349,22 +299,17 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   if($type=='selection')
   {
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
-    $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof( $groupe_type , '' , 0 );
+    $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof($groupe_type,'',0);
   }
   // Insèrer l'enregistrement de l'évaluation
-  $devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre );
+  $devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$description,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_profs);
   if($type=='selection')
   {
     // Affecter tous les élèves choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve( $devoir_id2 , $groupe_id , $tab_eleves , 'creer' );
-  }
-  if($nb_profs)
-  {
-    // Affecter tous les profs choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id2 , $tab_profs , 'creer' );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
   }
   // Insérer les enregistrements des items de l'évaluation
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id2 , $tab_items , 'dupliquer' , $devoir_id );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
   // Insérer les scores 'REQ' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
   if(!empty($_SESSION['TMP']['req_user_item']))
   {
@@ -372,7 +317,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     foreach($_SESSION['TMP']['req_user_item'] as $req)
     {
       list($eleve_id,$item_id) = explode('x',$req);
-      DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id2 , $item_id , $date_mysql , 'REQ' , $info , $date_visible_mysql );
+      DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id2,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
     }
     unset($_SESSION['TMP']['req_user_item']);
   }
@@ -382,11 +327,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
   $ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
-  $cs = ($nb_items >1) ? 's' : '' ;
-  $us = ($nb_eleves>1) ? 's' : '' ;
-  $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
-  $profs_nombre = ($nb_profs) ? ($nb_profs+1).' profs' : 'non' ;
-  $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
+  $cs = ($nb_items>1)  ? 's' : '';
+  $us = ($nb_eleves>1) ? 's' : '';
+  $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
@@ -399,8 +342,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   echo'<td>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
-  echo ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
-  echo'<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>';
+  echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
+  echo'<td>'.$profs_nombre.'</td>';
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
@@ -417,7 +360,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   echo'</td>';
   echo'<SCRIPT>';
   echo'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";';
-  echo'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+  echo'tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";';
   echo ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' : '' ;
   echo'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";';
   echo'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";';
@@ -428,7 +371,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 // Modifier une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date && $date_visible && $date_autoeval && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) && in_array($eleves_ordre,array('alpha','classe')) )
+if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible && $date_autoeval && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) )
 {
   $date_mysql          = convert_date_french_to_mysql($date);
   $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
@@ -455,66 +398,28 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   {
     exit('Date fin auto-éval. avant date visible !');
   }
-  // Tester les droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id==$_SESSION['USER_ID'])
+  // Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde dans le cas d'élèves sélectionnés]
+  if(count($tab_profs))
   {
-    $niveau_droit = 4; // propriétaire
-    $proprietaire = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'];
-  }
-  elseif($profs_liste) // forcément
-  {
-    $search_liste = '_'.$profs_liste.'_';
-    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    if(!in_array($_SESSION['USER_ID'],$tab_profs))
     {
-      $niveau_droit = 3; // modifier
+      exit('Erreur : absent de la liste des professeurs !');
     }
-    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !'); // saisir
-    }
-    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !'); // voir
-    }
-    else
-    {
-      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
-    }
-    $proprietaire = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_identite( $devoir_id );
-  }
-  else
-  {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
-  }
-  // Ordre des élèves
-  if($groupe_type=='classe')
-  {
-    $eleves_ordre = 'alpha';
-  }
-  else
-  {
-    Form::save_choix('evaluation_gestion');
   }
   // sacoche_devoir (maj des paramètres date & info)
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir( $devoir_id , $proprio_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $eleves_ordre );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$description,$date_visible_mysql,$date_autoeval_mysql,$tab_profs);
   if($type=='selection')
   {
     // sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve( $devoir_id , $groupe_id , $tab_eleves , 'substituer' );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
   }
   elseif($type=='groupe')
   {
     // sacoche_devoir (maj groupe_id) + sacoche_saisie pour TOUS les users !
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe( $devoir_id , $groupe_id );
-  }
-  if( $nb_profs && ($proprio_id==$_SESSION['USER_ID']) ) // à restreindre en cas de modification d'une évaluation dont on n'est pas le propriétaire
-  {
-    // Affecter tous les profs choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'substituer' );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id);
   }
   // sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id , $tab_items , 'substituer' );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
   // Récupérer le nb de saisies déjà effectuées pour l'évaluation
   $nb_saisies_effectuees = DB_STRUCTURE_PROFESSEUR::DB_lister_nb_saisies_par_evaluation($devoir_id);
   // Récupérer l'effectif de la classe ou du groupe
@@ -523,11 +428,9 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
   $ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
-  $cs = ($nb_items>1)  ? 's' : '' ;
-  $us = ($nb_eleves>1) ? 's' : '' ;
-  $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
-  $profs_nombre = ($nb_profs) ? ($nb_profs+1).' profs' : 'non' ;
-  $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
+  $cs = ($nb_items>1)  ? 's' : '';
+  $us = ($nb_eleves>1) ? 's' : '';
+  $profs_nombre = count($tab_profs) ? count($tab_profs).' collègues' : 'moi seul' ;
   $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
   $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
@@ -535,33 +438,30 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
   $remplissage_class2   = ($fini=='oui') ? ' bf' : '' ;
   $remplissage_contenu  = ($fini=='oui') ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
-  $remplissage_lien1    = ($niveau_droit<4)  ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
-  $remplissage_lien2    = ($niveau_droit<4)  ? '' : '</a>' ;
-  $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($proprietaire).')."' ;
+  $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
+  $remplissage_lien2    = '</a>';
   echo'<td>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
-  echo ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
-  echo'<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>';
+  echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
+  echo'<td>'.$profs_nombre.'</td>';
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
-  echo'<td>'.$image_sujet.$image_corrige;
-  echo ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($proprietaire).')."></q>' ;
-  echo'</td>';
-  echo'<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
+  echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
+  echo  '<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
-  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire).')."></q>' ;
-  echo ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire).')."></q>' ;
+  echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
+  echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
   echo  '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire).')."></q>' ;
+  echo  '<q class="supprimer" title="Supprimer cette évaluation."></q>';
   echo  '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
-  echo  '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>'; // niveau de droit à 3 ou 4 donc au moins à 2
+  echo  '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
   echo  '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
   echo  '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
   echo'</td>';
   echo'<SCRIPT>';
   echo'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";';
-  echo'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+  echo'tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";';
   echo ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' : '' ;
   echo'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";';
   echo'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";';
@@ -574,13 +474,6 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
 
 if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
-  }
-  // On y va
   if($type=='selection')
   {
     // supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
@@ -588,7 +481,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
     SACocheLog::ajouter('Suppression d\'un regroupement ('.$groupe_type.' '.$groupe_id.'), sans les devoirs associés.');
   }
   // on supprime l'évaluation avec ses saisies
-  DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies( $devoir_id );
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
   SACocheLog::ajouter('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
   // Afficher le retour
   exit('<td>ok</td>');
@@ -596,7 +489,6 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher le formulaire pour réordonner les items d'une évaluation
-// La vérification de droits suffisants s'effectuera lors de la soumission.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='ordonner') && $devoir_id )
@@ -638,15 +530,14 @@ if( ($action=='indiquer_eleves_deja') && $description && $date_debut )
 // Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 // Générer en même temps un csv à récupérer pour une saisie déportée
 // Générer en même temps un pdf contenant un tableau de saisie vide
-// La vérification des droits suffisants s'effectuera lors de la soumission.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) ) // $description et $groupe_nom sont aussi transmis
+if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr ) // $description et $groupe_nom sont aussi transmis
 {
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -786,12 +677,12 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
 // Générer en même temps un pdf contenant un tableau de saisie plein, couleur ou noir & blanc
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) ) // $description et $groupe_nom sont aussi transmis
+if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description et $groupe_nom sont aussi transmis
 {
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -977,7 +868,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   // liste des items
   $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
   // Let's go
   $item_nb = count($DB_TAB_ITEM);
   if(!$item_nb)
@@ -1178,38 +1069,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 
 if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
-  // Tester les droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id==$_SESSION['USER_ID'])
-  {
-    $niveau_droit = 4; // propriétaire
-  }
-  elseif($profs_liste) // forcément
-  {
-    $search_liste = '_'.$profs_liste.'_';
-    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 3; // modifier
-    }
-    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !'); // saisir
-    }
-    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !'); // voir
-    }
-    else
-    {
-      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
-    }
-  }
-  else
-  {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
-  }
-  // Mise à jour dans la base
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_ordre_item( $devoir_id , $tab_id );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_ordre_item($devoir_id,$tab_id);
   exit('<ok>');
 }
 
@@ -1219,37 +1079,6 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 
 if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible && count($tab_notes) )
 {
-  // Tester les droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id==$_SESSION['USER_ID'])
-  {
-    $niveau_droit = 4; // propriétaire
-  }
-  elseif($profs_liste) // forcément
-  {
-    $search_liste = '_'.$profs_liste.'_';
-    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 3; // modifier
-    }
-    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 2; // saisir
-    }
-    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
-    }
-    else
-    {
-      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
-    }
-  }
-  else
-  {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
-  }
-  // On y va
   $nb_saisies_possibles  = 0;
   $nb_saisies_effectuees = 0;
   // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
@@ -1320,22 +1149,22 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   foreach($tab_nouveau_ajouter as $key => $note)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $date_mysql , $note , $info , $date_visible_mysql );
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,$note,$info,$date_visible_mysql);
   }
   foreach($tab_nouveau_modifier as $key => $note)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $note , $info );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$note,$info);
   }
   foreach($tab_nouveau_supprimer as $key => $key)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie( $eleve_id , $devoir_id , $item_id );
+    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie($eleve_id,$devoir_id,$item_id);
   }
   foreach($tab_demande_supprimer as $key => $key)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise( $eleve_id , $item_id );
+    DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($eleve_id,$item_id);
   }
   $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
   $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
@@ -1350,7 +1179,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
 // Imprimer un cartouche d'une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur && in_array($eleves_ordre,array('alpha','classe')) )
+if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur )
 {
   Form::save_choix('cartouche');
   $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
@@ -1358,7 +1187,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
   // Let's go
   if(empty($DB_TAB_COMP))
   {
@@ -1674,14 +1503,8 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 
 if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
-  }
   // Mise à jour dans la base
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , $doc_url );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$doc_url);
   // Retour
   exit('ok');
 }
@@ -1692,13 +1515,6 @@ if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array(
 
 if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
-  }
-  // Récupération du fichier
   $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
   $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
@@ -1706,7 +1522,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
     exit($result);
   }
   // Mise à jour dans la base
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , $url_dossier_devoir.FileSystem::$file_saved_name );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$url_dossier_devoir.FileSystem::$file_saved_name);
   // Retour
   exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.FileSystem::$file_saved_name);
 }
@@ -1717,12 +1533,6 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 
 if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
-  }
   // Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
   if(mb_strpos($doc_url,$url_dossier_devoir)===0)
   {
@@ -1731,7 +1541,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
     FileSystem::supprimer_fichier( $chemin_doc , TRUE /*verif_exist*/ );
   }
   // Mise à jour dans la base
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , '' );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');
   // Retour
   exit('ok');
 }
@@ -1742,14 +1552,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
 
 if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
-  }
-  // Mise à jour dans la base
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini( $devoir_id , $fini );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini($devoir_id,$_SESSION['USER_ID'],$fini);
   // Retour
   exit('ok');
 }

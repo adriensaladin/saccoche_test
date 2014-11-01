@@ -416,10 +416,6 @@ class Form
         global $palier_id;
         $tab_choix_new = compact('palier_id');
         break;
-      case 'evaluation_gestion' :
-        global $eleves_ordre;
-        $tab_choix_new = compact('eleves_ordre');
-        break;
       default :
         $tab_choix_new = array();
     }

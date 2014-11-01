@@ -131,11 +131,7 @@ public static function DB_lister_brevet_notes_eleve($serie_ref,$user_id)
   $DB_SQL.= 'FROM sacoche_brevet_saisie ';
   $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND eleve_ou_classe_id=:user_id AND saisie_type=:saisie_type ';
   $DB_SQL.= 'ORDER BY brevet_epreuve_code ASC ';
-  $DB_VAR = array(
-    ':serie_ref'   => $serie_ref,
-    ':user_id'     => $user_id,
-    ':saisie_type' => 'eleve',
-  );
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':user_id'=>$user_id,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -153,11 +149,7 @@ public static function DB_lister_brevet_notes_epreuves_classe($serie_ref,$listin
   $DB_SQL.= 'FROM sacoche_brevet_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON ( sacoche_brevet_saisie.eleve_ou_classe_id=sacoche_user.user_id AND sacoche_brevet_saisie.brevet_serie_ref=sacoche_user.eleve_brevet_serie ) ';
   $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND brevet_epreuve_code IN('.$listing_epreuves_code.') AND ( ( eleve_classe_id=:classe_id AND saisie_type="eleve" ) OR ( eleve_ou_classe_id=:classe_id AND saisie_type="classe" ) ) ';
-  $DB_VAR = array(
-    ':serie_ref'   => $serie_ref,
-    ':classe_id'   => $classe_id,
-    ':saisie_type' => 'eleve',
-  );
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':classe_id'=>$classe_id,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -221,16 +213,11 @@ public static function DB_modifier_user_brevet_serie($listing_user_id,$serie_ref
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET eleve_brevet_serie=:serie_ref ';
   $DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') ';
-  $DB_VAR = array(
-    ':serie_ref' => $serie_ref
-  );
+  $DB_VAR = array(':serie_ref'=>$serie_ref);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   $DB_SQL = 'DELETE FROM sacoche_brevet_saisie ';
   $DB_SQL.= 'WHERE brevet_serie_ref!=:serie_ref AND eleve_ou_classe_id IN('.$listing_user_id.') AND saisie_type=:saisie_type ';
-  $DB_VAR = array(
-    ':serie_ref'   => $serie_ref,
-    ':saisie_type' => 'eleve',
-  );
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':saisie_type'=>'eleve');
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // Il faudrait aussi recalculer pour chaque épreuve les moyennes des classes dont les élèves sont issus...
 }
@@ -249,14 +236,8 @@ public static function DB_modifier_epreuve_choix($serie_ref , $epreuve_code , $c
 {
   $DB_SQL = 'UPDATE sacoche_brevet_epreuve ';
   $DB_SQL.= 'SET brevet_epreuve_choix_recherche=:choix_recherche, brevet_epreuve_choix_moyenne=:choix_moyenne , brevet_epreuve_choix_matieres=:choix_matieres ';
-  $DB_SQL.= 'WHERE brevet_serie_ref=:brevet_serie_ref AND brevet_epreuve_code=:brevet_epreuve_code ';
-  $DB_VAR = array(
-    ':brevet_serie_ref'    => $serie_ref,
-    ':brevet_epreuve_code' => $epreuve_code,
-    ':choix_recherche'     => $choix_recherche,
-    ':choix_moyenne'       => $choix_moyenne,
-    ':choix_matieres'      => $choix_matieres,
-  );
+  $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND brevet_epreuve_code=:epreuve_code ';
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':epreuve_code'=>$epreuve_code,':choix_recherche'=>$choix_recherche,':choix_moyenne'=>$choix_moyenne,':choix_matieres'=>$choix_matieres);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -272,10 +253,7 @@ public static function DB_modifier_brevet_classe_etat($classe_id , $new_etat)
   $DB_SQL = 'UPDATE sacoche_groupe ';
   $DB_SQL.= 'SET fiche_brevet=:fiche_brevet ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
-  $DB_VAR = array(
-    ':groupe_id'    => $classe_id,
-    ':fiche_brevet' => $new_etat,
-  );
+  $DB_VAR = array(':groupe_id'=>$classe_id,':fiche_brevet'=>$new_etat);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -306,18 +284,9 @@ public static function DB_modifier_brevet_fichier($user_id)
  */
 public static function DB_ajouter_brevet_note($serie_ref , $epreuve_code , $saisie_type , $eleve_ou_classe_id , $matieres_id , $saisie_note)
 {
-  $DB_SQL = 'INSERT INTO sacoche_brevet_saisie( brevet_serie_ref, brevet_epreuve_code, eleve_ou_classe_id, saisie_type, prof_id, matieres_id, saisie_note, saisie_appreciation) ';
-  $DB_SQL.= 'VALUES                           (:brevet_serie_ref,:brevet_epreuve_code,:eleve_ou_classe_id,:saisie_type,:prof_id,:matieres_id,:saisie_note,:saisie_appreciation)';
-  $DB_VAR = array(
-    ':brevet_serie_ref'    => $serie_ref,
-    ':brevet_epreuve_code' => $epreuve_code,
-    ':eleve_ou_classe_id'  => $eleve_ou_classe_id,
-    ':saisie_type'         => $saisie_type,
-    ':prof_id'             => 0,
-    ':matieres_id'         => $matieres_id,
-    ':saisie_note'         => $saisie_note,
-    ':saisie_appreciation' => '',
-  );
+  $DB_SQL = 'INSERT INTO sacoche_brevet_saisie(brevet_serie_ref,brevet_epreuve_code,eleve_ou_classe_id,saisie_type,prof_id,matieres_id,saisie_note,saisie_appreciation) ';
+  $DB_SQL.= 'VALUES(:serie_ref,:epreuve_code,:eleve_ou_classe_id,:saisie_type,:prof_id,:matieres_id,:saisie_note,:saisie_appreciation)';
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':epreuve_code'=>$epreuve_code,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':saisie_type'=>$saisie_type,':prof_id'=>0,':matieres_id'=>$matieres_id,':saisie_note'=>$saisie_note,':saisie_appreciation'=>'');
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -336,15 +305,8 @@ public static function DB_modifier_brevet_note($serie_ref , $epreuve_code , $sai
 {
   $DB_SQL = 'UPDATE sacoche_brevet_saisie ';
   $DB_SQL.= 'SET matieres_id=:matieres_id, saisie_note=:saisie_note ';
-  $DB_SQL.= 'WHERE brevet_serie_ref=:brevet_serie_ref AND brevet_epreuve_code=:brevet_epreuve_code AND eleve_ou_classe_id=:eleve_ou_classe_id AND saisie_type=:saisie_type ';
-  $DB_VAR = array(
-    ':brevet_serie_ref'    => $serie_ref,
-    ':brevet_epreuve_code' => $epreuve_code,
-    ':eleve_ou_classe_id'  => $eleve_ou_classe_id,
-    ':saisie_type'         => $saisie_type,
-    ':matieres_id'         => $matieres_id,
-    ':saisie_note'         => $saisie_note,
-  );
+  $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND brevet_epreuve_code=:epreuve_code AND eleve_ou_classe_id=:eleve_ou_classe_id AND saisie_type=:saisie_type ';
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':epreuve_code'=>$epreuve_code,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':saisie_type'=>$saisie_type,':matieres_id'=>$matieres_id,':saisie_note'=>$saisie_note);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -362,15 +324,8 @@ public static function DB_modifier_brevet_appreciation($serie_ref , $epreuve_cod
 {
   $DB_SQL = 'UPDATE sacoche_brevet_saisie ';
   $DB_SQL.= 'SET prof_id=:prof_id, saisie_appreciation=:saisie_appreciation ';
-  $DB_SQL.= 'WHERE brevet_serie_ref=:brevet_serie_ref AND brevet_epreuve_code=:brevet_epreuve_code AND eleve_ou_classe_id=:eleve_id AND saisie_type=:saisie_type ';
-  $DB_VAR = array(
-    ':brevet_serie_ref'    => $serie_ref,
-    ':brevet_epreuve_code' => $epreuve_code,
-    ':eleve_id'            => $eleve_id,
-    ':saisie_type'         => 'eleve',
-    ':prof_id'             => $prof_id,
-    ':saisie_appreciation' => $saisie_appreciation,
-  );
+  $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND brevet_epreuve_code=:epreuve_code AND eleve_ou_classe_id=:eleve_id AND saisie_type=:saisie_type ';
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':epreuve_code'=>$epreuve_code,':eleve_id'=>$eleve_id,':saisie_type'=>'eleve',':prof_id'=>$prof_id,':saisie_appreciation'=>$saisie_appreciation);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -386,13 +341,8 @@ public static function DB_modifier_brevet_appreciation($serie_ref , $epreuve_cod
 public static function DB_supprimer_brevet_saisie($serie_ref , $epreuve_code , $saisie_type , $eleve_ou_classe_id)
 {
   $DB_SQL = 'DELETE FROM sacoche_brevet_saisie ';
-  $DB_SQL.= 'WHERE brevet_serie_ref=:brevet_serie_ref AND brevet_epreuve_code=:brevet_epreuve_code AND eleve_ou_classe_id=:eleve_ou_classe_id AND saisie_type=:saisie_type ';
-  $DB_VAR = array(
-    ':brevet_serie_ref'    => $serie_ref,
-    ':brevet_epreuve_code' => $epreuve_code,
-    ':eleve_ou_classe_id'  => $eleve_ou_classe_id,
-    ':saisie_type'         => $saisie_type,
-  );
+  $DB_SQL.= 'WHERE brevet_serie_ref=:serie_ref AND brevet_epreuve_code=:epreuve_code AND eleve_ou_classe_id=:eleve_ou_classe_id AND saisie_type=:saisie_type ';
+  $DB_VAR = array(':serie_ref'=>$serie_ref,':epreuve_code'=>$epreuve_code,':eleve_ou_classe_id'=>$eleve_ou_classe_id,':saisie_type'=>$saisie_type);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -428,10 +378,7 @@ public static function DB_recuperer_brevet_classe_infos($classe_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_brevet_saisie ON ( sacoche_user.user_id=sacoche_brevet_saisie.eleve_ou_classe_id AND sacoche_user.eleve_brevet_serie=sacoche_brevet_saisie.brevet_serie_ref ) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() AND sacoche_user.eleve_brevet_serie!="X" AND brevet_epreuve_code='.CODE_BREVET_EPREUVE_TOTAL.' AND saisie_type="eleve" ';
-  $DB_VAR = array(
-    ':groupe_id'   => $classe_id,
-    ':profil_type' => 'eleve',
-  );
+  $DB_VAR = array(':groupe_id'=>$classe_id,':profil_type'=>'eleve');
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -455,10 +402,7 @@ public static function DB_recuperer_brevet_saisies_eleves($liste_eleve_id,$prof_
   $DB_SQL.= ($prof_id) ? 'AND prof_id IN(:prof_id,0) ' : '' ;
   $DB_SQL.= ($only_total) ? 'AND brevet_epreuve_code='.CODE_BREVET_EPREUVE_TOTAL.' ' : '' ;
   $DB_SQL.= 'ORDER BY brevet_epreuve_code ASC ';
-  $DB_VAR = array(
-    ':prof_id'     => $prof_id,
-    ':saisie_type' => 'eleve',
-  );
+  $DB_VAR = array(':prof_id'=>$prof_id,':saisie_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -482,11 +426,7 @@ public static function DB_recuperer_brevet_saisies_classe($classe_id,$prof_id,$w
   $DB_SQL.= ($prof_id) ? 'AND prof_id IN(:prof_id,0) ' : '' ;
   $DB_SQL.= ($only_total) ? 'AND brevet_epreuve_code='.CODE_BREVET_EPREUVE_TOTAL.' ' : '' ;
   $DB_SQL.= 'ORDER BY brevet_epreuve_code ASC ';
-  $DB_VAR = array(
-    ':classe_id'   => $classe_id,
-    ':prof_id'     => $prof_id,
-    ':saisie_type' => 'classe',
-  );
+  $DB_VAR = array(':classe_id'=>$classe_id,':prof_id'=>$prof_id,':saisie_type'=>'classe');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

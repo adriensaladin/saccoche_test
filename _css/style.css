@@ -473,14 +473,6 @@ q.n3_move            {background-position: 0 -1460px}
 q.n3_move2           {background-position: 0 -1480px}
 q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
 
-/* Pour des images associées à un select... */
-span.select_img {width:16px;height:16px;display:inline-block;background:transparent no-repeat url(../_img/sprite_action_12.png);margin:auto 2px;}
-span.droit_x {background-position: 0   -80px} /* 0 (aucun) */
-span.droit_v {background-position: 0 -1120px} /* 1 voir */
-span.droit_s {background-position: 0  -860px} /* 2 saisir */
-span.droit_m {background-position: 0  -600px} /* 3 modifier */
-span.droit_z {width:16px;height:16px;display:inline-block;margin:auto 2px;} /* 4 (propriétaire) */
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les formulaires                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

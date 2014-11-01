@@ -466,7 +466,7 @@ function selectionner_profs_option(prof_liste)
 {
   // Sélectionner l'option par défaut pour tous les profs
   $('#zone_profs').find('select').find('option[value=x]').prop('selected',true);
-  $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_x')
+  $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_x');
   // Décocher les boutons pour reporter une valeur à tous
   $('#zone_profs').find('input[type=radio]').prop('checked',false);
   // Modifier les sélections des profs concernés

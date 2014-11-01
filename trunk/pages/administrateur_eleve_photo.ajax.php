@@ -110,7 +110,7 @@ if($action=='afficher')
     exit('Erreur avec les données transmises !');
   }
   // On récupère les élèves
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id ) ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ ) ;
   if(empty($DB_TAB))
   {
     exit('Aucun élève trouvé dans ce regroupement.');
@@ -173,7 +173,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   }
   // Récupérer la liste des élèves et fabriquer le nom de fichier attendu correspondant à chacun
   $tab_bad = array( '[sconet_id]' , '[sconet_num]' , '[reference]' , '[nom]' , '[prenom]' , '[login]' , '[ent_id]' );
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , 1 /*statut*/ , 'all' /*groupe_type*/ , 0 /*groupe_id*/ , 'user_id,user_id_ent,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login' );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , 1 /*statut*/ , 'all' /*groupe_type*/ , 0 /*groupe_id*/ , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)

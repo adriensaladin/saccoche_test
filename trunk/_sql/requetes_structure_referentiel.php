@@ -94,7 +94,10 @@ public static function DB_recuperer_referentiel_partage_etat($matiere_id,$niveau
   $DB_SQL = 'SELECT referentiel_partage_etat ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+  );
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -110,7 +113,10 @@ public static function DB_recuperer_domaine_ordre_max($matiere_id,$niveau_id)
   $DB_SQL = 'SELECT MAX(domaine_ordre) ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+  );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -141,7 +147,10 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
   $DB_SQL = 'SELECT matiere_id ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+  );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -185,7 +194,13 @@ public static function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$do
 {
   $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
   $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:domaine_ordre,:domaine_ref,:domaine_nom)';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':domaine_ordre'=>$domaine_ordre,':domaine_ref'=>$domaine_ref,':domaine_nom'=>$domaine_nom);
+  $DB_VAR = array(
+    ':matiere_id'    => $matiere_id,
+    ':niveau_id'     => $niveau_id,
+    ':domaine_ordre' => $domaine_ordre,
+    ':domaine_ref'   => $domaine_ref,
+    ':domaine_nom'   => $domaine_nom,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -202,7 +217,11 @@ public static function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$th
 {
   $DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
   $DB_SQL.= 'VALUES(:domaine_id,:theme_ordre,:theme_nom)';
-  $DB_VAR = array(':domaine_id'=>$domaine_id,':theme_ordre'=>$theme_ordre,':theme_nom'=>$theme_nom);
+  $DB_VAR = array(
+    ':domaine_id'  => $domaine_id,
+    ':theme_ordre' => $theme_ordre,
+    ':theme_nom'   => $theme_nom,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -222,7 +241,14 @@ public static function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ord
 {
   $DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart) ';
   $DB_SQL.= 'VALUES(:theme_id,:socle_id,:item_ordre,:item_nom,:item_coef,:item_cart)';
-  $DB_VAR = array(':theme_id'=>$theme_id,':socle_id'=>$socle_id,':item_ordre'=>$item_ordre,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart);
+  $DB_VAR = array(
+    ':theme_id'   => $theme_id,
+    ':socle_id'   => $socle_id,
+    ':item_ordre' => $item_ordre,
+    ':item_nom'   => $item_nom,
+    ':item_coef'  => $item_coef,
+    ':item_cart'  => $item_cart,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -242,7 +268,12 @@ public static function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$d
   $DB_SQL.= 'SET niveau_id=:niveau_id, domaine_ordre=:domaine_ordre ';
   $DB_SQL.= ($matiere_id) ? ', matiere_id=:matiere_id ' : '' ;
   $DB_SQL.= 'WHERE domaine_id=:domaine_id ';
-  $DB_VAR = array(':domaine_id'=>$domaine_id,':niveau_id'=>$niveau_id,':domaine_ordre'=>$domaine_ordre,':matiere_id'=>$matiere_id);
+  $DB_VAR = array(
+    ':domaine_id'    => $domaine_id,
+    ':niveau_id'     => $niveau_id,
+    ':domaine_ordre' => $domaine_ordre,
+    ':matiere_id'    => $matiere_id,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -260,7 +291,11 @@ public static function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$them
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
   $DB_SQL.= 'SET domaine_id=:domaine_id, theme_ordre=:theme_ordre ';
   $DB_SQL.= 'WHERE theme_id=:theme_id ';
-  $DB_VAR = array(':theme_id'=>$theme_id,':domaine_id'=>$domaine_id,':theme_ordre'=>$theme_ordre);
+  $DB_VAR = array(
+    ':theme_id'    => $theme_id,
+    ':domaine_id'  => $domaine_id,
+    ':theme_ordre' => $theme_ordre,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -278,7 +313,11 @@ public static function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ord
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
   $DB_SQL.= 'SET theme_id=:theme_id, item_ordre=:item_ordre ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
-  $DB_VAR = array(':item_id'=>$item_id,':theme_id'=>$theme_id,':item_ordre'=>$item_ordre);
+  $DB_VAR = array(
+    ':item_id'    => $item_id,
+    ':theme_id'   => $theme_id,
+    ':item_ordre' => $item_ordre,
+    );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -308,7 +347,13 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
     $domaine_nom = $domaine_xml -> getAttribute('nom');
     $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
     $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:ordre,:ref,:nom)';
-    $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':ordre'=>$domaine_ordre+1,':ref'=>$domaine_ref,':nom'=>$domaine_nom);
+    $DB_VAR = array(
+      ':matiere_id' => $matiere_id,
+      ':niveau_id'  => $niveau_id,
+      ':ordre'      => $domaine_ordre+1,
+      ':ref'        => $domaine_ref,
+      ':nom'        => $domaine_nom,
+    );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $domaine_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
     // On passe en revue les thèmes du domaine...
@@ -320,7 +365,11 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
       $theme_nom = $theme_xml -> getAttribute('nom');
       $DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
       $DB_SQL.= 'VALUES(:domaine_id,:ordre,:nom)';
-      $DB_VAR = array(':domaine_id'=>$domaine_id,':ordre'=>$theme_ordre+1,':nom'=>$theme_nom);
+      $DB_VAR = array(
+        ':domaine_id' => $domaine_id,
+        ':ordre'      => $theme_ordre+1,
+        ':nom'        => $theme_nom,
+      );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
       $theme_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
       // On passe en revue les items du thème...
@@ -336,7 +385,15 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
         $item_lien  = $item_xml -> getAttribute('lien');
         $DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
         $DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:cart,:lien)';
-        $DB_VAR = array(':theme'=>$theme_id,':socle'=>$item_socle,':ordre'=>$item_ordre,':nom'=>$item_nom,':coef'=>$item_coef,':cart'=>$item_cart,':lien'=>$item_lien);
+        $DB_VAR = array(
+          ':theme' => $theme_id,
+          ':socle' => $item_socle,
+          ':ordre' => $item_ordre,
+          ':nom'   => $item_nom,
+          ':coef'  => $item_coef,
+          ':cart'  => $item_cart,
+          ':lien'  => $item_lien,
+        );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
       }
     }
@@ -379,7 +436,11 @@ public static function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
   $DB_SQL.= 'SET domaine_ref=:domaine_ref, domaine_nom=:domaine_nom ';
   $DB_SQL.= 'WHERE domaine_id=:domaine_id ';
-  $DB_VAR = array(':domaine_id'=>$domaine_id,':domaine_ref'=>$domaine_ref,':domaine_nom'=>$domaine_nom);
+  $DB_VAR = array(
+    ':domaine_id'  => $domaine_id,
+    ':domaine_ref' => $domaine_ref,
+    ':domaine_nom' => $domaine_nom,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -397,7 +458,10 @@ public static function DB_modifier_referentiel_theme($theme_id,$theme_nom)
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
   $DB_SQL.= 'SET theme_nom=:theme_nom ';
   $DB_SQL.= 'WHERE theme_id=:theme_id ';
-  $DB_VAR = array(':theme_id'=>$theme_id,':theme_nom'=>$theme_nom);
+  $DB_VAR = array(
+    ':theme_id'  => $theme_id,
+    ':theme_nom' => $theme_nom,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -417,7 +481,13 @@ public static function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
   $DB_SQL.= 'SET entree_id=:socle_id, item_nom=:item_nom, item_coef=:item_coef, item_cart=:item_cart ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
-  $DB_VAR = array(':item_id'=>$item_id,':socle_id'=>$socle_id,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart);
+  $DB_VAR = array(
+    ':item_id'   => $item_id,
+    ':socle_id'  => $socle_id,
+    ':item_nom'  => $item_nom,
+    ':item_coef' => $item_coef,
+    ':item_cart' => $item_cart,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -456,7 +526,10 @@ public static function DB_modifier_referentiel_items( $granulosite , $matiere_id
     $DB_SQL.= 'FROM sacoche_referentiel_item ';
     $DB_SQL.= 'WHERE theme_id=:objet_id';
   }
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':objet_id'=>$objet_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':objet_id'   => $objet_id,
+  );
   $listing_item_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // Mettre à jour les items concernés
   if(!$listing_item_id)
@@ -483,7 +556,10 @@ public static function DB_modifier_referentiel_lien_ressources($item_id,$item_li
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
   $DB_SQL.= 'SET item_lien=:item_lien ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
-  $DB_VAR = array(':item_id'=>$item_id,':item_lien'=>$item_lien);
+  $DB_VAR = array(
+    ':item_id'   => $item_id,
+    ':item_lien' => $item_lien,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -499,7 +575,10 @@ public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_d
   $DB_SQL = 'UPDATE sacoche_matiere ';
   $DB_SQL.= 'SET matiere_nb_demandes=:matiere_nb_demandes ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':matiere_nb_demandes'=>$matiere_nb_demandes);
+  $DB_VAR = array(
+    ':matiere_id'          => $matiere_id,
+    ':matiere_nb_demandes' => $matiere_nb_demandes,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -521,7 +600,10 @@ public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$nive
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -603,7 +685,10 @@ public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
  */
 public static function DB_fusionner_referentiel_items($item_id_degageant,$item_id_absorbant)
 {
-  $DB_VAR = array(':item_id_degageant'=>$item_id_degageant,':item_id_absorbant'=>$item_id_absorbant);
+  $DB_VAR = array(
+    ':item_id_degageant' => $item_id_degageant,
+    ':item_id_absorbant' => $item_id_absorbant,
+  );
   // Dans le cas où les deux items ont été évalués dans une même évaluation, on est obligé de supprimer l'un des scores
   // On doit donc commencer par chercher les conflits possibles de clefs multiples pour éviter un erreur lors de l'UPDATE
   //
@@ -692,7 +777,11 @@ public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
   $DB_SQL.= 'SET domaine_ordre=domaine_ordre-1 ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id AND domaine_ordre>:ordre_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':ordre_id'=>$ordre_id);
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+    ':ordre_id'   => $ordre_id,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -708,7 +797,10 @@ public static function DB_renumeroter_referentiel_themes_suivants($domaine_id,$o
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
   $DB_SQL.= 'SET theme_ordre=theme_ordre-1 ';
   $DB_SQL.= 'WHERE domaine_id=:domaine_id AND theme_ordre>:ordre_id ';
-  $DB_VAR = array(':domaine_id'=>$domaine_id,':ordre_id'=>$ordre_id);
+  $DB_VAR = array(
+    ':domaine_id' => $domaine_id,
+    ':ordre_id'   => $ordre_id,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

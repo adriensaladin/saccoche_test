@@ -86,16 +86,22 @@ public static function DB_recuperer_item_infos($item_id)
 
 /**
  * Lister les évaluations concernant un élève sur une période donnée
+ * Pour l'enseignant propriétaire du devoir et les enseignants ayant un accès au minimum en saisie.
  *
  * @param int    $devoir_id
  * @return array
  */
 public static function DB_recuperer_devoir_infos($devoir_id)
 {
-  $DB_SQL = 'SELECT prof_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date, devoir_partage ';
+  $DB_SQL = 'SELECT proprio_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date, GROUP_CONCAT(prof_id SEPARATOR ",") AS partage_id_listing  ';
   $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
-  $DB_VAR = array(':devoir_id'=>$devoir_id);
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND ( ( prof_id IS NULL ) OR ( jointure_droit != :jointure_droit_non ) ) ';
+  $DB_SQL.= 'GROUP BY devoir_id ';
+  $DB_VAR = array(
+    ':devoir_id'          => $devoir_id,
+    ':jointure_droit_non' => 'voir',
+  );
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -116,7 +122,10 @@ public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
   $DB_SQL.= 'GROUP BY user_id ';
-  $DB_VAR = array(':user_id'=>$eleve_id,':type2'=>'groupe');
+  $DB_VAR = array(
+    ':user_id' => $eleve_id,
+    ':type2'   => 'groupe',
+  );
   $liste_groupe_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!$liste_groupe_id) )
   {
@@ -165,7 +174,10 @@ public static function DB_lister_classes_parent($parent_id)
   $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'GROUP BY groupe_id '; // si plusieurs enfants dans la même classe
   $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(':parent_id'=>$parent_id,':profil_type'=>'eleve');
+  $DB_VAR = array(
+    ':parent_id'   => $parent_id,
+    ':profil_type' => 'eleve',
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -247,7 +259,7 @@ public static function DB_lister_devoirs_groupes_eleve($eleve_id,$classe_id,$dat
   $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
   $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
@@ -269,12 +281,15 @@ public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($elev
   $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note!="REQ" ';
   $DB_SQL.= 'AND DATE_ADD(devoir_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':nb_jours'=>$nb_jours);
+  $DB_VAR = array(
+    ':eleve_id' => $eleve_id,
+    ':nb_jours' => $nb_jours,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -292,7 +307,7 @@ public static function DB_lister_devoirs_eleve_avec_autoevaluation_en_cours($ele
   $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM  sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
   $DB_SQL.= 'AND devoir_autoeval_date IS NOT NULL AND devoir_autoeval_date >= NOW() '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
@@ -324,7 +339,10 @@ public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours)
   $DB_SQL.= 'AND DATE_ADD(saisie_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
   // Pas de 'GROUP BY item_id ' car le regroupement est effectué avant le tri par date
   $DB_SQL.= 'ORDER BY saisie_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':nb_jours'=>$nb_jours);
+  $DB_VAR = array(
+    ':eleve_id' => $eleve_id,
+    ':nb_jours' => $nb_jours,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE); // TRUE permet d'avoir item_id en clef et, pour un item qui ressortirait plusieurs fois, d'avoir la dernière saisie en [item_id][0]
 }
 
@@ -369,7 +387,10 @@ public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$user
   $DB_SQL = 'SELECT item_id, saisie_note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id '.$sql_view.$req_view;
-  $DB_VAR = array(':devoir_id'=>$devoir_id,':eleve_id'=>$eleve_id);
+  $DB_VAR = array(
+    ':devoir_id' => $devoir_id,
+    ':eleve_id'  => $eleve_id,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -386,7 +407,10 @@ public static function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$ma
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND matiere_id=:matiere_id ';
   $DB_SQL.= 'GROUP BY matiere_id';
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id);
+  $DB_VAR = array(
+    ':eleve_id'   => $eleve_id,
+    ':matiere_id' => $matiere_id,
+  );
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -403,7 +427,11 @@ public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_i
   $DB_SQL = 'SELECT demande_id ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
+  $DB_VAR = array(
+    ':eleve_id'   => $eleve_id,
+    ':matiere_id' => $matiere_id,
+    ':item_id'    => $item_id,
+  );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -422,9 +450,17 @@ public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_i
 public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$prof_id,$demande_score,$demande_statut,$message)
 {
   $demande_messages = ($message) ? afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_demande(eleve_id,matiere_id,item_id,prof_id,demande_date,demande_score,demande_statut,demande_messages) ';
-  $DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:item_id,:prof_id,NOW(),:demande_score,:demande_statut,:demande_messages)';
-  $DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id,':prof_id'=>$prof_id,':demande_score'=>$demande_score,':demande_statut'=>$demande_statut,':demande_messages'=>$demande_messages);
+  $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id,demande_date, demande_score, demande_statut, demande_messages) ';
+  $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,       NOW(),:demande_score,:demande_statut,:demande_messages)';
+  $DB_VAR = array(
+    ':eleve_id'         => $eleve_id,
+    ':matiere_id'       => $matiere_id,
+    ':item_id'          => $item_id,
+    ':prof_id'          => $prof_id,
+    ':demande_score'    => $demande_score,
+    ':demande_statut'   => $demande_statut,
+    ':demande_messages' => $demande_messages,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }

@@ -96,8 +96,12 @@ public static function DB_recuperer_statistiques()
 
 /**
  * compter_saisies_prof_classe
- * Remarque : on passe par sacoche_devoir pour ne conserver que les évaluations de l'année scolaire en cours
- * Attention, renvoie aussi des lignes avec juste les noms des profs : il est plus rapide de les écarter a posteriori en PHP que d'ajouter un test groupe_nom IS NOT NULL ou de remplacer la jointure par un INNER JOIN car ces deux procédés allongent le temps de réponse MySQL
+ *
+ * Remarque : on passe par sacoche_devoir pour ne conserver que les évaluations de l'année scolaire en cours.
+ *
+ * Attention, renvoie aussi des lignes avec juste les noms des profs : il est plus rapide de les écarter a posteriori en PHP
+ * que d'ajouter un test groupe_nom IS NOT NULL ou de remplacer la jointure par un INNER JOIN
+ * car ces deux procédés allongent le temps de réponse MySQL.
  *
  * @param void
  * @return array
@@ -106,7 +110,7 @@ public static function DB_compter_saisies_prof_classe()
 {
   $DB_SQL = 'SELECT CONCAT(prof.user_nom," ",prof.user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user AS prof ';
-  $DB_SQL.= 'LEFT JOIN sacoche_devoir ON prof.user_id=sacoche_devoir.prof_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_devoir ON prof.user_id=sacoche_devoir.proprio_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil ON prof.user_profil_sigle=sacoche_user_profil.user_profil_sigle ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_saisie.eleve_id=eleve.user_id ';

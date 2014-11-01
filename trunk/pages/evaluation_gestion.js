@@ -71,8 +71,48 @@ $(document).ready
       if(!tab_corriges[ref]) {$('#bouton_supprimer_corrige').prop('disabled',true);}
     }
 
-    function afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , groupe_val , groupe_nom , eleve_nombre , eleve_liste , prof_nombre , prof_liste , description , compet_nombre , compet_liste , doc_sujet , doc_corrige , fini )
+    function maj_choix_tri_eleves()
     {
+      groupe_id = $("#f_groupe option:selected").val();
+      if(groupe_id)
+      {
+        groupe_type = $("#f_groupe option:selected").parent().attr('label');
+        if(groupe_type=='Classes')
+        {
+          $("#bloc_ordre").hide();
+        }
+        else
+        {
+          $("#bloc_ordre").show();
+        }
+      }
+      else
+      {
+        $("#bloc_ordre").hide();
+      }
+    }
+
+    function afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , groupe_val , groupe_nom , eleve_nombre , eleve_liste , eleves_ordre , prof_nombre , prof_liste , description , compet_nombre , compet_liste , doc_sujet , doc_corrige , fini , proprio_id )
+    {
+      // Éviter, en cas de duplication d'évaluation dont on n'est pas le propriétaire, de se retrouver avec des complications
+      // (droit du propriétaire d'origine ? évaluations en exemplaires multiples pour les autres ?)
+      if( (mode=='dupliquer') && (user_id!=proprio_id) )
+      {
+        prof_nombre = 'non';
+        prof_liste = '';
+      }
+      // Choix des collègues à masquer en cas de modification d'une évaluation dont on n'est pas le propriétaire
+      // (ingérable sinon : on apparait comme propriétaire, le vrai propriétaire n'apparait pas comme tel...)
+      if( (mode=='modifier') && (user_id!=proprio_id) )
+      {
+        $('#choisir_prof').hide(0);
+        $('#choisir_prof_non').show(0);
+      }
+      else
+      {
+        $('#choisir_prof').show(0);
+        $('#choisir_prof_non').hide(0);
+      }
       $('#f_action').val(mode);
       $('#f_ref').val(ref);
       $('#f_date').val(date_fr);
@@ -80,11 +120,16 @@ $(document).ready
       {
         var selected_groupe = (mode=='ajouter') ? select_groupe.replace('value="'+groupe_val+'"','value="'+groupe_val+'" selected') : select_groupe.replace('>'+groupe_nom,' selected>'+groupe_nom) ;
         $('#f_groupe').html(selected_groupe);
+        maj_choix_tri_eleves();
       }
       else
       {
         $('#f_eleve_nombre').val(eleve_nombre);
         $('#f_eleve_liste').val(eleve_liste);
+      }
+      if(eleves_ordre)
+      {
+        $('#f_eleves_ordre option[value='+eleves_ordre+']').prop('selected',true);
       }
       $('#f_prof_nombre').val(prof_nombre);
       $('#f_prof_liste').val(prof_liste);
@@ -157,7 +202,7 @@ $(document).ready
       }
       var groupe_val = (TYPE=='groupe') ? $('#f_aff_classe option:selected').val() : '' ;
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*ref*/ , input_date /*date_fr*/ , 'identique' /*date_visible*/ , 'sans objet' /*date_autoeval*/ , groupe_val , '' /*groupe_nom*/ , reception_users_texte /*eleve_nombre*/ , reception_users_liste /*eleve_liste*/ , 'moi seul' /*prof_nombre*/ , '' /*prof_liste*/ , '' /*description*/ , reception_items_texte /*compet_nombre*/ , reception_items_liste /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ );
+      afficher_form_gestion( mode , '' /*ref*/ , input_date /*date_fr*/ , 'identique' /*date_visible*/ , 'sans objet' /*date_autoeval*/ , groupe_val , '' /*groupe_nom*/ , reception_users_texte /*eleve_nombre*/ , reception_users_liste /*eleve_liste*/ , '' /*eleves_ordre*/ , 'non' /*prof_nombre*/ , '' /*prof_liste*/ , '' /*description*/ , reception_items_texte /*compet_nombre*/ , reception_items_liste /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ , user_id /*proprio_id*/ );
     };
 
     /**
@@ -182,10 +227,12 @@ $(document).ready
       else
       {
         var groupe_nom    = '';
-        var eleve_nombre  = objet_tds.eq(3).html();
+        var eleve_nombre  = objet_tds.eq(3).text().trim();
         var eleve_liste   = tab_eleves[ref];
       }
-      var prof_nombre   = objet_tds.eq(4).html();
+      var eleves_ordre  = objet_tds.eq(3).attr('class');
+      var prof_nombre   = objet_tds.eq(4).text().trim();
+      var proprio_id    = objet_tds.eq(4).attr('id').substring(8); // "proprio_" + ref
       var description   = objet_tds.eq(5).html();
       var compet_nombre = objet_tds.eq(6).html();
       var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
@@ -193,7 +240,7 @@ $(document).ready
       var prof_liste    = tab_profs[ref];
       var compet_liste  = tab_items[ref];
       // Afficher le formulaire
-      afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , '' /*groupe_val*/ , groupe_nom /* volontairement sans unescapeHtml() */ , eleve_nombre , eleve_liste , prof_nombre , prof_liste , unescapeHtml(description) , compet_nombre , compet_liste , tab_sujets[ref] , tab_corriges[ref] , fini );
+      afficher_form_gestion( mode , ref , date_fr , date_visible , date_autoeval , '' /*groupe_val*/ , groupe_nom /* volontairement sans unescapeHtml() */ , eleve_nombre , eleve_liste , eleves_ordre , prof_nombre , prof_liste , unescapeHtml(description) , compet_nombre , compet_liste , tab_sujets[ref] , tab_corriges[ref] , fini , proprio_id );
     };
 
     /**
@@ -206,10 +253,10 @@ $(document).ready
       var objet_tds     = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
-      var groupe_nom    = objet_tds.eq(3).html();
+      var groupe_nom    = objet_tds.eq(3).text().trim();
       var description   = objet_tds.eq(5).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , ref , '' /*date_fr*/ , '' /*date_visible*/ , '' /*date_autoeval*/ , '' /*groupe_val*/ , '' /*groupe_nom*/ , '' /*eleve_nombre*/ , '' /*eleve_liste*/ , '' /*prof_nombre*/ , '' /*prof_liste*/ , unescapeHtml(description+' ('+groupe_nom+')') , '' /*compet_nombre*/ , '' /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ );
+      afficher_form_gestion( mode , ref , '' /*date_fr*/ , '' /*date_visible*/ , '' /*date_autoeval*/ , '' /*groupe_val*/ , '' /*groupe_nom*/ , '' /*eleve_nombre*/ , '' /*eleve_liste*/ , '' /*eleves_ordre*/ , '' /*prof_nombre*/ , '' /*prof_liste*/ , unescapeHtml(description+' ('+groupe_nom+')') , '' /*compet_nombre*/ , '' /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ , user_id /*proprio_id*/ );
     };
 
     /**
@@ -223,12 +270,14 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var eleves_ordre  = objet_tds.eq(3).attr('class');
       var description   = objet_tds.eq(5).html();
       // Mettre les infos de côté
       $('#imprimer_ref').val(ref);
       $('#imprimer_date_fr').val(date_fr);
       $('#imprimer_groupe_nom').val(unescapeHtml(groupe));
+      $('#imprimer_eleves_ordre').val(eleves_ordre);
       $('#imprimer_description').val(unescapeHtml(description));
       // Afficher la zone associée
       $('#titre_imprimer').html(groupe+' | '+date_fr+' | '+description);
@@ -278,13 +327,15 @@ $(document).ready
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
       var date_visible  = objet_tds.eq(1).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var eleves_ordre  = objet_tds.eq(3).attr('class');
       var description   = objet_tds.eq(5).html();
       var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
       // Mettre les infos de côté
       $('#saisir_ref').val(ref);
       $('#saisir_date_fr').val(date_fr);
       $('#saisir_date_visible').val(date_visible);
+      $('#saisir_eleves_ordre').val(eleves_ordre);
       $('#saisir_description').val(unescapeHtml(description));
       $('#saisir_fini').val(fini);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
@@ -293,7 +344,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
+          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -371,7 +422,8 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var eleves_ordre  = objet_tds.eq(3).attr('class');
       var description   = objet_tds.eq(5).html();
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
@@ -379,7 +431,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -465,7 +517,7 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
       var description   = objet_tds.eq(5).html();
       // Mettre les infos de côté
       $('#ordre_ref').val(ref);
@@ -524,7 +576,7 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
       var description   = objet_tds.eq(5).html();
       // Afficher la zone associée après avoir chargé son contenu
       $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
@@ -573,7 +625,7 @@ $(document).ready
      */
     var choisir_prof = function()
     {
-      cocher_profs( $('#f_prof_liste').val() );
+      selectionner_profs_option( $('#f_prof_liste').val() );
       // Afficher la zone
       $.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
@@ -590,7 +642,7 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).html();
+      var groupe        = objet_tds.eq(3).text().trim();
       var description   = objet_tds.eq(5).html();
       // Sujet & Corrigé
       var img_sujet     = (tab_sujets[ref])   ? '<a href="'+tab_sujets[ref]+'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
@@ -635,23 +687,105 @@ $(document).ready
     $('#zone_imprimer').on( 'click' , '#fermer_zone_imprimer' , annuler );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Cocher / décocher par lot des individus
+    // Indiquer au survol une liste de profs associés à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#prof_check_all').click
+    $('#table_action').on
     (
+      'mouseover',
+      'img.bulle_profs',
       function()
       {
-        $('.prof_liste').find('input:enabled').prop('checked',true);
-        return false;
+        var obj_image  = $(this);
+        var ref        = obj_image.parent().parent().children('td:last').attr('id').substring(7); // "devoir_" + ref
+        var proprio_id = obj_image.parent().attr('id').substring(8); // "proprio_" + ref
+        var prof_liste = tab_profs[ref];
+        var tab_texte  = new Array();;
+        if(prof_liste.length)
+        {
+          prof_liste += '_z'+proprio_id;
+          var tab_val = prof_liste.split('_');
+          for(i in tab_val)
+          {
+            var val_option = tab_val[i].substring(0,1);
+            var id_prof    = tab_val[i].substring(1);
+            var id_select  = 'p'+'_'+id_prof;
+            if($('#'+id_select).length)
+            {
+              tab_texte[i] = $('#'+id_select).next().next().text();
+            }
+            else
+            {
+              tab_texte[i] = 'collègue n°'+id_prof+'... ?';
+            }
+          }
+          tab_texte.sort();
+        }
+        obj_image.attr( 'title' , tab_texte.join('<br />') );
       }
     );
-    $('#prof_uncheck_all').click
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Indiquer au survol une liste d'élèves associés à une évaluation
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#table_action').on
+    (
+      'mouseover',
+      'img.bulle_eleves',
+      function()
+      {
+        var obj_image   = $(this);
+        var ref         = obj_image.parent().parent().children('td:last').attr('id').substring(7); // "devoir_" + ref
+        var eleve_liste = tab_eleves[ref];
+        var tab_texte   = new Array();;
+        if(eleve_liste.length)
+        {
+          var tab_id = eleve_liste.split('_');
+          for(i in tab_id)
+          {
+            var id_debut = 'id_'+tab_id[i]+'_';
+            if($('input[id^='+id_debut+']').length)
+            {
+              tab_texte[i] = $('input[id^='+id_debut+']').next().text();
+            }
+            else
+            {
+              tab_texte[i] = 'élève n°'+tab_id[i]+' (ne vous est pas affecté)';
+            }
+          }
+          tab_texte.sort();
+        }
+        obj_image.attr( 'title' , tab_texte.join('<br />') );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Modification du select par lot pour tous les profs
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('input[name=prof_check_all]').click
     (
       function()
       {
-        $('.prof_liste').find('input:enabled').prop('checked',false);
-        return false;
+        var valeur = $(this).val();
+        $('#zone_profs').find('select').find('option[value='+valeur+']').prop('selected',true);
+        $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_'+valeur);
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Modification du select pour choisir un droit à un prof
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#zone_profs').on
+    (
+      'change',
+      'select',
+      function()
+      {
+        var val_option = $(this).find('option:selected').val();
+        $(this).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
       }
     );
 
@@ -713,16 +847,20 @@ $(document).ready
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Alerte si modification de groupe d'une évaluation
+    // Afficher / Masquer le mode de tri des élèves
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_groupe').change
     (
       function()
       {
+        // Alerte si modification de groupe d'une évaluation
         if(mode=='modifier')
         {
           $('#alerte_groupe').show();
         }
+        // Afficher / Masquer le mode de tri des élèves
+        maj_choix_tri_eleves();
       }
     );
 
@@ -883,16 +1021,22 @@ $(document).ready
       {
         var liste = '';
         var nombre = 0;
-        $("#zone_profs input[type=checkbox]:checked").each
+        $('#zone_profs').find('select').each
         (
           function()
           {
-            liste += $(this).val()+'_';
-            nombre++;
+            var val_option = $(this).find('option:selected').val();
+            if( (val_option!='x') && (val_option!='z') )
+            {
+              var tab_val = $(this).attr('id').split('_');
+              var id_prof = tab_val[1];
+              liste += val_option+id_prof+'_';
+              nombre++;
+            }
           }
         );
-        liste  = (nombre==1) ? '' : liste.substring(0,liste.length-1) ;
-        nombre = (nombre==1) ? 'moi seul' : nombre+' collègues' ;
+        liste  = (!nombre) ? '' : liste.substring(0,liste.length-1) ;
+        nombre = (!nombre) ? 'non' : (nombre+1)+' profs' ;
         $('#f_prof_liste').val(liste);
         $('#f_prof_nombre').val(nombre);
         $('#annuler_profs').click();
@@ -1596,12 +1740,13 @@ $(document).ready
           );
           $('#zone_ordonner button').prop('disabled',true);
           $('#ajax_msg_ordonner').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          var ref = $('#ordre_ref').val();
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=enregistrer_ordre'+'&f_ref='+$('#ordre_ref').val()+'&tab_id='+tab_id,
+              data : 'csrf='+CSRF+'&f_action=enregistrer_ordre'+'&f_ref='+ref+'&f_prof_liste='+tab_profs[ref]+'&tab_id='+tab_id,
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -1660,12 +1805,13 @@ $(document).ready
               }
             }
           );
+          var ref = $('#saisir_ref').val();
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#saisir_ref").val()+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_fini='+$("#saisir_fini").val()+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_description").val()),
+              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+ref+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_eleves_ordre='+$("#saisir_eleves_ordre").val()+'&f_fini='+$("#saisir_fini").val()+'&f_prof_liste='+tab_profs[ref]+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_description").val()),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -1716,6 +1862,7 @@ $(document).ready
           f_date_autoeval : { required:function(){return !$('#box_autoeval').is(':checked');} , dateITA:true },
           f_groupe        : { required:true },
           f_eleve_nombre  : { isWord:'élève' },
+          f_eleves_ordre  : { required:true },
           f_description   : { required:false , maxlength:60 },
           f_prof_nombre   : { required:false },
           f_compet_nombre : { isWord:'item' },
@@ -1729,6 +1876,7 @@ $(document).ready
           f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_groupe        : { required:"groupe manquant" },
           f_eleve_nombre  : { isWord:"élève(s) manquant(s)" },
+          f_eleves_ordre  : { required:"ordre manquant" },
           f_description   : { maxlength:"60 caractères maximum" },
           f_prof_nombre   : { },
           f_compet_nombre : { isWord:"item(s) manquant(s)" },
@@ -1836,7 +1984,7 @@ $(document).ready
             if(TYPE=='groupe')
             {
               var groupe_id = $("#f_groupe option:selected").val();
-              var new_tds = new_tds.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
+              var new_tds = new_tds.replace('>{{GROUPE_NOM}}<','>'+tab_groupe[groupe_id]+'<'); // on ne prend pas '<td>' en entier car il y a un attribut class
             }
             var new_tr = '<tr class="new">'+new_tds+'</tr>';
             $('#table_action tbody').prepend(new_tr);
@@ -1848,7 +1996,7 @@ $(document).ready
             if(TYPE=='groupe')
             {
               var groupe_id = $("#f_groupe option:selected").val();
-              var new_tds = new_tds.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
+              var new_tds = new_tds.replace('>{{GROUPE_NOM}}<','>'+tab_groupe[groupe_id]+'<'); // on ne prend pas '<td>' en entier car il y a un attribut class
             }
             $('#devoir_'+$('#f_ref').val()).parent().addClass("new").html(new_tds);
             eval( responseHTML.substring(position_script+8) );

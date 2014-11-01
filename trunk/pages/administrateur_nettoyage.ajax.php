@@ -119,7 +119,7 @@ if($action=='purger')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>'.NL;
+  echo'<li><label class="valide">Évaluations et dépendances supprimées (saisies associées conservées).</label></li>'.NL;
   echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL;
   echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL;
   echo'<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL;

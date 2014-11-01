@@ -88,6 +88,22 @@ function replaceAll(find, replace, str)
 }
 
 /**
+ * Ajout de la méthode trim() pour les navigateurs embarquant un javascript de version < 1.8.1
+ * @see https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/String/Trim
+ * @see http://www.w3schools.com/jsref/jsref_trim_string.asp
+ *
+ * @param string
+ * @return string
+ */
+if(!String.prototype.trim)
+{
+  String.prototype.trim = function()
+  {
+    return this.replace(/^\s+|\s+$/gm,'');
+  };
+}
+
+/**
  * Fonction pour extraire le hash (sans le dièse) d'une URL
  * Mise en place car un substring() ne passe pas si 
  * session.use_trans_sid = ON et session.use_only_cookies = OFF
@@ -181,7 +197,7 @@ function infobulle()
 /**
  * Fonction pour un tester la robustesse d'un mot de passe.
  *
- * @param void
+ * @param mdp
  * @return void
  */
 function analyse_mdp(mdp)
@@ -371,7 +387,43 @@ function cocher_socle_item(socle_item_id)
 var cocher_socle_item_first_appel = true;
 
 /**
- * Fonction pour afficher et cocher une liste de profs donnés
+ * Fonction pour afficher et cocher une liste d'élèves donnés
+ *
+ * @param prof_liste : ids séparés par des underscores
+ * @return void
+ */
+function cocher_eleves(eleve_liste)
+{
+  // Replier les classes
+    $('#zone_eleve ul').css("display","none");
+    $('#zone_eleve ul.ul_m1').css("display","block");
+  // Décocher tout
+  $("#zone_eleve input[type=checkbox]").each
+  (
+    function()
+    {
+      this.checked = false;
+      $(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuelles d'élèves associés à une évaluation de même nom
+    }
+  );
+  // Cocher ce qui doit l'être (initialisation)
+  if(eleve_liste.length)
+  {
+    var tab_id = eleve_liste.split('_');
+    for(i in tab_id)
+    {
+      var id_debut = 'id_'+tab_id[i]+'_';
+      if($('input[id^='+id_debut+']').length)
+      {
+        $('input[id^='+id_debut+']').prop('checked',true);
+        $('input[id^='+id_debut+']').parent().parent().css("display","block");  // le regroupement
+      }
+    }
+  }
+}
+
+/**
+ * Fonction pour cocher une liste de profs donnés
  *
  * @param prof_liste : ids séparés par des underscores
  * @return void
@@ -405,36 +457,31 @@ function cocher_profs(prof_liste)
 }
 
 /**
- * Fonction pour afficher et cocher une liste d'élèves donnés
+ * Fonction pour selectionner une option pour une liste de profs donnés
  *
- * @param prof_liste : ids séparés par des underscores
+ * @param prof_liste : { lettre de l'option concaténée avec l'id du prof } séparés par des underscores
  * @return void
  */
-function cocher_eleves(eleve_liste)
+function selectionner_profs_option(prof_liste)
 {
-  // Replier les classes
-    $('#zone_eleve ul').css("display","none");
-    $('#zone_eleve ul.ul_m1').css("display","block");
-  // Décocher tout
-  $("#zone_eleve input[type=checkbox]").each
-  (
-    function()
-    {
-      this.checked = false;
-      $(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuelles d'élèves associés à une évaluation de même nom
-    }
-  );
-  // Cocher ce qui doit l'être (initialisation)
-  if(eleve_liste.length)
+  // Sélectionner l'option par défaut pour tous les profs
+  $('#zone_profs').find('select').find('option[value=x]').prop('selected',true);
+  $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_x')
+  // Décocher les boutons pour reporter une valeur à tous
+  $('#zone_profs').find('input[type=radio]').prop('checked',false);
+  // Modifier les sélections des profs concernés
+  if(prof_liste.length)
   {
-    var tab_id = eleve_liste.split('_');
-    for(i in tab_id)
+    var tab_val = prof_liste.split('_');
+    for(i in tab_val)
     {
-      var id_debut = 'id_'+tab_id[i]+'_';
-      if($('input[id^='+id_debut+']').length)
+      var val_option = tab_val[i].substring(0,1);
+      var id_prof    = tab_val[i].substring(1);
+      var id_select  = 'p'+'_'+id_prof;
+      if($('#'+id_select).length)
       {
-        $('input[id^='+id_debut+']').prop('checked',true);
-        $('input[id^='+id_debut+']').parent().parent().css("display","block");  // le regroupement
+        $('#'+id_select+' option[value='+val_option+']').prop('selected',true);
+        $('#'+id_select).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
       }
     }
   }

@@ -192,7 +192,10 @@ public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
   $DB_SQL.= 'FROM sacoche_geo ';
   $DB_SQL.= 'WHERE geo_nom=:geo_nom ';
   $DB_SQL.= ($geo_id) ? 'AND geo_id!=:geo_id ' : '' ;
-  $DB_VAR = array(':geo_nom'=>$geo_nom,':geo_id'=>$geo_id);
+  $DB_VAR = array(
+    ':geo_nom' => $geo_nom,
+    ':geo_id'  => $geo_id,
+  );
   return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -209,7 +212,10 @@ public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
   $DB_SQL.= 'FROM sacoche_structure ';
   $DB_SQL.= 'WHERE structure_uai=:structure_uai ';
   $DB_SQL.= ($base_id) ? 'AND sacoche_base!=:base_id ' : '' ;
-  $DB_VAR = array(':structure_uai'=>$structure_uai,':base_id'=>$base_id);
+  $DB_VAR = array(
+    ':structure_uai' => $structure_uai,
+    ':base_id'       => $base_id,
+  );
   return (int)DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -224,7 +230,10 @@ public static function DB_ajouter_zone($geo_ordre,$geo_nom)
 {
   $DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
   $DB_SQL.= 'VALUES(:geo_ordre,:geo_nom)';
-  $DB_VAR = array(':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
+  $DB_VAR = array(
+    ':geo_ordre' => $geo_ordre,
+    ':geo_nom'   => $geo_nom,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
 }
@@ -251,7 +260,7 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
     $DB_SQL = 'INSERT INTO sacoche_structure(geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
     $DB_SQL.= 'VALUES(:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
     $DB_VAR = array(
-      ':geo_id'=>$geo_id,
+      ':geo_id'           => $geo_id,
       ':structure_uai'    => $structure_uai,
       ':localisation'     => $localisation,
       ':denomination'     => $denomination,
@@ -343,7 +352,10 @@ public static function DB_modifier_parametre($parametre_nom,$parametre_valeur)
   $DB_SQL = 'UPDATE sacoche_parametre ';
   $DB_SQL.= 'SET parametre_valeur=:parametre_valeur ';
   $DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
-  $DB_VAR = array( ':parametre_nom'=>$parametre_nom , ':parametre_valeur'=>$parametre_valeur );
+  $DB_VAR = array(
+    ':parametre_nom'    => $parametre_nom,
+    ':parametre_valeur' => $parametre_valeur,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -417,7 +429,10 @@ public static function DB_modifier_partenaire_conventionne_mdp($partenaire_id,$p
   $DB_SQL = 'UPDATE sacoche_partenaire ';
   $DB_SQL.= 'SET partenaire_courriel=:password_crypte ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id,':password_crypte'=>$password_crypte);
+  $DB_VAR = array(
+    ':partenaire_id'   => $partenaire_id,
+    ':password_crypte' => $password_crypte,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -434,7 +449,11 @@ public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
   $DB_SQL = 'UPDATE sacoche_geo ';
   $DB_SQL.= 'SET geo_ordre=:geo_ordre, geo_nom=:geo_nom ';
   $DB_SQL.= 'WHERE geo_id=:geo_id ';
-  $DB_VAR = array(':geo_id'=>$geo_id,':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
+  $DB_VAR = array(
+    ':geo_id'    => $geo_id,
+    ':geo_ordre' => $geo_ordre,
+    ':geo_nom'   => $geo_nom,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -451,7 +470,10 @@ public static function DB_modifier_convention_date($convention_id,$objet,$date_m
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_'.$objet.'=:date_mysql ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';
-  $DB_VAR = array(':convention_id'=>$convention_id,':date_mysql'=>$date_mysql);
+  $DB_VAR = array(
+    ':convention_id' => $convention_id,
+    ':date_mysql'    => $date_mysql,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -467,7 +489,10 @@ public static function DB_modifier_convention_activation($convention_id,$activat
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_activation=:activation_etat ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';
-  $DB_VAR = array(':convention_id'=>$convention_id,':activation_etat'=>$activation_etat);
+  $DB_VAR = array(
+    ':convention_id'   => $convention_id,
+    ':activation_etat' => $activation_etat,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -483,7 +508,10 @@ public static function DB_modifier_convention_commentaire($convention_id,$commen
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_commentaire=:commentaire ';
   $DB_SQL.= 'WHERE convention_id=:convention_id ';
-  $DB_VAR = array(':convention_id'=>$convention_id,':commentaire'=>$commentaire);
+  $DB_VAR = array(
+    ':convention_id' => $convention_id,
+    ':commentaire'   => $commentaire,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

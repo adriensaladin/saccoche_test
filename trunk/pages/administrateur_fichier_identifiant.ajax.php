@@ -158,7 +158,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   echo  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
   if($action=='generer_mdp')
   {
-    echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>'.NL;
+    echo'<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
   }
   echo'</ul>'.NL;
   exit();
@@ -381,7 +381,7 @@ if($action=='import_loginmdp')
     }
     $pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
     echo'<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
-    echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>'.NL;
+    echo'<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
   }
   // On affiche le bilan
   echo'<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL;

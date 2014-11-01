@@ -45,7 +45,10 @@ public static function DB_recuperer_image($user_id,$image_objet)
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_image ';
   $DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+  $DB_VAR = array(
+    ':user_id'     => $user_id,
+    ':image_objet' => $image_objet,
+  );
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -93,9 +96,16 @@ public static function DB_lister_signatures_avec_identite()
  */
 public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$image_format,$image_largeur,$image_hauteur)
 {
-  $DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
-  $DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
-  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet,':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
+  $DB_SQL = 'REPLACE INTO sacoche_image ( user_id,  image_objet,  image_contenu,  image_format,  image_largeur,  image_hauteur) ';
+  $DB_SQL.= 'VALUES                     (:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+  $DB_VAR = array(
+    ':user_id'       => $user_id,
+    ':image_objet'   => $image_objet,
+    ':image_contenu' => $image_contenu,
+    ':image_format'  => $image_format,
+    ':image_largeur' => $image_largeur,
+    ':image_hauteur' => $image_hauteur,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -110,7 +120,10 @@ public static function DB_supprimer_image($user_id,$image_objet)
 {
   $DB_SQL = 'DELETE FROM sacoche_image ';
   $DB_SQL.= 'WHERE user_id=:user_id AND image_objet=:image_objet ';
-  $DB_VAR = array(':user_id'=>$user_id,':image_objet'=>$image_objet);
+  $DB_VAR = array(
+    ':user_id'     => $user_id,
+    ':image_objet' => $image_objet,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

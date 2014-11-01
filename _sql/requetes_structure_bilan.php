@@ -85,7 +85,10 @@ public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $l
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_date>=:date_debut AND saisie_date<=:date_fin ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array( ':date_debut'=>$date_mysql_debut , ':date_fin'=>$date_mysql_fin );
+  $DB_VAR = array(
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   $tab_matiere = array();
   foreach($DB_TAB as $item_id => $tab)
@@ -258,7 +261,10 @@ public static function DB_recuperer_items_travailles( $liste_eleve_id , $liste_m
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$where_matiere.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
-  $DB_VAR = array( ':date_debut'=>$date_mysql_debut , ':date_fin'=>$date_mysql_fin );
+  $DB_VAR = array(
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
   // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_matiere
   $tab_matiere = array();

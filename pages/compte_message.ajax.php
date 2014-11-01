@@ -62,7 +62,7 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 if( ($action=='afficher_users') && $profil && $groupe_id && isset($tab_types[$groupe_type]) )
 {
   $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
   exit( Form::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , TRUE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 

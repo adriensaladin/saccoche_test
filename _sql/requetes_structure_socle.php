@@ -131,7 +131,10 @@ public static function DB_lister_result_eleve_item( $eleve_id , $entree_id )
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
-  $DB_VAR = array( ':eleve_id'=>$eleve_id , ':entree_id'=>$entree_id );
+  $DB_VAR = array(
+    ':eleve_id'  => $eleve_id,
+    ':entree_id' => $entree_id,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -353,7 +356,10 @@ public static function DB_compter_eleves_actuels_sans_id_sconet()
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
-  $DB_VAR = array(':profil_type'=>'eleve',':sconet_id'=>0);
+  $DB_VAR = array(
+    ':profil_type' => 'eleve',
+    ':sconet_id'   => 0,
+  );
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -373,7 +379,7 @@ public static function DB_ajouter_validation( $type , $user_id , $element_id , $
   $DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
   $DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
   $DB_VAR = array(
-    ':user_id'=>$user_id,
+    ':user_id'               => $user_id,
     ':'.$type.'_id'          => $element_id,
     ':validation_etat'       => $validation_etat,
     ':validation_date_mysql' => $validation_date_mysql,

@@ -6,7 +6,8 @@ DB est une classe PHP servant de façade d'échange avec une BDD.
 Auteur : Sébastien ROMMENS pour Sésamath.
 
 Seule la classe est présente dans SACoche.
-Pour infos et documentations : https://svn.devsesamath.net/svn/commun/trunk (réservé à Sésamath).
+Pour infos et documentations (réservé à Sésamath) :
+https://src.sesamath.net/svn/commun/trunk/DB_docs_dev/utilisation_classe_de_connexion.txt
 
 Fin de DB_Manager.class.php un temps adaptée ainsi :
 

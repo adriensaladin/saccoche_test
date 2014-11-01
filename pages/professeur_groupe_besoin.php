@@ -28,8 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer ses groupes de besoin";
 
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
-
 $tab_groupe_proprio = array();
 $tab_groupe_associe = array();
 $tab_niveau_groupe  = array();
@@ -237,13 +235,13 @@ else
 
 <form action="#" method="post" id="zone_profs" class="hide">
   <div class="astuce">Vous pouvez associer des collègues à vos groupes de besoin, mais pas vous retirer de vos propres groupes de besoin !</div>
-  <?php echo afficher_form_element_checkbox_collegues() ?>
+  <?php echo Html::afficher_form_element_checkbox_collegues() ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
+  <?php echo Html::afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
   <p class="danger">Un groupe déjà utilisé lors d'une évaluation ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves du groupe empêche l'accès aux notes saisies correspondantes !</p>
   <div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

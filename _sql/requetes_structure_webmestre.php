@@ -148,7 +148,10 @@ public static function DB_modifier_admin_mdp($admin_id,$password_crypte)
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET user_password=:password_crypte ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(':user_id'=>$admin_id,':password_crypte'=>$password_crypte);
+  $DB_VAR = array(
+    ':user_id'         => $admin_id,
+    ':password_crypte' => $password_crypte,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

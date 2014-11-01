@@ -185,12 +185,12 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   $doc_sujet   = '';
   $doc_corrige = '';
-  $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige);
+  $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $info , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre='alpha' );
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
   // Affecter tous les élèves choisis
   if($qui=='select')
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_user_id,'creer');
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve($devoir_id,$groupe_id,$tab_user_id,'creer');
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
@@ -224,7 +224,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   if($qui=='select')
   {
     // Il faut ajouter tous les élèves choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id,$devoir_groupe_id,$tab_user_id,'ajouter'); // ($devoir_groupe_id et non $groupe_id qui correspond à la classe d'origine des élèves...)
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve($devoir_id,$devoir_groupe_id,$tab_user_id,'ajouter'); // ($devoir_groupe_id et non $groupe_id qui correspond à la classe d'origine des élèves...)
   }
   // Maintenant on peut modifier les items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');

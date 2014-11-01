@@ -881,6 +881,16 @@ $(document).ready
       }
     );
 
+    $('#section_corriger').on
+    (
+      'keyup',
+      '#f_appreciation',
+      function()
+      {
+        afficher_textarea_reste($(this),memo_long_max);
+      }
+    );
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // [officiel_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1410,7 +1420,7 @@ $(document).ready
         $('#f_action').val(objet+'_faute');
         $('#zone_signaler_corriger h2').html(objet[0].toUpperCase() + objet.substring(1) + " une faute");
         var appreciation_contenu = $(this).parent().next().html();
-        var message_contenu = $('h1').text().substring(2)+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
+        var message_contenu = $('h1').text()+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataires_liste').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation
         if(objet=='corriger')

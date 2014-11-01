@@ -812,5 +812,145 @@ class Html
     '</p>'.NL ;
   }
 
+  /**
+   * Retourner une liste HTML ordonnée des élèves (d'un professeur) pour chaque classe et groupe qui lui sont affectés, avec des cases à cocher.
+   *
+   * @param bool $with_pourcent
+   * @return string
+   */
+  public static function afficher_form_element_checkbox_eleves_professeur($with_pourcent)
+  {
+    $affichage = '';
+    $tab_regroupements = array();
+    $tab_id = array('classe'=>'','groupe'=>'');
+    // Recherche de la liste des classes et des groupes du professeur
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_regroupements[$DB_ROW['groupe_id']] = array('nom'=>$DB_ROW['groupe_nom'],'eleve'=>array());
+      $tab_id[$DB_ROW['groupe_type']][] = $DB_ROW['groupe_id'];
+    }
+    // Recherche de la liste des élèves pour chaque classe du professeur
+    if(is_array($tab_id['classe']))
+    {
+      $listing = implode(',',$tab_id['classe']);
+      $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_classes($listing);
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_regroupements[$DB_ROW['eleve_classe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
+      }
+    }
+    // Recherche de la liste des élèves pour chaque groupe du professeur
+    if(is_array($tab_id['groupe']))
+    {
+      $listing = implode(',',$tab_id['groupe']);
+      $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_groupes($listing);
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_regroupements[$DB_ROW['groupe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
+      }
+    }
+    // Affichage de la liste des élèves (du professeur) pour chaque classe et groupe
+    foreach($tab_regroupements as $groupe_id => $tab_groupe)
+    {
+      $gradient_pourcent = ($with_pourcent) ? '<span id="groupe_'.$groupe_id.'" class="gradient_pourcent"></span>' : '' ;
+      $affichage .= '<ul class="ul_m1">'.NL;
+      $affichage .=   '<li class="li_m1"><span class="deja">'.html($tab_groupe['nom']).'</span>'.$gradient_pourcent.NL;
+      $affichage .=     '<ul class="ul_n3">'.NL;
+      foreach($tab_groupe['eleve'] as $eleve_id => $eleve_nom)
+      {
+        // C'est plus compliqué que pour les items car un élève peut appartenir à une classe et plusieurs groupes => id du groupe mélé à l'id de l'élève
+        $affichage .=       '<li class="li_n3"><input id="id_'.$eleve_id.'_'.$groupe_id.'" name="f_eleves[]" type="checkbox" value="'.$eleve_id.'" /><label for="id_'.$eleve_id.'_'.$groupe_id.'"> '.html($eleve_nom).'</label><span></span></li>'.NL;
+      }
+      $affichage .=     '</ul>'.NL;
+      $affichage .=   '</li>'.NL;
+      $affichage .= '</ul>'.NL;
+    }
+    return $affichage;
+  }
+
+  /**
+   * Retourner, sur une ou plusieurs colonnes, une liste HTML ordonnée des professeurs, avec des cases à cocher.
+   *
+   * @param void
+   * @return string
+   */
+  public static function afficher_form_element_checkbox_collegues()
+  {
+    $affichage = '';
+    // Affichage de la liste des professeurs
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl();
+    if(is_string($DB_TAB))
+    {
+      echo $DB_TAB;
+    }
+    else
+    {
+      $nb_profs              = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
+      $nb_profs_maxi_par_col = 20;
+      $nb_cols               = floor(($nb_profs-1)/$nb_profs_maxi_par_col)+1;
+      $nb_profs_par_col      = ceil($nb_profs/$nb_cols);
+      $tab_div = array_fill(0,$nb_cols,'');
+      foreach($DB_TAB as $i => $DB_ROW)
+      {
+        $checked_and_disabled = ($DB_ROW['valeur']!=$_SESSION['USER_ID']) ? '' : ' checked disabled' ; // readonly ne fonctionne pas sur un checkbox
+        $texte_identite       = ($DB_ROW['valeur']!=$_SESSION['USER_ID']) ? html($DB_ROW['texte']) : html($DB_ROW['texte']) ;
+        $tab_div[floor($i/$nb_profs_par_col)] .= '<label for="p_'.$DB_ROW['valeur'].'"><input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /> '.$texte_identite.'</label><br />';
+      }
+      $affichage .= '<p><a href="#prof_liste" id="prof_check_all" class="cocher_tout">Tout le monde</a>&nbsp;&nbsp;&nbsp;<a href="#prof_liste" id="prof_uncheck_all" class="cocher_rien">Seulement moi</a></p>'.NL;
+      $affichage .= '<div class="prof_liste">'.implode('</div>'.NL.'<div class="prof_liste">',$tab_div).'</div>'.NL;
+    }
+    return $affichage;
+  }
+
+  /**
+   * Retourner, sur une ou plusieurs colonnes, une liste HTML ordonnée des professeurs, avec un formulaire de choix d'un attribut pour chacun.
+   *
+   * @param array   $tab_options
+   * @return string
+   */
+  public static function afficher_form_element_select_collegues($tab_options)
+  {
+    $affichage = '';
+    // Affichage de la liste des professeurs
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl();
+    if(is_string($DB_TAB))
+    {
+      echo $DB_TAB;
+    }
+    else
+    {
+      $nb_profs              = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
+      $nb_profs_maxi_par_col = 20;
+      $nb_cols               = floor(($nb_profs-1)/$nb_profs_maxi_par_col)+1;
+      $nb_profs_par_col      = ceil($nb_profs/$nb_cols);
+      $tab_div = array_fill(0,$nb_cols,'');
+      $select_options = '<option value="x">0</option>';
+      foreach($tab_options as $option_texte => $option_value)
+      {
+        $select_options .= '<option value="'.$option_value.'">'.$option_texte.'</option>';
+      }
+      foreach($DB_TAB as $i => $DB_ROW)
+      {
+        if($DB_ROW['valeur']!=$_SESSION['USER_ID'])
+        {
+          $tab_div[floor($i/$nb_profs_par_col)] .= '<select id="p_'.$DB_ROW['valeur'].'" name="p_'.$DB_ROW['valeur'].'" class="t9">'.$select_options.'</select><span class="select_img droit_x">&nbsp;</span><label>'.html($DB_ROW['texte']).'</label><br />';
+        }
+        else
+        {
+          $tab_div[floor($i/$nb_profs_par_col)] .= '<select id="p_'.$DB_ROW['valeur'].'" name="p_'.$DB_ROW['valeur'].'" class="t9" disabled><option value="z">4</option></select><span class="droit_z">&nbsp;</span><label>'.html($DB_ROW['texte']).'</label><br />';
+        }
+      }
+      $affichage .= '<p class="hc">Choisir <label for="p_0_x"><input type="radio" name="prof_check_all" id="p_0_x" value="x" /><span class="select_img droit_x">&nbsp;</span></label>';
+      foreach($tab_options as $option_value)
+      {
+        $affichage .= ' ou <label for="p_0_'.$option_value.'"><input type="radio" name="prof_check_all" id="p_0_'.$option_value.'" value="'.$option_value.'" /><span class="select_img droit_'.$option_value.'">&nbsp;</span></label>';
+      }
+      $affichage .= ' pour tout le monde.</p>'.NL;
+      $affichage .= '<div class="prof_liste">'.implode('</div>'.NL.'<div class="prof_liste">',$tab_div).'</div>'.NL;
+    }
+    return $affichage;
+  }
+
 }
 ?>

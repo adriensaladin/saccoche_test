@@ -62,7 +62,11 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
     $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
     $DB_SQL.= 'WHERE eleve.user_sconet_id=:eleve_sconet_id AND parent.user_nom LIKE :parent_nom_like AND parent.user_prenom LIKE :parent_prenom_like ';
-    $DB_VAR = array( ':eleve_sconet_id'=>$user_identifiant , ':parent_nom_like'=>'%'.$parent_nom.'%' , ':parent_prenom_like'=>'%'.$parent_prenom.'%' );
+    $DB_VAR = array(
+      ':eleve_sconet_id'    => $user_identifiant,
+      ':parent_nom_like'    => '%'.$parent_nom.'%',
+      ':parent_prenom_like' => '%'.$parent_prenom.'%',
+    );
     $user_identifiant = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     if(empty($user_identifiant)) return NULL;
   }
@@ -162,7 +166,11 @@ public static function DB_modifier_user_password_or_key($user_id,$user_password,
     $DB_SQL.= ', user_password=:user_password ';
   }
   $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR = array(':user_id'=>$user_id,':user_pass_key'=>$user_pass_key,':user_password'=>$user_password);
+  $DB_VAR = array(
+    ':user_id'       => $user_id,
+    ':user_pass_key' => $user_pass_key,
+    ':user_password' => $user_password,
+  );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

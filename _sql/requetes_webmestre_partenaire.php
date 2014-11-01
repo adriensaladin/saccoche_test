@@ -47,7 +47,10 @@ public static function DB_modifier_mdp_partenaire($partenaire_id,$password_ancie
   $DB_SQL = 'SELECT partenaire_id ';
   $DB_SQL.= 'FROM sacoche_partenaire ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id AND partenaire_password=:password_crypte ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id,':password_crypte'=>$password_ancien_crypte);
+  $DB_VAR = array(
+    ':partenaire_id'   => $partenaire_id,
+    ':password_crypte' => $password_ancien_crypte,
+  );
   $DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   if(empty($DB_ROW))
   {
@@ -57,7 +60,10 @@ public static function DB_modifier_mdp_partenaire($partenaire_id,$password_ancie
   $DB_SQL = 'UPDATE sacoche_partenaire ';
   $DB_SQL.= 'SET partenaire_password=:password_crypte ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
-  $DB_VAR = array(':partenaire_id'=>$partenaire_id,':password_crypte'=>$password_nouveau_crypte);
+  $DB_VAR = array(
+    ':partenaire_id'   => $partenaire_id,
+    ':password_crypte' => $password_nouveau_crypte,
+  );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   return 'ok';
 }

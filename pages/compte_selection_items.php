@@ -28,8 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer ses regroupements d'items";
 
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
-
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_items = new Array();' );
 ?>

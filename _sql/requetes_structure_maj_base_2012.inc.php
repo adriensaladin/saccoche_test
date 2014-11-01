@@ -50,7 +50,10 @@ if($version_base_structure_actuelle=='2011-12-30')
     $DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1)';
     foreach($DB_TAB as $DB_ROW)
     {
-      $DB_VAR = array(':user_id'=>$DB_ROW['user_id'],':groupe_id'=>$DB_ROW['groupe_id']);
+      $DB_VAR = array(
+        ':user_id'   => $DB_ROW['user_id'],
+        ':groupe_id' => $DB_ROW['groupe_id'],
+      );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     }
   }

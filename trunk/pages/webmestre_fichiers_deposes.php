@@ -29,12 +29,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Fichiers déposés";
 
 $tab_select_taille_max = array(
-   100=>'100 Ko',
-   200=>'200 Ko',
-   500=>'500 Ko',
-  1000=>'1 Mo',
-  2000=>'2 Mo',
-  5000=>'5 Mo',
+   100=>'100 Ko / audio 25 s',
+   200=>'200 Ko / audio 50 s',
+   500=>'500 Ko / audio 120 s',
+  1000=>'1 Mo / audio 120 s',
+  2000=>'2 Mo / audio 120 s',
+  5000=>'5 Mo / audio 120 s',
 );
 
 $select_taille_max = '';

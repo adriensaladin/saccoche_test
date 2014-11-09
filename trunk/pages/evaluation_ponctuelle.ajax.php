@@ -106,7 +106,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && isset($tab_notes[$
   $presence_item   = FALSE;
   $presence_eleve  = FALSE;
   $presence_saisie = FALSE;
-  $DB_TAB = ($presence_devoir) ? DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ ) : array() ;
+  $DB_TAB = ($presence_devoir) ? DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ ) : array() ;
   foreach($DB_TAB as $DB_ROW)
   {
     if($DB_ROW['item_id']==$item_id)

@@ -40,6 +40,7 @@ $contact_nom      = (isset($_POST['f_contact_nom']))      ? Clean::nom($_POST['f
 $contact_prenom   = (isset($_POST['f_contact_prenom']))   ? Clean::prenom($_POST['f_contact_prenom'])     : '';
 $contact_courriel = (isset($_POST['f_contact_courriel'])) ? Clean::courriel($_POST['f_contact_courriel']) : '';
 $courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? Clean::entier($_POST['f_courriel_envoi'])     : 0;
+$courriel_copie   = (isset($_POST['f_courriel_copie']))   ? Clean::entier($_POST['f_courriel_copie'])     : 0;
 $date_fr          = (isset($_POST['f_date_fr']))          ? Clean::date_fr($_POST['f_date_fr'])           : '' ;
 $admin_id         = (isset($_POST['f_admin_id']))         ? Clean::entier($_POST['f_admin_id'])           : 0;
 
@@ -114,11 +115,21 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   // Insérer le compte administrateur dans la base de cette structure
   $password = fabriquer_mdp();
   $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
-  // Et lui envoyer un courriel
+  // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
+  $courriel_contenu = ( $courriel_envoi || $courriel_copie ) ? Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE ) : '' ;
+  $courriel_titre   = ( $courriel_envoi || $courriel_copie ) ? 'Création compte - Inscription n°'.$base_id : '' ;
   if($courriel_envoi)
   {
-    $texte = Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
-    $courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $texte );
+    $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
+    if(!$courriel_bilan)
+    {
+      exit('Erreur lors de l\'envoi du courriel !');
+    }
+  }
+  if($courriel_copie)
+  {
+    $introduction = '================================================================================'."\r\n".'Copie pour information du courriel adressé à '.$contact_courriel."\r\n".'================================================================================'."\r\n\r\n";
+    $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
     if(!$courriel_bilan)
     {
       exit('Erreur lors de l\'envoi du courriel !');
@@ -221,12 +232,25 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   // Générer un nouveau mdp de l'admin
   $admin_password = fabriquer_mdp();
   DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
-  // Envoyer un courriel au contact
-  $courriel_contenu = Webmestre::contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE );
-  $courriel_bilan = Sesamail::mail( $contact_courriel , 'Modification mdp administrateur' , $courriel_contenu );
-  if(!$courriel_bilan)
+  // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
+  $courriel_contenu = ( $courriel_envoi || $courriel_copie ) ? Webmestre::contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE ) : '' ;
+  $courriel_titre   = ( $courriel_envoi || $courriel_copie ) ? 'Modification mdp administrateur - Inscription n°'.$base_id : '' ;
+  if($courriel_envoi)
   {
-    exit('Erreur lors de l\'envoi du courriel !');
+    $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
+    if(!$courriel_bilan)
+    {
+      exit('Erreur lors de l\'envoi du courriel !');
+    }
+  }
+  if($courriel_copie)
+  {
+    $introduction = '================================================================================'."\r\n".'Copie pour information du courriel adressé à '.$contact_courriel."\r\n".'================================================================================'."\r\n\r\n";
+    $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
+    if(!$courriel_bilan)
+    {
+      exit('Erreur lors de l\'envoi du courriel !');
+    }
   }
   // On affiche le retour
   echo'<ok>';

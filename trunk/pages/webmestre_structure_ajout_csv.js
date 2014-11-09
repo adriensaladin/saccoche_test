@@ -36,6 +36,7 @@ $(document).ready
 
     var listing_id     = new Array();
     var courriel_envoi = -1 ;
+    var courriel_copie = -1 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Réagir au clic sur un bouton pour uploader un fichier csv à importer
@@ -112,6 +113,7 @@ $(document).ready
       function()
       {
         courriel_envoi = $('#f_courriel_envoi').is(':checked') ? 1 : 0 ;
+        courriel_copie = $('#f_courriel_copie').is(':checked') ? 1 : 0 ;
         if(courriel_envoi)
         {
           envoyer_demande_import_confirmee();
@@ -165,7 +167,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=ajouter'+'&num='+num+'&max='+max+'&courriel_envoi='+courriel_envoi,
+          data : 'csrf='+CSRF+'&f_action=ajouter'+'&num='+num+'&max='+max+'&f_courriel_envoi='+courriel_envoi+'&f_courriel_copie='+courriel_copie,
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {

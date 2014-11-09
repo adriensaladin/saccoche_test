@@ -494,20 +494,21 @@ if($version_base_structure_actuelle=='2014-09-27')
   {
     $version_base_structure_actuelle = '2014-11-01';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // nouvelle table [sacoche_jointure_devoir_droit]
-    $reload_sacoche_jointure_devoir_droit = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_devoir_droit.sql');
+    // nouvelle table [sacoche_jointure_devoir_droit] renommée dans la mise à jour suivante [sacoche_jointure_devoir_prof]
+    $table_nom = file_exists(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_devoir_prof.sql') ? 'sacoche_jointure_devoir_prof' : 'sacoche_jointure_devoir_droit' ;
+    $reload_sacoche_jointure_devoir_prof = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.$table_nom.'.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // nouvelle table [sacoche_jointure_devoir_audio]
-    $reload_sacoche_jointure_devoir_audio = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_devoir_audio.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // report des valeurs des champs [prof_id] et [devoir_partage] de la table [sacoche_devoir] dans la table de jointure [sacoche_jointure_devoir_droit]
+    // nouvelle table [sacoche_jointure_devoir_audio] renommée dans la mise à jour suivante [sacoche_jointure_devoir_eleve]
+    // $reload_sacoche_jointure_devoir_audio = TRUE;
+    // $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_devoir_audio.sql');
+    // DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    // DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // report des valeurs des champs [prof_id] et [devoir_partage] de la table [sacoche_devoir] dans la table de jointure [ sacoche_jointure_devoir_droit | sacoche_jointure_devoir_prof ]
     $DB_SQL = 'SELECT devoir_id,prof_id,devoir_partage FROM sacoche_devoir';
     $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-    $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_droit (devoir_id,prof_id,jointure_droit) VALUES(:devoir_id,:prof_id,:jointure_droit)';
+    $DB_SQL = 'INSERT INTO '.$table_nom.' (devoir_id,prof_id,jointure_droit) VALUES(:devoir_id,:prof_id,:jointure_droit)';
     foreach($DB_TAB as $DB_ROW)
     {
       if($DB_ROW['devoir_partage'])
@@ -534,7 +535,31 @@ if($version_base_structure_actuelle=='2014-09-27')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir DROP devoir_partage' );
     // ajout du champ [devoir_eleves_ordre] à la table [sacoche_devoir]
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_eleves_ordre ENUM("alpha","classe") COLLATE utf8_unicode_ci NOT NULL DEFAULT "alpha" ' );
+  }
+}
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-11-01 => 2014-11-09
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-11-01')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-11-09';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // table [sacoche_jointure_devoir_droit] renommée en [sacoche_jointure_devoir_prof]
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLES FROM '.SACOCHE_STRUCTURE_BD_NAME.' LIKE "sacoche_jointure_devoir_droit"');
+    if(!empty($DB_TAB))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'RENAME TABLE sacoche_jointure_devoir_droit TO sacoche_jointure_devoir_prof' );
+    }
+    // nouvelle table [sacoche_jointure_devoir_eleve] en remplacement éventuel de [sacoche_jointure_devoir_audio]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_jointure_devoir_audio' );
+    $reload_sacoche_jointure_devoir_eleve = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_devoir_eleve.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
   }
 }
 

@@ -500,7 +500,8 @@ $(document).ready
           f_contact_nom      : { required:true , maxlength:20 },
           f_contact_prenom   : { required:true , maxlength:20 },
           f_contact_courriel : { required:true , email:true , maxlength:63 },
-          f_courriel_envoi   : { required:false }
+          f_courriel_envoi   : { required:false },
+          f_courriel_copie   : { required:false }
         },
         messages :
         {
@@ -512,7 +513,8 @@ $(document).ready
           f_contact_nom      : { required:"nom manquant" , maxlength:"20 caractères maximum" },
           f_contact_prenom   : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
           f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" },
-          f_courriel_envoi   : { }
+          f_courriel_envoi   : { },
+          f_courriel_copie   : { }
         },
         errorElement : "label",
         errorClass : "erreur",

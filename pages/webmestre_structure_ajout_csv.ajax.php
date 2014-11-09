@@ -30,11 +30,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier( explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
 $nb_bases    = count($tab_base_id);
 
-$action         = (isset($_POST['f_action']))         ? Clean::texte($_POST['f_action'])          : '';
-$num            = (isset($_POST['num']))              ? (int)$_POST['num']                        : 0 ;  // Numéro de l'étape en cours
-$max            = (isset($_POST['max']))              ? (int)$_POST['max']                        : 0 ;  // Nombre d'étapes à effectuer
-$courriel_envoi = (isset($_POST['f_courriel_envoi'])) ? Clean::entier($_POST['f_courriel_envoi']) : 0 ;
-$courriel_copie = (isset($_POST['f_courriel_copie'])) ? Clean::entier($_POST['f_courriel_copie']) : 0 ;
+$action         = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])        : '';
+$num            = (isset($_POST['num']))            ? (int)$_POST['num']                     : 0 ;  // Numéro de l'étape en cours
+$max            = (isset($_POST['max']))            ? (int)$_POST['max']                     : 0 ;  // Nombre d'étapes à effectuer
+$courriel_envoi = (isset($_POST['courriel_envoi'])) ? Clean::entier($_POST['courriel_envoi']) : 0;
 
 $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
 
@@ -192,21 +191,11 @@ if( ($action=='ajouter') && $num && $max )
   // Insérer le compte administrateur dans la base de cette structure
   $password = fabriquer_mdp();
   $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
-  // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
-  $courriel_contenu = ( $courriel_envoi || $courriel_copie ) ? Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE ) : '' ;
-  $courriel_titre   = ( $courriel_envoi || $courriel_copie ) ? 'Création compte - Inscription n°'.$base_id : '' ;
+  // Et lui envoyer un courriel
   if($courriel_envoi)
   {
-    $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
-    if(!$courriel_bilan)
-    {
-      exit('Erreur lors de l\'envoi du courriel !');
-    }
-  }
-  if($courriel_copie)
-  {
-    $introduction = '================================================================================'."\r\n".'Copie pour information du courriel adressé à '.$contact_courriel."\r\n".'================================================================================'."\r\n\r\n";
-    $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
+    $courriel_contenu = Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
+    $courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $courriel_contenu );
     if(!$courriel_bilan)
     {
       exit('Erreur lors de l\'envoi du courriel !');

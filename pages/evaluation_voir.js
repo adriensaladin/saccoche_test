@@ -239,13 +239,13 @@ $(document).ready
     maj_eval();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Voir les notes saisies à un devoir / Lire un commentaire écrit / Écouter un commentaire audio
+// Clic sur l'image pour Voir les notes saisies à un devoir
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_eval_choix').on
     (
       'click',
-      'q.voir , q.texte_consulter , q.audio_ecouter',
+      'q.voir',
       function()
       {
         var objet_tds  = $(this).parent().parent().find('td');
@@ -270,18 +270,27 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              var tab_response = responseHTML.split(']¤[');
-              if(tab_response[0]!='ok')
+              if(responseHTML.substring(0,4)!='<tr>')
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
                 $('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
-                $('#table_voir tbody').html(tab_response[1]);
-                $('#report_legende'  ).html(tab_response[2]);
-                $('#report_texte'    ).html(tab_response[3]);
-                $('#report_audio'    ).html(tab_response[4]);
+                // séparer lignes de résultat et légende
+                var position_legende = responseHTML.lastIndexOf('<h3>');
+                if(position_legende==-1)
+                {
+                  var html_tableau = responseHTML;
+                  var html_legende = '';
+                }
+                else
+                {
+                  var html_tableau = responseHTML.substring(0,position_legende);
+                  var html_legende = responseHTML.substring(position_legende);
+                }
+                $('#table_voir tbody').html(html_tableau);
+                $('#report_legende'  ).html(html_legende);
                 tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'centerOnScroll':true } );
               }

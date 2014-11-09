@@ -48,9 +48,30 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   {
     exit('Erreur : la date de début est postérieure à la date de fin !');
   }
+  // Classe de l'élève
+  $classe_id = 0;
+  if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) ) )
+  {
+    $classe_id = $_SESSION['ELEVE_CLASSE_ID'];
+  }
+  elseif( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+  {
+    foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab_info)
+    {
+      if($tab_info['valeur']==$eleve_id)
+      {
+        $classe_id = $tab_info['classe_id'];
+        break;
+      }
+    }
+  }
+  else
+  {
+    $classe_id = DB_STRUCTURE_ELEVE::DB_recuperer_classe_eleve($eleve_id);
+  }
   // Lister les évaluations
   $script = '';
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_groupes_eleve( $eleve_id , $classe_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
   if(empty($DB_TAB))
   {
     exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !');
@@ -60,8 +81,6 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
     $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
     $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
-    $q_texte       = ($DB_ROW['jointure_texte'])     ? '<q class="texte_consulter" title="Commentaire écrit disponible."></q>' : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
-    $q_audio       = ($DB_ROW['jointure_audio'])     ? '<q class="audio_ecouter" title="Commentaire audio disponible."></q>'   : '<q class="audio_ecouter_non" title="Pas de commentaire audio."></q>' ;
     // Afficher une ligne du tableau
     echo'<tr>';
     echo  '<td>'.html($date_affich).'</td>';
@@ -70,8 +89,6 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     echo  '<td>'.$image_sujet.$image_corrige.'</td>';
     echo  '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
     echo    '<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
-    echo    $q_texte;
-    echo    $q_audio;
     if($DB_ROW['devoir_autoeval_date']===NULL)
     {
       echo'<q class="saisir_non" title="Devoir sans auto-évaluation."></q>';
@@ -148,37 +165,11 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
       $tab_affich[$item_id] .= Html::td_score( $tab_scores[$item_id] , 'score' /*methode_tri*/ , '' /*pourcent*/ );
     }
   }
-  $affichage = '<tr>'.implode('</tr><tr>',$tab_affich).'</tr>';
   // la légende, qui peut être personnalisée (codes ABS, NN, etc.)
   $score_legende  = (test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
   $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ );
-  // Les commentaires texte ou audio
-  $commentaire_texte = '';
-  $commentaire_audio = '';
-  $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id);
-  if(!empty($DB_ROW))
-  {
-    if($DB_ROW['jointure_texte'])
-    {
-      $msg_url = $DB_ROW['jointure_texte'];
-      if(strpos($msg_url,URL_DIR_SACOCHE)===0)
-      {
-        $fichier_chemin = url_to_chemin($msg_url);
-        $msg_data = is_file($fichier_chemin) ? file_get_contents($fichier_chemin) : 'Erreur : fichier avec le contenu du commentaire non trouvé.' ;
-      }
-      else
-      {
-        $msg_data = cURL::get_contents($msg_url);
-      }
-      $commentaire_texte = '<h3>Commentaire écrit</h3><textarea name="f_msg_data" id="f_msg_texte" rows="10" cols="100" readonly>'.html($msg_data).'</textarea>';
-    }
-    if($DB_ROW['jointure_audio'])
-    {
-      $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$DB_ROW['jointure_audio'].'" class="eleve"></audio>';
-    }
-  }
   // retour des infos
-  exit('ok'.']¤['.$affichage.']¤['.$legende.']¤['.$commentaire_texte.']¤['.$commentaire_audio);
+  exit('<tr>'.implode('</tr><tr>',$tab_affich).'</tr>'.$legende);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

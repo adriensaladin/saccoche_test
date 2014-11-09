@@ -106,27 +106,6 @@ public static function DB_recuperer_devoir_prorietaire_identite($devoir_id)
 }
 
 /**
- * recuperer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @param string $msg_objet   texte | audio
- * @return array
- */
-public static function DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet)
-{
-  $jointure = 'jointure_'.$msg_objet;
-  $DB_SQL = 'SELECT '.$jointure.' ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_VAR = array(
-    ':devoir_id' => $devoir_id,
-    ':eleve_id'  => $eleve_id,
-  );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * tester_devoir_ponctuel_prof_by_ids
  *
  * @param int    $devoir_id
@@ -551,8 +530,8 @@ public static function DB_lister_eleves_devoirs($prof_id,$devoir_info,$date_debu
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
-  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR sacoche_jointure_devoir_prof.prof_id=:prof_id ) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR sacoche_jointure_devoir_droit.prof_id=:prof_id ) ';
   $DB_SQL.= $where_description;
   $DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" ';
   $DB_SQL.= 'AND groupe_type=:type4 ';
@@ -579,11 +558,11 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  // Il faut commencer par lister les ids de devoirs sinon en cas de jointure du prof sur sacoche_jointure_devoir_prof on ne récupère pas la liste des autres profs associés à l'éval.
+  // Il faut commencer par lister les ids de devoirs sinon en cas de jointure du prof sur sacoche_jointure_devoir_droit on ne récupère pas la liste des autres profs associés à l'éval.
   $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT devoir_id SEPARATOR ",") AS devoirs_listing ';
   $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
-  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR sacoche_jointure_devoir_prof.prof_id=:prof_id ) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR sacoche_jointure_devoir_droit.prof_id=:prof_id ) ';
   $DB_VAR = array(
     ':proprio_id' => $prof_id,
     ':prof_id'    => $prof_id,
@@ -597,7 +576,7 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
   $DB_SQL = 'SELECT sacoche_devoir.*, CONCAT(prof.user_nom," ",prof.user_prenom) AS proprietaire, ';
   $DB_SQL.= 'GROUP_CONCAT(DISTINCT sacoche_jointure_devoir_item.item_id SEPARATOR "_") AS items_listing, ';
   $DB_SQL.= 'COUNT(DISTINCT sacoche_jointure_devoir_item.item_id) AS items_nombre, ';
-  $DB_SQL.= 'GROUP_CONCAT(DISTINCT CONCAT(SUBSTRING(sacoche_jointure_devoir_prof.jointure_droit,1,1),sacoche_jointure_devoir_prof.prof_id) SEPARATOR "_") AS partage_listing, ';
+  $DB_SQL.= 'GROUP_CONCAT(DISTINCT CONCAT(SUBSTRING(sacoche_jointure_devoir_droit.jointure_droit,1,1),sacoche_jointure_devoir_droit.prof_id) SEPARATOR "_") AS partage_listing, ';
   if(!$groupe_id)
   {
     $DB_SQL .= 'GROUP_CONCAT(DISTINCT sacoche_jointure_user_groupe.user_id SEPARATOR "_") AS users_listing, ';
@@ -605,8 +584,8 @@ public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_my
   }
   $DB_SQL.= 'groupe_type, groupe_nom ';
   $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item  USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   if(!$groupe_id)
   {
@@ -643,9 +622,9 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
 {
   $DB_SQL = 'SELECT devoir_id, groupe_id, devoir_info, devoir_date, devoir_visible_date ';
   $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR ( sacoche_jointure_devoir_prof.prof_id=:prof_id AND jointure_droit=:jointure_droit ) ) ';
+  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR ( sacoche_jointure_devoir_droit.prof_id=:prof_id AND jointure_droit=:jointure_droit ) ) ';
   $DB_SQL.= ($groupe_type=='groupe') ? 'AND groupe_type!=:type4 AND groupe_id=:groupe_id ' : 'AND groupe_type=:type4 ' ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC ';
@@ -661,7 +640,7 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
 }
 
 /**
- * lister_devoir_items
+ * lister_items_devoir
  * Retourner les items d'un devoir
  *
  * @param int   $devoir_id
@@ -669,7 +648,7 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
  * @param bool  $with_coef
  * @return array
  */
-public static function DB_lister_devoir_items($devoir_id,$with_lien,$with_coef)
+public static function DB_lister_items_devoir($devoir_id,$with_lien,$with_coef)
 {
   $DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
   $DB_SQL.= ($with_lien) ? 'item_lien, ' : '' ;
@@ -688,13 +667,13 @@ public static function DB_lister_devoir_items($devoir_id,$with_lien,$with_coef)
 }
 
 /**
- * lister_devoir_saisies
+ * lister_saisies_devoir
  *
  * @param int   $devoir_id
  * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public static function DB_lister_devoir_saisies($devoir_id,$with_REQ)
+public static function DB_lister_saisies_devoir($devoir_id,$with_REQ)
 {
   // On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
   $DB_SQL = 'SELECT eleve_id, item_id, saisie_note, prof_id ';
@@ -702,21 +681,6 @@ public static function DB_lister_devoir_saisies($devoir_id,$with_REQ)
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_sortie_date>NOW() ';
   $DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
-  $DB_VAR = array(':devoir_id'=>$devoir_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_devoir_commentaires
- *
- * @param int   $devoir_id
- * @return array
- */
-public static function DB_lister_devoir_commentaires($devoir_id)
-{
-  $DB_SQL = 'SELECT eleve_id, jointure_texte, jointure_audio ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1065,30 +1029,6 @@ public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,
 }
 
 /**
- * remplacer_devoir_commentaire
- * Si la note est "REQ" (pour marquer une demande d'évaluation), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @param string $msg_objet   texte | audio
- * @param string $msg_url
- * @return void
- */
-public static function DB_remplacer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet,$msg_url)
-{
-  $jointure = 'jointure_'.$msg_objet;
-  $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_eleve( devoir_id, eleve_id, '.$jointure.') ';
-  $DB_SQL.= 'VALUES                                   (:devoir_id,:eleve_id,:'.$jointure.') ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE '.$jointure.'=:'.$jointure.' ';
-  $DB_VAR = array(
-    ':devoir_id'  => $devoir_id,
-    ':eleve_id'   => $eleve_id,
-    ':'.$jointure => $msg_url,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * modifier_groupe_par_prof ; on ne touche pas à "groupe_type" (ni à "groupe_ref" qui reste vide)
  *
  * @param int    $groupe_id
@@ -1370,7 +1310,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
   if($mode=='creer')
   {
     // Insertion des droits
-    $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_prof(devoir_id,prof_id,jointure_droit) ';
+    $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_droit(devoir_id,prof_id,jointure_droit) ';
     $DB_SQL.= 'VALUES(:devoir_id,:prof_id,:droit)';
     foreach($tab_profs as $prof_id => $droit)
     {
@@ -1387,7 +1327,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
     // On récupère la liste des droits déjà présents, et on étudie les différences pour faire des REPLACE / DELETE / INSERT sélectifs
     // -> on récupère les droits actuels
     $DB_SQL = 'SELECT prof_id, jointure_droit ';
-    $DB_SQL.= 'FROM sacoche_jointure_devoir_prof ';
+    $DB_SQL.= 'FROM sacoche_jointure_devoir_droit ';
     $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
     $DB_VAR = array(':devoir_id'=>$devoir_id);
     $tab_old_droits = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
@@ -1399,7 +1339,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
         if($tab_old_droits[$prof_id]!=$droit)
         {
           // -> modification de droit
-          $DB_SQL = 'UPDATE sacoche_jointure_devoir_prof ';
+          $DB_SQL = 'UPDATE sacoche_jointure_devoir_droit ';
           $DB_SQL.= 'SET jointure_droit=:droit ';
           $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
           $DB_VAR = array(
@@ -1414,7 +1354,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
       else
       {
         // -> ajout de droit
-        $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_prof(devoir_id,prof_id,jointure_droit) ';
+        $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_droit(devoir_id,prof_id,jointure_droit) ';
         $DB_SQL.= 'VALUES(:devoir_id,:prof_id,:droit)';
         $DB_VAR = array(
           ':devoir_id' => $devoir_id,
@@ -1429,7 +1369,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
     {
       $chaine_prof_id = implode(',',array_keys($tab_old_droits));
       // -> suppression de droit
-      $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_prof ';
+      $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_droit ';
       $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id IN('.$chaine_prof_id.')';
       $DB_VAR = array(':devoir_id'=>$devoir_id);
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1621,8 +1561,8 @@ public static function DB_supprimer_groupe_par_prof($groupe_id,$groupe_type,$wit
   $jointure_periode_delete = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? ', sacoche_jointure_groupe_periode ' : '' ;
   $jointure_periode_join   = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? 'LEFT JOIN sacoche_jointure_groupe_periode USING (groupe_id) ' : '' ;
   // Il faut aussi supprimer les évaluations portant sur le groupe
-  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir , sacoche_jointure_devoir_item , sacoche_jointure_devoir_prof , sacoche_jointure_devoir_eleve ' : '' ;
-  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ' : '' ;
+  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir , sacoche_jointure_devoir_item , sacoche_jointure_devoir_droit , sacoche_jointure_devoir_audio ' : '' ;
+  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_audio USING (devoir_id) ' : '' ;
   // Let's go
   $DB_SQL = 'DELETE sacoche_groupe , sacoche_jointure_user_groupe '.$jointure_periode_delete.$jointure_devoir_delete;
   $DB_SQL.= 'FROM sacoche_groupe ';
@@ -1651,12 +1591,12 @@ public static function DB_supprimer_groupe_par_prof($groupe_id,$groupe_type,$wit
 public static function DB_supprimer_devoir_et_saisies($devoir_id)
 {
   // Il faut aussi supprimer les jointures du devoir avec les items
-  $DB_SQL = 'DELETE sacoche_devoir, sacoche_saisie, sacoche_jointure_devoir_item, sacoche_jointure_devoir_prof, sacoche_jointure_devoir_eleve ';
+  $DB_SQL = 'DELETE sacoche_devoir, sacoche_saisie, sacoche_jointure_devoir_item, sacoche_jointure_devoir_droit, sacoche_jointure_devoir_audio ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_audio USING (devoir_id) ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1678,24 +1618,6 @@ public static function DB_supprimer_saisie($eleve_id,$devoir_id,$item_id)
     ':eleve_id'  => $eleve_id,
     ':devoir_id' => $devoir_id,
     ':item_id'   => $item_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * supprimer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @return void
- */
-public static function DB_supprimer_devoir_commentaire($devoir_id,$eleve_id)
-{
-  $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_VAR = array(
-    ':devoir_id' => $devoir_id,
-    ':eleve_id'  => $eleve_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

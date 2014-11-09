@@ -1811,8 +1811,8 @@ public static function DB_supprimer_groupe_par_admin($groupe_id,$groupe_type,$wi
   $jointure_periode_delete = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? ', sacoche_jointure_groupe_periode ' : '' ;
   $jointure_periode_join   = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? 'LEFT JOIN sacoche_jointure_groupe_periode USING (groupe_id) ' : '' ;
   // Il faut aussi supprimer les évaluations portant sur le groupe
-  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir, sacoche_jointure_devoir_item, sacoche_jointure_devoir_prof, sacoche_jointure_devoir_eleve ' : '' ;
-  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ' : '' ;
+  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir, sacoche_jointure_devoir_item, sacoche_jointure_devoir_droit, sacoche_jointure_devoir_audio ' : '' ;
+  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_audio USING (devoir_id) ' : '' ;
   // Let's go
   $DB_SQL = 'DELETE sacoche_groupe , sacoche_jointure_user_groupe '.$jointure_periode_delete.$jointure_devoir_delete;
   $DB_SQL.= 'FROM sacoche_groupe ';
@@ -1839,12 +1839,12 @@ public static function DB_supprimer_groupe_par_admin($groupe_id,$groupe_type,$wi
  */
 public static function DB_supprimer_devoirs_sans_saisies()
 {
-  // Il faut aussi supprimer les jointures du devoir avec les items / les profs / les élèves
-  $DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_jointure_devoir_prof, sacoche_jointure_devoir_eleve ';
+  // Il faut aussi supprimer les jointures du devoir avec les items / les profs / l'audio
+  $DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_jointure_devoir_droit, sacoche_jointure_devoir_audio ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_audio USING (devoir_id) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -1997,7 +1997,7 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     $DB_SQL = 'DELETE FROM sacoche_jointure_parent_eleve ';
     $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_eleve ';
+    $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_audio ';
     $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_saisie ';
@@ -2051,7 +2051,7 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     $DB_SQL = 'DELETE FROM sacoche_devoir ';
     $DB_SQL.= 'WHERE proprio_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_prof ';
+    $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_droit ';
     $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'UPDATE sacoche_saisie ';
@@ -2306,11 +2306,11 @@ public static function DB_corriger_anomalies()
   $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
   $tab_bilan[] = '<label class="'.$classe.'">Scores : '.$message.'.</label>';
   // Recherche d'anomalies : devoirs associés à un prof ou un groupe supprimé...
-  $DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item , sacoche_jointure_devoir_prof , sacoche_jointure_devoir_eleve ';
+  $DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item , sacoche_jointure_devoir_droit , sacoche_jointure_devoir_audio ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof  USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_droit USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_audio USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_groupe.groupe_id IS NULL) ) ';
@@ -2426,10 +2426,10 @@ public static function DB_corriger_anomalies()
   $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
   $tab_bilan[] = '<label class="'.$classe.'">Jointures évaluation/item : '.$message.'.</label>';
   // Recherche d'anomalies : jointures devoir/droit associées à un devoir ou un user supprimé...
-  $DB_SQL = 'DELETE sacoche_jointure_devoir_prof ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_prof ';
+  $DB_SQL = 'DELETE sacoche_jointure_devoir_droit ';
+  $DB_SQL.= 'FROM sacoche_jointure_devoir_droit ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_devoir_prof.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_devoir_droit.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE ( (sacoche_devoir.devoir_id IS NULL) OR (sacoche_user.user_id IS NULL) ) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
@@ -2437,10 +2437,10 @@ public static function DB_corriger_anomalies()
   $classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
   $tab_bilan[] = '<label class="'.$classe.'">Jointures évaluation/prof : '.$message.'.</label>';
   // Recherche d'anomalies : jointures devoir/audio associées à un devoir ou un user supprimé...
-  $DB_SQL = 'DELETE sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
+  $DB_SQL = 'DELETE sacoche_jointure_devoir_audio ';
+  $DB_SQL.= 'FROM sacoche_jointure_devoir_audio ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_devoir_eleve.eleve_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_devoir_audio.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE ( (sacoche_devoir.devoir_id IS NULL) OR (sacoche_user.user_id IS NULL) ) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);

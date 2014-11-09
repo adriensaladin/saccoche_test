@@ -140,12 +140,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 
-// Longueur max pour un enregistrement audio (de toutes façons limitée techniquement à 120s).
-// Selon les tests effectués la taille du MP3 enregistrée est de 3,9 Ko/s.
-$AUDIO_DUREE_MAX = min( 120 , FICHIER_TAILLE_MAX/4 );
-
 // Javascript
-Layout::add( 'js_inline_before' , 'var AUDIO_DUREE_MAX = '.$AUDIO_DUREE_MAX.';' );
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value=""></option>'.$select_eleve).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
@@ -268,7 +263,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
     <li>3 &rarr; <span class="select_img droit_m">&nbsp;</span> modifier les paramètres (élèves, items, &hellip;) <span class="danger">Risqué : à utiliser en connaissance de cause&nbsp;!</span></li>
   </ul>
   <hr />
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Associer des collègues à une évaluation.</a></span>
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Gestion des évaluations &rarr; Associer des collègues à une évaluation.</a></span>
   <hr />
   <?php echo Html::afficher_form_element_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
@@ -433,57 +428,6 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
     <p class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</p>
   </div>
 </div>
-
-<form action="#" method="post" id="zone_enregistrer_texte" class="hide"><fieldset>
-  <h2>Commentaire écrit personnalisé</h2>
-  <hr />
-  <ul class="puce">
-    <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_texte">DOC : Commentaire écrit personnalisé.</a></span></li>
-  </ul>
-  <hr />
-  <p class="b">
-    <label class="tab">Élève :</label><span id="titre_enregistrer_texte"></span>
-  </p>
-  <div>
-    <label for="f_msg_texte" class="tab">Message :</label><textarea name="f_msg_data" id="f_msg_texte" rows="10" cols="60"></textarea><br />
-    <span class="tab"></span><label id="f_msg_texte_reste"></label>
-  </div>
-  <p>
-    <span class="tab"></span><button id="valider_enregistrer_texte" type="button" class="valider">Enregistrer</button> <button id="annuler_enregistrer_texte" type="button" class="annuler">Annuler</button> <label id="ajax_msg_enregistrer_texte">&nbsp;</label>
-    <input id="enregistrer_texte_ref" name="f_ref" type="hidden" value="" />
-    <input id="enregistrer_texte_eleve_id" name="f_eleve_id" type="hidden" value="" />
-    <input id="enregistrer_texte_msg_url" name="f_msg_url" type="hidden" value="" />
-    <input id="enregistrer_texte_msg_autre" name="f_msg_autre" type="hidden" value="" />
-  </p>
-</fieldset></form>
-
-<form action="#" method="post" id="zone_enregistrer_audio" class="hide"><fieldset>
-  <h2>Commentaire audio personnalisé</h2>
-  <hr />
-  <ul class="puce">
-    <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_audio">DOC : Commentaire audio personnalisé.</a></span></li>
-    <li><span class="danger">Fonctionnalité expérimentale ! <span class="fluo">Usage du navigateur Chrome quasi-obligatoire !</span></span></li>
-    <li><span class="astuce">Enregistrement de <?php echo $AUDIO_DUREE_MAX ?> s maximum, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre.<br />Dans tous les cas l'enregistrement ne peut techniquement pas dépasser 120 secondes." /></span></li>
-  </ul>
-  <hr />
-  <p class="b">
-    <label class="tab">Élève :</label><span id="titre_enregistrer_audio"></span>
-  </p>
-  <p>
-    <label class="tab">Enregistrement :</label><span id="record_start" class="hide"><button id="audio_enregistrer_start" type="button" class="enregistrer_start">Démarrer</button></span><span id="record_stop" class="hide"><button id="audio_enregistrer_stop" type="button" class="enregistrer_stop">Arrêter</button></span> <label id="ajax_msg_enregistrer_audio">&nbsp;</label>
-  </p>
-  <p>
-    <label class="tab">Lecture :</label><span id="record_play" class="hide"><audio id="audio_lecture" controls="" src="" class="prof"></audio></span> <span id="record_delete" class="hide"><button id="audio_enregistrer_supprimer" type="button" class="supprimer">Supprimer</button></span>
-  </p>
-  <div>
-    <span class="tab"></span><button id="fermer_enregistrer_audio" type="button" class="retourner">Retour</button>
-    <input id="enregistrer_audio_ref" name="f_ref" type="hidden" value="" />
-    <input id="enregistrer_audio_eleve_id" name="f_eleve_id" type="hidden" value="" />
-    <input id="enregistrer_audio_msg_url" name="f_msg_url" type="hidden" value="" />
-    <input id="enregistrer_audio_msg_autre" name="f_msg_autre" type="hidden" value="" />
-    <input id="enregistrer_audio_msg_data" name="f_msg_data" type="hidden" value="" />
-  </div>
-</fieldset></form>
 
 <div id="zone_confirmer_fermer_saisir" class="hide">
   <p class="danger">Des saisies ont été effectuées, mais n'ont pas été enregistrées.</p>

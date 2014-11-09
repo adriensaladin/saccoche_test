@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS sacoche_jointure_devoir_prof;
+DROP TABLE IF EXISTS sacoche_jointure_devoir_droit;
 
-CREATE TABLE sacoche_jointure_devoir_prof (
+CREATE TABLE sacoche_jointure_devoir_droit (
   devoir_id      MEDIUMINT(8)                     UNSIGNED                NOT NULL DEFAULT 0,
   prof_id        MEDIUMINT(8)                     UNSIGNED                NOT NULL DEFAULT 0,
   jointure_droit ENUM("voir","saisir","modifier") COLLATE utf8_unicode_ci NOT NULL DEFAULT "saisir",

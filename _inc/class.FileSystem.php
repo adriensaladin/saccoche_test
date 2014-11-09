@@ -789,7 +789,7 @@ class FileSystem
     // Si le fichier dépasse les capacités du serveur, il se peut que $_FILES ne soit même pas renseigné.
     if(!isset($_FILES['userfile']))
     {
-      return 'Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
+      return 'Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
     }
     // Si $_FILES est renseigné, il se peut qu'il y ait quand même eu un dépassement des limites.
     $tab_file = $_FILES['userfile'];

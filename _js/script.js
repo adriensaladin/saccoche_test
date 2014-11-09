@@ -119,33 +119,6 @@ function extract_hash(href)
 }
 
 /**
- * Fonction pour envoyer un message vers la console javascript
- *
- * @param type  log | info | warn | error | table | time | timeEnd | group | dir | assert | trace
- * @param msg   le contenu du message
- * @return string
- */
-function log(type,msg)
-{
-  try
-  {
-         if(type=='log')     { console.log(msg);     }
-    else if(type=='info')    { console.info(msg);    }
-    else if(type=='warn')    { console.warn(msg);    }
-    else if(type=='error')   { console.error(msg);   }
-    else if(type=='table')   { console.table(msg);   }
-    else if(type=='time')    { console.time(msg);    }
-    else if(type=='timeEnd') { console.timeEnd(msg); }
-    else if(type=='group')   { console.group(msg);   }
-    else if(type=='dir')     { console.dir(msg);     }
-    else if(type=='assert')  { console.assert(msg);  }
-    else if(type=='trace')   { console.trace(msg);   }
-  }
-  catch (e)
-  {}
-}
-
-/**
  * Fonction pour interpréter une erreur d'extraction json
  *
  * @param jqXHR      l'objet retourné par ajax, contenant la réponse du serveur
@@ -1004,7 +977,7 @@ $(document).ready
           var largeur = Math.max( 1000 , screen.width - 600 );
           var hauteur = screen.height * 1 ;
           var gauche = 0 ;
-          var haut   = 0 ;
+          var haut  = 0 ;
           window.moveTo(gauche,haut);
           window.resizeTo(largeur,hauteur);
         }
@@ -1012,7 +985,7 @@ $(document).ready
         var largeur = 600 ;
         var hauteur = screen.height * 1 ;
         var gauche = screen.width - largeur ;
-        var haut   = 0 ;
+        var haut  = 0 ;
         w = window.open( adresse , 'popup' ,"toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width="+largeur+",height="+hauteur+",top="+haut+",left="+gauche ) ;
         w.focus() ;
         return false;

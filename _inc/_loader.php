@@ -423,31 +423,19 @@ if(defined('APPEL_SITE_PROJET'))
 }
 define('URL_INSTALL_SACOCHE',$url); // la seule constante sans slash final
 define('URL_DIR_SACOCHE',$url.'/'); // avec slash final
-
-function chemin_to_url($chemin)
-{
-  $tab_bad = array( CHEMIN_DOSSIER_SACOCHE , DS );
-  $tab_bon = array( URL_DIR_SACOCHE        , '/');
-  return str_replace( $tab_bad , $tab_bon , $chemin );
-}
-function url_to_chemin($url)
-{
-  $tab_bad = array( URL_DIR_SACOCHE        , '/');
-  $tab_bon = array( CHEMIN_DOSSIER_SACOCHE , DS );
-  return str_replace( $tab_bad , $tab_bon , $url );
-}
-
-define('URL_DIR_TMP'         , chemin_to_url(CHEMIN_DOSSIER_TMP        ) );
-define('URL_DIR_IMG'         , chemin_to_url(CHEMIN_DOSSIER_IMG        ) );
-define('URL_DIR_DEVOIR'      , chemin_to_url(CHEMIN_DOSSIER_DEVOIR     ) );
-define('URL_DIR_DUMP'        , chemin_to_url(CHEMIN_DOSSIER_DUMP       ) );
-define('URL_DIR_EXPORT'      , chemin_to_url(CHEMIN_DOSSIER_EXPORT     ) );
-define('URL_DIR_IMPORT'      , chemin_to_url(CHEMIN_DOSSIER_IMPORT     ) );
-define('URL_DIR_LOGINPASS'   , chemin_to_url(CHEMIN_DOSSIER_LOGINPASS  ) );
-define('URL_DIR_LOGO'        , chemin_to_url(CHEMIN_DOSSIER_LOGO       ) );
-define('URL_DIR_PARTENARIAT' , chemin_to_url(CHEMIN_DOSSIER_PARTENARIAT) );
-define('URL_DIR_RSS'         , chemin_to_url(CHEMIN_DOSSIER_RSS        ) );
-define('URL_DIR_WEBSERVICES' , chemin_to_url(CHEMIN_DOSSIER_WEBSERVICES) );
+$tab_bad = array( CHEMIN_DOSSIER_SACOCHE , DS );
+$tab_bon = array( URL_DIR_SACOCHE        , '/');
+define('URL_DIR_TMP'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_TMP         ) );
+define('URL_DIR_IMG'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMG         ) );
+define('URL_DIR_DEVOIR'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR      ) );
+define('URL_DIR_DUMP'        , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP        ) );
+define('URL_DIR_EXPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT      ) );
+define('URL_DIR_IMPORT'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMPORT      ) );
+define('URL_DIR_LOGINPASS'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS   ) );
+define('URL_DIR_LOGO'        , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO        ) );
+define('URL_DIR_PARTENARIAT' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_PARTENARIAT ) );
+define('URL_DIR_RSS'         , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS         ) );
+define('URL_DIR_WEBSERVICES' , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_WEBSERVICES ) );
 
 // ============================================================================
 // URL externes appelées par l'application

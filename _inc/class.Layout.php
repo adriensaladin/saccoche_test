@@ -129,7 +129,7 @@ class Layout
     // Cadres (frames) ; est requis pour le js AjaxUpload ; peut être requis pour le js Fancybox
     $tab_CSP_directives[] = "frame-src 'self'";
     // Si audio ou vidéo
-    $tab_CSP_directives[] = "media-src 'self'";
+    $tab_CSP_directives[] = "media-src 'self' data:";
     // Si object ou applet ; requis pour du flash (IEP, TEP, MEP...)
     $tab_CSP_directives[] = "object-src 'none'";
     // Si font

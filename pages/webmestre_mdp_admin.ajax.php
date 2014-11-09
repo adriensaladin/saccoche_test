@@ -49,8 +49,8 @@ if($admin_id)
   // On affiche le retour
   echo'<ul class="puce">';
   echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>';
-  echo'<li>nom d\'utilisateur " '.$admin_login.' "</li>';
-  echo'<li>mot de passe " '.$admin_password.' "</li>';
+  echo'<li>nom d\'utilisateur " <b>'.$admin_login.'</b> "</li>';
+  echo'<li>mot de passe " <b>'.$admin_password.'</b> "</li>';
   echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.URL_DIR_SACOCHE.'">'.URL_INSTALL_SACOCHE.'</a></li>';
   echo'</ul>';
 }

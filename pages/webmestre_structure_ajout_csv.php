@@ -55,7 +55,8 @@ FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 
 <form action="#" method="post" id="form_importer"><fieldset>
   <label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label><br />
-  <span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
+  <span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label><br />
+  <span class="tab"></span><input id="f_courriel_copie" name="f_courriel_copie" type="checkbox" value="1" /><label for="f_courriel_copie"> envoyer une copie à <?php echo html(WEBMESTRE_COURRIEL); ?></label>
   <div id="div_import" class="hide">
     <span class="tab"></span><button id="bouton_importer" type="button" class="valider">Ajouter les établissements du fichier.</button><label id="ajax_msg_import">&nbsp;</label>
   </div>

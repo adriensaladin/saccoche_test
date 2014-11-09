@@ -129,7 +129,8 @@ if(empty($_POST['f_afficher']))
       <label class="tab" for="f_contact_prenom">Contact Prénom :</label><input id="f_contact_prenom" name="f_contact_prenom" type="text" value="" size="20" maxlength="20" /><br />
       <label class="tab" for="f_contact_courriel">Contact Courriel :</label><input id="f_contact_courriel" name="f_contact_courriel" type="text" value="" size="50" maxlength="63" /><br />
       <span id="span_envoi">
-        <label class="tab"></label><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
+        <span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label><br />
+        <span class="tab"></span><input id="f_ajouter_copie" name="f_courriel_copie" type="checkbox" value="1" /><label for="f_ajouter_copie"> envoyer une copie à <?php echo html(WEBMESTRE_COURRIEL); ?></label>
       </span>
     </p>
   </div>
@@ -147,6 +148,9 @@ if(empty($_POST['f_afficher']))
   <p class="b" id="titre_generer_mdp"></p>
   <p>
     <label class="tab" for="f_admin_id">Administrateur :</label><select id="f_admin_id" name="f_admin_id"><option></option></select>
+  </p>
+  <p>
+    <label class="tab"></label><input id="f_mdp_copie" name="f_courriel_copie" type="checkbox" value="1" /><label for="f_mdp_copie"> envoyer une copie à <?php echo html(WEBMESTRE_COURRIEL); ?></label>
   </p>
   <p>
     <button id="valider_generer_mdp" type="button" class="valider">Valider.</button> <button id="fermer_zone_generer_mdp" type="button" class="annuler">Annuler.</button> <label id="ajax_msg_generer_mdp">&nbsp;</label>

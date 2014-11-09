@@ -46,6 +46,11 @@ $doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_
 $groupe         = (isset($_POST['f_groupe']))          ? Clean::texte($_POST['f_groupe'])                : '';
 $groupe_nom     = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])            : '';
 $eleves_ordre   = (isset($_POST['f_eleves_ordre']))    ? Clean::texte($_POST['f_eleves_ordre'])          : '';
+$eleve_id       = (isset($_POST['f_eleve_id']))        ? Clean::entier($_POST['f_eleve_id'])             : 0;
+$msg_objet      = (isset($_POST['f_msg_objet']))       ? Clean::texte($_POST['f_msg_objet'])             : '';
+$msg_data       = (isset($_POST['f_msg_data']))        ? Clean::texte($_POST['f_msg_data'])              : '';
+$msg_url        = (isset($_POST['f_msg_url']))         ? Clean::texte($_POST['f_msg_url'])               : '';
+$msg_autre      = (isset($_POST['f_msg_autre']))       ? Clean::texte($_POST['f_msg_autre'])             : '';
 $cart_detail    = (isset($_POST['f_detail']))          ? Clean::texte($_POST['f_detail'])                : '';
 $cart_cases_nb  = (isset($_POST['f_cases_nb']))        ? Clean::entier($_POST['f_cases_nb'])             : '';
 $cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
@@ -341,7 +346,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
       {
         $masque_remplacement = $url_dossier_devoir.'devoir_$1_$2_'.time().'.$4';
         $url_nouvelle = preg_replace( $masque_recherche , $masque_remplacement , $url_actuelle );
-        copy ( str_replace(URL_DIR_DEVOIR,CHEMIN_DOSSIER_DEVOIR,$url_actuelle) , str_replace(URL_DIR_DEVOIR,CHEMIN_DOSSIER_DEVOIR,$url_nouvelle) );
+        copy ( url_to_chemin($url_actuelle) , url_to_chemin($url_nouvelle) );
         ${'doc_'.$objet} = $url_nouvelle;
       }
     }
@@ -602,7 +607,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
 if( ($action=='ordonner') && $devoir_id )
 {
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   if(empty($DB_TAB_COMP))
   {
     exit('Aucun item n\'est associé à cette évaluation !');
@@ -644,9 +649,11 @@ if( ($action=='indiquer_eleves_deja') && $description && $date_debut )
 if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) ) // $description et $groupe_nom sont aussi transmis
 {
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  // liste des commentaires audio ou texte
+  $DB_TAB_MSG = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_commentaires($devoir_id);
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -663,17 +670,19 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
   $tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
-  $tab_affich[0][0] = '<td>';
-  $tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
-  $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
-  $tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="arrow_continue_rigth">par item</span></label></span><br />';
-  $tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
-  $tab_affich[0][0].= '</p><p>';
-  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur"'.$check_largeur.' /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
-  $tab_affich[0][0].= '</p>';
-  $tab_affich[0][0].= '</td>';
+  $tab_affich['head'][0] = '<td>';
+  $tab_affich['head'][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
+  $tab_affich['head'][0].= '<p>';
+  $tab_affich['head'][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+  $tab_affich['head'][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="arrow_continue_rigth">par item</span></label></span><br />';
+  $tab_affich['head'][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
+  $tab_affich['head'][0].= '</p><p>';
+  $tab_affich['head'][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur"'.$check_largeur.' /> <span class="retrecir_largeur">Largeur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+  $tab_affich['head'][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+  $tab_affich['head'][0].= '</p>';
+  $tab_affich['head'][0].= '</td>';
+  $tab_affich['foot_texte'][0] = '<th>Commentaire écrit</th>';
+  $tab_affich['foot_audio'][0] = '<th>Commentaire audio</th>';
   // première ligne (noms prénoms des élèves)
   $csv_ligne_eleve_nom = $separateur;
   $csv_ligne_eleve_id  = $separateur;
@@ -681,11 +690,31 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
   $br = ($_SESSION['BROWSER']['mobile']) ? '' : '&amp;br' ;
   foreach($DB_TAB_USER as $DB_ROW)
   {
-    $tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).$br.'" /></th>';
-    $tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+    $tab_affich['head'][$DB_ROW['user_id']] = '<th><img id="image_'.$DB_ROW['user_id'].'" alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).$br.'" /></th>';
+    $tab_user_id[] = $DB_ROW['user_id'];
     $csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
     $csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
     $csv_nb_colonnes++;
+    // On initialise ces cellules, qui seront remplacées si besoin par une autre valeur dans la boucle suivante
+    $tab_affich['foot_texte'][$DB_ROW['user_id']] = '<td id="texte_'.$DB_ROW['user_id'].'"><q class="texte_enregistrer" title="Saisir un commentaire écrit."></q></td>';
+    $tab_affich['foot_audio'][$DB_ROW['user_id']] = '<td id="audio_'.$DB_ROW['user_id'].'"><q class="audio_enregistrer" title="Enregistrer un commentaire audio."></q></td>';
+  }
+  if(!empty($DB_TAB_MSG))
+  {
+    $tab_title = array(
+      'texte' => 'Modifier le commentaire écrit.',
+      'audio' => 'Modifier le commentaire audio.',
+    );
+    foreach($DB_TAB_MSG as $DB_ROW)
+    {
+      foreach($tab_title as $msg_objet => $msg_title)
+      {
+        if($DB_ROW['jointure_'.$msg_objet])
+        {
+          $tab_affich['foot_'.$msg_objet][$DB_ROW['eleve_id']] = '<td id="'.$msg_objet.'_'.$DB_ROW['eleve_id'].'" class="off"><q class="'.$msg_objet.'_enregistrer" title="'.$msg_title.'"></q></td>';
+        }
+      }
+    }
   }
   $export_csv = $csv_ligne_eleve_id."\r\n";
   // première colonne (noms items)
@@ -695,24 +724,24 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
     $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $tab_comp_id[$DB_ROW['item_id']] = $item_ref;
+    $tab_comp_id[] = $DB_ROW['item_id'];
     $export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom']."\r\n";
   }
   $export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
   // cases centrales avec un champ input de base
   $num_colonne = 0;
-  foreach($tab_user_id as $user_id=>$val_user)
+  foreach($tab_user_id as $user_id)
   {
     $num_colonne++;
     $num_ligne=0;
-    foreach($tab_comp_id as $comp_id=>$val_comp)
+    foreach($tab_comp_id as $comp_id)
     {
       $num_ligne++;
       $tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
     }
   }
   // configurer le champ input
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
   $bad = 'class="X" value="X"';
   foreach($DB_TAB as $DB_ROW)
   {
@@ -758,9 +787,14 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
   $tbody_class = ($_SESSION['BROWSER']['mobile']) ? 'v' : 'h' ;
   foreach($tab_affich as $comp_id => $tab_user)
   {
-    if(!$comp_id)
+    if(!is_int($comp_id))
     {
-      echo'<thead>';
+      switch($comp_id)
+      {
+        case 'head'       : echo'<thead>';break;
+        case 'foot_texte' : echo'<tfoot>';break;
+        case 'foot_audio' : break;
+      }
     }
     echo'<tr>';
     foreach($tab_user as $user_id => $val)
@@ -768,9 +802,14 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
       echo $val;
     }
     echo'</tr>';
-    if(!$comp_id)
+    if(!is_int($comp_id))
     {
-      echo'</thead><tbody class="'.$tbody_class.'">';
+      switch($comp_id)
+      {
+        case 'head'       : echo'</thead>';break;
+        case 'foot_texte' : break;
+        case 'foot_audio' : echo'</tfoot><tbody class="'.$tbody_class.'">';break;
+      }
     }
   }
   echo'</tbody>';
@@ -789,7 +828,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
 if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) ) // $description et $groupe_nom sont aussi transmis
 {
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -849,7 +888,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
     }
   }
   // ajouter le contenu
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -975,7 +1014,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
 if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $description et $groupe_nom sont aussi transmis
 {
   // liste des items
-  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
   // Let's go
@@ -1033,7 +1072,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
     $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
   }
   // ligne suivantes
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , FALSE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -1271,7 +1310,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   $tab_nouveau_modifier = array();
   $tab_nouveau_supprimer = array();
   $tab_demande_supprimer = array();
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , TRUE /*with_REQ*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
@@ -1356,7 +1395,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
   $with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE : FALSE ;
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -1397,7 +1436,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // compléter si demandé avec les résultats et/ou les demandes d'évaluations
   if($with_result || $only_req)
   {
-    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir( $devoir_id , $only_req );
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , $only_req );
     foreach($DB_TAB as $DB_ROW)
     {
       // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -1726,9 +1765,8 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   // Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
   if(mb_strpos($doc_url,$url_dossier_devoir)===0)
   {
-    $chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
     // Il peut ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-    FileSystem::supprimer_fichier( $chemin_doc , TRUE /*verif_exist*/ );
+    FileSystem::supprimer_fichier( url_to_chemin($doc_url) , TRUE /*verif_exist*/ );
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , '' );
@@ -1752,6 +1790,118 @@ if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini( $devoir_id , $fini );
   // Retour
   exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer un commentaire audio ou texte
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='recuperer_message') && $eleve_id && in_array($msg_objet,array('audio','texte')) )
+{
+  $msg_url = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet);
+  if(empty($msg_url))
+  {
+    exit('Erreur : commentaire introuvable !');
+  }
+  // [audio] => On renvoie le lien
+  if($msg_objet=='audio')
+  {
+    $msg_data = $msg_url;
+  }
+  // [texte] => On récupère le contenu du fichier ;  pas de html() sinon ce n'est pas décodé dans le textarea...
+  if($msg_objet=='texte')
+  {
+    if(strpos($msg_url,URL_DIR_SACOCHE)===0)
+    {
+      $fichier_chemin = url_to_chemin($msg_url);
+      $msg_data = is_file($fichier_chemin) ? file_get_contents($fichier_chemin) : 'Erreur : fichier avec le contenu du commentaire non trouvé.' ;
+    }
+    else
+    {
+      $msg_data = cURL::get_contents($msg_url);
+    }
+  }
+  // Retour
+  exit('ok'.']¤['.$msg_url.']¤['.$msg_data);
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enregistrer un commentaire texte ou audio
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $devoir_id && $eleve_id && in_array($msg_autre,array('oui','non')) )
+{
+  $msg_objet = substr($action,-5);
+  // Tester les droits
+  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
+  if($proprio_id==$_SESSION['USER_ID'])
+  {
+    $niveau_droit = 4; // propriétaire
+  }
+  elseif($profs_liste) // forcément
+  {
+    $search_liste = '_'.$profs_liste.'_';
+    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      $niveau_droit = 3; // modifier
+    }
+    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      $niveau_droit = 2; // saisir
+    }
+    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
+    }
+    else
+    {
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
+    }
+  }
+  else
+  {
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
+  }
+  // Supprimer un éventuel fichier précédent
+  if( $msg_url && (mb_strpos($msg_url,$url_dossier_devoir)===0) )
+  {
+    // Il peut ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
+    FileSystem::supprimer_fichier( url_to_chemin($msg_url) , TRUE /*verif_exist*/ );
+  }
+  // Mise à jour dans la base
+  if($msg_data)
+  {
+    if($action=='enregistrer_audio')
+    {
+      // extraire les données binaires brutes
+      $msg_data = substr($msg_data, strpos($msg_data,',') + 1 );
+      // les décoder
+      $msg_data = base64_decode($msg_data);
+      $ext = 'mp3';
+    }
+    else
+    {
+      $ext = 'txt';
+    }
+    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_'.$msg_objet.'_'.$_SERVER['REQUEST_TIME'].'.'.$ext; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
+    DB_STRUCTURE_PROFESSEUR::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , $url_dossier_devoir.$fichier_nom );
+    // et enregistrement du fichier
+    FileSystem::ecrire_fichier( $chemin_devoir.$fichier_nom , $msg_data );
+  }
+  else
+  {
+    if($msg_autre=='oui')
+    {
+      DB_STRUCTURE_PROFESSEUR::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , '' );
+    }
+    else
+    {
+      DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_commentaire( $devoir_id , $eleve_id );
+    }
+  }
+  // Retour
+  $retour = ($msg_data) ? $url_dossier_devoir.$fichier_nom : 'supprimé' ;
+  exit('ok'.']¤['.$retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

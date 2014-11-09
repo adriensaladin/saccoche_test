@@ -54,6 +54,8 @@ em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /
 del{text-decoration:line-through;color:#999}
 kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
 kbd:hover{background-color:#CCC;border-color:#AAA}
+audio.prof{vertical-align:middle;width:300px;}
+audio.eleve{vertical-align:middle;width:600px;}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
@@ -393,92 +395,98 @@ a.no_puce        {padding-right:0;background:transparent;}
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-q {background:transparent url(../_img/sprite_action_12.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+q {background:transparent url(../_img/sprite_action_13.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
 q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 q.activer            {background-position: 0     0px}
 q.actualiser         {background-position: 0   -20px}
 q.ajouter            {background-position: 0   -40px}
 q.ajouter_non        {background-position: 0   -60px}
 q.annuler            {background-position: 0   -80px}
-q.choisir_compet     {background-position: 0  -100px}
-q.choisir_eleve      {background-position: 0  -120px}
-q.choisir_prof       {background-position: 0  -140px}
-q.cocher_inverse     {background-position: 0  -160px}
-q.cocher_rien        {background-position: 0  -180px}
-q.cocher_tout        {background-position: 0  -200px}
-q.date_ajouter       {background-position: 0  -220px}
-q.date_calendrier    {background-position: 0  -240px}
-q.date_periode       {background-position: 0  -260px}
-q.demander_add       {background-position: 0  -280px}
-q.demander_non       {background-position: 0  -300px}
-q.deployer_m1        {background-position: 0  -320px}
-q.deployer_m2        {background-position: 0  -340px}
-q.deployer_n1        {background-position: 0  -360px}
-q.deployer_n2        {background-position: 0  -380px}
-q.deployer_n3        {background-position: 0  -400px}
-q.detailler          {background-position: 0  -420px}
-q.detailler_non      {background-position: 0  -440px}
-q.dupliquer          {background-position: 0  -460px}
-q.echanger           {background-position: 0  -480px}
-q.ecrire             {background-position: 0  -500px}
-q.ecrire_go          {background-position: 0  -520px}
-q.imprimer_arbre     {background-position: 0  -540px}
-q.imprimer           {background-position: 0  -540px} /* attention : même décalage */
-q.imprimer_non       {background-position: 0  -560px}
-q.initialiser_mdp    {background-position: 0  -580px}
-q.modifier           {background-position: 0  -600px}
-q.modifier_non       {background-position: 0  -620px}
-q.ordonner           {background-position: 0  -640px}
-q.ordonner_non       {background-position: 0  -660px}
-q.calculer           {background-position: 0  -680px}
-q.calculer_non       {background-position: 0  -700px}
-q.envoyer            {background-position: 0  -720px}
-q.envoyer_non        {background-position: 0  -740px}
-q.partager           {background-position: 0  -760px}
-q.partager_non       {background-position: 0  -780px}
-q.ress_ajouter       {background-position: 0  -800px}
-q.ress_page_elaborer {background-position: 0  -820px}
-q.retourner          {background-position: 0  -840px}
-q.saisir             {background-position: 0  -860px}
-q.saisir_non         {background-position: 0  -880px}
-q.supprimer          {background-position: 0  -900px}
-q.supprimer_non      {background-position: 0  -920px}
-q.tamponner          {background-position: 0  -940px}
-q.tamponner_non      {background-position: 0  -960px}
-q.texte_editer       {background-position: 0  -980px}
-q.uploader_doc       {background-position: 0 -1000px}
-q.uploader_doc_non   {background-position: 0 -1020px}
-q.valider            {background-position: 0 -1040px}
-q.voir_archive       {background-position: 0 -1060px}
-q.voir_archive_non   {background-position: 0 -1080px}
-q.voir_repart        {background-position: 0 -1100px}
-q.voir               {background-position: 0 -1120px}
-q.voir_non           {background-position: 0 -1140px}
-q.n1_add             {background-position: 0 -1160px}
-q.n1_del             {background-position: 0 -1180px}
-q.n1_edit            {background-position: 0 -1200px}
-q.n1_move            {background-position: 0 -1220px}
-q.n1_move2           {background-position: 0 -1240px}
-q.n2_add             {background-position: 0 -1260px}
-q.n2_del             {background-position: 0 -1280px}
-q.n2_edit            {background-position: 0 -1300px}
-q.n2_move            {background-position: 0 -1320px}
-q.n2_move2           {background-position: 0 -1340px}
-q.n3_add             {background-position: 0 -1360px}
-q.n3_del             {background-position: 0 -1380px}
-q.n3_edit            {background-position: 0 -1400px}
-q.n3_fus             {background-position: 0 -1420px}
-q.n3_fus2            {background-position: 0 -1440px}
-q.n3_move            {background-position: 0 -1460px}
-q.n3_move2           {background-position: 0 -1480px}
+q.audio_ecouter      {background-position: 0  -100px}
+q.audio_ecouter_non  {background-position: 0  -120px}
+q.audio_enregistrer  {background-position: 0  -140px;margin-left:0}
+q.choisir_compet     {background-position: 0  -160px}
+q.choisir_eleve      {background-position: 0  -180px}
+q.choisir_prof       {background-position: 0  -200px}
+q.cocher_inverse     {background-position: 0  -220px}
+q.cocher_rien        {background-position: 0  -240px}
+q.cocher_tout        {background-position: 0  -260px}
+q.date_ajouter       {background-position: 0  -280px}
+q.date_calendrier    {background-position: 0  -300px}
+q.date_periode       {background-position: 0  -320px}
+q.demander_add       {background-position: 0  -340px}
+q.demander_non       {background-position: 0  -360px}
+q.deployer_m1        {background-position: 0  -380px}
+q.deployer_m2        {background-position: 0  -400px}
+q.deployer_n1        {background-position: 0  -420px}
+q.deployer_n2        {background-position: 0  -440px}
+q.deployer_n3        {background-position: 0  -460px}
+q.detailler          {background-position: 0  -480px}
+q.detailler_non      {background-position: 0  -500px}
+q.dupliquer          {background-position: 0  -520px}
+q.echanger           {background-position: 0  -540px}
+q.ecrire             {background-position: 0  -560px}
+q.ecrire_go          {background-position: 0  -580px}
+q.imprimer_arbre     {background-position: 0  -600px}
+q.imprimer           {background-position: 0  -600px} /* attention : même décalage */
+q.imprimer_non       {background-position: 0  -620px}
+q.initialiser_mdp    {background-position: 0  -640px}
+q.modifier           {background-position: 0  -660px}
+q.modifier_non       {background-position: 0  -680px}
+q.ordonner           {background-position: 0  -700px}
+q.ordonner_non       {background-position: 0  -720px}
+q.calculer           {background-position: 0  -740px}
+q.calculer_non       {background-position: 0  -760px}
+q.envoyer            {background-position: 0  -780px}
+q.envoyer_non        {background-position: 0  -800px}
+q.partager           {background-position: 0  -820px}
+q.partager_non       {background-position: 0  -840px}
+q.ress_ajouter       {background-position: 0  -860px}
+q.ress_page_elaborer {background-position: 0  -880px}
+q.retourner          {background-position: 0  -900px}
+q.saisir             {background-position: 0  -920px}
+q.saisir_non         {background-position: 0  -940px}
+q.supprimer          {background-position: 0  -960px}
+q.supprimer_non      {background-position: 0  -980px}
+q.tamponner          {background-position: 0 -1000px}
+q.tamponner_non      {background-position: 0 -1020px}
+q.texte_consulter    {background-position: 0 -1040px}
+q.texte_consulter_non{background-position: 0 -1060px}
+q.texte_editer       {background-position: 0 -1080px}
+q.texte_enregistrer  {background-position: 0 -1100px;margin-left:0}
+q.uploader_doc       {background-position: 0 -1120px}
+q.uploader_doc_non   {background-position: 0 -1140px}
+q.valider            {background-position: 0 -1160px}
+q.voir_archive       {background-position: 0 -1180px}
+q.voir_archive_non   {background-position: 0 -1200px}
+q.voir_repart        {background-position: 0 -1220px}
+q.voir               {background-position: 0 -1240px}
+q.voir_non           {background-position: 0 -1260px}
+q.n1_add             {background-position: 0 -1280px}
+q.n1_del             {background-position: 0 -1300px}
+q.n1_edit            {background-position: 0 -1320px}
+q.n1_move            {background-position: 0 -1340px}
+q.n1_move2           {background-position: 0 -1360px}
+q.n2_add             {background-position: 0 -1380px}
+q.n2_del             {background-position: 0 -1400px}
+q.n2_edit            {background-position: 0 -1420px}
+q.n2_move            {background-position: 0 -1440px}
+q.n2_move2           {background-position: 0 -1460px}
+q.n3_add             {background-position: 0 -1480px}
+q.n3_del             {background-position: 0 -1500px}
+q.n3_edit            {background-position: 0 -1520px}
+q.n3_fus             {background-position: 0 -1540px}
+q.n3_fus2            {background-position: 0 -1560px}
+q.n3_move            {background-position: 0 -1580px}
+q.n3_move2           {background-position: 0 -1600px}
 q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
 
 /* Pour des images associées à un select... */
-span.select_img {width:16px;height:16px;display:inline-block;background:transparent no-repeat url(../_img/sprite_action_12.png);margin:auto 2px;}
+span.select_img {width:16px;height:16px;display:inline-block;background:transparent no-repeat url(../_img/sprite_action_13.png);margin:auto 2px;}
 span.droit_x {background-position: 0   -80px} /* 0 (aucun) */
-span.droit_v {background-position: 0 -1120px} /* 1 voir */
-span.droit_s {background-position: 0  -860px} /* 2 saisir */
-span.droit_m {background-position: 0  -600px} /* 3 modifier */
+span.droit_v {background-position: 0 -1240px} /* 1 voir */
+span.droit_s {background-position: 0  -920px} /* 2 saisir */
+span.droit_m {background-position: 0  -660px} /* 3 modifier */
 span.droit_z {width:16px;height:16px;display:inline-block;margin:auto 2px;} /* 4 (propriétaire) */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -501,7 +509,7 @@ form label.mini{width:8em;}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_7.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px;text-indent:0}
+button{background:#DDF url(../_img/sprite_bouton_8.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px;text-indent:0}
 button.actualiser        {background-position: 2px    1px}
 button.ajouter           {background-position: 2px  -19px}
 button.annuler           {background-position: 2px  -39px}
@@ -513,40 +521,42 @@ button.corriger          {background-position: 2px -139px}
 button.deconnecter:hover {background-position: 2px -159px}
 button.dump_export       {background-position: 2px -179px}
 button.eclair            {background-position: 2px -199px}
-button.fichier_export    {background-position: 2px -219px}
-button.fichier_import    {background-position: 2px -239px}
-button.form_ajouter      {background-position: 2px -259px}
-button.form_retirer      {background-position: 2px -279px}
-button.generer           {background-position: 2px -299px}
-button.go_dernier        {background-position: 2px -319px}
-button.go_precedent      {background-position: 2px -339px}
-button.go_premier        {background-position: 2px -359px}
-button.go_suivant        {background-position: 2px -379px}
-button.groupe_ajouter    {background-position: 2px -399px}
-button.groupe_retirer    {background-position: 2px -419px}
-button.imprimer          {background-position: 2px -439px}
-button.mail_ecrire       {background-position: 2px -459px}
-button.mail_envoyer      {background-position: 2px -479px}
-button.mdp_groupe        {background-position: 2px -499px}
-button.mdp_perso         {background-position: 2px -519px}
-button.modifier          {background-position: 2px -539px}
-button.nettoyer          {background-position: 2px -559px}
-button.parametre         {background-position: 2px -579px}
-button.periode_ajouter   {background-position: 2px -599px}
-button.periode_retirer   {background-position: 2px -619px}
-button.rechercher        {background-position: 2px -639px}
-button.referencer_lien   {background-position: 2px -659px}
-button.retourner         {background-position: 2px -679px}
-button.signaler          {background-position: 2px -699px}
-button.stats             {background-position: 2px -719px}
-button.supprimer         {background-position: 2px -739px}
-button.texte             {background-position: 2px -759px}
-button.user_ajouter      {background-position: 2px -779px}
-button.user_desactiver   {background-position: 2px -799px}
-button.valider           {background-position: 2px -819px}
-button.valider_next      {background-position: 2px -839px}
-button.valider_prev      {background-position: 2px -859px}
-button.voir_photo        {background-position: 2px -879px}
+button.enregistrer_start {background-position: 2px -219px}
+button.enregistrer_stop  {background-position: 2px -239px}
+button.fichier_export    {background-position: 2px -259px}
+button.fichier_import    {background-position: 2px -279px}
+button.form_ajouter      {background-position: 2px -299px}
+button.form_retirer      {background-position: 2px -319px}
+button.generer           {background-position: 2px -339px}
+button.go_dernier        {background-position: 2px -359px}
+button.go_precedent      {background-position: 2px -379px}
+button.go_premier        {background-position: 2px -399px}
+button.go_suivant        {background-position: 2px -419px}
+button.groupe_ajouter    {background-position: 2px -439px}
+button.groupe_retirer    {background-position: 2px -459px}
+button.imprimer          {background-position: 2px -479px}
+button.mail_ecrire       {background-position: 2px -499px}
+button.mail_envoyer      {background-position: 2px -519px}
+button.mdp_groupe        {background-position: 2px -539px}
+button.mdp_perso         {background-position: 2px -559px}
+button.modifier          {background-position: 2px -579px}
+button.nettoyer          {background-position: 2px -599px}
+button.parametre         {background-position: 2px -619px}
+button.periode_ajouter   {background-position: 2px -639px}
+button.periode_retirer   {background-position: 2px -659px}
+button.rechercher        {background-position: 2px -679px}
+button.referencer_lien   {background-position: 2px -699px}
+button.retourner         {background-position: 2px -719px}
+button.signaler          {background-position: 2px -739px}
+button.stats             {background-position: 2px -759px}
+button.supprimer         {background-position: 2px -779px}
+button.texte             {background-position: 2px -799px}
+button.user_ajouter      {background-position: 2px -819px}
+button.user_desactiver   {background-position: 2px -839px}
+button.valider           {background-position: 2px -859px}
+button.valider_next      {background-position: 2px -879px}
+button.valider_prev      {background-position: 2px -899px}
+button.voir_photo        {background-position: 2px -919px}
 
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
@@ -560,6 +570,7 @@ input[type=text],input[type=password],select,textarea {margin:1px 0;background:#
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
 select[multiple],textarea {vertical-align:middle}
 textarea {white-space:pre-wrap}
+textarea[readonly] {background:#EEE}
 
 /* select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur) */
 span.select_multiple {display:inline-block;vertical-align:middle;border:1px solid #66F;height:auto;max-height:10em;width:auto;margin:1px auto;overflow:auto;overflow-x:hidden;font-size:90%;text-align:left}
@@ -627,9 +638,10 @@ table.simulation td.nu {border:none}
 table.scor_eval th, table.scor_eval td {text-align:center}
 table.scor_eval thead th {vertical-align:bottom}
 table.scor_eval thead td {background:#FFF;border:none;}
-table.scor_eval tbody th {white-space:normal;font-weight:normal}
+table.scor_eval tfoot th {text-align:right;padding-right:1ex;font-style:italic;background:#EEF}
+table.scor_eval tfoot td {}
+table.scor_eval tbody th {white-space:normal;font-weight:normal;text-align:left}
 table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#DDF;font-size:90%}
-table.scor_eval tbody tr th {text-align:left}
 table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
 table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
@@ -834,7 +846,7 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* Liste à puce pour les étapes lors d'un import de fichier                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ul.puce li  { margin-left:2em;}
+ul.puce li  { margin-left:2em;margin-top:2px;}
 #step li    { margin-left:2em;color:#777;}
 #step li.on {font-weight:bold;color:#000;}
 ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAICAMAAAD+zz7+AAAARVBMVEUAAACBndSgtd9Lc8NVe8c7Y7R7mNOIoterveNDbcBcgMiSq9uvweRxkc89Zrhois2kueA2WqM+aLuNptiYr905X6wuTYtON3v6AAAAAXRSTlMAQObYZgAAAElJREFUCNdVjIEKgCAMRGduzqlZZvX/n9oFQXpwBw+OR38CTTGPUXVh3RL7I7EBS4lxX86cu1ol9wKo4yaVvqc0YblG1d1mM/oAgSUCQYxehQIAAAAASUVORK5CYII=");} /* puce_li */
@@ -904,11 +916,11 @@ div.td_souris img.on {background-color:#FF0}
 /* Certaines touches KBD                                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-kbd.img{background:#EEE url(../_img/sprite_bouton_7.png) 0 0 no-repeat;height:15px}
+kbd.img{background:#EEE url(../_img/sprite_bouton_8.png) 0 0 no-repeat;height:15px}
 kbd.img:hover{background-color:#CCC}
 kbd.annuler   {background-position: 7px  -34px}
-kbd.retourner {background-position: 7px -674px}
-kbd.valider   {background-position: 7px -814px}
+kbd.retourner {background-position: 7px -694px}
+kbd.valider   {background-position: 7px -834px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Message d'un partenaire conventionné ENT                                                            */

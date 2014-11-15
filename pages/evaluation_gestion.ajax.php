@@ -513,10 +513,19 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     // sacoche_devoir (maj groupe_id) + sacoche_saisie pour TOUS les users !
     DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe( $devoir_id , $groupe_id );
   }
-  if( $nb_profs && ($proprio_id==$_SESSION['USER_ID']) ) // à restreindre en cas de modification d'une évaluation dont on n'est pas le propriétaire
+  // sacoche_jointure_devoir_prof ; à restreindre en cas de modification d'une évaluation dont on n'est pas le propriétaire
+  if($proprio_id==$_SESSION['USER_ID'])
   {
-    // Affecter tous les profs choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'substituer' );
+    if($nb_profs)
+    {
+      // Mofifier les affectations des profs choisis
+      DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'substituer' );
+    }
+    else
+    {
+      // Au cas où on aurait retiré les droits à tous
+      DB_STRUCTURE_PROFESSEUR::DB_supprimer_liaison_devoir_prof($devoir_id);
+    }
   }
   // sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id , $tab_items , 'substituer' );

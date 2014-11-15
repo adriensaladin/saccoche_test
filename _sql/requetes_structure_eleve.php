@@ -85,24 +85,46 @@ public static function DB_recuperer_item_infos($item_id)
 }
 
 /**
- * Lister les évaluations concernant un élève sur une période donnée
- * Pour l'enseignant propriétaire du devoir et les enseignants ayant un accès au minimum en saisie.
+ * Récupérer les informations relatives à un devoir
  *
- * @param int    $devoir_id
+ * Pas réussi à récupérer en même temps la liste des profs associés en écriture au devoir car
+ * une jointure sur LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id)
+ * pour avoir GROUP_CONCAT(prof_id SEPARATOR ",") AS partage_id_listing
+ * avec GROUP BY devoir_id
+ * et la condition AND ( ( prof_id IS NULL ) OR ( jointure_droit != :jointure_droit_non ) )
+ * fonctionne si aucun prof n'est associé à l'éval
+ * ou si au moin sun prof y est associé en saisie
+ * mais pas si tous les profs associés l'y sont uniquement en visualisation !!!
+ * (dans ce cas la requête retourne un tableau vide...)
+ *
+ * @param int   $devoir_id
  * @return array
  */
 public static function DB_recuperer_devoir_infos($devoir_id)
 {
-  $DB_SQL = 'SELECT proprio_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date, GROUP_CONCAT(prof_id SEPARATOR ",") AS partage_id_listing  ';
+  $DB_SQL = 'SELECT proprio_id, devoir_date, devoir_info, devoir_visible_date, devoir_autoeval_date ';
   $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND ( ( prof_id IS NULL ) OR ( jointure_droit != :jointure_droit_non ) ) ';
-  $DB_SQL.= 'GROUP BY devoir_id ';
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+  $DB_VAR = array( ':devoir_id' => $devoir_id );
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * En complément de DB_recuperer_devoir_infos()
+ *
+ * @param int   $devoir_id
+ * @return array
+ */
+public static function DB_lister_devoir_profs_droit_saisie($devoir_id)
+{
+  $DB_SQL = 'SELECT prof_id ';
+  $DB_SQL.= 'FROM sacoche_jointure_devoir_prof ';
+  $DB_SQL.= 'WHERE devoir_id = :devoir_id AND jointure_droit != :jointure_droit_non ';
   $DB_VAR = array(
     ':devoir_id'          => $devoir_id,
     ':jointure_droit_non' => 'voir',
   );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
 }
 
 /**
@@ -262,6 +284,7 @@ public static function DB_lister_devoirs_eleve($eleve_id,$date_debut_mysql,$date
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_SQL.= 'GROUP BY user_id ';
   $DB_VAR = array(':user_id'=>$eleve_id);
   $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if( !$DB_ROW['eleve_classe_id'] && !$DB_ROW['eleve_groupes_id'] )

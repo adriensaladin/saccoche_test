@@ -1732,6 +1732,20 @@ public static function DB_supprimer_demande_precise($eleve_id,$item_id)
 }
 
 /**
+ * supprimer_liaison_devoir_prof
+ *
+ * @param int   $devoir_id
+ * @return void
+ */
+public static function DB_supprimer_liaison_devoir_prof($devoir_id)
+{
+  $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_prof ';
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+  $DB_VAR = array(':devoir_id'=>$devoir_id);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * supprimer_selection_items
  *
  * @param int   $selection_item_id

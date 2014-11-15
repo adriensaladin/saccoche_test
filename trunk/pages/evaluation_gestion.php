@@ -449,7 +449,7 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
     <span class="tab"></span><label id="f_msg_texte_reste"></label>
   </div>
   <p>
-    <span class="tab"></span><button id="valider_enregistrer_texte" type="button" class="valider">Enregistrer</button> <button id="annuler_enregistrer_texte" type="button" class="annuler">Annuler</button> <label id="ajax_msg_enregistrer_texte">&nbsp;</label>
+    <span class="tab"></span><button id="valider_enregistrer_texte" type="button" class="valider">Valider</button> <button id="annuler_enregistrer_texte" type="button" class="annuler">Annuler</button> <label id="ajax_msg_enregistrer_texte">&nbsp;</label>
     <input id="enregistrer_texte_ref" name="f_ref" type="hidden" value="" />
     <input id="enregistrer_texte_eleve_id" name="f_eleve_id" type="hidden" value="" />
     <input id="enregistrer_texte_msg_url" name="f_msg_url" type="hidden" value="" />
@@ -473,7 +473,7 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
     <label class="tab">Enregistrement :</label><span id="record_start" class="hide"><button id="audio_enregistrer_start" type="button" class="enregistrer_start">Démarrer</button></span><span id="record_stop" class="hide"><button id="audio_enregistrer_stop" type="button" class="enregistrer_stop">Arrêter</button></span> <label id="ajax_msg_enregistrer_audio">&nbsp;</label>
   </p>
   <p>
-    <label class="tab">Lecture :</label><span id="record_play" class="hide"><audio id="audio_lecture" controls="" src="" class="prof"></audio></span> <span id="record_delete" class="hide"><button id="audio_enregistrer_supprimer" type="button" class="supprimer">Supprimer</button></span>
+    <label class="tab">Lecture :</label><span id="record_play" class="hide"><audio id="audio_lecture" controls="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio></span> <span id="record_delete" class="hide"><button id="audio_enregistrer_supprimer" type="button" class="supprimer">Supprimer</button></span>
   </p>
   <div>
     <span class="tab"></span><button id="fermer_enregistrer_audio" type="button" class="retourner">Retour</button>

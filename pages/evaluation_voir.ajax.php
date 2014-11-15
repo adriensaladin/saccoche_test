@@ -174,7 +174,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     }
     if($DB_ROW['jointure_audio'])
     {
-      $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$DB_ROW['jointure_audio'].'" class="eleve"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>';
+      $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$DB_ROW['jointure_audio'].'" class="eleve"></audio>';
     }
   }
   // retour des infos
@@ -247,10 +247,11 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   {
     exit('Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !');
   }
-  $devoir_proprio_id  = $DB_ROW['proprio_id'];
+  $devoir_prof_id     = $DB_ROW['proprio_id'];
   $devoir_date_mysql  = $DB_ROW['devoir_date'];
   $devoir_description = $DB_ROW['devoir_info'];
   $date_visible_mysql = $DB_ROW['devoir_visible_date'];
+  $tab_profs_rss      = ($DB_ROW['partage_id_listing']) ? explode(',',$DB_ROW['proprio_id'].','.$DB_ROW['partage_id_listing']) : array($DB_ROW['proprio_id']) ;
   // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
   // On récupère les notes transmises dans $tab_post
   $tab_post = array();
@@ -310,11 +311,11 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_nouveau_ajouter as $item_id => $note)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($devoir_proprio_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$devoir_date_mysql,$note,$info,$date_visible_mysql);
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($devoir_prof_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$devoir_date_mysql,$note,$info,$date_visible_mysql);
   }
   foreach($tab_nouveau_modifier as $item_id => $note)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($devoir_proprio_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$note,$info);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($devoir_prof_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$note,$info);
   }
   foreach($tab_nouveau_supprimer as $item_id)
   {
@@ -325,7 +326,6 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
     DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($_SESSION['USER_ID'],$item_id);
   }
   // Ajout aux flux RSS des profs concernés
-  $tab_profs_rss = array_merge( array($devoir_proprio_id) , DB_STRUCTURE_ELEVE::DB_lister_devoir_profs_droit_saisie($devoir_id) );
   $titre = 'Autoévaluation effectuée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'"';
   $guid  = 'autoeval_'.$devoir_id.'_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME']; // obligé d'ajouter un time pour unicité au cas où un élève valide 2x l'autoévaluation

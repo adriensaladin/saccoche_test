@@ -194,7 +194,7 @@ if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom 
     ':prenom'  => $prenom,
     ':email'   => $courriel,
     ':id_ent'  => $id_ent,
-    ':id_gepi' = >$id_gepi,
+    ':id_gepi' => $id_gepi,
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Mettre à jour aussi éventuellement la session

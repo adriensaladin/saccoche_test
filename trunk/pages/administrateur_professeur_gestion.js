@@ -40,8 +40,8 @@ $(document).ready
     var f_action   = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},11:{sorter:'date_fr'},12:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[5,0],[6,0],[7,0]] ] ); };
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},10:{sorter:false},12:{sorter:'date_fr'},13:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[5,0],[7,0],[8,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
 
@@ -108,8 +108,10 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , reference , profil , nom , prenom , login , courriel , date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , reference , profil , genre , nom , prenom , login , courriel , date_fr , check )
     {
+      var tab_genre = { '' : 'I' , 'M.' : 'M' , 'Mme' : 'F' };
+      var opt_genre = ( typeof(tab_genre[genre]) !== 'undefined' ) ? tab_genre[genre] : 'I' ;
       $('#f_action').val(mode);
       $('#f_check').val(check);
       $('#f_id').val(id);
@@ -118,6 +120,7 @@ $(document).ready
       $('#f_sconet_id').val(sconet_id);
       $('#f_reference').val(reference);
       $('#f_profil option[value='+profil+']').prop('selected',true);
+      $('#f_genre option[value='+opt_genre+']').prop('selected',true);
       $('#f_nom').val(nom);
       $('#f_prenom').val(prenom);
       $('#f_courriel').val(courriel);
@@ -156,7 +159,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*date_fr*/ , '' /*check*/ );
     };
 
     /**
@@ -176,11 +179,12 @@ $(document).ready
       var sconet_id  = objet_tds.eq( 3).html();
       var reference  = objet_tds.eq( 4).html();
       var profil     = objet_tds.eq( 5).html();
-      var nom        = objet_tds.eq( 6).html();
-      var prenom     = objet_tds.eq( 7).html();
-      var login      = objet_tds.eq( 8).html();
-      var courriel   = objet_tds.eq(10).html();
-      var date_fr    = objet_tds.eq(11).html();
+      var genre      = objet_tds.eq( 6).html();
+      var nom        = objet_tds.eq( 7).html();
+      var prenom     = objet_tds.eq( 8).html();
+      var login      = objet_tds.eq( 9).html();
+      var courriel   = objet_tds.eq(11).html();
+      var date_fr    = objet_tds.eq(12).html();
       // Retirer une éventuelle balise image présente dans profil
       position_image = profil.indexOf('<');
       if (position_image!=-1)
@@ -194,7 +198,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , date_fr , check );
     };
 
     /**
@@ -255,6 +259,7 @@ $(document).ready
           f_sconet_id   : { required:false , digits:true , max:16777215 },
           f_reference   : { required:false , maxlength:11 },
           f_profil      : { required:true },
+          f_genre       : { required:false },
           f_nom         : { required:true , maxlength:25 },
           f_prenom      : { required:true , maxlength:25 },
           f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
@@ -269,6 +274,7 @@ $(document).ready
           f_sconet_id   : { digits:"nombre entier inférieur à 2^24" },
           f_reference   : { maxlength:"11 caractères maximum" },
           f_profil      : { required:"profil manquant" },
+          f_genre       : { },
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
           f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
@@ -365,7 +371,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=13]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=14]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':

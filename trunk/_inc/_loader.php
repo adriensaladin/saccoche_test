@@ -197,9 +197,9 @@ define('NL',PHP_EOL);
 // Version PHP & MySQL requises et conseillées
 // Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
 define('PHP_VERSION_MINI_REQUISE'     ,'5.1');
-define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.3.4'); // PHP 5.2 n'est plus supporté depuis le 16 décembre 2010.
-define('MYSQL_VERSION_MINI_REQUISE'   ,'5');
-define('MYSQL_VERSION_MINI_CONSEILLEE','5.5'); // Version stable depuis octobre 2010
+define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.4'); // PHP 5.2 n'est plus supporté depuis le 16 décembre 2010. PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.
+define('MYSQL_VERSION_MINI_REQUISE'   ,'5.1');
+define('MYSQL_VERSION_MINI_CONSEILLEE','5.5'); // MySQL 5.1 n'est plus supporté depuis le 31 décembre 2013. MySQL 5.5 est stable depuis octobre 2010.
 
 // Vérifier la version de PHP
 if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
@@ -350,6 +350,129 @@ else
 // ============================================================================
 
 if(SACoche=='etiquette') return;
+
+// ============================================================================
+// Auto-chargement des classes
+// ============================================================================
+
+/**
+ * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées suivant les besoins).
+ * 
+ * @param string   $class_name   nom de la classe
+ * @return void
+ */
+function SACoche_autoload($class_name)
+{
+  $tab_classes_appli = array(
+    'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
+    'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
+    'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
+    'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
+    'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
+    'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
+    'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
+    // Pour SimpleSAMLphp c'est plus compliqué, on fait un include directement dans les 2 fichiers concernés...
+
+    'Browser'                     => '_inc'.DS.'class.Browser.php' ,
+    'Clean'                       => '_inc'.DS.'class.Clean.php' ,
+    'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
+    'cURL'                        => '_inc'.DS.'class.cURL.php' ,
+    'Erreur500'                   => '_inc'.DS.'class.Erreur500.php' ,
+    'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
+    'Form'                        => '_inc'.DS.'class.Form.php' ,
+    'Html'                        => '_inc'.DS.'class.Html.php' ,
+    'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
+    'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
+    'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
+    'Layout'                      => '_inc'.DS.'class.Layout.php' ,
+    'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
+    'Mobile_Detect'               => '_inc'.DS.'class.MobileDetect.php' ,
+    'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
+    'PDF'                         => '_inc'.DS.'class.PDF.php' ,
+    'RSS'                         => '_inc'.DS.'class.RSS.php' ,
+    'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,
+    'ServeurCommunautaire'        => '_inc'.DS.'class.ServeurCommunautaire.php' ,
+    'Sesamail'                    => '_inc'.DS.'class.Sesamail.php' ,
+    'Session'                     => '_inc'.DS.'class.Session.php' ,
+    'SessionUser'                 => '_inc'.DS.'class.SessionUser.php' ,
+    'To'                          => '_inc'.DS.'class.To.php' ,
+    'Webmestre'                   => '_inc'.DS.'class.Webmestre.php' ,
+
+    'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
+    'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
+    'DB_STRUCTURE_ELEVE'          => '_sql'.DS.'requetes_structure_eleve.php' ,
+    'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DS.'requetes_structure_professeur.php' ,
+    'DB_STRUCTURE_PUBLIC'         => '_sql'.DS.'requetes_structure_public.php' ,
+    'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
+
+    'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
+    'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
+    'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
+    'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
+    'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
+    'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
+    'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
+    'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
+
+    'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
+    'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
+    'DB_WEBMESTRE_PARTENAIRE'     => '_sql'.DS.'requetes_webmestre_partenaire.php' ,
+    'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
+    'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
+    'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php' ,
+  );
+  if( isset($tab_classes_appli[$class_name]) )
+  {
+    require(CHEMIN_DOSSIER_SACOCHE.$tab_classes_appli[$class_name]);
+  }
+  // Pour le portail sacoche.sesamath.net
+  if(defined('APPEL_SITE_PROJET'))
+  {
+    $tab_classes_projet = array(
+      'DB_PROJET'       => 'class.requetes_DB_projet.php' ,
+      'ProjetAdmin'     => 'class.ProjetAdmin.php' ,
+      'ServeurSesamath' => 'class.ServeurSesamath.php' ,
+    );
+    if( isset($tab_classes_projet[$class_name]) )
+    {
+      require(CHEMIN_DOSSIER_PROJET_INCLUDE.$tab_classes_projet[$class_name]);
+    }
+  }
+}
+
+/**
+ * Le principe du code qui suit est inspiré de celui de phpCAS.
+ */
+if(function_exists('spl_autoload_register'))
+{
+  // On peut utiliser une pile d'autoload ( PHP >= 5.1.2 ).
+  if( !(spl_autoload_functions()) || !in_array('SACoche_autoload', spl_autoload_functions()) )
+  {
+    // On y ajoute notre autoload.
+    spl_autoload_register('SACoche_autoload');
+    if( function_exists('__autoload') && !in_array('__autoload', spl_autoload_functions()) )
+    {
+      // __autoload() a déjà été déclaré : pour ne pas l'ignorer on l'ajoute à la pile
+      spl_autoload_register('__autoload');
+    }
+  }
+}
+else
+{
+  // Pas de pile d'autoload possible
+  if(!function_exists('__autoload'))
+  {
+    // On définit notre autoload
+    function __autoload($class_name)
+    {
+      return SACoche_autoload($class_name);
+    }
+  }
+  else
+  {
+    exit('Erreur : l\'autoload ne peut être chargé car il a déjà été déclaré et PHP est en version < 5.1.2 !');
+  }
+}
 
 // ============================================================================
 // DEBUG - Sorties FirePHP
@@ -529,129 +652,6 @@ define('PHOTO_DIMENSION_MAXI',144);
 // Avec une dimension maxi imposée de 144 pixels, on arrive à 6~7 Ko par photo par élève dans la base (en comptant le base64_encode).
 // Avec une dimension maxi imposée de 120 pixels, on arrive à 4~5 Ko par photo par élève dans la base (en comptant le base64_encode).
 define('JPEG_QUALITY',90);
-
-// ============================================================================
-// Auto-chargement des classes
-// ============================================================================
-
-/**
- * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées suivant les besoins).
- * 
- * @param string   $class_name   nom de la classe
- * @return void
- */
-function SACoche_autoload($class_name)
-{
-  $tab_classes_appli = array(
-    'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
-    'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
-    'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
-    'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
-    'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
-    'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
-    'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
-    // Pour SimpleSAMLphp c'est plus compliqué, on fait un include directement dans les 2 fichiers concernés...
-
-    'Browser'                     => '_inc'.DS.'class.Browser.php' ,
-    'Clean'                       => '_inc'.DS.'class.Clean.php' ,
-    'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
-    'cURL'                        => '_inc'.DS.'class.cURL.php' ,
-    'Erreur500'                   => '_inc'.DS.'class.Erreur500.php' ,
-    'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,
-    'Form'                        => '_inc'.DS.'class.Form.php' ,
-    'Html'                        => '_inc'.DS.'class.Html.php' ,
-    'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
-    'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
-    'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
-    'Layout'                      => '_inc'.DS.'class.Layout.php' ,
-    'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
-    'Mobile_Detect'               => '_inc'.DS.'class.MobileDetect.php' ,
-    'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
-    'PDF'                         => '_inc'.DS.'class.PDF.php' ,
-    'RSS'                         => '_inc'.DS.'class.RSS.php' ,
-    'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,
-    'ServeurCommunautaire'        => '_inc'.DS.'class.ServeurCommunautaire.php' ,
-    'Sesamail'                    => '_inc'.DS.'class.Sesamail.php' ,
-    'Session'                     => '_inc'.DS.'class.Session.php' ,
-    'SessionUser'                 => '_inc'.DS.'class.SessionUser.php' ,
-    'To'                          => '_inc'.DS.'class.To.php' ,
-    'Webmestre'                   => '_inc'.DS.'class.Webmestre.php' ,
-
-    'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
-    'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
-    'DB_STRUCTURE_ELEVE'          => '_sql'.DS.'requetes_structure_eleve.php' ,
-    'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DS.'requetes_structure_professeur.php' ,
-    'DB_STRUCTURE_PUBLIC'         => '_sql'.DS.'requetes_structure_public.php' ,
-    'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
-
-    'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
-    'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
-    'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
-    'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
-    'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
-    'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-    'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
-    'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
-
-    'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
-    'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
-    'DB_WEBMESTRE_PARTENAIRE'     => '_sql'.DS.'requetes_webmestre_partenaire.php' ,
-    'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
-    'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
-    'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php' ,
-  );
-  if( isset($tab_classes_appli[$class_name]) )
-  {
-    require(CHEMIN_DOSSIER_SACOCHE.$tab_classes_appli[$class_name]);
-  }
-  // Pour le portail sacoche.sesamath.net
-  if(defined('APPEL_SITE_PROJET'))
-  {
-    $tab_classes_projet = array(
-      'DB_PROJET'       => 'class.requetes_DB_projet.php' ,
-      'ProjetAdmin'     => 'class.ProjetAdmin.php' ,
-      'ServeurSesamath' => 'class.ServeurSesamath.php' ,
-    );
-    if( isset($tab_classes_projet[$class_name]) )
-    {
-      require(CHEMIN_DOSSIER_PROJET_INCLUDE.$tab_classes_projet[$class_name]);
-    }
-  }
-}
-
-/**
- * Le principe du code qui suit est inspiré de celui de phpCAS.
- */
-if(function_exists('spl_autoload_register'))
-{
-  // On peut utiliser une pile d'autoload ( PHP >= 5.1.2 ).
-  if( !(spl_autoload_functions()) || !in_array('SACoche_autoload', spl_autoload_functions()) )
-  {
-    // On y ajoute notre autoload.
-    spl_autoload_register('SACoche_autoload');
-    if( function_exists('__autoload') && !in_array('__autoload', spl_autoload_functions()) )
-    {
-      // __autoload() a déjà été déclaré : pour ne pas l'ignorer on l'ajoute à la pile
-      spl_autoload_register('__autoload');
-    }
-  }
-}
-else
-{
-  // Pas de pile d'autoload possible
-  if(!function_exists('__autoload'))
-  {
-    // On définit notre autoload
-    function __autoload($class_name)
-    {
-      return SACoche_autoload($class_name);
-    }
-  }
-  else
-  {
-    exit('Erreur : l\'autoload ne peut être chargé car il a déjà été déclaré et PHP est en version < 5.1.2 !');
-  }
-}
 
 // ============================================================================
 // Fonctions utilisées pour déterminer l'URL de base du serveur

@@ -39,8 +39,8 @@ $(document).ready
     var memo_login = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{5:{sorter:false},7:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[2,0],[3,0]] ] ); };
+    $('#table_action').tablesorter({ headers:{6:{sorter:false},8:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[3,0],[4,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
 
@@ -68,12 +68,15 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , profil , nom , prenom , login , courriel )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , profil , genre , nom , prenom , login , courriel )
     {
+      var tab_genre = { '' : 'I' , 'M.' : 'M' , 'Mme' : 'F' };
+      var opt_genre = ( typeof(tab_genre[genre]) !== 'undefined' ) ? tab_genre[genre] : 'I' ;
       $('#f_action').val(mode);
       $('#f_id').val(id);
       $('#f_id_ent').val(id_ent);
       $('#f_id_gepi').val(id_gepi);
+      $('#f_genre option[value='+opt_genre+']').prop('selected',true);
       $('#f_nom').val(nom);
       $('#f_prenom').val(prenom);
       $('#f_courriel').val(courriel);
@@ -113,7 +116,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ );
     };
 
     /**
@@ -129,10 +132,11 @@ $(document).ready
       var id         = objet_tr.attr('id').substring(3);
       var id_ent     = objet_tds.eq(0).html();
       var id_gepi    = objet_tds.eq(1).html();
-      var nom        = objet_tds.eq(2).html();
-      var prenom     = objet_tds.eq(3).html();
-      var login      = objet_tds.eq(4).html();
-      var courriel   = objet_tds.eq(6).html();
+      var genre      = objet_tds.eq(2).html();
+      var nom        = objet_tds.eq(3).html();
+      var prenom     = objet_tds.eq(4).html();
+      var login      = objet_tds.eq(5).html();
+      var courriel   = objet_tds.eq(7).html();
       // Retirer une éventuelle balise image présente dans login
       position_image = login.indexOf('<');
       if (position_image!=-1)
@@ -140,7 +144,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) );
     };
 
     /**
@@ -154,10 +158,10 @@ $(document).ready
       var objet_tds  = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
       var id         = objet_tr.attr('id').substring(3);
-      var nom        = objet_tds.eq(2).html();
-      var prenom     = objet_tds.eq(3).html();
+      var nom        = objet_tds.eq(3).html();
+      var prenom     = objet_tds.eq(4).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , '' /*id_ent*/ , '' /*id_gepi*/ , profil , unescapeHtml(nom) , unescapeHtml(prenom) , '' /*login*/ , '' /*courriel*/ );
+      afficher_form_gestion( mode , id , '' /*id_ent*/ , '' /*id_gepi*/ , profil , '' /*genre*/ , unescapeHtml(nom) , unescapeHtml(prenom) , '' /*login*/ , '' /*courriel*/ );
     };
 
     /**
@@ -216,6 +220,7 @@ $(document).ready
         {
           f_id_ent   : { required:false , maxlength:63 },
           f_id_gepi  : { required:false , maxlength:63 },
+          f_genre    : { required:false },
           f_nom      : { required:true , maxlength:25 },
           f_prenom   : { required:true , maxlength:25 },
           f_login    : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
@@ -226,6 +231,7 @@ $(document).ready
         {
           f_id_ent   : { maxlength:"identifiant ENT de 63 caractères maximum" },
           f_id_gepi  : { maxlength:"identifiant Gepi de 63 caractères maximum" },
+          f_genre    : { },
           f_nom      : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom   : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
           f_login    : { required:"login manquant"  , maxlength:"20 caractères maximum" },
@@ -317,7 +323,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=8]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr td[colspan=9]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':

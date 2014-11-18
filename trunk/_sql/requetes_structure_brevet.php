@@ -446,7 +446,7 @@ public static function DB_recuperer_brevet_classe_infos($classe_id)
  */
 public static function DB_recuperer_brevet_saisies_eleves($liste_eleve_id,$prof_id,$with_epreuve_nom,$only_total)
 {
-  $DB_SQL = 'SELECT prof_id, eleve_ou_classe_id AS eleve_id, brevet_serie_ref, brevet_epreuve_code, matieres_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
+  $DB_SQL = 'SELECT prof_id, eleve_ou_classe_id AS eleve_id, brevet_serie_ref, brevet_epreuve_code, matieres_id, saisie_note, saisie_appreciation, user_genre, user_nom, user_prenom ';
   $DB_SQL.= ($with_epreuve_nom) ? ', brevet_epreuve_nom ' : '' ;
   $DB_SQL.= 'FROM sacoche_brevet_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_brevet_saisie.prof_id=sacoche_user.user_id ';

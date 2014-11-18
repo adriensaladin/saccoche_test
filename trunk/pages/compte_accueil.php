@@ -241,7 +241,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages']['contenu'][$DB_ROW['message_id']] = array(
-        'titre'   => 'Message ('.html(afficher_identite_initiale($DB_ROW['user_prenom'],TRUE,$DB_ROW['user_nom'],FALSE)).')',
+        'titre'   => 'Message ('.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
         'message' => make_lien(nl2br(html($DB_ROW['message_contenu']))),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
@@ -279,7 +279,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       foreach($DB_TAB as $DB_ROW)
       {
         $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_num.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_num.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['resultats']['contenu'].= '</ul>';
     }
@@ -403,7 +403,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
     foreach($DB_TAB as $DB_ROW)
     {
       $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
     }
     $tab_accueil['saisies']['contenu'].= '</ul>';
   }

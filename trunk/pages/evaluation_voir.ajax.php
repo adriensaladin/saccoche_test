@@ -65,7 +65,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     // Afficher une ligne du tableau
     echo'<tr>';
     echo  '<td>'.html($date_affich).'</td>';
-    echo  '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE)).'</td>';
+    echo  '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>';
     echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
     echo  '<td>'.$image_sujet.$image_corrige.'</td>';
     echo  '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
@@ -306,8 +306,8 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   {
     exit('Aucune modification détectée !');
   }
-  // L'information associée à la note comporte le nom de l'évaluation + celui de l'élève (c'est une information statique, conservée sur plusieurs années)
-  $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+  $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   foreach($tab_nouveau_ajouter as $item_id => $note)
   {
     DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($devoir_proprio_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$devoir_date_mysql,$note,$info,$date_visible_mysql);

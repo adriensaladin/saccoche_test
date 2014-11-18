@@ -471,7 +471,7 @@ if( $step==6 )
       DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
       // Insérer un compte administrateur dans la base de la structure
       $password = fabriquer_mdp();
-      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
       // Affichage du retour
       $affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'.NL;
       $affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'.NL;

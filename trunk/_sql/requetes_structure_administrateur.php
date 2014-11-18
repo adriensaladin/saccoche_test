@@ -653,7 +653,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   $order_enfant = ($order_enfant) ? 'eleve.user_nom ASC, ' : '' ;
   $DB_SQL = 'SELECT ' ;
-  $DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
+  $DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_genre, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
   $DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR "§BR§") AS enfants_liste, ';
   $DB_SQL.= 'COUNT(eleve.user_id) AS enfants_nombre ';
   $DB_SQL.= 'FROM sacoche_user AS parent ';
@@ -1229,7 +1229,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
  * On peut envisager une modification de "profil_sigle" entre personnels.
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':email'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':genre'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':email'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 public static function DB_modifier_user($user_id,$DB_VAR)
@@ -1239,21 +1239,22 @@ public static function DB_modifier_user($user_id,$DB_VAR)
   {
     switch($key)
     {
-      case ':sconet_id'   : $tab_set[] = 'user_sconet_id='.$key;      break;
+      case ':sconet_id'   : $tab_set[] = 'user_sconet_id='     .$key; break;
       case ':sconet_num'  : $tab_set[] = 'user_sconet_elenoet='.$key; break;
-      case ':reference'   : $tab_set[] = 'user_reference='.$key;      break;
-      case ':profil_sigle': $tab_set[] = 'user_profil_sigle='.$key;   break;
-      case ':nom'         : $tab_set[] = 'user_nom='.$key;            break;
-      case ':prenom'      : $tab_set[] = 'user_prenom='.$key;         break;
+      case ':reference'   : $tab_set[] = 'user_reference='     .$key; break;
+      case ':profil_sigle': $tab_set[] = 'user_profil_sigle='  .$key; break;
+      case ':genre'       : $tab_set[] = 'user_genre='         .$key; break;
+      case ':nom'         : $tab_set[] = 'user_nom='           .$key; break;
+      case ':prenom'      : $tab_set[] = 'user_prenom='        .$key; break;
       case ':birth_date'  : $tab_set[] = 'user_naissance_date='.$key; break;
-      case ':email'       : $tab_set[] = 'user_email='.$key;          break;
-      case ':login'       : $tab_set[] = 'user_login='.$key;          break;
-      case ':password'    : $tab_set[] = 'user_password='.$key;       break;
-      case ':daltonisme'  : $tab_set[] = 'user_daltonisme='.$key;     break;
-      case ':sortie_date' : $tab_set[] = 'user_sortie_date='.$key;    break;
-      case ':classe'      : $tab_set[] = 'eleve_classe_id='.$key;     break;
-      case ':id_ent'      : $tab_set[] = 'user_id_ent='.$key;         break;
-      case ':id_gepi'     : $tab_set[] = 'user_id_gepi='.$key;        break;
+      case ':email'       : $tab_set[] = 'user_email='         .$key; break;
+      case ':login'       : $tab_set[] = 'user_login='         .$key; break;
+      case ':password'    : $tab_set[] = 'user_password='      .$key; break;
+      case ':daltonisme'  : $tab_set[] = 'user_daltonisme='    .$key; break;
+      case ':sortie_date' : $tab_set[] = 'user_sortie_date='   .$key; break;
+      case ':classe'      : $tab_set[] = 'eleve_classe_id='    .$key; break;
+      case ':id_ent'      : $tab_set[] = 'user_id_ent='        .$key; break;
+      case ':id_gepi'     : $tab_set[] = 'user_id_gepi='       .$key; break;
     }
   }
   $DB_SQL = 'UPDATE sacoche_user ';

@@ -116,6 +116,7 @@ elseif($find_doublon) // (forcément)
       <th>Id Sconet</th>
       <th>Référence</th>
       <th>Profil</th>
+      <th>Civ.</th>
       <th>Nom</th>
       <th>Prénom</th>
       <th>Login</th>
@@ -129,6 +130,7 @@ elseif($find_doublon) // (forcément)
     <?php
     if(!empty($DB_TAB))
     {
+      $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
       foreach($DB_TAB as $DB_ROW)
       {
         // Formater la date
@@ -143,6 +145,7 @@ elseif($find_doublon) // (forcément)
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$DB_ROW['user_profil_sigle']].'" /></td>';
+        echo  '<td class="label">'.$tab_genre[$DB_ROW['user_genre']].'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
@@ -162,7 +165,7 @@ elseif($find_doublon) // (forcément)
     }
     else
     {
-      echo'<tr><td class="nu" colspan="14"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="15"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -197,6 +200,7 @@ if( $find_doublon && !empty($DB_TAB) )
     <label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><?php echo $options ?></select>
   </p>
   <p>
+    <label class="tab" for="f_genre">Civilité :</label><select id="f_genre" name="f_genre"><option value="I"></option><option value="M">Monsieur</option><option value="F">Madame</option></select><br />
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" />

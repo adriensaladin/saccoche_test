@@ -240,11 +240,11 @@ class SessionUser
     $_SESSION['USER_DUREE_INACTIVITE']  = (int) $DB_ROW['user_profil_duree_inactivite'];
     // Enregistrer en session les données personnelles de l'utilisateur.
     $_SESSION['USER_ID']                = (int) $DB_ROW['user_id'];
+    $_SESSION['USER_GENRE']             = $DB_ROW['user_genre'];
     $_SESSION['USER_NOM']               = $DB_ROW['user_nom'];
     $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];
     $_SESSION['USER_EMAIL']             = $DB_ROW['user_email'];
     $_SESSION['USER_LOGIN']             = $DB_ROW['user_login'];
-    $_SESSION['USER_DESCR']             = '['.$DB_ROW['user_profil_nom_court_singulier'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
     $_SESSION['USER_DALTONISME']        = $DB_ROW['user_daltonisme'];
     $_SESSION['USER_ID_ENT']            = $DB_ROW['user_id_ent'];
     $_SESSION['USER_ID_GEPI']           = $DB_ROW['user_id_gepi'];
@@ -425,7 +425,6 @@ class SessionUser
     $_SESSION['USER_ID']                       = 0;
     $_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
     $_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
-    $_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;
     $_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
@@ -455,7 +454,6 @@ class SessionUser
     $_SESSION['USER_ID']                       = 0;
     $_SESSION['USER_NOM']                      = 'SACoche';
     $_SESSION['USER_PRENOM']                   = 'développeur';
-    $_SESSION['USER_DESCR']                    = '[devel] développeur SACoche';
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;
     $_SESSION['ETABLISSEMENT']['DENOMINATION'] = HEBERGEUR_INSTALLATION;
@@ -485,7 +483,6 @@ class SessionUser
     $_SESSION['USER_ID']                       = (int) $DB_ROW['partenaire_id'];
     $_SESSION['USER_NOM']                      = $DB_ROW['partenaire_nom'];
     $_SESSION['USER_PRENOM']                   = $DB_ROW['partenaire_prenom'];
-    $_SESSION['USER_DESCR']                    = '[partenaire] '.$DB_ROW['partenaire_prenom'].' '.$DB_ROW['partenaire_nom'];
     $_SESSION['USER_CONNECTEURS']              = $DB_ROW['partenaire_connecteurs'];
     // Données associées à l'établissement.
     $_SESSION['SESAMATH_ID']                   = 0;

@@ -37,6 +37,7 @@ $sconet_id       = (isset($_POST['f_sconet_id']))     ? Clean::entier($_POST['f_
 $sconet_num      = (isset($_POST['f_sconet_num']))    ? Clean::entier($_POST['f_sconet_num'])    : 0;
 $reference       = (isset($_POST['f_reference']))     ? Clean::ref($_POST['f_reference'])        : '';
 $profil          = 'ELV';
+$genre           = (isset($_POST['f_genre']))         ? Clean::texte($_POST['f_genre'])          : '';
 $nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom'])              : '';
 $prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
 $birth_date      = (isset($_POST['f_birth_date']))    ? Clean::date_fr($_POST['f_birth_date'])   : '' ;
@@ -56,7 +57,7 @@ $groupe_id       = Clean::entier( substr($groupe,1) );
 // Ajouter un nouvel élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
+if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
 {
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
   if($id_ent)
@@ -157,7 +158,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
     $birth_date_mysql = convert_date_french_to_mysql($birth_date);
   }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $nom , $prenom , $birth_date_mysql , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $genre , $nom , $prenom , $birth_date_mysql , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_sortie_date)
   {
@@ -176,6 +177,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , $tab_groupe_type[$groupe_type] , TRUE );
   }
   // Afficher le retour
+  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
   echo  '<td class="label">'.html($id_ent).'</td>';
@@ -183,6 +185,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
   echo  '<td class="label">'.html($sconet_id).'</td>';
   echo  '<td class="label">'.html($sconet_num).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
+  echo  '<td class="label">'.$tab_genre[$genre].'</td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label">'.$birth_date.'</td>';
@@ -201,7 +204,7 @@ if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_p
 // Modifier un élève existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
+if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_birth_date || $birth_date) && ($box_sortie_date || $sortie_date) )
 {
   $tab_donnees = array();
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
@@ -296,9 +299,22 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
     $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(':sconet_id'=>$sconet_id,':sconet_num'=>$sconet_num,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':birth_date'=>$birth_date_mysql,':email'=>$courriel,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
+  $tab_donnees += array(
+    ':sconet_id'   => $sconet_id,
+    ':sconet_num'  => $sconet_num,
+    ':reference'   => $reference,
+    ':genre'       => $genre,
+    ':nom'         => $nom,
+    ':prenom'      => $prenom,
+    ':birth_date'  => $birth_date_mysql,
+    ':email'       => $courriel,
+    ':id_ent'      => $id_ent,
+    ':id_gepi'     => $id_gepi,
+    ':sortie_date' => $sortie_date_mysql,
+  );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Afficher le retour
+  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   $checked = ($check) ? ' checked' : '' ;
   echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'"'.$checked.' /></td>';
   echo'<td class="label">'.html($id_ent).'</td>';
@@ -306,6 +322,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) &&
   echo'<td class="label">'.html($sconet_id).'</td>';
   echo'<td class="label">'.html($sconet_num).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
+  echo'<td class="label">'.$tab_genre[$genre].'</td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.$birth_date.'</td>';

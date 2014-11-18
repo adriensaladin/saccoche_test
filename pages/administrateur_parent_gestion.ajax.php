@@ -36,6 +36,7 @@ $id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gep
 $sconet_id    = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])    : 0;
 $reference    = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])       : '';
 $profil       = (isset($_POST['f_profil']))      ? Clean::texte($_POST['f_profil'])        : '';
+$genre        = (isset($_POST['f_genre']))       ? Clean::texte($_POST['f_genre'])         : '';
 $nom          = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])             : '';
 $prenom       = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])       : '';
 $login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])         : '';
@@ -50,7 +51,7 @@ $courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_cou
 // Ajouter un nouveau parent
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_date || $sortie_date) )
+if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_date || $sortie_date) )
 {
   // Vérifier le profil
   if( !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) || ($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]!='parent') )
@@ -138,7 +139,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
     }
   }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_date)
   {
@@ -151,6 +152,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':sortie_date'=>$sortie_date_mysql) );
   }
   // Afficher le retour
+  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
   echo  '<td class="label">0 <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Aucun lien de responsabilité !" /></td>';
@@ -159,6 +161,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
   echo  '<td class="label">'.html($sconet_id).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
   echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
+  echo  '<td class="label">'.$tab_genre[$genre].'</td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à relever le login généré !" /></td>';
@@ -176,7 +179,7 @@ if( ($action=='ajouter') && $profil && $nom && $prenom && ($box_login || $login)
 // Modifier un parent existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_date || $sortie_date) )
+if( ($action=='modifier') && $id && $profil && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_date || $sortie_date) )
 {
   $tab_donnees = array();
   // Vérifier le profil
@@ -258,9 +261,21 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
     $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(':sconet_id'=>$sconet_id,':reference'=>$reference,':profil_sigle'=>$profil,':nom'=>$nom,':prenom'=>$prenom,':email'=>$courriel,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
+  $tab_donnees += array(
+    ':sconet_id'    => $sconet_id,
+    ':reference'    => $reference,
+    ':profil_sigle' => $profil,
+    ':genre'        => $genre,
+    ':nom'          => $nom,
+    ':prenom'       => $prenom,
+    ':email'        => $courriel,
+    ':id_ent'       => $id_ent,
+    ':id_gepi'      => $id_gepi,
+    ':sortie_date'  => $sortie_date_mysql,
+  );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Afficher le retour
+  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   $checked = ($check) ? ' checked' : '' ;
   echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'"'.$checked.' /></td>';
   // td avec nb de liens de responsabilité ajouté en js
@@ -269,6 +284,7 @@ if( ($action=='modifier') && $id && $profil && $nom && $prenom && ($box_login ||
   echo'<td class="label">'.html($sconet_id).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
   echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
+  echo'<td class="label">'.$tab_genre[$genre].'</td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';

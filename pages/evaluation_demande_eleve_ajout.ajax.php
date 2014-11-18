@@ -51,7 +51,7 @@ if( ($action=='lister_profs') && $matiere_id )
     $options = (count($DB_TAB)==1) ? '' : '<option value="0">Tous les enseignants concernés</option>' ;
     foreach($DB_TAB as $DB_ROW)
     {
-      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE)).'</option>';
+      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).'</option>';
     }
     exit($options);
   }

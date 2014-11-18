@@ -116,7 +116,8 @@ foreach($tab_brevet_serie as $serie_ref)
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_eleve_saisie[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = array( 'matieres_id'=>$DB_ROW['matieres_id'] , 'prof_id'=>$DB_ROW['prof_id'] , 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
+  $prof_info = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
+  $tab_eleve_saisie[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = array( 'matieres_id'=>$DB_ROW['matieres_id'] , 'prof_id'=>$DB_ROW['prof_id'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_classe( $classe_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)

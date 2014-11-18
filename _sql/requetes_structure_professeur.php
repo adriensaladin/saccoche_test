@@ -97,12 +97,12 @@ public static function DB_recuperer_devoir_prorietaire_id($devoir_id)
  */
 public static function DB_recuperer_devoir_prorietaire_identite($devoir_id)
 {
-  $DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS proprietaire ';
+  $DB_SQL = 'SELECT user_genre, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
   $DB_VAR = array(':devoir_id'=>$devoir_id);
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1190,13 +1190,14 @@ public static function DB_modifier_selection_items($selection_item_id,$selection
  * @param int    $devoir_id
  * @param int    $proprio_id
  * @param string $date_mysql
- * @param string $info
+ * @param string $devoir_info
+ * @param string $proprietaire_archive
  * @param string $date_visible_mysql
  * @param string $date_autoeval_mysql
  * @param string $eleves_ordre   'alpha' | 'classe'
  * @return void
  */
-public static function DB_modifier_devoir($devoir_id,$proprio_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$eleves_ordre)
+public static function DB_modifier_devoir( $devoir_id , $proprio_id , $date_mysql , $devoir_info , $proprietaire_archive , $date_visible_mysql , $date_autoeval_mysql , $eleves_ordre )
 {
   // sacoche_devoir (maj)
   $DB_SQL = 'UPDATE sacoche_devoir ';
@@ -1204,7 +1205,7 @@ public static function DB_modifier_devoir($devoir_id,$proprio_id,$date_mysql,$in
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND proprio_id=:proprio_id ';
   $DB_VAR = array(
     ':date'          => $date_mysql,
-    ':devoir_info'   => $info,
+    ':devoir_info'   => $devoir_info,
     ':visible_date'  => $date_visible_mysql,
     ':autoeval_date' => $date_autoeval_mysql,
     ':eleves_ordre'  => $eleves_ordre,
@@ -1213,7 +1214,7 @@ public static function DB_modifier_devoir($devoir_id,$proprio_id,$date_mysql,$in
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // sacoche_saisie (maj)
-  $saisie_info = $info.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  $saisie_info = $devoir_info.' ('.$proprietaire_archive.')';
   $DB_SQL = 'UPDATE sacoche_saisie ';
   $DB_SQL.= 'SET saisie_date=:date, saisie_info=:saisie_info, saisie_visible_date=:visible_date ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
@@ -1574,7 +1575,7 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
  */
 public static function DB_modifier_demandes_statut($listing_demande_id,$statut,$message)
 {
-  $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
+  $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])."\r\n".$message : '' ;
   $DB_SQL = 'UPDATE sacoche_demande ';
   $DB_SQL.= 'SET demande_statut=:demande_statut, demande_messages=CONCAT(demande_messages,:message_complementaire) ';
   $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';

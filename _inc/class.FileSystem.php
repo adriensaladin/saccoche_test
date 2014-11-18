@@ -791,7 +791,7 @@ class FileSystem
     {
       return 'Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
     }
-    // Si $_FILES est renseigné, il se peut qu'il y ait quand même eu un dépassement des limites.
+    // Si $_FILES est renseigné, il se peut qu'il y ait quand même eu un dépassement des limites ou un problème d'écriture.
     $tab_file = $_FILES['userfile'];
     $fichier_tmp_nom    = $tab_file['name'];
     $fichier_tmp_chemin = $tab_file['tmp_name'];
@@ -799,7 +799,9 @@ class FileSystem
     $fichier_tmp_erreur = $tab_file['error'];
     if( (!file_exists($fichier_tmp_chemin)) || (!$fichier_tmp_taille) || ($fichier_tmp_erreur) )
     {
-      return 'Problème de récupération ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
+      $alerte_open_basedir = InfoServeur::is_open_basedir() ? ' Variable serveur "open_basedir" mal renseignée ?' : '' ;
+      $alerte_upload_size = ' Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
+      return 'Problème de récupération !'.$alerte_open_basedir.$alerte_upload_size;
     }
     // Vérification d'une sécurité sur le nom
     if($fichier_tmp_nom{0}=='.')

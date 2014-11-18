@@ -563,4 +563,19 @@ if($version_base_structure_actuelle=='2014-11-01')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-11-09 => 2014-11-18
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-11-09')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-11-18';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // ajout du champ [user_genre] à la table [sacoche_user]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_genre ENUM("I","M","F") COLLATE utf8_unicode_ci NOT NULL DEFAULT "I" COMMENT "Indéterminé / Masculin / Féminin" AFTER user_profil_sigle ' );
+  }
+}
+
 ?>

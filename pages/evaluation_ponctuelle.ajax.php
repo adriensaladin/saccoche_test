@@ -124,7 +124,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && isset($tab_notes[$
     }
   }
   // On enregistre les modifications.
-  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   if(!$presence_item)
   {
     // 'ajouter' plutôt que 'creer' car en cas d'ajout puis de suppression d'une note à un élève, un item peut se retrouver déjà affecté à un devoir sans qu'il n'y ait de note trouvée

@@ -85,8 +85,8 @@ class InfoServeur
   {
     switch($sujet)
     {
-      case 'version_php'                    : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.';
-      case 'version_mysql'                  : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.5 est stable depuis octobre 2010.';
+      case 'version_php'                    : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.<br \>PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.';
+      case 'version_mysql'                  : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.1 n\'est plus supporté depuis le 31 décembre 2013.<br \>MySQL 5.5 est stable depuis octobre 2010.';
       case 'version_sacoche_prog'           : return 'Dernière version disponible : '.InfoServeur::SACoche_version_dispo();
       case 'version_sacoche_base_structure' : return InfoServeur::info_base_complement('structure').'Version attendue : '.VERSION_BASE_STRUCTURE;
       case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre').'Version attendue : '.VERSION_BASE_WEBMESTRE;
@@ -675,6 +675,17 @@ function getServerProtocole()
       }
     }
     return ($avec_explication) ? 'min(memory_limit,post_max_size,upload_max_filesize) = '.$chaine_mini : $chaine_mini ;
+  }
+
+  /**
+   * is_open_basedir
+   *
+   * @param void
+   * @return bool
+   */
+  public static function is_open_basedir()
+  {
+    return (ini_get('open_basedir')) ? TRUE : FALSE ;
   }
 
   /**

@@ -112,6 +112,27 @@ function afficher_etapes($import_origine,$import_profil)
   return $puces;
 }
 
+$tab_genre_enfant = array( 'I'=>'' , 'M'=>'Masc.' , 'F'=>'Fém.' );
+$tab_genre_adulte = array( 'I'=>'' , 'M'=>'M.'    , 'F'=>'Mme'  );
+
+function aff_champ($profil,$type,$val)
+{
+  if($type!='genre')
+  {
+    return html($val);
+  }
+  else if($profil=='eleve')
+  {
+    global $tab_genre_enfant;
+    return $tab_genre_enfant[$val];
+  }
+  else
+  {
+    global $tab_genre_adulte;
+    return $tab_genre_adulte[$val];
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Étape 10 - Récupération du fichier (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +203,7 @@ if( $step==20 )
   $tab_users_fichier['sconet_num']   = array();
   $tab_users_fichier['reference']    = array();
   $tab_users_fichier['profil_sigle'] = array(); // Notamment pour distinguer les personnels
+  $tab_users_fichier['genre']        = array();
   $tab_users_fichier['nom']          = array();
   $tab_users_fichier['prenom']       = array();
   $tab_users_fichier['classe']       = array(); // Avec id sconet_id ou reference // Classe de l'élève || Classes du professeur, avec indication PP
@@ -228,7 +250,7 @@ if( $step==20 )
      * Les matières des profs peuvent être récupérées de 2 façons :
      * 1. $xml->DONNEES->INDIVIDUS->INDIVIDU->DISCIPLINES->DISCIPLINE->attributes()->CODE
      *    On récupère alors un code formé d'une lettre (L ou C) et de 4 chiffres (matières que le prof est apte à enseigner, son service peut préciser les choses...).
-     *    Je n'ai pas trouvé de correspondance officielle &rarr; Le tableau $tab_discipline_code_discipline_TO_matiere_code_gestion donne les principales.
+     *    Je n'ai pas trouvé de correspondance officielle -> Le tableau $tab_discipline_code_discipline_TO_matiere_code_gestion donne les principales.
      */
     $tab_discipline_code_discipline_TO_matiere_code_gestion = array();
     $tab_discipline_code_discipline_TO_matiere_code_gestion['.0080'] = array('DOC');
@@ -256,7 +278,7 @@ if( $step==20 )
      * Les matières des profs peuvent être récupérées de 2 façons :
      * 2. $xml->DONNEES->STRUCTURES->DIVISIONS->DIVISION->SERVICES->SERVICE->attributes()->CODE_MATIERE
      *    On récupère alors, si l'emploi du temps est rensigné, un code expliqué dans $xml->NOMENCLATURES->MATIERES->MATIERE.
-     *    &rarr; Le tableau $tab_matiere_code_matiere_TO_matiere_code_gestion liste ce contenu des nomenclatures.
+     *    -> Le tableau $tab_matiere_code_matiere_TO_matiere_code_gestion liste ce contenu des nomenclatures.
      */
     $tab_matiere_code_matiere_TO_matiere_code_gestion = array();
     if( ($xml->NOMENCLATURES) && ($xml->NOMENCLATURES->MATIERES) && ($xml->NOMENCLATURES->MATIERES->MATIERE) )
@@ -274,17 +296,20 @@ if( $step==20 )
     $date_aujourdhui = date('Y-m-d');
     if( ($xml->DONNEES) && ($xml->DONNEES->INDIVIDUS) && ($xml->DONNEES->INDIVIDUS->INDIVIDU) )
     {
+      $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
       foreach ($xml->DONNEES->INDIVIDUS->INDIVIDU as $individu)
       {
         $fonction = Clean::ref($individu->FONCTION) ;
         if( (isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction])) && (in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction],array('professeur','directeur'))) )
         {
           $sconet_id = Clean::entier($individu->attributes()->ID);
+          $civilite  = Clean::entier($individu->SEXE); // L'attribut <CIVILITE> est aussi présent et apparemment identique.
           $i_fichier  = $sconet_id;
           $tab_users_fichier['sconet_id'   ][$i_fichier] = $sconet_id;
           $tab_users_fichier['sconet_num'  ][$i_fichier] = 0;
           $tab_users_fichier['reference'   ][$i_fichier] = '';
           $tab_users_fichier['profil_sigle'][$i_fichier] = $fonction;
+          $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
           $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($individu->NOM_USAGE);
           $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($individu->PRENOM);
           $tab_users_fichier['classe'      ][$i_fichier] = array();
@@ -464,9 +489,11 @@ if( $step==20 )
     //
     if( ($xml->DONNEES) && ($xml->DONNEES->ELEVES) && ($xml->DONNEES->ELEVES->ELEVE) )
     {
+      $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
       foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
       {
         $i_fichier = Clean::entier($eleve->attributes()->ELEVE_ID);
+        $civilite  = Clean::entier($eleve->CODE_SEXE);
         if($eleve->DATE_SORTIE)
         {
           $_SESSION['tmp']['date_sortie'][$i_fichier] = (string) $eleve->DATE_SORTIE; // format fr (jj/mm/aaaa)
@@ -477,6 +504,7 @@ if( $step==20 )
           $tab_users_fichier['sconet_num'  ][$i_fichier] = Clean::entier($eleve->attributes()->ELENOET);
           $tab_users_fichier['reference'   ][$i_fichier] = Clean::ref($eleve->ID_NATIONAL);
           $tab_users_fichier['profil_sigle'][$i_fichier] = 'ELV' ;
+          $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
           $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($eleve->NOM);
           $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($eleve->PRENOM);
           $tab_users_fichier['birth_date'  ][$i_fichier] = Clean::texte($eleve->DATE_NAISS);
@@ -608,9 +636,11 @@ if( $step==20 )
     //
     if( ($xml->DONNEES) && ($xml->DONNEES->PERSONNES) && ($xml->DONNEES->PERSONNES->PERSONNE) )
     {
+      $tab_genre = array( ''=>'I' , 'M.'=>'M' , 'MME'=>'F' );
       foreach ($xml->DONNEES->PERSONNES->PERSONNE as $personne)
       {
         $i_fichier = Clean::entier($personne->attributes()->PERSONNE_ID);
+        $civilite  = Clean::texte($personne->LC_CIVILITE); // L'attribut <LL_CIVILITE> est aussi présent.
         if(isset($tab_enfants[$i_fichier]))
         {
           $i_adresse = Clean::entier($personne->ADRESSE_ID);
@@ -618,6 +648,7 @@ if( $step==20 )
           $tab_users_fichier['sconet_num'  ][$i_fichier] = 0;
           $tab_users_fichier['reference'   ][$i_fichier] = '';
           $tab_users_fichier['profil_sigle'][$i_fichier] = 'TUT' ;
+          $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
           $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($personne->NOM);
           $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($personne->PRENOM);
           $tab_users_fichier['adresse'     ][$i_fichier] = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;
@@ -639,13 +670,24 @@ if( $step==20 )
     //
     // On passe les utilisateurs en revue : on mémorise leurs infos
     //
+    $tab_genre = array(
+      0     =>'I' ,
+      ''    =>'I' ,
+      1     =>'M' ,
+      'M'   =>'M' ,
+      'M.'  =>'M' ,
+      'G'   =>'M' ,
+      2     =>'F' ,
+      'MME' =>'F' ,
+      'F'   =>'F' ,
+    );
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = str_getcsv($ligne_contenu,$separateur);
-      $tab_elements = array_slice($tab_elements,0,6);
-      if(count($tab_elements)>=4)
+      $tab_elements = array_slice($tab_elements,0,7);
+      if(count($tab_elements)>=5)
       {
-        list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array_fill(4,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+        list($reference,$genre,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array_fill(0,7,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
         $profil = Clean::ref($profil);
         if( ($nom!='') && ($prenom!='') && isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) && in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil],array('professeur','directeur')) )
         {
@@ -653,6 +695,7 @@ if( $step==20 )
           $tab_users_fichier['sconet_num'  ][] = 0;
           $tab_users_fichier['reference'   ][] = Clean::ref($reference);
           $tab_users_fichier['profil_sigle'][] = $profil;
+          $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
           $tab_users_fichier['nom'         ][] = Clean::nom($nom);
           $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
           // classes
@@ -716,19 +759,31 @@ if( $step==20 )
     //
     // On passe les utilisateurs en revue : on mémorise leurs infos et les classes trouvées
     //
+    $tab_genre = array(
+      0     =>'I' ,
+      ''    =>'I' ,
+      1     =>'M' ,
+      'M'   =>'M' ,
+      'M.'  =>'M' ,
+      'G'   =>'M' ,
+      2     =>'F' ,
+      'MME' =>'F' ,
+      'F'   =>'F' ,
+    );
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = str_getcsv($ligne_contenu,$separateur);
-      $tab_elements = array_slice($tab_elements,0,6);
-      if(count($tab_elements)>=5)
+      $tab_elements = array_slice($tab_elements,0,7);
+      if(count($tab_elements)>=6)
       {
-        list($reference,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array(5=>NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+        list($reference,$genre,$nom,$prenom,$birth_date,$classe,$groupes) = $tab_elements + array_fill(0,7,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
         if( ($nom!='') && ($prenom!='') )
         {
           $tab_users_fichier['sconet_id'   ][] = 0;
           $tab_users_fichier['sconet_num'  ][] = 0;
           $tab_users_fichier['reference'   ][] = Clean::ref($reference);
           $tab_users_fichier['profil_sigle'][] = 'ELV';
+          $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
           $tab_users_fichier['nom'         ][] = Clean::nom($nom);
           $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
           $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
@@ -791,14 +846,25 @@ if( $step==20 )
     //
     // On passe les utilisateurs en revue : on mémorise leurs infos et les classes trouvées
     //
+    $tab_genre = array(
+      0     =>'I' ,
+      ''    =>'I' ,
+      1     =>'M' ,
+      'M'   =>'M' ,
+      'M.'  =>'M' ,
+      'G'   =>'M' ,
+      2     =>'F' ,
+      'MME' =>'F' ,
+      'F'   =>'F' ,
+    );
     $tab_adresses_uniques = array();
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = str_getcsv($ligne_contenu,$separateur);
-      $tab_elements = array_slice($tab_elements,0,19);
-      if(count($tab_elements)>=11)
+      $tab_elements = array_slice($tab_elements,0,20);
+      if(count($tab_elements)>=12)
       {
-        list($reference,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(3,16,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+        list($reference,$genre,$nom,$prenom,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(0,20,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
         if( ($nom!='') && ($prenom!='') && ($enfant1!='') )
         {
           // enfants
@@ -823,6 +889,7 @@ if( $step==20 )
             $tab_users_fichier['sconet_num'  ][] = 0;
             $tab_users_fichier['reference'   ][] = Clean::ref($reference);
             $tab_users_fichier['profil_sigle'][] = 'TUT';
+            $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
             $tab_users_fichier['nom'         ][] = Clean::nom($nom);
             $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
             $tab_users_fichier['adresse'     ][] = array( Clean::adresse($adresse_ligne1) , Clean::adresse($adresse_ligne2) , Clean::adresse($adresse_ligne3) , Clean::adresse($adresse_ligne4) , Clean::codepostal($codepostal) , Clean::commune($commune) , Clean::pays($pays) ) ;
@@ -845,7 +912,7 @@ if( $step==20 )
     $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
     $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
     // Utiliser la 1e ligne pour repérer les colonnes intéressantes
-    $tab_numero_colonne = array('nom'=>-100,'prenom'=>-100,'niveau'=>-100,'classe'=>-100);
+    $tab_numero_colonne = array('nom'=>-100,'prenom'=>-100,'birth_date'=>-100,'genre'=>-100,'niveau'=>-100,'classe'=>-100);
     $tab_elements = str_getcsv($tab_lignes[0],$separateur);
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
@@ -855,6 +922,7 @@ if( $step==20 )
         case 'Nom Elève'      : $tab_numero_colonne['nom'   ]     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
         case 'Prénom Elève'   : $tab_numero_colonne['prenom']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
         case 'Date naissance' : $tab_numero_colonne['birth_date'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 3
+        case 'Sexe'           : $tab_numero_colonne['genre']      = $numero; $numero_max = max($numero_max,$numero); break; // normalement 4
         case 'Niveau'         : $tab_numero_colonne['niveau']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 14
         case 'Classe'         : $tab_numero_colonne['classe']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15
       }
@@ -890,6 +958,7 @@ if( $step==20 )
     //
     // On passe les utilisateurs en revue : on mémorise leurs infos, les classes trouvées, les groupes trouvés
     //
+    $tab_genre = array( ''=>'I' , 'M'=>'M' , 'F'=>'F' );
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = str_getcsv($ligne_contenu,$separateur);
@@ -897,6 +966,7 @@ if( $step==20 )
       {
         $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
         $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
+        $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;;
         $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? convert_date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
         $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
         $classe     = $tab_elements[$tab_numero_colonne['classe']];
@@ -916,6 +986,7 @@ if( $step==20 )
           $tab_users_fichier['sconet_num'  ][] = 0;
           $tab_users_fichier['reference'   ][] = '';
           $tab_users_fichier['profil_sigle'][] = 'ELV';
+          $tab_users_fichier['genre'       ][] = $genre;
           $tab_users_fichier['nom'         ][] = Clean::nom($nom);
           $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
           $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
@@ -940,13 +1011,14 @@ if( $step==20 )
     $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
     $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
     // Utiliser la 1e ligne pour repérer les colonnes intéressantes
-    $tab_numero_colonne = array('nom'=>-200,'prenom'=>-200,'adresse'=>-200,'codepostal'=>-200,'commune'=>-200,'pays'=>-200,'enfant_nom'=>array(),'enfant_prenom'=>array());
+    $tab_numero_colonne = array('genre'=>-200,'nom'=>-200,'prenom'=>-200,'adresse'=>-200,'codepostal'=>-200,'commune'=>-200,'pays'=>-200,'enfant_nom'=>array(),'enfant_prenom'=>array());
     $tab_elements = str_getcsv($tab_lignes[0],$separateur);
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
     {
       switch($element)
       {
+        case 'Civilité Responsable'  : $tab_numero_colonne['genre']           = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
         case 'Nom responsable'       : $tab_numero_colonne['nom']             = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
         case 'Prénom responsable'    : $tab_numero_colonne['prenom']          = $numero; $numero_max = max($numero_max,$numero); break; // normalement 3
         case 'Adresse responsable'   : $tab_numero_colonne['adresse']         = $numero; $numero_max = max($numero_max,$numero); break; // normalement 4
@@ -977,12 +1049,14 @@ if( $step==20 )
     //
     // On passe les utilisateurs en revue : on mémorise leurs infos, les adresses trouvées, les enfants trouvés
     //
+    $tab_genre = array( ''=>'I' , 'M.'=>'M' , 'MME'=>'F' );
     $tab_adresses_uniques = array();
     foreach ($tab_lignes as $ligne_contenu)
     {
       $tab_elements = str_getcsv($ligne_contenu,$separateur);
       if(count($tab_elements)>$numero_max)
       {
+        $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;;
         $nom        = Clean::nom(       $tab_elements[$tab_numero_colonne['nom']       ]);
         $prenom     = Clean::prenom(    $tab_elements[$tab_numero_colonne['prenom']    ]);
         $adresse    = Clean::adresse(   $tab_elements[$tab_numero_colonne['adresse']   ]);
@@ -1016,6 +1090,7 @@ if( $step==20 )
             $tab_users_fichier['sconet_num'  ][] = 0;
             $tab_users_fichier['reference'   ][] = '';
             $tab_users_fichier['profil_sigle'][] = 'TUT';
+            $tab_users_fichier['genre'       ][] = $genre;
             $tab_users_fichier['nom'         ][] = $nom;
             $tab_users_fichier['prenom'      ][] = $prenom;
             $tab_users_fichier['adresse'     ][] = array( $adresse , '' , '' , '' , $codepostal , $commune , $pays );
@@ -1043,6 +1118,7 @@ if( $step==20 )
       $test1 = array_multisort(
         $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
         $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['genre'],
         $tab_users_fichier['sconet_id'],
         $tab_users_fichier['sconet_num'],
         $tab_users_fichier['reference'],
@@ -1066,6 +1142,7 @@ if( $step==20 )
       $test1 = array_multisort(
         $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
         $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['genre'],
         $tab_users_fichier['sconet_id'],
         $tab_users_fichier['sconet_num'],
         $tab_users_fichier['reference'],
@@ -1089,6 +1166,7 @@ if( $step==20 )
       $test1 = array_multisort(
         $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
         $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['genre'],
         $tab_users_fichier['birth_date'],
         $tab_users_fichier['sconet_id'],
         $tab_users_fichier['sconet_num'],
@@ -1112,6 +1190,7 @@ if( $step==20 )
       $test1 = array_multisort(
         $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
         $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['genre'],
         $tab_users_fichier['birth_date'],
         $tab_users_fichier['sconet_id'],
         $tab_users_fichier['sconet_num'],
@@ -1131,6 +1210,7 @@ if( $step==20 )
       $test1 = array_multisort(
         $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
         $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
+        $tab_users_fichier['genre'],
         $tab_users_fichier['sconet_id'],
         $tab_users_fichier['sconet_num'],
         $tab_users_fichier['reference'],
@@ -1671,16 +1751,17 @@ if( $step==51 )
   $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
   $tab_i_groupe_TO_id_base  = $tab_liens_id_base['groupes'];
   $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
-  // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
+  // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / classe / groupes / matieres / adresse / enfant
   $tab_users_fichier = load_fichier('users');
   // On récupère le fichier avec les classes : $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['nom'] : i -> nom ; $tab_classes_fichier['niveau'] : i -> niveau
   $tab_classes_fichier = load_fichier('classes');
-  // On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / birth_date / statut / classe / adresse
+  // On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / statut / classe / adresse
   $tab_users_base                 = array();
   $tab_users_base['sconet_id'   ] = array();
   $tab_users_base['sconet_num'  ] = array();
   $tab_users_base['reference'   ] = array();
   $tab_users_base['profil_sigle'] = array();
+  $tab_users_base['genre'       ] = array();
   $tab_users_base['nom'         ] = array();
   $tab_users_base['prenom'      ] = array();
   $tab_users_base['birth_date'  ] = array();
@@ -1689,16 +1770,17 @@ if( $step==51 )
   $tab_users_base['adresse'     ] = array();
   $profil_type = ($import_profil!='professeur') ? $import_profil : array('professeur','directeur') ;
   $with_classe = ($import_profil=='eleve') ? TRUE : FALSE ;
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_genre,user_nom,user_prenom,user_naissance_date,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_users_base['sconet_id'   ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
     $tab_users_base['sconet_num'  ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
     $tab_users_base['reference'   ][$DB_ROW['user_id']] = $DB_ROW['user_reference'];
     $tab_users_base['profil_sigle'][$DB_ROW['user_id']] = $DB_ROW['user_profil_sigle'];
+    $tab_users_base['genre'       ][$DB_ROW['user_id']] = $DB_ROW['user_genre'];
     $tab_users_base['nom'         ][$DB_ROW['user_id']] = $DB_ROW['user_nom'];
-    $tab_users_base['birth_date'  ][$DB_ROW['user_id']] = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
     $tab_users_base['prenom'      ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
+    $tab_users_base['birth_date'  ][$DB_ROW['user_id']] = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
     $tab_users_base['sortie'      ][$DB_ROW['user_id']] = $DB_ROW['user_sortie_date'] ;
     $tab_users_base['classe'      ][$DB_ROW['user_id']] = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : '' ;
   }
@@ -1758,7 +1840,7 @@ if( $step==51 )
       $indication = ($import_profil=='eleve') ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
       $lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>'.NL;
       $id_classe = ( ($import_profil=='eleve') && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
-      $tab_users_ajouter[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil_sigle'=>$tab_users_fichier['profil_sigle'][$i_fichier] , 'classe'=>$id_classe );
+      $tab_users_ajouter[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'genre'=>$tab_users_fichier['genre'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil_sigle'=>$tab_users_fichier['profil_sigle'][$i_fichier] , 'classe'=>$id_classe );
       if($import_profil=='eleve')
       {
         $tab_users_ajouter[$i_fichier]['birth_date'] = $tab_users_fichier['birth_date'][$i_fichier];
@@ -1783,7 +1865,7 @@ if( $step==51 )
       // On compare les données de 2 enregistrements pour voir si des choses ont été modifiées
       $td_modif = '';
       $nb_modif = 0;
-      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil_sigle'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
+      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'genre'=>'Genre' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'classe'=>'Classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil_sigle'=>'Profil' , 'genre'=>'Civilité' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
       foreach($tab_champs as $champ_ref => $champ_aff)
       {
         if($champ_ref=='classe')
@@ -1793,13 +1875,13 @@ if( $step==51 )
         }
         if($tab_users_base[$champ_ref][$id_base]!=$tab_users_fichier[$champ_ref][$i_fichier])
         {
-          $td_modif .= ' || <b>'.$champ_aff.' : '.html($tab_users_base[$champ_ref][$id_base]).' &rarr; '.html($tab_users_fichier[$champ_ref][$i_fichier]).'</b>';
+          $td_modif .= ' || <b>'.$champ_aff.' : '.aff_champ($import_profil,$champ_ref,$tab_users_base[$champ_ref][$id_base]).' &rarr; '.aff_champ($import_profil,$champ_ref,$tab_users_fichier[$champ_ref][$i_fichier]).'</b>';
           $tab_users_modifier[$id_base][$champ_ref] = ($champ_ref!='classe') ? $tab_users_fichier[$champ_ref][$i_fichier] : $id_classe ;
           $nb_modif++;
         }
         else
         {
-          $td_modif .= ' || '.$champ_aff.' : '.html($tab_users_base[$champ_ref][$id_base]);
+          $td_modif .= ' || '.$champ_aff.' : '.aff_champ($import_profil,$champ_ref,$tab_users_base[$champ_ref][$id_base]);
           $tab_users_modifier[$id_base][$champ_ref] = FALSE;
         }
       }
@@ -2020,6 +2102,7 @@ if( $step==52 )
           $tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'],
           $tab_memo_analyse['ajouter'][$i_fichier]['reference'],
           $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'],
+          $tab_memo_analyse['ajouter'][$i_fichier]['genre'],
           $tab_memo_analyse['ajouter'][$i_fichier]['nom'],
           $tab_memo_analyse['ajouter'][$i_fichier]['prenom'],
           $birth_date,
@@ -2048,7 +2131,7 @@ if( $step==52 )
     foreach($tab_mod as $id_base)
     {
       // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
-      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'birth_date' ) : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'nom' , 'prenom' ) ;
+      $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'genre' , 'nom' , 'prenom' , 'birth_date' ) : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'genre' , 'nom' , 'prenom' ) ;
       $DB_VAR  = array();
       foreach($tab_champs as $champ_ref)
       {

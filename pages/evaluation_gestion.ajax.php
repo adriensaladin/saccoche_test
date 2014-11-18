@@ -465,9 +465,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   if($proprio_id==$_SESSION['USER_ID'])
   {
     $niveau_droit = 4; // propriétaire
-    $proprietaire_genre  = $_SESSION['USER_GENRE'];
-    $proprietaire_nom    = $_SESSION['USER_NOM'];
-    $proprietaire_prenom = $_SESSION['USER_PRENOM'];
+    $proprietaire = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'];
   }
   elseif($profs_liste) // forcément
   {
@@ -488,17 +486,12 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     {
       exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
     }
-    $DB_ROW = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_identite( $devoir_id );
-    $proprietaire_genre  = $DB_ROW['user_genre'];
-    $proprietaire_nom    = $DB_ROW['user_nom'];
-    $proprietaire_prenom = $DB_ROW['user_prenom'];
+    $proprietaire = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_identite( $devoir_id );
   }
   else
   {
     exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
   }
-  $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
-  $proprietaire_archive  = afficher_identite_initiale($proprietaire_nom,FALSE,$proprietaire_prenom,TRUE,$proprietaire_genre);
   // Ordre des élèves
   if($groupe_type=='classe')
   {
@@ -509,7 +502,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     Form::save_choix('evaluation_gestion');
   }
   // sacoche_devoir (maj des paramètres date & info)
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir( $devoir_id , $proprio_id , $date_mysql , $description , $proprietaire_archive , $date_visible_mysql , $date_autoeval_mysql , $eleves_ordre );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir( $devoir_id , $proprio_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $eleves_ordre );
   if($type=='selection')
   {
     // sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
@@ -558,7 +551,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $remplissage_contenu  = ($fini=='oui') ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
   $remplissage_lien1    = ($niveau_droit<4)  ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
   $remplissage_lien2    = ($niveau_droit<4)  ? '' : '</a>' ;
-  $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."' ;
+  $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($proprietaire).')."' ;
   echo'<td>'.$date.'</td>';
   echo'<td>'.$date_visible.'</td>';
   echo'<td>'.$date_autoeval.'</td>';
@@ -567,14 +560,14 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   echo'<td>'.html($description).'</td>';
   echo'<td>'.$nb_items.' item'.$cs.'</td>';
   echo'<td>'.$image_sujet.$image_corrige;
-  echo ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
+  echo ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($proprietaire).')."></q>' ;
   echo'</td>';
   echo'<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
   echo'<td class="nu" id="devoir_'.$ref.'">';
-  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
-  echo ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
+  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire).')."></q>' ;
+  echo ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire).')."></q>' ;
   echo  '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
+  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire).')."></q>' ;
   echo  '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
   echo  '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>'; // niveau de droit à 3 ou 4 donc au moins à 2
   echo  '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
@@ -1371,7 +1364,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
   $date_mysql         = convert_date_french_to_mysql($date_fr);
   $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : convert_date_french_to_mysql($date_visible);
-  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
+  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_nouveau_ajouter as $key => $note)
   {
     list($item_id,$eleve_id) = explode('x',$key);

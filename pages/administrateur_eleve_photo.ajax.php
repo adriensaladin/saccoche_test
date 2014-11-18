@@ -173,8 +173,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   }
   // Récupérer la liste des élèves et fabriquer le nom de fichier attendu correspondant à chacun
   $tab_bad = array( '[sconet_id]' , '[sconet_num]' , '[reference]' , '[nom]' , '[prenom]' , '[login]' , '[ent_id]' );
-  $champs = 'user_id, user_id_ent, user_sconet_id, user_sconet_elenoet, user_reference, user_nom, user_prenom, user_login' ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , 1 /*statut*/ , 'all' /*groupe_type*/ , 0 /*groupe_id*/ , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , 1 /*statut*/ , 'all' /*groupe_type*/ , 0 /*groupe_id*/ , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)

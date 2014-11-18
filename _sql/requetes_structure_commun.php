@@ -577,7 +577,7 @@ public static function DB_lister_messages_user_auteur($user_id)
  */
 public static function DB_lister_messages_user_destinataire($user_id)
 {
-  $DB_SQL = 'SELECT message_id, user_genre, user_nom, user_prenom, message_contenu, message_dests_cache ';
+  $DB_SQL = 'SELECT message_id,user_nom, user_prenom, message_contenu,message_dests_cache ';
   $DB_SQL.= 'FROM sacoche_message ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
@@ -626,7 +626,6 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param int         $user_sconet_elenoet
  * @param string      $user_reference
  * @param string      $user_profil_sigle
- * @param string      $user_genre
  * @param string      $user_nom
  * @param string      $user_prenom
  * @param string|NULL $user_naissance_date
@@ -638,16 +637,15 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_id_gepi    facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_genre,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
-  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_naissance_date, user_email, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
+  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
   $DB_VAR = array(
     ':user_sconet_id'      => $user_sconet_id,
     ':user_sconet_elenoet' => $user_sconet_elenoet,
     ':user_reference'      => $user_reference,
     ':user_profil_sigle'   => $user_profil_sigle,
-    ':user_genre'          => $user_genre,
     ':user_nom'            => $user_nom,
     ':user_prenom'         => $user_prenom,
     ':user_naissance_date' => $user_naissance_date,

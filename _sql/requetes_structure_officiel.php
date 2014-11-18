@@ -93,7 +93,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
     $rubrique_champ_ordre = (substr($officiel_type,0,6)!='palier') ? 'matiere_ordre'   : 'pilier_ordre' ;
   }
   $periode_where = ($with_periodes_avant) ? '' : 'AND periode_id=:periode_id' ;
-  $DB_SQL = 'SELECT prof_id, eleve_ou_classe_id AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT prof_id, eleve_ou_classe_id AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
   $DB_SQL.= ($with_rubrique_nom)   ? ', '.$rubrique_champ_nom.' as rubrique_nom ' : '' ;
   $DB_SQL.= ($with_periodes_avant) ? ', periode_id , periode_ordre , periode_nom ' : '' ;
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
@@ -106,7 +106,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
   $DB_SQL.= 'ORDER BY ';
   $DB_SQL.= ($with_rubrique_nom)   ? $rubrique_champ_ordre.' ASC, ' : '' ;
   $DB_SQL.= ($with_periodes_avant) ? 'periode_ordre ASC, ' : '' ;
-  $DB_SQL.= 'user_nom ASC, user_prenom ASC ';
+  $DB_SQL.= 'prof_info ASC ';
   $DB_VAR = array(
     ':officiel_type' => $officiel_type,
     ':periode_id'    => $periode_id,
@@ -129,7 +129,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
 public static function DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , $prof_id , $with_periodes_avant , $only_synthese_generale )
 {
   $periode_where = ($with_periodes_avant) ? '' : 'AND periode_id=:periode_id' ;
-  $DB_SQL = 'SELECT prof_id, 0 AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT prof_id, 0 AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
   $DB_SQL.= ', matiere_nom as rubrique_nom ';
   $DB_SQL.= ($with_periodes_avant) ? ', periode_id , periode_ordre , periode_nom ' : '' ;
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
@@ -141,7 +141,7 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $periode_id ,
   $DB_SQL.= ($only_synthese_generale) ? 'AND rubrique_id=0 ' : '' ;
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, ';
   $DB_SQL.= ($with_periodes_avant) ? 'periode_ordre ASC, ' : '' ;
-  $DB_SQL.= 'user_nom ASC, user_prenom ASC ';
+  $DB_SQL.= 'prof_info ASC ';
   $DB_VAR = array(
     ':officiel_type' => 'bulletin',
     ':periode_id'    => $periode_id,
@@ -299,7 +299,7 @@ public static function DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id
  */
 public static function DB_lister_profs_principaux($classe_id)
 {
-  $DB_SQL = 'SELECT user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND jointure_pp=:pp AND user_sortie_date>NOW() ';
@@ -319,7 +319,7 @@ public static function DB_lister_profs_principaux($classe_id)
  */
 public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
 {
-  $DB_SQL = 'SELECT eleve_id, resp_legal_num, parent.user_genre, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.* ';
+  $DB_SQL = 'SELECT eleve_id, resp_legal_num, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.* ';
   $DB_SQL.= 'FROM sacoche_user AS enfant ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON enfant.user_id=sacoche_jointure_parent_eleve.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';

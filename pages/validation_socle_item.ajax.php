@@ -379,7 +379,7 @@ elseif($action=='Enregistrer_validation')
     exit('Aucune modification détectée !');
   }
   // L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
-  $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+  $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   foreach($tab_nouveau_ajouter as $key => $etat)
   {
     list($entree_id,$eleve_id) = explode('x',$key);

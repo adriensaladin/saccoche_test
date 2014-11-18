@@ -44,35 +44,20 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'.$separateur.'LOGIN'.$separateur.'GENRE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'GROUPE'."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'GROUPE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
   // Récupérer les élèves de la classe ou du groupe
-  $champs = 'user_id, user_login, user_genre, user_nom, user_prenom';
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_login,user_nom,user_prenom' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $export_csv .= $DB_ROW['user_id']
-        .$separateur.$DB_ROW['user_login']
-        .$separateur.$tab_genre[$DB_ROW['user_genre']]
-        .$separateur.$DB_ROW['user_nom']
-        .$separateur.$DB_ROW['user_prenom']
-        .$separateur.$groupe_nom
-        ."\r\n";
-      $export_html .= '<tr>'
-                       .'<td>'.$DB_ROW['user_id'].'</td>'
-                       .'<td>'.html($DB_ROW['user_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
-                       .'<td>'.html($DB_ROW['user_nom']).'</td>'
-                       .'<td>'.html($DB_ROW['user_prenom']).'</td>'
-                       .'<td>'.html($groupe_nom).'</td>'
-                     .'</tr>'.NL;
+      $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$groupe_nom."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($groupe_nom).'</td></tr>'.NL;
     }
   }
 
@@ -98,28 +83,9 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'ITEM_ID'
-    .$separateur.'MATIERE'
-    .$separateur.'NIVEAU'
-    .$separateur.'REFERENCE'
-    .$separateur.'NOM'
-    .$separateur.'COEF'
-    .$separateur.'DEMANDE_EVAL'
-    .$separateur.'LIEN'
-    .$separateur.'SOCLE'
-    ."\r\n\r\n";
+  $export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'COEF'.$separateur.'DEMANDE_EVAL'.$separateur.'LIEN'.$separateur.'SOCLE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr>'
-                   .'<th>Id</th>'
-                   .'<th>Matière</th>'
-                   .'<th>Niveau</th>'
-                   .'<th>Référence</th>'
-                   .'<th>Nom</th>'
-                   .'<th>Coef</th>'
-                   .'<th>Demande</th>'
-                   .'<th>Lien</th>'
-                   .'<th>Socle</th>'
-                 .'</tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Coef</th><th>Demande</th><th>Lien</th><th>Socle</th></tr>'.NL.'</thead><tbody>'.NL;
 
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ );
   if(!empty($DB_TAB))
@@ -128,27 +94,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
     {
       $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
       $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
-      $export_csv .= $DB_ROW['item_id']
-        .$separateur.$matiere_nom
-        .$separateur.$DB_ROW['niveau_nom']
-        .$separateur.$item_ref
-        .$separateur.'"'.$DB_ROW['item_nom'].'"'
-        .$separateur.$DB_ROW['item_coef']
-        .$separateur.$demande_eval
-        .$separateur.'"'.$DB_ROW['item_lien'].'"'
-        .$separateur.'"'.$DB_ROW['entree_nom'].'"'
-        ."\r\n";
-      $export_html .= '<tr>'
-                       .'<td>'.$DB_ROW['item_id'].'</td>'
-                       .'<td>'.html($matiere_nom).'</td>'
-                       .'<td>'.html($DB_ROW['niveau_nom']).'</td>'
-                       .'<td>'.html($item_ref).'</td>'
-                       .'<td>'.html($DB_ROW['item_nom']).'</td>'
-                       .'<td>'.html($DB_ROW['item_coef']).'</td>'
-                       .'<td>'.html($demande_eval).'</td>'
-                       .'<td>'.html($DB_ROW['item_lien']).'</td>'
-                       .'<td>'.html($DB_ROW['entree_nom']).'</td>'
-                     .'</tr>'.NL;
+      $export_csv .= $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.$DB_ROW['item_coef'].$separateur.$demande_eval.$separateur.'"'.$DB_ROW['item_lien'].'"'.$separateur.'"'.$DB_ROW['entree_nom'].'"'."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td><td>'.html($DB_ROW['item_coef']).'</td><td>'.html($demande_eval).'</td><td>'.html($DB_ROW['item_lien']).'</td><td>'.html($DB_ROW['entree_nom']).'</td></tr>'.NL;
     }
   }
   // Finalisation de l'export CSV (archivage dans un fichier)
@@ -551,40 +498,12 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_eleves') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'
-    .$separateur.'ID_ENT'
-    .$separateur.'ID_GEPI'
-    .$separateur.'SCONET_ID'
-    .$separateur.'SCONET_NUM'
-    .$separateur.'REFERENCE'
-    .$separateur.'LOGIN'
-    .$separateur.'GENRE'
-    .$separateur.'NOM'
-    .$separateur.'PRENOM'
-    .$separateur.'DATE_NAISSANCE'
-    .$separateur.'CLASSE_REF'
-    .$separateur.'CLASSE_NOM'
-    ."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'DATE_NAISSANCE'.$separateur.'CLASSE_REF'.$separateur.'CLASSE_NOM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr>'
-                   .'<th>Id</th>'
-                   .'<th>Id. ENT</th>'
-                   .'<th>Id. GEPI</th>'
-                   .'<th>Id. Sconet</th>'
-                   .'<th>Num. Sconet</th>'
-                   .'<th>Référence</th>'
-                   .'<th>Login</th>'
-                   .'<th>Genre</th>'
-                   .'<th>Nom</th>'
-                   .'<th>Prénom</th>'
-                   .'<th>Date Naiss.</th>'
-                   .'<th>Classe Ref.</th>'
-                   .'<th>Classe Nom</th>'
-                 .'</tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Date Naiss.</th><th>Classe Ref.</th><th>Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer la liste des classes
   $tab_groupe = array();
@@ -594,42 +513,14 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des élèves
-  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, eleve_classe_id';
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,eleve_classe_id' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
       $date_fr = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
-      $export_csv .= $DB_ROW['user_id']
-        .$separateur.$DB_ROW['user_id_ent']
-        .$separateur.$DB_ROW['user_id_gepi']
-        .$separateur.$DB_ROW['user_sconet_id']
-        .$separateur.$DB_ROW['user_sconet_elenoet']
-        .$separateur.$DB_ROW['user_reference']
-        .$separateur.$DB_ROW['user_login']
-        .$separateur.$tab_genre[$DB_ROW['user_genre']]
-        .$separateur.$DB_ROW['user_nom']
-        .$separateur.$DB_ROW['user_prenom']
-        .$separateur.$date_fr
-        .$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref']
-        .$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']
-        ."\r\n";
-      $export_html .= '<tr>'
-                       .'<td>'.$DB_ROW['user_id'].'</td>'
-                       .'<td>'.html($DB_ROW['user_id_ent']).'</td>'
-                       .'<td>'.html($DB_ROW['user_id_gepi']).'</td>'
-                       .'<td>'.$DB_ROW['user_sconet_id'].'</td>'
-                       .'<td>'.$DB_ROW['user_sconet_elenoet'].'</td>'
-                       .'<td>'.html($DB_ROW['user_reference']).'</td>'
-                       .'<td>'.html($DB_ROW['user_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
-                       .'<td>'.html($DB_ROW['user_nom']).'</td>'
-                       .'<td>'.html($DB_ROW['user_prenom']).'</td>'
-                       .'<td>'.$date_fr.'</td>'
-                       .'<td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td>'
-                       .'<td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td>'
-                     .'</tr>'.NL;
+      $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$date_fr.$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.$date_fr.'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td></tr>'.NL;
     }
   }
 
@@ -651,44 +542,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_parents') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'
-    .$separateur.'ID_ENT'
-    .$separateur.'ID_GEPI'
-    .$separateur.'SCONET_ID'
-    .$separateur.'SCONET_NUM'
-    .$separateur.'REFERENCE'
-    .$separateur.'LOGIN'
-    .$separateur.'CIVILITE'
-    .$separateur.'NOM'
-    .$separateur.'PRENOM'
-    .$separateur.'ENFANT_ID'
-    .$separateur.'ENFANT_NOM'
-    .$separateur.'ENFANT_PRENOM'
-    .$separateur.'ENFANT_CLASSE_REF'
-    .$separateur.'ENFANT_CLASSE_NOM'
-    ."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'ENFANT_ID'.$separateur.'ENFANT_NOM'.$separateur.'ENFANT_PRENOM'.$separateur.'ENFANT_CLASSE_REF'.$separateur.'ENFANT_CLASSE_NOM'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr>'
-                   .'<th>Id</th>'
-                   .'<th>Id. ENT</th>'
-                   .'<th>Id. GEPI</th>'
-                   .'<th>Id. Sconet</th>'
-                   .'<th>Num. Sconet</th>'
-                   .'<th>Référence</th>'
-                   .'<th>Login</th>'
-                   .'<th>Civilité</th>'
-                   .'<th>Nom</th>'
-                   .'<th>Prénom</th>'
-                   .'<th>Enfant Id.</th>'
-                   .'<th>Enfant Nom</th>'
-                   .'<th>Enfant Prénom</th>'
-                   .'<th>Enfant Classe Ref.</th>'
-                   .'<th>Enfant Classe Nom</th>'
-                 .'</tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Enfant Id.</th><th>Enfant Nom</th><th>Enfant Prénom</th><th>Enfant Classe Ref.</th><th>Enfant Classe Nom</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer la liste des classes
   $tab_groupe = array();
@@ -698,48 +557,13 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des responsables
-  $champs = 'parent.user_id AS parent_id, parent.user_id_ent AS parent_id_ent, parent.user_id_gepi AS parent_id_gepi,
-             parent.user_sconet_id AS parent_sconet_id, parent.user_sconet_elenoet AS parent_sconet_elenoet, parent.user_reference AS parent_reference,
-             parent.user_genre AS parent_genre, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_login AS parent_login,
-             enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'parent.user_id AS parent_id,parent.user_id_ent AS parent_id_ent,parent.user_id_gepi AS parent_id_gepi,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login,enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $export_csv .= $DB_ROW['parent_id']
-        .$separateur.$DB_ROW['parent_id_ent']
-        .$separateur.$DB_ROW['parent_id_gepi']
-        .$separateur.$DB_ROW['parent_sconet_id']
-        .$separateur.$DB_ROW['parent_sconet_elenoet']
-        .$separateur.$DB_ROW['parent_reference']
-        .$separateur.$DB_ROW['parent_login']
-        .$separateur.$tab_genre[$DB_ROW['parent_genre']]
-        .$separateur.$DB_ROW['parent_nom']
-        .$separateur.$DB_ROW['parent_prenom']
-        .$separateur.$DB_ROW['enfant_id']
-        .$separateur.$DB_ROW['enfant_nom']
-        .$separateur.$DB_ROW['enfant_prenom']
-        .$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['ref']
-        .$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['nom']
-        ."\r\n";
-      $export_html .= '<tr>'
-                       .'<td>'.$DB_ROW['parent_id'].'</td>'
-                       .'<td>'.html($DB_ROW['parent_id_ent']).'</td>'
-                       .'<td>'.html($DB_ROW['parent_id_gepi']).'</td>'
-                       .'<td>'.$DB_ROW['parent_sconet_id'].'</td>'
-                       .'<td>'.$DB_ROW['parent_sconet_elenoet'].'</td>'
-                       .'<td>'.html($DB_ROW['parent_reference']).'</td>'
-                       .'<td>'.html($DB_ROW['parent_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['parent_genre']].'</td>'
-                       .'<td>'.html($DB_ROW['parent_nom']).'</td>'
-                       .'<td>'.html($DB_ROW['parent_prenom']).'</td>'
-                       .'<td>'.$DB_ROW['enfant_id'].'</td>'
-                       .'<td>'.html($DB_ROW['enfant_nom']).'</td>'
-                       .'<td>'.html($DB_ROW['enfant_prenom']).'</td>'
-                       .'<td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['ref']).'</td>'
-                       .'<td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['nom']).'</td>'
-                     .'</tr>'.NL;
+      $export_csv  .= $DB_ROW['parent_id'].$separateur.$DB_ROW['parent_id_ent'].$separateur.$DB_ROW['parent_id_gepi'].$separateur.$DB_ROW['parent_sconet_id'].$separateur.$DB_ROW['parent_sconet_elenoet'].$separateur.$DB_ROW['parent_reference'].$separateur.$DB_ROW['parent_login'].$separateur.$DB_ROW['parent_nom'].$separateur.$DB_ROW['parent_prenom'].$separateur.$DB_ROW['enfant_id'].$separateur.$DB_ROW['enfant_nom'].$separateur.$DB_ROW['enfant_prenom'].$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['ref'].$separateur.$tab_groupe[$DB_ROW['enfant_classe_id']]['nom']."\r\n";
+      $export_html .= '<tr><td>'.$DB_ROW['parent_id'].'</td><td>'.html($DB_ROW['parent_id_ent']).'</td><td>'.html($DB_ROW['parent_id_gepi']).'</td><td>'.$DB_ROW['parent_sconet_id'].'</td><td>'.$DB_ROW['parent_sconet_elenoet'].'</td><td>'.html($DB_ROW['parent_reference']).'</td><td>'.html($DB_ROW['parent_login']).'</td><td>'.html($DB_ROW['parent_nom']).'</td><td>'.html($DB_ROW['parent_prenom']).'</td><td>'.$DB_ROW['enfant_id'].'</td><td>'.html($DB_ROW['enfant_nom']).'</td><td>'.html($DB_ROW['enfant_prenom']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['ref']).'</td><td>'.html($tab_groupe[$DB_ROW['enfant_classe_id']]['nom']).'</td></tr>'.NL;
     }
   }
 
@@ -761,72 +585,24 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_professeurs') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'
-    .$separateur.'ID_ENT'
-    .$separateur.'ID_GEPI'
-    .$separateur.'SCONET_ID'
-    .$separateur.'SCONET_NUM'
-    .$separateur.'REFERENCE'
-    .$separateur.'LOGIN'
-    .$separateur.'CIVILITE'
-    .$separateur.'NOM'
-    .$separateur.'PRENOM'
-    .$separateur.'PROFIL'
-    ."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'ID_ENT'.$separateur.'ID_GEPI'.$separateur.'SCONET_ID'.$separateur.'SCONET_NUM'.$separateur.'REFERENCE'.$separateur.'LOGIN'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr>'
-                   .'<th>Id</th>'
-                   .'<th>Id. ENT</th>'
-                   .'<th>Id. GEPI</th>'
-                   .'<th>Id. Sconet</th>'
-                   .'<th>Num. Sconet</th>'
-                   .'<th>Référence</th>'
-                   .'<th>Login</th>'
-                   .'<th>Civilité</th>'
-                   .'<th>Nom</th>'
-                   .'<th>Prénom</th>'
-                   .'<th>Profil</th>'
-                 .'</tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Id. ENT</th><th>Id. GEPI</th><th>Id. Sconet</th><th>Num. Sconet</th><th>Référence</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Profil</th></tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer les données des professeurs et des personnels
   $tab_profil = array('professeur','personnel');
-  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_login, user_profil_sigle' ;
   foreach($tab_profil as $profil)
   {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil  , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil  , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,user_profil_sigle' );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        $export_csv .= $DB_ROW['user_id']
-          .$separateur.$DB_ROW['user_id_ent']
-          .$separateur.$DB_ROW['user_id_gepi']
-          .$separateur.$DB_ROW['user_sconet_id']
-          .$separateur.$DB_ROW['user_sconet_elenoet']
-          .$separateur.$DB_ROW['user_reference']
-          .$separateur.$DB_ROW['user_login']
-          .$separateur.$tab_genre[$DB_ROW['user_genre']]
-          .$separateur.$DB_ROW['user_nom']
-          .$separateur.$DB_ROW['user_prenom']
-          .$separateur.$DB_ROW['user_profil_sigle']
-          ."\r\n";
-        $export_html .= '<tr>'
-                         .'<td>'.$DB_ROW['user_id'].'</td>'
-                         .'<td>'.html($DB_ROW['user_id_ent']).'</td>'
-                         .'<td>'.html($DB_ROW['user_id_gepi']).'</td>'
-                         .'<td>'.$DB_ROW['user_sconet_id'].'</td>'
-                         .'<td>'.$DB_ROW['user_sconet_elenoet'].'</td>'
-                         .'<td>'.html($DB_ROW['user_reference']).'</td>'
-                         .'<td>'.html($DB_ROW['user_login']).'</td>'
-                         .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
-                         .'<td>'.html($DB_ROW['user_nom']).'</td>'
-                         .'<td>'.html($DB_ROW['user_prenom']).'</td>'
-                         .'<td>'.$DB_ROW['user_profil_sigle'].'</td>'
-                       .'</tr>'.NL;
+        $export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_id_ent'].$separateur.$DB_ROW['user_id_gepi'].$separateur.$DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$DB_ROW['user_profil_sigle']."\r\n";
+        $export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_id_ent']).'</td><td>'.html($DB_ROW['user_id_gepi']).'</td><td>'.$DB_ROW['user_sconet_id'].'</td><td>'.$DB_ROW['user_sconet_elenoet'].'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.$DB_ROW['user_profil_sigle'].'</td></tr>'.NL;
       }
     }
   }

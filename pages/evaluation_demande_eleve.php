@@ -72,7 +72,7 @@ else
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        $destinataires = ($DB_ROW['prof_id']) ? html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])) : 'enseignants concernés' ;
+        $destinataires = ($DB_ROW['prof_id']) ? html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE)) : 'enseignants concernés' ;
         $score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
         $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
         $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';

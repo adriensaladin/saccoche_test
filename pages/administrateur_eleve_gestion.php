@@ -78,7 +78,6 @@ if(empty($_POST['f_afficher']))
       <th>Id Sconet</th>
       <th>N° Sconet</th>
       <th>Référence</th>
-      <th>Genre</th>
       <th>Nom</th>
       <th>Prénom</th>
       <th>Date Naiss.</th>
@@ -91,7 +90,6 @@ if(empty($_POST['f_afficher']))
   </thead>
   <tbody>
     <?php
-    $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
     // Lister les élèves
     $tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
     $groupe_type = $tab_types[$groupe_type];
@@ -99,8 +97,7 @@ if(empty($_POST['f_afficher']))
     {
       $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
     }
-    $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, user_email, user_sortie_date' ;
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_naissance_date,user_login,user_email,user_sortie_date' );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -117,7 +114,6 @@ if(empty($_POST['f_afficher']))
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_sconet_elenoet']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
-        echo  '<td class="label">'.$tab_genre[$DB_ROW['user_genre']].'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.$date_naissance.'</td>';
@@ -133,7 +129,7 @@ if(empty($_POST['f_afficher']))
     }
     else
     {
-      echo'<tr><td class="nu" colspan="15"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="14"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -156,7 +152,6 @@ if(empty($_POST['f_afficher']))
     <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sconet : champ ELEVE.ID_NATIONAL (laisser vide si inconnu).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
   </p>
   <p>
-    <label class="tab" for="f_genre">Genre :</label><select id="f_genre" name="f_genre"><option value="I"></option><option value="M">Masculin</option><option value="F">Féminin</option></select><br />
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_birth_date">Date Naiss. :</label><input id="box_birth_date" name="box_birth_date" value="1" type="checkbox" /> <label for="box_birth_date">inconnue</label><span><input id="f_birth_date" name="f_birth_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />

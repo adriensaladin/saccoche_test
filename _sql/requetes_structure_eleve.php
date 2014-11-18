@@ -188,7 +188,7 @@ public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere
   }
   // Maintenant qu'on a la matière et la classe / les groupes, on cherche les profs à la fois dans sacoche_jointure_user_matiere et sacoche_jointure_user_groupe .
   // On part de sacoche_jointure_user_matiere qui ne contient que des profs.
-  $DB_SQL = 'SELECT DISTINCT(user_id), user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT DISTINCT(user_id), user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
@@ -254,7 +254,7 @@ public static function DB_lister_demandes_eleve($eleve_id)
   $DB_SQL = 'SELECT sacoche_demande.*, ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
   $DB_SQL.= 'item_id , item_nom , item_lien , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom , ';
-  $DB_SQL.= 'prof_id , user_genre , user_nom , user_prenom ';
+  $DB_SQL.= 'prof_id , user_nom , user_prenom ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
@@ -297,7 +297,7 @@ public static function DB_lister_devoirs_eleve($eleve_id,$date_debut_mysql,$date
     $listing_groupes = $DB_ROW['eleve_classe_id'].$virgule.$DB_ROW['eleve_groupes_id'];
     // Cette fonction peut être appelée avec un autre profil.
     $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
-    $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom, jointure_texte, jointure_audio ';
+    $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom, jointure_texte, jointure_audio ';
     $DB_SQL.= 'FROM sacoche_devoir ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve ON ( sacoche_devoir.devoir_id=sacoche_jointure_devoir_eleve.devoir_id AND sacoche_jointure_devoir_eleve.eleve_id=:eleve_id ) ';
     $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
@@ -319,7 +319,7 @@ public static function DB_lister_devoirs_eleve($eleve_id,$date_debut_mysql,$date
 public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($eleve_id,$nb_jours)
 {
   $sql_view = 'AND devoir_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
-  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
+  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
@@ -345,7 +345,7 @@ public static function DB_lister_devoirs_eleve_avec_autoevaluation_en_cours($ele
 {
   $sql_view = 'AND devoir_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
   $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
-  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
+  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM  sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';

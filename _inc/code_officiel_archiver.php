@@ -210,7 +210,7 @@ if($action=='imprimer_donnees_eleves_collegues')
     if($DB_ROW['prof_id'])
     {
       // Les appréciations
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = $DB_ROW['prof_info'].' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['tab_appreciation'][] = suppression_sauts_de_ligne($texte);
       $nb_lignes_rubriques += nombre_de_ligne_supplémentaires($texte);
     }
@@ -266,7 +266,7 @@ if($action=='imprimer_donnees_classe_collegues')
     if($DB_ROW['prof_id'])
     {
       // Les appréciations
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = $DB_ROW['prof_info'].' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['rubrique_id']]['tab_appreciation'][] = suppression_sauts_de_ligne($texte);
       $nb_lignes_supplémentaires += nombre_de_ligne_supplémentaires($texte);
     }
@@ -321,7 +321,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
     if($DB_ROW['prof_id'])
     {
       // L'appréciation
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = $DB_ROW['prof_info'].' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['eleve_id']]['appreciation'] = suppression_sauts_de_ligne($texte);
       $nb_lignes_supplémentaires += nombre_de_ligne_supplémentaires($texte);
     }
@@ -451,7 +451,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       if($DB_ROW['prof_id'])
       {
         $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][$DB_ROW['periode_ordre']] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
-        $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
+        $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = $DB_ROW['prof_info'];
       }
       else if($DB_ROW['saisie_note']!==NULL) // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       {

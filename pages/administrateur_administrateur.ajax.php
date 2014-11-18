@@ -33,7 +33,6 @@ $id           = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])
 $id_ent       = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])      : '';
 $id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])     : '';
 $profil       = 'ADM';
-$genre        = (isset($_POST['f_genre']))       ? Clean::texte($_POST['f_genre'])       : '';
 $nom          = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])           : '';
 $prenom       = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])     : '';
 $login        = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])       : '';
@@ -46,7 +45,7 @@ $courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_cou
 // Ajouter un nouvel administrateur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) )
+if( ($action=='ajouter') && $nom && $prenom && ($box_login || $login) && ($box_password || $password) )
 {
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
   if($id_ent)
@@ -113,13 +112,11 @@ if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $pren
     }
   }
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td>'.html($id_ent).'</td>';
   echo  '<td>'.html($id_gepi).'</td>';
-  echo  '<td>'.$tab_genre[$genre].'</td>';
   echo  '<td>'.html($nom).'</td>';
   echo  '<td>'.html($prenom).'</td>';
   echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le login !" /></td>';
@@ -137,7 +134,7 @@ if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $pren
 // Modifier un administrateur existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) )
+if( ($action=='modifier') && $id && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) )
 {
   $tab_donnees = array();
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
@@ -188,14 +185,7 @@ if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom 
     $tab_donnees[':password'] = crypter_mdp($password);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(
-    ':genre'   => $genre,
-    ':nom'     => $nom,
-    ':prenom'  => $prenom,
-    ':email'   => $courriel,
-    ':id_ent'  => $id_ent,
-    ':id_gepi' = >$id_gepi,
-  );
+  $tab_donnees += array(':nom'=>$nom,':prenom'=>$prenom,':email'=>$courriel,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Mettre à jour aussi éventuellement la session
   if($id==$_SESSION['USER_ID'])
@@ -204,10 +194,8 @@ if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom 
     $_SESSION['USER_PRENOM'] = $prenom ;
   }
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<td>'.html($id_ent).'</td>';
   echo'<td>'.html($id_gepi).'</td>';
-  echo'<td>'.$tab_genre[$genre].'</td>';
   echo'<td>'.html($nom).'</td>';
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';

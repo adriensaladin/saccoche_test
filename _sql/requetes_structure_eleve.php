@@ -510,7 +510,7 @@ public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$prof_i
  * supprimer_demande_precise
  *
  * @param int   $demande_id
- * @return void
+ * @return int
  */
 public static function DB_supprimer_demande_precise($demande_id)
 {
@@ -518,6 +518,7 @@ public static function DB_supprimer_demande_precise($demande_id)
   $DB_SQL.= 'WHERE demande_id=:demande_id ';
   $DB_VAR = array(':demande_id'=>$demande_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 }

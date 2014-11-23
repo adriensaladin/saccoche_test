@@ -40,11 +40,7 @@ $prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'
 
 if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_id!=-1) )
 {
-  $nb_suppression = DB_STRUCTURE_ELEVE::DB_supprimer_demande_precise($demande_id);
-  if(!$nb_suppression)
-  {
-    exit('La demande transmise a déjà été supprimée !');
-  }
+  DB_STRUCTURE_ELEVE::DB_supprimer_demande_precise($demande_id);
   // Récupérer la référence et le nom de l'item
   $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_item_infos($item_id);
   // Ajout aux flux RSS des profs concernés

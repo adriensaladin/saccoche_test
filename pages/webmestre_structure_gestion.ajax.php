@@ -232,13 +232,16 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   // Générer un nouveau mdp de l'admin
   $admin_password = fabriquer_mdp();
   DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
-  // Envoyer un courriel au contact et éventuellement une copie du courriel au webmestre
-  $courriel_contenu = Webmestre::contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE );
-  $courriel_titre   = 'Modification mdp administrateur - Inscription n°'.$base_id;
-  $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
-  if(!$courriel_bilan)
+  // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
+  $courriel_contenu = ( $courriel_envoi || $courriel_copie ) ? Webmestre::contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE ) : '' ;
+  $courriel_titre   = ( $courriel_envoi || $courriel_copie ) ? 'Modification mdp administrateur - Inscription n°'.$base_id : '' ;
+  if($courriel_envoi)
   {
-    exit('Erreur lors de l\'envoi du courriel !');
+    $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
+    if(!$courriel_bilan)
+    {
+      exit('Erreur lors de l\'envoi du courriel !');
+    }
   }
   if($courriel_copie)
   {

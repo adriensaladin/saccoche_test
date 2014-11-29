@@ -1177,8 +1177,8 @@ if($type_individuel)
   // Ajout du javascript en fin de fichier
   $releve_HTML_individuel .= '<script type="text/javascript">'.$releve_HTML_individuel_javascript.'</script>'.NL;
   // On enregistre les sorties HTML et PDF
-  if($make_html) { FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.html' , $releve_HTML_individuel ); }
-  if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf'  , $releve_PDF ); }
+  if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.html',$releve_HTML_individuel); }
+  if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf','F'); }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1343,8 +1343,8 @@ if($type_synthese)
   $releve_HTML_synthese .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('complet').'</form>'.NL : '';
   $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'.NL; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
   // On enregistre les sorties HTML et PDF
-  FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.html' , $releve_HTML_synthese );
-  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf'  , $releve_PDF );
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.html',$releve_HTML_synthese);
+  $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf','F');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

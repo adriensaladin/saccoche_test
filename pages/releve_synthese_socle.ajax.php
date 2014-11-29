@@ -346,8 +346,8 @@ $releve_PDF->releve_synthese_socle_legende($type);
 // Chemins d'enregistrement
 $fichier = 'releve_socle_synthese_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 // On enregistre les sorties HTML et PDF
-FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.$fichier.'.html'  ,$releve_HTML );
-FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf'  , $releve_PDF  );
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier.'.html',$releve_HTML);
+$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)
 {

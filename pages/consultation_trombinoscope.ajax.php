@@ -88,7 +88,7 @@ foreach($tab_vignettes as $user_id => $tab)
   $img_title = ($tab['img_title']) ? ' title="absence de photo"' : '' ;
   echo'<div id="div_'.$user_id.'" class="photo"><img width="'.$tab['img_width'].'" height="'.$tab['img_height'].'" alt=""'.$img_src.$img_title.' /><br />'.html($tab['user_nom']).'<br />'.html($tab['user_prenom']).'</div>';
 }
-FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fnom_pdf , $sacoche_pdf );
+$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fnom_pdf,'F');
 exit();
 
 ?>

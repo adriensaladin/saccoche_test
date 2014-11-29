@@ -60,7 +60,6 @@ $tab_notes_info = array
   'Salengro'     => array( 'nom'=>'Salengro'      , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'B'  , 'VV' =>'V'  ),
   'Sand'         => array( 'nom'=>'Sand'          , 'RR' =>'R'  , 'R' =>'J'  , 'V' =>'V'  , 'VV' =>'B'  ),
   'Sun'          => array( 'nom'=>'Sun'           , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'Min', 'VV' =>'Max'),
-  'Tillion'      => array( 'nom'=>'Tillion'       , 'RR' =>'PEA', 'R' =>'VA' , 'V' =>'A'  , 'VV' =>'M'  ),
   'Trappes'      => array( 'nom'=>'Trappes'       , 'RR' =>'XX' , 'R' =>'X'  , 'V' =>'V'  , 'VV' =>'VV' ),
   'Ulis'         => array( 'nom'=>'Ulis'          , 'RR' =>'0'  , 'R' =>'1'  , 'V' =>'2'  , 'VV' =>'3'  ),
   'Verne'        => array( 'nom'=>'Verne'         , 'RR' =>'NA' , 'R' =>'ECA', 'V' =>'AR' , 'VV' =>'A'  ),

@@ -1823,7 +1823,7 @@ if( $step==51 )
       $tab_id_prenom = array_keys($tab_users_base['prenom'],$tab_users_fichier['prenom'][$i_fichier]);
       $tab_id_commun = array_intersect($tab_id_nom,$tab_id_prenom);
       $nb_homonymes  = count($tab_id_commun);
-      if($nb_homonymes==1)
+      if($nb_homonymes>0)
       {
         list($inutile,$id_base) = each($tab_id_commun);
       }
@@ -2199,7 +2199,7 @@ if( $step==52 )
     {
       $pdf -> Add_Label(To::pdf($text));
     }
-    FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf' , $pdf );
+    $pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
   }
   $champ = ($import_profil=='eleve') ? 'Classe' : 'Profil' ;
   echo'<p><label class="valide">'.$nb_debut_actuel.' utilisateur'.$s_debut_actuel.' actuel'.$s_debut_actuel.' et '.$nb_debut_ancien.' utilisateur'.$s_debut_ancien.' ancien'.$s_debut_ancien.' &rarr; '.$nb_mod.' utilisateur'.$s_mod.' modifié'.$s_mod.' + '.$nb_add.' utilisateur'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' utilisateur'.$s_del.' retiré'.$s_del.' &rarr; '.$nb_fin_actuel.' utilisateur'.$s_fin_actuel.' actuel'.$s_fin_actuel.' et '.$nb_fin_ancien.' utilisateur'.$s_fin_ancien.' ancien'.$s_fin_ancien.'.</label></p>'.NL;

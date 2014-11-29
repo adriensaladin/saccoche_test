@@ -1066,6 +1066,7 @@ public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,
 
 /**
  * remplacer_devoir_commentaire
+ * Si la note est "REQ" (pour marquer une demande d'évaluation), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
  *
  * @param int    $devoir_id
  * @param int    $eleve_id

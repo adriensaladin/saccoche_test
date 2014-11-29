@@ -116,37 +116,33 @@ if($f_action=='enregistrer_mode_identification')
     {
       exit_json( FALSE , 'Syntaxe URL validate incorrecte !' );
     }
-    // Deux tests sauf pour les établissements destinés à tester les connecteurs ENT
-    if( !IS_HEBERGEMENT_SESAMATH || ($_SESSION['BASE']<CONVENTION_ENT_ID_ETABL_MAXI) )
+    // Ne pas dupliquer en paramétrage CAS-perso un paramétrage CAS-ENT existant (utiliser la connexion CAS officielle)
+    if($f_connexion_nom=='perso')
     {
-      // Ne pas dupliquer en paramétrage CAS-perso un paramétrage CAS-ENT existant (utiliser la connexion CAS officielle)
-      if($f_connexion_nom=='perso')
+      foreach($tab_serveur_cas as $cas_nom => $tab_cas_param)
       {
-        foreach($tab_serveur_cas as $cas_nom => $tab_cas_param)
+        if($cas_nom)
         {
-          if($cas_nom)
+          $is_param_defaut_identiques = ( (strpos($cas_serveur_host,$tab_cas_param['serveur_host_domain'])!==FALSE) && ($cas_serveur_root==$tab_cas_param['serveur_root']) ) ? TRUE : FALSE ; // Pas de test sur le sous-domaine ni le port car ils peuvent varier
+          $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || (strpos($cas_serveur_url_login,$tab_cas_param['serveur_host_domain'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'])!==FALSE) ) ) ? TRUE : FALSE ;
+          if( $is_param_defaut_identiques || $is_param_force_identiques )
           {
-            $is_param_defaut_identiques = ( (strpos($cas_serveur_host,$tab_cas_param['serveur_host_domain'])!==FALSE) && ($cas_serveur_root==$tab_cas_param['serveur_root']) ) ? TRUE : FALSE ; // Pas de test sur le sous-domaine ni le port car ils peuvent varier
-            $is_param_force_identiques  = ( ($cas_serveur_url_login!='') && ( ($cas_serveur_url_login==$tab_cas_param['serveur_url_login']) || (strpos($cas_serveur_url_login,$tab_cas_param['serveur_host_domain'].':'.$tab_cas_param['serveur_port'].'/'.$tab_cas_param['serveur_root'])!==FALSE) ) ) ? TRUE : FALSE ;
-            if( $is_param_defaut_identiques || $is_param_force_identiques )
-            {
-              exit_json( FALSE , 'Paramètres d\'un ENT référencé : sélectionnez-le !' );
-            }
+            exit_json( FALSE , 'Paramètres d\'un ENT référencé : sélectionnez-le !' );
           }
         }
       }
-      // Sur le serveur Sésamath, ne pas autoriser un paramétrage CAS correspondant à un hébergement académique (ne devrait pas se produire, Sésamath n'hébergeant pas ces établissements).
-      else if(IS_HEBERGEMENT_SESAMATH)
+    }
+    // Sur le serveur Sésamath, ne pas autoriser un paramétrage CAS correspondant à un hébergement académique (ne devrait pas se produire, Sésamath n'hébergeant pas ces établissements).
+    else if(IS_HEBERGEMENT_SESAMATH)
+    {
+      if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
       {
-        if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
-        {
-          exit_json( FALSE , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' );
-        }  
-        require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
-        if( isset($tab_connecteurs_hebergement[$f_connexion_ref]) )
-        {
-          exit_json( FALSE , 'Paramètres d\'un serveur CAS à utiliser sur l\'hébergement académique dédié !' );
-        }
+        exit_json( FALSE , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' );
+      }  
+      require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
+      if( isset($tab_connecteurs_hebergement[$f_connexion_ref]) )
+      {
+        exit_json( FALSE , 'Paramètres d\'un serveur CAS à utiliser sur l\'hébergement académique dédié !' );
       }
     }
     // C'est ok
@@ -332,7 +328,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   }
   // On enregistre la sortie PDF
   $contrat_fichier_nom = 'convention_contrat_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$contrat_fichier_nom , $contrat_PDF );
+  $contrat_PDF->Output(CHEMIN_DOSSIER_EXPORT.$contrat_fichier_nom,'F');
   //
   // Imprimer la facture.
   //
@@ -393,7 +389,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   $facture_PDF->CellFit( 180 , $hauteur_ligne , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // On enregistre la sortie PDF
   $facture_fichier_nom = 'convention_facture_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom , $facture_PDF );
+  $facture_PDF->Output(CHEMIN_DOSSIER_EXPORT.$facture_fichier_nom,'F');
   //
   // Envoyer un courriel au contact.
   //

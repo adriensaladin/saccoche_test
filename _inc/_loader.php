@@ -606,7 +606,6 @@ define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
 define('CONVENTION_ENT_REQUISE'         ,TRUE);
 define('CONVENTION_ENT_START_DATE_FR'   ,'01/09/2013');
 define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
-define('CONVENTION_ENT_ID_ETABL_MAXI'   ,100000); // Les établissements d'id >= sont des établissements de test.
 
 // Identifiants particuliers (à ne pas modifier)
 define('ID_DEMO'                   , 9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath

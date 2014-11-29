@@ -338,20 +338,6 @@ class FileSystem
   }
 
   /**
-   * Ecrire la sortie de FPDF dans un fichier, exit() en cas d'erreur
-   * 
-   * @param string   $fichier_chemin
-   * @param string   $objet_PDF
-   * @return TRUE
-   */
-  public static function ecrire_sortie_PDF($fichier_chemin,$objet_PDF)
-  {
-    @umask(FileSystem::systeme_umask());
-    $objet_PDF->Output($fichier_chemin,'F');
-    return TRUE;
-  }
-
-  /**
    * Ecrire du contenu dans un fichier, retourne un booléen indiquant la réussite de l'opération
    * 
    * @param string   $fichier_chemin

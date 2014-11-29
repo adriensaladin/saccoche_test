@@ -404,7 +404,6 @@ public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $peri
 /**
  * modifier_officiel_assiduite
  *
- * @param string   $mode     sconet | siecle | gepi | pronote | manuel
  * @param int      $periode_id
  * @param int      $user_id
  * @param int|null $nb_absence
@@ -413,15 +412,10 @@ public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $peri
  * @param int|null $nb_retard_nj
  * @return void
  */
-public static function DB_modifier_officiel_assiduite( $mode , $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj )
+public static function DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj )
 {
-  // Pronote exporte un fichier pour les absences, et un autre pour les retards, il ne faut donc pas réinitialiser ce qui n'est pas importé.
-  $update_absences = 'assiduite_absence=:assiduite_absence, assiduite_absence_nj=:assiduite_absence_nj';
-  $update_retards  = 'assiduite_retard=:assiduite_retard, assiduite_retard_nj=:assiduite_retard_nj';
-  $update = ($mode!='pronote') ? $update_absences.', '.$update_retards : ( ($nb_absence!==NULL) ? $update_absences : $update_retards ) ;
-  $DB_SQL = 'INSERT INTO sacoche_officiel_assiduite ( periode_id,  user_id,  assiduite_absence,  assiduite_absence_nj,  assiduite_retard,  assiduite_retard_nj) ';
-  $DB_SQL.= 'VALUES                                 (:periode_id, :user_id, :assiduite_absence, :assiduite_absence_nj, :assiduite_retard, :assiduite_retard_nj) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE '.$update;
+  $DB_SQL = 'REPLACE INTO sacoche_officiel_assiduite (periode_id, user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj) ';
+  $DB_SQL.= 'VALUES(:periode_id, :user_id, :assiduite_absence, :assiduite_absence_nj, :assiduite_retard, :assiduite_retard_nj) ';
   $DB_VAR = array(
     ':periode_id'           => $periode_id,
     ':user_id'              => $user_id,

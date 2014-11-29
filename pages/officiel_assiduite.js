@@ -40,7 +40,7 @@ $(document).ready
     function afficher_upload()
     {
       // Masquer tout
-      $('#puce_import_siecle , #puce_import_gepi').hide(0);
+      $('#puce_import_sconet , #puce_import_siecle , #puce_import_gepi , #puce_import_pronote').hide(0);
         // Puis afficher ce qu'il faut
       if( id_periode_import && f_action )
       {
@@ -54,8 +54,10 @@ $(document).ready
       function()
       {
         id_periode_import = $('#f_periode_import option:selected').val();
-        uploader_fichier_siecle['_settings']['data']['f_periode'] = id_periode_import;
-        uploader_fichier_gepi[  '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_sconet[ '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_siecle[ '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_gepi[   '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_pronote['_settings']['data']['f_periode'] = id_periode_import;
         afficher_upload();
       }
     );
@@ -133,6 +135,19 @@ $(document).ready
 
     if( $('#form_fichier').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
     {
+      var uploader_fichier_sconet = new AjaxUpload
+      ('#import_sconet',
+        {
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_sconet','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: "html",
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
+        }
+      );
       var uploader_fichier_siecle = new AjaxUpload
       ('#import_siecle',
         {
@@ -152,6 +167,19 @@ $(document).ready
           action: 'ajax.php?page='+PAGE,
           name: 'userfile',
           data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: "html",
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
+        }
+      );
+      var uploader_fichier_pronote = new AjaxUpload
+      ('#import_pronote',
+        {
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_pronote','f_periode':'maj_plus_tard'},
           autoSubmit: true,
           responseType: "html",
           onChange: changer_fichier,
@@ -179,6 +207,11 @@ $(document).ready
         $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
+      else if ( (f_action=='import_sconet') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        return false;
+      }
       else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
         $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
@@ -187,6 +220,11 @@ $(document).ready
       else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
         $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        return false;
+      }
+      else if ( (f_action=='import_pronote') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
         return false;
       }
       else
@@ -207,19 +245,29 @@ $(document).ready
       }
       else
       {
-        $('#comfirm_import_siecle , #comfirm_import_gepi').hide(0);
-        if(f_action=='import_siecle')
+        $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
+        if(f_action=='import_sconet')
         {
-          $('#date_export'       ).html(tab_infos[1]);
-          $('#periode_libelle'   ).html(tab_infos[2]);
-          $('#periode_date_debut').html(tab_infos[3]);
-          $('#periode_date_fin'  ).html(tab_infos[4]);
+          $('#sconet_date_export').html(tab_infos[1]);
+          $('#sconet_libelle'    ).html(tab_infos[2]);
+          $('#sconet_date_debut' ).html(tab_infos[3]);
+          $('#sconet_date_fin'   ).html(tab_infos[4]);
+        }
+        else if(f_action=='import_siecle')
+        {
         }
         else if(f_action=='import_gepi')
         {
-          $('#eleves_nb').html(tab_infos[1]);
+          $('#gepi_eleves_nb').html(tab_infos[1]);
         }
-        $('#periode_import'    ).html($('#f_periode_import option:selected').text());
+        else if(f_action=='import_pronote')
+        {
+          $('#pronote_objet'     ).html(tab_infos[1]);
+          $('#pronote_eleves_nb' ).html(tab_infos[2]);
+          $('#pronote_date_debut').html(tab_infos[3]);
+          $('#pronote_date_fin'  ).html(tab_infos[4]);
+        }
+        $('#periode_import').html($('#f_periode_import option:selected').text());
         $('#ajax_msg_'+f_action).removeAttr("class").html('');
         $('#ajax_msg_confirm').removeAttr("class").html('');
         $('#comfirm_'+f_action).show(0);

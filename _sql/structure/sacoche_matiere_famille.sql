@@ -67,6 +67,7 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 68, 3, "Transformation"),
 ( 69, 3, "Disciplines générales enseignement agricole"),
 ( 90, 3, "Enseignement religieux"),
+( 93, 4, "Langues vivantes régionales ou spécifiques"),
 ( 97, 4, "Spécialités de baccalauréat professionnel"),
 ( 98, 4, "Champs professionnels en SEGPA"),
 ( 99, 1, "Matières principales");

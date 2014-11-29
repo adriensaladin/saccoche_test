@@ -26,24 +26,24 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('import_siecle','afficher_formulaire_manuel'))) ) {exit('Action désactivée pour la démo...');}
+if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('import_sconet','import_siecle','import_gepi','import_pronote','afficher_formulaire_manuel'))) ) {exit('Action désactivée pour la démo...');}
 
 $action     = (isset($_POST['f_action']))  ? $_POST['f_action']                 : '';
 $periode_id = (isset($_POST['f_periode'])) ? Clean::entier($_POST['f_periode']) : 0;
 $groupe_id  = (isset($_POST['f_groupe']))  ? Clean::entier($_POST['f_groupe'])  : 0;
 $datas      = (isset($_POST['f_data']))    ? Clean::texte($_POST['f_data'])     : '';
 
-$test_sconet = (mb_strpos($action,'siecle')!==FALSE) ? TRUE : FALSE ;
-$tab_extensions_autorisees = $test_sconet ? array('zip','xml') : array('txt','csv') ;
-$extension_fichier_dest    = $test_sconet ? 'xml'              : 'txt' ;
+$test_gepi = (mb_strpos($action,'gepi')!==FALSE) ? TRUE : FALSE ;
+$tab_extensions_autorisees = $test_gepi ? array('txt','csv') : array('zip','xml') ;
+$extension_fichier_dest    = $test_gepi ? 'txt'              : 'xml' ;
 $fichier_dest = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
 $fichier_memo = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'_extraction.'.$extension_fichier_dest ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de SIÈCLE
+// Réception et analyse d'un fichier d'import issu de Sconet Absences
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='import_siecle') && $periode_id )
+if( ($action=='import_sconet') && $periode_id )
 {
   // Récupération du fichier (zip ou pas)
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
@@ -82,12 +82,14 @@ if( ($action=='import_siecle') && $periode_id )
     foreach ($xml->eleve as $eleve)
     {
       $tab_users_fichier[] = array(
+        NULL,
         Clean::entier($eleve->attributes()->elenoet),
         Clean::nom(   $eleve->attributes()->nomEleve),
         Clean::prenom($eleve->attributes()->prenomEleve),
         Clean::entier($eleve->attributes()->nbAbs),
         Clean::entier($eleve->attributes()->nbNonJustif),
         Clean::entier($eleve->attributes()->nbRet),
+        NULL,
       );
     }
   }
@@ -103,7 +105,15 @@ if( ($action=='import_siecle') && $periode_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de GEPI
+// Réception et analyse d'un fichier d'import issu de Siècle Vie Scolaire
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='import_siecle') && $periode_id )
+{
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Réception et analyse d'un fichier d'import issu de GEPI Absences 2
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import_gepi') && $periode_id )
@@ -130,12 +140,14 @@ if( ($action=='import_gepi') && $periode_id )
     {
       list($elenoet,$nom,$prenom,$classe,$nb_absence,$nb_absence_nj,$nb_retard) = $tab_elements;
       $tab_users_fichier[] = array(
+        NULL,
         Clean::entier($elenoet),
         Clean::nom($nom),
         Clean::prenom($prenom),
         Clean::entier($nb_absence),
         Clean::entier($nb_absence_nj),
         Clean::entier($nb_retard),
+        NULL,
       );
     }
   }
@@ -151,11 +163,122 @@ if( ($action=='import_gepi') && $periode_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement d'un fichier d'import issu de SIÈCLE ou de GEPI
+// Réception et analyse d'un fichier d'import issu de Pronote
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('traitement_import_siecle','traitement_import_gepi')) && $periode_id )
+if( ($action=='import_pronote') && $periode_id )
 {
+  // Récupération du fichier (zip ou pas)
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
+  if($result!==TRUE)
+  {
+    exit('Erreur : '.$result);
+  }
+  // Vérification du fichier
+  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  if($xml===FALSE)
+  {
+    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
+  }
+  // Récupération des données du fichier
+  $memo_date_debut = 9999;
+  $memo_date_fin   = 0;
+  $tab_users_fichier = array();
+  if($xml->Absences_des_eleves)
+  {
+    $objet = 'absences';
+    // cas d'un fichier d'absences
+    foreach ($xml->Absences_des_eleves as $eleve)
+    {
+      // la liste des champs dépend de ce qu'à coché l'admin
+      $sconet_id     = ($eleve->N_GEP)      ? Clean::entier($eleve->N_GEP)     : NULL ;
+      $nom           = ($eleve->NOM)        ? Clean::nom($eleve->NOM)          : NULL ;
+      $prenom        = ($eleve->PRENOM)     ? Clean::prenom($eleve->PRENOM)    : NULL ;
+      $nb_absence    = ($eleve->DEMI_JOUR)  ? Clean::entier($eleve->DEMI_JOUR) : NULL ;
+      $nb_absence_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? $nb_absence   : 0 ;
+      $id            = ($eleve->ID_ELEVE)   ? Clean::entier($eleve->ID_ELEVE)  : $nom.'.'.$prenom ;
+      $date_debut    = ($eleve->DATE_DEBUT) ? convert_date_french_to_mysql($eleve->DATE_DEBUT) : NULL ;
+      $date_fin      = ($eleve->DATE_FIN)   ? convert_date_french_to_mysql($eleve->DATE_FIN)   : NULL ;
+      if( $nom && $prenom && $nb_absence && $date_debut && $date_fin )
+      {
+        if(!isset($tab_users_fichier[$id]))
+        {
+          $tab_users_fichier[$id] = array(
+            $sconet_id,
+            NULL,
+            $nom,
+            $prenom,
+            $nb_absence,
+            $nb_absence_nj,
+            NULL,
+            NULL,
+          );
+        }
+        else
+        {
+          $tab_users_fichier[$id][4] += $nb_absence;
+          $tab_users_fichier[$id][5] += $nb_absence_nj;
+        }
+        $memo_date_debut = min( $memo_date_debut , $date_debut );
+        $memo_date_fin   = max( $memo_date_fin   , $date_fin   );
+      }
+    }
+  }
+  if($xml->Retards)
+  {
+    $objet = 'retards';
+    // cas d'un fichier de retards
+    foreach ($xml->Retards as $eleve)
+    {
+      // il n'y a aucun identifiant disponible dans cet export...
+      $nom    = ($eleve->NOM)    ? Clean::nom($eleve->NOM)        : NULL ;
+      $prenom = ($eleve->PRENOM) ? Clean::prenom($eleve->PRENOM)  : NULL ;
+      $nb_retard_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? 1 : 0 ;
+      $id     = $nom.'.'.$prenom ;
+      $date   = ($eleve->DATE)   ? convert_date_french_to_mysql($eleve->DATE) : NULL ;
+      if( $nom && $prenom && $date )
+      {
+        if(!isset($tab_users_fichier[$id]))
+        {
+          $tab_users_fichier[$id] = array(
+            NULL,
+            NULL,
+            $nom,
+            $prenom,
+            NULL,
+            NULL,
+            1,
+            $nb_retard_nj,
+          );
+        }
+        else
+        {
+          $tab_users_fichier[$id][6] += 1;
+          $tab_users_fichier[$id][7] += 1;
+        }
+        $memo_date_debut = min( $memo_date_debut , $date );
+        $memo_date_fin   = max( $memo_date_fin   , $date );
+      }
+    }
+  }
+  $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
+  if(!$nb_eleves_trouves)
+  {
+    exit('Erreur : aucun élève trouvé dans le fichier !');
+  }
+  // On enregistre
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
+  // On affiche la demande de confirmation
+  exit('ok'.']¤['.$objet.']¤['.html($nb_eleves_trouves).']¤['.convert_date_mysql_to_french($memo_date_debut).']¤['.convert_date_mysql_to_french($memo_date_fin));
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement d'un fichier d'import déjà réceptionné
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( in_array($action,array('traitement_import_sconet','traitement_import_siecle','traitement_import_gepi','traitement_import_pronote')) && $periode_id )
+{
+  $mode = substr($action,strrpos($action,'_')+1);
   // Récupération des données déjà extraites du fichier
   if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_memo))
   {
@@ -168,27 +291,71 @@ if( in_array($action,array('traitement_import_siecle','traitement_import_gepi'))
     exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
   }
   // Récupération des données de la base
-  $tab_users_base = array();
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_elenoet' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
+  $tab_users_base                   = array();
+  $tab_users_base['sconet_id'     ] = array();
+  $tab_users_base['sconet_elenoet'] = array();
+  $tab_users_base['nom'           ] = array();
+  $tab_users_base['prenom'        ] = array();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_users_base[(int)$DB_ROW['user_sconet_elenoet']] = (int)$DB_ROW['user_id'];
+    $tab_users_base['sconet_id'     ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
+    $tab_users_base['sconet_elenoet'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
+    $tab_users_base['nom'           ][$DB_ROW['user_id']] = $DB_ROW['user_nom'];
+    $tab_users_base['prenom'        ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
   }
   // Analyse et maj du contenu de la base
   $lignes_ok = '';
   $lignes_ko = '';
   foreach ($tab_users_fichier as $tab_donnees_eleve)
   {
-    list($eleve_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_absence_nj,$nb_retard) = $tab_donnees_eleve;
-    if(isset($tab_users_base[$eleve_elenoet]))
+    list($eleve_sconet_id,$eleve_sconet_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_absence_nj,$nb_retard,$nb_retard_nj) = $tab_donnees_eleve;
+    $user_id = FALSE;
+    // Recherche sur sconet_id
+    if( !$user_id && $eleve_sconet_id )
     {
-      $user_id = $tab_users_base[$eleve_elenoet];
-      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , NULL /* nb_retard_nj */ );
-      $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_absence_nj.'</td><td>'.$nb_retard.'</td><td></td></tr>';
+      $user_id = array_search($eleve_sconet_id,$tab_users_base['sconet_id']);
+    }
+    // Recherche sur sconet_elenoet
+    if( !$user_id && $eleve_sconet_elenoet )
+    {
+      $user_id = array_search($eleve_sconet_elenoet,$tab_users_base['sconet_elenoet']);
+    }
+    // Si pas trouvé, recherche sur nom prénom
+    if( !$user_id )
+    {
+      $tab_id_nom    = array_keys( $tab_users_base['nom']    , $eleve_nom    );
+      $tab_id_prenom = array_keys( $tab_users_base['prenom'] , $eleve_prenom );
+      $tab_id_commun = array_intersect($tab_id_nom,$tab_id_prenom);
+      $nb_homonymes  = count($tab_id_commun);
+      if($nb_homonymes==1)
+      {
+        list($inutile,$user_id) = each($tab_id_commun);
+      }
+    }
+    if($user_id)
+    {
+      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $mode, $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
+      $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_absence_nj.'</td><td>'.$nb_retard.'</td><td>'.$nb_retard_nj.'</td></tr>';
     }
     else
     {
-      $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="3" class="r">Numéro Sconet ("ELENOET") '.$eleve_elenoet.' non trouvé dans la base.</td></tr>';
+      if($eleve_sconet_id)
+      {
+        $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="4" class="r">Identifiant Sconet ("ELEVE_ID") '.$eleve_sconet_id.' non trouvé dans la base.</td></tr>';
+      }
+      else if($eleve_sconet_elenoet)
+      {
+        $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="4" class="r">Numéro Sconet ("ELENOET") '.$eleve_sconet_elenoet.' non trouvé dans la base.</td></tr>';
+      }
+      else if(!$nb_homonymes)
+      {
+        $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="4" class="r">Nom et prénom non trouvés dans la base.</td></tr>';
+      }
+      else
+      {
+        $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="4" class="r">Homonymes trouvés dans la base.</td></tr>';
+      }
     }
   }
   // affichage du retour
@@ -260,7 +427,7 @@ if( ($action=='enregistrer_saisies') && $periode_id && $datas )
     $nb_absence_nj = ($nb_absence_nj==='') ? NULL : (int)$nb_absence_nj ;
     $nb_retard     = ($nb_retard==='')     ? NULL : (int)$nb_retard ;
     $nb_retard_nj  = ($nb_retard_nj==='')  ? NULL : (int)$nb_retard_nj ;
-    DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
+    DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( 'manuel' /*mode*/ , $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
   }
   exit('ok');
 }

@@ -578,4 +578,150 @@ if($version_base_structure_actuelle=='2014-11-09')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-11-18 => 2014-11-29
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-11-18')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-11-29';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Correction de coquilles détectées sur la table sacoche_matiere.
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="TTERR" WHERE matiere_id=4059' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="POL8", matiere_nom="Littérature étrangère en polonais" WHERE matiere_id=397' );
+    // Intégration de langues vivantes régionales ou spécifiques comme nouvelles matières.
+    if(empty($reload_sacoche_matiere_famille))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 93, 4, "Langues vivantes régionales ou spécifiques")' );
+    }
+    if(empty($reload_sacoche_matiere))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9307, 0, 0,  93, 0, 255, "GRE", "Grec moderne")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9308, 0, 0,  93, 0, 255, "HEB", "Hébreu")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9315, 0, 0,  93, 0, 255, "ARM", "Arménien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9316, 0, 0,  93, 0, 255, "AMH", "Amharique")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9317, 0, 0,  93, 0, 255, "ARD", "Arabe dialectal")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9318, 0, 0,  93, 0, 255, "BER", "Berbère")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9319, 0, 0,  93, 0, 255, "BUL", "Bulgare")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9320, 0, 0,  93, 0, 255, "CAM", "Cambodgien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9321, 0, 0,  93, 0, 255, "VIE", "Vietnamien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9322, 0, 0,  93, 0, 255, "FIN", "Finnois")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9323, 0, 0,  93, 0, 255, "HON", "Hongrois")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9324, 0, 0,  93, 0, 255, "ISL", "Islandais")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9325, 0, 0,  93, 0, 255, "NOR", "Norvégien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9326, 0, 0,  93, 0, 255, "MLG", "Malgache")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9327, 0, 0,  93, 0, 255, "ROU", "Roumain")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9328, 0, 0,  93, 0, 255, "TCH", "Tchèque")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9330, 0, 0,  93, 0, 255, "PER", "Persan")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9331, 0, 0,  93, 0, 255, "TUR", "Turc")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9332, 0, 0,  93, 0, 255, "LAO", "Laotien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9333, 0, 0,  93, 0, 255, "SUE", "Suédois")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9334, 0, 0,  93, 0, 255, "AME", "Américain")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9335, 0, 0,  93, 0, 255, "ALB", "Albanais")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9336, 0, 0,  93, 0, 255, "SER", "Serbe")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9337, 0, 0,  93, 0, 255, "CRO", "Croate")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9338, 0, 0,  93, 0, 255, "BAM", "Bambara")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9339, 0, 0,  93, 0, 255, "COE", "Coréen")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9340, 0, 0,  93, 0, 255, "HAO", "Haoussa")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9341, 0, 0,  93, 0, 255, "HIN", "Hindi")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9342, 0, 0,  93, 0, 255, "INM", "Indonésien-malaysien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9343, 0, 0,  93, 0, 255, "MAC", "Macédonien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9344, 0, 0,  93, 0, 255, "PEU", "Peuhl")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9345, 0, 0,  93, 0, 255, "SLQ", "Slovaque")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9346, 0, 0,  93, 0, 255, "SLN", "Slovène")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9347, 0, 0,  93, 0, 255, "SWA", "Swahili")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9348, 0, 0,  93, 0, 255, "TAM", "Tamoul")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9350, 0, 0,  93, 0, 255, "AUV", "Auvergnat")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9351, 0, 0,  93, 0, 255, "BAS", "Basque")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9352, 0, 0,  93, 0, 255, "BRE", "Breton")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9353, 0, 0,  93, 0, 255, "CAT", "Catalan")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9354, 0, 0,  93, 0, 255, "COR", "Corse")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9355, 0, 0,  93, 0, 255, "GAL", "Gallo")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9356, 0, 0,  93, 0, 255, "GAS", "Gascon")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9357, 0, 0,  93, 0, 255, "LAN", "Languedocien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9358, 0, 0,  93, 0, 255, "OCC", "Langue occitane")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9359, 0, 0,  93, 0, 255, "LRA", "Langues régionales d\'alsace")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9360, 0, 0,  93, 0, 255, "LIM", "Limousin")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9361, 0, 0,  93, 0, 255, "NIS", "Nissart")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9362, 0, 0,  93, 0, 255, "PRV", "Provençal")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9363, 0, 0,  93, 0, 255, "TAH", "Tahitien")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9364, 0, 0,  93, 0, 255, "VAL", "Vivaro-alpin")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9367, 0, 0,  93, 0, 255, "MOS", "Langues régionales des pays mosellans")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9368, 0, 0,  93, 0, 255, "MEL", "Langues mélanésiennes")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9369, 0, 0,  93, 0, 255, "LMJ", "Mélanésien ajie")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9370, 0, 0,  93, 0, 255, "LMR", "Mélanésien drehu")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9371, 0, 0,  93, 0, 255, "LMN", "Mélanésien nengone")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9372, 0, 0,  93, 0, 255, "LMD", "Mélanésien paici")' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9373, 0, 0,  93, 0, 255, "CRE", "Créole")' );
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
+    }
+    // Si une matière similaire spécifique est trouvée, alors la convertir...
+    $tab_convert = array();
+    // 1ère recherche sur la référence
+    $DB_SQL = 'SELECT matiere_ref , ';
+    $DB_SQL.= 'CONVERT( GROUP_CONCAT(matiere_id SEPARATOR "$") , CHAR ) AS liste_matiere_id , ';
+    $DB_SQL.= 'GROUP_CONCAT(matiere_nom SEPARATOR "$") AS liste_matiere_nom , ';
+    $DB_SQL.= 'COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_matiere ';
+    $DB_SQL.= 'GROUP BY matiere_ref ';
+    $DB_SQL.= 'HAVING nombre=2 ';
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        list($id1,$id2) = explode('$',$DB_ROW['liste_matiere_id']);
+        if( ($id1>9300) && ($id1<9400) && ($id2>ID_MATIERE_PARTAGEE_MAX) )
+        {
+          $tab_convert[$id2] = $id1 ;
+        }
+        else if( ($id2>9300) && ($id2<9400) && ($id1>ID_MATIERE_PARTAGEE_MAX) )
+        {
+          $tab_convert[$id1] = $id2 ;
+        }
+      }
+    }
+    // 2ème recherche sur le nom
+    $DB_SQL = 'SELECT matiere_nom , ';
+    $DB_SQL.= 'CONVERT( GROUP_CONCAT(matiere_id SEPARATOR "$") , CHAR ) AS liste_matiere_id , ';
+    $DB_SQL.= 'GROUP_CONCAT(matiere_ref SEPARATOR "$") AS liste_matiere_ref , ';
+    $DB_SQL.= 'COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_matiere ';
+    $DB_SQL.= 'GROUP BY matiere_nom ';
+    $DB_SQL.= 'HAVING nombre=2 ';
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        list($id1,$id2) = explode('$',$DB_ROW['liste_matiere_id']);
+        if( ($id1>9300) && ($id1<9400) && ($id2>ID_MATIERE_PARTAGEE_MAX) && !isset($tab_convert[$id2]) )
+        {
+          $tab_convert[$id2] = $id1 ;
+        }
+        else if( ($id2>9300) && ($id2<9400) && ($id1>ID_MATIERE_PARTAGEE_MAX) && !isset($tab_convert[$id1]) )
+        {
+          $tab_convert[$id1] = $id2 ;
+        }
+      }
+    }
+    // On lance la conversion
+    if(!empty($tab_convert))
+    {
+      foreach($tab_convert as $id_avant => $id_apres)
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_active=1 WHERE matiere_id='.$id_apres );
+        DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+        SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
+        DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id_avant);
+        SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id_avant.').');
+        SACocheLog::ajouter('Suppression des référentiels associés (matière '.$id_avant.').');
+      }
+    }
+  }
+}
+
 ?>

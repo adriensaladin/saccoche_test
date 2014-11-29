@@ -780,8 +780,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 // On enregistre les sorties HTML et PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_HTML); }
-if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
+if($make_html) { FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html' , $releve_HTML ); }
+if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf'  , $releve_PDF  ); }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On fabrique les options js pour le diagramme graphique

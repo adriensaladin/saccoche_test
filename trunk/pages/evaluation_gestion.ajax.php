@@ -796,7 +796,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
     }
     $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
   }
-  $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf' , $sacoche_pdf );
   //
   // c'est fini ; affichage du retour
   //
@@ -967,7 +967,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
     }
     $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
   }
-  $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf' , $sacoche_pdf );
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
   // pdf contenant un tableau de saisie plein, en couleurs ou en noir & blanc ; on a besoin de tourner du texte à 90°
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -995,7 +995,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
       }
       $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
     }
-    $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_'.$fichier_couleur.'_'.$fnom_export.'.pdf','F');
+    FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_'.$fichier_couleur.'_'.$fnom_export.'.pdf' , $sacoche_pdf );
   }
   //
   // c'est fini ; affichage du retour
@@ -1180,7 +1180,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
       }
       $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
     }
-    $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_quantitative_'.$fichier_couleur.'_'.$fnom_export.'.pdf','F');
+    FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'repartition_quantitative_'.$fichier_couleur.'_'.$fnom_export.'.pdf' , $sacoche_pdf );
   }
   // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
   // pdf contenant un tableau avec la répartition nominative, en couleur ou en noir & blanc
@@ -1218,7 +1218,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
       }
       $sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
     }
-    $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_nominative_'.$fichier_couleur.'_'.$fnom_export.'.pdf','F');
+    FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'repartition_nominative_'.$fichier_couleur.'_'.$fnom_export.'.pdf' , $sacoche_pdf );
   }
   //
   // c'est fini...
@@ -1659,11 +1659,11 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     }
   }
   // On archive le cartouche dans un fichier csv
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
+  FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
   // On archive le cartouche dans un fichier tex
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.tex' , $sacoche_tex );
+  FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.tex' , $sacoche_tex );
   // On archive le cartouche dans un fichier pdf
-  $sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
+  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf' , $sacoche_pdf );
   // Affichage
   exit($sacoche_htm);
 }

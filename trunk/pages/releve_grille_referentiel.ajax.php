@@ -572,8 +572,8 @@ if( $type_generique || $type_individuel )
     }
   }
   // On enregistre les sorties HTML et PDF
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type1.'.html',$releve_HTML_individuel);
-  $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type1.'.pdf','F');
+  FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.$fichier_nom_type1.'.html' , $releve_HTML_individuel );
+  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom_type1.'.pdf'  , $releve_PDF );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -721,8 +721,8 @@ if($type_synthese)
   $releve_HTML_synthese .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('complet').'</form>'.NL : '';
   $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'.NL; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
   // On enregistre les sorties HTML et PDF
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.html',$releve_HTML_synthese);
-  $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.pdf','F');
+  FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.html' , $releve_HTML_synthese );
+  FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.pdf'  , $releve_PDF );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

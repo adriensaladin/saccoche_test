@@ -351,8 +351,8 @@ if($connexion_mode=='cas')
   }
   // Vérifier la présence d'une convention valide si besoin,
   // sauf pour les administrateurs qui doivent pouvoir accéder à leur espace pour régulariser la situation (même s'il leur est toujours possible d'utiliser une authentification locale),
-  // et sauf pour les établissements pour tester les connecteurs ENT en PROD, d'identifiants >= 100 000.
-  if( IS_HEBERGEMENT_SESAMATH && (SERVEUR_TYPE=='PROD') && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) && ($auth_DB_ROW['user_profil_type']!='administrateur') && ($BASE<100000) )
+  // et sauf pour les établissements destinés à tester les connecteurs ENT en PROD
+  if( IS_HEBERGEMENT_SESAMATH && (SERVEUR_TYPE=='PROD') && CONVENTION_ENT_REQUISE && (CONVENTION_ENT_START_DATE_MYSQL<=TODAY_MYSQL) && ($auth_DB_ROW['user_profil_type']!='administrateur') && ($BASE<CONVENTION_ENT_ID_ETABL_MAXI) )
   {
     // Vérifier que les paramètres de la base n'ont pas été trafiqués (via une sauvegarde / restauration de la base avec modification intermédiaire) pour passer outre : nom de connexion mis à perso ou modifié etc.
     $connexion_ref = $connexion_departement.'|'.$connexion_nom;

@@ -320,7 +320,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
-$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf','F');
+FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $releve_PDF );
 echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')

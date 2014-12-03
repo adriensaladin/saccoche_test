@@ -787,10 +787,21 @@ class PDF extends FPDF
   // Méthode pour afficher une appréciation sur plusieurs lignes dans une zone de dimensions données
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  private function correction_espaces($texte)
+  {
+    // Ajout d'espaces insécables judicieux et retrait d'espaces de mise en forme inappropriés
+    $e = chr(0xC2).chr(0xA0); // espace insécable en UTF-8 (http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable ; http://fr.wikipedia.org/wiki/UTF-8)
+    $tab_bad = array(   ' !' ,   ' ?' ,   ' :' ,   ' ;' ,   ' %' , ' .' , ' ,' );
+    $tab_bon = array( $e.'!' , $e.'?' , $e.':' , $e.';' , $e.'%' ,  '.' ,  ',' );
+    return trim( str_replace( $tab_bad , $tab_bon , $texte ) );
+  }
+
   public function afficher_appreciation( $largeur_autorisee , $hauteur_autorisee , $taille_police , $taille_interligne , $texte )
   {
     $this->SetFont('Arial' , '' , $taille_police);
+    $texte = $this->correction_espaces($texte);
     // Traiter un éventuel nombre de retours à la ligne saisis excessifs
+    $texte = str_replace( array("\r\n","\r","\n") , "\n" , $texte ); // Le dénombrement n'est pas effectué ici mais à la ligne suivante sinon un "\r\n" compte double...
     $nombre_lignes_tolerees  = max( 1 , floor($hauteur_autorisee / $taille_interligne) );
     $nombre_lignes_actuelles = substr_count($texte,"\n") + 1 ;
     if($nombre_lignes_actuelles>$nombre_lignes_tolerees)
@@ -2897,7 +2908,7 @@ class PDF extends FPDF
   // cartouche_entete()
   // cartouche_minimal_competence()
   // cartouche_complet_competence()
-  // cartouche_commentaire_interligne()
+  // cartouche_interligne()
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public function cartouche_initialiser( $detail , $item_nb , $cases_nb )
@@ -3083,24 +3094,9 @@ class PDF extends FPDF
     }
   }
 
-  public function cartouche_commentaire_interligne($decalage_nb_lignes,$commentaire,$commentaire_nb_lignes)
+  public function cartouche_interligne($nb_lignes)
   {
-    if($decalage_nb_lignes)
-    {
-      $this->SetXY($this->marge_gauche , $this->GetY() + $decalage_nb_lignes*$this->cases_hauteur);
-    }
-    if($commentaire)
-    {
-      // cadre
-      $memo_x = $this->GetX();
-      $memo_y = $this->GetY();
-      $this->choisir_couleur_fond('gris_clair');
-      $this->Cell( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
-      $this->SetXY($memo_x , $memo_y);
-      $this->SetFont('Arial' , '' , 9);
-      $this->afficher_appreciation( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , 9 /*taille_police*/ , 4 /*taille_interligne*/ , $commentaire );
-    }
-    $this->SetXY($this->marge_gauche , $this->GetY() + 2*$this->cases_hauteur);
+    $this->SetXY($this->marge_gauche , $this->GetY() + $nb_lignes*$this->cases_hauteur);
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@ class Clean
   // Méthodes privées (internes)
   // //////////////////////////////////////////////////
 
+  
   /**
    * Pour supprimer les caractères NULL dans une chaîne.
    * Il m'est arrivé d'en trouver dans des chaînes copiées-collées et ça pose pb par exemple pour les noms de fichiers :
@@ -64,32 +65,6 @@ class Clean
   private static function nul($text)
   {
     return str_replace("\0", "", $text) ;
-  }
-
-  /**
-   * Ajout d'espaces insécables judicieux et retrait d'espaces de mise en forme inappropriés.
-   *
-   * @param string
-   * @return string
-   */
-  private static function espaces($text)
-  {
-    $e = chr(0xC2).chr(0xA0); // espace insécable en UTF-8 (http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable ; http://fr.wikipedia.org/wiki/UTF-8)
-    $tab_bad = array(   ' !' ,   ' ?' ,   ' :' ,   ' ;' ,   ' %' , ' .' , ' ,' );
-    $tab_bon = array( $e.'!' , $e.'?' , $e.':' , $e.';' , $e.'%' ,  '.' ,  ',' );
-    return str_replace( $tab_bad , $tab_bon , $text );
-  }
-
-  /**
-   * Pour harmoniser les retours chariots.
-   * La classe PDF ne compte ensuite que le nb de "\n"
-   *
-   * @param string
-   * @return string
-   */
-  private static function lignes($text)
-  {
-    return str_replace( array("\r\n","\r","\n") , "\n" , $text );
   }
 
   /**
@@ -293,7 +268,6 @@ class Clean
   public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 35); }
   public static function code($text)         { return Clean::perso_strtolower( Clean::nul( trim($text) ) ); }
   public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( Clean::nul( trim($text) ) ) ); }
-  public static function appreciation($text) { return Clean::espaces( Clean::lignes( Clean::nul( trim($text) ) ) ); }
   public static function texte($text)        { return Clean::nul( trim($text) ); }
   public static function url($text)          { return Clean::nul( trim($text) ); }
   public static function id_ent($text)       { return mb_substr( Clean::texte( (string)$text ) ,0,63 ); }

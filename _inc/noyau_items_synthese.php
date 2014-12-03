@@ -309,6 +309,7 @@ else
 
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
+$nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 ;
 $nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']/100) : 0 ;
 $nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                  ? 1.3 : 0 ;
 $nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                             ? 1.3 : 0 ;
@@ -333,20 +334,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);
         }
       }
-      // Compter la longueur de chaque appréciation
-      $nb_lignes_appreciation_intermediaire = 0;
-      if(isset($tab_saisie[$eleve_id][$matiere_id]))
-      {
-        foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
-        {
-          if($prof_id) // Sinon c'est la note.
-          {
-            $nb_lignes_appreciation_intermediaire += max( 2 , ceil(strlen($tab['appreciation'])/100), min( substr_count($tab['appreciation'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 ) );
-          }
-        }
-      }
       $nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
-      $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? $nb_lignes_appreciation_intermediaire + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
+      $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$matiere_id]) ) + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
       $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
     }
   }

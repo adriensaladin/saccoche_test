@@ -34,6 +34,23 @@ class DB_STRUCTURE_PROFESSEUR extends DB
 {
 
 /**
+ * recuperer_item_popularite
+ * Calculer pour chaque item sa popularité, i.e. le nb de demandes pour les élèves concernés.
+ *
+ * @param string $listing_demande_id   id des demandes séparés par des virgules
+ * @param string $listing_user_id      id des élèves séparés par des virgules
+ * @return array   [i]=>array('item_id','popularite')
+ */
+public static function DB_recuperer_item_popularite($listing_demande_id,$listing_user_id)
+{
+  $DB_SQL = 'SELECT item_id , COUNT(item_id) AS popularite ';
+  $DB_SQL.= 'FROM sacoche_demande ';
+  $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') AND eleve_id IN('.$listing_user_id.') ';
+  $DB_SQL.= 'GROUP BY item_id ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * recuperer_devoir_ponctuel_prof_by_date
  *
  * @param int    $prof_id
@@ -471,6 +488,45 @@ public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_group
 }
 
 /**
+ * lister_demandes_prof
+ *
+ * @param int    $matiere_id        id de la matière du prof ; si 0 alors chercher parmi toutes les matières du prof
+ * @param int    $listing_user_id   id des élèves du prof séparés par des virgules
+ * @return array
+ */
+public static function DB_lister_demandes_prof($matiere_id,$listing_user_id)
+{
+  $select_matiere = ($matiere_id) ? '' : 'matiere_nom, ';
+  $order_matiere  = ($matiere_id) ? '' : 'matiere_nom ASC, ';
+
+  $DB_SQL = 'SELECT sacoche_demande.*, '.$select_matiere;
+  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+  $DB_SQL.= 'item_nom, user_nom, user_prenom, prof_id ';
+  $DB_SQL.= 'FROM sacoche_demande ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.eleve_id=sacoche_user.user_id ';
+  if($matiere_id)
+  {
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_demande.matiere_id=:matiere_id ';
+  }
+  else
+  {
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
+    $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_jointure_user_matiere.matiere_id=sacoche_matiere.matiere_id ';
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
+  }
+  $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':prof_id'    => $_SESSION['USER_ID'],
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Lister les élèves ayant déjà fait une évaluation de nom donné avec un prof donné à partir d'une date donnée.
  * Seules les évaluations sur des sélections d'élèves sont prises en compte.
  *
@@ -752,6 +808,30 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
   $DB_SQL.= 'GROUP BY periode_id ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
   $DB_VAR = array(':etat'=>'2rubrique');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Retourner les résultats pour 1 élève donné, pour 1 item matière donné
+ *
+ * @param int $eleve_id
+ * @param int $item_id
+ * @return array
+ */
+public static function DB_lister_result_eleve_item($eleve_id,$item_id)
+{
+  $DB_SQL = 'SELECT saisie_note AS note , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+  $DB_SQL.= 'FROM sacoche_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id AND saisie_note!="REQ" ';
+  $DB_SQL.= 'ORDER BY saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
+  $DB_VAR = array(
+    ':eleve_id'  => $eleve_id,
+    ':item_id'   => $item_id,
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1485,6 +1565,46 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
 }
 
 /**
+ * modifier_demandes_statut
+ *
+ * @param string $listing_demande_id   id des demandes séparées par des virgules
+ * @param string $statut               'prof' | 'eleve'
+ * @param string $message              facultatif
+ * @return void
+ */
+public static function DB_modifier_demandes_statut($listing_demande_id,$statut,$message)
+{
+  $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])."\r\n".$message : '' ;
+  $DB_SQL = 'UPDATE sacoche_demande ';
+  $DB_SQL.= 'SET demande_statut=:demande_statut, demande_messages=CONCAT(demande_messages,:message_complementaire) ';
+  $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
+  $DB_VAR = array(
+    ':demande_statut'         => $statut,
+    ':message_complementaire' => $message_complementaire
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_demande_score
+ *
+ * @param int      $demande_id
+ * @param int|null $demande_score
+ * @return void
+ */
+public static function DB_modifier_demande_score($demande_id,$demande_score)
+{
+  $DB_SQL = 'UPDATE sacoche_demande ';
+  $DB_SQL.= 'SET demande_score=:demande_score ';
+  $DB_SQL.= 'WHERE demande_id=:demande_id ';
+  $DB_VAR = array(
+    ':demande_id'    => $demande_id,
+    ':demande_score' => $demande_score
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * supprimer_groupe_par_prof
  * Par défaut, on supprime aussi les devoirs associés ($with_devoir=TRUE), mais on conserve les notes, qui deviennent orphelines et non éditables ultérieurement.
  * Mais on peut aussi vouloir dans un second temps ($with_devoir=FALSE) supprimer les devoirs associés avec leurs notes en utilisant DB_supprimer_devoir_et_saisies().
@@ -1576,6 +1696,37 @@ public static function DB_supprimer_devoir_commentaire($devoir_id,$eleve_id)
   $DB_VAR = array(
     ':devoir_id' => $devoir_id,
     ':eleve_id'  => $eleve_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Supprimer les demandes d'évaluations listées (correspondant à une évaluation)
+ *
+ * @param string   $listing_demande_id   id des demandes séparées par des virgules
+ * @return void
+ */
+public static function DB_supprimer_demandes_devoir($listing_demande_id)
+{
+  $DB_SQL = 'DELETE FROM sacoche_demande ';
+  $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * supprimer_demande_precise
+ *
+ * @param int   $eleve_id
+ * @param int   $item_id
+ * @return void
+ */
+public static function DB_supprimer_demande_precise($eleve_id,$item_id)
+{
+  $DB_SQL = 'DELETE FROM sacoche_demande ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id ';
+  $DB_VAR = array(
+    ':eleve_id'  => $eleve_id,
+    ':item_id'   => $item_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

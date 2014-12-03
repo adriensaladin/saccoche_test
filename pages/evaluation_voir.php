@@ -141,10 +141,10 @@ Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
   </table>
   <div id="report_legende">
   </div>
-  <div id="report_texte">
-  </div>
-  <div id="report_audio">
-  </div>
+  <p id="report_texte">
+  </p>
+  <p id="report_audio">
+  </p>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">

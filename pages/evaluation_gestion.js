@@ -427,8 +427,6 @@ $(document).ready
       var groupe        = objet_tds.eq(3).text().trim();
       var eleves_ordre  = objet_tds.eq(3).attr('class');
       var description   = objet_tds.eq(5).html();
-      // Mettre les infos de côté
-      $('#voir_ref').val(ref);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -2654,7 +2652,7 @@ $(document).ready
         var tab_infos = $(this).parent().attr('id').split('_');
         var msg_objet = tab_infos[0]; // texte | audio
         var user_id   = tab_infos[1];
-        var user_nom  = $('#image_'+user_id).attr('alt');
+        var user_nom = $('#image_'+user_id).attr('alt');
         var obj_autre = (msg_objet=='texte') ? 'audio' : 'texte' ;
         var msg_autre = ( $('#'+obj_autre+'_'+user_id).hasClass('off') ) ? 'oui' : 'non' ;
         // Les reporter
@@ -2941,75 +2939,6 @@ $(document).ready
         $('#titre_enregistrer_audio').html("");
         $('#ajax_msg_enregistrer_audio').removeAttr("class").html("");
         $.fancybox.close();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur une image pour ajouter ou modifier un commentaire audio ou texte
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#table_voir').on
-    (
-      'click',
-      'q',
-      function()
-      {
-        // Récupérer les informations
-        var tab_infos = $(this).parent().attr('id').split('_');
-        var msg_objet = tab_infos[0]; // texte | audio
-        var user_id   = tab_infos[1];
-        var user_nom  = $('#image_'+user_id).attr('alt');
-        var obj_autre = (msg_objet=='texte') ? 'audio' : 'texte' ;
-        // Les reporter
-        $('#titre_voir_commentaires').html(user_nom);
-        // Récupérer le texte ou l'audio actuellement enregistré
-        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              var tab_response = responseHTML.split(']¤[');
-              if(tab_response[0]!='ok')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                var msg_url  = tab_response[1];
-                var msg_data = tab_response[2];
-                if(msg_objet=='texte')
-                {
-                  $('#f_voir_texte').val(msg_data);
-                  $('#report_texte').show();
-                  $('#report_audio').hide();
-                }
-                else
-                {
-                  $('#f_ecouter_audio').attr('src',msg_data);
-                  $('#report_audio').show();
-                  $('#report_texte').hide();
-                }
-                // Afficher la zone
-                $.fancybox( { 'href':'#zone_voir_commentaires' , 'centerOnScroll':true } );
-                if(msg_objet=='audio')
-                {
-                  document.getElementById("f_ecouter_audio").play();
-                }
-              }
-            }
-          }
-        );
       }
     );
 

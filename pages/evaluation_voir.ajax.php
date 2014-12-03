@@ -174,16 +174,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     }
     if($DB_ROW['jointure_audio'])
     {
-      $msg_url = $DB_ROW['jointure_audio'];
-      if(strpos($msg_url,URL_DIR_SACOCHE)!==0)
-      {
-        // Violation des directives CSP si on essaye de le lire sur un serveur distant -> on le récupère et le copie localement temporairement
-        $msg_data = cURL::get_contents($msg_url);
-        $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_audio_copie.mp3';
-        FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $msg_data );
-        $msg_url = URL_DIR_IMPORT.$fichier_nom;
-      }
-      $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$msg_url.'" class="eleve"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>';
+      $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$DB_ROW['jointure_audio'].'" class="eleve"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>';
     }
   }
   // retour des infos
@@ -319,19 +310,19 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
   $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   foreach($tab_nouveau_ajouter as $item_id => $note)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $devoir_proprio_id , $_SESSION['USER_ID'] , $devoir_id , $item_id , $devoir_date_mysql , $note , $info , $date_visible_mysql );
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($devoir_proprio_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$devoir_date_mysql,$note,$info,$date_visible_mysql);
   }
   foreach($tab_nouveau_modifier as $item_id => $note)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie( $devoir_proprio_id , $_SESSION['USER_ID'] , $devoir_id , $item_id , $note , $info );
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($devoir_proprio_id,$_SESSION['USER_ID'],$devoir_id,$item_id,$note,$info);
   }
   foreach($tab_nouveau_supprimer as $item_id)
   {
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie( $_SESSION['USER_ID'] , $devoir_id , $item_id );
+    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie($_SESSION['USER_ID'],$devoir_id,$item_id);
   }
   foreach($tab_demande_supprimer as $item_id)
   {
-    DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_eleve_item( $_SESSION['USER_ID'] , $item_id );
+    DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($_SESSION['USER_ID'],$item_id);
   }
   // Ajout aux flux RSS des profs concernés
   $tab_profs_rss = array_merge( array($devoir_proprio_id) , DB_STRUCTURE_ELEVE::DB_lister_devoir_profs_droit_saisie($devoir_id) );

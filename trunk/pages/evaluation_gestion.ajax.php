@@ -715,6 +715,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
     $tab_affich['foot_texte'][$DB_ROW['user_id']] = '<td id="texte_'.$DB_ROW['user_id'].'"><q class="texte_enregistrer" title="Saisir un commentaire écrit."></q></td>';
     $tab_affich['foot_audio'][$DB_ROW['user_id']] = '<td id="audio_'.$DB_ROW['user_id'].'"><q class="audio_enregistrer" title="Enregistrer un commentaire audio."></q></td>';
   }
+  $export_csv = $csv_ligne_eleve_id."\r\n";
   if(!empty($DB_TAB_MSG))
   {
     $tab_title = array(
@@ -732,7 +733,6 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
       }
     }
   }
-  $export_csv = $csv_ligne_eleve_id."\r\n";
   // première colonne (noms items)
   foreach($DB_TAB_COMP as $DB_ROW)
   {
@@ -812,7 +812,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_fr && in_array($ele
         case 'foot_audio' : break;
       }
     }
-    echo'<tr>';
+    echo ( ($comp_id=='foot_texte') || ($comp_id=='foot_audio') ) ? '<tr class="no_margin">' : '<tr>' ;
     foreach($tab_user as $user_id => $val)
     {
       echo $val;
@@ -847,6 +847,8 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  // liste des commentaires audio ou texte
+  $DB_TAB_MSG = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_commentaires($devoir_id);
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -862,25 +864,47 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
   $tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
-  $tab_affich[0][0] = '<td>';
-  $tab_affich[0][0].= '<p>';
-  $tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <span class="retrecir_largeur">Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-  $tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
-  $tab_affich[0][0].= '</p>';
-  $tab_affich[0][0].= '</td>';
+  $tab_affich['head'][0] = '<td>';
+  $tab_affich['head'][0].= '<p>';
+  $tab_affich['head'][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <span class="retrecir_largeur">Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+  $tab_affich['head'][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <span class="retrecir_hauteur">Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+  $tab_affich['head'][0].= '</p>';
+  $tab_affich['head'][0].= '</td>';
+  $tab_affich['foot_texte'][0] = '<th>Commentaire écrit</th>';
+  $tab_affich['foot_audio'][0] = '<th>Commentaire audio</th>';
   // première ligne (noms prénoms des élèves)
   $csv_ligne_eleve_nom = $separateur;
   $csv_ligne_eleve_id  = $separateur;
   foreach($DB_TAB_USER as $DB_ROW)
   {
-    $tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+    $tab_affich['head'][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
     $tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
     $csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
     $csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
+    // On initialise ces cellules, qui seront remplacées si besoin par une autre valeur dans la boucle suivante
+    $tab_affich['foot_texte'][$DB_ROW['user_id']] = '<td id="texte_'.$DB_ROW['user_id'].'"><q class="texte_consulter_non" title="Pas de commentaire écrit."></q></td>';
+    $tab_affich['foot_audio'][$DB_ROW['user_id']] = '<td id="audio_'.$DB_ROW['user_id'].'"><q class="audio_ecouter_non" title="Pas de commentaire audio."></q></td>';
   }
   $export_csv = $csv_ligne_eleve_id."\r\n";
   $csv_lignes_scores = array();
   $csv_colonne_texte = array();
+  if(!empty($DB_TAB_MSG))
+  {
+    $tab_balise = array(
+      'texte' => '<q class="texte_consulter" title="Commentaire écrit disponible."></q>',
+      'audio' => '<q class="audio_ecouter" title="Commentaire audio disponible."></q>',
+    );
+    foreach($DB_TAB_MSG as $DB_ROW)
+    {
+      foreach($tab_balise as $msg_objet => $balise_html)
+      {
+        if($DB_ROW['jointure_'.$msg_objet])
+        {
+          $tab_affich['foot_'.$msg_objet][$DB_ROW['eleve_id']] = '<td id="'.$msg_objet.'_'.$DB_ROW['eleve_id'].'" class="off">'.$balise_html.'</td>';
+        }
+      }
+    }
+  }
   // première colonne (noms items)
   foreach($DB_TAB_COMP as $DB_ROW)
   {
@@ -1000,21 +1024,32 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
   //
   // c'est fini ; affichage du retour
   //
+  $tbody_class = ($_SESSION['BROWSER']['mobile']) ? 'v' : 'h' ;
   foreach($tab_affich as $comp_id => $tab_user)
   {
-    if(!$comp_id)
+    if(!is_int($comp_id))
     {
-      echo'<thead>';
+      switch($comp_id)
+      {
+        case 'head'       : echo'<thead>';break;
+        case 'foot_texte' : echo'<tfoot>';break;
+        case 'foot_audio' : break;
+      }
     }
-    echo'<tr>';
+    echo ( ($comp_id=='foot_texte') || ($comp_id=='foot_audio') ) ? '<tr class="no_margin">' : '<tr>' ;
     foreach($tab_user as $user_id => $val)
     {
       echo $val;
     }
     echo'</tr>';
-    if(!$comp_id)
+    if(!is_int($comp_id))
     {
-      echo'</thead><tbody>';
+      switch($comp_id)
+      {
+        case 'head'       : echo'</thead>';break;
+        case 'foot_texte' : break;
+        case 'foot_audio' : echo'</tfoot><tbody class="'.$tbody_class.'">';break;
+      }
     }
   }
   echo'</tbody>';
@@ -1390,7 +1425,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   foreach($tab_demande_supprimer as $key => $key)
   {
     list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise( $eleve_id , $item_id );
+    DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_eleve_item( $eleve_id , $item_id );
   }
   $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
   $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
@@ -1427,6 +1462,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
   $tab_user_nb_req = array(); // pour retenir le nb d'items par utilisateur : variable et utile uniquement si cartouche avec les demandes d'évaluations 
+  $tab_user_comm   = array(); // pour retenir les commentaires écrits pour par élève
   // enregistrer noms prénoms des élèves
   foreach($DB_TAB_USER as $DB_ROW)
   {
@@ -1444,6 +1480,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // résultats vierges
   foreach($tab_user_id as $user_id=>$val_user)
   {
+    $tab_user_comm[$user_id] = NULL;
     foreach($tab_comp_id as $comp_id=>$val_comp)
     {
       $tab_result[$comp_id][$user_id] = '';
@@ -1463,6 +1500,32 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           $tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $valeur ;
           $tab_user_nb_req[$DB_ROW['eleve_id']]++;
+        }
+      }
+    }
+  }
+  // liste des commentaires audio ou texte, si demandé avec les résultats
+  if($with_result)
+  {
+    $DB_TAB_MSG = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_commentaires($devoir_id);
+    if(!empty($DB_TAB_MSG))
+    {
+      foreach($DB_TAB_MSG as $DB_ROW)
+      {
+        if($DB_ROW['jointure_texte'])
+        {
+          // On récupère le contenu du fichier
+          $msg_url = $DB_ROW['jointure_texte'];
+          if(strpos($msg_url,URL_DIR_SACOCHE)===0)
+          {
+            $fichier_chemin = url_to_chemin($msg_url);
+            $msg_data = is_file($fichier_chemin) ? file_get_contents($fichier_chemin) : 'Erreur : fichier avec le contenu du commentaire non trouvé.' ;
+          }
+          else
+          {
+            $msg_data = cURL::get_contents($msg_url);
+          }
+          $tab_user_comm[$DB_ROW['eleve_id']] = $msg_data;
         }
       }
     }
@@ -1498,12 +1561,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
       if($tab_user_nb_req[$user_id])
       {
         $colonnes_nb = $tab_user_nb_req[$user_id];
-        $lignes_nb   = 1 + 2 + $cart_cases_nb; // marge incluse
+        $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
+        $lignes_nb   = 1 + 2 + $cart_cases_nb + $lignes_comm; // marge incluse
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
         $case_vide    = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
         $sacoche_htm .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-        $sacoche_csv .= $texte_entete."\r\n";
-        $sacoche_tex .= $texte_entete."\r\n";
+        $sacoche_csv .= To::csv($texte_entete)."\r\n";
+        $sacoche_tex .= To::latex($texte_entete)."\r\n";
         $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         if($cart_cases_nb==1)
         {
@@ -1511,7 +1575,6 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           $rows_htm = array( 'item' => '' , 'note'=> '' );
           $rows_csv = array( 'item' => '' , 'note'=> '' );
           $rows_tex = array( 'item' => '' , 'note'=> '' );
-          $cols_tex_nb = 0;
         }
         else
         {
@@ -1519,7 +1582,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           $rows_htm = array( 'item' => '<td class="nu"></td>' );
           $rows_csv = array( 'item' => $separateur );
           $rows_tex = array( 'item' => ' & ' );
-          $cols_tex_nb = 1;
+          $colonnes_nb += 1;
           foreach($tab_codes as $note_code => $is_note )
           {
             $rows_htm[$note_code] = ($is_note) ? '<td class="hc">'.Html::note($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
@@ -1531,11 +1594,11 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
-            $cols_tex_nb++;
+            $cols_nb++;
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
             $rows_htm['item'] .= '<td class="hc">'.html($tab_val_comp[0]).'</td>';
-            $rows_csv['item'] .= '"'.$tab_val_comp[0].'"'.$separateur;
+            $rows_csv['item'] .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur;
             $rows_tex['item'] .= '\begin{tabular}{c}'.To::latex($ref_matiere).'\\\\'.To::latex($ref_suite).'\end{tabular} & ';
             if($cart_cases_nb==1)
             {
@@ -1570,10 +1633,20 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           $rows_tex[$note_code] = mb_substr($tex_contenu,0,-2);
         }
-        $sacoche_htm .= '<tr>'.implode('</tr><tr>',$rows_htm).'</tr></tbody></table>';
-        $sacoche_csv .= implode("\r\n",$rows_csv)."\r\n\r\n";
-        $sacoche_tex .= '\begin{center}'."\r\n".'\begin{tabular}{|'.str_repeat('c|',$cols_tex_nb).'}'."\r\n".'\hline'."\r\n".implode(' \\\\'."\r\n".'\hline'."\r\n",$rows_tex).' \\\\'."\r\n".'\hline'."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
-        $sacoche_pdf->cartouche_interligne(3+$cart_cases_nb);
+        // Commentaire écrit
+        $row_htm_comm = '';
+        $row_csv_comm = '';
+        $row_tex_comm = '';
+        if($lignes_comm)
+        {
+          $row_htm_comm = '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
+          $row_csv_comm = To::csv($tab_user_comm[$user_id])."\r\n";
+          $row_tex_comm = '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
+        }
+        $sacoche_htm .= '<tr>'.implode('</tr><tr>',$rows_htm).'</tr>'.$row_htm_comm.'</tbody></table>';
+        $sacoche_csv .= implode("\r\n",$rows_csv)."\r\n".$row_csv_comm."\r\n";
+        $sacoche_tex .= '\begin{center}'."\r\n".'\begin{tabular}{|'.str_repeat('c|',$colonnes_nb).'}'."\r\n".'\hline'."\r\n".implode(' \\\\'."\r\n".'\hline'."\r\n",$rows_tex).' \\\\'."\r\n".'\hline'.$row_tex_comm."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
+        $sacoche_pdf->cartouche_commentaire_interligne( $cart_cases_nb+1 /*decalage_nb_lignes*/ , $tab_user_comm[$user_id] /*commentaire éventuel*/ , $lignes_comm );
       }
     }
   }
@@ -1584,15 +1657,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     {
       if($tab_user_nb_req[$user_id])
       {
+        $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
         $colonnes_nb = ($cart_cases_nb==1) ? 3 : 2 ;
-        $lignes_nb   = 1 + 1 + $tab_user_nb_req[$user_id] ; // marge incluse
+        $lignes_nb   = 1 + 1 + $tab_user_nb_req[$user_id] + $lignes_comm ; // marge incluse
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
         if($cart_cases_nb==1)
         {
           // ... avec une case à remplir
           $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-          $sacoche_csv .= $texte_entete."\r\n";
-          $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
+          $sacoche_csv .= To::csv($texte_entete)."\r\n";
+          $sacoche_tex .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
         }
         else
         {
@@ -1607,8 +1681,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.$note_code.'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
           $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
-          $sacoche_csv .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
-          $sacoche_tex .= $texte_entete."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
+          $sacoche_csv .= To::csv($texte_entete).$separateur.$separateur.$cols_csv."\r\n";
+          $sacoche_tex .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
           $sacoche_tex .= ' & & '.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
         }
         $sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
@@ -1621,17 +1695,18 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             {
               // ... avec une case à remplir
               $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($note,$date_fr,$description,FALSE).'</td></tr>';
-              $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$note.'"'."\r\n";
+              $sacoche_csv .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur.'"'.$note.'"'."\r\n";
               $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.$note.' \\\\'."\r\n".'\hline'."\r\n";
             }
             else
             {
               // ... avec 5 cases dont une à cocher
               $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td>';
-              $sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur;
+              $sacoche_csv .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur;
               $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]);
               foreach($tab_codes as $note_code => $is_note )
               {
+                $colonnes_nb++;
                 if($is_note)
                 {
                   $coche = ($note_code==$note) ? 'XXX' : NULL ;
@@ -1651,10 +1726,17 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $sacoche_pdf->cartouche_complet_competence( $tab_val_comp[0] , $tab_val_comp[1] , $note , $cart_cases_nb );
           }
         }
+        // Commentaire écrit
+        if($lignes_comm)
+        {
+          $sacoche_htm .= '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
+          $sacoche_csv .= To::csv($tab_user_comm[$user_id])."\r\n";
+          $sacoche_tex .= '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
+        }
         $sacoche_htm .= '</tbody></table>';
         $sacoche_csv .= "\r\n";
         $sacoche_tex .= '\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
-        $sacoche_pdf->cartouche_interligne(2);
+        $sacoche_pdf->cartouche_commentaire_interligne( 0 /*decalage_nb_lignes*/ , $tab_user_comm[$user_id] /*commentaire éventuel*/ , $lignes_comm );
       }
     }
   }
@@ -1812,7 +1894,7 @@ if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
 // Récupérer un commentaire audio ou texte
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='recuperer_message') && $eleve_id && in_array($msg_objet,array('audio','texte')) )
+if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_objet,array('audio','texte')) )
 {
   $msg_url = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet);
   if(empty($msg_url))
@@ -1822,6 +1904,14 @@ if( ($action=='recuperer_message') && $eleve_id && in_array($msg_objet,array('au
   // [audio] => On renvoie le lien
   if($msg_objet=='audio')
   {
+    if(strpos($msg_url,URL_DIR_SACOCHE)!==0)
+    {
+      // Violation des directives CSP si on essaye de le lire sur un serveur distant -> on le récupère et le copie localement temporairement
+      $msg_data = cURL::get_contents($msg_url);
+      $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_audio_copie.mp3';
+      FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $msg_data );
+      $msg_url = URL_DIR_IMPORT.$fichier_nom;
+    }
     $msg_data = $msg_url;
   }
   // [texte] => On récupère le contenu du fichier ;  pas de html() sinon ce n'est pas décodé dans le textarea...

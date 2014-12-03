@@ -404,7 +404,7 @@ q.ajouter_non        {background-position: 0   -60px}
 q.annuler            {background-position: 0   -80px}
 q.audio_ecouter      {background-position: 0  -100px}
 q.audio_ecouter_non  {background-position: 0  -120px}
-q.audio_enregistrer  {background-position: 0  -140px;margin-left:0}
+q.audio_enregistrer  {background-position: 0  -140px}
 q.choisir_compet     {background-position: 0  -160px}
 q.choisir_eleve      {background-position: 0  -180px}
 q.choisir_prof       {background-position: 0  -200px}
@@ -453,7 +453,7 @@ q.tamponner_non      {background-position: 0 -1020px}
 q.texte_consulter    {background-position: 0 -1040px}
 q.texte_consulter_non{background-position: 0 -1060px}
 q.texte_editer       {background-position: 0 -1080px}
-q.texte_enregistrer  {background-position: 0 -1100px;margin-left:0}
+q.texte_enregistrer  {background-position: 0 -1100px}
 q.uploader_doc       {background-position: 0 -1120px}
 q.uploader_doc_non   {background-position: 0 -1140px}
 q.valider            {background-position: 0 -1160px}
@@ -480,6 +480,7 @@ q.n3_fus2            {background-position: 0 -1560px}
 q.n3_move            {background-position: 0 -1580px}
 q.n3_move2           {background-position: 0 -1600px}
 q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens */
+tr.no_margin q{margin-left:0}
 
 /* Pour des images associées à un select... */
 span.select_img {width:16px;height:16px;display:inline-block;background:transparent no-repeat url(../_img/sprite_action_13.png);margin:auto 2px;}

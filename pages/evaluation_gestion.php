@@ -416,6 +416,7 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   <h2>Voir les acquisitions à une évaluation</h2>
   <p>
     <b id="titre_voir"></b> <button id="fermer_zone_voir" type="button" class="retourner">Retour</button> <label id="ajax_msg_voir"></label>
+    <input id="voir_ref" name="f_ref" type="hidden" value="" />
   </p>
   <table id="table_voir" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
@@ -431,6 +432,19 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
       <li><a id="export_file_voir_tableau_scores_gris" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
     </ul>
     <p class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</p>
+  </div>
+</div>
+
+<div id="zone_voir_commentaires" class="hide">
+  <h2>Consulter un commentaire pour un élève à une évaluation</h2>
+  <p id="titre_voir_commentaires" class="b"></p>
+  <div id="report_texte">
+    <h3>Commentaire écrit</h3>
+    <textarea id="f_voir_texte" rows="10" cols="60" readonly></textarea>
+  </div>
+  <div id="report_audio">
+    <h3>Commentaire audio</h3>
+    <audio id="f_ecouter_audio" controls="" autoplay="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>
   </div>
 </div>
 

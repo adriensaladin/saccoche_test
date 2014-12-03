@@ -408,6 +408,7 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
     'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
     'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
+    'DB_STRUCTURE_DEMANDE'        => '_sql'.DS.'requetes_structure_demande.php' ,
     'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
     'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
     'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,

@@ -31,19 +31,19 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
-$ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
-$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])    : 0;
-$prof_id      = (isset($_POST['f_prof']))         ? Clean::entier($_POST['f_prof'])        : 0; // id du prof dont on corrige l'appréciation
-$appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
-$moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])    : -1;
-$import_info  = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_import_info'])  : '';
+$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])               : '';
+$ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])              : '';
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])          : '';
+$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])                : '';
+$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])            : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])             : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])             : 0;
+$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])               : 0;
+$rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])           : 0;
+$prof_id      = (isset($_POST['f_prof']))         ? Clean::entier($_POST['f_prof'])               : 0; // id du prof dont on corrige l'appréciation
+$appreciation = (isset($_POST['f_appreciation'])) ? Clean::appreciation($_POST['f_appreciation']) : '';
+$moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])           : -1;
+$import_info  = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_import_info'])         : '';
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;

@@ -277,11 +277,10 @@ $(document).ready
       function()
       {
         var obj_td  = $(this).parent();
-        var td_html = obj_td.html();
         var ids     = obj_td.parent().children('td:first').children('input').val();
         var score   = $(this).prev('i').html();
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
-        obj_td.html('<label class="loader">&nbsp;</label>');
+        $.fancybox( '<label class="loader">&nbsp;</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
@@ -298,12 +297,12 @@ $(document).ready
               initialiser_compteur();
               if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
+                $.fancybox.close();
                 obj_td.replaceWith(responseHTML);
               }
               else
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-                obj_td.html(td_html);
               }
             }
           }

@@ -41,7 +41,7 @@ $message    = (isset($_POST['f_message']))    ? Clean::texte($_POST['f_message']
 
 if( ($action=='lister_profs') && $matiere_id )
 {
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_recuperer_professeurs_eleve_matiere( $_SESSION['USER_ID'] , $_SESSION['ELEVE_CLASSE_ID'] , $matiere_id );
   if(empty($DB_TAB))
   {
     exit('Aucun de vos professeurs n\'étant rattaché à cette matière, personne ne pourrait traiter votre demande.');
@@ -65,14 +65,14 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
 {
 
   // Vérifier que les demandes sont autorisées pour cette matière
-  $nb_demandes_autorisees = DB_STRUCTURE_ELEVE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
+  $nb_demandes_autorisees = DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
   if(!$nb_demandes_autorisees)
   {
     exit('<label class="erreur">Vous ne pouvez pas formuler de demandes pour les items cette matière.</label>');
   }
 
   // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés
-  $nb_demandes_formulees = DB_STRUCTURE_ELEVE::DB_compter_demandes_formulees_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+  $nb_demandes_formulees = DB_STRUCTURE_DEMANDE::DB_compter_demandes_formulees_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
   $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
   if(!$nb_demandes_possibles)
   {
@@ -81,13 +81,13 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   }
 
   // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-  if( DB_STRUCTURE_ELEVE::DB_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
+  if( DB_STRUCTURE_DEMANDE::DB_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
   {
     exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
   }
 
   // Vérifier que cet item n'est pas interdit à la sollitation ; récupérer au passage sa référence et son nom
-  $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_item_infos($item_id);
+  $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
   if($DB_ROW['item_cart']==0)
   {
     exit('<label class="erreur">La demande de cet item est interdite !</label>');
@@ -95,7 +95,7 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
 
   // Enregistrement de la demande
   $score = ($score!=-1) ? $score : NULL ;
-  $demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message );
+  $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message );
 
   // Ajout aux flux RSS des profs concernés
   $titre = 'Demande ajoutée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
@@ -109,7 +109,7 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   else
   {
     // On récupère les profs...
-    $DB_TAB = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+    $DB_TAB = DB_STRUCTURE_DEMANDE::DB_recuperer_professeurs_eleve_matiere( $_SESSION['USER_ID'] , $_SESSION['ELEVE_CLASSE_ID'] , $matiere_id );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

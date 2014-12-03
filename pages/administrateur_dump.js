@@ -148,10 +148,30 @@ $(document).ready
       }
       else
       {
-        $('#ajax_msg_restauration').html('Demande traitée...');
-        $('#ajax_info').html(responseHTML);
-        initialiser_compteur();
-        restaurer(1);
+        $.prompt(
+          "Souhaitez-vous vraiment restaurer la base contenue dans le fichier "+fichier_nom+"&nbsp;?<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
+          {
+            title   : 'Demande de confirmation',
+            buttons : {
+              "Non, c'est une erreur !" : false ,
+              "Oui, je confirme !" : true
+            },
+            submit  : function(event, value, message, formVals) {
+              if(value)
+              {
+                $('#ajax_msg_restauration').html('Demande traitée...');
+                $('#ajax_info').html(responseHTML);
+                initialiser_compteur();
+                restaurer(1);
+              }
+              else
+              {
+                $("button").prop('disabled',false);
+                $('#ajax_msg_restauration').removeAttr("class").addClass("alerte").html('Restauration annulée.');
+              }
+            }
+          }
+        );
       }
     }
 

@@ -186,5 +186,53 @@ $(document).ready
       }
     }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic pour demander le recalcul d'un score
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#table_action').on
+    (
+      'click',
+      'q.actualiser',
+      function()
+      {
+        var obj_td     = $(this).parent();
+        // Récupérer les informations de la ligne concernée
+        var tab_ids    = obj_td.parent().attr('id').split('_');
+        var demande_id = tab_ids[1];
+        var item_id    = tab_ids[2];
+        var score      = $(this).prev('i').html();
+        score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
+        $.fancybox( '<label class="loader">&nbsp;</label>' , {'centerOnScroll':true} );
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&f_demande_id='+demande_id+'&f_item_id='+item_id+'&score='+score,
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              {
+                $.fancybox.close();
+                obj_td.replaceWith(responseHTML);
+              }
+              else
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              }
+            }
+          }
+        );
+        return false;
+      }
+    );
+
   }
 );

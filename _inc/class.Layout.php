@@ -118,10 +118,10 @@ class Layout
   private static function header_CSP_directives()
   {
     $tab_CSP_directives = array();
-    // Scripts JS ; "unsafe-eval" requis si usage de compression js avec la méthode "pack" ; URL_SSL requis pour la bannière rotative
-    $tab_CSP_directives[] = (!defined('APPEL_SITE_PROJET')) ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval' ".URL_SSL ;
-    // Styles CSS ; URL_SSL requis pour la bannière rotative
-    $tab_CSP_directives[] = (!defined('APPEL_SITE_PROJET')) ? "style-src 'self' 'unsafe-inline'" :  "style-src 'self' 'unsafe-inline' ".URL_SSL;
+    // Scripts JS ; "unsafe-eval" requis si usage de compression js avec la méthode "pack"
+    $tab_CSP_directives[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+    // Styles CSS
+    $tab_CSP_directives[] = "style-src 'self' 'unsafe-inline'";
     // Images
     $tab_CSP_directives[] = "img-src 'self' 'unsafe-inline' data:";
     // Appels ajax

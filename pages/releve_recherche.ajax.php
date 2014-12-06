@@ -235,7 +235,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
         $tab_score_item[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
       }
       // calcul des bilans des scores
-      $tableau_score_filtre = array_filter($tab_score_item,'non_vide');
+      $tableau_score_filtre = array_filter($tab_score_item,'non_nul');
       $nb_scores = count( $tableau_score_filtre );
       // la moyenne peut être pondérée par des coefficients
       $somme_scores_ponderes = 0;

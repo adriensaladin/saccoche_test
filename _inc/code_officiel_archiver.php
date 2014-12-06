@@ -470,7 +470,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       $tab_moyennes[$rubrique_id][$eleve_id] = isset($tab_saisies[$eleve_id][$rubrique_id]['note']) ? round( array_sum($tab_saisies[$eleve_id][$rubrique_id]['note']) / count($tab_saisies[$eleve_id][$rubrique_id]['note']) , 1 ) : NULL ;
     }
     $somme  = array_sum($tab_moyennes[$rubrique_id]);
-    $nombre = count( array_filter($tab_moyennes[$rubrique_id],'non_vide') );
+    $nombre = count( array_filter($tab_moyennes[$rubrique_id],'non_nul') );
     $tab_moyennes[$rubrique_id][0] = ($nombre) ? round($somme/$nombre,1) : NULL ;
   }
   // Calcul du nb de lignes requises par élève

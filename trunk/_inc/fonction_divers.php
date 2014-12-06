@@ -39,12 +39,12 @@ function html_decode($text)
 }
 
 /**
- * Fonctions utilisées avec array_filter() ; teste si différent de FALSE.
+ * Fonctions utilisées avec array_filter() ; teste si différent de FALSE et de NULL.
  * @return bool
  */
-function non_nul($n)
+function non_vide($n)
 {
-  return $n!==FALSE ;
+  return ($n!==FALSE) && ($n!==NULL) ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de zéro.
@@ -52,7 +52,7 @@ function non_nul($n)
  */
 function non_zero($n)
 {
-  return $n!=0 ;
+  return $n!==0 ;
 }
 /**
  * Fonctions utilisées avec array_filter() ; teste si strictement positif.

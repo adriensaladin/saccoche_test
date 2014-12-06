@@ -444,7 +444,7 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   </div>
   <div id="report_audio">
     <h3>Commentaire audio</h3>
-    <audio id="f_ecouter_audio" controls="" autoplay="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>
+    <audio id="f_ecouter_audio" controls="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>
   </div>
 </div>
 

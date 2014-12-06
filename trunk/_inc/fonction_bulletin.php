@@ -103,7 +103,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
             $tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           }
           // calcul des bilans des scores
-          $tableau_score_filtre = array_filter($tab_score,'non_nul');
+          $tableau_score_filtre = array_filter($tab_score,'non_vide');
           $nb_scores = count( $tableau_score_filtre );
           // la moyenne peut être pondérée par des coefficients
           $somme_scores_ponderes = 0;
@@ -175,7 +175,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
         if(count($tab_moyennes_enregistrees['eleve'][$matiere_id]))
         {
           $somme   = array_sum($tab_moyennes_enregistrees['eleve'][$matiere_id]);
-          $nombre  = count( array_filter($tab_moyennes_enregistrees['eleve'][$matiere_id],'non_nul') );
+          $nombre  = count( array_filter($tab_moyennes_enregistrees['eleve'][$matiere_id],'non_vide') );
           $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
           if( (!isset($tab_moyennes_enregistrees['groupe'][$matiere_id])) || ( ($tab_moyennes_enregistrees['groupe'][$matiere_id]!=$moyenne) ) )
           {
@@ -210,7 +210,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
     foreach($tab_moyennes_enregistrees_par_eleve as $eleve_id => $tab)
     {
       $somme  = array_sum($tab_moyennes_enregistrees_par_eleve[$eleve_id]);
-      $nombre = count( array_filter($tab_moyennes_enregistrees_par_eleve[$eleve_id],'non_nul') );
+      $nombre = count( array_filter($tab_moyennes_enregistrees_par_eleve[$eleve_id],'non_vide') );
       $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
       if( (!isset($tab_moyennes_enregistrees['eleve'][0][$eleve_id])) || ( ($tab_moyennes_enregistrees['eleve'][0][$eleve_id]!=$note) ) )
       {
@@ -222,7 +222,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
     if($memo_moyennes_classe)
     {
       $somme   = array_sum($tab_moyenne_eleve_generale);
-      $nombre  = count( array_filter($tab_moyenne_eleve_generale,'non_nul') );
+      $nombre  = count( array_filter($tab_moyenne_eleve_generale,'non_vide') );
       $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
       if( (!isset($tab_moyennes_enregistrees['groupe'][0])) || ( ($tab_moyennes_enregistrees['groupe'][0]!=$moyenne) ) )
       {
@@ -281,7 +281,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
     $tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
   }
   // calcul des bilans des scores
-  $tableau_score_filtre = array_filter($tab_score,'non_nul');
+  $tableau_score_filtre = array_filter($tab_score,'non_vide');
   $nb_scores = count( $tableau_score_filtre );
   // la moyenne peut être pondérée par des coefficients
   $somme_scores_ponderes = 0;

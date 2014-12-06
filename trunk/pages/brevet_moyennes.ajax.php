@@ -252,7 +252,7 @@ if($action=='proposer')
       if( (count($tab_choix_matieres)>1) && (!$epreuve_choix_moyenne) )
       {
         $somme  = array_sum($tab_moyenne_referentiel);
-        $nombre = count( array_filter($tab_moyenne_referentiel,'non_nul') );
+        $nombre = count( array_filter($tab_moyenne_referentiel,'non_vide') );
         $moyenne_moyenne_referentiels = ($nombre) ? round($somme/$nombre,1) : FALSE ;
         // Déterminer celui qui doit être coché et dont la note doit être reportée
         $test_checked = (isset($tab_notes_enregistrees[$epreuve_code])) ? $tab_notes_enregistrees[$epreuve_code]['matieres_id'] : $epreuve_choix_matieres ;

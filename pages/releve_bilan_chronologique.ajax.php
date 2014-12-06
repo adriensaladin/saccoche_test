@@ -195,7 +195,7 @@ if(count($tab_date))
     foreach($tab_matiere_todo_moyenne as $matiere_id)
     {
       // calcul des bilans des scores
-      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_nul');
+      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_vide');
       $nb_scores = count( $tableau_score_filtre );
       // la moyenne peut être pondérée par des coefficients
       $somme_scores_ponderes = 0;

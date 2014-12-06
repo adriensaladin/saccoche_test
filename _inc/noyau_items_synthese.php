@@ -271,7 +271,7 @@ if(empty($is_appreciation_groupe))
       {
         foreach($tab_matiere_scores as $synthese_ref => $tab_synthese_scores)
         {
-          $tableau_score_filtre = array_filter($tab_synthese_scores,'non_nul');
+          $tableau_score_filtre = array_filter($tab_synthese_scores,'non_vide');
           $nb_scores = count( $tableau_score_filtre );
           if(!isset($tab_infos_acquis_eleve[$eleve_id][$matiere_id]))
           {
@@ -327,7 +327,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // Ne pas compter les lignes de synthèses dont aucun item n'a été évalué
       foreach($tab_score_eleve_item[$eleve_id][$matiere_id] as $synthese_ref => $tab_items)
       {
-        $nb_items_evalues = count(array_filter($tab_items,'non_nul'));
+        $nb_items_evalues = count(array_filter($tab_items,'non_vide'));
         if(!$nb_items_evalues)
         {
           unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);

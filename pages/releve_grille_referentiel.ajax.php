@@ -327,7 +327,7 @@ if(count($tab_eval))
     if($type_synthese)
     {
       // calcul des bilans des scores
-      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id],'non_nul');
+      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id],'non_vide');
       $nb_scores = count( $tableau_score_filtre );
       // la moyenne peut être pondérée par des coefficients
       $somme_scores_ponderes = 0;
@@ -376,7 +376,7 @@ if($type_synthese)
   // Pour chaque item...
   foreach($tab_liste_item as $item_id)
   {
-    $tableau_score_filtre = isset($tab_score_item_eleve[$item_id]) ? array_filter($tab_score_item_eleve[$item_id],'non_nul') : array() ; // Test pour éviter de rares "array_filter() expects parameter 1 to be array, null given"
+    $tableau_score_filtre = isset($tab_score_item_eleve[$item_id]) ? array_filter($tab_score_item_eleve[$item_id],'non_vide') : array() ; // Test pour éviter de rares "array_filter() expects parameter 1 to be array, null given"
     $nb_scores = count( $tableau_score_filtre );
     if($nb_scores)
     {
@@ -411,11 +411,11 @@ if( $type_synthese )
 {
   // $moyenne_moyenne_scores
   $somme  = array_sum($tab_moyenne_scores_eleve);
-  $nombre = count( array_filter($tab_moyenne_scores_eleve,'non_nul') );
+  $nombre = count( array_filter($tab_moyenne_scores_eleve,'non_vide') );
   $moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : FALSE;
   // $moyenne_pourcentage_acquis
   $somme  = array_sum($tab_pourcentage_acquis_eleve);
-  $nombre = count( array_filter($tab_pourcentage_acquis_eleve,'non_nul') );
+  $nombre = count( array_filter($tab_pourcentage_acquis_eleve,'non_vide') );
   $moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : FALSE;
 }
 

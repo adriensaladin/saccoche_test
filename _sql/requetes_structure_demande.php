@@ -147,7 +147,7 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
  * @param int $matiere_id
  * @return array
  */
-public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$eleve_classe_id,$matiere_id)
+public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');

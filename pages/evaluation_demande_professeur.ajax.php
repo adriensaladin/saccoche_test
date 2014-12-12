@@ -40,7 +40,7 @@ $qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui
 $date          = (isset($_POST['f_date']))          ? Clean::date_fr($_POST['f_date'])          : '';
 $date_visible  = (isset($_POST['f_date_visible']))  ? Clean::date_fr($_POST['f_date_visible'])  : '';
 $date_autoeval = (isset($_POST['f_date_autoeval'])) ? Clean::date_fr($_POST['f_date_autoeval']) : '';
-$description   = (isset($_POST['f_description']))   ? Clean::texte($_POST['f_description'])     : '';
+$info          = (isset($_POST['f_info']))          ? Clean::texte($_POST['f_info'])            : '';
 $devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_devoir'])          : '';
 $suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])           : '';
 $message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])         : '' ;
@@ -70,26 +70,6 @@ if(count($tab_ids))
 $nb_demandes = count($tab_demande_id);
 $nb_users    = count($tab_user_id);
 $nb_items    = count($tab_item_id);
-
-// Contrôler la liste des profs transmis
-$tab_profs   = array();
-$tab_droits  = array( 'v'=>'voir' , 's'=>'saisir' , 'm'=>'modifier' );
-$profs_liste = (isset($_POST['f_prof_liste'])) ? $_POST['f_prof_liste'] : '' ;
-$tmp_tab     = ($profs_liste) ? explode('_',$profs_liste) : array() ;
-foreach($tmp_tab as $valeur)
-{
-  $droit   = $valeur{0};
-  $id_prof = (int)substr($valeur,1);
-  if( isset($tab_droits[$droit]) && ($id_prof>0) && ($id_prof!=$_SESSION['USER_ID']) )
-  {
-    $tab_profs[$id_prof] = $tab_droits[$droit];
-  }
-  else
-  {
-    $profs_liste = str_replace( array( '_'.$valeur , $valeur.'_' , $valeur ) , '' , $profs_liste );
-  }
-}
-$nb_profs   = count($tab_profs);
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 $tab_qui   = array('groupe','select');
@@ -151,7 +131,6 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
     $matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
     $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank">oui</a>' : 'non' ;
     $messages_html .= '<tr><td>'.html($matiere_nom).'<br />'.html($DB_ROW['item_ref']).'</td><td>'.html($tab_groupes[$DB_ROW['eleve_id']]).'<br />'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td><td>'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'</td></tr>';
     $fichier_csv .= '"'.$matiere_nom.'"'.$separateur.'"'.$DB_ROW['item_ref'].'"'.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.'"'.$tab_groupes[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$score.'"'.$separateur.'"'.$date.'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
     // Afficher une ligne du tableau 
@@ -167,7 +146,6 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">'.$dest.'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
     $retour .= '<td class="label">'.$commentaire.'</td>';
-    $retour .= '<td class="label">'.$document.'</td>';
     $retour .= '</tr>';
   }
   $messages_html .= '</tbody></table>';
@@ -193,7 +171,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
 // Créer une nouvelle évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (isset($tab_types[$groupe_type])) && $groupe_id ) ) && $date && $date_visible && $date_autoeval && $description && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
+if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (isset($tab_types[$groupe_type])) && $groupe_id ) ) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
   if($qui=='select')
@@ -207,16 +185,12 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   $doc_sujet   = '';
   $doc_corrige = '';
-  $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre='alpha' );
-  // Affecter tous les élèves choisis (dans le cas d'une évaluation sur une liste d'élèves sélectionnés)
+  $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $info , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre='alpha' );
+  // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
+  // Affecter tous les élèves choisis
   if($qui=='select')
   {
     DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve($devoir_id,$groupe_id,$tab_user_id,'creer');
-  }
-  // Affecter tous les profs choisis
-  if($nb_profs)
-  {
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'creer' );
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
@@ -237,8 +211,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   {
     DB_STRUCTURE_DEMANDE::DB_supprimer_demandes_devoir($listing_demande_id);
   }
-  $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
-  exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$groupe_id);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,8 +247,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   {
     DB_STRUCTURE_DEMANDE::DB_supprimer_demandes_devoir($listing_demande_id);
   }
-  $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
-  exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$devoir_groupe_id);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

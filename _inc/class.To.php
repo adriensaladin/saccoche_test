@@ -46,7 +46,6 @@ class To
 
   /*
    * Convertir l'utf-8 en windows-1252 pour un export CSV compatible avec Ooo et Word.
-   * 12/2012 : il apprarait que cette fonction fait disparaitre toutes les lettres accentuées... mais je n'ai pas trouvé mieux...
    * 
    * @param string
    * @return string
@@ -55,10 +54,6 @@ class To
   {
     mb_substitute_character(0x00A0);  // Pour mettre " " au lieu de "?" en remplacement des caractères non convertis.
     return mb_convert_encoding($text,'Windows-1252','UTF-8');
-    // return mb_convert_encoding($text,'ISO-8859-15','UTF-8');
-    // return iconv('UTF-8', 'Windows-1252', $text);
-    // return mb_convert_encoding($text,'UTF-16LE','UTF-8');
-    // return $text;
   }
 
   /*
@@ -96,17 +91,6 @@ class To
     $tab_bad = array( '–' ,  '$' ,  '&' ,  '%' ,  '#' ,  '_' ,  '{' ,  '}' ,  '^' , '\\' );
     $tab_bon = array( '-' , '\$' , '\&' , '\%' , '\#' , '\_' , '\{' , '\}' , '\^' , '\textbackslash{}' );
     return str_replace( $tab_bad , $tab_bon , $text );
-  }
-
-  /**
-   * Afficher un équivalent texte de note pour une sortie CSV ou LaTeX.
-   *
-   * @param string $note
-   * @return string
-   */
-  public static function note_texte($note)
-  {
-    return (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_TEXTE'][$note] : $note ;
   }
 
 }

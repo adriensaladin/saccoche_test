@@ -37,7 +37,7 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},6:{sorter:false},7:{sorter:false},8:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},6:{sorter:false},7:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -180,7 +180,7 @@ $(document).ready
       else
       {
         $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        $('#ids_'+$('#f_demande_id').val()+'_'+$('#f_item_id').val()+'_'+$('#f_matiere_id').val()+'_'+$('#f_prof_id').val()).remove();
+        $('#ids_'+$('#f_demande_id').val()+'_'+$('#f_item_id').val()+'_'+$('#f_matiere_id').val()).remove();
         $.fancybox.close();
         mode = false;
       }
@@ -196,15 +196,14 @@ $(document).ready
       'q.actualiser',
       function()
       {
-        var obj_q      = $(this);
-        var obj_td     = obj_q.parent();
+        var obj_td     = $(this).parent();
         // Récupérer les informations de la ligne concernée
         var tab_ids    = obj_td.parent().attr('id').split('_');
         var demande_id = tab_ids[1];
         var item_id    = tab_ids[2];
         var score      = $(this).prev('i').html();
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
-        obj_q.removeAttr("class");
+        $.fancybox( '<label class="loader">&nbsp;</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
@@ -215,19 +214,18 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-              obj_q.addClass("actualiser");
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
               if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
+                $.fancybox.close();
                 obj_td.replaceWith(responseHTML);
               }
               else
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-                obj_q.addClass("actualiser");
               }
             }
           }

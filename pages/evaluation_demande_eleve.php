@@ -61,7 +61,6 @@ else
       <th>Score</th>
       <th>Statut</th>
       <th>Messages</th>
-      <th>Fichier</th>
       <th class="nu"></th>
     </tr>
   </thead>
@@ -79,7 +78,6 @@ else
         $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
         $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
         $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank">oui</a>' : 'non' ;
         // Afficher une ligne du tableau 
         echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['prof_id'].'">';
         echo  '<td>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
@@ -89,14 +87,13 @@ else
         echo  str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
         echo  '<td>'.$statut.'</td>';
         echo  '<td>'.$commentaire.'</td>';
-        echo  '<td>'.$document.'</td>';
         echo  '<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';
         echo'</tr>'.NL;
       }
     }
     else
     {
-      echo'<tr><td class="nu" colspan="8"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL;
     }
     ?>
   </tbody>

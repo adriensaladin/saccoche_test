@@ -28,9 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // Réception d'id transmis via un lien de [Évaluer un élève à la volée].
-$auto_voir_devoir_id   = isset($_GET['devoir_id'])   ? Clean::entier($_GET['devoir_id'])  : 'false' ;
-$auto_voir_groupe_type = isset($_GET['groupe_type']) ? Clean::texte($_GET['groupe_type']) : 'E' ;
-$auto_voir_groupe_id   = isset($_GET['groupe_id'])   ? Clean::entier($_GET['groupe_id'])  : 'false' ;
+$auto_voir_devoir_id = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
+$auto_voir_groupe_id = isset($_GET['groupe_id']) ? Clean::entier($_GET['groupe_id']) : 'false' ;
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
@@ -102,9 +101,8 @@ Layout::add( 'js_inline_before' , 'var reception_items_texte = "'.$txt_items.'";
 Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
 Layout::add( 'js_inline_before' , 'var reception_items_liste = "'.implode('_',$tab_items).'";' );
 Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
-Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id   = '.$auto_voir_devoir_id.';' );
-Layout::add( 'js_inline_before' , 'var auto_voir_groupe_type = "'.$auto_voir_groupe_type.'";' );
-Layout::add( 'js_inline_before' , 'var auto_voir_groupe_id   = '.$auto_voir_groupe_id.';' );
+Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';' );
+Layout::add( 'js_inline_before' , 'var auto_voir_groupe_id = '.$auto_voir_groupe_id.';' );
 
 // Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
 $select_eleve   = '';

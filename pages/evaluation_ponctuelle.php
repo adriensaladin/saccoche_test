@@ -82,6 +82,6 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
 <hr />
 <div id="bilan" class="hide">
   <ul class="puce">
-    <li>Une fois toutes vos notes saisies, vous pouvez <a id="bilan_lien" href="./index.php?page=evaluation_gestion&amp;section=selection&amp;devoir_id=0&amp;groupe_type=E&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
+    <li>Une fois toutes vos notes saisies, vous pouvez <a id="bilan_lien" href="./index.php?page=evaluation_gestion&amp;section=selection&amp;devoir_id=0&amp;groupe_id=0">voir l'évaluation correspondante ainsi générée</a>.</li>
   </ul>
 </div>

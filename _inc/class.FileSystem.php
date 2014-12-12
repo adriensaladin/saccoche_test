@@ -319,18 +319,6 @@ class FileSystem
   }
 
   /**
-   * Déplacer un fichier
-   * 
-   * @param string   $fichier_chemin_origine
-   * @param string   $fichier_chemin_final
-   * @return bool
-   */
-  public static function deplacer_fichier($fichier_chemin_origine,$fichier_chemin_final)
-  {
-    return rename($fichier_chemin_origine , $fichier_chemin_final);
-  }
-
-  /**
    * Ecrire du contenu dans un fichier, exit() en cas d'erreur
    * 
    * @param string   $fichier_chemin

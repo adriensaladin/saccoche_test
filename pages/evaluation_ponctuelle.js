@@ -270,7 +270,7 @@ $(document).ready
                 $('#ajax_msg_enregistrement').removeAttr("class").addClass("valide").html("Note enregistrée !");
                 $("#f_devoir").val(responseJSON['devoir_id']);
                 $('#f_groupe').val(responseJSON['groupe_id']);
-                $('#bilan_lien').attr('href','./index.php?page=evaluation_gestion&section=selection&devoir_id='+responseJSON['devoir_id']+'&groupe_type='+'E'+'&groupe_id='+responseJSON['groupe_id']);
+                $('#bilan_lien').attr('href','./index.php?page=evaluation_gestion&section=selection&devoir_id='+responseJSON['devoir_id']+'&groupe_id='+responseJSON['groupe_id']);
                 $('#bilan').show();
               }
               else

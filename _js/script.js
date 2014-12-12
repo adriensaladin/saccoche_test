@@ -1496,7 +1496,7 @@ $(document).ready
     );
 
     /**
-     * Gestion d'une demande d'évaluation d'un élève
+     * Calque pour une demande d'évaluation élève
      */
 
     $(document).on
@@ -1543,7 +1543,6 @@ $(document).ready
                             + '<p class="b">'+item_nom+'</p>'
                             + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseHTML+'</select></p>'
                             + '<p><label class="tab">Message (facultatif) :</label><textarea id="zone_message" name="f_message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
-                            + '<div><label class="tab">Document (facultatif) :</label><button id="bouton_upload_demande_document" type="button" class="fichier_import">Choisir un fichier.</button><label id="ajax_upload_demande_document">&nbsp;</label><input id="f_doc_nom" name="f_doc_nom" type="hidden" value="" /></div>'
                             + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" />'
                             + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
                             + '</form>';
@@ -1557,59 +1556,7 @@ $(document).ready
                     afficher_textarea_reste( $(this) , 500 );
                   }
                 );
-                // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-                var upload_demande_document = new AjaxUpload
-                ('#bouton_upload_demande_document',
-                  {
-                    action: 'ajax.php?page=evaluation_demande_eleve_ajout',
-                    name: 'userfile',
-                    data: {'f_action':'uploader_document'},
-                    autoSubmit: true,
-                    responseType: "html",
-                    onSubmit: verifier_demande_document,
-                    onComplete: retourner_demande_document
-                  }
-                );
-                function verifier_demande_document(fichier_nom,fichier_extension)
-                {
-                  if (fichier_nom==null || fichier_nom.length<5)
-                  {
-                    $('#f_doc_nom').val('');
-                    $('#ajax_upload_demande_document').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-                    return false;
-                  }
-                  else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
-                  {
-                    $('#f_doc_nom').val('');
-                    $('#ajax_upload_demande_document').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
-                    return false;
-                  }
-                  else
-                  {
-                    $('#f_doc_nom').val('');
-                    $('#bouton_upload_demande_document').prop('disabled',true);
-                    $('#ajax_upload_demande_document').removeAttr("class").addClass("loader").html("En cours&hellip;");
-                    return true;
-                  }
-                }
-                function retourner_demande_document(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
-                {
-                  fichier_extension = fichier_nom.split('.').pop();
-                  var tab_infos = responseHTML.split(']¤[');
-                  if(tab_infos[0]!='ok')
-                  {
-                    $('#ajax_upload_demande_document').removeAttr("class").addClass("alerte").html(responseHTML);
-                  }
-                  else
-                  {
-                    initialiser_compteur();
-                    var doc_nom = tab_infos[1];
-                    var doc_url = tab_infos[2];
-                    $('#f_doc_nom').val(doc_nom);
-                    $('#ajax_upload_demande_document').removeAttr("class").addClass("valide").html('<a href="'+doc_url+'" target="_blank">'+fichier_nom+'</a>');
-                  }
-                  $('#bouton_upload_demande_document').prop('disabled',false);
-                }
+
               }
               $('#form_demande_evaluation button').prop('disabled',false);
             }

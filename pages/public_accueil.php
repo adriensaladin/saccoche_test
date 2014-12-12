@@ -118,7 +118,7 @@ else
 <h1 class="hebergement">Hébergement</h1>
 <ul class="puce">
   <li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a target="_blank" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche - Remplacer ce texte par l\'objet de votre message !!!','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
+  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a target="_blank" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
   <li><a target="_blank" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 

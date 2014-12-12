@@ -43,28 +43,6 @@ else
   }
 }
 
-// boutons radio
-$tab_radio_boutons = array();
-$tab_notes = array(
-  'RR'   => $_SESSION['NOTE_DOSSIER'] ,
-  'R'    => $_SESSION['NOTE_DOSSIER'] ,
-  'V'    => $_SESSION['NOTE_DOSSIER'] ,
-  'VV'   => $_SESSION['NOTE_DOSSIER'] ,
-  'NN'   => 'commun' ,
-  'NE'   => 'commun' ,
-  'NF'   => 'commun' ,
-  'NR'   => 'commun' ,
-  'ABS'  => 'commun' ,
-  'DISP' => 'commun' ,
-  // 'REQ'  => 'commun' ,
-  // 'X'    => 'commun' ,
-);
-foreach($tab_notes as $note => $dossier)
-{
-  $tab_radio_boutons[] = '<label for="note_'.$note.'"><span class="td"><input type="radio" id="note_'.$note.'" name="f_note" value="'.$note.'"> <img alt="'.$note.'" src="./_img/note/'.$dossier.'/h/'.$note.'.gif" /></span></label>';
-}
-$radio_boutons = implode(' ',$tab_radio_boutons);
-
 // Dates par défaut
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
@@ -116,11 +94,10 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
         <th>Destinaire(s)</th>
         <th>Statut</th>
         <th>Messages</th>
-        <th>Fichier</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="11"></td></tr>
+      <tr><td class="nu" colspan="10"></td></tr>
     </tbody>
   </table>
   <hr />
@@ -136,29 +113,22 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
         <option value=""></option>
         <option value="creer">Créer une nouvelle évaluation.</option>
         <option value="completer">Compléter une évaluation existante.</option>
-        <option value="saisir">Évaluer à la volée.</option>
         <option value="changer_prof">Changer le statut pour "évaluation en préparation".</option>
         <option value="changer_eleve">Changer le statut pour "demande non traitée".</option>
         <option value="retirer">Retirer de la liste des demandes.</option>
       </select>
     </fieldset>
-    <fieldset id="step_qui" class="p hide">
-      <label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select><input type="hidden" id="f2_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f2_groupe_type" name="f_groupe_type" value="" />
+    <fieldset id="step_qui" class="hide">
+      <label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
     </fieldset>
-    <fieldset id="step_creer" class="p hide">
-      <label class="tab" for="f_date">Date du devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
-      <label class="tab" for="f_date_visible">Date de visibilité :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
-      <label class="tab" for="f_date_autoeval">Fin auto-évaluation :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
-      <label class="tab" for="f_prof_nombre">Partage collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="non" readonly /><q id="choisir_prof" class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><br />
-      <label class="tab" for="f_description">Description :</label><input id="f_description" name="f_description" size="30" type="text" value="" />
+    <fieldset id="step_creer" class="hide">
+      <label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
+      <label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+      <label class="tab" for="f_date_autoeval">Fin auto-éval. :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+      <label class="tab" for="f_info">Description :</label><input id="f_info" name="f_info" size="30" type="text" value="" />
     </fieldset>
-    <fieldset id="step_completer" class="p hide">
+    <fieldset id="step_completer" class="hide">
       <label class="tab" for="f_devoir">Évaluation :</label><select id="f_devoir" name="f_devoir"><option></option></select><label id="ajax_maj1">&nbsp;</label>
-    </fieldset>
-    <fieldset id="step_saisir" class="p hide">
-      <label class="tab">Note :</label><?php echo $radio_boutons ?>
-      <input id="f_saisir_devoir" type="hidden" value="0" />
-      <input id="f_saisir_groupe" type="hidden" value="0" />
     </fieldset>
     <fieldset id="step_suite" class="hide">
       <label class="tab" for="f_suite">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
@@ -168,31 +138,9 @@ $select_groupe  = Form::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom
       <span class="tab"></span><label id="f_message_reste"></label>
     </fieldset>
     <p id="step_valider" class="hide">
-      <span class="tab"></span><button id="bouton_valider" type="button" class="valider">Valider.</button><label id="ajax_msg_gestion">&nbsp;</label>
+      <input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />
+      <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Valider.</button><label id="ajax_msg_gestion">&nbsp;</label>
     </p>
   </div>
 </form>
-
-<form action="#" method="post" id="zone_profs" class="hide">
-  <div class="astuce">Résumé des différents niveaux de droits (les plus élevés incluent les plus faibles)&nbsp;:</div>
-  <ul class="puce">
-    <li>0 &rarr; <span class="select_img droit_x">&nbsp;</span> aucun droit</li>
-    <li>1 &rarr; <span class="select_img droit_v">&nbsp;</span> visualiser le devoir (et le dupliquer)</li>
-    <li>2 &rarr; <span class="select_img droit_s">&nbsp;</span> co-saisir les notes du devoir</li>
-    <li>3 &rarr; <span class="select_img droit_m">&nbsp;</span> modifier les paramètres (élèves, items, &hellip;) <span class="danger">Risqué : à utiliser en connaissance de cause&nbsp;!</span></li>
-  </ul>
-  <hr />
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Associer des collègues à une évaluation.</a></span>
-  <hr />
-  <?php echo Html::afficher_form_element_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
-  <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
-</form>
-
 <div id="zone_messages" class="hide"></div>
-
-<div id="bilan" class="hide">
-  <hr />
-  <ul class="puce">
-    <li>Vous pouvez ensuite <a id="bilan_lien" href="./index.php?page=evaluation_gestion&amp;section=selection&amp;devoir_id=0&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
-  </ul>
-</div>

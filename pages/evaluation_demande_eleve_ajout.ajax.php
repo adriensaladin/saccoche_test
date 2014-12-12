@@ -28,13 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
-$matiere_id   = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
-$item_id      = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
-$prof_id      = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])    : -1;
-$score        = (isset($_POST['f_score']))      ? Clean::entier($_POST['f_score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
-$message      = (isset($_POST['f_message']))    ? Clean::texte($_POST['f_message'])     : '' ;
-$document_nom = (isset($_POST['f_doc_nom']))    ? Clean::texte($_POST['f_doc_nom'])     : '' ;
+$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
+$matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
+$item_id    = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
+$prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])    : -1;
+$score      = (isset($_POST['f_score']))      ? Clean::entier($_POST['f_score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+$message    = (isset($_POST['f_message']))    ? Clean::texte($_POST['f_message'])     : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lister les profs associés à l'élève et à une matière
@@ -58,36 +57,12 @@ if( ($action=='lister_profs') && $matiere_id )
   }
 }
 
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Uploader un document pour joindre à une demande
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='uploader_document')
-{
-  // Récupération du fichier
-  $fichier_nom = 'demande_'.$_SESSION['BASE'].'_user_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-  if($result!==TRUE)
-  {
-    exit($result);
-  }
-  // Retour
-  exit('ok'.']¤['.FileSystem::$file_saved_name.']¤['.URL_DIR_IMPORT.FileSystem::$file_saved_name);
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Un élève confirme l'ajout d'une demande d'évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) && ($score!==-2) )
 {
-
-  // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-  if( DB_STRUCTURE_DEMANDE::DB_tester_demande_existante( $_SESSION['USER_ID'] , $matiere_id , $item_id ) )
-  {
-    exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
-  }
 
   // Vérifier que les demandes sont autorisées pour cette matière
   $nb_demandes_autorisees = DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
@@ -97,12 +72,18 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   }
 
   // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés
-  $nb_demandes_formulees = DB_STRUCTURE_DEMANDE::DB_compter_demandes_formulees_eleve_matiere( $_SESSION['USER_ID'] , $matiere_id );
+  $nb_demandes_formulees = DB_STRUCTURE_DEMANDE::DB_compter_demandes_formulees_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
   $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
   if(!$nb_demandes_possibles)
   {
     $reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
     exit($reponse);
+  }
+
+  // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
+  if( DB_STRUCTURE_DEMANDE::DB_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
+  {
+    exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
   }
 
   // Vérifier que cet item n'est pas interdit à la sollitation ; récupérer au passage sa référence et son nom
@@ -112,31 +93,14 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
     exit('<label class="erreur">La demande de cet item est interdite !</label>');
   }
 
-  // Indiquer, si renseigné, le document déjà uploadé temporairement
-  $demande_doc = '';
-  if($document_nom)
-  {
-    if(!is_file(CHEMIN_DOSSIER_IMPORT.$document_nom))
-    {
-      exit('<label class="erreur">Le document joint est introuvable !</label>');
-    }
-    $fichier_nom = str_replace( 'demande_'.$_SESSION['BASE'].'_' , 'demande_' , $document_nom );
-    if(!FileSystem::deplacer_fichier( CHEMIN_DOSSIER_IMPORT.$document_nom , CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS.$fichier_nom ))
-    {
-      exit('<label class="erreur">Impossible de déplacer le document joint !</label>');
-    }
-    $demande_doc = URL_DIR_DEVOIR.$_SESSION['BASE'].'/'.$fichier_nom;
-  }
-
   // Enregistrement de la demande
   $score = ($score!=-1) ? $score : NULL ;
-  $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message , $demande_doc );
+  $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message );
 
   // Ajout aux flux RSS des profs concernés
   $titre = 'Demande ajoutée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
   $texte.= ($message) ? ' avec ce message : '."\r\n".$message : '' ;
-  $texte.= ($demande_doc) ? "\r\n".' Document joint : '.$demande_doc : '' ;
   $guid  = 'demande_'.$demande_id.'_add';
   if($prof_id)
   {
@@ -162,15 +126,6 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   echo'<label class="valide">Votre demande a été ajoutée.</label><br />';
   echo($nb_demandes_possibles==0) ? 'Vous ne pouvez plus formuler d\'autres demandes pour cette matière.' : 'Vous pouvez encore formuler '.$nb_demandes_possibles.' demande'.$s.' pour cette matière.' ;
   exit();
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Il se peut que rien n'ait été récupéré à cause de l'upload d'un fichier trop lourd
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(empty($_POST))
-{
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

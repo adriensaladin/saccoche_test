@@ -31,7 +31,7 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},10:{sorter:false},11:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},10:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[9,0],[1,0],[3,1],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -194,12 +194,12 @@ $(document).ready
         $("#zone_actions").hide(0);
         $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
         // Mémoriser le nom de la matière + le type de groupe + le nom du groupe
-        $('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
-        $("#f_groupe_id").val(   $("#f_groupe option:selected").val() );
-        $("#f_groupe_nom").val(  $("#f_groupe option:selected").text() );
-        $("#f_groupe_type").val( $("#f_groupe option:selected").parent().attr('label') );
-        $("#f2_groupe_id").val( $("#f_groupe_id").val() );
-        $("#f2_groupe_type").val( $("#f_groupe_type").val() );
+        $('#f_matiere_nom').val(  $("#f_matiere option:selected").text() );
+        $("#f_groupe_id").val(    $("#f_groupe option:selected").val() );
+        $("#f_groupe_id2").val(   $("#f_groupe option:selected").val() );
+        $("#f_groupe_nom").val(   $("#f_groupe option:selected").text() );
+        $("#f_groupe_type").val(  $("#f_groupe option:selected").parent().attr('label') );
+        $("#f_groupe_type2").val( $("#f_groupe option:selected").parent().attr('label') );
         $(this).ajaxSubmit(ajaxOptions0);
         return false;
       }
@@ -276,12 +276,11 @@ $(document).ready
       'q.actualiser',
       function()
       {
-        var obj_q   = $(this);
         var obj_td  = $(this).parent();
         var ids     = obj_td.parent().children('td:first').children('input').val();
         var score   = $(this).prev('i').html();
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
-        obj_q.removeAttr("class");
+        $.fancybox( '<label class="loader">&nbsp;</label>' , {'centerOnScroll':true} );
         $.ajax
         (
           {
@@ -292,19 +291,18 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-              obj_q.addClass("actualiser");
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
               if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
+                $.fancybox.close();
                 obj_td.replaceWith(responseHTML);
               }
               else
               {
                 $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-                obj_q.addClass("actualiser");
               }
             }
           }
@@ -383,7 +381,7 @@ $(document).ready
 // Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Récupérer les noms des items des checkbox cochés pour la description de l'évaluation
+    // Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
     $('#table_action').on
     (
       'click',
@@ -406,7 +404,7 @@ $(document).ready
         );
         if(listing_refs.length)
         {
-          $("#f_description").val('Demande'+listing_refs);
+          $("#f_info").val('Demande'+listing_refs);
         }
       }
     );
@@ -417,16 +415,14 @@ $(document).ready
     (
       function()
       {
-        $('#bilan').hide();
         quoi = $("#f_quoi option:selected").val();
-        if(quoi=='completer')                                     {maj_evaluation();}
-        if( (quoi=='creer') || (quoi=='completer') )              {$("#step_qui").show(0);}       else {$("#step_qui").hide(0);}
-        if(quoi=='saisir')                                        {$("#step_saisir").show(0);}    else {$("#step_saisir").hide(0);}
-        if(quoi=='creer')                                         {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
-        if(quoi=='completer')                                     {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
-        if( (quoi=='creer') || (quoi=='completer') )              {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
-        if( (quoi!='') && (quoi!='retirer') && (quoi!='saisir') ) {$("#step_message").show(0);}   else {$("#step_message").hide(0);}
-        if(quoi!='')                                              {$("#step_valider").show(0);}
+        if(quoi=='completer')                        {maj_evaluation();}
+        if( (quoi=='creer') || (quoi=='completer') ) {$("#step_qui").show(0);}       else {$("#step_qui").hide(0);}
+        if(quoi=='creer')                            {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
+        if(quoi=='completer')                        {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
+        if( (quoi=='creer') || (quoi=='completer') ) {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
+        if( (quoi!='') && (quoi!='retirer') )        {$("#step_message").show(0);}   else {$("#step_message").hide(0);}
+        if(quoi!='')                                 {$("#step_valider").show(0);}
       }
     );
 
@@ -435,7 +431,6 @@ $(document).ready
     (
       function()
       {
-        $('#bilan').hide();
         if( $("#f_quoi option:selected").val() == 'completer')
         {
           maj_evaluation();
@@ -460,97 +455,9 @@ $(document).ready
       }
     );
 
-    // Choisir les professeurs associés à une évaluation
-
-    $('#step_creer').on
-    (
-      'click',
-      'q.choisir_prof',
-      function()
-      {
-        selectionner_profs_option( $('#f_prof_liste').val() );
-        // Afficher la zone
-        $.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-        $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
-      }
-    );
-
-    $('input[name=prof_check_all]').click
-    (
-      function()
-      {
-        var valeur = $(this).val();
-        $('#zone_profs').find('select').find('option[value='+valeur+']').prop('selected',true);
-        $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_'+valeur);
-      }
-    );
-
-    $('#zone_profs').on
-    (
-      'change',
-      'select',
-      function()
-      {
-        var val_option = $(this).find('option:selected').val();
-        $(this).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
-      }
-    );
-
-    $('#annuler_profs').click
-    (
-      function()
-      {
-        $.fancybox.close();
-      }
-    );
-
-    $('#valider_profs').click
-    (
-      function()
-      {
-        var liste = '';
-        var nombre = 0;
-        $('#zone_profs').find('select').each
-        (
-          function()
-          {
-            var val_option = $(this).find('option:selected').val();
-            if( (val_option!='x') && (val_option!='z') )
-            {
-              var tab_val = $(this).attr('id').split('_');
-              var id_prof = tab_val[1];
-              liste += val_option+id_prof+'_';
-              nombre++;
-            }
-          }
-        );
-        liste  = (!nombre) ? '' : liste.substring(0,liste.length-1) ;
-        nombre = (!nombre) ? 'non' : (nombre+1)+' profs' ;
-        $('#f_prof_liste').val(liste);
-        $('#f_prof_nombre').val(nombre);
-        $('#annuler_profs').click();
-      }
-    );
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire principal
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // On sépare en 2 parties pour traiter les évaluations à la volée à part.
-    $('#bouton_valider').click
-    (
-      function()
-      {
-        if($("#f_quoi").val()!='saisir')
-        {
-          formulaire.submit();
-        }
-        else
-        {
-          valider_envoi_saisie();
-        }
-      }
-    );
 
     // Le formulaire qui va être analysé et traité en AJAX
     var formulaire = $('#form_gestion');
@@ -564,29 +471,26 @@ $(document).ready
       {
         rules :
         {
-          // "required:true" ne fonctionne pas sur "f_prof_liste" car type hidden
           f_ids           : { required:true },
           f_quoi          : { required:true },
           f_qui           : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
           f_date          : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
           f_date_visible  : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_date').is(':checked')));} , dateITA:true },
           f_date_autoeval : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_autoeval').is(':checked')));} , dateITA:true },
-          f_description   : { required:false , maxlength:60 },
-          f_prof_nombre   : { required:false },
+          f_info          : { required:false , maxlength:60 },
           f_devoir        : { required:function(){return $("#f_quoi").val()=='completer';} },
           f_suite         : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
           f_message       : { required:false }
         },
         messages :
         {
-          f_ids           : { required:"cocher au moins une demande" },
+          f_ids           : { required:"demandes manquantes" },
           f_quoi          : { required:"action manquante" },
           f_qui           : { required:"groupe manquant" },
           f_date          : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_description   : { maxlength:"60 caractères maximum" },
-          f_prof_nombre   : { },
+          f_info          : { maxlength:"60 caractères maximum" },
           f_devoir        : { required:"évaluation manquante" },
           f_suite         : { required:"suite manquante" },
           f_message       : {  }
@@ -596,7 +500,7 @@ $(document).ready
         errorPlacement : function(error,element)
         {
           if(element.is("select")) {element.after(error);}
-          else if(element.attr("id")=='f_description') {element.after(error);}
+          else if(element.attr("id")=='f_info') {element.after(error);}
           else if(element.attr("type")=="text") {element.next().after(error);}
           else if(element.attr("type")=="checkbox") {$('#ajax_msg_gestion').after(error);}
         }
@@ -656,16 +560,14 @@ $(document).ready
     {
       initialiser_compteur();
       $('button').prop('disabled',false);
-      tab_response = responseHTML.split('¤');
-      if( tab_response[0]!='ok' )
+      if(responseHTML!='ok')
       {
         $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        var qui   = $("#f_qui"  ).val();
-        var quoi  = $("#f_quoi" ).val();
-        var suite = $("#f_suite").val();
+        quoi  = $("#f_quoi").val();
+        suite = $("#f_suite").val();
         if( ((quoi=='creer')&&(suite=='changer')) || ((quoi=='completer')&&(suite=='changer')) || (quoi=='changer_prof') )
         {
           // Changer le statut des demandes cochées
@@ -703,133 +605,8 @@ $(document).ready
             }
           );
         }
-        // lien vers le devoir
-        if( (quoi=='creer') || (quoi=='completer') )
-        {
-          devoir_id   = tab_response[1];
-          groupe_type = tab_response[2];
-          groupe_id   = tab_response[3];
-          var section = (qui=='select') ? 'selection' : 'groupe' ;
-          $('#bilan_lien').attr('href','./index.php?page=evaluation_gestion&section='+section+'&devoir_id='+devoir_id+'&groupe_type='+groupe_type+'&groupe_id='+groupe_id);
-          $('#bilan').show();
-        }
         $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
       }
-    }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Enregistrement d'une évaluation à la volée
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function valider_envoi_saisie()
-    {
-      var tab_ids = new Array(); $("input[name=f_ids]:checked").each(function(){tab_ids.push($(this).val());});
-      var valeur = $('#step_saisir input[name=f_note]:checked').val();
-      var devoir_id = $("#f_saisir_devoir").val();
-      var groupe_id = $("#f_saisir_groupe").val();
-      $('#ids').val(tab_ids);
-      if(!tab_ids.length)
-      {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Cocher au moins une demande !");
-        return false;
-      }
-      else if(typeof(valeur)=='undefined')	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
-      {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Choisir une note !");
-        return false;
-      }
-      else
-      {
-        $('button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        enregistrer_saisie( tab_ids , valeur , devoir_id , groupe_id );
-      }
-    }
-
-    function enregistrer_saisie( tab_ids , valeur , devoir_id , groupe_id )
-    {
-      var ids = tab_ids[0];
-      tab_ids.shift();
-      var tab = ids.split('x');
-      var user_id = tab[1];
-      var item_id = tab[2];
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page=evaluation_ponctuelle',
-          data : 'csrf='+CSRF+'&'+'f_action=enregistrer_note'+'&'+'f_item='+item_id+'&'+'f_eleve='+user_id+'&'+'f_note='+valeur+'&'+'f_devoir='+devoir_id+'&'+'f_groupe='+groupe_id,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('button').prop('disabled',false);
-            $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
-            return false;
-          },
-          success : function(responseJSON)
-          {
-            initialiser_compteur();
-            if(responseJSON['statut']==true)
-            {
-              // On enregistre la note pour la demande suivante
-              if(tab_ids.length)
-              {
-                enregistrer_saisie( tab_ids , valeur , responseJSON['devoir_id'] , responseJSON['groupe_id'] );
-              }
-              // ... ou on passe à la suppression des demandes
-              else
-              {
-                supprimer_demandes( responseJSON['devoir_id'] , responseJSON['groupe_id'] );
-              }
-            }
-            else
-            {
-              $('button').prop('disabled',false);
-              $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseJSON['value']);
-            }
-          }
-        }
-      );
-    }
-
-    function supprimer_demandes( devoir_id , groupe_id )
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=retirer'+'&'+'ids='+$('#ids').val(),
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('button').prop('disabled',false);
-            $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-          },
-          success : function(responseHTML)
-          {
-            initialiser_compteur();
-            $('button').prop('disabled',false);
-            if(responseHTML!='ok')
-            {
-              $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-            else
-            {
-              $('#table_action input[type=checkbox]:checked').each
-              (
-                function()
-                {
-                  $(this).parent().parent().remove();
-                }
-              );
-              $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              $('#bilan_lien').attr('href','./index.php?page=evaluation_gestion&section=selection&devoir_id='+devoir_id+'&groupe_type='+'E'+'&groupe_id='+groupe_id);
-              $('#bilan').show();
-            }
-          }
-        }
-      );
     }
 
   }

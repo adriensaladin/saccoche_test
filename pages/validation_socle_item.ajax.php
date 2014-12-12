@@ -161,13 +161,10 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   if(count($tab_item))
   {
     $listing_item_id = implode(',',array_keys($tab_item));
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $listing_item_id , FALSE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($listing_item_id,$detail=FALSE);
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_item[$DB_ROW['item_id']] = array(
-        'calcul_methode' => $DB_ROW['calcul_methode'],
-        'calcul_limite'  => $DB_ROW['calcul_limite'],
-      );
+      $tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
     }
   }
   // Tableaux et variables pour mémoriser les infos
@@ -257,14 +254,14 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);
   // $affichage = str_replace('class="v2"','class="v2" title="Cliquer pour valider ou invalider."',$affichage); // Retiré car embêtant si modifié ensuite.
-  exit($affichage);
+  echo $affichage;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher les informations pour aider à valider un item précis pour un élève donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
+elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
 {
   // Tableau des langues
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
@@ -321,14 +318,13 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
   {
     echo'@'.implode('<br />',$tab_infos_socle_eleve);
   }
-  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer les états de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='Enregistrer_validation')
+elseif($action=='Enregistrer_validation')
 {
   // Récupérer les triplets {item;eleve;valid}
   $tab_valid = (isset($_POST['f_valid'])) ? explode(',',$_POST['f_valid']) : array() ;

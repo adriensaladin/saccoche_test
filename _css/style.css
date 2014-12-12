@@ -115,7 +115,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Boutons d'informations (dans #cadre_haut)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_3.png) 0 20px no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_3.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
 #top_info span.expiration            {background-position: 1px    1px;font-weight:bold;color:#C00}
 #top_info span.connexion             {background-position: 1px  -19px;font-weight:bold}
 #top_info span.favicon               {background-position: 1px  -39px}
@@ -145,7 +145,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_20.png) 0 20px no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_20.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu a.disabled {color:#99F;cursor:default;}
 #menu a.disabled:hover {background-color:#77F;color:#99F;cursor:default}
@@ -241,7 +241,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Icones des navigateurs                                                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.navigo {background:transparent url(../_img/sprite_navigateur_1.png) 0 20px no-repeat;padding-left:20px;padding-top:1px;padding-bottom:1px}
+.navigo {background:transparent url(../_img/sprite_navigateur_1.png) 0 0 no-repeat;padding-left:20px;padding-top:1px;padding-bottom:1px}
 .navigo_chrome   {background-position: 0    0px}
 .navigo_explorer {background-position: 0  -20px}
 .navigo_firefox  {background-position: 0  -40px}
@@ -252,7 +252,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Tableau de saisie des résultats d'une évaluation                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#table_saisir label span {background:transparent url(../_img/sprite_saisie_1.png) 0 20px no-repeat;padding-left:19px;padding-top:1px}
+#table_saisir label span {background:transparent url(../_img/sprite_saisie_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
 label span.arrow_continue_down  {background-position: 0    0px}
 label span.arrow_continue_rigth {background-position: 0  -20px}
 label span.pilot_keyboard       {background-position: 0  -40px}
@@ -265,7 +265,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .rien64       {padding-left:70px}
-.accueil64    {background:transparent url(../_img/sprite_accueil64_1.png) 0 300px no-repeat;padding-left:70px;min-height:64px;max-height:500px}
+.accueil64    {background:transparent url(../_img/sprite_accueil64_1.png) 0 0 no-repeat;padding-left:70px;min-height:64px;max-height:500px}
 .alert64      {background-position: 0     0px}
 .ecolo64      {background-position: 0  -300px}
 .help64       {background-position: 0  -600px}
@@ -283,7 +283,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 20px no-repeat;padding-left:19px;padding-top:1px}
+.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
 .file_aac  {background-position: 0  -20px}
 .file_mp3  {background-position: 0  -20px} /* attention : même décalage */
 .file_ogg  {background-position: 0  -20px} /* attention : même décalage */
@@ -343,7 +343,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Images relatives aux états des bilans officiels                                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 20px no-repeat;padding-left:19px;padding-top:1px}
+.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
 .absence  {background-position: 0    0px}
 .vide     {background-position: 0  -20px}
 .rubrique {background-position: 0  -40px}
@@ -360,7 +360,7 @@ label span.retrecir_largeur     {background-position: 0 -100px}
 /* Images pour les pages de validation du socle                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 20px no-repeat;padding-left:19px}
+span.socle_info {background:transparent url(../_img/sprite_socle_info_1.png) 0 0 no-repeat;padding-left:19px}
 span.eleve      {background-position: 0    0px}
 span.socle_n1   {background-position: 0  -20px}
 span.socle_n3   {background-position: 0  -40px}
@@ -395,7 +395,7 @@ a.no_puce        {padding-right:0;background:transparent;}
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-q {background:transparent url(../_img/sprite_action_13.png) 0 20px no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+q {background:transparent url(../_img/sprite_action_13.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
 q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 q.activer            {background-position: 0     0px}
 q.actualiser         {background-position: 0   -20px}
@@ -483,7 +483,7 @@ q:hover {cursor:pointer}  /* Curseur pointeur pour ces images qui sont des liens
 tr.no_margin q{margin-left:0}
 
 /* Pour des images associées à un select... */
-span.select_img {width:16px;height:16px;display:inline-block;background:transparent url(../_img/sprite_action_13.png) 0 20px no-repeat;margin:auto 2px;}
+span.select_img {width:16px;height:16px;display:inline-block;background:transparent no-repeat url(../_img/sprite_action_13.png);margin:auto 2px;}
 span.droit_x {background-position: 0   -80px} /* 0 (aucun) */
 span.droit_v {background-position: 0 -1240px} /* 1 voir */
 span.droit_s {background-position: 0  -920px} /* 2 saisir */
@@ -510,7 +510,7 @@ form label.mini{width:8em;}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_8.png) 0 20px no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px;text-indent:0}
+button{background:#DDF url(../_img/sprite_bouton_8.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px;text-indent:0}
 button.actualiser        {background-position: 2px    1px}
 button.ajouter           {background-position: 2px  -19px}
 button.annuler           {background-position: 2px  -39px}
@@ -917,7 +917,7 @@ div.td_souris img.on {background-color:#FF0}
 /* Certaines touches KBD                                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-kbd.img{background:#EEE url(../_img/sprite_bouton_8.png) 0 20px no-repeat;height:15px}
+kbd.img{background:#EEE url(../_img/sprite_bouton_8.png) 0 0 no-repeat;height:15px}
 kbd.img:hover{background-color:#CCC}
 kbd.annuler   {background-position: 7px  -34px}
 kbd.retourner {background-position: 7px -694px}

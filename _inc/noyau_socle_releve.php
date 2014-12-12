@@ -158,21 +158,10 @@ if($groupe_id && count($tab_eleve_id))
   if(count($tab_item))
   {
     $listing_item_id = implode(',',array_keys($tab_item));
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $listing_item_id , TRUE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($listing_item_id,$detail=TRUE);
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_item[$DB_ROW['item_id']] = array(
-        'item_ref'            => $DB_ROW['item_ref'],
-        'item_nom'            => $DB_ROW['item_nom'],
-        'item_coef'           => $DB_ROW['item_coef'],
-        'item_cart'           => $DB_ROW['item_cart'],
-        'item_socle'          => $DB_ROW['socle_id'],
-        'item_lien'           => $DB_ROW['item_lien'],
-        'matiere_id'          => $DB_ROW['matiere_id'],
-        'matiere_nb_demandes' => $DB_ROW['matiere_nb_demandes'],
-        'calcul_methode'      => $DB_ROW['calcul_methode'],
-        'calcul_limite'       => $DB_ROW['calcul_limite'],
-      );
+      $tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_cart'=>$DB_ROW['item_cart'],'item_socle'=>$DB_ROW['socle_id'],'item_lien'=>$DB_ROW['item_lien'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
     }
   }
 }
@@ -271,7 +260,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               {
                 foreach($tab_eval[$eleve_id][$socle_id] as $item_id => $tab_devoirs)
                 {
-                  extract($tab_item[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
+                  extract($tab_item[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite
                   // calcul du bilan de l'item
                   $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
                   if($score!==FALSE)
@@ -294,10 +283,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                         $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
                         $texte_lien_apres = ($item_lien) ? '</a>' : '';
                       }
-                      if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
-                      elseif(!$matiere_nb_demandes)              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
-                      elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
-                      else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
+                      $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
                       $tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
                     }
                     // on enregistre les infos

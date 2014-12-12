@@ -398,6 +398,65 @@ class Session
   }
 
   // //////////////////////////////////////////////////
+  // CSRF
+  //
+  // @see http://fr.wikipedia.org/wiki/Cross-site_request_forgery
+  // @see http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html
+  // //////////////////////////////////////////////////
+
+  // //////////////////////////////////////////////////
+  // Attributs
+  // //////////////////////////////////////////////////
+
+  // //////////////////////////////////////////////////
+  // Tableau avec les pages pour lesquelles une vérification de jeton n'est pas effectuée lors d'un appel AJAX pour contrer les attaques de type CSRF
+  // Remarque : plutôt que de lister les pages qui en ont besoin, on liste les pages qui n'en ont pas besoin, car leur liste est plus restreinte :)
+  // //////////////////////////////////////////////////
+  private static $tab_sans_verif_csrf = array
+  (
+    // appel depuis plusieurs pages + pas de vérif utile
+    '_maj_select_directeurs',
+    '_maj_select_domaines',
+    '_maj_select_eleves',
+    '_maj_select_eval',
+    '_maj_select_items',
+    '_maj_select_matieres',
+    '_maj_select_matieres_famille',
+    '_maj_select_matieres_prof',
+    '_maj_select_niveaux',
+    '_maj_select_niveaux_famille',
+    '_maj_select_parents',
+    '_maj_select_piliers',
+    '_maj_select_professeurs',
+    '_maj_select_professeurs_directeurs',
+    '_maj_select_profs_groupe',
+    'calque_date_calendrier',
+    'compte_selection_items',
+    'conserver_session_active',
+    'evaluation_demande_eleve_ajout',
+    'fermer_session',
+    // sans objet (sans besoin d'identification) + sinon si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
+    'public_accueil',
+    // sans objet car pas de formulaire
+    'force_download', 
+    'public_login_SSO', 
+    'public_logout_SSO',
+    'releve_html',
+    'releve_pdf',
+    'webservices',
+  );
+
+  // //////////////////////////////////////////////////
+  // Tableau avec les pages pour lesquelles un ou plusieurs jetons supplémentaires doivent être enregistrés car elles postent vers des pages supplémentaires.
+  // //////////////////////////////////////////////////
+  private static $tab_pages_csrf_multi = array
+  (
+    'brevet_fiches'    => array( 'calque_voir_photo' ),
+    'officiel_accueil' => array( 'calque_voir_photo' ),
+    'evaluation_demande_professeur' => array( 'evaluation_ponctuelle' ),
+  );
+
+  // //////////////////////////////////////////////////
   // Méthodes privées (internes) - Gestion CSRF
   // //////////////////////////////////////////////////
 
@@ -409,46 +468,7 @@ class Session
    */
   private static function page_avec_jeton_CSRF($page)
   {
-    // //////////////////////////////////////////////////
-    // Tableau avec les pages pour lesquelles une vérification de jeton est effectuée lors d'un appel AJAX pour contrer les attaques de type CSRF
-    // En fait plutôt que de lister les pages qui en ont besoin, on liste les pages qui n'en ont pas besoin :)
-    // @see http://fr.wikipedia.org/wiki/Cross-site_request_forgery
-    // @see http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html
-    // //////////////////////////////////////////////////
-    $tab_sans_verif_csrf = array
-    (
-      // appel depuis plusieurs pages + pas de vérif utile
-      '_maj_select_directeurs',
-      '_maj_select_domaines',
-      '_maj_select_eleves',
-      '_maj_select_eval',
-      '_maj_select_items',
-      '_maj_select_matieres',
-      '_maj_select_matieres_famille',
-      '_maj_select_matieres_prof',
-      '_maj_select_niveaux',
-      '_maj_select_niveaux_famille',
-      '_maj_select_parents',
-      '_maj_select_piliers',
-      '_maj_select_professeurs',
-      '_maj_select_professeurs_directeurs',
-      '_maj_select_profs_groupe',
-      'calque_date_calendrier',
-      'calque_voir_photo',
-      'compte_selection_items',
-      'conserver_session_active',
-      'evaluation_demande_eleve_ajout',
-      'fermer_session',
-      // sans objet (sans besoin d'identification) + sinon si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
-      'public_accueil',
-      // sans objet car pas de formulaire
-      'public_login_SSO', 
-      'public_logout_SSO',
-      'releve',
-      'releve_pdf',
-      'webservices',
-    );
-    return (in_array($page,$tab_sans_verif_csrf)) ? FALSE : TRUE ;
+    return (in_array($page,Session::$tab_sans_verif_csrf)) ? FALSE : TRUE ;
   }
 
   // //////////////////////////////////////////////////
@@ -459,7 +479,7 @@ class Session
    * Générer un jeton CSRF pour une page donnée (le met en session).
    * Inutile d'essayer de le fixer uniquement sur l'IP ou la Session car pour ce type d'attaque c'est le navigateur de l'utilisateur qui est utilisé.
    * On est donc contraint d'utiliser un élément aléatoire ou indicateur de temps.
-   * Pour éviter de fausses alertes si utilisation de plusieurs onglets d'une même page, on ne retient pas qu'un seul jeton par page.
+   * Pour éviter de fausses alertes si utilisation de plusieurs onglets d'une même page, on ne retient pas qu'un seul jeton par page, mais un par affichage de page.
    * La session doit être ouverte.
    * 
    * @param string $page
@@ -469,8 +489,18 @@ class Session
   {
     if(Session::page_avec_jeton_CSRF($page))
     {
-      Session::$_CSRF_value = uniqid(); // sera écrit dans la page pour que javascript l'envoie
+      // Valeur qui sera écrite dans la page pour que javascript l'envoie
+      Session::$_CSRF_value = uniqid(); 
+      // Pour les appels ajax de la page concernée
       $_SESSION['CSRF'][Session::$_CSRF_value.'.'.$page] = TRUE;
+      // Pour d'éventuels appels vers des pages complémentaires
+      if(isset(Session::$tab_pages_csrf_multi[$page]))
+      {
+        foreach(Session::$tab_pages_csrf_multi[$page] as $autre_page)
+        {
+          $_SESSION['CSRF'][Session::$_CSRF_value.'.'.$autre_page] = TRUE;
+        }
+      }
     }
   }
 

@@ -150,14 +150,14 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);
   // Afficher le résultat
-  echo $affichage;
+  exit($affichage);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher les informations pour aider à valider un pilier précis pour un élève donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
+if( ($action=='Afficher_information') && $eleve_id && $pilier_id )
 {
   // Récupération de la liste des validations des items du palier
   $tab_item = array();  // [entree_id] => 0/1;
@@ -201,13 +201,14 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
   }
   // Paragraphe des items
   echo'@'.$affichage_socle;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer les états de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-elseif($action=='Enregistrer_validation')
+if($action=='Enregistrer_validation')
 {
   // Récupérer les triplets {eleve;pilier;valid}
   $tab_valid = (isset($_POST['f_valid'])) ? explode(',',$_POST['f_valid']) : array() ;

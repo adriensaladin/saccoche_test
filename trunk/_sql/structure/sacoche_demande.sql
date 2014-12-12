@@ -13,6 +13,7 @@ CREATE TABLE sacoche_demande (
   demande_score    TINYINT(3)           UNSIGNED                         DEFAULT NULL    COMMENT "Sert à mémoriser le score avant réévaluation pour ne pas avoir à le recalculer ; valeur null si item non évalué.",
   demande_statut   ENUM("eleve","prof") COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" COMMENT "[eleve] pour une demande d'élève ; [prof] pour une prévision d'évaluation par le prof ; une annulation de l'élève ou du prof efface l'enregistrement",
   demande_messages TEXT                 COLLATE utf8_unicode_ci NOT NULL,
+  demande_doc      VARCHAR(255)         COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (demande_id),
   UNIQUE KEY demande_key (eleve_id,matiere_id,item_id),
   KEY matiere_id (matiere_id),

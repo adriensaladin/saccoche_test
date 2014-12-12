@@ -134,10 +134,13 @@ if($type=='pourcentage')
   if(count($tab_item))
   {
     $listing_item_id = implode(',',array_keys($tab_item));
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($listing_item_id,$detail=FALSE);
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $listing_item_id , FALSE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+      $tab_item[$DB_ROW['item_id']] = array(
+        'calcul_methode' => $DB_ROW['calcul_methode'],
+        'calcul_limite'  => $DB_ROW['calcul_limite'],
+      );
     }
   }
 }

@@ -105,7 +105,7 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
  * @param int $item_id
  * @return array
  */
-public static function DB_lister_result_eleve_item($eleve_id,$item_id)
+public static function DB_lister_result_eleve_item( $eleve_id , $item_id )
 {
   $DB_SQL = 'SELECT saisie_note AS note , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
   $DB_SQL.= 'FROM sacoche_saisie ';
@@ -130,7 +130,7 @@ public static function DB_lister_result_eleve_item($eleve_id,$item_id)
  * @param string $listing_user_id      id des élèves séparés par des virgules
  * @return array   [i]=>array('item_id','popularite')
  */
-public static function DB_recuperer_item_popularite($listing_demande_id,$listing_user_id)
+public static function DB_recuperer_item_popularite( $listing_demande_id , $listing_user_id )
 {
   $DB_SQL = 'SELECT item_id , COUNT(item_id) AS popularite ';
   $DB_SQL.= 'FROM sacoche_demande ';
@@ -147,7 +147,7 @@ public static function DB_recuperer_item_popularite($listing_demande_id,$listing
  * @param int $matiere_id
  * @return array
  */
-public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$eleve_classe_id,$matiere_id)
+public static function DB_recuperer_professeurs_eleve_matiere( $eleve_id , $eleve_classe_id , $matiere_id )
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
@@ -234,7 +234,7 @@ public static function DB_recuperer_item_infos($item_id)
  * @param string $message              facultatif
  * @return void
  */
-public static function DB_modifier_demandes_statut($listing_demande_id,$statut,$message)
+public static function DB_modifier_demandes_statut( $listing_demande_id , $statut , $message )
 {
   $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])."\r\n".$message : '' ;
   $DB_SQL = 'UPDATE sacoche_demande ';
@@ -254,7 +254,7 @@ public static function DB_modifier_demandes_statut($listing_demande_id,$statut,$
  * @param int|null $demande_score
  * @return void
  */
-public static function DB_modifier_demande_score($demande_id,$demande_score)
+public static function DB_modifier_demande_score( $demande_id , $demande_score )
 {
   $DB_SQL = 'UPDATE sacoche_demande ';
   $DB_SQL.= 'SET demande_score=:demande_score ';
@@ -273,7 +273,7 @@ public static function DB_modifier_demande_score($demande_id,$demande_score)
  * @param int   $matiere_id
  * @return int
  */
-public static function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_id)
+public static function DB_compter_demandes_formulees_eleve_matiere( $eleve_id , $matiere_id )
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_demande ';
@@ -294,7 +294,7 @@ public static function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$ma
  * @param int    $item_id
  * @return int
  */
-public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_id)
+public static function DB_tester_demande_existante( $eleve_id , $matiere_id , $item_id )
 {
   $DB_SQL = 'SELECT demande_id ';
   $DB_SQL.= 'FROM sacoche_demande ';
@@ -317,13 +317,14 @@ public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_i
  * @param int|null $demande_score
  * @param string   $demande_statut
  * @param string   $message
+ * @param string   $demande_doc
  * @return int
  */
-public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$prof_id,$demande_score,$demande_statut,$message)
+public static function DB_ajouter_demande( $eleve_id , $matiere_id , $item_id , $prof_id , $demande_score , $demande_statut , $message , $demande_doc )
 {
   $demande_messages = ($message) ? afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id,demande_date, demande_score, demande_statut, demande_messages) ';
-  $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,       NOW(),:demande_score,:demande_statut,:demande_messages)';
+  $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id,demande_date, demande_score, demande_statut, demande_messages, demande_doc) ';
+  $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,       NOW(),:demande_score,:demande_statut,:demande_messages,:demande_doc)';
   $DB_VAR = array(
     ':eleve_id'         => $eleve_id,
     ':matiere_id'       => $matiere_id,
@@ -332,6 +333,7 @@ public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$prof_i
     ':demande_score'    => $demande_score,
     ':demande_statut'   => $demande_statut,
     ':demande_messages' => $demande_messages,
+    ':demande_doc'      => $demande_doc,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);

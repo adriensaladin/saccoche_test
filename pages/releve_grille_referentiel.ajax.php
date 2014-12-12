@@ -275,6 +275,9 @@ if($besoin_notes)
   }
 }
 
+// Nombre de demandes d'évaluation autorisées pour la matière concernée
+$nb_demandes_autorisees = DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 /* 
  * Libérer de la place mémoire car les scripts de bilans sont assez gourmands.
@@ -512,7 +515,10 @@ if( $type_generique || $type_individuel )
                   $texte_lien_apres = ($item_lien) ? '</a>' : '';
                 }
                 $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
-                $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+                if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+                elseif(!$nb_demandes_autorisees)           { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+                elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+                else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                 $releve_HTML_individuel .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
                 $releve_PDF->grille_referentiel_item( $item_ref , $texte_coef.$texte_socle.$item_nom , $colspan_nb );
                 // Pour chaque case...
@@ -541,7 +547,7 @@ if( $type_generique || $type_individuel )
                         $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                       }
-                      $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
+                      $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,FALSE).'</td>';
                       $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan_nb) /*br*/ , $pdf_bg );
                     }
                     else

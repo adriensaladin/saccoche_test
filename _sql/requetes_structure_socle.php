@@ -193,7 +193,7 @@ public static function DB_lister_infos_items( $liste_item_id , $detail )
     $DB_SQL.= 'item_nom , entree_id AS socle_id , ';
     $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
     $DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
-    $DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
+    $DB_SQL.= 'matiere_id , matiere_nb_demandes , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
   }
   $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
   $DB_SQL.= 'FROM sacoche_referentiel_item ';

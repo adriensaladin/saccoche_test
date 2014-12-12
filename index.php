@@ -32,7 +32,7 @@
 require('./_inc/_loader.php');
 
 // Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd
-// C'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...
+// C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
 if(isset($_GET['memoget']))
 {
   $memoget = urldecode($_GET['memoget']);
@@ -154,7 +154,7 @@ if(Session::$_sso_redirect)
 }
 
 // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
-// C'est le cas lors de l'appel d'un l'IdP de type RSA FIM, application nationale du ministère...
+// C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
 if(isset($_COOKIE[COOKIE_MEMOGET]))
 {
   setcookie( COOKIE_MEMOGET /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );

@@ -45,7 +45,7 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$synthese_modele.
 $tab_item        = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,calcul_retroactif,synthese_ref);
 $tab_liste_item  = array();  // [i] => item_id
 $tab_eleve_infos = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance)
-$tab_matiere     = array();  // [matiere_id] => matiere_nom
+$tab_matiere     = array();  // [matiere_id] => array(matiere_nom,matiere_nb_demandes)
 $tab_synthese    = array();  // [synthese_ref] => synthese_nom
 $tab_eval        = array();  // [eleve_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
 
@@ -113,7 +113,10 @@ if(empty($is_appreciation_groupe))
   if($synthese_modele=='matiere')
   {
     list($tab_item,$tab_synthese) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
-    $tab_matiere[$matiere_id] = $matiere_nom;
+    $tab_matiere[$matiere_id] = array(
+      'matiere_nom'         => $matiere_nom,
+      'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
+    );
   }
   elseif($synthese_modele=='multimatiere')
   {
@@ -128,7 +131,10 @@ else
   $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_matiere[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];
+    $tab_matiere[$DB_ROW['rubrique_id']] = array(
+      'matiere_nom'         => $DB_ROW['rubrique_nom'],
+      'matiere_nb_demandes' => NULL,
+    );
   }
 }
 $item_nb = count($tab_item);
@@ -239,6 +245,7 @@ if(empty($is_appreciation_groupe))
       {
         // le score bilan
         extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
+        $matiere_nb_demandes = $tab_matiere[$matiere_id]['matiere_nb_demandes'];
         $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
         $tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
         // le détail HTML
@@ -260,9 +267,12 @@ if(empty($is_appreciation_groupe))
               $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
-            $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+            if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+            elseif(!$matiere_nb_demandes)              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+            elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+            else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
             $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
-            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
+            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<div><span class="pourcentage '.$tab_etat[$indice].'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval.'</div>';
           }
         }
       }
@@ -297,7 +307,7 @@ if(empty($is_appreciation_groupe))
 else
 {
   // Pour pouvoir passer dans la boucle en cas d'appréciation sur le groupe
-  foreach($tab_matiere as $matiere_id => $matiere_nom)
+  foreach($tab_matiere as $matiere_id => $tab)
   {
     $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'] = array('NA'=>0 , 'VA'=>0 , 'A'=>0);
   }
@@ -320,7 +330,7 @@ $nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_mat
 
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  foreach($tab_matiere as $matiere_id => $matiere_nom)
+  foreach($tab_matiere as $matiere_id => $tab)
   {
     if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
     {
@@ -434,12 +444,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // On passe en revue les matières...
       foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
       {
+        $matiere_nom = $tab_matiere[$matiere_id]['matiere_nom'];
         if( (!$make_officiel) || (($make_action=='saisir')&&($BILAN_ETAT=='3synthese')) || (($make_action=='saisir')&&($BILAN_ETAT=='2rubrique')&&(in_array($matiere_id,$tab_matiere_id))) || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
         {
           // Bulletin - Interface graphique
           if($make_graph)
           {
-            $tab_graph_data['categories'][$matiere_id] = '"'.addcslashes($tab_matiere[$matiere_id],'"').'"';
+            $tab_graph_data['categories'][$matiere_id] = '"'.addcslashes($matiere_nom,'"').'"';
             $tab_graph_data['series_data_NA'][$matiere_id] = $tab_infos_matiere['total']['NA'];
             $tab_graph_data['series_data_VA'][$matiere_id] = $tab_infos_matiere['total']['VA'];
             $tab_graph_data['series_data_A'][$matiere_id]  = $tab_infos_matiere['total']['A'];
@@ -471,12 +482,12 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $moyenne_classe = $tab_saisie[0][$matiere_id][0]['note'];
               }
             }
-            $releve_PDF->bilan_synthese_ligne_matiere( $tab_matiere[$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] , $tab_infos_matiere['total'] , $total , $moyenne_eleve , $moyenne_classe , $avec_texte_nombre , $avec_texte_code );
+            $releve_PDF->bilan_synthese_ligne_matiere( $matiere_nom , $tab_nb_lignes[$eleve_id][$matiere_id] , $tab_infos_matiere['total'] , $total , $moyenne_eleve , $moyenne_classe , $avec_texte_nombre , $avec_texte_code );
           }
           if($make_html)
           {
             $releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>'.NL.'<tr>';
-            $releve_HTML .= '<th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>';
+            $releve_HTML .= '<th style="width:540px">'.html($matiere_nom).'</th>';
             $releve_HTML .= ($_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS']) ? Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total,$avec_texte_nombre,$avec_texte_code) : '<td style="width:360px"></td>' ;
             $releve_HTML .= '</tr>'.NL.'</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
             $releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>'.NL;
@@ -502,7 +513,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $releve_HTML .= '<td style="width:'.$width_texte.'px">' ;
                 $releve_HTML .= '<a href="#toggle" class="'.$toggle_class.'" title="Voir / masquer le détail des items associés." id="to_'.$synthese_ref.'_'.$eleve_id.'"></a> ';
                 $releve_HTML .= html($tab_synthese[$synthese_ref]);
-                $releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_etat.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
+                $releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_etat.'>'.implode('',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
                 $releve_HTML .= '</td></tr>'.NL;
               }
             }
@@ -600,11 +611,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           // Examen de présence des appréciations intermédiaires et des notes
           if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id][0])) || ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) ) )
           {
-            $tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
+            $tab_resultat_examen[$matiere_nom][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
           }
           if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) )
           {
-            $tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
+            $tab_resultat_examen[$matiere_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
           }
           // Impression des appréciations intermédiaires (PDF)
           if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )

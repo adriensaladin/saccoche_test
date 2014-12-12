@@ -56,7 +56,7 @@ $calcul_acquisitions = ( $type_synthese || $type_bulletin || $aff_etat_acquisiti
 $tab_item_infos       = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite,calcul_retroactif);
 $tab_matiere_item     = array();  // [matiere_id][item_id] => item_nom
 $tab_eleve_infos      = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_id_gepi)
-$tab_matiere          = array();  // [matiere_id] => matiere_nom
+$tab_matiere          = array();  // [matiere_id] => array(matiere_nom,matiere_nb_demandes)
 $tab_eval             = array();  // [eleve_id][matiere_id][item_id][devoir] OU [matiere_id][item_id][eleve_id][devoir] => array(note,date,info)
 
 // Initialisation de variables
@@ -123,7 +123,10 @@ $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroact
 if($releve_modele=='matiere')
 {
   $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan($liste_eleve,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme) ;
-  $tab_matiere[$matiere_id] = $matiere_nom;
+    $tab_matiere[$matiere_id] = array(
+      'matiere_nom'         => $matiere_nom,
+      'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
+    );
 }
 elseif($releve_modele=='multimatiere')
 {
@@ -140,11 +143,22 @@ elseif($releve_modele=='selection')
   if(count($tab_matiere)>1)
   {
     $matiere_id = 0;
-    $tab_matiere = array( 0 => implode(' - ',$tab_matiere) );
+    $tab_matiere = array(
+      0 => array(
+        'matiere_nom'         => implode(' - ',$tab_matiere),
+        'matiere_nb_demandes' => NULL,
+       )
+     );
   }
   else
   {
     list($matiere_id,$matiere_nom) = each($tab_matiere);
+    $tab_matiere = array(
+      $matiere_id => array(
+        'matiere_nom'         => $matiere_nom,
+        'matiere_nb_demandes' => NULL,
+       )
+     );
   }
 }
 elseif($releve_modele=='professeur')
@@ -154,11 +168,22 @@ elseif($releve_modele=='professeur')
   if(count($tab_matiere)>1)
   {
     $matiere_id = 0;
-    $tab_matiere = array( 0 => implode(' - ',$tab_matiere) );
+    $tab_matiere = array(
+      0 => array(
+        'matiere_nom'         => implode(' - ',$tab_matiere),
+        'matiere_nb_demandes' => NULL,
+       )
+     );
   }
   else
   {
     list($matiere_id,$matiere_nom) = each($tab_matiere);
+    $tab_matiere = array(
+      $matiere_id => array(
+        'matiere_nom'         => $matiere_nom,
+        'matiere_nb_demandes' => NULL,
+       )
+     );
   }
 }
 
@@ -288,7 +313,7 @@ if($calcul_acquisitions)
     if(isset($tab_eval[$eleve_id]))
     {
       // Pour chaque matiere...
-      foreach($tab_matiere as $matiere_id => $matiere_nom)
+      foreach($tab_matiere as $matiere_id => $tab)
       {
         // Si cet élève a été évalué dans cette matière...
         if(isset($tab_eval[$eleve_id][$matiere_id]))
@@ -446,7 +471,7 @@ if( $type_individuel && ($releve_individuel_format=='eleve') )
   $tab_nb_lignes = array();
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    foreach($tab_matiere as $matiere_id => $matiere_nom)
+    foreach($tab_matiere as $matiere_id => $tab)
     {
       if(isset($tab_eval[$eleve_id][$matiere_id])) // $tab_eval[] utilisé plutôt que $tab_score_eleve_item[] au cas où $calcul_acquisitions=FALSE
       {
@@ -478,7 +503,7 @@ if( $type_individuel && ($releve_individuel_format=='item') )
   $nb_lignes_item_synthese          = $aff_moyenne_scores + $aff_pourcentage_acquis ;
   $tab_nb_lignes_total_item = array();
   // On commence par recenser les items
-  foreach($tab_matiere as $matiere_id => $matiere_nom)
+  foreach($tab_matiere as $matiere_id => $tab)
   {
     if(isset($tab_matiere_item[$matiere_id]))
     {
@@ -491,7 +516,7 @@ if( $type_individuel && ($releve_individuel_format=='item') )
   // Puis on passe en revue les notes pour avoir le nombre d'élève par item
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    foreach($tab_matiere as $matiere_id => $matiere_nom)
+    foreach($tab_matiere as $matiere_id => $tab)
     {
       if(isset($tab_eval[$eleve_id][$matiere_id])) // $tab_eval[] utilisé plutôt que $tab_score_eleve_item[] au cas où $calcul_acquisitions=FALSE
       {
@@ -592,8 +617,9 @@ if($type_individuel)
             $releve_PDF->bilan_item_individuel_entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
           }
           // Pour chaque matiere...
-          foreach($tab_matiere as $matiere_id => $matiere_nom)
+          foreach($tab_matiere as $matiere_id => $tab)
           {
+            extract($tab); // $matiere_nom $matiere_nb_demandes
             if( (!$make_officiel) || (($make_action=='saisir')&&($BILAN_ETAT=='2rubrique')&&(in_array($matiere_id,$tab_matiere_id))) || (($make_action=='saisir')&&($BILAN_ETAT=='3synthese')) || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
             {
               // Si cet élève a été évalué dans cette matière...
@@ -647,7 +673,10 @@ if($type_individuel)
                         $texte_fluo_avant = ($highlight_id!=$item_id) ? '' : '<span class="fluo">';
                         $texte_fluo_apres = ($highlight_id!=$item_id) ? '' : '</span>';
                       }
-                      $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+                      if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+                      elseif(!$matiere_nb_demandes)              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+                      elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+                      else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                       $releve_HTML_table_body .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</td>';
                     }
                     if($make_pdf)
@@ -680,7 +709,7 @@ if($type_individuel)
                               $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                               $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                             }
-                            if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                            if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                             if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                           }
                           else
@@ -704,7 +733,7 @@ if($type_individuel)
                             $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                             $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                           }
-                          if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                          if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                           if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                         }
                       }
@@ -986,8 +1015,9 @@ if($type_individuel)
       $releve_PDF->bilan_item_individuel_entete_format_item( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom );
     }
     // Pour chaque matiere...
-    foreach($tab_matiere as $matiere_id => $matiere_nom)
+    foreach($tab_matiere as $matiere_id => $tab)
     {
+      extract($tab); // $matiere_nom $matiere_nb_demandes
       if(isset($tab_matiere_item[$matiere_id]))
       {
         if($make_html) { $releve_HTML_individuel .= $separation.'<h2>'.html($groupe_nom.' - '.$matiere_nom).'</h2>'.NL; }
@@ -1077,7 +1107,7 @@ if($type_individuel)
                         $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                       }
-                      if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                      if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                       if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                     }
                     else
@@ -1101,7 +1131,7 @@ if($type_individuel)
                       $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                       $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                     }
-                    if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+                    if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                     if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
                   }
                 }

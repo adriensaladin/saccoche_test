@@ -126,7 +126,10 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
-    $texte_demande_eval = ($_SESSION['USER_PROFIL_TYPE']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+    if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+    elseif(!$DB_ROW['matiere_nb_demandes'])    { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+    elseif(!$DB_ROW['item_cart'])              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+    else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
     $tab_affich[$item_id] = '<td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td>';
   }
   // récupérer les saisies et les ajouter
@@ -138,7 +141,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   }
   foreach($tab_liste_item as $item_id)
   {
-    $tab_affich[$item_id] .= (isset($tab_notes[$item_id])) ? '<td class="hc">'.Html::note($tab_notes[$item_id],'','',TRUE /*tri*/).'</td>' : '<td class="hc">-</td>' ;
+    $tab_affich[$item_id] .= (isset($tab_notes[$item_id])) ? '<td class="hc">'.Html::note_image($tab_notes[$item_id],'','',TRUE /*tri*/).'</td>' : '<td class="hc">-</td>' ;
   }
   // ajouter les états d'acquisition
   if(test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))

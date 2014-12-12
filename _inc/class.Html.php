@@ -300,11 +300,11 @@ class Html
    * @param bool   $tri
    * @return string
    */
-  public static function note( $note , $date , $info , $tri=FALSE )
+  public static function note_image( $note , $date , $info , $tri=FALSE )
   {
     if(isset(Html::$tab_legende_notes_speciales_nombre[$note])) Html::$tab_legende_notes_speciales_nombre[$note]++;
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
-    $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
+    $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/' ;
     $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     return (in_array($note,array('-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
   }

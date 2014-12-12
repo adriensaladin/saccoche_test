@@ -409,10 +409,10 @@ $(document).ready
     var voir = function()
     {
       // Afficher au chargement
-      if(auto_voir_devoir_id && auto_voir_groupe_id)
+      if(auto_voir_devoir_id && auto_voir_groupe_type && auto_voir_groupe_id)
       {
         mode = 'voir';
-        var objet_tds = $('#devoir_'+auto_voir_devoir_id+'_E'+auto_voir_groupe_id).parent().find('td');
+        var objet_tds = $('#devoir_'+auto_voir_devoir_id+'_'+auto_voir_groupe_type+auto_voir_groupe_id).parent().find('td');
         auto_voir_devoir_id = false;
         auto_voir_groupe_id = false;
       }
@@ -3208,9 +3208,9 @@ $(document).ready
           $('q.ajouter').click();
         }
         // Afficher des résultats au chargement
-        if(auto_voir_devoir_id && auto_voir_groupe_id)
+        if(auto_voir_devoir_id && auto_voir_groupe_type && auto_voir_groupe_id)
         {
-          if( $('#devoir_'+auto_voir_devoir_id+'_E'+auto_voir_groupe_id).length )
+          if( $('#devoir_'+auto_voir_devoir_id+'_'+auto_voir_groupe_type+auto_voir_groupe_id).length )
           {
             voir();
           }

@@ -62,7 +62,7 @@ $doc_objet      = (isset($_POST['f_doc_objet']))       ? Clean::texte($_POST['f_
 $doc_url        = (isset($_POST['f_doc_url']))         ? Clean::texte($_POST['f_doc_url'])               : '';
 $fini           = (isset($_POST['f_fini']))            ? Clean::texte($_POST['f_fini'])                  : '';
 
-$chemin_devoir      =  CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
+$chemin_devoir      = CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
 $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
 $fnom_export = $_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.Clean::fichier($description).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 
@@ -934,7 +934,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr && in_array($eleve
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
     if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
     {
-      $tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','>'.Html::note($DB_ROW['saisie_note'],'','',FALSE).'<',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
+      $tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','>'.Html::note_image($DB_ROW['saisie_note'],'','',FALSE).'<',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
       $csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
     }
   }
@@ -1120,7 +1120,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
   $affichage_repartition_head = '<th class="nu"></th>';
   foreach($tab_init_quantitatif as $note=>$vide)
   {
-    $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
+    $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note_image($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
   }
   // ligne suivantes
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_REQ*/ );
@@ -1585,9 +1585,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           $colonnes_nb += 1;
           foreach($tab_codes as $note_code => $is_note )
           {
-            $rows_htm[$note_code] = ($is_note) ? '<td class="hc">'.Html::note($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
-            $rows_csv[$note_code] = ($is_note) ? '"'.$note_code.'"'.$separateur                               : '"autre"'.$separateur;
-            $rows_tex[$note_code] = ($is_note) ? '\begin{tabular}{c}'.$note_code.'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+            $rows_htm[$note_code] = ($is_note) ? '<td class="hc">'.Html::note_image($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
+            $rows_csv[$note_code] = ($is_note) ? '"'.To::note_texte($note_code).'"'.$separateur                               : '"autre"'.$separateur;
+            $rows_tex[$note_code] = ($is_note) ? '\begin{tabular}{c}'.To::note_texte($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
         }
         foreach($tab_comp_id as $comp_id => $tab_val_comp)
@@ -1603,9 +1603,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             if($cart_cases_nb==1)
             {
               // ... avec une case à remplir
-              $rows_htm['note'] .= '<td class="hc">'.Html::note($note,$date_fr,$description,FALSE).'</td>';
-              $rows_csv['note'] .= '"'.$note.'"'.$separateur;
-              $rows_tex['note'] .= '\begin{tabular}{c}'.$note.'\end{tabular} & ';
+              $rows_htm['note'] .= '<td class="hc">'.Html::note_image($note,$date_fr,$description,FALSE).'</td>';
+              $rows_csv['note'] .= '"'.To::note_texte($note).'"'.$separateur;
+              $rows_tex['note'] .= '\begin{tabular}{c}'.To::note_texte($note).'\end{tabular} & ';
             }
             else
             {
@@ -1676,9 +1676,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           $cols_tex = '';
           foreach($tab_codes as $note_code => $is_note )
           {
-            $cols_htm .= ($is_note) ? '<td class="hc">'.Html::note($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
-            $cols_csv .= ($is_note) ? '"'.$note_code.'"'.$separateur                               : '"autre"'.$separateur;
-            $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.$note_code.'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+            $cols_htm .= ($is_note) ? '<td class="hc">'.Html::note_image($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
+            $cols_csv .= ($is_note) ? '"'.To::note_texte($note_code).'"'.$separateur                               : '"autre"'.$separateur;
+            $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.To::note_texte($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
           $sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
           $sacoche_csv .= To::csv($texte_entete).$separateur.$separateur.$cols_csv."\r\n";
@@ -1694,9 +1694,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             if($cart_cases_nb==1)
             {
               // ... avec une case à remplir
-              $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($note,$date_fr,$description,FALSE).'</td></tr>';
-              $sacoche_csv .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur.'"'.$note.'"'."\r\n";
-              $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.$note.' \\\\'."\r\n".'\hline'."\r\n";
+              $sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note_image($note,$date_fr,$description,FALSE).'</td></tr>';
+              $sacoche_csv .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur.'"'.To::note_texte($note).'"'."\r\n";
+              $sacoche_tex .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.To::note_texte($note).' \\\\'."\r\n".'\hline'."\r\n";
             }
             else
             {

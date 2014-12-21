@@ -36,6 +36,7 @@ $groupe_id      = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_gr
 $groupe_nom     = (isset($_POST['f_groupe_nom']))   ? Clean::texte($_POST['f_groupe_nom'])   : '';
 $groupe_type    = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
 $couleur        = (isset($_POST['f_couleur']))      ? Clean::texte($_POST['f_couleur'])      : '';
+$fond           = (isset($_POST['f_fond']))         ? Clean::texte($_POST['f_fond'])         : '';
 $legende        = (isset($_POST['f_legende']))      ? Clean::texte($_POST['f_legende'])      : '';
 $marge_min      = (isset($_POST['f_marge_min']))    ? Clean::entier($_POST['f_marge_min'])   : 0;
 $eleves_ordre   = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
@@ -50,7 +51,7 @@ $tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' )
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( !$palier_id || !$palier_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) || !count($tab_pilier_id) || !in_array($type,array('pourcentage','validation')) || !in_array($mode,array('auto','manuel')) || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
+if( !$palier_id || !$palier_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) || !count($tab_pilier_id) || !in_array($type,array('pourcentage','validation')) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -255,8 +256,8 @@ $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CS
 $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>'.NL;
 $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>'.NL;
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-$releve_PDF = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
-$releve_PDF->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
+$releve_PDF = new PDF_socle_synthese( FALSE /*officiel*/ , 'landscape' /*orientation*/ , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , $legende );
+$releve_PDF->initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
 // - - - - - - - - - -
 // Lignes d'en-tête
 // - - - - - - - - - -
@@ -278,7 +279,7 @@ foreach($tab_socle as $tab)
   }
 }
 $releve_HTML_head .= '</tr>'.NL;
-$releve_PDF->releve_synthese_socle_entete($tab_pilier);
+$releve_PDF->entete($tab_pilier);
 // - - - - - - - - - -
 // Lignes suivantes
 // - - - - - - - - - -
@@ -307,7 +308,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
     }
     $releve_HTML_body .= '</tr>'.NL;
-    $releve_PDF->releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle,$drapeau_langue);
+    $releve_PDF->pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle,$drapeau_langue);
   }
   if($type=='validation')
   {
@@ -337,14 +338,14 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
     }
     $releve_HTML_body .= '</tr>'.NL;
-    $releve_PDF->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue);
+    $releve_PDF->validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue);
   }
 }
 $releve_HTML .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
 $releve_HTML .= '<table class="bilan"><thead>'.NL.$releve_HTML_head.'</thead><tbody>'.NL.$releve_HTML_body.'</tbody></table>'.NL;
 $releve_HTML .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('simplifié').'</form>'.NL : '';
 $releve_HTML .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ , FALSE /*make_officiel*/ );
-$releve_PDF->releve_synthese_socle_legende($type);
+$releve_PDF->legende($type);
 
 // Chemins d'enregistrement
 $fichier = 'releve_socle_synthese_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();

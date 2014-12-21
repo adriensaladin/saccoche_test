@@ -302,6 +302,7 @@ $(document).ready
           f_restriction_socle  : { required:false },
           f_restriction_niveau : { required:false },
           f_couleur            : { required:true },
+          f_fond               : { required:true },
           f_legende            : { required:true },
           f_marge_min          : { required:true }
         },
@@ -322,6 +323,7 @@ $(document).ready
           f_restriction_socle  : { },
           f_restriction_niveau : { },
           f_couleur            : { required:"couleur manquante" },
+          f_fond               : { required:"fond manquant" },
           f_legende            : { required:"légende manquante" },
           f_marge_min          : { required:"marge mini manquante" }
         },

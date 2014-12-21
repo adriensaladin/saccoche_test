@@ -319,94 +319,10 @@ $(document).ready
 
     /**
      * Saisir les items acquis par les élèves à une évaluation : chargement du formulaire
+     * Voir   les items acquis par les élèves à une évaluation : chargement des données
      * @return void
      */
-    var saisir = function()
-    {
-      mode = $(this).attr('class');
-      var objet_tds     = $(this).parent().parent().find('td');
-      // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
-      var date_fr       = objet_tds.eq(0).html();
-      var date_visible  = objet_tds.eq(1).html();
-      var groupe        = objet_tds.eq(3).text().trim();
-      var eleves_ordre  = objet_tds.eq(3).attr('class');
-      var description   = objet_tds.eq(5).html();
-      var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
-      // Mettre les infos de côté
-      $('#saisir_ref').val(ref);
-      $('#saisir_date_fr').val(date_fr);
-      $('#saisir_date_visible').val(date_visible);
-      $('#saisir_eleves_ordre').val(eleves_ordre);
-      $('#saisir_description').val(unescapeHtml(description));
-      $('#saisir_fini').val(fini);
-      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-            return false;
-          },
-          success : function(responseHTML)
-          {
-            initialiser_compteur();
-            var tab_response = responseHTML.split('<SEP>');
-            if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
-            {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-            }
-            else
-            {
-              modification = false;
-              $.fancybox.close();
-              // Masquer le tableau ; Afficher la zone associée et remplir son contenu
-              $('#form_prechoix , #table_action').hide('fast');
-              $('#msg_import').removeAttr("class").html('&nbsp;');
-              $('#titre_saisir').html(groupe+' | '+date_fr+' | '+description);
-              $('#ajax_msg_saisir').removeAttr("class").html('&nbsp;');
-              $('#table_saisir').html(tab_response[0]);
-              $('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-              $('#export_file_saisir_tableau_scores_csv'   ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
-              $('#export_file_saisir_tableau_scores_vierge').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
-              colorer_cellules();
-              $('#radio_'+memo_pilotage).click();
-              $('#arrow_continue_'+memo_direction).click();
-              nb_colonnes = $('#table_saisir thead th').length;
-              nb_lignes   = $('#table_saisir tbody tr').length;
-              $('#zone_saisir').show();
-              if(nb_lignes>nb_lignes_max)
-              {
-                $('#table_saisir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
-              }
-              if(memo_pilotage=='clavier')
-              {
-                $('#C'+colonne+'L'+ligne).focus();
-                if(isMobile)
-                {
-                  $('#cadre_tactile').show();
-                }
-              }
-              else
-              {
-                $('#arrow_continue').hide();
-              }
-            }
-          }
-        }
-      );
-    };
-
-    /**
-     * Voir les items acquis par les élèves à une évaluation : chargement des données
-     * @return void
-     */
-    var voir = function()
+    var saisir_ou_voir = function()
     {
       // Afficher au chargement
       if(auto_voir_devoir_id && auto_voir_groupe_type && auto_voir_groupe_id)
@@ -424,18 +340,28 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
       var date_fr       = objet_tds.eq(0).html();
+      var date_visible  = objet_tds.eq(1).html();
       var groupe        = objet_tds.eq(3).text().trim();
       var eleves_ordre  = objet_tds.eq(3).attr('class');
       var description   = objet_tds.eq(5).html();
+      var fini          =(objet_tds.eq(8).find('span').text()=='terminé') ? 'oui' : 'non' ;
       // Mettre les infos de côté
-      $('#voir_ref').val(ref);
+      $('#saisir_voir_ref'         ).val(ref);
+      $('#saisir_voir_date_fr'     ).val(date_fr);
+      $('#saisir_voir_date_visible').val(date_visible);
+      $('#saisir_voir_groupe_nom'  ).val(unescapeHtml(groupe));
+      $('#saisir_voir_eleves_ordre').val(eleves_ordre);
+      $('#saisir_voir_description' ).val(unescapeHtml(description));
+      $('#saisir_voir_fini'        ).val(fini);
+      // pour finir
+      $('#zone_saisir_voir h2').html(mode[0].toUpperCase() + mode.substring(1) + " les acquisitions à une évaluation");
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -445,30 +371,56 @@ $(document).ready
           success : function(responseHTML)
           {
             initialiser_compteur();
-            var tab_response = responseHTML.split('<SEP>');
-            if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
+
+            if(responseHTML.substring(0,7)!='<thead>')
             {
               $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
+              modification = false;
               $.fancybox.close();
               // Masquer le tableau ; Afficher la zone associée et remplir son contenu
               $('#form_prechoix , #table_action').hide('fast');
-              $('#titre_voir').html(groupe+' | '+date_fr+' | '+description);
-              $('#ajax_msg_voir').removeAttr("class").html('&nbsp;');
-              $('#table_voir').html(tab_response[0]);
-              $('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-              $('#export_file_voir_tableau_scores_csv'    ).attr("href", './force_download.php?fichier='+'saisie_deportee_'+tab_response[1]+'.csv' );
-              $('#export_file_voir_tableau_scores_vierge' ).attr("href", url_export+'tableau_sans_notes_'           +tab_response[1]+'.pdf' );
-              $('#export_file_voir_tableau_scores_couleur').attr("href", url_export+'tableau_avec_notes_couleur_'   +tab_response[1]+'.pdf' );
-              $('#export_file_voir_tableau_scores_gris'   ).attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
-              $('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
-              nb_lignes   = $('#table_voir tbody tr').length;
-              $('#zone_voir').show();
+              $('#titre_saisir_voir').html(groupe+' | '+date_fr+' | '+description);
+              $('#ajax_msg_saisir_voir').removeAttr("class").html('&nbsp;');
+              $('#table_saisir_voir').html(responseHTML);
+              $('#table_saisir_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+              if(mode=='saisir')
+              {
+                $('#valider_saisir').show();
+                $('#para_report_note').show();
+                colorer_cellules();
+                $('#radio_'+memo_pilotage).click();
+                $('#arrow_continue_'+memo_direction).click();
+              }
+              else if(mode=='voir')
+              {
+                $('#valider_saisir').hide();
+                $('#para_report_note').hide();
+                $('#table_saisir_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
+              }
+              nb_colonnes = $('#table_saisir_voir thead th').length;
+              nb_lignes   = $('#table_saisir_voir tbody tr').length;
+              $('#zone_saisir_voir').show();
               if(nb_lignes>nb_lignes_max)
               {
-                $('#table_voir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
+                $('#table_saisir_voir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
+              }
+              if(mode=='saisir')
+              {
+                if(memo_pilotage=='clavier')
+                {
+                  $('#C'+colonne+'L'+ligne).focus();
+                  if(isMobile)
+                  {
+                    $('#cadre_tactile').show();
+                  }
+                }
+                else
+                {
+                  $('#arrow_continue').hide();
+                }
               }
             }
           }
@@ -582,6 +534,11 @@ $(document).ready
       var date_fr       = objet_tds.eq(0).html();
       var groupe        = objet_tds.eq(3).text().trim();
       var description   = objet_tds.eq(5).html();
+      // Mettre les infos de côté
+      $('#repart_ref').val(ref);
+      $('#repart_date_fr').val(date_fr);
+      $('#repart_groupe_nom').val(unescapeHtml(groupe));
+      $('#repart_description').val(unescapeHtml(description));
       // Afficher la zone associée après avoir chargé son contenu
       $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
@@ -601,21 +558,18 @@ $(document).ready
           {
             initialiser_compteur();
             var tab_response = responseHTML.split('<SEP>');
-            if( tab_response.length!=3 )
+            if( tab_response.length!=2 )
             {
               $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
               // Afficher la zone
-              $('#table_voir_repart1').html(tab_response[0]);
-              $('#table_voir_repart2').html(tab_response[1]);
-              $('#export_voir_repart_quantitative_couleur').attr("href", url_export+'repartition_quantitative_couleur_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_quantitative_gris'   ).attr("href", url_export+'repartition_quantitative_monochrome_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_nominative_couleur'  ).attr("href", url_export+'repartition_nominative_couleur_'+tab_response[2]+'.pdf' );
-              $('#export_voir_repart_nominative_gris'     ).attr("href", url_export+'repartition_nominative_monochrome_'+tab_response[2]+'.pdf' );
-              $('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
-              $('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
+              $('#table_voir_repart_nominative').html(tab_response[1]);
+              $('#table_voir_repart_nominative tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
+              $('#table_voir_repart_quantitative').html(tab_response[0]);
+              $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
+              $('#ajax_msg_archiver_repart').removeAttr("class").html("");
               $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
             }
           }
@@ -674,8 +628,8 @@ $(document).ready
     $('#table_action').on( 'click' , 'q.supprimer'      , supprimer );
     $('#table_action').on( 'click' , 'q.ordonner'       , ordonner );
     $('#table_action').on( 'click' , 'q.imprimer'       , imprimer );
-    $('#table_action').on( 'click' , 'q.saisir'         , saisir );
-    $('#table_action').on( 'click' , 'q.voir'           , voir );
+    $('#table_action').on( 'click' , 'q.saisir'         , saisir_ou_voir );
+    $('#table_action').on( 'click' , 'q.voir'           , saisir_ou_voir );
     $('#table_action').on( 'click' , 'q.voir_repart'    , voir_repart );
     $('#table_action').on( 'click' , 'q.uploader_doc'   , uploader_doc );
 
@@ -884,33 +838,33 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
+    // Clic sur le bouton pour fermer le formulaire servant à saisir ou voir les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function fermer_zone_saisir()
+    function fermer_zone_saisir_voir()
     {
-      $('#titre_saisir').html("");
-      $('#table_saisir').html("<tbody><tr><td></td></tr></tbody>");
+      $('#titre_saisir_voir').html("");
+      $('#table_saisir_voir').html("<tbody><tr><td></td></tr></tbody>");
       if(nb_lignes>nb_lignes_max)
       {
-        $('#table_saisir').thfloat('destroy'); /* jQuery TH Float Plugin */
+        $('#table_saisir_voir').thfloat('destroy'); /* jQuery TH Float Plugin */
       }
-      if(isMobile)
+      if( (mode=='saisir') && isMobile )
       {
         $('#cadre_tactile').hide();
       }
-      $('#zone_saisir').hide();
+      $('#zone_saisir_voir').hide();
       $('#form_prechoix , #table_action').show('fast');
       return false;
     }
 
-    $('#fermer_zone_saisir').click
+    $('#fermer_zone_saisir_voir').click
     (
       function()
       {
-        if(!modification)
+        if( (mode=='voir') || !modification )
         {
-          fermer_zone_saisir();
+          fermer_zone_saisir_voir();
         }
         else
         {
@@ -925,7 +879,7 @@ $(document).ready
       function()
       {
         $.fancybox.close();
-        fermer_zone_saisir();
+        fermer_zone_saisir_voir();
       }
     );
 
@@ -934,26 +888,6 @@ $(document).ready
       function()
       {
         $.fancybox.close();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#fermer_zone_voir').click
-    (
-      function()
-      {
-        $('#titre_voir').html("");
-        $('#table_voir').html("<tbody><tr><td></td></tr></tbody>");
-        if(nb_lignes>nb_lignes_max)
-        {
-          $('#table_voir').thfloat('destroy'); /* jQuery TH Float Plugin */
-        }
-        $('#zone_voir').hide();
-        $('#form_prechoix , #table_action').show('fast');
-        return false;
       }
     );
 
@@ -1077,7 +1011,7 @@ $(document).ready
 
     function colorer_cellules()
     {
-      $("#table_saisir tbody td input").each
+      $("#table_saisir_voir tbody td input").each
       (
         function ()
         {
@@ -1129,6 +1063,113 @@ $(document).ready
               {
                 $('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
                 $('#zone_imprimer_retour').html(responseHTML);
+              }
+            }
+          }
+        );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Validation de la demande de génération d'un PDF de répartition des scores
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#archiver_repart').click
+    (
+      function()
+      {
+        $('#archiver_repart').prop('disabled',true);
+        $('#ajax_msg_archiver_repart').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=archiver_repart'+'&'+$("#zone_archiver_repart").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#archiver_repart').prop('disabled',false);
+              $('#ajax_msg_archiver_repart').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('#archiver_repart').prop('disabled',false);
+              if(responseHTML.substring(0,3)!='<a ')
+              {
+                $('#ajax_msg_archiver_repart').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg_archiver_repart').removeAttr("class").html(responseHTML);
+              }
+            }
+          }
+        );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour afficher la zone "Saisie déportée & Archivage"
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#afficher_deport_archivage').click
+    (
+      function()
+      {
+        $('#ajax_msg_deport_archivage').removeAttr("class").html('');
+        if(mode=='saisir')
+        {
+          $('#zone_deport_archivage').find('li.saisir').show();
+          $('#zone_deport_archivage').find('li.voir').hide();
+        }
+        else if(mode=='voir')
+        {
+          $('#zone_deport_archivage').find('li.voir').show();
+          $('#zone_deport_archivage').find('li.saisir').hide();
+        }
+        $.fancybox( { 'href':'#zone_deport_archivage' , onStart:function(){$('#zone_deport_archivage').css("display","block");} , onClosed:function(){$('#zone_deport_archivage').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur un bouton pour générer un CSV ou un PDF depuis la zone "Saisie déportée & Archivage"
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#zone_deport_archivage').on
+    (
+      'click',
+      'button[id^=generer_tableau_scores]',
+      function()
+      {
+        $('#zone_deport_archivage button').prop('disabled',true);
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+$(this).attr('id')+'&'+$("#zone_deport_archivage").serialize(),
+            dataType : "html",
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#zone_deport_archivage button').prop('disabled',false);
+              $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('#zone_deport_archivage button').prop('disabled',false);
+              if(responseHTML.substring(0,3)!='<a ')
+              {
+                $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html(responseHTML);
+              }
+              else
+              {
+                $('#ajax_msg_deport_archivage').removeAttr("class").html(responseHTML);
               }
             }
           }
@@ -1247,7 +1288,7 @@ $(document).ready
     // Choix du mode de pilotage pour la saisie des résultats
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       'input[name=mode_saisie]',
@@ -1278,7 +1319,7 @@ $(document).ready
     // Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       'input[name=arrow_continue]',
@@ -1290,18 +1331,18 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Choix de rétrécir ou pas les colonnes sur #table_saisir
+    // Choix de rétrécir ou pas les colonnes sur #table_saisir_voir
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       '#check_largeur',
       function()
       {
         var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
-        $('#table_saisir tbody').removeAttr("class").addClass(condense);
-        $("#table_saisir thead tr th img").each
+        $('#table_saisir_voir tbody').removeAttr("class").addClass(condense);
+        $("#table_saisir_voir thead tr th img").each
         (
           function ()
           {
@@ -1314,57 +1355,24 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Choix de rétrécir ou pas les colonnes sur #table_voir
+    // Choix de rétrécir ou pas les lignes sur #table_saisir_voir
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_voir').on
-    (
-      'click',
-      '#check_largeur',
-      function()
-      {
-        var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
-        $("#table_voir thead tr th img").each
-        (
-          function ()
-          {
-            img_src_old = $(this).attr('src');
-            img_src_new = (condense=='v') ? img_src_old.substring(0,img_src_old.length-3) : img_src_old+'&br' ;
-            $(this).attr('src',img_src_new);
-          }
-        );
-        $("#table_voir tbody tr td img").each
-        (
-          function ()
-          {
-            img_src_old = $(this).attr('src');
-            img_src_new = (condense=='v') ? img_src_old.replace('/h/','/v/') : img_src_old.replace('/v/','/h/') ; // Pas besoin d'expression régulière car une seule occurence
-            $(this).attr('src',img_src_new);
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).on
+    $('#table_saisir_voir').on
     (
       'click',
       '#check_hauteur',
       function()
       {
-        var table_id = $(this).closest('table').attr('id');
         if($(this).is(':checked'))
         {
-          $("#"+table_id+" tbody tr th div").css('display','none');         // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-          $("#"+table_id+" tbody tr th img").css('display','inline-block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th div").css('display','none');         // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th img").css('display','inline-block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
         }
         else
         {
-          $("#"+table_id+" tbody tr th img").css('display','none');  // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-          $("#"+table_id+" tbody tr th div").css('display','block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th img").css('display','none');  // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th div").css('display','block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
         }
       }
     );
@@ -1418,7 +1426,7 @@ $(document).ready
       }
     );
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       'tbody td input',
@@ -1430,7 +1438,7 @@ $(document).ready
       }
     );
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'keydown',  // keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
       'tbody td input',
@@ -1492,7 +1500,7 @@ $(document).ready
         else if(endroit_report_note=='tableau')
         {
           // pour toutes les cases vides du tableau
-          $("#table_saisir tbody td input").each
+          $("#table_saisir_voir tbody td input").each
           (
             function()
             {
@@ -1507,7 +1515,7 @@ $(document).ready
         else if(endroit_report_note=='colonne')
         {
           // pour toutes les cases vides d'une colonne
-          $("#table_saisir tbody td input[id^=C"+colonne+"L]").each
+          $("#table_saisir_voir tbody td input[id^=C"+colonne+"L]").each
           (
             function()
             {
@@ -1523,7 +1531,7 @@ $(document).ready
         else if(endroit_report_note=='ligne')
         {
           // pour toutes les cases vides d'une ligne
-          $("#table_saisir tbody td input[id$=L"+ligne+"]").each
+          $("#table_saisir_voir tbody td input[id$=L"+ligne+"]").each
           (
             function()
             {
@@ -1538,11 +1546,11 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#fermer_zone_saisir_voir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
           $('#kbd_27').removeAttr("class").addClass("img annuler");
           modification = true;
         }
-        $('#ajax_msg_saisir').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_saisir_voir').removeAttr("class").html("&nbsp;");
         focus_cellule_suivante_en_evitant_sortie_tableau();
         endroit_report_note = 'cellule';
       }
@@ -1566,7 +1574,7 @@ $(document).ready
       else if(touche_code==27)
       {
         // La touche escape a été pressée
-        $('#fermer_zone_saisir').click();
+        $('#fermer_zone_saisir_voir').click();
       }
       else if('.67.76.84.'.indexOf(findme)!=-1)
       {
@@ -1593,7 +1601,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Remplacer la cellule par les images de choix
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'mouseover',
       'tbody td.td_clavier',
@@ -1623,7 +1631,7 @@ $(document).ready
     );
 
     // Revenir à la cellule initiale ; mouseout ne fonctionne pas à cause des éléments contenus dans le div ; mouseleave est mieux, mais pb qd même avec les select du calendrier
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'mouseleave',
       'tbody td',
@@ -1642,7 +1650,7 @@ $(document).ready
     );
 
     // Renvoyer l'information dans la ou les cellule(s)
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       'div.td_souris img',
@@ -1662,7 +1670,7 @@ $(document).ready
           if(endroit_report_note=='tableau')
           {
             // pour toutes les cases vides du tableau
-            $("#table_saisir tbody td input").each
+            $("#table_saisir_voir tbody td input").each
             (
               function()
               {
@@ -1677,7 +1685,7 @@ $(document).ready
           else if(endroit_report_note=='colonne')
           {
             // pour toutes les cases vides d'une colonne
-            $("#table_saisir tbody td input[id^=C"+colonne+"L]").each
+            $("#table_saisir_voir tbody td input[id^=C"+colonne+"L]").each
             (
               function()
               {
@@ -1692,7 +1700,7 @@ $(document).ready
           else if(endroit_report_note=='ligne')
           {
             // pour toutes les cases vides d'une ligne
-            $("#table_saisir tbody td input[id$=L"+ligne+"]").each
+            $("#table_saisir_voir tbody td input[id$=L"+ligne+"]").each
             (
               function()
               {
@@ -1707,11 +1715,11 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#fermer_zone_saisir_voir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
           $('#kbd_27').removeAttr("class").addClass("img annuler");
           modification = true;
         }
-        $('#ajax_msg_saisir').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_saisir_voir').removeAttr("class").html("&nbsp;");
       }
     );
 
@@ -1789,15 +1797,15 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+          $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
         }
         else
         {
           $('button').prop('disabled',true);
-          $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_msg_saisir_voir').removeAttr("class").addClass("loader").html("En cours&hellip;");
           // Grouper les saisies dans une variable unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
           var f_notes = new Array();
-          $("#table_saisir tbody input").each
+          $("#table_saisir_voir tbody input").each
           (
             function()
             {
@@ -1809,18 +1817,18 @@ $(document).ready
               }
             }
           );
-          var ref = $('#saisir_ref').val();
+          var ref = $('#saisir_voir_ref').val();
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+ref+'&f_date_fr='+$("#saisir_date_fr").val()+'&f_date_visible='+$("#saisir_date_visible").val()+'&f_eleves_ordre='+$("#saisir_eleves_ordre").val()+'&f_fini='+$("#saisir_fini").val()+'&f_prof_liste='+tab_profs[ref]+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_description").val()),
+              data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+ref+'&f_date_fr='+$("#saisir_voir_date_fr").val()+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_eleves_ordre='+$("#saisir_voir_eleves_ordre").val()+'&f_fini='+$("#saisir_voir_fini").val()+'&f_prof_liste='+tab_profs[ref]+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_voir_description").val()),
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('button').prop('disabled',false);
-                $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
                 return false;
               },
               success : function(responseHTML)
@@ -1830,15 +1838,15 @@ $(document).ready
                 $('button').prop('disabled',false);
                 if(responseHTML.substring(0,4)!='<td ')
                 {
-                  $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
+                  $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html(responseHTML);
                 }
                 else
                 {
-                  $('#ajax_msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
-                  $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
+                  $('#ajax_msg_saisir_voir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
+                  $('#fermer_zone_saisir_voir').removeAttr("class").addClass("retourner").html('Retour');
                   $('#kbd_27').removeAttr("class").addClass("img retourner");
                   colorer_cellules();
-                  $("#devoir_"+$("#saisir_ref").val()).prev().replaceWith(responseHTML);
+                  $("#devoir_"+$("#saisir_voir_ref").val()).prev().replaceWith(responseHTML);
                 }
               }
             }
@@ -2036,7 +2044,7 @@ $(document).ready
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#msg_import').removeAttr("class").html('&nbsp;');
+      $('#ajax_msg_deport_archivage').removeAttr("class").html('&nbsp;');
       return true;
     }
 
@@ -2044,28 +2052,28 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#msg_import').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#msg_import').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
         return false;
       }
       else
       {
-        $('button').prop('disabled',true);
-        $('#msg_import').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#zone_deport_archivage button').prop('disabled',true);
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
 
     function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      $('button').prop('disabled',false);
+      $('#zone_deport_archivage button').prop('disabled',false);
       if(responseHTML.substring(0,1)!='|')
       {
-        $('#msg_import').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
@@ -2082,7 +2090,7 @@ $(document).ready
               var eleve_id = tab_valeur[0];
               var item_id  = tab_valeur[1];
               var score    = tab_valeur[2];
-              champ = $('#table_saisir input[name='+item_id+'x'+eleve_id+']');
+              champ = $('#table_saisir_voir input[name='+item_id+'x'+eleve_id+']');
               if(champ.length)
               {
                 switch (score)
@@ -2105,7 +2113,7 @@ $(document).ready
             }
           }
         }
-        $('#msg_import').removeAttr("class").addClass("valide").html("Tableau complété ! N'oubliez pas d'enregistrer...");
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html("Tableau complété ; n'oubliez pas d'enregistrer le tableau de saisies !");
       }
     }
 
@@ -2644,12 +2652,17 @@ $(document).ready
       }
     }
 
-    $('#table_saisir').on
+    $('#table_saisir_voir').on
     (
       'click',
       'q',
       function()
       {
+        var classe = $(this).attr('class');
+        if( (classe=='texte_consulter_non') || (classe=='audio_ecouter_non') )
+        {
+          return false;
+        }
         // Récupérer les informations
         var tab_infos = $(this).parent().attr('id').split('_');
         var msg_objet = tab_infos[0]; // texte | audio
@@ -2658,20 +2671,60 @@ $(document).ready
         var obj_autre = (msg_objet=='texte') ? 'audio' : 'texte' ;
         var msg_autre = ( $('#'+obj_autre+'_'+user_id).hasClass('off') ) ? 'oui' : 'non' ;
         // Les reporter
+        $('#titre_voir_commentaires').html(user_nom);
         $('#titre_enregistrer_'+msg_objet).html(user_nom);
-        $('#enregistrer_'+msg_objet+'_ref').val( $('#saisir_ref').val() );
+        $('#enregistrer_'+msg_objet+'_ref').val( $('#saisir_voir_ref').val() );
         $('#enregistrer_'+msg_objet+'_eleve_id').val( user_id );
         $('#enregistrer_'+msg_objet+'_msg_autre').val( msg_autre );
-        // Récupérer si besoin le texte ou l'audio actuellement enregistré
-        if( $(this).parent().hasClass('off') )
+        // Récupérer (si besoin) le texte ou l'audio actuellement enregistré
+        if(mode=='saisir')
         {
+          if( $(this).parent().hasClass('off') )
+          {
+            $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+            $.ajax
+            (
+              {
+                type : 'POST',
+                url : 'ajax.php?page='+PAGE,
+                data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#saisir_voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
+                dataType : "html",
+                error : function(jqXHR, textStatus, errorThrown)
+                {
+                  $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+                  return false;
+                },
+                success : function(responseHTML)
+                {
+                  initialiser_compteur();
+                  var tab_response = responseHTML.split(']¤[');
+                  if(tab_response[0]!='ok')
+                  {
+                    $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                  }
+                  else
+                  {
+                    afficher_zone_enregistrer( msg_objet , tab_response[1] /*msg_url*/ , tab_response[2] /*msg_data*/ );
+                  }
+                }
+              }
+            );
+          }
+          else
+          {
+            afficher_zone_enregistrer( msg_objet , '' /*msg_url*/ , '' /*msg_data*/ );
+          }
+        }
+        else if(mode=='voir')
+        {
+          // Récupérer le texte ou l'audio actuellement enregistré
           $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#saisir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
+              data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#saisir_voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -2688,15 +2741,30 @@ $(document).ready
                 }
                 else
                 {
-                  afficher_zone_enregistrer( msg_objet , tab_response[1] /*msg_url*/ , tab_response[2] /*msg_data*/ );
+                  var msg_url  = tab_response[1];
+                  var msg_data = tab_response[2];
+                  if(msg_objet=='texte')
+                  {
+                    $('#f_voir_texte').val(msg_data);
+                    $('#report_texte').show();
+                    $('#report_audio').hide();
+                  }
+                  else
+                  {
+                    $('#f_ecouter_audio').attr('src',msg_data);
+                    $('#report_audio').show();
+                    $('#report_texte').hide();
+                  }
+                  // Afficher la zone
+                  $.fancybox( { 'href':'#zone_voir_commentaires' , 'centerOnScroll':true } );
+                  if(msg_objet=='audio')
+                  {
+                    document.getElementById("f_ecouter_audio").play();
+                  }
                 }
               }
             }
           );
-        }
-        else
-        {
-          afficher_zone_enregistrer( msg_objet , '' /*msg_url*/ , '' /*msg_data*/ );
         }
       }
     );
@@ -2945,75 +3013,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur une image pour ajouter ou modifier un commentaire audio ou texte
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#table_voir').on
-    (
-      'click',
-      'q',
-      function()
-      {
-        // Récupérer les informations
-        var tab_infos = $(this).parent().attr('id').split('_');
-        var msg_objet = tab_infos[0]; // texte | audio
-        var user_id   = tab_infos[1];
-        var user_nom  = $('#image_'+user_id).attr('alt');
-        var obj_autre = (msg_objet=='texte') ? 'audio' : 'texte' ;
-        // Les reporter
-        $('#titre_voir_commentaires').html(user_nom);
-        // Récupérer le texte ou l'audio actuellement enregistré
-        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              var tab_response = responseHTML.split(']¤[');
-              if(tab_response[0]!='ok')
-              {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                var msg_url  = tab_response[1];
-                var msg_data = tab_response[2];
-                if(msg_objet=='texte')
-                {
-                  $('#f_voir_texte').val(msg_data);
-                  $('#report_texte').show();
-                  $('#report_audio').hide();
-                }
-                else
-                {
-                  $('#f_ecouter_audio').attr('src',msg_data);
-                  $('#report_audio').show();
-                  $('#report_texte').hide();
-                }
-                // Afficher la zone
-                $.fancybox( { 'href':'#zone_voir_commentaires' , 'centerOnScroll':true } );
-                if(msg_objet=='audio')
-                {
-                  document.getElementById("f_ecouter_audio").play();
-                }
-              }
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3212,7 +3211,7 @@ $(document).ready
         {
           if( $('#devoir_'+auto_voir_devoir_id+'_'+auto_voir_groupe_type+auto_voir_groupe_id).length )
           {
-            voir();
+            saisir_ou_voir();
           }
           else
           {

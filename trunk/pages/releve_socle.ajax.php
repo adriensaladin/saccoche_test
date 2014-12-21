@@ -42,6 +42,7 @@ $aff_socle     = (isset($_POST['f_socle']))         ? 1                         
 $aff_lien      = (isset($_POST['f_lien']))          ? 1                                      : 0;
 $aff_start     = (isset($_POST['f_start']))         ? 1                                      : 0;
 $couleur       = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])      : '';
+$fond          = (isset($_POST['f_fond']))          ? Clean::texte($_POST['f_fond'])         : '';
 $legende       = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])      : '';
 $marge_min     = (isset($_POST['f_marge_min']))     ? Clean::entier($_POST['f_marge_min'])   : 0;
 $eleves_ordre  = (isset($_POST['f_eleves_ordre']))  ? Clean::texte($_POST['f_eleves_ordre']) : '';
@@ -66,7 +67,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
-if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
+if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

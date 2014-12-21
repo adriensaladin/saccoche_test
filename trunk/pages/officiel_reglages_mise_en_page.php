@@ -32,6 +32,7 @@ $check_adresse   = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT']
 $check_telephone = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone')) ? ' checked' : '' ;
 $check_fax       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))       ? ' checked' : '' ;
 $check_courriel  = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))  ? ' checked' : '' ;
+$check_url       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))       ? ' checked' : '' ;
 $check_logo      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))      ? ' checked' : '' ;
 
 $check_archive_ajout_message_copie      = ($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])      ? ' checked' : '' ;
@@ -103,6 +104,7 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
     <label for="f_coordonnees_telephone"><input type="checkbox" id="f_coordonnees_telephone" name="f_coordonnees[]" value="telephone"<?php echo $check_telephone ?> /> téléphone</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_fax"><input type="checkbox" id="f_coordonnees_fax" name="f_coordonnees[]" value="fax"<?php echo $check_fax ?> /> fax</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_courriel"><input type="checkbox" id="f_coordonnees_courriel" name="f_coordonnees[]" value="courriel"<?php echo $check_courriel ?> /> courriel</label>&nbsp;&nbsp;&nbsp;
+    <label for="f_coordonnees_url"><input type="checkbox" id="f_coordonnees_url" name="f_coordonnees[]" value="url"<?php echo $check_url ?> /> site internet</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_logo"><input type="checkbox" id="f_coordonnees_logo" name="f_coordonnees[]" value="logo"<?php echo $check_logo ?> /> logo</label>
   </p>
   <p>

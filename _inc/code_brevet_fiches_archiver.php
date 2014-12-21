@@ -90,11 +90,11 @@ $nb_eleves = count($tab_eleve_id);
 // Récupération de l'identité des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , 'alpha' /*eleves_ordre*/ , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
+$tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , 'alpha' /*eleves_ordre*/ , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
 
 if(!is_array($tab_eleve_infos))
 {
-  exit('Aucun élève trouvé correspondant aux identifiants transmis !');
+  exit($liste_eleve_id.'Aucun élève trouvé correspondant aux identifiants transmis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,20 +174,20 @@ if($action=='imprimer_donnees_eleves_epreuves')
     }
   }
   // Fabrication du PDF
-  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $releve_PDF->tableau_appreciation_initialiser_eleves_collegues( $nb_eleves , $nb_lignes_epreuves );
-  $releve_PDF->tableau_appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Appréciations par élève' );
+  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $archivage_tableau_PDF->appreciation_initialiser_eleves_collegues( $nb_eleves , $nb_lignes_epreuves );
+  $archivage_tableau_PDF->appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Appréciations par élève' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   foreach($tab_eleve_id as $eleve_id)
   {
     extract($tab_eleve_infos[$eleve_id]);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
-    $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_thead($eleve_nom,$eleve_prenom,$tab_brevet_serie[$eleve_brevet_serie]);
+    $archivage_tableau_PDF->appreciation_epreuve_eleves_collegues_thead( $eleve_nom , $eleve_prenom , $tab_brevet_serie[$eleve_brevet_serie] );
     if(isset($tab_saisie[$eleve_id]))
     {
       foreach($tab_saisie[$eleve_id] as $epreuve_code =>$tab)
       {
         extract($tab);  // $note $appreciation
-        $releve_PDF->tableau_appreciation_epreuve_eleves_collegues_tbody( $tab_brevet_epreuve[$eleve_brevet_serie][$epreuve_code] , $note , $appreciation );
+        $archivage_tableau_PDF->appreciation_epreuve_eleves_collegues_tbody( $tab_brevet_epreuve[$eleve_brevet_serie][$epreuve_code] , $note , $appreciation );
       }
     }
   }
@@ -223,9 +223,9 @@ if($action=='imprimer_donnees_eleves_syntheses')
     }
   }
   // Fabrication du PDF
-  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $releve_PDF->tableau_appreciation_initialiser_eleves_syntheses( $nb_eleves , $nb_lignes_epreuves , TRUE /*with_moyenne*/ );
-  $releve_PDF->tableau_appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Avis de synthèse' );
+  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $archivage_tableau_PDF->appreciation_initialiser_eleves_syntheses( $nb_eleves , $nb_lignes_epreuves , TRUE /*with_moyenne*/ );
+  $archivage_tableau_PDF->appreciation_intitule( 'Fiches Brevet - '.$annee_session_brevet.' - '.$classe_nom.' - '.'Avis de synthèse' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   foreach($tab_eleve_id as $eleve_id)
   {
@@ -239,7 +239,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
       $note = NULL;
       $appreciation = '';
     }
-    $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , TRUE /*with_moyenne*/ , TRUE /*is_brevet*/ );
+    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , TRUE /*with_moyenne*/ , TRUE /*is_brevet*/ );
   }
 }
 
@@ -277,41 +277,41 @@ if($action=='imprimer_donnees_eleves_moyennes')
   // Fabrication d'un CSV en parallèle
   $tab_brevet_epreuve[$serie_ref][CODE_BREVET_EPREUVE_TOTAL] = 'Total des points';
   $nb_epreuves = count($tab_brevet_epreuve,COUNT_RECURSIVE) - count($tab_brevet_epreuve) ;
-  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $releve_PDF->tableau_moyennes_initialiser( $nb_eleves+1 , $nb_epreuves );
-  $releve_CSV = '';
+  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves+1 , $nb_epreuves );
+  $archivage_tableau_CSV = '';
   $separateur = ';';
   // 1ère ligne : intitulés, noms rubriques
-  $releve_PDF->tableau_moyennes_intitule( $classe_nom , 'Session '.$annee_session_brevet , TRUE /*is_brevet*/ );
-  $releve_CSV .= '"'.$classe_nom.' | Session '.$annee_session_brevet.'"';
+  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , 'Session '.$annee_session_brevet , TRUE /*is_brevet*/ );
+  $archivage_tableau_CSV .= '"'.$classe_nom.' | Session '.$annee_session_brevet.'"';
   foreach($tab_brevet_serie as $serie_ref => $serie_nom)
   {
     foreach($tab_brevet_epreuve[$serie_ref] as $epreuve_ref => $epreuve_nom)
     {
-      $releve_PDF->tableau_moyennes_reference_rubrique( $epreuve_ref , $epreuve_nom );
-      $releve_CSV .= $separateur.'"'.$epreuve_nom.'"';
+      $archivage_tableau_PDF->moyennes_reference_rubrique( $epreuve_ref , $epreuve_nom );
+      $archivage_tableau_CSV .= $separateur.'"'.$epreuve_nom.'"';
     }
   }
-  $releve_CSV .= "\r\n";
+  $archivage_tableau_CSV .= "\r\n";
   // ligne suivantes : élèves, notes
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->marge_haut+$releve_PDF->etiquette_hauteur );
+  $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
   foreach($tab_eleve_id as $eleve_id)
   {
     extract($tab_eleve_infos[$eleve_id]);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
-    $releve_PDF->tableau_moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
-    $releve_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
+    $archivage_tableau_PDF->moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
+    $archivage_tableau_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
     foreach($tab_brevet_serie as $serie_ref => $serie_nom)
     {
       foreach($tab_brevet_epreuve[$serie_ref] as $epreuve_ref => $epreuve_nom)
       {
         $note = (isset($tab_saisie[$eleve_id][$serie_ref.$epreuve_ref])) ? $tab_saisie[$eleve_id][$serie_ref.$epreuve_ref] : NULL ;
-        $releve_PDF->tableau_moyennes_note( $eleve_id , $epreuve_ref , $note , TRUE /*is_brevet*/ );
-        $releve_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
+        $archivage_tableau_PDF->moyennes_note( $eleve_id , $epreuve_ref , $note , TRUE /*is_brevet*/ );
+        $archivage_tableau_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
       }
     }
-    $releve_PDF->SetXY($releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur);
-    $releve_CSV .= "\r\n";
+    $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
+    $archivage_tableau_CSV .= "\r\n";
   }
 }
 
@@ -320,12 +320,12 @@ if($action=='imprimer_donnees_eleves_moyennes')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
-FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $releve_PDF );
+FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')
 {
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($releve_CSV) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
   echo'<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
 }
 exit();

@@ -163,6 +163,7 @@ else
   $tab_eleve_infos[0] = array(
     'eleve_nom'      => '',
     'eleve_prenom'   => '',
+    'eleve_genre'    => 'I',
     'date_naissance' => NULL,
   );
 }
@@ -319,10 +320,10 @@ else
 
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
-$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']/100) : 0 ;
-$nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                  ? 1.3 : 0 ;
-$nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                             ? 1.3 : 0 ;
-$nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )  ? 1.3 : 0 ;
+$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']/100) : 0 ;
+$nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                           ? 1.3 : 0 ;
+$nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                                      ? 1.3 : 0 ;
+$nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )           ? 1.3 : 0 ;
 $nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + 1 : 0 ;
 $nb_lignes_matiere_marge    = 1 ;
 $nb_lignes_matiere_intitule = 2 ;
@@ -351,12 +352,12 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         {
           if($prof_id) // Sinon c'est la note.
           {
-            $nb_lignes_appreciation_intermediaire += max( 2 , ceil(strlen($tab['appreciation'])/100), min( substr_count($tab['appreciation'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 ) );
+            $nb_lignes_appreciation_intermediaire += max( 2 , ceil(strlen($tab['appreciation'])/100), min( substr_count($tab['appreciation'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] / 100 ) );
           }
         }
       }
       $nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
-      $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? $nb_lignes_appreciation_intermediaire + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
+      $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? $nb_lignes_appreciation_intermediaire + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
       $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
     }
   }
@@ -405,13 +406,13 @@ if( ($make_html) || ($make_graph) )
 }
 if($make_pdf)
 {
-  $releve_PDF = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->bilan_synthese_initialiser( $synthese_modele , $nb_lignes_total , $eleve_nb );
+  $releve_PDF = new PDF_item_synthese( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
+  $releve_PDF->initialiser( $synthese_modele , $nb_lignes_total , $eleve_nb );
 }
 // Pour chaque élève...
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_genre $date_naissance
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
@@ -433,13 +434,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         if( ($make_officiel) && ($couleur=='non') )
         {
           // Le réglage ne semble pertinent que pour les exemplaires que l'établissement destine à l'impression.
-          // L'exemplaire archivé est une copie destinée à être consultée et sa lecture c'est bien plus agréable en couleur.
+          // L'exemplaire archivé est une copie destinée à être consultée et sa lecture est bien plus agréable en couleur.
           $couleur_tirage = ($numero_tirage==0) ? 'oui' : 'non' ;
           $releve_PDF->__set('couleur',$couleur_tirage);
         }
         $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$synthese_modele] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
-        $releve_PDF->bilan_synthese_entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+        $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$synthese_modele] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
+        $releve_PDF->entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
       }
       // On passe en revue les matières...
       foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
@@ -482,7 +483,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $moyenne_classe = $tab_saisie[0][$matiere_id][0]['note'];
               }
             }
-            $releve_PDF->bilan_synthese_ligne_matiere( $matiere_nom , $tab_nb_lignes[$eleve_id][$matiere_id] , $tab_infos_matiere['total'] , $total , $moyenne_eleve , $moyenne_classe , $avec_texte_nombre , $avec_texte_code );
+            $releve_PDF->ligne_matiere( $matiere_nom , $tab_nb_lignes[$eleve_id][$matiere_id] , $tab_infos_matiere['total'] , $total , $moyenne_eleve , $moyenne_classe , $avec_texte_nombre , $avec_texte_code );
           }
           if($make_html)
           {
@@ -504,7 +505,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
               if($make_pdf)
               {
-                $releve_PDF->bilan_synthese_ligne_synthese( $tab_synthese[$synthese_ref] , $tab_infos_synthese , $total , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
+                $releve_PDF->ligne_synthese( $tab_synthese[$synthese_ref] , $tab_infos_synthese , $total , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
               }
               if($make_html)
               {
@@ -522,7 +523,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           {
             // Il est possible qu'aucun item n'ait été évalué pour un élève (absent...) : il faut quand même dessiner un cadre pour ne pas provoquer un décalage, d'autant plus qu'il peut y avoir une appréciation à côté.
             $hauteur_ligne_synthese = $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ;
-            $releve_PDF->bilan_synthese_ligne_synthese( '' , array() , 0 , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
+            $releve_PDF->ligne_synthese( '' , array() , 0 , $hauteur_ligne_synthese , $avec_texte_nombre , $avec_texte_code );
           }
           if($make_html)
           {
@@ -556,7 +557,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
             }
             // Bulletin - Note (HTML)
-            if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
+            if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) && !in_array($matiere_id,$tab_moyenne_exception_matieres) )
             {
               // $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini car déjà calculé (mais peut valoir NULL)
               extract($tab_saisie[$eleve_id][$matiere_id][0]);  // $prof_info $appreciation $note
@@ -574,7 +575,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $releve_HTML .= '<tr id="note_'.$matiere_id.'_0"><td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span>'.$moyenne_classe.'</td></tr>'.NL;
             }
             // Bulletin - Appréciations intermédiaires (HTML)
-            if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
+            if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) )
             {
               // $tab_saisie[$eleve_id][$matiere_id] n'est pas défini si bulletin dans note et pas d'appréciation encore saisie
               if(isset($tab_saisie[$eleve_id][$matiere_id]))
@@ -609,24 +610,24 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $releve_HTML .= '</tbody></table>'.NL;
           }
           // Examen de présence des appréciations intermédiaires et des notes
-          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id][0])) || ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) ) )
+          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && !in_array($matiere_id,$tab_moyenne_exception_matieres) && ( (!isset($tab_saisie[$eleve_id][$matiere_id][0])) || ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) ) )
           {
             $tab_resultat_examen[$matiere_nom][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
           }
-          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) )
+          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) )
           {
             $tab_resultat_examen[$matiere_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
           }
           // Impression des appréciations intermédiaires (PDF)
-          if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
+          if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) )
           {
             $nb_lignes_en_moins = ( $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] || $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'] ) ? $nb_lignes_matiere_intitule_et_marge : $nb_lignes_matiere_marge ;
-            $releve_PDF->bilan_synthese_appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_en_moins );
+            $releve_PDF->appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_en_moins );
           }
         }
       }
       // Bulletin - Appréciation générale + Moyenne générale
-      if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+      if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
       {
         if( ($make_html) || ($make_graph) )
         {
@@ -697,12 +698,12 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
       }
       // Examen de présence de l'appréciation générale
-      if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && !$is_appreciation_generale_enregistree )
+      if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']) && (in_array(0,$tab_rubrique_id)) && !$is_appreciation_generale_enregistree )
       {
         $tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
       }
       // Impression de l'appréciation générale + Moyenne générale
-      if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) )
+      if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']) )
       {
         if($is_appreciation_generale_enregistree)
         {
@@ -729,7 +730,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $moyenne_generale_classe_affichee = $tab_saisie[0][0][0]['note'];
           }
         }
-        $releve_PDF->bilan_synthese_appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes , $moyenne_generale_eleve_affichee , $moyenne_generale_classe_affichee );
+        $releve_PDF->appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes , $moyenne_generale_eleve_affichee , $moyenne_generale_classe_affichee );
       }
       $tab_pdf_lignes_additionnelles = array();
       // Bulletin - Absences et retard
@@ -774,7 +775,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // Bulletin - Légende
       if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
       {
-        if($make_pdf)  { $releve_PDF->bilan_synthese_legende(); }
+        if($make_pdf)  { $releve_PDF->legende(); }
         if($make_html) { $releve_HTML .= $legende_html; }
       }
       // Indiquer a posteriori le nombre de pages par élève

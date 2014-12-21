@@ -101,7 +101,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
   $DB_SQL.= ($with_rubrique_nom)   ? 'LEFT JOIN '.$rubrique_table.' ON sacoche_officiel_saisie.rubrique_id='.$rubrique_table.'.'.$rubrique_champ_id.' ' : '' ;
   $DB_SQL.= ($with_periodes_avant) ? 'LEFT JOIN sacoche_periode USING(periode_id) ' : '' ;
   $DB_SQL.= 'WHERE officiel_type=:officiel_type '.$periode_where.' AND eleve_ou_classe_id IN('.$liste_eleve_id.') AND saisie_type=:saisie_type ';
-  $DB_SQL.= ($prof_id) ? ( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) ? 'AND prof_id IN(:prof_id,0) ' :  'AND prof_id=:prof_id ' ) : '' ;
+  $DB_SQL.= ($prof_id) ? ( ( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) ? 'AND prof_id IN(:prof_id,0) ' :  'AND prof_id=:prof_id ' ) : '' ;
   $DB_SQL.= ($only_synthese_generale) ? 'AND rubrique_id=0 ' : '' ;
   $DB_SQL.= 'ORDER BY ';
   $DB_SQL.= ($with_rubrique_nom)   ? $rubrique_champ_ordre.' ASC, ' : '' ;

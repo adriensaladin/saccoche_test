@@ -149,7 +149,7 @@ $(document).ready
       else
       {
         $.prompt(
-          "Souhaitez-vous vraiment restaurer la base contenue dans le fichier "+fichier_nom+"&nbsp;?<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
+          "Souhaitez-vous vraiment restaurer la base contenue dans ce fichier&nbsp;?<br />==&gt; "+fichier_nom+"<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
           {
             title   : 'Demande de confirmation',
             buttons : {

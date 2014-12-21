@@ -151,13 +151,13 @@ if( ($make_html) || ($make_graph) )
 {
   $bouton_print_appr = (!$make_graph)                       ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $releve_HTML  = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '<div id="div_graphique"></div>'.NL ;
+  $fiche_brevet_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '<div id="div_graphique"></div>'.NL ;
   $width_col1 = 100 ;
   $width_col2 = 900 - $width_col1;
 }
 if($make_pdf)
 {
-  $releve_PDF = new FPDI( TRUE /*make_officiel*/ , 'portrait' /*orientation*/ , 16 /*marge_gauche*/ , 16 /*marge_droite*/ , 16 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ , 'oui' /*legende*/ , !empty($is_test_impression) /*filigrane*/ );
+  $fiche_brevet_PDF = new PDF_fiche_brevet( TRUE /*make_officiel*/ , 'portrait' /*orientation*/ , 16 /*marge_gauche*/ , 16 /*marge_droite*/ , 16 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ , 'oui' /*legende*/ , !empty($is_test_impression) /*filigrane*/ );
   // Tag date heure initiales
   $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Quelques valeurs de positionnement ...
@@ -253,7 +253,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // indiquer le fichier source
     $source_pdf = ($eleve_brevet_serie_initiale=='G') ? 'DNB_Fiche_scolaire_pour_le_jury_Serie_generale_2014_01' : 'DNB_Fiche_scolaire_pour_le_jury_Serie_professionnelle_2014_01' ;
-    $releve_PDF->setSourceFile('./_pdf/'.$source_pdf.'.pdf');
+    $fiche_brevet_PDF->setSourceFile('./_pdf/'.$source_pdf.'.pdf');
   }
   for( $numero_tirage=0 ; $numero_tirage<$nombre_tirages ; $numero_tirage++ )
   {
@@ -261,19 +261,19 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     {
       $etablissement = ($numero_tirage==0) ? 'Établissement' : 'Avertissement' ;
       // ajouter une page ; y importer la page 1 ; l'utiliser comme support
-      $releve_PDF->AddPage();
-      $tplIdx = $releve_PDF->importPage(1);
-      $releve_PDF->useTemplate($tplIdx);
-      if($eleve_brevet_serie_initiale=='G') { $releve_PDF->SetFillColor(255,95,36); } else { $releve_PDF->SetFillColor(35,153,249); }
-      $releve_PDF->fiche_brevet_information( $pdf_coords_session[$eleve_brevet_serie_initiale] , 'Session' , $annee_session_brevet );
-      $releve_PDF->SetFillColor(255,255,255);
-      $releve_PDF->fiche_brevet_information( $pdf_coords_academie      , 'Académie'          , ':   '.$geo_academie_nom    );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_departement   , 'Département'       , ':   '.$geo_departement_nom );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_eleve_nom     , 'Nom'               , ':   '.$eleve_nom           );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_eleve_prenom  , 'Prénom'            , ':   '.$eleve_prenom        );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_eleve_date    , 'Date de naissance' , ':   '.$date_naissance      );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_classe_nom    , 'Division'          , ':   '.$classe_nom          );
-      $releve_PDF->fiche_brevet_information( $pdf_coords_etablissement , $etablissement      ,        $tab_etabl_coords    );
+      $fiche_brevet_PDF->AddPage();
+      $tplIdx = $fiche_brevet_PDF->importPage(1);
+      $fiche_brevet_PDF->useTemplate($tplIdx);
+      if($eleve_brevet_serie_initiale=='G') { $fiche_brevet_PDF->SetFillColor(255,95,36); } else { $fiche_brevet_PDF->SetFillColor(35,153,249); }
+      $fiche_brevet_PDF->information( $pdf_coords_session[$eleve_brevet_serie_initiale] , 'Session' , $annee_session_brevet );
+      $fiche_brevet_PDF->SetFillColor(255,255,255);
+      $fiche_brevet_PDF->information( $pdf_coords_academie      , 'Académie'          , ':   '.$geo_academie_nom    );
+      $fiche_brevet_PDF->information( $pdf_coords_departement   , 'Département'       , ':   '.$geo_departement_nom );
+      $fiche_brevet_PDF->information( $pdf_coords_eleve_nom     , 'Nom'               , ':   '.$eleve_nom           );
+      $fiche_brevet_PDF->information( $pdf_coords_eleve_prenom  , 'Prénom'            , ':   '.$eleve_prenom        );
+      $fiche_brevet_PDF->information( $pdf_coords_eleve_date    , 'Date de naissance' , ':   '.$date_naissance      );
+      $fiche_brevet_PDF->information( $pdf_coords_classe_nom    , 'Division'          , ':   '.$classe_nom          );
+      $fiche_brevet_PDF->information( $pdf_coords_etablissement , $etablissement      ,        $tab_etabl_coords    );
     }
     // On passe en revue les épreuves...
     foreach($tab_brevet_epreuve[$eleve_brevet_serie] as $epreuve_code => $tab)
@@ -302,9 +302,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           {
             $note           = is_numeric($note)           ? sprintf("%04.1f",$note)           : $note ;
             $moyenne_classe = is_numeric($moyenne_classe) ? sprintf("%04.1f",$moyenne_classe) : $moyenne_classe ;
-            $releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>'.NL;
-            $releve_HTML .= '<tr><th colspan="2">'.html($epreuve_nom).' [ '.html(implode(' ; ',$tab_matieres_utilisees)).' ]</th></tr>'.NL;
-            $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
+            $fiche_brevet_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>'.NL;
+            $fiche_brevet_HTML .= '<tr><th colspan="2">'.html($epreuve_nom).' [ '.html(implode(' ; ',$tab_matieres_utilisees)).' ]</th></tr>'.NL;
+            $fiche_brevet_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
             if($appreciation)
             {
               $actions = '';
@@ -317,16 +317,16 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                 if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
               }
-              $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
+              $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
             }
             if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
             {
               if(!$appreciation)
               {
-                $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation.</button></div></td></tr>'.NL;
+                $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation.</button></div></td></tr>'.NL;
               }
             }
-            $releve_HTML .= '</tbody></table>'.NL;
+            $fiche_brevet_HTML .= '</tbody></table>'.NL;
           }
           if($make_pdf)
           {
@@ -334,13 +334,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $moyenne_classe = is_numeric($moyenne_classe) ? number_format($moyenne_classe,1,',','') : $moyenne_classe ;
             if(isset($pdf_coords_precision[$epreuve_code][$eleve_brevet_serie_initiale]))
             {
-              $releve_PDF->fiche_brevet_precision( $pdf_coords_precision[$epreuve_code][$eleve_brevet_serie_initiale] , $tab_matieres_utilisees );
+              $fiche_brevet_PDF->precision( $pdf_coords_precision[$epreuve_code][$eleve_brevet_serie_initiale] , $tab_matieres_utilisees );
             }
-            $releve_PDF->fiche_brevet_note( $pdf_coords_epreuve_classe[$epreuve_code][$eleve_brevet_serie_initiale] , 'classe' /*type*/ , $moyenne_classe );
-            $releve_PDF->fiche_brevet_note( $pdf_coords_epreuve_eleve[ $epreuve_code][$eleve_brevet_serie_initiale] , 'eleve'  /*type*/ , $note           );
+            $fiche_brevet_PDF->note( $pdf_coords_epreuve_classe[$epreuve_code][$eleve_brevet_serie_initiale] , 'classe' /*type*/ , $moyenne_classe );
+            $fiche_brevet_PDF->note( $pdf_coords_epreuve_eleve[ $epreuve_code][$eleve_brevet_serie_initiale] , 'eleve'  /*type*/ , $note           );
             if($appreciation)
             {
-              $releve_PDF->fiche_brevet_appreciation( $pdf_coords_epreuve_appr[  $epreuve_code][$eleve_brevet_serie_initiale] , $appreciation );
+              $fiche_brevet_PDF->appreciation( $pdf_coords_epreuve_appr[  $epreuve_code][$eleve_brevet_serie_initiale] , $appreciation );
             }
           }
         }
@@ -368,9 +368,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       {
         $note           = is_numeric($note)           ? sprintf("%05.1f",$note)           : $note ;
         $moyenne_classe = is_numeric($moyenne_classe) ? sprintf("%05.1f",$moyenne_classe) : $moyenne_classe ;
-        $releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'.NL;
-        $releve_HTML .= '<tr><th style="width:'.$width_col1.'px">Total des points</th><th style="width:'.$width_col2.'px">Avis de synthèse (conseil de classe / chef d\'établissement)</th></tr>'.NL;
-        $releve_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
+        $fiche_brevet_HTML .= '<table class="bilan" style="width:900px"><tbody>'.NL;
+        $fiche_brevet_HTML .= '<tr><th style="width:'.$width_col1.'px">Total des points</th><th style="width:'.$width_col2.'px">Avis de synthèse (conseil de classe / chef d\'établissement)</th></tr>'.NL;
+        $fiche_brevet_HTML .= '<tr><td class="now moyenne" style="width:'.$width_col1.'px">'.$note.'</td><td class="now" style="width:'.$width_col2.'px">Moyenne de classe : '.$moyenne_classe.'</td></tr>'.NL;
         if($appreciation)
         {
           $actions = '';
@@ -384,30 +384,30 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
           }
           $txt_avis_conseil_classe = ($avis_conseil_classe=='F') ? 'Avis favorable' : 'Doit faire ses preuves' ;
-          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div><div id="avis_conseil_classe" class="b">'.html($txt_avis_conseil_classe).'</div></td></tr>'.NL;
+          $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div><div id="avis_conseil_classe" class="b">'.html($txt_avis_conseil_classe).'</div></td></tr>'.NL;
         }
         elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
         {
-          $releve_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button></div></td></tr>'.NL;
+          $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button></div></td></tr>'.NL;
         }
-        $releve_HTML .= '</tbody></table>'.NL;
+        $fiche_brevet_HTML .= '</tbody></table>'.NL;
       }
     }
     if($make_pdf)
     {
       $note = str_replace('.',',',$note);
-      $releve_PDF->fiche_brevet_note( $pdf_coords_epreuve_eleve[CODE_BREVET_EPREUVE_TOTAL][$eleve_brevet_serie_initiale] , 'total' /*type*/ , $note );
+      $fiche_brevet_PDF->note( $pdf_coords_epreuve_eleve[CODE_BREVET_EPREUVE_TOTAL][$eleve_brevet_serie_initiale] , 'total' /*type*/ , $note );
       if($appreciation)
       {
-        $releve_PDF->fiche_brevet_appreciation( $pdf_coords_epreuve_appr[ CODE_BREVET_EPREUVE_TOTAL][$eleve_brevet_serie_initiale] , $appreciation );
-        $releve_PDF->fiche_brevet_case( $pdf_coords_epreuve_case[$avis_conseil_classe][$eleve_brevet_serie_initiale] );
+        $fiche_brevet_PDF->appreciation( $pdf_coords_epreuve_appr[ CODE_BREVET_EPREUVE_TOTAL][$eleve_brevet_serie_initiale] , $appreciation );
+        $fiche_brevet_PDF->rectangle( $pdf_coords_epreuve_case[$avis_conseil_classe][$eleve_brevet_serie_initiale] );
       }
-      $releve_PDF->fiche_brevet_ligne_tag($tag_date_heure_initiales);
+      $fiche_brevet_PDF->ligne_tag($tag_date_heure_initiales);
     }
     // Fiche brevet - Date de naissance
     if( ($date_naissance) && ( ($make_html) || ($make_graph) ) )
     {
-      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
+      $fiche_brevet_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
     }
     // Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
     if($make_action=='imprimer')
@@ -422,7 +422,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 // On enregistre la sortie PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf' , $releve_PDF ); }
+if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf' , $fiche_brevet_PDF ); }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On fabrique les options js pour le diagramme graphique

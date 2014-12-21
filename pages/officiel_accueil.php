@@ -121,16 +121,22 @@ if($BILAN_TYPE=='bulletin')
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var USER_ID           = '.$_SESSION['USER_ID'].';' );
-Layout::add( 'js_inline_before' , 'var TODAY_FR          = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var BILAN_TYPE        = "'.$BILAN_TYPE.'";' );
-Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'].';' );
-Layout::add( 'js_inline_before' , 'var APP_GENERALE      = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'].';' );
-Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20 = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_NA     = "'.$_SESSION['BACKGROUND_NA'].'";' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_VA     = "'.$_SESSION['BACKGROUND_VA'].'";' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_A      = "'.$_SESSION['BACKGROUND_A'].'";' );
-Layout::add( 'js_inline_before' , 'var URL_IMPORT        = "'.URL_DIR_IMPORT.'";' );
+Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
+Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var BILAN_TYPE            = "'.$BILAN_TYPE.'";' );
+Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20     = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_NA         = "'.$_SESSION['BACKGROUND_NA'].'";' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_VA         = "'.$_SESSION['BACKGROUND_VA'].'";' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_A          = "'.$_SESSION['BACKGROUND_A'].'";' );
+Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR'].';' );
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR'].';' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_REPORT   = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_REPORT'].';' );
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_REPORT   = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_REPORT'].';' );
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_MODELE   = "'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_MODELE'])).'";' );
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_MODELE   = "'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_MODELE'])).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 
 <ul class="puce">
@@ -300,11 +306,11 @@ foreach($DB_TAB as $DB_ROW)
   // images action : vérification
   if($etat=='2rubrique')
   {
-    $icone_verification = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire."></q>' ;
+    $icone_verification = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire."></q>' ;
   }
   elseif($etat=='3synthese')
   {
-    $icone_verification = ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) || ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire ni de synthèse."></q>' ;
+    $icone_verification = ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) || ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire ni de synthèse."></q>' ;
   }
   else
   {
@@ -364,7 +370,7 @@ foreach($DB_TAB as $DB_ROW)
     {
       if($etat=='2rubrique')
       {
-        $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '<q class="modifier" title="Saisir '.$tab_types[$BILAN_TYPE]['modif_rubrique'].'."></q>' : '<q class="modifier_non" title="Bilan configuré sans saisie intermédiaire."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
+        $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '<q class="modifier" title="Saisir '.$tab_types[$BILAN_TYPE]['modif_rubrique'].'."></q>' : '<q class="modifier_non" title="Bilan configuré sans saisie intermédiaire."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
       }
       else
       {
@@ -380,7 +386,7 @@ foreach($DB_TAB as $DB_ROW)
     {
       if($etat=='3synthese')
       {
-        $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
+        $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
       }
       else
       {
@@ -461,7 +467,7 @@ if($affichage_formulaire_statut)
 
 $form_hidden = '';
 $tab_checkbox_rubriques = array();
-$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE']) ? '' : ' disabled' ;
+$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '' : ' disabled' ;
 if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
 {
   // Lister les piliers du palier concerné
@@ -491,7 +497,7 @@ elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
   $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 }
 // Choix de vérifier ou pas l'appréciation générale ; le test ($etat=='3synthese') dépend de chaque classe...
-$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '' : ' disabled' ;
+$disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ? '' : ' disabled' ;
 $tab_checkbox_rubriques[0] = '<label for="rubrique_0"><input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /> <i>Appréciation de synthèse générale</i></label><br />';
 // Présenter les rubriques en colonnes de hauteur raisonnables
 $tab_checkbox_rubriques    = array_values($tab_checkbox_rubriques);
@@ -662,7 +668,7 @@ $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y')))
       <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>
       <li><button id="imprimer_donnees_eleves_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
       <li><button id="imprimer_donnees_classe_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues sur le groupe classe.</li>
-      <?php if($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']): ?>
+      <?php if($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']): ?>
         <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
       <?php endif; ?>
       <?php if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']): ?>
@@ -672,7 +678,7 @@ $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y')))
     <?php else: ?>
       <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève.</li>
       <li><button id="imprimer_donnees_eleves_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
-      <?php if($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']): ?>
+      <?php if($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']): ?>
         <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
       <?php endif; ?>
     <?php endif; ?>

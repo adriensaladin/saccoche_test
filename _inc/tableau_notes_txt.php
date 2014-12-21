@@ -52,6 +52,7 @@ $tab_notes_info = array
   'LomerBiseau'  => array( 'nom'=>'Lomer Biseau'  , 'RR' =>'RR' , 'R' =>'R'  , 'V' =>'V'  , 'VV' =>'VV' ),
   'Luys'         => array( 'nom'=>'Luys'          , 'RR' =>'R'  , 'R' =>'O'  , 'V' =>'V'  , 'VV' =>'B'  ),
   'Marly'        => array( 'nom'=>'Marly'         , 'RR' =>'0'  , 'R' =>'1'  , 'V' =>'2'  , 'VV' =>'3'  ),
+  'MendesFrance' => array( 'nom'=>'Mendès France' , 'RR' =>'R'  , 'R' =>'B'  , 'V' =>'V'  , 'VV' =>'E'  ),
   'Mistral'      => array( 'nom'=>'Mistral'       , 'RR' =>'SA' , 'R' =>'NA' , 'V' =>'EC' , 'VV' =>'A'  ),
   'Padawan'      => array( 'nom'=>'Padawan'       , 'RR' =>'CNA', 'R' =>'CR' , 'V' =>'CD' , 'VV' =>'CA' ),
   'Prevert'      => array( 'nom'=>'Prévert'       , 'RR' =>'EN' , 'R' =>'AR' , 'V' =>'EP' , 'VV' =>'R'  ),

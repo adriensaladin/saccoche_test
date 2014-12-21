@@ -231,7 +231,8 @@ if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords[] = $_SESSION['E
 if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
 if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
 if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['COURRIEL']; }
+if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
 
 // académie, département, année
 
@@ -268,7 +269,7 @@ $tab_eleve      = $tab_eleve_id;
 $liste_eleve    = $liste_eleve_id;
 $tab_matiere_id = array();
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_brevet_fiches.php');
-$nom_bilan_html = 'releve_HTML';
+$nom_bilan_html = 'fiche_brevet_HTML';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat (pas grand chose, car la découpe du PDF intervient lors d'appels ajax ultérieurs, sauf s'il s'agissait d'un test d'impression auquel cas on ajoute un filigrane et on s'arrête là)

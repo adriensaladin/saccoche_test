@@ -258,7 +258,8 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
   if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
   if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-  if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['COURRIEL']; }
+  if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+  if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
   // Coordonnées du contact référent
   $DB_ROW2 = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
   $tab_etabl_coords[] = '';

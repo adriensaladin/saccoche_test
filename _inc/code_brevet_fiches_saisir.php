@@ -185,7 +185,7 @@ $tab_eleve      = array($eleve_id); // tableau de l'unique élève à considére
 $liste_eleve    = (string)$eleve_id;
 $tab_matiere_id = $tab_matiere_id;
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_brevet_fiches.php');
-$nom_bilan_html = 'releve_HTML';
+$nom_bilan_html = 'fiche_brevet_HTML';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat

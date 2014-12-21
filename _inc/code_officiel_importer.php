@@ -239,7 +239,7 @@ if($ACTION=='uploader_saisie_csv')
           if( ( $ref1_valeur && ($BILAN_ETAT=='2rubrique') && isset($tab_rubriques[$ref1_valeur]) ) || ( !$ref1_valeur && ($BILAN_ETAT=='3synthese') ) )
           {
             $rubrique_id = $ref1_valeur;
-            $longueur_maxi = ($rubrique_id) ? $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'] : $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] ;
+            $longueur_maxi = ($rubrique_id) ? $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR'] : $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR'] ;
           }
           else
           {

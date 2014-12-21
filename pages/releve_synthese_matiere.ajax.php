@@ -52,6 +52,7 @@ $only_socle      = (isset($_POST['f_restriction_socle']))  ? 1                  
 $only_niveau     = (isset($_POST['f_restriction_niveau'])) ? $niveau_id                                       : 0;
 $mode_synthese   = (isset($_POST['f_mode_synthese']))      ? Clean::texte($_POST['f_mode_synthese'])          : '';
 $couleur         = (isset($_POST['f_couleur']))            ? Clean::texte($_POST['f_couleur'])                : '';
+$fond            = (isset($_POST['f_fond']))               ? Clean::texte($_POST['f_fond'])                   : '';
 $legende         = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])                : '';
 $marge_min       = (isset($_POST['f_marge_min']))          ? Clean::entier($_POST['f_marge_min'])             : 0;
 $eleves_ordre    = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
@@ -61,7 +62,7 @@ $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende || !$marge_min || !$eleves_ordre )
+if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }

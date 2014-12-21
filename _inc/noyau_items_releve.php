@@ -459,11 +459,11 @@ if( $type_synthese || $type_bulletin )
 
 if( $type_individuel && ($releve_individuel_format=='eleve') )
 {
-  $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = ( $make_officiel && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']<250) ) ? 1   : 2 ;
-  $nb_lignes_appreciation_generale_avec_intitule               = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR'] )       ? 1+6 : 0 ;
-  $nb_lignes_assiduite                                         = ( $make_officiel && ($affichage_assiduite) )                                               ? 1.3 : 0 ;
-  $nb_lignes_prof_principal                                    = ( $make_officiel && ($affichage_prof_principal) )                                          ? 1.3 : 0 ;
-  $nb_lignes_supplementaires                                   = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE'] )                 ? 1.3 : 0 ;
+  $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = ( $make_officiel && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']<250) ) ? 1   : 2 ;
+  $nb_lignes_appreciation_generale_avec_intitule               = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE'] )       ? 1+6 : 0 ;
+  $nb_lignes_assiduite                                         = ( $make_officiel && ($affichage_assiduite) )                                      ? 1.3 : 0 ;
+  $nb_lignes_prof_principal                                    = ( $make_officiel && ($affichage_prof_principal) )                                 ? 1.3 : 0 ;
+  $nb_lignes_supplementaires                                   = ( $make_officiel && $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE'] )        ? 1.3 : 0 ;
   $nb_lignes_legendes                                          = ($legende=='oui') ? 0.5 + 1 + ($retroactif!='non') + ($aff_etat_acquisition) : 0 ;
   $nb_lignes_matiere_intitule_et_marge                         = 1.5 ;
   $nb_lignes_matiere_synthese                                  = $aff_moyenne_scores + $aff_pourcentage_acquis ;
@@ -476,7 +476,7 @@ if( $type_individuel && ($releve_individuel_format=='eleve') )
       if(isset($tab_eval[$eleve_id][$matiere_id])) // $tab_eval[] utilisé plutôt que $tab_score_eleve_item[] au cas où $calcul_acquisitions=FALSE
       {
         $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + count($tab_eval[$eleve_id][$matiere_id],COUNT_NORMAL) + $nb_lignes_matiere_synthese ;
-        if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
+        if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
         {
           $tab_nb_lignes[$eleve_id][$matiere_id] += ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$matiere_id]) ) + 1 ; // + 1 pour "Appréciation / Conseils pour progresser"
         }
@@ -568,7 +568,7 @@ if($type_individuel)
   if($make_pdf)
   {
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-    $releve_PDF = new PDF_item_releve( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
+    $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende , !empty($is_test_impression) /*filigrane*/ );
   }
   /*
    * ********************************
@@ -583,12 +583,12 @@ if($type_individuel)
     {
       $lignes_nb = ($releve_modele!='multimatiere') ? array_sum($tab_nb_lignes_total_eleve) : 0 ;
       $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
-      $releve_PDF->initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
+      $releve_PDF->bilan_item_individuel_initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleve_nb , $pages_nb );
     }
     // Pour chaque élève...
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     {
-      extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
+      extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
       $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
       if($make_officiel)
       {
@@ -608,13 +608,13 @@ if($type_individuel)
             if( ($make_officiel) && ($couleur=='non') )
             {
               // Le réglage ne semble pertinent que pour les exemplaires que l'établissement destine à l'impression.
-              // L'exemplaire archivé est une copie destinée à être consultée et sa lecture est bien plus agréable en couleur.
+              // L'exemplaire archivé est une copie destinée à être consultée et sa lecture c'est bien plus agréable en couleur.
               $couleur_tirage = ($numero_tirage==0) ? 'oui' : 'non' ;
               $releve_PDF->__set('couleur',$couleur_tirage);
             }
             $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-            $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
-            $releve_PDF->entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+            $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$date_naissance) ;
+            $releve_PDF->bilan_item_individuel_entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
           }
           // Pour chaque matiere...
           foreach($tab_matiere as $matiere_id => $tab)
@@ -630,7 +630,7 @@ if($type_individuel)
                   if( ($make_pdf) && ($releve_modele!='matiere') )
                   {
                     $item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
-                    $releve_PDF->transdisciplinaire_ligne_matiere( $matiere_nom , $item_matiere_nb+$aff_moyenne_scores+$aff_pourcentage_acquis /*lignes_nb*/ );
+                    $releve_PDF->bilan_item_individuel_transdisciplinaire_ligne_matiere( $matiere_nom , $item_matiere_nb+$aff_moyenne_scores+$aff_pourcentage_acquis /*lignes_nb*/ );
                   }
                   if($make_html)
                   {
@@ -681,7 +681,7 @@ if($type_individuel)
                     }
                     if($make_pdf)
                     {
-                      $releve_PDF->debut_ligne_item( $item_ref , $texte_coef.$texte_socle.$item_nom );
+                      $releve_PDF->bilan_item_individuel_debut_ligne_item( $item_ref , $texte_coef.$texte_socle.$item_nom );
                     }
                     // cases d'évaluations
                     $devoirs_nb = count($tab_devoirs);
@@ -701,12 +701,12 @@ if($type_individuel)
                             $pdf_bg = ''; $td_class = '';
                             if($date<$jour_debut_annee_scolaire)
                             {
-                              $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_year' : '' ;
+                              $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
                               $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
                             }
                             elseif($date<$date_mysql_debut)
                             {
-                              $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_date' : '' ;
+                              $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                               $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                             }
                             if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
@@ -725,12 +725,12 @@ if($type_individuel)
                           $pdf_bg = ''; $td_class = '';
                           if($date<$jour_debut_annee_scolaire)
                           {
-                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_year' : '' ;
+                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
                             $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
                           }
                           elseif($date<$date_mysql_debut)
                           {
-                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_date' : '' ;
+                            $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                             $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                           }
                           if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
@@ -771,7 +771,7 @@ if($type_individuel)
                         $texte_bilan = '---';
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; }
-                      if($make_pdf)  { $releve_PDF->ligne_synthese('Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan); }
+                      if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan); }
                     }
                     // ... un pour le nombre d'items considérés acquis ou pas
                     if( $aff_pourcentage_acquis )
@@ -786,7 +786,7 @@ if($type_individuel)
                         $texte_bilan = '---';
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
-                      if($make_pdf)  { $releve_PDF->ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+                      if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
                     }
                   }
                   if($make_html)
@@ -795,7 +795,7 @@ if($type_individuel)
                     $releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan hsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
                     $releve_HTML_individuel_javascript .= '$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();';
                   }
-                  if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) )
+                  if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) )
                   {
                     // Relevé de notes - Info saisies périodes antérieures
                     $appreciations_avant = '';
@@ -847,20 +847,20 @@ if($type_individuel)
                   }
                 }
                 // Examen de présence des appréciations intermédiaires
-                if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && (!isset($tab_saisie[$eleve_id][$matiere_id])) )
+                if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) && (!isset($tab_saisie[$eleve_id][$matiere_id])) )
                 {
                   $tab_resultat_examen[$matiere_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
                 }
                 // Impression des appréciations intermédiaires (PDF)
-                if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
+                if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
                 {
-                  $releve_PDF->appreciation_rubrique( $tab_saisie[$eleve_id][$matiere_id] );
+                  $releve_PDF->bilan_item_individuel_appreciation_rubrique( $tab_saisie[$eleve_id][$matiere_id] );
                 }
               }
             }
           }
           // Relevé de notes - Synthèse générale
-          if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+          if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
           {
             if($make_html)
             {
@@ -907,12 +907,12 @@ if($type_individuel)
             }
           }
           // Examen de présence de l'appréciation générale
-          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']) && (in_array(0,$tab_rubrique_id)) && (!$is_appreciation_generale_enregistree) )
+          if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!$is_appreciation_generale_enregistree) )
           {
             $tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
           }
           // Impression de l'appréciation générale
-          if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']) )
+          if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) )
           {
             if($is_appreciation_generale_enregistree)
             {
@@ -929,7 +929,7 @@ if($type_individuel)
             {
               $tab_image_tampon_signature = ( (($numero_tirage>0)||(!$_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
             }
-            $releve_PDF->appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes );
+            $releve_PDF->bilan_item_individuel_appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes );
           }
           $tab_pdf_lignes_additionnelles = array();
           // Relevé de notes - Absences et retard
@@ -975,7 +975,7 @@ if($type_individuel)
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
           {
             if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
-            if($make_pdf)  { $releve_PDF->legende(); }
+            if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
           }
           // Indiquer a posteriori le nombre de pages par élève
           if($make_pdf)
@@ -1011,8 +1011,8 @@ if($type_individuel)
     {
       $lignes_nb = array_sum($tab_nb_lignes_total_item) + ($matiere_nb*1.5) ;
       $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
-      $releve_PDF->initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $item_nb , $pages_nb );
-      $releve_PDF->entete_format_item( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom );
+      $releve_PDF->bilan_item_individuel_initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $item_nb , $pages_nb );
+      $releve_PDF->bilan_item_individuel_entete_format_item( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom );
     }
     // Pour chaque matiere...
     foreach($tab_matiere as $matiere_id => $tab)
@@ -1050,7 +1050,7 @@ if($type_individuel)
           // Intitulé
           if($make_pdf)
           {
-            $releve_PDF->format_item_ligne_item( $item_ref.' - '.$texte_coef.$texte_socle.$item_nom , $tab_nb_lignes_total_item[$item_id] /*lignes_nb*/ );
+            $releve_PDF->bilan_item_individuel_format_item_ligne_item( $item_ref.' - '.$texte_coef.$texte_socle.$item_nom , $tab_nb_lignes_total_item[$item_id] /*lignes_nb*/ );
           }
           if($make_html)
           {
@@ -1078,7 +1078,7 @@ if($type_individuel)
               $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
               if($make_pdf)
               {
-                $releve_PDF->debut_ligne_eleve($eleve_nom.' '.$eleve_prenom);
+                $releve_PDF->bilan_item_individuel_debut_ligne_eleve($eleve_nom.' '.$eleve_prenom);
               }
               // cases d'évaluations
               $tab_devoirs = $tab_eval[$eleve_id][$matiere_id][$item_id];
@@ -1099,12 +1099,12 @@ if($type_individuel)
                       $pdf_bg = ''; $td_class = '';
                       if($date<$jour_debut_annee_scolaire)
                       {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_year' : '' ;
+                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
                       }
                       elseif($date<$date_mysql_debut)
                       {
-                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_date' : '' ;
+                        $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                       }
                       if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
@@ -1123,12 +1123,12 @@ if($type_individuel)
                     $pdf_bg = ''; $td_class = '';
                     if($date<$jour_debut_annee_scolaire)
                     {
-                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_year' : '' ;
+                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
                       $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
                     }
                     elseif($date<$date_mysql_debut)
                     {
-                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='oui') ) ? 'prev_date' : '' ;
+                      $pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
                       $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                     }
                     if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
@@ -1170,7 +1170,7 @@ if($type_individuel)
                 $texte_bilan = '---';
               }
               if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Moyenne des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; } // indication de pondération inopportune
-              if($make_pdf)  { $releve_PDF->ligne_synthese('Moyenne des scores d\'acquisitions : '.$texte_bilan); } // indication de pondération inopportune
+              if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Moyenne des scores d\'acquisitions : '.$texte_bilan); } // indication de pondération inopportune
             }
             // ... un pour le nombre d'items considérés acquis ou pas
             if( $aff_pourcentage_acquis )
@@ -1185,7 +1185,7 @@ if($type_individuel)
                 $texte_bilan = '---';
               }
               if($make_html) { $releve_HTML_table_foot .= '<tr><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
-              if($make_pdf)  { $releve_PDF->ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+              if($make_pdf)  { $releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
             }
           }
           if($make_html)
@@ -1199,7 +1199,7 @@ if($type_individuel)
         if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
         {
           if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
-          if($make_pdf)  { $releve_PDF->legende(); }
+          if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende(); }
         }
       }
     }
@@ -1228,11 +1228,12 @@ if($type_synthese)
   // Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
   // On définit l'orientation la plus adaptée
   $orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
-  $releve_PDF = new PDF_item_tableau( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , 'oui' /*legende*/ );
-  $releve_PDF->initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
-  $releve_PDF->entete($tab_titre[$releve_modele],$matiere_et_groupe,$texte_periode);
+  $releve_PDF = new PDF( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , 'oui' /*legende*/ );
+  $releve_PDF->bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
+  $releve_PDF->bilan_periode_synthese_entete($tab_titre[$releve_modele],$matiere_et_groupe,$texte_periode);
   // 1ère ligne
-  $releve_PDF->ligne_tete_cellule_debut();
+  $releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '' , 0 , 0 , 'C' , FALSE , '');
+  $releve_PDF->choisir_couleur_fond('gris_clair');
   $th = ($tableau_synthese_format=='eleve') ? 'Elève' : 'Item' ;
   $releve_HTML_table_head = '<thead><tr><th>'.$th.'</th>';
   if($tableau_synthese_format=='eleve')
@@ -1241,7 +1242,7 @@ if($type_synthese)
     {
       foreach($tab_item as $item_id=>$item_nom)
       {
-        $releve_PDF->ligne_tete_cellule_corps( $tab_item_infos[$item_id][0]['item_ref'] );
+        $releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($tab_item_infos[$item_id][0]['item_ref']), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
         $releve_HTML_table_head .= '<th title="'.html(html($tab_item_infos[$item_id][0]['item_nom'])).'"><img alt="'.html($tab_item_infos[$item_id][0]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item_infos[$item_id][0]['item_ref']).'&amp;size=8" /></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
       }
     }
@@ -1251,11 +1252,14 @@ if($type_synthese)
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
       extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
-      $releve_PDF->ligne_tete_cellule_corps( $eleve_nom.' '.$eleve_prenom );
+      $releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
       $releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
     }
   }
-  $releve_PDF->ligne_tete_cellules_fin();
+  $releve_PDF->SetX( $releve_PDF->GetX()+2 );
+  $releve_PDF->choisir_couleur_fond('gris_moyen');
+  $releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ * ]'  , 1 , 0 , 'C' , TRUE , '');
+  $releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ ** ]' , 1 , 1 , 'C' , TRUE , '');
   $checkbox_vide = ($affichage_checkbox) ? '<th class="nu">&nbsp;</th>' : '' ;
   $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'.NL;
   // lignes suivantes
@@ -1265,7 +1269,8 @@ if($type_synthese)
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
       extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
-      $releve_PDF->ligne_corps_cellule_debut( $eleve_nom.' '.$eleve_prenom );
+      $releve_PDF->choisir_couleur_fond('gris_clair');
+      $releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , TRUE , '');
       $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
       foreach($tab_matiere_item as $matiere_id=>$tab_item)  // Pour chaque item...
       {
@@ -1283,7 +1288,7 @@ if($type_synthese)
       }
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
-      $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
+      $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,FALSE,TRUE);
       $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
       $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
     }
@@ -1294,7 +1299,8 @@ if($type_synthese)
     {
       foreach($tab_item as $item_id=>$item_nom)
       {
-        $releve_PDF->ligne_corps_cellule_debut( $tab_item_infos[$item_id][0]['item_ref'] );
+        $releve_PDF->choisir_couleur_fond('gris_clair');
+        $releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($tab_item_infos[$item_id][0]['item_ref']) , 1 , 0 , 'L' , TRUE , '');
         $releve_HTML_table_body .= '<tr><td title="'.html(html($tab_item_infos[$item_id][0]['item_nom'])).'">'.html($tab_item_infos[$item_id][0]['item_ref']).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
         {
@@ -1305,7 +1311,7 @@ if($type_synthese)
         }
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
-        $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
+        $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,FALSE,TRUE);
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
         $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
       }
@@ -1313,10 +1319,16 @@ if($type_synthese)
   }
   $releve_HTML_table_body = '<tbody>'.NL.$releve_HTML_table_body.'</tbody>'.NL;
   // dernière ligne (doublée)
-  $releve_PDF->lignes_pied_cellules_debut( $info_ponderation_courte );
+  $memo_y = $releve_PDF->GetY()+2;
+  $releve_PDF->SetY( $memo_y );
+  $releve_PDF->choisir_couleur_fond('gris_moyen');
+  $releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf('moy. scores '.$info_ponderation_courte.' [*]') , 1 , 2 , 'C' , TRUE , '');
+  $releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf('% items acquis [**]') , 1 , 0 , 'C' , TRUE , '');
   $releve_HTML_table_foot1 = '<tr><th>moy. scores '.$info_ponderation_courte.' [*]</th>';
   $releve_HTML_table_foot2 = '<tr><th>% items acquis [**]</th>';
   $checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;
+  $memo_x = $releve_PDF->GetX();
+  $releve_PDF->SetXY($memo_x,$memo_y);
   if($tableau_synthese_format=='eleve')
   {
     foreach($tab_matiere_item as $matiere_id=>$tab_item)  // Pour chaque item...
@@ -1325,7 +1337,7 @@ if($type_synthese)
       {
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
-        $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
+        $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,TRUE,FALSE);
         $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
         $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
         $checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
@@ -1338,7 +1350,7 @@ if($type_synthese)
     {
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
-      $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
+      $releve_PDF->bilan_periode_synthese_pourcentages($valeur1,$valeur2,TRUE,FALSE);
       $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
       $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
       $checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
@@ -1347,7 +1359,7 @@ if($type_synthese)
   // les deux dernières cases (moyenne des moyennes)
   $colspan  = ($tableau_synthese_format=='eleve') ? $item_nb : $eleve_nb ;
   $last_col = ($affichage_checkbox) ? '<td class="nu"></td>' : '' ;
-  $releve_PDF->ligne_corps_cellules_fin($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
+  $releve_PDF->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
   $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL;
   $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$checkbox_vide.'</tr>'.NL;
   $checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL : '' ;

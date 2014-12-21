@@ -290,8 +290,7 @@ $(document).ready
           f_etablissement_adresse3     : { required:false , maxlength:50 },
           f_etablissement_telephone    : { required:false , maxlength:25 },
           f_etablissement_fax          : { required:false , maxlength:25 },
-          f_etablissement_courriel     : { required:false , maxlength:63 , email:true },
-          f_etablissement_url          : { required:false , maxlength:63 , url:true }
+          f_etablissement_courriel     : { required:false , maxlength:63 , email:true }
         },
         messages :
         {
@@ -301,8 +300,7 @@ $(document).ready
           f_etablissement_adresse3     : { maxlength:"50 caractères maximum" },
           f_etablissement_telephone    : { maxlength:"25 caractères maximum" },
           f_etablissement_fax          : { maxlength:"25 caractères maximum" },
-          f_etablissement_courriel     : { maxlength:"63 caractères maximum" , email:"courriel invalide" },
-          f_etablissement_url          : { maxlength:"63 caractères maximum" , url:"url invalide (http:// manquant ?)" }
+          f_etablissement_courriel     : { maxlength:"63 caractères maximum" , email:"courriel invalide" }
         },
         errorElement : "label",
         errorClass : "erreur",

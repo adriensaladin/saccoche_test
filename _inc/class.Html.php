@@ -894,7 +894,8 @@ class Html
       foreach($DB_TAB as $i => $DB_ROW)
       {
         $checked_and_disabled = ($DB_ROW['valeur']!=$_SESSION['USER_ID']) ? '' : ' checked disabled' ; // readonly ne fonctionne pas sur un checkbox
-        $tab_div[floor($i/$nb_profs_par_col)] .= '<label for="p_'.$DB_ROW['valeur'].'"><input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /> '.html($DB_ROW['texte']).'</label><br />';
+        $texte_identite       = ($DB_ROW['valeur']!=$_SESSION['USER_ID']) ? html($DB_ROW['texte']) : html($DB_ROW['texte']) ;
+        $tab_div[floor($i/$nb_profs_par_col)] .= '<label for="p_'.$DB_ROW['valeur'].'"><input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /> '.$texte_identite.'</label><br />';
       }
       $affichage .= '<p><a href="#prof_liste" id="prof_check_all" class="cocher_tout">Tout le monde</a>&nbsp;&nbsp;&nbsp;<a href="#prof_liste" id="prof_uncheck_all" class="cocher_rien">Seulement moi</a></p>'.NL;
       $affichage .= '<div class="prof_liste">'.implode('</div>'.NL.'<div class="prof_liste">',$tab_div).'</div>'.NL;
@@ -947,37 +948,6 @@ class Html
       }
       $affichage .= ' pour tout le monde.</p>'.NL;
       $affichage .= '<div class="prof_liste">'.implode('</div>'.NL.'<div class="prof_liste">',$tab_div).'</div>'.NL;
-    }
-    return $affichage;
-  }
-
-  /**
-   * Retourner, sur une ou plusieurs colonnes, une liste HTML ordonnée des matières, avec des cases à cocher.
-   *
-   * @param void
-   * @return string
-   */
-  public static function afficher_form_element_checkbox_matieres()
-  {
-    $affichage = '';
-    // Affichage de la liste des matières
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-    if(is_string($DB_TAB))
-    {
-      echo $DB_TAB;
-    }
-    else
-    {
-      $nb_matieres              = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
-      $nb_matieres_maxi_par_col = 20;
-      $nb_cols                  = floor(($nb_matieres-1)/$nb_matieres_maxi_par_col)+1;
-      $nb_matieres_par_col      = ceil($nb_matieres/$nb_cols);
-      $tab_div = array_fill(0,$nb_cols,'');
-      foreach($DB_TAB as $i => $DB_ROW)
-      {
-        $tab_div[floor($i/$nb_matieres_par_col)] .= '<label for="m_'.$DB_ROW['valeur'].'"><input type="checkbox" name="f_matieres[]" id="m_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label><br />';
-      }
-      $affichage .= '<div class="matiere_liste">'.implode('</div>'.NL.'<div class="matiere_liste">',$tab_div).'</div>'.NL;
     }
     return $affichage;
   }

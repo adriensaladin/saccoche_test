@@ -450,37 +450,6 @@ function cocher_eleves(eleve_liste)
 }
 
 /**
- * Fonction pour cocher une liste de matières données
- *
- * @param matiere_liste : ids séparés par des virgules
- * @return void
- */
-function cocher_matieres(matiere_liste)
-{
-  // Décocher tout
-  $("#zone_matieres input[type=checkbox]").each
-  (
-    function()
-    {
-      this.checked = false;
-    }
-  );
-  // Cocher des cases des matières
-  if(matiere_liste.length)
-  {
-    var tab_id = matiere_liste.split('_');
-    for(i in tab_id)
-    {
-      var id = 'm_'+tab_id[i];
-      if($('#'+id).length)
-      {
-        $('#'+id).prop('checked',true);
-      }
-    }
-  }
-}
-
-/**
  * Fonction pour cocher une liste de profs donnés
  *
  * @param prof_liste : ids séparés par des underscores
@@ -1588,7 +1557,19 @@ $(document).ready
                     afficher_textarea_reste( $(this) , 500 );
                   }
                 );
-                // Fonction à définir avant new AjaxUpload() sinon Firefox plante
+                // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+                var upload_demande_document = new AjaxUpload
+                ('#bouton_upload_demande_document',
+                  {
+                    action: 'ajax.php?page=evaluation_demande_eleve_ajout',
+                    name: 'userfile',
+                    data: {'f_action':'uploader_document'},
+                    autoSubmit: true,
+                    responseType: "html",
+                    onSubmit: verifier_demande_document,
+                    onComplete: retourner_demande_document
+                  }
+                );
                 function verifier_demande_document(fichier_nom,fichier_extension)
                 {
                   if (fichier_nom==null || fichier_nom.length<5)
@@ -1611,7 +1592,6 @@ $(document).ready
                     return true;
                   }
                 }
-                // Fonction à définir avant new AjaxUpload() sinon Firefox plante
                 function retourner_demande_document(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
                 {
                   fichier_extension = fichier_nom.split('.').pop();
@@ -1630,21 +1610,6 @@ $(document).ready
                   }
                   $('#bouton_upload_demande_document').prop('disabled',false);
                 }
-
-                // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-                var upload_demande_document = new AjaxUpload
-                ('#bouton_upload_demande_document',
-                  {
-                    action: 'ajax.php?page=evaluation_demande_eleve_ajout',
-                    name: 'userfile',
-                    data: {'f_action':'uploader_document'},
-                    autoSubmit: true,
-                    responseType: "html",
-                    onSubmit: verifier_demande_document,
-                    onComplete: retourner_demande_document
-                  }
-                );
-
               }
               $('#form_demande_evaluation button').prop('disabled',false);
             }

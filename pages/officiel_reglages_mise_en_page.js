@@ -57,7 +57,6 @@ $(document).ready
       'f_coordonnees_telephone' : 'coordonnees',
       'f_coordonnees_fax'       : 'coordonnees',
       'f_coordonnees_courriel'  : 'coordonnees',
-      'f_coordonnees_url'       : 'coordonnees',
       'f_coordonnees_logo'      : 'coordonnees',
       'f_infos_responsables' : 'responsables',
       'f_nombre_exemplaires' : 'responsables',

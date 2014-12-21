@@ -59,7 +59,6 @@ $select_groupe       = Form::afficher_select($tab_groupes                   , 'f
 $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
 $select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ ,              '' /*optgroup*/);
 $select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , 'f_couleur'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ ,              '' /*optgroup*/);
-$select_fond         = Form::afficher_select(Form::$tab_select_fond         , 'f_fond'         /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']         /*selection*/ ,              '' /*optgroup*/);
 $select_legende      = Form::afficher_select(Form::$tab_select_legende      , 'f_legende'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']      /*selection*/ ,              '' /*optgroup*/);
 ?>
 
@@ -83,7 +82,7 @@ $select_legende      = Form::afficher_select(Form::$tab_select_legende      , 'f
   </div>
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
   </div>
   <p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

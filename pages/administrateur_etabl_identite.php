@@ -137,8 +137,7 @@ else
       <label class="tab" for="f_etablissement_adresse3">Adresse ligne 3 :</label><input id="f_etablissement_adresse3" name="f_etablissement_adresse3" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['ADRESSE3']); ?>" /><br />
       <label class="tab" for="f_etablissement_telephone">Téléphone :</label><input id="f_etablissement_telephone" name="f_etablissement_telephone" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['TELEPHONE']); ?>" /><br />
       <label class="tab" for="f_etablissement_fax">Fax :</label><input id="f_etablissement_fax" name="f_etablissement_fax" size="25" maxlength="25" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['FAX']); ?>" /><br />
-      <label class="tab" for="f_etablissement_courriel">Courriel :</label><input id="f_etablissement_courriel" name="f_etablissement_courriel" size="60" maxlength="63" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['COURRIEL']); ?>" /><br />
-      <label class="tab" for="f_etablissement_url">Site internet :</label><input id="f_etablissement_url" name="f_etablissement_url" size="60" maxlength="63" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['URL']); ?>" /><br />
+      <label class="tab" for="f_etablissement_courriel">Courriel :</label><input id="f_etablissement_courriel" name="f_etablissement_courriel" size="50" maxlength="50" type="text" value="<?php echo html($_SESSION['ETABLISSEMENT']['COURRIEL']); ?>" /><br />
       <span class="tab"></span><button id="bouton_valider_etablissement" type="submit" class="parametre">Valider.</button><label id="ajax_msg_etablissement">&nbsp;</label>
     </p>
   </form>

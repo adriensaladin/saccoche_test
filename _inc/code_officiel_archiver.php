@@ -99,7 +99,6 @@ function nombre_de_lignes($texte)
 $nb_eleves = count($tab_eleve_id);
 $with_moyenne = ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
 $prof_nom = ($action=='imprimer_donnees_eleves_prof') ? $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'] : 'Équipe enseignante' ;
-$tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES'] ) ? array() : explode(',',$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES']) ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas 1/6 imprimer_donnees_eleves_prof : Mes appréciations pour chaque élève et le groupe classe
@@ -156,7 +155,7 @@ if($action=='imprimer_donnees_eleves_prof')
     {
       if(isset($tab_rubriques[$DB_ROW['rubrique_id']]))
       {
-        $note = ( ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) || ( !$DB_ROW['eleve_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] ) || (in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres)) ) ? NULL : $DB_ROW['saisie_note'] ;
+        $note = ( ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) || ( !$DB_ROW['eleve_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] ) ) ? NULL : $DB_ROW['saisie_note'] ;
         if(isset($tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]))
         {
           $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['note'] = $note;
@@ -169,11 +168,11 @@ if($action=='imprimer_donnees_eleves_prof')
     }
   }
   // Fabrication du PDF
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   foreach($tab_saisie as $rubrique_id => $tab)
   {
-    $archivage_tableau_PDF->appreciation_initialiser_eleves_prof( $nb_eleves , $nb_lignes_supplémentaires[$rubrique_id] , $with_moyenne );
-    $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - Appréciations de '.$prof_nom.' - '.$tab_rubriques[$rubrique_id] );
+    $releve_PDF->tableau_appreciation_initialiser_eleves_prof( $nb_eleves , $nb_lignes_supplémentaires[$rubrique_id] , $with_moyenne );
+    $releve_PDF->tableau_appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - Appréciations de '.$prof_nom.' - '.$tab_rubriques[$rubrique_id] );
     // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
     foreach($tab_eleve_id as $eleve_id => $tab_eleve)
     {
@@ -181,7 +180,7 @@ if($action=='imprimer_donnees_eleves_prof')
       if(isset($tab[$eleve_id]))
       {
         extract($tab[$eleve_id]);  // $note $appreciation
-        $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
+        $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
       }
     }
   }
@@ -204,7 +203,7 @@ if($action=='imprimer_donnees_eleves_collegues')
     {
       // Initialisation, dont la note pour le bulletin
       $rubrique_nom = ($DB_ROW['rubrique_nom']!==NULL) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
-      $note = ( ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') || (in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres)) || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) || ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) ) ? NULL : $DB_ROW['saisie_note'] ;
+      $note = ( ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) || ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) ) ? NULL : $DB_ROW['saisie_note'] ;
       $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']] = array( 'rubrique_nom'=>$rubrique_nom , 'note'=>$note , 'tab_appreciation'=>array() );
       $nb_lignes_rubriques += 2;
     }
@@ -225,9 +224,9 @@ if($action=='imprimer_donnees_eleves_collegues')
     }
   }
   // Fabrication du PDF
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $archivage_tableau_PDF->appreciation_initialiser_eleves_collegues( $nb_eleves , $nb_lignes_rubriques );
-  $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Appréciations par élève' );
+  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF->tableau_appreciation_initialiser_eleves_collegues( $nb_eleves , $nb_lignes_rubriques );
+  $releve_PDF->tableau_appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Appréciations par élève' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
@@ -237,7 +236,7 @@ if($action=='imprimer_donnees_eleves_collegues')
       foreach($tab_saisie[$eleve_id] as $rubrique_id => $tab)
       {
         extract($tab);  // $rubrique_nom $note $appreciation
-        $archivage_tableau_PDF->appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
+        $releve_PDF->tableau_appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
         $eleve_nom = $eleve_prenom = '' ;
       }
     }
@@ -261,7 +260,7 @@ if($action=='imprimer_donnees_classe_collegues')
     {
       // Initialisation, dont la note pour le bulletin
       $rubrique_nom = ($DB_ROW['rubrique_nom']!==NULL) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
-      $note = ( ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') || (in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres)) || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) || ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ) ? NULL : $DB_ROW['saisie_note'] ;
+      $note = ( ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) || ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ) ? NULL : $DB_ROW['saisie_note'] ;
       $tab_saisie[$DB_ROW['rubrique_id']] = array( 'rubrique_nom'=>$rubrique_nom , 'note'=>$note , 'tab_appreciation'=>array() );
     }
     if($DB_ROW['prof_id'])
@@ -279,13 +278,13 @@ if($action=='imprimer_donnees_classe_collegues')
   }
   // Fabrication du PDF
   $nb_rubriques = count($tab_saisie);
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $archivage_tableau_PDF->appreciation_initialiser_classe_collegues( $nb_eleves , $nb_rubriques , $nb_lignes_supplémentaires );
-  $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Appréciations du groupe classe' );
+  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF->tableau_appreciation_initialiser_classe_collegues( $nb_eleves , $nb_rubriques , $nb_lignes_supplémentaires );
+  $releve_PDF->tableau_appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Appréciations du groupe classe' );
   foreach($tab_saisie as $rubrique_id => $tab)
   {
     extract($tab);  // $rubrique_nom $note $appreciation
-    $archivage_tableau_PDF->appreciation_rubrique_classe_collegues( $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
+    $releve_PDF->tableau_appreciation_rubrique_classe_collegues( $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
   }
 }
 
@@ -328,9 +327,9 @@ if($action=='imprimer_donnees_eleves_syntheses')
     }
   }
   // Fabrication du PDF
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $archivage_tableau_PDF->appreciation_initialiser_eleves_syntheses( $nb_eleves , $nb_lignes_supplémentaires , $with_moyenne );
-  $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Synthèses générales' );
+  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF->tableau_appreciation_initialiser_eleves_syntheses( $nb_eleves , $nb_lignes_supplémentaires , $with_moyenne );
+  $releve_PDF->tableau_appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - '.'Synthèses générales' );
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
@@ -344,7 +343,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
       $note = NULL;
       $appreciation = '';
     }
-    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
+    $releve_PDF->tableau_appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
   }
 }
 
@@ -366,7 +365,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
   {
     if( $DB_ROW['rubrique_id'] || $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] )
     {
-      $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']] = ( ($DB_ROW['saisie_note']!==NULL) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ) ? (float)$DB_ROW['saisie_note'] : NULL ; // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
+      $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']] = ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note'] : NULL ; // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       $tab_rubriques[$DB_ROW['rubrique_id']] = ($DB_ROW['rubrique_id']) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
     }
   }
@@ -378,7 +377,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
     {
       if( $DB_ROW['rubrique_id'] || $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] )
       {
-        $tab_saisie[0][$DB_ROW['rubrique_id']] = ( ($DB_ROW['saisie_note']!==NULL) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ) ? (float)$DB_ROW['saisie_note'] : NULL ; // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
+        $tab_saisie[0][$DB_ROW['rubrique_id']] = ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note'] : NULL ; // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       }
     }
   }
@@ -402,35 +401,35 @@ if($action=='imprimer_donnees_eleves_moyennes')
   // Fabrication du PDF ; on a besoin de tourner du texte à 90°
   // Fabrication d'un CSV en parallèle
   $nb_rubriques = count($tab_rubriques);
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves , $nb_rubriques );
-  $archivage_tableau_CSV = '';
+  $releve_PDF = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF->tableau_moyennes_initialiser( $nb_eleves , $nb_rubriques );
+  $releve_CSV = '';
   $separateur = ';';
   // 1ère ligne : intitulés, noms rubriques
-  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , FALSE /*is_brevet*/ );
-  $archivage_tableau_CSV .= '"'.$classe_nom.' | '.$periode_nom.'"';
+  $releve_PDF->tableau_moyennes_intitule( $classe_nom , $periode_nom , FALSE /*is_brevet*/ );
+  $releve_CSV .= '"'.$classe_nom.' | '.$periode_nom.'"';
   foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
   {
-    $archivage_tableau_PDF->moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
-    $archivage_tableau_CSV .= $separateur.'"'.$rubrique_nom.'"';
+    $releve_PDF->tableau_moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
+    $releve_CSV .= $separateur.'"'.$rubrique_nom.'"';
   }
-  $archivage_tableau_CSV .= "\r\n";
+  $releve_CSV .= "\r\n";
   // ligne suivantes : élèves, notes
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
+  $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->marge_haut+$releve_PDF->etiquette_hauteur );
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
     extract($tab_eleve);  // $eleve_nom $eleve_prenom
-    $archivage_tableau_PDF->moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
-    $archivage_tableau_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
+    $releve_PDF->tableau_moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
+    $releve_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
       $note = (isset($tab_saisie[$eleve_id][$rubrique_id])) ? $tab_saisie[$eleve_id][$rubrique_id] : NULL ;
-      $archivage_tableau_PDF->moyennes_note( $eleve_id , $rubrique_id , $note , FALSE /*is_brevet*/ );
-      $archivage_tableau_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
+      $releve_PDF->tableau_moyennes_note( $eleve_id , $rubrique_id , $note , FALSE /*is_brevet*/ );
+      $releve_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
     }
-    $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
-    $archivage_tableau_CSV .= "\r\n";
+    $releve_PDF->SetXY($releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur);
+    $releve_CSV .= "\r\n";
   }
 }
 
@@ -454,7 +453,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
         $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][$DB_ROW['periode_ordre']] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
         $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
       }
-      else if( ($DB_ROW['saisie_note']!==NULL) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ) // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
+      else if($DB_ROW['saisie_note']!==NULL) // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       {
         $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['note'][$DB_ROW['periode_ordre']] = (float)$DB_ROW['saisie_note'];
       }
@@ -518,11 +517,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
   }
   if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))
   {
-    if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))
-  {
-    if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
+    if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['COURRIEL']; }
   }
   // Indication de l'année scolaire (code repris de [code_officiel_imprimer.php] )
   $mois_actuel    = date('n');
@@ -544,12 +539,12 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
   // Tag date heure initiales (code repris de [code_officiel_imprimer.php] )
   $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Fabrication du PDF
-  $archivage_tableau_PDF = new PDF_archivage_tableau( TRUE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
+  $releve_PDF = new PDF( TRUE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   unset($tab_eleve_id[0]);
   $classe_effectif = count($tab_eleve_id);
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
-    $archivage_tableau_PDF->recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] );
+    $releve_PDF->tableau_recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] );
     // $etabl_coords__bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_hauteur ) * 0.75 ) ;
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
@@ -557,7 +552,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       $moyenne_eleve  = $tab_moyennes[$rubrique_id][$eleve_id] ;
       $moyenne_classe = $tab_moyennes[$rubrique_id][0] ;
       $tab_appreciations = $tab_saisies[$eleve_id][$rubrique_id]['appreciation'];
-      $archivage_tableau_PDF->recapitulatif_rubrique( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_profs , $moyenne_eleve , $moyenne_classe , $tab_appreciations );
+      $releve_PDF->tableau_recapitulatif_rubrique( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_profs , $moyenne_eleve , $moyenne_classe , $tab_appreciations );
     }
   }
   $periode_nom = 'Année Scolaire';
@@ -568,12 +563,12 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
-FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
+FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $releve_PDF );
 echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')
 {
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($releve_CSV) );
   echo'<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
 }
 exit();

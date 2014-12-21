@@ -218,7 +218,6 @@ $(document).ready
           'f_eleve[]'    : { required:true },
           f_eleves_ordre : { required:true },
           f_couleur      : { required:true },
-          f_fond         : { required:true },
           f_legende      : { required:true },
           f_marge_min    : { required:true }
         },
@@ -233,7 +232,6 @@ $(document).ready
           'f_eleve[]'    : { required:"élève(s) manquant(s)" },
           f_eleves_ordre : { required:"ordre manquant" },
           f_couleur      : { required:"couleur manquante" },
-          f_fond         : { required:"fond manquant" },
           f_legende      : { required:"légende manquante" },
           f_marge_min    : { required:"marge mini manquante" }
         },

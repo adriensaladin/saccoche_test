@@ -50,7 +50,6 @@ $etablissement_adresse3      = (isset($_POST['f_etablissement_adresse3']))      
 $etablissement_telephone     = (isset($_POST['f_etablissement_telephone']))     ? Clean::texte($_POST['f_etablissement_telephone'])      : '';
 $etablissement_fax           = (isset($_POST['f_etablissement_fax']))           ? Clean::texte($_POST['f_etablissement_fax'])            : '';
 $etablissement_courriel      = (isset($_POST['f_etablissement_courriel']))      ? Clean::texte($_POST['f_etablissement_courriel'])       : '';
-$etablissement_url           = (isset($_POST['f_etablissement_url']))           ? Clean::url($_POST['f_etablissement_url'])              : '';
 
 $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? Clean::entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
 
@@ -178,7 +177,7 @@ if( $etablissement_denomination )
   $tab_parametres['etablissement_adresse3']     = $etablissement_adresse3;
   $tab_parametres['etablissement_telephone']    = $etablissement_telephone;
   $tab_parametres['etablissement_fax']          = $etablissement_fax;
-  $tab_parametres['etablissement_url']          = $etablissement_url;
+  $tab_parametres['etablissement_courriel']     = $etablissement_courriel;
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['DENOMINATION'] = $etablissement_denomination;
@@ -188,7 +187,6 @@ if( $etablissement_denomination )
   $_SESSION['ETABLISSEMENT']['TELEPHONE']    = $etablissement_telephone;
   $_SESSION['ETABLISSEMENT']['FAX']          = $etablissement_fax;
   $_SESSION['ETABLISSEMENT']['COURRIEL']     = $etablissement_courriel;
-  $_SESSION['ETABLISSEMENT']['URL']          = $etablissement_url;
   exit('ok');
 }
 

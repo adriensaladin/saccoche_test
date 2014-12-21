@@ -804,7 +804,7 @@ $(document).ready
       if(memo_rubrique_type=='appr')
       {
         memo_html = obj_lieu.closest('td').html();
-        memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+        memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE : APP_GENERALE ;
         var nb_lignes = parseInt(memo_long_max/100,10);
         var formulaire_saisie = '<div class="ti"><b>Appréciation / Conseils pour progresser [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
                               + '<div class="ti"><textarea id="f_appreciation" name="f_appreciation" rows="'+nb_lignes+'" cols="125"></textarea></div>'
@@ -833,12 +833,6 @@ $(document).ready
       // finalisation (remplissage et focus)
       if(memo_rubrique_type=='appr')
       {
-        // report d'une appréciation préremplie
-        var is_report = (memo_rubrique_id) ? APP_RUBRIQUE_REPORT : APP_GENERALE_REPORT ;
-        if( !champ_contenu && is_report )
-        {
-          champ_contenu = (memo_rubrique_id) ? APP_RUBRIQUE_MODELE : APP_GENERALE_MODELE ;
-        }
         $('#f_appreciation').focus().html(champ_contenu);
         afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
         window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
@@ -1439,7 +1433,7 @@ $(document).ready
           {
             $('#section_signaler').hide(0);
           }
-          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE : APP_GENERALE ;
           var nb_lignes = parseInt(memo_long_max/100,10);
           message_contenu += 'je me suis permis de corriger son appréciation en remplaçant " .......... " par " .......... ".';
           $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label></div>').show(0);

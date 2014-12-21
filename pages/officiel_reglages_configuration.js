@@ -99,11 +99,11 @@ $(document).ready
       }
     );
 
-    $('#f_bulletin_appreciation_generale_longueur').change
+    $('#f_bulletin_appreciation_generale').change
     (
       function()
       {
-        if(parseInt($('#f_bulletin_appreciation_generale_longueur').val(),10)>0)
+        if(parseInt($('#f_bulletin_appreciation_generale').val(),10)>0)
         {
           $('#span_moyenne_generale').show();
         }
@@ -114,203 +114,11 @@ $(document).ready
       }
     );
 
-    // relevé report
-
-    $('#f_releve_appreciation_rubrique_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_releve_appreciation_rubrique_longueur').val(),10)>0)
-        {
-          $('#span_releve_appreciation_rubrique_report').show();
-        }
-        else
-        {
-          $('#span_releve_appreciation_rubrique_report').hide();
-        }
-      }
-    );
-
-    $('#f_releve_appreciation_generale_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_releve_appreciation_generale_longueur').val(),10)>0)
-        {
-          $('#span_releve_appreciation_generale_report').show();
-        }
-        else
-        {
-          $('#span_releve_appreciation_generale_report').hide();
-        }
-      }
-    );
-
-    // relevé modèle
-
-    $('#f_releve_appreciation_rubrique_report').click
-    (
-      function()
-      {
-        if($('#f_releve_appreciation_rubrique_report').is(':checked'))
-        {
-          $('#span_releve_appreciation_rubrique_modele').show();
-        }
-        else
-        {
-          $('#span_releve_appreciation_rubrique_modele').hide();
-        }
-      }
-    );
-
-    $('#f_releve_appreciation_generale_report').click
-    (
-      function()
-      {
-        if($('#f_releve_appreciation_generale_report').is(':checked'))
-        {
-          $('#span_releve_appreciation_generale_modele').show();
-        }
-        else
-        {
-          $('#span_releve_appreciation_generale_modele').hide();
-        }
-      }
-    );
-
-    // bulletin report
-
-    $('#f_bulletin_appreciation_rubrique_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_bulletin_appreciation_rubrique_longueur').val(),10)>0)
-        {
-          $('#span_bulletin_appreciation_rubrique_report').show();
-        }
-        else
-        {
-          $('#span_bulletin_appreciation_rubrique_report').hide();
-        }
-      }
-    );
-
-    $('#f_bulletin_appreciation_generale_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_bulletin_appreciation_generale_longueur').val(),10)>0)
-        {
-          $('#span_bulletin_appreciation_generale_report').show();
-        }
-        else
-        {
-          $('#span_bulletin_appreciation_generale_report').hide();
-        }
-      }
-    );
-
-    // bulletin modèle
-
-    $('#f_bulletin_appreciation_rubrique_report').click
-    (
-      function()
-      {
-        if($('#f_bulletin_appreciation_rubrique_report').is(':checked'))
-        {
-          $('#span_bulletin_appreciation_rubrique_modele').show();
-        }
-        else
-        {
-          $('#span_bulletin_appreciation_rubrique_modele').hide();
-        }
-      }
-    );
-
-    $('#f_bulletin_appreciation_generale_report').click
-    (
-      function()
-      {
-        if($('#f_bulletin_appreciation_generale_report').is(':checked'))
-        {
-          $('#span_bulletin_appreciation_generale_modele').show();
-        }
-        else
-        {
-          $('#span_bulletin_appreciation_generale_modele').hide();
-        }
-      }
-    );
-
-    // socle report
-
-    $('#f_socle_appreciation_rubrique_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_socle_appreciation_rubrique_longueur').val(),10)>0)
-        {
-          $('#span_socle_appreciation_rubrique_report').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_rubrique_report').hide();
-        }
-      }
-    );
-
-    $('#f_socle_appreciation_generale_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_socle_appreciation_generale_longueur').val(),10)>0)
-        {
-          $('#span_socle_appreciation_generale_report').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_generale_report').hide();
-        }
-      }
-    );
-
-    // socle modèle
-
-    $('#f_socle_appreciation_rubrique_report').click
-    (
-      function()
-      {
-        if($('#f_socle_appreciation_rubrique_report').is(':checked'))
-        {
-          $('#span_socle_appreciation_rubrique_modele').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_rubrique_modele').hide();
-        }
-      }
-    );
-
-    $('#f_socle_appreciation_generale_report').click
-    (
-      function()
-      {
-        if($('#f_socle_appreciation_generale_report').is(':checked'))
-        {
-          $('#span_socle_appreciation_generale_modele').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_generale_modele').hide();
-        }
-      }
-    );
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Alerter sur la nécessité de valider
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $("#form_releve input , #form_releve select , #form_releve textarea").change
+    $("#form_releve input , #form_releve select").change
     (
       function()
       {
@@ -318,7 +126,7 @@ $(document).ready
       }
     );
 
-    $("#form_bulletin input , #form_bulletin select , #form_bulletin textarea").change
+    $("#form_bulletin input , #form_bulletin select").change
     (
       function()
       {
@@ -326,65 +134,11 @@ $(document).ready
       }
     );
 
-    $("#form_socle input , #form_socle select , #form_socle textarea").change
+    $("#form_socle input , #form_socle select").change
     (
       function()
       {
         $('#ajax_msg_socle').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour choisir les matières (mise en place du formulaire)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#span_moyennes q.choisir_compet').click
-    (
-      function()
-      {
-        cocher_matieres( $('#f_matiere_liste').val() );
-        // Afficher la zone
-        $.fancybox( { 'href':'#zone_matieres' , onStart:function(){$('#zone_matieres').css("display","block");} , onClosed:function(){$('#zone_matieres').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-        $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour valider le choix des matières sans moyennes
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#valider_matieres').click
-    (
-      function()
-      {
-        var liste = '';
-        var nombre = 0;
-        $("#zone_matieres input[type=checkbox]:checked").each
-        (
-          function()
-          {
-            liste += $(this).val()+'_';
-            nombre++;
-          }
-        );
-        liste  = (nombre==0) ? '' : liste.substring(0,liste.length-1) ;
-        nombre = (nombre==0) ? 'Sans exception (toutes matières avec moyennes)' : ( (nombre==1) ? 'Une exception (matière sans moyenne)' : ' '+nombre+' exceptions (matières sans moyennes)' ) ;
-        $('#f_matiere_liste').val(liste);
-        $('#f_matiere_nombre').val(nombre);
-        $('#ajax_msg_bulletin').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-        $('#annuler_matieres').click();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour annuler le choix des matières
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#annuler_matieres').click
-    (
-      function()
-      {
-        $.fancybox.close();
       }
     );
 

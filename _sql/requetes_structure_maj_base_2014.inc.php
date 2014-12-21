@@ -331,6 +331,8 @@ if($version_base_structure_actuelle=='2014-03-18')
     // Modification champ sacoche_parent_adresse
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parent_adresse CHANGE adresse_postal_code adresse_postal_code VARCHAR(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "@see http://fr.wikipedia.org/wiki/Code_postal" ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parent_adresse SET adresse_postal_code="" WHERE adresse_postal_code="0" ' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 
@@ -737,46 +739,6 @@ if($version_base_structure_actuelle=='2014-11-29')
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD demande_doc VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
     }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-12-12 => 2014-12-19
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2014-12-12')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2014-12-19';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification de paramètres
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_bulletin_appreciation_generale_longueur" WHERE parametre_nom="officiel_bulletin_appreciation_generale" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_bulletin_appreciation_rubrique_longueur" WHERE parametre_nom="officiel_bulletin_appreciation_rubrique" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_releve_appreciation_generale_longueur" WHERE parametre_nom="officiel_releve_appreciation_generale" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_releve_appreciation_rubrique_longueur" WHERE parametre_nom="officiel_releve_appreciation_rubrique" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_socle_appreciation_generale_longueur" WHERE parametre_nom="officiel_socle_appreciation_generale" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_socle_appreciation_generale_longueur" WHERE parametre_nom="officiel_socle_appreciation_generale" ' );
-    // ajout de paramètres
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_url" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_exception_matieres" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_generale_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_generale_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_rubrique_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_rubrique_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_generale_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_generale_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_rubrique_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_rubrique_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_generale_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_generale_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_rubrique_report" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_rubrique_modele" , "" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_fond" , "gris" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_fond"   , "gris" )' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_fond"    , "gris" )' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

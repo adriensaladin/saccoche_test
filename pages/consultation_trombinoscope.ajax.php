@@ -77,20 +77,18 @@ if(!empty($DB_TAB))
 }
 // Génération de la sortie HTML (affichée directement) et de la sortie PDF (enregistrée dans un fichier)
 $fnom_pdf = 'trombinoscope_'.$_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-$trombinoscope_HTML = '<h2>'.html($groupe_nom).'</h2><p><a target="_blank" href="'.URL_DIR_EXPORT.$fnom_pdf.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a> &rarr; <span class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</span></p>';
-$trombinoscope_PDF = new PDF_trombinoscope( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 7 /*marge_bas*/ );
-$trombinoscope_PDF->initialiser($groupe_nom);
+echo'<h2>'.html($groupe_nom).'</h2><p><a target="_blank" href="'.URL_DIR_EXPORT.$fnom_pdf.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a> &rarr; <span class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</span></p>';
+$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 7 /*marge_bas*/ );
+$sacoche_pdf->trombinoscope_initialiser($groupe_nom);
 // On passe les élèves en revue (on a toutes les infos déjà disponibles)
 foreach($tab_vignettes as $user_id => $tab)
 {
-  $trombinoscope_PDF->vignette($tab);
+  $sacoche_pdf->trombinoscope_vignette($tab);
   $img_src   = ($tab['img_src'])   ? ' src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$tab['img_src'].'"' : ' src="./_img/trombinoscope_vide.png"' ;
   $img_title = ($tab['img_title']) ? ' title="absence de photo"' : '' ;
-  $trombinoscope_HTML .= '<div id="div_'.$user_id.'" class="photo"><img width="'.$tab['img_width'].'" height="'.$tab['img_height'].'" alt=""'.$img_src.$img_title.' /><br />'.html($tab['user_nom']).'<br />'.html($tab['user_prenom']).'</div>';
+  echo'<div id="div_'.$user_id.'" class="photo"><img width="'.$tab['img_width'].'" height="'.$tab['img_height'].'" alt=""'.$img_src.$img_title.' /><br />'.html($tab['user_nom']).'<br />'.html($tab['user_prenom']).'</div>';
 }
-// Enregistrement du PDF
-FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fnom_pdf , $trombinoscope_PDF );
-// Affichage du HTML
-exit($trombinoscope_HTML);
+FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fnom_pdf , $sacoche_pdf );
+exit();
 
 ?>

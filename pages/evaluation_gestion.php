@@ -85,6 +85,7 @@ $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); //
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var TYPE           = "'.$TYPE.'";' );
+Layout::add( 'js_inline_before' , 'var url_export     = "'.URL_DIR_EXPORT.'";' );
 Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var date_mysql     = "'.TODAY_MYSQL.'";' );
 Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
@@ -321,7 +322,6 @@ $select_cart_cases_nb = Form::afficher_select(Form::$tab_select_cart_cases_nb , 
 $select_cart_contenu  = Form::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
 $select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
 $select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
-$select_fond          = Form::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/);
 $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
 ?>
 
@@ -336,15 +336,15 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   </div>
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-    <label class="tab">Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_marge_min ?><br />
+    <label class="tab">Orientation :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_marge_min ?><br />
     <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1" /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label>
   </div>
   <span class="tab"></span><button id="valider_imprimer" type="button" class="valider">Générer le cartouche</button> <button id="fermer_zone_imprimer" type="button" class="retourner">Retour</button> <label id="ajax_msg_imprimer">&nbsp;</label>
-  <input id="imprimer_ref"          name="f_ref"          type="hidden" value="" />
-  <input id="imprimer_date_fr"      name="f_date_fr"      type="hidden" value="" />
-  <input id="imprimer_groupe_nom"   name="f_groupe_nom"   type="hidden" value="" />
+  <input id="imprimer_ref" name="f_ref" type="hidden" value="" />
+  <input id="imprimer_date_fr" name="f_date_fr" type="hidden" value="" />
+  <input id="imprimer_groupe_nom" name="f_groupe_nom" type="hidden" value="" />
   <input id="imprimer_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
-  <input id="imprimer_description"  name="f_description"  type="hidden" value="" />
+  <input id="imprimer_description" name="f_description" type="hidden" value="" />
   <p id="zone_imprimer_retour"></p>
 </fieldset></form>
 
@@ -352,83 +352,90 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   <h2>Voir les répartitions des élèves à une évaluation</h2>
   <p class="b" id="titre_voir_repart"></p>
   <hr />
-  <h3>Répartition nominative des scores</h3>
-  <table id="table_voir_repart_nominative" class="scor_eval">
+  <table id="table_voir_repart1" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
   </table>
   <hr />
-  <h3>Répartition quantitative des scores</h3>
-  <table id="table_voir_repart_quantitative" class="scor_eval">
+  <ul class="puce">
+    <li><a id="export_voir_repart_quantitative_couleur" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em> en couleurs).</span></a></li>
+    <li><a id="export_voir_repart_quantitative_gris" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em> monochrome).</span></a></li>
+  </ul>
+  <hr />
+  <table id="table_voir_repart2" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
   </table>
   <hr />
-  <h3>Archivage PDF</h3>
-  <form action="#" method="post" id="zone_archiver_repart"><fieldset>
-    <input id="repart_ref"         name="f_ref"         type="hidden" value="" />
-    <input id="repart_date_fr"     name="f_date_fr"     type="hidden" value="" />
-    <input id="repart_groupe_nom"  name="f_groupe_nom"  type="hidden" value="" />
-    <input id="repart_description" name="f_description" type="hidden" value="" />
-    <button id="archiver_repart" type="button" class="imprimer">Archiver / Imprimer</button> le tableau avec la 
-    <select id="repart_type" name="f_repartition_type"><option value="nominative">répartition nominative</option><option value="quantitative">répartition quantitative</option></select>
-    des scores 
-    <?php echo str_replace( 'id="f_couleur"' , 'id="f_repart_couleur"' , $select_couleur); ?>
-    <?php echo str_replace( 'id="f_fond"'    , 'id="f_repart_fond"'    , $select_fond); ?>
-  </fieldset></form>
-  <p>
-    <span class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</span>
-    <label id="ajax_msg_archiver_repart"></label>
-  </p>
+  <ul class="puce">
+    <li><a id="export_voir_repart_nominative_couleur" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em> en couleurs).</span></a></li>
+    <li><a id="export_voir_repart_nominative_gris" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em> monochrome).</span></a></li>
+  </ul>
+  <hr />
 </div>
 
-<div id="zone_saisir_voir" class="hide">
-  <h2>Saisir / Voir les acquisitions à une évaluation</h2>
+<?php /* Sans onsubmit="return false" une soumission incontrôlée s'effectue quand on presse "entrée" dans le cas d'un seul élève évalué sur un seul item. */ ?>
+<form action="#" method="post" id="zone_saisir" class="hide" onsubmit="return false">
+  <h2>Saisir les acquisitions à une évaluation</h2>
   <p>
-    <b id="titre_saisir_voir"></b> <button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir_voir" type="button" class="retourner">Retour</button> <label id="ajax_msg_saisir_voir"></label>
+    <b id="titre_saisir"></b> <button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button> <label id="ajax_msg_saisir"></label>
+    <input id="saisir_ref" name="f_ref" type="hidden" value="" />
+    <input id="saisir_date_fr" name="f_date_fr" type="hidden" value="" />
+    <input id="saisir_date_visible" name="f_date_visible" type="hidden" value="" />
+    <input id="saisir_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
+    <input id="saisir_description" name="f_description" type="hidden" value="" />
+    <input id="saisir_fini" name="f_fini" type="hidden" value="" />
   </p>
-  <table id="table_saisir_voir" class="scor_eval">
+  <table id="table_saisir" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
   </table>
-  <p id="para_report_note" class="ti">Note à reporter dans &hellip;
+  <div id="td_souris_container"><div class="td_souris">
+    <img alt="NN" src="./_img/note/commun/h/NN.gif" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS"  src="./_img/note/commun/h/ABS.gif"  /><br />
+    <img alt="NE" src="./_img/note/commun/h/NE.gif" /><img alt="R"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif"  /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
+    <img alt="NF" src="./_img/note/commun/h/NF.gif" /><img alt="V"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif"  /><img alt="REQ"  src="./_img/note/commun/h/REQ.gif"  /><br />
+    <img alt="NR" src="./_img/note/commun/h/NR.gif" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X"    src="./_img/note/commun/h/X.gif"    /><br />
+  </div></div>
+  <p class="ti">Note à reporter dans &hellip;
     <label for="f_report_cellule">[ <input type="radio" id="f_report_cellule" name="f_endroit_report_note" value="cellule" checked /> la cellule ]</label>
     <label for="f_report_colonne">[ <input type="radio" id="f_report_colonne" name="f_endroit_report_note" value="colonne" /> la <span class="u">C</span>olonne ]</label>
     <label for="f_report_ligne">[ <input type="radio" id="f_report_ligne" name="f_endroit_report_note" value="ligne" /> la <span class="u">L</span>igne ]</label>
     <label for="f_report_tableau">[ <input type="radio" id="f_report_tableau" name="f_endroit_report_note" value="tableau" /> le <span class="u">T</span>ableau ]</label>.
     <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_resultats#toggle_saisies_multiples ">DOC : Report multiple.</a></span>
   </p>
-  <p class="ti"><button id="afficher_deport_archivage" type="button" class="parametre">Saisie déportée &amp; Archivage.</button></p>
-</div>
+  <div>
+    <a id="to_zone_saisir_deport" href="#toggle" class="toggle_plus" title="Voir / masquer la saisie déportée."></a> Saisie déportée
+    <div id="zone_saisir_deport" class="p hide">
+      <ul class="puce">
+        <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
+        <li><a id="export_file_saisir_tableau_scores_csv" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</span></a></li>
+        <li><a id="export_file_saisir_tableau_scores_vierge" target="_blank" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
+        <li><button id="import_file" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button><label id="msg_import">&nbsp;</label></li>
+      </ul>
+      <p class="astuce">Pour récupérer un fichier <em>csv</em> ou un tableau <em>pdf</em> avec les notes saisies, choisir "<em>Voir les acquisitions</em>".</p>
+    </div>
+  </div>
+</form>
 
-<form action="#" method="post" id="zone_deport_archivage" class="hide"><fieldset>
-  <h2>Saisie déportée &amp; Archivage</h2>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></p>
-  <input id="saisir_voir_ref"          name="f_ref"          type="hidden" value="" />
-  <input id="saisir_voir_date_fr"      name="f_date_fr"      type="hidden" value="" />
-  <input id="saisir_voir_date_visible" name="f_date_visible" type="hidden" value="" />
-  <input id="saisir_voir_groupe_nom"   name="f_groupe_nom"   type="hidden" value="" />
-  <input id="saisir_voir_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
-  <input id="saisir_voir_description"  name="f_description"  type="hidden" value="" />
-  <input id="saisir_voir_fini"         name="f_fini"         type="hidden" value="" />
-  <ul class="puce">
-    <li><button id="generer_tableau_scores_vierge_csv" type="button" class="fichier_export">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</button>
-    <li><button id="generer_tableau_scores_rempli_csv" type="button" class="fichier_export">Récupérer un fichier complété avec les scores <b>enregistrés</b> (format <em>csv</em>).</button>
-    <li class="saisir"><button id="import_file" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button></li>
-    <li class="voir"><span class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</span></li>
-  </ul>
-  <p class="ti">
-    <span class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</span><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label> <?php echo str_replace( 'id="f_couleur"' , 'id="f_deport_archivage_couleur"' , $select_couleur); ?> <?php echo str_replace( 'id="f_fond"'    , 'id="f_deport_archivage_fond"'    , $select_fond); ?>
+<div id="zone_voir" class="hide">
+  <h2>Voir les acquisitions à une évaluation</h2>
+  <p>
+    <b id="titre_voir"></b> <button id="fermer_zone_voir" type="button" class="retourner">Retour</button> <label id="ajax_msg_voir"></label>
+    <input id="voir_ref" name="f_ref" type="hidden" value="" />
   </p>
-  <ul class="puce">
-    <li><button id="generer_tableau_scores_vierge_pdf" type="button" class="imprimer">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</button>
-    <li><button id="generer_tableau_scores_rempli_pdf" type="button" class="imprimer">Archiver / Imprimer le tableau complété avec les scores <b>enregistrés</b> (format <em>pdf</em>).</button>
-  </ul>
-  <hr />
-  <p><label id="ajax_msg_deport_archivage">&nbsp;</label></p>
-<!--
-<a target="_blank" href=""><span class="file file_txt"></span></a></li>
-<a id="" target="_blank" href=""><span class="file file_pdf">.</span></a></li>
--->
-</fieldset></form>
+  <table id="table_voir" class="scor_eval">
+    <tbody><tr><td></td></tr></tbody>
+  </table>
+  <p>&nbsp;</p>
+  <a id="to_zone_voir_deport" href="#toggle" class="toggle_plus" title="Voir / masquer la saisie déportée."></a> Saisie déportée &amp; archivage
+  <div id="zone_voir_deport" class="p hide">
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
+      <li><a id="export_file_voir_tableau_scores_csv" target="_blank" href=""><span class="file file_txt">Récupérer un fichier des scores pour une saisie déportée (format <em>csv</em>).</span></a></li>
+      <li><a id="export_file_voir_tableau_scores_vierge" target="_blank" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
+      <li><a id="export_file_voir_tableau_scores_couleur" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> en couleurs).</span></a></li>
+      <li><a id="export_file_voir_tableau_scores_gris" target="_blank" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
+    </ul>
+    <p class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</p>
+  </div>
+</div>
 
 <div id="zone_voir_commentaires" class="hide">
   <h2>Consulter un commentaire pour un élève à une évaluation</h2>
@@ -459,9 +466,9 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   </div>
   <p>
     <span class="tab"></span><button id="valider_enregistrer_texte" type="button" class="valider">Valider</button> <button id="annuler_enregistrer_texte" type="button" class="annuler">Annuler</button> <label id="ajax_msg_enregistrer_texte">&nbsp;</label>
-    <input id="enregistrer_texte_ref"       name="f_ref"       type="hidden" value="" />
-    <input id="enregistrer_texte_eleve_id"  name="f_eleve_id"  type="hidden" value="" />
-    <input id="enregistrer_texte_msg_url"   name="f_msg_url"   type="hidden" value="" />
+    <input id="enregistrer_texte_ref" name="f_ref" type="hidden" value="" />
+    <input id="enregistrer_texte_eleve_id" name="f_eleve_id" type="hidden" value="" />
+    <input id="enregistrer_texte_msg_url" name="f_msg_url" type="hidden" value="" />
     <input id="enregistrer_texte_msg_autre" name="f_msg_autre" type="hidden" value="" />
   </p>
 </fieldset></form>
@@ -486,11 +493,11 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
   </p>
   <div>
     <span class="tab"></span><button id="fermer_enregistrer_audio" type="button" class="retourner">Retour</button>
-    <input id="enregistrer_audio_ref"       name="f_ref"       type="hidden" value="" />
-    <input id="enregistrer_audio_eleve_id"  name="f_eleve_id"  type="hidden" value="" />
-    <input id="enregistrer_audio_msg_url"   name="f_msg_url"   type="hidden" value="" />
+    <input id="enregistrer_audio_ref" name="f_ref" type="hidden" value="" />
+    <input id="enregistrer_audio_eleve_id" name="f_eleve_id" type="hidden" value="" />
+    <input id="enregistrer_audio_msg_url" name="f_msg_url" type="hidden" value="" />
     <input id="enregistrer_audio_msg_autre" name="f_msg_autre" type="hidden" value="" />
-    <input id="enregistrer_audio_msg_data"  name="f_msg_data"  type="hidden" value="" />
+    <input id="enregistrer_audio_msg_data" name="f_msg_data" type="hidden" value="" />
   </div>
 </fieldset></form>
 
@@ -502,14 +509,6 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
     <button id="annuler_fermer_zone_saisir" type="button" class="annuler">Non, je reste sur l'interface</button>
   </p>
 </div>
-
-<?php /*  Pour la saisie des notes à la souris */ ?>
-<div id="td_souris_container"><div class="td_souris">
-  <img alt="NN" src="./_img/note/commun/h/NN.gif" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS"  src="./_img/note/commun/h/ABS.gif"  /><br />
-  <img alt="NE" src="./_img/note/commun/h/NE.gif" /><img alt="R"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif"  /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
-  <img alt="NF" src="./_img/note/commun/h/NF.gif" /><img alt="V"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif"  /><img alt="REQ"  src="./_img/note/commun/h/REQ.gif"  /><br />
-  <img alt="NR" src="./_img/note/commun/h/NR.gif" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X"    src="./_img/note/commun/h/X.gif"    /><br />
-</div></div>
 
 <?php /*  Clavier virtuel pour les dispositifs tactiles */ ?>
 <div id="cadre_tactile">

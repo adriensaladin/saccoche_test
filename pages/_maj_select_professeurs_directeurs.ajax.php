@@ -39,5 +39,5 @@ $multiple  = (empty($_POST['f_multiple']))  ? FALSE                             
 $select_nom   = ($multiple) ? 'f_user' : FALSE ;
 $option_first = ($multiple) ? FALSE    : ''    ;
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'profs_directeurs' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'profs_directeurs' /*optgroup*/ , $multiple ) );
 ?>

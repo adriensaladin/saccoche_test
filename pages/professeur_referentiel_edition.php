@@ -179,7 +179,7 @@ else
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
     if(!empty($DB_TAB))
     {
-      echo HtmlArborescence::afficher_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
+      echo Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
     }
     else
     {

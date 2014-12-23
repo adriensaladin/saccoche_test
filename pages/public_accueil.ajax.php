@@ -41,7 +41,7 @@ $courriel   = (isset($_POST['f_courriel']))   ? Clean::courriel($_POST['f_courri
 function afficher_formulaire_etablissement($BASE,$profil)
 {
   $affichage = '';
-  $options_structures = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , FALSE /*select_nom*/ , FALSE /*option_first*/ , $BASE /*selection*/ , 'zones_geo' /*optgroup*/ );
+  $options_structures = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , FALSE /*select_nom*/ , FALSE /*option_first*/ , $BASE /*selection*/ , 'zones_geo' /*optgroup*/ );
   $affichage .= '<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" class="t9">'.$options_structures.'</select><br />'.NL;
   $affichage .= '<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   $affichage .= '<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'.NL;
@@ -78,7 +78,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
   {
     // Lecture d'un cookie sur le poste client servant à retenir le dernier partenariat sélectionné si identification avec succès
     $selection = (isset($_COOKIE[COOKIE_PARTENAIRE])) ? Clean::entier($_COOKIE[COOKIE_PARTENAIRE]) : FALSE ;
-    $options_partenaires = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_partenaires_conventionnes() , FALSE /*select_nom*/ , '' /*option_first*/ , $selection , '' /*optgroup*/ );
+    $options_partenaires = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_partenaires_conventionnes() , FALSE /*select_nom*/ , '' /*option_first*/ , $selection , '' /*optgroup*/ );
     $affichage .= '<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;

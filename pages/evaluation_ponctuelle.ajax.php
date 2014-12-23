@@ -39,9 +39,22 @@ $note_val  = (isset($_POST['f_note']))   ? Clean::texte($_POST['f_note'])    : N
 $devoir_id = (isset($_POST['f_devoir'])) ? Clean::entier($_POST['f_devoir']) : NULL;
 $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : NULL;
 
-$tab_notes = array( 'RR' , 'R' , 'V' , 'VV' , 'NN' , 'NE' , 'NF' , 'NR' , 'ABS' , 'DISP' , 'REQ' , 'X' );
+$tab_notes = array(
+  'RR'   => $_SESSION['NOTE_DOSSIER'] ,
+  'R'    => $_SESSION['NOTE_DOSSIER'] ,
+  'V'    => $_SESSION['NOTE_DOSSIER'] ,
+  'VV'   => $_SESSION['NOTE_DOSSIER'] ,
+  'NN'   => 'commun' ,
+  'NE'   => 'commun' ,
+  'NF'   => 'commun' ,
+  'NR'   => 'commun' ,
+  'ABS'  => 'commun' ,
+  'DISP' => 'commun' ,
+  'REQ'  => 'commun' ,
+  'X'    => 'commun' ,
+);
 
-if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val,$tab_notes) && ($devoir_id!==NULL) && ($groupe_id!==NULL) )
+if( ($action=='enregistrer_note') && $item_id && $eleve_id && isset($tab_notes[$note_val]) && ($devoir_id!==NULL) && ($groupe_id!==NULL) )
 {
   // Nom du devoir
   $tab_jour = array(

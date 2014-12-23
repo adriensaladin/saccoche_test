@@ -92,7 +92,7 @@ else
       <label class="tab" for="f_webmestre_uai">Code UAI (ex-RNE) :</label><input id="f_webmestre_uai" name="f_webmestre_uai" size="8" type="text" value="<?php echo html($_SESSION['WEBMESTRE_UAI']); ?>" disabled /><br />
       <label class="tab" for="f_webmestre_denomination">Dénomination :</label><input id="f_webmestre_denomination" name="f_webmestre_denomination" size="50" type="text" value="<?php echo html($_SESSION['WEBMESTRE_DENOMINATION']); ?>" disabled />
     </p>
-    <ul class="puce"><li>En cas d'erreur, <?php echo HtmlMail::to(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
+    <ul class="puce"><li>En cas d'erreur, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','contacter le webmestre'); ?> responsable des installations sur ce serveur.</li></ul>
   </form>
 
   <form action="#" method="post" id="form_sesamath">
@@ -124,7 +124,7 @@ else
       <label class="tab" for="f_contact_courriel">Courriel<?php echo $mail_title ?> :</label><input id="f_contact_courriel" name="f_contact_courriel" size="50" type="text" value="<?php echo html($contact_courriel); ?>"<?php echo $mail_readonly ?> /><br />
       <span class="<?php echo $contact_class_valider ?>"><span class="tab"></span><button id="bouton_valider_contact" type="submit" class="parametre">Valider.</button><label id="ajax_msg_contact">&nbsp;</label></span>
     </p>
-    <ul class="puce <?php echo $contact_class_mailto ?>"><li>Si besoin, <?php echo HtmlMail::to(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</li></ul>
+    <ul class="puce <?php echo $contact_class_mailto ?>"><li>Si besoin, <?php echo Html::mailto(WEBMESTRE_COURRIEL,'Modifier contact SACoche n°'.$_SESSION['BASE'].' ['.$_SESSION['WEBMESTRE_UAI'].']','demander une modification au webmestre'); ?>.</li></ul>
   </form>
 
   <form action="#" method="post" id="form_etablissement">

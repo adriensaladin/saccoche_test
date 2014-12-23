@@ -442,10 +442,167 @@ class Form
       Dans ce cas il faut remplacer
       serialize(Form::$tab_choix)
       par
-      private static function callback_float($matches) { return "'d:'.(round($matches[1],9)).';'"; }
-      preg_replace_callback( '/d:([0-9]+(\.[0-9]+)?([Ee][+-]?[0-9]+)?);/', "Form::callback_float", serialize(Form::$tab_choix) );
+      preg_replace( '/d:([0-9]+(\.[0-9]+)?([Ee][+-]?[0-9]+)?);/e', "'d:'.(round($1,9)).';'", serialize(Form::$tab_choix) );
     */
     FileSystem::ecrire_fichier(Form::$fichier_cookie,serialize(Form::$tab_choix));
+  }
+
+  /**
+   * Afficher un élément select de formulaire à partir d'un tableau de données et d'options
+   * 
+   * Les select multiples sont convertis en une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur).
+   * Cela revient à remplacer ...
+   *  <select id="select_nom" name="select_nom[]" multiple size="8">
+   *    <optgroup label="Groupe A">
+   *      <option value="2204" selected>Option 1</option>
+   *      <option value="2206">Option 2</option>
+   *    </optgroup>
+   *  </select>
+   * ... par ...
+   *  <span id="select_nom" class="select_multiple">
+   *    <span>Groupe A</span>
+   *    <label for="select_nom_2204" class="check"><input type="checkbox" name="select_nom[]" id="select_nom_2204" value="2204" checked /> Option 1</label>
+   *    <label for="select_nom_2206"><input type="checkbox" name="select_nom[]" id="select_nom_2206" value="2206" /> Option 2</label>
+   *  </span>
+   * 
+   * @param array             $DB_TAB       tableau des données [i] => [valeur texte optgroup]
+   * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select (doit être transmis si $multiple l'est aussi)
+   * @param string|bool       $option_first 1ère option éventuelle [FALSE] [] [nom_option]
+   * @param string|bool|array $selection    préselection éventuelle [FALSE] [TRUE] [val] [ou $...] [ou array(...)]
+   * @param string            $optgroup     regroupement d'options éventuel [] [nom_du_regroupement]
+   * @param bool              $multiple     TRUE si transmis pour forcer un faux select multiple
+   * @return string
+   */
+  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup='',$multiple=FALSE)
+  {
+    // On commence par la 1ère option
+    if($option_first===FALSE)
+    {
+      // ... sans option initiale
+      $options = '';
+    }
+    elseif($option_first==='')
+    {
+      // ... avec une option initiale vierge
+      $options = (!$multiple) ? '<option value=""></option>' : '' ;
+    }
+    else
+    {
+      // ... avec une option initiale dont le contenu est à récupérer
+      list($option_valeur,$option_texte) = Form::$tab_select_option_first[$option_first];
+      $options = (!$multiple) ? '<option value="'.$option_valeur.'">'.html($option_texte).'</option>' : '<label for="'.$select_nom.'_'.$option_valeur.'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$option_valeur.'" value="'.$option_valeur.'" /> '.html($option_texte).'</label>' ;
+    }
+    if(is_array($DB_TAB))
+    {
+      // On construit les options...
+      if(!$optgroup)
+      {
+        // ... classiquement, sans regroupements
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $options .= (!$multiple) ? '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>' : '<label for="'.$select_nom.'_'.$DB_ROW['valeur'].'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label>' ;
+        }
+      }
+      else
+      {
+        // ... en regroupant par optgroup ; $tab_select_optgroup[$optgroup] est alors un tableau à 2 champs
+        $tab_options = array();
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $tab_options[$DB_ROW['optgroup']][] = (!$multiple) ? '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>' : '<label for="'.$select_nom.'_'.$DB_ROW['valeur'].'"><input type="checkbox" name="'.$select_nom.'[]" id="'.$select_nom.'_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" /> '.html($DB_ROW['texte']).'</label>' ;
+        }
+        foreach($tab_options as $group_key => $tab_group_options)
+        {
+          $options .= (!$multiple) ? '<optgroup label="'.html(Form::$tab_select_optgroup[$optgroup][$group_key]).'">'.implode('',$tab_group_options).'</optgroup>' : '<span>'.html(Form::$tab_select_optgroup[$optgroup][$group_key]).'</span>'.implode('',$tab_group_options) ;
+        }
+      }
+      // On sélectionne les options qu'il faut... (fait après le foreach précédent sinon c'est compliqué à gérer simultanément avec les groupes d'options éventuels
+      if($selection===FALSE)
+      {
+        // ... ne rien sélectionner
+      }
+      elseif($selection===TRUE)
+      {
+        // ... tout sélectionner
+        $options = (!$multiple) ? str_replace( '<option' , '<option selected' , $options ) : str_replace( array('><input','" />') , array(' class="check"><input','" checked />') , $options ) ;
+      }
+      else
+      {
+        // ... sélectionner une ou plusieurs option(s) ; $selection contient la valeur ou le tableau de valeurs à sélectionner
+        if(!is_array($selection))
+        {
+          $options = (!$multiple) ? str_replace( 'value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options ) : str_replace( array($selection.'"><input',$selection.'" />') , array($selection.'" class="check"><input',$selection.'" checked />') , $options ) ;
+        }
+        else
+        {
+          foreach($selection as $selection_val)
+          {
+            $options = (!$multiple) ? str_replace( 'value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options ) : str_replace( array('for="'.$select_nom.'_'.$selection_val.'"','value="'.$selection_val.'"') , array('for="'.$select_nom.'_'.$selection_val.'" class="check"','value="'.$selection_val.'" checked') , $options ) ;
+          }
+        }
+      }
+    }
+    // Si $DB_TAB n'est pas un tableau alors c'est une chaine avec un message d'erreur affichée sous la forme d'une option disable
+    else
+    {
+      $options .= (!$multiple) ? '<option value="" disabled>'.$DB_TAB.'</option>' : $DB_TAB;
+    }
+    // On insère dans un select si demandé
+    return (!$multiple) ? ( ($select_nom) ? '<select id="'.$select_nom.'" name="'.$select_nom.'">'.$options.'</select>' : $options ) : $options ;
+  }
+
+  /**
+   * Fabrication de tableau javascript de jointures à partir des groupes
+   * 
+   * @param array     $tab_groupes          tableau des données [i] => [valeur texte optgroup]
+   * @param bool      $tab_groupe_periode   charger ou non "tab_groupe_periode" pour les jointures groupes/périodes
+   * @param bool      $tab_groupe_niveau    charger ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
+   * @return void     alimente Layout::$tab_js_inline[]
+   */
+  public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$tab_groupe_periode,$tab_groupe_niveau)
+  {
+    Layout::add( 'js_inline_before' , 'var tab_groupe_periode = new Array();' );
+    Layout::add( 'js_inline_before' , 'var tab_groupe_niveau  = new Array();' );
+    if(is_array($tab_groupes))
+    {
+      // On liste les ids des classes et groupes
+      $tab_id_classe_groupe = array();
+      foreach($tab_groupes as $tab_groupe_infos)
+      {
+        if( !isset($tab_groupe_infos['optgroup']) || ($tab_groupe_infos['optgroup']!='besoin') )
+        {
+          $tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
+        }
+      }
+      if(count($tab_id_classe_groupe))
+      {
+        $listing_groupe_id = implode(',',$tab_id_classe_groupe);
+        // Charger le tableau js $tab_groupe_periode de jointures groupes/périodes
+        if($tab_groupe_periode)
+        {
+          $tab_memo_groupes = array();
+          $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
+          foreach($DB_TAB as $DB_ROW)
+          {
+            if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+            {
+              $tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
+              Layout::add( 'js_inline_before' , 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();' );
+            }
+            Layout::add( 'js_inline_before' , 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";' );
+          }
+        }
+        // Charger le tableau js $tab_groupe_niveau de jointures groupes/périodes
+        if($tab_groupe_niveau)
+        {
+          $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id);
+          foreach($DB_TAB as $DB_ROW)
+          {
+            Layout::add( 'js_inline_before' , 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");' );
+          }
+        }
+      }
+    }
   }
 
 }

@@ -31,15 +31,28 @@ $TITRE = "Évaluer un élève à la volée";
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
 $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 
-$select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_classe'  /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
-$select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
+$select_groupe  = Form::afficher_select($tab_groupes  , 'f_classe'  /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_matiere = Form::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
 
 // boutons radio
 $tab_radio_boutons = array();
-$tab_notes = array( 'RR' , 'R' , 'V' , 'VV' , 'NN' , 'NE' , 'NF' , 'NR' , 'ABS' , 'DISP' , 'REQ' , 'X' );
-foreach($tab_notes as $note)
+$tab_notes = array(
+  'RR'   => $_SESSION['NOTE_DOSSIER'] ,
+  'R'    => $_SESSION['NOTE_DOSSIER'] ,
+  'V'    => $_SESSION['NOTE_DOSSIER'] ,
+  'VV'   => $_SESSION['NOTE_DOSSIER'] ,
+  'NN'   => 'commun' ,
+  'NE'   => 'commun' ,
+  'NF'   => 'commun' ,
+  'NR'   => 'commun' ,
+  'ABS'  => 'commun' ,
+  'DISP' => 'commun' ,
+  'REQ'  => 'commun' ,
+  'X'    => 'commun' ,
+);
+foreach($tab_notes as $note => $dossier)
 {
-  $tab_radio_boutons[] = '<label for="note_'.$note.'"><span class="td"><input type="radio" id="note_'.$note.'" name="f_note" value="'.$note.'"> <img alt="'.$note.'" src="'.Html::note_src($note).'" /></span></label>';
+  $tab_radio_boutons[] = '<label for="note_'.$note.'"><span class="td"><input type="radio" id="note_'.$note.'" name="f_note" value="'.$note.'"> <img alt="'.$note.'" src="./_img/note/'.$dossier.'/h/'.$note.'.gif" /></span></label>';
 }
 $radio_boutons = implode(' ',$tab_radio_boutons);
 ?>

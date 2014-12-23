@@ -48,7 +48,7 @@ if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
   // $matiere_ref trasmis maintenant car pas possible lors du AjaxUpload (moment où on en a besoin) ; du coup on le garde au chaud
   $_SESSION['tmp']['matiere_ref'] = $matiere_ref;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
-  exit( HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
+  exit( Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

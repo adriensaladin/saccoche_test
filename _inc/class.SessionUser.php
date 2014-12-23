@@ -367,7 +367,6 @@ class SessionUser
       'CSS_BACKGROUND-COLOR',
       'CALCUL_VALEUR',
       'CALCUL_SEUIL',
-      'NOTE_IMAGE',
       'NOTE_TEXTE',
       'NOTE_LEGENDE',
       'ACQUIS_TEXTE',
@@ -401,7 +400,7 @@ class SessionUser
         $_SESSION[$parametre_nom] = $parametre_valeur ;
       }
     }
-    // Fabriquer $_SESSION['IMG_...'] et $_SESSION['BACKGROUND_...'] en fonction de $_SESSION['USER_DALTONISME'] à partir de $_SESSION['NOTE_IMAGE_...'] et $_SESSION['CSS_BACKGROUND-COLOR']['...']
+    // Fabriquer $_SESSION['NOTE_DOSSIER'] et $_SESSION['BACKGROUND_...'] en fonction de $_SESSION['USER_DALTONISME'] à partir de $_SESSION['NOTE_IMAGE_STYLE'] et $_SESSION['CSS_BACKGROUND-COLOR']['...']
     // remarque : $_SESSION['USER_DALTONISME'] ne peut être utilisé que pour les profils élèves/parents/profs/directeurs, pas les admins ni le webmestre
     SessionUser::adapter_daltonisme() ;
     // Enregistrer en session le CSS personnalisé
@@ -509,10 +508,7 @@ class SessionUser
   public static function adapter_daltonisme()
   {
     // codes de notation
-    $_SESSION['IMG_RR'] = $_SESSION['USER_DALTONISME'] ? './_img/note/daltonisme/h/RR.gif' : './_img/note/choix/h/'.$_SESSION['NOTE_IMAGE']['RR'].'.gif' ;
-    $_SESSION['IMG_R' ] = $_SESSION['USER_DALTONISME'] ? './_img/note/daltonisme/h/R.gif'  : './_img/note/choix/h/'.$_SESSION['NOTE_IMAGE']['R' ].'.gif' ;
-    $_SESSION['IMG_V' ] = $_SESSION['USER_DALTONISME'] ? './_img/note/daltonisme/h/V.gif'  : './_img/note/choix/h/'.$_SESSION['NOTE_IMAGE']['V' ].'.gif' ;
-    $_SESSION['IMG_VV'] = $_SESSION['USER_DALTONISME'] ? './_img/note/daltonisme/h/VV.gif' : './_img/note/choix/h/'.$_SESSION['NOTE_IMAGE']['VV'].'.gif' ;
+    $_SESSION['NOTE_DOSSIER']  = $_SESSION['USER_DALTONISME'] ? 'Dalton'  : $_SESSION['NOTE_IMAGE_STYLE'] ;
     // couleurs des états d'acquisition
     $_SESSION['BACKGROUND_NA'] = $_SESSION['USER_DALTONISME'] ? '#909090' : $_SESSION['CSS_BACKGROUND-COLOR']['NA'] ;
     $_SESSION['BACKGROUND_VA'] = $_SESSION['USER_DALTONISME'] ? '#BEBEBE' : $_SESSION['CSS_BACKGROUND-COLOR']['VA'] ;
@@ -534,14 +530,14 @@ class SessionUser
   {
     $_SESSION['CSS']  = '';
     // codes de notation
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.RR {background:#FFF url('.$_SESSION['IMG_RR'].') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.R  {background:#FFF url('.$_SESSION['IMG_R' ].') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.V  {background:#FFF url('.$_SESSION['IMG_V' ].') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.VV {background:#FFF url('.$_SESSION['IMG_VV'].') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.RR {background:#FFF url('.str_replace('/h/','/v/',$_SESSION['IMG_RR']).') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.R  {background:#FFF url('.str_replace('/h/','/v/',$_SESSION['IMG_R' ]).') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.V  {background:#FFF url('.str_replace('/h/','/v/',$_SESSION['IMG_V' ]).') no-repeat center center;}'.NL;
-    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.VV {background:#FFF url('.str_replace('/h/','/v/',$_SESSION['IMG_VV']).') no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/RR.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.RR {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/RR.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/R.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.R  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/R.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/V.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.V  {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/V.gif)  no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/VV.gif) no-repeat center center;}'.NL;
+    $_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.VV {background:#FFF url(./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/v/VV.gif) no-repeat center center;}'.NL;
     // couleurs des états d'acquisition
     $_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['BACKGROUND_NA'].'}'.NL;
     $_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['BACKGROUND_VA'].'}'.NL;

@@ -31,54 +31,18 @@ $(document).ready
   {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
+// Reporter dans les input equiv_txt les valeurs préféfinies lors du clic sur un bouton radio (jeu de symboles colorés).
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var mode_note_code = false;
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un crayon pour modifier un symbole coloré
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#form_notes').on
-    (
-      'click',
-      'q.modifier',
-      function()
-      {
-        mode_note_code = $(this).prev('input').attr('id').substring(11); // note_image_
-        $.fancybox( { 'href':'#zone_notes' , onStart:function(){$('#zone_notes').css("display","block");} , onClosed:function(){$('#zone_notes').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un lien pour choisir d'un symbole coloré
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('.note_liste').on
-    (
-      'click',
-      'a',
-      function()
-      {
-        var new_note_code = $(this).attr('id').substring(2); // a_
-        var input_obj = $('#note_image_'+mode_note_code);
-        input_obj.val(new_note_code);
-        input_obj.prev('img').attr('src','./_img/note/choix/h/'+new_note_code+'.gif');
-        $('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-        $.fancybox.close();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le lien pour annuler le choix d'un symbole coloré
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#annuler_note').click
+    $('table.simulation input[type=radio]').click
     (
       function()
       {
-        $.fancybox.close();
+        var note_nom = $(this).val();
+        $('#note_texte_RR').val( tab_notes_txt[note_nom]['RR'] );
+        $('#note_texte_R').val( tab_notes_txt[note_nom]['R'] );
+        $('#note_texte_V').val( tab_notes_txt[note_nom]['V'] );
+        $('#note_texte_VV').val( tab_notes_txt[note_nom]['VV'] );
       }
     );
 
@@ -105,7 +69,6 @@ $(document).ready
       function()
       {
         $( '#acquis_'+$(this).attr('name') ).val( $(this).val() ).focus();
-        $('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
       }
     );
 
@@ -144,10 +107,7 @@ $(document).ready
       {
         rules :
         {
-          note_image_RR     : { required:true },
-          note_image_R      : { required:true },
-          note_image_V      : { required:true },
-          note_image_VV     : { required:true },
+          note_image_style  : { required:true },
           note_texte_RR     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
           note_texte_R      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
           note_texte_V      : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
@@ -159,10 +119,6 @@ $(document).ready
         },
         messages :
         {
-          note_image_RR     : { required:"codes de couleur manquant" },
-          note_image_R      : { required:"codes de couleur manquant" },
-          note_image_V      : { required:"codes de couleur manquant" },
-          note_image_VV     : { required:"codes de couleur manquant" },
           note_image_style  : { required:"codes de couleur manquant" },
           note_texte_RR     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
           note_texte_R      : { required:"texte manquant" , maxlength:"3 caractères maximum" },
@@ -177,7 +133,8 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          $('#ajax_msg_notes').html(error);
+          if(element.attr("type")=="radio") { $('#ajax_msg_note_symbole').html(error); }
+          else {element.parent().append(error);}
         }
       }
     );
@@ -211,32 +168,6 @@ $(document).ready
     {
       $('#ajax_msg_notes').removeAttr("class").html("&nbsp;");
       var readytogo = validation1.form();
-      if(readytogo)
-      {
-        readytogo = false;
-        var tab_image   = new Array( $('#note_image_RR').val().toUpperCase()   , $('#note_image_R').val().toUpperCase()   , $('#note_image_V').val().toUpperCase()   , $('#note_image_VV').val().toUpperCase()   );
-        var tab_texte   = new Array( $('#note_texte_RR').val().toUpperCase()   , $('#note_texte_R').val().toUpperCase()   , $('#note_texte_V').val().toUpperCase()   , $('#note_texte_VV').val().toUpperCase()   );
-        var tab_legende = new Array( $('#note_legende_RR').val().toUpperCase() , $('#note_legende_R').val().toUpperCase() , $('#note_legende_V').val().toUpperCase() , $('#note_legende_VV').val().toUpperCase() );
-        tab_image.sort();
-        tab_texte.sort();
-        tab_legende.sort();
-        if( (tab_image[0]==tab_image[1]) || (tab_image[1]==tab_image[2]) || (tab_image[2]==tab_image[3]) )
-        {
-          $('#ajax_msg_notes').addClass("erreur").html("Des symboles colorés sont identiques !").show();
-        }
-        else if( (tab_texte[0]==tab_texte[1]) || (tab_texte[1]==tab_texte[2]) || (tab_texte[2]==tab_texte[3]) )
-        {
-          $('#ajax_msg_notes').addClass("erreur").html("Des équivalents textes sont identiques !").show();
-        }
-        else if( (tab_legende[0]==tab_legende[1]) || (tab_legende[1]==tab_legende[2]) || (tab_legende[2]==tab_legende[3]) )
-        {
-          $('#ajax_msg_notes').addClass("erreur").html("Des légendes sont identiques !").show();
-        }
-        else
-        {
-          readytogo = true;
-        }
-      }
       if(readytogo)
       {
         $("#bouton_valider_notes").prop('disabled',true);
@@ -307,7 +238,7 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          $('#ajax_msg_acquis').html(error);
+          element.parent().append(error);
         }
       }
     );
@@ -341,32 +272,6 @@ $(document).ready
     {
       $('#ajax_msg_acquis').removeAttr("class").html("&nbsp;");
       var readytogo = validation2.form();
-      if(readytogo)
-      {
-        readytogo = false;
-        var tab_texte   = new Array( $('#acquis_texte_NA').val().toUpperCase()   , $('#acquis_texte_VA').val().toUpperCase()   , $('#acquis_texte_A').val().toUpperCase()   );
-        var tab_legende = new Array( $('#acquis_legende_NA').val().toUpperCase() , $('#acquis_legende_VA').val().toUpperCase() , $('#acquis_legende_A').val().toUpperCase() );
-        var tab_color   = new Array( $('#acquis_color_NA').val().toUpperCase()   , $('#acquis_color_VA').val().toUpperCase()   , $('#acquis_color_A').val().toUpperCase()   );
-        tab_texte.sort();
-        tab_legende.sort();
-        tab_color.sort();
-        if( (tab_texte[0]==tab_texte[1]) || (tab_texte[1]==tab_texte[2]) || (tab_texte[2]==tab_texte[3]) )
-        {
-          $('#ajax_msg_acquis').addClass("erreur").html("Des équivalents textes sont identiques !").show();
-        }
-        else if( (tab_legende[0]==tab_legende[1]) || (tab_legende[1]==tab_legende[2]) || (tab_legende[2]==tab_legende[3]) )
-        {
-          $('#ajax_msg_acquis').addClass("erreur").html("Des légendes sont identiques !").show();
-        }
-        else if( (tab_color[0]==tab_color[1]) || (tab_color[1]==tab_color[2]) || (tab_color[2]==tab_color[3]) )
-        {
-          $('#ajax_msg_acquis').addClass("erreur").html("Des couleurs de fond sont identiques !").show();
-        }
-        else
-        {
-          readytogo = true;
-        }
-      }
       if(readytogo)
       {
         $("#bouton_valider_acquis").prop('disabled',true);

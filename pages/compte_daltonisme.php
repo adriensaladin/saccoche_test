@@ -37,8 +37,8 @@ $td_dalton = '<td class="nu">&nbsp;</td>';
 $tab_note = array('RR','R','V','VV');
 foreach($tab_note as $note)
 {
-  $td_normal .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="'.$note.'" src="./_img/note/choix/h/'.$_SESSION['NOTE_IMAGE'][$note].'.gif" /></td>';
-  $td_dalton .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="'.$note.'" src="./_img/note/daltonisme/h/'.$note.'.gif" /></td>';
+  $td_normal .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$note.'.gif" /></td>';
+  $td_dalton .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/Dalton/h/'.$note.'.gif" /></td>';
 }
 
 // couleurs des états d'acquisition

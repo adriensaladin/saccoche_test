@@ -93,11 +93,11 @@ foreach($DB_TAB_series as $DB_ROW)
     // Mode de recherche
     $f_nom_recherche = 'f_'.$id_start.'_recherche';
     $selection_recherche = ($DB_ROW['brevet_epreuve_choix_recherche']===NULL) ? FALSE : $DB_ROW['brevet_epreuve_choix_recherche'] ;
-    echo'<label class="tab" for="'.$f_nom_recherche.'">Mode de recherche :</label>'.HtmlForm::afficher_select($tab_choix_recherche, $f_nom_recherche /*select_nom*/ , FALSE /*option_first*/ , $selection_recherche , '' /*optgroup*/).'<br />'.NL;
+    echo'<label class="tab" for="'.$f_nom_recherche.'">Mode de recherche :</label>'.Form::afficher_select($tab_choix_recherche, $f_nom_recherche /*select_nom*/ , FALSE /*option_first*/ , $selection_recherche , '' /*optgroup*/).'<br />'.NL;
     // Moyenne utilisée
     $f_nom_moyenne = 'f_'.$id_start.'_moyenne';
     $selection_moyenne = ($DB_ROW['brevet_epreuve_choix_moyenne']===NULL)   ? FALSE : $DB_ROW['brevet_epreuve_choix_moyenne'] ;
-    echo'<label class="tab" for="'.$f_nom_moyenne.'">Moyenne utilisée :</label>'.HtmlForm::afficher_select($tab_choix_moyenne, $f_nom_moyenne /*select_nom*/ , FALSE /*option_first*/ , $selection_moyenne , '' /*optgroup*/).'<br />'.NL;
+    echo'<label class="tab" for="'.$f_nom_moyenne.'">Moyenne utilisée :</label>'.Form::afficher_select($tab_choix_moyenne, $f_nom_moyenne /*select_nom*/ , FALSE /*option_first*/ , $selection_moyenne , '' /*optgroup*/).'<br />'.NL;
     // Matière(s)
     $listing_matieres_id_select = ($DB_ROW['brevet_epreuve_choix_matieres']===NULL) ? $DB_ROW['brevet_epreuve_matieres_cibles'] : $DB_ROW['brevet_epreuve_choix_matieres'] ;
     $tab_matieres_id_select = explode(',',$listing_matieres_id_select);

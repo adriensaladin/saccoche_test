@@ -73,7 +73,7 @@ $TITRE = "Choix des profils utilisateurs";
   <?php
   // Affichage de la liste des items du socle pour chaque palier
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();
-  echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , HtmlArborescence::afficher_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , FALSE /*aff_input*/ , FALSE /*ids*/ ) );
+  echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , FALSE /*aff_input*/ , FALSE /*ids*/ ) );
   ?>
 </div>
 

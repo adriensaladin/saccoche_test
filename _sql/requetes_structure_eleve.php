@@ -101,6 +101,7 @@ public static function DB_lister_devoir_profs_droit_saisie($devoir_id)
  */
 public static function DB_recuperer_devoir_commentaire($devoir_id,$eleve_id)
 {
+  $jointure = 'jointure_'.$msg_objet;
   $DB_SQL = 'SELECT jointure_texte, jointure_audio ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';

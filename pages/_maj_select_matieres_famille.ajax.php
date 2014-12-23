@@ -37,6 +37,6 @@ if(!$matiere_famille_id)
   exit('Erreur avec les données transmises !');
 }
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , FALSE /*select_nom*/ , 'matieres_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , FALSE /*select_nom*/ , 'matieres_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 
 ?>

@@ -40,6 +40,6 @@ if( (!$matiere_id) || (!$niveau_id) )
 
 // Affichage du retour.
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_arborescence($matiere_id,$niveau_id) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'referentiel' /*optgroup*/ , FALSE /*multiple*/ ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_arborescence($matiere_id,$niveau_id) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'referentiel' /*optgroup*/ , FALSE /*multiple*/ ) );
 
 ?>

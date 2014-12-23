@@ -115,15 +115,15 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe       = HtmlForm::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
-$select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
-$select_periode      = HtmlForm::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
+$select_groupe       = Form::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
+$select_matiere      = Form::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
+$select_periode      = Form::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__bilan_chronologique">DOC : Bilan chronologique.</a></span></div>

@@ -45,6 +45,6 @@ $selection    = ($multiple) ? TRUE        : $matiere ;
 
 // Affichage du retour.
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

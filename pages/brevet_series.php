@@ -31,8 +31,8 @@ $TITRE = "Étape n°1 - Indiquer la série des élèves concernés";
 // Fabrication des éléments select du formulaire
 $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
 $tab_series  = DB_STRUCTURE_BREVET::DB_OPT_brevet_series();
-$select_eleve = HtmlForm::afficher_select($tab_groupes , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_serie = HtmlForm::afficher_select($tab_series  , 'f_serie'       /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
+$select_eleve = Form::afficher_select($tab_groupes , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_serie = Form::afficher_select($tab_series  , 'f_serie'       /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
 ?>
 
 <p>

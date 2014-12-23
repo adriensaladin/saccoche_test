@@ -30,10 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 
 $objet             = (isset($_POST['objet']))             ?    Clean::texte($_POST['objet'])             : '' ;
 
-$note_image_RR     = (isset($_POST['note_image_RR']))     ? Clean::txt_note($_POST['note_image_RR'])     : '' ;
-$note_image_R      = (isset($_POST['note_image_R']))      ? Clean::txt_note($_POST['note_image_R'])      : '' ;
-$note_image_V      = (isset($_POST['note_image_V']))      ? Clean::txt_note($_POST['note_image_V'])      : '' ;
-$note_image_VV     = (isset($_POST['note_image_VV']))     ? Clean::txt_note($_POST['note_image_VV'])     : '' ;
+$note_image_style  = (isset($_POST['note_image_style']))  ?    Clean::texte($_POST['note_image_style'])  : '' ;
 
 $note_texte_RR     = (isset($_POST['note_texte_RR']))     ? Clean::txt_note($_POST['note_texte_RR'])     : '' ;
 $note_texte_R      = (isset($_POST['note_texte_R']))      ? Clean::txt_note($_POST['note_texte_R'])      : '' ;
@@ -57,15 +54,10 @@ $acquis_color_NA   = (isset($_POST['acquis_color_NA']))   ?    Clean::texte($_PO
 $acquis_color_VA   = (isset($_POST['acquis_color_VA']))   ?    Clean::texte($_POST['acquis_color_VA'])   : '' ;
 $acquis_color_A    = (isset($_POST['acquis_color_A']))    ?    Clean::texte($_POST['acquis_color_A'])    : '' ;
 
-$chemin_dossier = CHEMIN_DOSSIER_IMG.'note'.DS.'choix'.DS.'h'.DS;
-$test_image_RR = (preg_match("/^[0-9a-z_-]+$/i", $note_image_RR)) && (is_file($chemin_dossier.$note_image_RR.'.gif')) ;
-$test_image_R  = (preg_match("/^[0-9a-z_-]+$/i", $note_image_R )) && (is_file($chemin_dossier.$note_image_R .'.gif')) ;
-$test_image_V  = (preg_match("/^[0-9a-z_-]+$/i", $note_image_V )) && (is_file($chemin_dossier.$note_image_V .'.gif')) ;
-$test_image_VV = (preg_match("/^[0-9a-z_-]+$/i", $note_image_VV)) && (is_file($chemin_dossier.$note_image_VV.'.gif')) ;
-
 $longueur_NA = mb_strlen($acquis_color_NA);
 $longueur_VA = mb_strlen($acquis_color_VA);
 $longueur_A  = mb_strlen($acquis_color_A);
+$test_jeu = (preg_match("/^[0-9a-z_-]+$/i", $note_image_style)) && (is_dir('./_img/note/'.$note_image_style)) ;
 $test_color_NA  = (preg_match("/^\#[0-9a-f]{3,6}$/i", $acquis_color_NA)) && ($longueur_NA!=5) && ($longueur_NA!=6) ;
 $test_color_VA  = (preg_match("/^\#[0-9a-f]{3,6}$/i", $acquis_color_VA)) && ($longueur_VA!=5) && ($longueur_VA!=6) ;
 $test_color_A   = (preg_match("/^\#[0-9a-f]{3,6}$/i", $acquis_color_A))  && ($longueur_A !=5) && ($longueur_A !=6) ;
@@ -74,22 +66,19 @@ $test_color_A   = (preg_match("/^\#[0-9a-f]{3,6}$/i", $acquis_color_A))  && ($lo
 // Notes aux évaluations : symboles colorés, équivalents textes, légende
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($objet=='notes') && $test_image_RR && $test_image_R && $test_image_R && $test_image_VV && ($note_texte_RR!='') && ($note_texte_R!='') && ($note_texte_V!='') && ($note_texte_VV!='') && $note_legende_RR && $note_legende_R && $note_legende_V && $note_legende_VV )
+if( ($objet=='notes') && $test_jeu && ($note_texte_RR!='') && ($note_texte_R!='') && ($note_texte_V!='') && ($note_texte_VV!='') && $note_legende_RR && $note_legende_R && $note_legende_V && $note_legende_VV )
 {
   // Mettre à jour la session + la base + le css perso
   $tab_parametres = array();
-  $_SESSION['NOTE_IMAGE']['RR']   = $note_image_RR;   $tab_parametres['note_image_RR']   = $note_image_RR;
-  $_SESSION['NOTE_IMAGE']['R']    = $note_image_R;    $tab_parametres['note_image_R']    = $note_image_R;
-  $_SESSION['NOTE_IMAGE']['V']    = $note_image_V;    $tab_parametres['note_image_V']    = $note_image_V;
-  $_SESSION['NOTE_IMAGE']['VV']   = $note_image_VV;   $tab_parametres['note_image_VV']   = $note_image_VV;
-  $_SESSION['NOTE_TEXTE']['RR']   = $note_texte_RR;   $tab_parametres['note_texte_RR']   = $note_texte_RR;
-  $_SESSION['NOTE_TEXTE']['R']    = $note_texte_R;    $tab_parametres['note_texte_R']    = $note_texte_R;
-  $_SESSION['NOTE_TEXTE']['V']    = $note_texte_V;    $tab_parametres['note_texte_V']    = $note_texte_V;
-  $_SESSION['NOTE_TEXTE']['VV']   = $note_texte_VV;   $tab_parametres['note_texte_VV']   = $note_texte_VV;
-  $_SESSION['NOTE_LEGENDE']['RR'] = $note_legende_RR; $tab_parametres['note_legende_RR'] = $note_legende_RR;
-  $_SESSION['NOTE_LEGENDE']['R']  = $note_legende_R;  $tab_parametres['note_legende_R']  = $note_legende_R;
-  $_SESSION['NOTE_LEGENDE']['V']  = $note_legende_V;  $tab_parametres['note_legende_V']  = $note_legende_V;
-  $_SESSION['NOTE_LEGENDE']['VV'] = $note_legende_VV; $tab_parametres['note_legende_VV'] = $note_legende_VV;
+  $_SESSION['NOTE_IMAGE_STYLE']           = $note_image_style;  $tab_parametres['note_image_style']               = $note_image_style;
+  $_SESSION['NOTE_TEXTE']['RR']           = $note_texte_RR;     $tab_parametres['note_texte_RR']                  = $note_texte_RR;
+  $_SESSION['NOTE_TEXTE']['R']            = $note_texte_R;      $tab_parametres['note_texte_R']                   = $note_texte_R;
+  $_SESSION['NOTE_TEXTE']['V']            = $note_texte_V;      $tab_parametres['note_texte_V']                   = $note_texte_V;
+  $_SESSION['NOTE_TEXTE']['VV']           = $note_texte_VV;     $tab_parametres['note_texte_VV']                  = $note_texte_VV;
+  $_SESSION['NOTE_LEGENDE']['RR']         = $note_legende_RR;   $tab_parametres['note_legende_RR']                = $note_legende_RR;
+  $_SESSION['NOTE_LEGENDE']['R']          = $note_legende_R;    $tab_parametres['note_legende_R']                 = $note_legende_R;
+  $_SESSION['NOTE_LEGENDE']['V']          = $note_legende_V;    $tab_parametres['note_legende_V']                 = $note_legende_V;
+  $_SESSION['NOTE_LEGENDE']['VV']         = $note_legende_VV;   $tab_parametres['note_legende_VV']                = $note_legende_VV;
   DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
   // Enregistrer en session le CSS personnalisé
   SessionUser::adapter_daltonisme();

@@ -33,7 +33,7 @@ $TITRE = "Importer / Imposer des identifiants";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 // Fabrication des éléments select du formulaire
-$select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
 <ul class="puce">

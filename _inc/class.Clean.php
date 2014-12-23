@@ -252,12 +252,7 @@ class Clean
    */
   public static function perso_ucwords($text)
   {
-    return (perso_mb_detect_encoding_utf8($text)) ? mb_convert_case($text,MB_CASE_TITLE,'UTF-8') : trim(preg_replace_callback('/([^a-z'.LATIN1_LC_CHARS.']|^)([a-z'.LATIN1_LC_CHARS.'])/', "Clean::callback_ucwords", Clean::perso_strtolower($text)));
-  }
-  private static function callback_ucwords($matches)
-  {
-    // comme d'habitude : $matches[0] représente la valeur totale et $matches[1] représente la première parenthèse capturante
-    return stripslashes($matches[1].Clean::perso_strtoupper($matches[2]));
+    return (perso_mb_detect_encoding_utf8($text)) ? mb_convert_case($text,MB_CASE_TITLE,'UTF-8') : trim(preg_replace('/([^a-z'.LATIN1_LC_CHARS.']|^)([a-z'.LATIN1_LC_CHARS.'])/e', 'stripslashes("$1".Clean::perso_strtoupper("$2"))', Clean::perso_strtolower($text)));
   }
 
   /*

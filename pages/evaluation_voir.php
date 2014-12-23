@@ -53,7 +53,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
   $tab_groupes  = array();
   $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';
-  $select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/);
+  $select_eleves = HtmlForm::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/);
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -67,7 +67,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'false';
   $select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
-$select_groupe = Form::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_g /*option_first*/ , $sel_g /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_groupe = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_g /*option_first*/ , $sel_g /*selection*/ , 'regroupements' /*optgroup*/ );
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 

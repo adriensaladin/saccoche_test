@@ -55,7 +55,7 @@ echo'<p>'.$messages.'</p>'.NL;
 
 <?php
 $TITRE = "Analyser / Réparer les bases";
-$select_structure = Form::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , FALSE , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
+$select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , FALSE , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <form action="#" method="post" id="form_repair"><fieldset>

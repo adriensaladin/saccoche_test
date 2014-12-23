@@ -1341,7 +1341,6 @@ $(document).ready
       function()
       {
         var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
-        $('#table_saisir_voir tbody').removeAttr("class").addClass(condense);
         $("#table_saisir_voir thead tr th img").each
         (
           function ()
@@ -1351,6 +1350,22 @@ $(document).ready
             $(this).attr('src',img_src_new);
           }
         );
+        if(mode=='saisir')
+        {
+          $('#table_saisir_voir tbody').removeAttr("class").addClass(condense);
+        }
+        if(mode=='voir')
+        {
+          $("#table_saisir_voir tbody tr td img").each
+          (
+            function ()
+            {
+              img_src_old = $(this).attr('src');
+              img_src_new = (condense=='v') ? img_src_old.replace('/h/','/v/') : img_src_old.replace('/v/','/h/') ;
+              $(this).attr('src',img_src_new);
+            }
+          );
+        }
       }
     );
 

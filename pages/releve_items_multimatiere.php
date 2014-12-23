@@ -94,25 +94,25 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 }
 $tab_periodes          = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_individuel_format = Form::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/);
-$select_groupe            = Form::afficher_select($tab_groupes                        , 'f_groupe'            /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                       /*selection*/ , 'regroupements' /*optgroup*/);
-$select_eleves_ordre      = Form::afficher_select(Form::$tab_select_eleves_ordre      , 'f_eleves_ordre'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']             /*selection*/ ,              '' /*optgroup*/);
-$select_periode           = Form::afficher_select($tab_periodes                       , 'f_periode'           /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                        /*selection*/ ,              '' /*optgroup*/);
-$select_orientation       = Form::afficher_select(Form::$tab_select_orientation       , 'f_orientation'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']              /*selection*/ ,              '' /*optgroup*/);
-$select_marge_min         = Form::afficher_select(Form::$tab_select_marge_min         , 'f_marge_min'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']                /*selection*/ ,              '' /*optgroup*/);
-$select_pages_nb          = Form::afficher_select(Form::$tab_select_pages_nb          , 'f_pages_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                 /*selection*/ ,              '' /*optgroup*/);
-$select_couleur           = Form::afficher_select(Form::$tab_select_couleur           , 'f_couleur'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']                  /*selection*/ ,              '' /*optgroup*/);
-$select_fond              = Form::afficher_select(Form::$tab_select_fond              , 'f_fond'              /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['fond']                     /*selection*/ ,              '' /*optgroup*/);
-$select_legende           = Form::afficher_select(Form::$tab_select_legende           , 'f_legende'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']                  /*selection*/ ,              '' /*optgroup*/);
-$select_cases_nb          = Form::afficher_select(Form::$tab_select_cases_nb          , 'f_cases_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']                 /*selection*/ ,              '' /*optgroup*/);
-$select_cases_larg        = Form::afficher_select(Form::$tab_select_cases_size        , 'f_cases_larg'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']            /*selection*/ ,              '' /*optgroup*/);
+$select_individuel_format = HtmlForm::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/);
+$select_groupe            = HtmlForm::afficher_select($tab_groupes                        , 'f_groupe'            /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                                       /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleves_ordre      = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre      , 'f_eleves_ordre'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']             /*selection*/ ,              '' /*optgroup*/);
+$select_periode           = HtmlForm::afficher_select($tab_periodes                       , 'f_periode'           /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                        /*selection*/ ,              '' /*optgroup*/);
+$select_orientation       = HtmlForm::afficher_select(Form::$tab_select_orientation       , 'f_orientation'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']              /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min         = HtmlForm::afficher_select(Form::$tab_select_marge_min         , 'f_marge_min'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']                /*selection*/ ,              '' /*optgroup*/);
+$select_pages_nb          = HtmlForm::afficher_select(Form::$tab_select_pages_nb          , 'f_pages_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                 /*selection*/ ,              '' /*optgroup*/);
+$select_couleur           = HtmlForm::afficher_select(Form::$tab_select_couleur           , 'f_couleur'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']                  /*selection*/ ,              '' /*optgroup*/);
+$select_fond              = HtmlForm::afficher_select(Form::$tab_select_fond              , 'f_fond'              /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['fond']                     /*selection*/ ,              '' /*optgroup*/);
+$select_legende           = HtmlForm::afficher_select(Form::$tab_select_legende           , 'f_legende'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']                  /*selection*/ ,              '' /*optgroup*/);
+$select_cases_nb          = HtmlForm::afficher_select(Form::$tab_select_cases_nb          , 'f_cases_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']                 /*selection*/ ,              '' /*optgroup*/);
+$select_cases_larg        = HtmlForm::afficher_select(Form::$tab_select_cases_size        , 'f_cases_larg'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']            /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql  = "'.TODAY_MYSQL.'";' );
 Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_multimatiere">DOC : Relevé d'items pluridisciplinaire.</a></span></div>

@@ -756,7 +756,6 @@ if($version_base_structure_actuelle=='2014-12-12')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_releve_appreciation_generale_longueur" WHERE parametre_nom="officiel_releve_appreciation_generale" ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_releve_appreciation_rubrique_longueur" WHERE parametre_nom="officiel_releve_appreciation_rubrique" ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_socle_appreciation_generale_longueur" WHERE parametre_nom="officiel_socle_appreciation_generale" ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_socle_appreciation_generale_longueur" WHERE parametre_nom="officiel_socle_appreciation_generale" ' );
     // ajout de paramètres
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_url" , "" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_exception_matieres" , "" )' );
@@ -775,6 +774,69 @@ if($version_base_structure_actuelle=='2014-12-12')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_fond" , "gris" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_fond"   , "gris" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_fond"    , "gris" )' );
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-12-19 => 2014-12-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2014-12-19')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2014-12-22';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modification de paramètre (oublié à la MAJ d'avant...)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_socle_appreciation_rubrique_longueur" WHERE parametre_nom="officiel_socle_appreciation_rubrique" ' );
+    // récupération de paramètre
+    $image_style = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="note_image_style" ' );
+    // ajout de paramètres
+    $tab_notes_info = array
+    (
+      'Lomer'        => array( 'RR' =>'disque-double_rouge'         , 'R' =>'disque_rouge'                , 'V' =>'disque_vert-fonce'             , 'VV' =>'disque-double_vert-fonce' ),
+      'Albert'       => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_orange'               , 'V' =>'disque_vert-fonce'             , 'VV' =>'disque-double_vert-fonce' ),
+      'Alienor'      => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_orange'               , 'V' =>'disque_vert-fonce'             , 'VV' =>'etoile_jaune' ),
+      'Aubrac'       => array( 'RR' =>'disque_jaune'                , 'R' =>'disque_vert-fonce'           , 'V' =>'disque_bleu-fonce'             , 'VV' =>'disque_noir' ),
+      'Berthelot'    => array( 'RR' =>'disque_noir'                 , 'R' =>'disque_rouge'                , 'V' =>'disque_bleu-fonce'             , 'VV' =>'disque_vert-fonce' ),
+      'Blaye'        => array( 'RR' =>'carre_rouge'                 , 'R' =>'carre_orange'                , 'V' =>'carre_jaune'                   , 'VV' =>'carre_vert' ),
+      'Brassens'     => array( 'RR' =>'symbole-couleur_moins'       , 'R' =>'symbole-couleur_moyen-moins' , 'V' =>'symbole-couleur_moyen-plus'    , 'VV' =>'symbole-couleur_plus' ),
+      'Brel'         => array( 'RR' =>'rectangle-texte_rouge-NR'    , 'R' =>'rectangle-texte_orange_PR'   , 'V' =>'rectangle-texte_vert_R'        , 'VV' =>'rectangle-texte_violet-M' ),
+      'CitesUnies'   => array( 'RR' =>'carre_rouge'                 , 'R' =>'carre_orange'                , 'V' =>'carre_vert'                    , 'VV' =>'carre_jaune' ),
+      'Courbet'      => array( 'RR' =>'disque_bleu-fonce'           , 'R' =>'disque_jaune'                , 'V' =>'disque_orange'                 , 'VV' =>'disque_rouge' ),
+      'Descartes'    => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_orange'               , 'V' =>'disque_vert-fonce'             , 'VV' =>'etoile_violet' ),
+      'Deutsch'      => array( 'RR' =>'rectangle_rose'              , 'R' =>'rectangle_orange-fonce'      , 'V' =>'rectangle_vert-fonce'          , 'VV' =>'rectangle_bleu-fonce' ),
+      'Europe'       => array( 'RR' =>'texte_lettre-D'              , 'R' =>'texte_lettre-C'              , 'V' =>'texte_lettre-B'                , 'VV' =>'texte_lettre-A' ),
+      'Indonesie'    => array( 'RR' =>'carre_rouge'                 , 'R' =>'carre_orange'                , 'V' =>'carre_vert'                    , 'VV' =>'carre-double_vert' ),
+      'JeanZay'      => array( 'RR' =>'rectangle_bleu-clair'        , 'R' =>'rectangle_jaune'             , 'V' =>'rectangle_vert-clair'          , 'VV' =>'rectangle_vert-fonce' ),
+      'Koeberle'     => array( 'RR' =>'texte-couleur_rouge-NM'      , 'R' =>'texte-couleur_orange-MI'     , 'V' =>'texte-couleur_vert-MS'         , 'VV' =>'texte-couleur_bleu-EX' ),
+      'LaFontaine'   => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_jaune'                , 'V' =>'disque_vert-clair'             , 'VV' =>'disque_vert-fonce' ),
+      'Langevin'     => array( 'RR' =>'texte_niveau-1'              , 'R' =>'texte_niveau-2'              , 'V' =>'texte_niveau-3'                , 'VV' =>'texte_niveau-4' ),
+      'Leon'         => array( 'RR' =>'disque_noir'                 , 'R' =>'disque_rouge'                , 'V' =>'disque_orange'                 , 'VV' =>'disque_vert-fonce' ),
+      'LomerBiseau'  => array( 'RR' =>'triangle-rectangle_2-rouge'  , 'R' =>'triangle-rectangle_rouge'    , 'V' =>'triangle-rectangle_vert-clair' , 'VV' =>'triangle-rectangle_2-vert-clair' ),
+      'Luys'         => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_orange'               , 'V' =>'disque_vert-fonce'             , 'VV' =>'disque_bleu-fonce' ),
+      'Marly'        => array( 'RR' =>'remplissage-triangle_0'      , 'R' =>'remplissage-triangle_1'      , 'V' =>'remplissage-triangle_2'        , 'VV' =>'remplissage-triangle_3' ),
+      'MendesFrance' => array( 'RR' =>'disque_rouge'                , 'R' =>'disque_bleu-fonce'           , 'V' =>'disque_vert-fonce'             , 'VV' =>'etoile_jaune' ),
+      'Mistral'      => array( 'RR' =>'disque_blanc'                , 'R' =>'disque_rouge'                , 'V' =>'disque_orange'                 , 'VV' =>'disque_vert-fonce' ),
+      'Padawan'      => array( 'RR' =>'disque-cercle-double_orange' , 'R' =>'disque-cercle_orange'        , 'V' =>'etoile_vert'                   , 'VV' =>'etoile-double_vert' ),
+      'Prevert'      => array( 'RR' =>'symbole_moins'               , 'R' =>'symbole_moyen'               , 'V' =>'symbole_plus'                  , 'VV' =>'symbole_plus-plus' ),
+      'Reval'        => array( 'RR' =>'rectangle_rouge'             , 'R' =>'rectangle_orange-clair'      , 'V' =>'rectangle_bleu-fonce'          , 'VV' =>'rectangle_vert-fonce' ),
+      'SaintExupery' => array( 'RR' =>'rectangle-texte_rouge-NA'    , 'R' =>'rectangle-texte_orange-ECA'  , 'V' =>'rectangle-texte_jaune-AR'      , 'VV' =>'rectangle-texte_vert-A' ),
+      'Salengro'     => array( 'RR' =>'carre-etire_rouge'           , 'R' =>'carre-etire_orange'          , 'V' =>'carre-etire_bleu-fonce'        , 'VV' =>'carre-etire_vert' ),
+      'Sand'         => array( 'RR' =>'rectangle_rose'              , 'R' =>'rectangle_jaune'             , 'V' =>'rectangle_vert-fonce'          , 'VV' =>'rectangle_bleu-fonce' ),
+      'Sun'          => array( 'RR' =>'old-style_0-cercle-vide'     , 'R' =>'old-style_1-cercle-point'    , 'V' =>'old-style_2-cercle-plein'      , 'VV' =>'old-style_3-etoile' ),
+      'Tillion'      => array( 'RR' =>'rectangle_jaune'             , 'R' =>'rectangle_vert-fonce'        , 'V' =>'rectangle_bleu-fonce'          , 'VV' =>'rectangle_noir' ),
+      'Trappes'      => array( 'RR' =>'texte-couleur_noir-XX'       , 'R' =>'texte-couleur_noir-X'        , 'V' =>'texte-couleur_vert-V'          , 'VV' =>'texte-couleur_vert-VV' ),
+      'Ulis'         => array( 'RR' =>'remplissage-cercle_0'        , 'R' =>'remplissage-cercle_1'        , 'V' =>'remplissage-cercle_2'          , 'VV' =>'remplissage-cercle_3' ),
+      'Verne'        => array( 'RR' =>'texte_chiffre-4'             , 'R' =>'texte_chiffre-3'             , 'V' =>'texte_chiffre-2'               , 'VV' =>'texte_chiffre-1' ),
+      'Voltaire'     => array( 'RR' =>'rectangle_rouge'             , 'R' =>'rectangle_orange-clair'      , 'V' =>'rectangle_vert-fonce'          , 'VV' =>'rectangle_jaune' ),
+    );
+    foreach($tab_notes_info[$image_style] as $note_code => $note_texte)
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "note_image_'.$note_code.'" , "'.$note_texte.'" )' );
+    }
+    // suppression de paramètres
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="note_image_style" ' );
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }

@@ -72,6 +72,6 @@ $selection    = ($multiple) ? $selection  : FALSE ;
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

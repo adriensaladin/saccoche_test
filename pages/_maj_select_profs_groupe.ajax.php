@@ -43,6 +43,6 @@ if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 
 // Affichage du retour.
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , FALSE /*option_first*/ , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , FALSE /*option_first*/ , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
 
 ?>

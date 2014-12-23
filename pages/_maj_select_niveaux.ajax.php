@@ -38,5 +38,5 @@ if(!$matiere)
   exit('Erreur avec les données transmises !');
 }
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , $option_first , FALSE /*selection*/ , '' /*optgroup*/ ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , $option_first , FALSE /*selection*/ , '' /*optgroup*/ ) );
 ?>

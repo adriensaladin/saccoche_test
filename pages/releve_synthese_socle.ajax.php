@@ -343,7 +343,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 }
 $releve_HTML .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
 $releve_HTML .= '<table class="bilan"><thead>'.NL.$releve_HTML_head.'</thead><tbody>'.NL.$releve_HTML_body.'</tbody></table>'.NL;
-$releve_HTML .= ($affichage_checkbox) ? Html::afficher_formulaire_synthese_exploitation('simplifié').'</form>'.NL : '';
+$releve_HTML .= ($affichage_checkbox) ? HtmlForm::afficher_synthese_exploitation('simplifié').'</form>'.NL : '';
 $releve_HTML .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ , FALSE /*make_officiel*/ );
 $releve_PDF->legende($type);
 

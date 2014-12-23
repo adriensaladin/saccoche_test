@@ -31,8 +31,8 @@ $TITRE = "Affecter les périodes aux classes &amp; groupes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_periodes        = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , 'select_periodes'        /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ , $multiple=TRUE);
-$select_classes_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , 'select_classes_groupes' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ , $multiple=TRUE);
+$select_periodes        = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl(TRUE /*alerte*/) , 'select_periodes'        /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ , $multiple=TRUE);
+$select_classes_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl()         , 'select_classes_groupes' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ , $multiple=TRUE);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>

@@ -50,11 +50,11 @@ foreach($tab_options as $val => $txt)
 
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 
-$select_groupe          = Form::afficher_select($tab_groupes                                                      , 'f_groupe'          /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/);
-$select_critere_objet   = Form::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/);
-$select_matiere         = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'         /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
-$select_piliers         = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/);
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/);
+$select_groupe          = HtmlForm::afficher_select($tab_groupes                                                      , 'f_groupe'          /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/);
+$select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/);
+$select_matiere         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'         /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
+$select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/);
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/);
 
 ?>
 
@@ -104,7 +104,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   }
   else
   {
-    $arborescence = Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
+    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous êtes rattaché à' : 'L\'établissement a mis en place' ;
     echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">'.$phrase_debut.' des matières dont les référentiels ne comportent aucun item !</p>' ;
   }
@@ -124,7 +124,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
   if(!empty($DB_TAB))
   {
-    echo Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
+    echo HtmlArborescence::afficher_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
   }
   else
   {

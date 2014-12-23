@@ -65,8 +65,8 @@ else // directeur ou administrateur
 {
   $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
 }
-$select_eleve  = Form::afficher_select($tab_groupes              , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_langue = Form::afficher_select(OPT_langues($tab_langues) , 'f_langue'      /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,       'langues' /*optgroup*/ );
+$select_eleve  = HtmlForm::afficher_select($tab_groupes              , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue'      /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,       'langues' /*optgroup*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_choisir_langue">DOC : Choisir la langue étrangère pour le socle commun</a></span></p>

@@ -28,45 +28,29 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Notation : codes, couleurs, légendes";
 
-// Évaluation : symboles colorés
+// Évaluation : symboles colorés, équivalents textes, légendes
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
+$tab_note = array(
+  'RR' => 'très mauvais',
+  'R'  => 'assez mauvais',
+  'V'  => 'assez bon',
+  'VV' => 'très bon',
+);
 
-$dossier = './_img/note/';
-Layout::add( 'js_inline_before' , 'var tab_notes_txt = new Array();' );
-
-$simulation_lignes = array('','','','','');
-foreach($tab_notes_info as $note_code => $tab_note_info)
+$note_div = '';
+foreach($tab_note as $note => $label)
 {
-  if(is_dir($dossier.$note_code))
-  {
-    $checked = ($note_code==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked' : '' ;
-    $simulation_lignes[0] .=   '<td style="width:5em"><label for="dossier_'.$note_code.'">'.html($tab_note_info['nom']).'</label><br /><input type="radio" id="dossier_'.$note_code.'" name="note_image_style" value="'.$note_code.'"'.$checked.' /></td>';
-    $simulation_lignes[1] .=   '<td><img alt="'.$tab_note_info['RR'].'" src="'.$dossier.$note_code.'/h/RR.gif" /><br />'.$tab_note_info['RR'].'</td>';
-    $simulation_lignes[2] .=   '<td><img alt="'.$tab_note_info['R' ].'" src="'.$dossier.$note_code.'/h/R.gif"  /><br />'.$tab_note_info['R' ].'</td>';
-    $simulation_lignes[3] .=   '<td><img alt="'.$tab_note_info['V' ].'" src="'.$dossier.$note_code.'/h/V.gif"  /><br />'.$tab_note_info['V' ].'</td>';
-    $simulation_lignes[4] .=   '<td><img alt="'.$tab_note_info['VV'].'" src="'.$dossier.$note_code.'/h/VV.gif" /><br />'.$tab_note_info['VV'].'</td>';
-    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.html($note_code).'"] = new Array();' );
-    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["RR"]="'.$tab_note_info['RR'].'";' );
-    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["R"] ="'.$tab_note_info['R'].'";' );
-    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["V"] ="'.$tab_note_info['V'].'";' );
-    Layout::add( 'js_inline_before' , 'tab_notes_txt["'.$note_code.'"]["VV"]="'.$tab_note_info['VV'].'";' );
-  }
+  $input_image   = '<img alt="'.$note.'" src="./_img/note/choix/h/'.$_SESSION['NOTE_IMAGE'][$note].'.gif" />';
+  $input_hidden  = '<input type="hidden" id="note_image_'.$note.'" name="note_image_'.$note.'" value="'.html($_SESSION['NOTE_IMAGE'][$note]).'" />';
+  $input_texte   = '<input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.html($_SESSION['NOTE_TEXTE'][$note]).'" />';
+  $input_legende = '<input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.html($_SESSION['NOTE_LEGENDE'][$note]).'" />';
+  $note_div .= '<div id="div_'.$note.'"><label class="tab">'.$label.' :</label>'.$input_image.$input_hidden.'<q class="modifier" title="Modifier ce choix."></q>'.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$input_texte.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$input_legende.'</div>';
 }
 
-// Évaluation : équivalents textes & légende
+// États d'acquisitions calculés : couleurs de fond, équivalents textes, légendes
 
-$note_equiv_div = '';
-$tab_note = array('RR','R','V','VV');
-foreach($tab_note as $note)
-{
-  $note_equiv_div .= '<div class="ti"><input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.html($_SESSION['NOTE_TEXTE'][$note]).'" /> <input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.html($_SESSION['NOTE_LEGENDE'][$note]).'" /></div>';
-}
-
-// États d'acquisitions calculés : couleurs de fond, équivalents textes, légende
-
-$tab_acquis = array('NA'=>'r','VA'=>'o','A'=>'v');
-$tab_defaut = array('NA'=>'#ff9999','VA'=>'#ffdd33','A'=>'#99ff99');
+$tab_acquis = array( 'NA'=>'r'       , 'VA'=>'o'       , 'A'=>'v' );
+$tab_defaut = array( 'NA'=>'#ff9999' , 'VA'=>'#ffdd33' , 'A'=>'#99ff99' );
 
 $acquis_box = '';
 foreach($tab_acquis as $acquis => $class)
@@ -79,6 +63,23 @@ foreach($tab_acquis as $acquis => $class)
   $acquis_box .= '</div>';
 }
 
+// Listing des symboles colorés
+
+$chemin_dossier = CHEMIN_DOSSIER_IMG.'note'.DS.'choix'.DS.'h'.DS;
+$tab_fichiers = FileSystem::lister_contenu_dossier($chemin_dossier);
+$tab_liste = array();
+
+foreach($tab_fichiers as $fichier_nom)
+{
+  list( $fichier_partie_1 , $fichier_partie_2 ) = explode( '_' , $fichier_nom , 2 );
+  $image_nom = substr($fichier_nom,0,-4);
+  if(!isset($tab_liste[$fichier_partie_1]))
+  {
+    $tab_liste[$fichier_partie_1] = '';
+  }
+  $tab_liste[$fichier_partie_1] .= '<div class="p"><a href="#" id="a_'.$image_nom.'"><img alt="'.$image_nom.'" src="./_img/note/choix/h/'.$fichier_nom.'" /></a></div>';
+}
+
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Notation : codes, couleurs, légendes</a></span></div>
@@ -86,14 +87,12 @@ foreach($tab_acquis as $acquis => $class)
 <hr />
 
 <form action="#" method="post" id="form_notes">
-  <h2>Notes aux évaluations : symboles colorés, équivalents textes, légende</h2>
-  <table class="simulation p"><tbody><tr><?php echo implode('</tr><tr>',$simulation_lignes) ?></tr></tbody></table>
-  <label id="ajax_msg_note_symbole"></label>
-  <?php echo $note_equiv_div ?>
+  <h2>Notes aux évaluations : symboles colorés, équivalents textes, légendes</h2>
+  <?php echo $note_div ?>
   <p><span class="tab"></span><input type="hidden" name="objet" value="notes" /><button id="bouton_valider_notes" type="submit" class="parametre">Enregistrer ces choix.</button><label id="ajax_msg_notes">&nbsp;</label></p>
 </form>
 
-  <hr />
+<hr />
 
 <form action="#" method="post" id="form_acquis">
   <h2>Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende</h2>
@@ -104,4 +103,10 @@ foreach($tab_acquis as $acquis => $class)
   <p><span class="tab"></span><input type="hidden" name="objet" value="acquis" /><button id="bouton_valider_acquis" type="submit" class="parametre">Enregistrer ces choix.</button><label id="ajax_msg_acquis">&nbsp;</label></p>
 </form>
 
-  <hr />
+<hr />
+
+<form action="#" method="post" id="zone_notes" class="hide">
+  <h3>Codes de couleur</h3>
+  <div>Cliquer sur un symbole coloré ou <a id="annuler_note" href="#">[ annuler le choix ]</a>.</div>
+  <div class="note_liste"><?php echo implode('</div>'.NL.'<div class="note_liste">',$tab_liste) ?></div>
+</form>

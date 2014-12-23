@@ -92,10 +92,10 @@ foreach($tab_options as $value => $texte)
   </thead>
   <tbody>
     <tr><td>
-      <label class="tab mini" for="valeurRR">saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
-      <label class="tab mini" for="valeurR" >saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R']  ?>" /><br />
-      <label class="tab mini" for="valeurV" >saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
-      <label class="tab mini" for="valeurVV">saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
+      <label class="tab mini" for="valeurRR">saisie <img alt="RR" src="./_img/note/choix/h/<?php echo $_SESSION['NOTE_IMAGE']['RR'] ?>.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
+      <label class="tab mini" for="valeurR" >saisie <img alt="R"  src="./_img/note/choix/h/<?php echo $_SESSION['NOTE_IMAGE']['R' ] ?>.gif" /> :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R' ] ?>" /><br />
+      <label class="tab mini" for="valeurV" >saisie <img alt="V"  src="./_img/note/choix/h/<?php echo $_SESSION['NOTE_IMAGE']['V' ] ?>.gif" /> :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V' ] ?>" /><br />
+      <label class="tab mini" for="valeurVV">saisie <img alt="VV" src="./_img/note/choix/h/<?php echo $_SESSION['NOTE_IMAGE']['VV'] ?>.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
     </td><td>
       <select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
       <select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />

@@ -130,16 +130,16 @@ if($TYPE=='groupe')
     }
   }
   // Élément de formulaire "f_aff_periode" pour le choix d'une période
-  $select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , 'f_aff_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+  $select_periode = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , 'f_aff_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
   // On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
   $select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 }
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 
 // Longueur max pour un enregistrement audio (de toutes façons limitée techniquement à 120s).
 // Selon les tests effectués la taille du MP3 enregistrée est de 3,9 Ko/s.
@@ -152,7 +152,7 @@ Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','
 Layout::add( 'js_inline_before' , '// ]]>' );
 
 Form::load_choix_memo();
-$select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
+$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
 ?>
 
 <ul class="puce">
@@ -247,7 +247,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
   }
   else
   {
-    $arborescence = Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
+    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
     echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">Vous êtes rattaché à des matières dont les référentiels ne comportent aucun item !</p>' ;
   }
   ?>
@@ -271,7 +271,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
   <hr />
   <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Associer des collègues à une évaluation.</a></span>
   <hr />
-  <?php echo Html::afficher_form_element_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
+  <?php echo HtmlForm::afficher_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
@@ -279,7 +279,7 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
   <div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french'); ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <?php echo Html::afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
+  <?php echo HtmlForm::afficher_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
   <p id="alerte_eleves" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</span></p>
   <div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
@@ -316,13 +316,13 @@ $select_eleves_ordre = Form::afficher_select(Form::$tab_select_eleves_ordre , 'f
 <?php
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
-$select_cart_detail   = Form::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/);
-$select_cart_cases_nb = Form::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/);
-$select_cart_contenu  = Form::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
-$select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
-$select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
-$select_fond          = Form::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/);
-$select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
+$select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/);
+$select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/);
+$select_cart_contenu  = HtmlForm::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
+$select_orientation   = HtmlForm::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
+$select_couleur       = HtmlForm::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
+$select_fond          = HtmlForm::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/);
+$select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
@@ -505,17 +505,17 @@ $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , 
 
 <?php /*  Pour la saisie des notes à la souris */ ?>
 <div id="td_souris_container"><div class="td_souris">
-  <img alt="NN" src="./_img/note/commun/h/NN.gif" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /><img alt="ABS"  src="./_img/note/commun/h/ABS.gif"  /><br />
-  <img alt="NE" src="./_img/note/commun/h/NE.gif" /><img alt="R"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif"  /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
-  <img alt="NF" src="./_img/note/commun/h/NF.gif" /><img alt="V"  src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif"  /><img alt="REQ"  src="./_img/note/commun/h/REQ.gif"  /><br />
-  <img alt="NR" src="./_img/note/commun/h/NR.gif" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X"    src="./_img/note/commun/h/X.gif"    /><br />
+  <img alt="NN" src="<?php echo Html::note_src('NN') ?>" /><img alt="RR" src="<?php echo Html::note_src('RR') ?>" /><img alt="ABS"  src="<?php echo Html::note_src('ABS' ) ?>" /><br />
+  <img alt="NE" src="<?php echo Html::note_src('NE') ?>" /><img alt="R"  src="<?php echo Html::note_src('R' ) ?>" /><img alt="DISP" src="<?php echo Html::note_src('DISP') ?>" /><br />
+  <img alt="NF" src="<?php echo Html::note_src('NF') ?>" /><img alt="V"  src="<?php echo Html::note_src('V' ) ?>" /><img alt="REQ"  src="<?php echo Html::note_src('REQ' ) ?>" /><br />
+  <img alt="NR" src="<?php echo Html::note_src('NR') ?>" /><img alt="VV" src="<?php echo Html::note_src('VV') ?>" /><img alt="X"    src="<?php echo Html::note_src('X'   ) ?>" /><br />
 </div></div>
 
 <?php /*  Clavier virtuel pour les dispositifs tactiles */ ?>
 <div id="cadre_tactile">
   <div><kbd id="kbd_37"><img alt="Gauche" src="./_img/fleche/fleche_g1.gif" /></kbd><kbd id="kbd_39"><img alt="Droite" src="./_img/fleche/fleche_d1.gif" /></kbd><kbd id="kbd_38"><img alt="Haut" src="./_img/fleche/fleche_h1.gif" /></kbd><kbd id="kbd_40"><img alt="Bas" src="./_img/fleche/fleche_b1.gif" /></kbd></div>
-  <div><kbd id="kbd_97"><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /></kbd><kbd id="kbd_98"><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /></kbd><kbd id="kbd_99"><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /></kbd><kbd id="kbd_100"><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /></kbd></div>
-  <div><kbd id="kbd_78"><img alt="NN" src="./_img/note/commun/h/NN.gif" /></kbd><kbd id="kbd_69"><img alt="NN" src="./_img/note/commun/h/NE.gif" /></kbd><kbd id="kbd_70"><img alt="NN" src="./_img/note/commun/h/NF.gif" /></kbd><kbd id="kbd_82"><img alt="NN" src="./_img/note/commun/h/NR.gif" /></kbd></div>
-  <div><kbd id="kbd_65"><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /></kbd><kbd id="kbd_68"><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /></kbd><kbd id="kbd_80"><img alt="ABS" src="./_img/note/commun/h/REQ.gif" /></kbd><kbd id="kbd_46"><img alt="X" src="./_img/note/commun/h/X.gif" /></kbd></div>
+  <div><kbd id="kbd_97"><img alt="RR"  src="<?php echo Html::note_src('RR' ) ?>" /></kbd><kbd id="kbd_98"><img alt="R"    src="<?php echo Html::note_src('R'   ) ?>" /></kbd><kbd id="kbd_99"><img alt="V"   src="<?php echo Html::note_src('V'  ) ?>" /></kbd><kbd id="kbd_100"><img alt="VV" src="<?php echo Html::note_src('VV') ?>" /></kbd></div>
+  <div><kbd id="kbd_78"><img alt="NN"  src="<?php echo Html::note_src('NN' ) ?>" /></kbd><kbd id="kbd_69"><img alt="NE"   src="<?php echo Html::note_src('NE'  ) ?>" /></kbd><kbd id="kbd_70"><img alt="NF"  src="<?php echo Html::note_src('NF' ) ?>" /></kbd><kbd id="kbd_82" ><img alt="NR" src="<?php echo Html::note_src('NR') ?>" /></kbd></div>
+  <div><kbd id="kbd_65"><img alt="ABS" src="<?php echo Html::note_src('ABS') ?>" /></kbd><kbd id="kbd_68"><img alt="DISP" src="<?php echo Html::note_src('DISP') ?>" /></kbd><kbd id="kbd_80"><img alt="REQ" src="<?php echo Html::note_src('REQ') ?>" /></kbd><kbd id="kbd_46" ><img alt="X"  src="<?php echo Html::note_src('X' ) ?>" /></kbd></div>
   <div><kbd style="visibility:hidden"></kbd><kbd id="kbd_13" class="img valider"></kbd><kbd id="kbd_27" class="img retourner"></kbd><kbd style="visibility:hidden"></kbd></div>
 </div>

@@ -32,7 +32,7 @@ $TITRE = "Professeurs / Personnels";
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $statut = (isset($_POST['f_statut'])) ? Clean::entier($_POST['f_statut']) : 1  ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
+$select_f_statuts = HtmlForm::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 
 // Options du formulaire de profils, et variable en session pour la page ajax associée
 $options = '';

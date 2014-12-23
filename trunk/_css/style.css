@@ -896,10 +896,12 @@ div.td_souris img.on {background-color:#FF0}
 #robustesse {border:1px solid #66F;margin:auto 10% auto 1em;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Listes d'utilisateurs ou de matières sur plusieurs colonnes                                         */
+/* Listes d'utilisateurs ou de matières ou de notes sur plusieurs colonnes                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.prof_liste , .matiere_liste {float:left;margin-right:10px;margin-bottom:1em}
+.prof_liste , .matiere_liste , .note_liste {float:left;margin-right:10px;margin-bottom:1em}
+.note_liste img {padding:2px;border:1px solid #139}
+.note_liste img:hover {border-color:#D41}
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Diagramme Highcharts                                                                                */
@@ -943,8 +945,8 @@ form.encadre fieldset.new{background:#CFC}
 /* Colorpicker                                                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#colorpicker    {height:195px;width:200px;float:left;margin-left:1em}
-div.colorpicker {height:195px;width:200px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
+#colorpicker    {height:195px;width:225px;float:left;margin-left:1em}
+div.colorpicker {height:195px;width:225px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
 div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 
 /**

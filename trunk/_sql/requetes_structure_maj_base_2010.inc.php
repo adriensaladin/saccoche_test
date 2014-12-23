@@ -470,11 +470,22 @@ if($version_base_structure_actuelle=='2010-08-06')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_niveau WHERE niveau_id=4' );
     // récupérer qq infos pour maj la suite
     $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_note_style"' );
-    require_once(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
-    $rr = $tab_notes_info[$DB_ROW['parametre_valeur']]['RR'];
-    $r  = $tab_notes_info[$DB_ROW['parametre_valeur']]['R'];
-    $v  = $tab_notes_info[$DB_ROW['parametre_valeur']]['V'];
-    $vv = $tab_notes_info[$DB_ROW['parametre_valeur']]['VV'];
+    if(is_file(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php'))
+    {
+      require_once(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
+      $rr = $tab_notes_info[$DB_ROW['parametre_valeur']]['RR'];
+      $r  = $tab_notes_info[$DB_ROW['parametre_valeur']]['R'];
+      $v  = $tab_notes_info[$DB_ROW['parametre_valeur']]['V'];
+      $vv = $tab_notes_info[$DB_ROW['parametre_valeur']]['VV'];
+    }
+    else
+    {
+      // fichier supprimé en décembre 2014
+      $rr = 'RR';
+      $r  = 'R';
+      $v  = 'V';
+      $vv = 'VV';
+    }
     $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="eleve_options"' );
     $eleve_bilans = str_replace( array(',SoclePourcentageAcquis',',SocleEtatValidation','SoclePourcentageAcquis,','SocleEtatValidation,','SoclePourcentageAcquis','SocleEtatValidation') , '' , $DB_ROW['parametre_valeur'] );
     $eleve_socle  = 'SocleAcces,'.str_replace( array(',BilanMoyenneScore',',BilanPourcentageAcquis','BilanMoyenneScore,','BilanPourcentageAcquis,','BilanMoyenneScore','BilanPourcentageAcquis') , '' , $DB_ROW['parametre_valeur'] );

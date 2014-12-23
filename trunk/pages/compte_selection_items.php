@@ -109,7 +109,7 @@ Layout::add( 'js_inline_before' , 'var tab_items = new Array();' );
   }
   else
   {
-    $arborescence = Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
+    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous êtes rattaché à' : 'L\'établissement a mis en place' ;
     echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">'.$phrase_debut.' des matières dont les référentiels ne comportent aucun item !</p>' ;
   }

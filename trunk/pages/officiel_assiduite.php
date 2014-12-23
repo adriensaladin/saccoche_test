@@ -47,13 +47,13 @@ else // Ne passent ici que les professeurs
   $tab_groupes = (test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP')) ? DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) ;
 }
 
-$select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
-$select_groupe  = Form::afficher_select($tab_groupes                                 , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+$select_periode = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+$select_groupe  = HtmlForm::afficher_select($tab_groupes                                 , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-Form::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
+HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_assiduite">DOC : Bilan officiel - Absences &amp; Retards</a></span></div>

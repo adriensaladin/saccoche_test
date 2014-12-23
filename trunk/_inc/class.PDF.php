@@ -657,9 +657,8 @@ class PDF extends FPDF
           $memo_y = $this->GetY();
           $img_pos_x = $memo_x + ( ($this->lomer_espace_largeur - $this->lomer_image_largeur) / 2 ) ;
           $img_pos_y = $memo_y + ( ($this->lomer_espace_hauteur - $this->lomer_image_hauteur) / 2 ) ;
-          $dossier = ($note!='REQ') ? $_SESSION['NOTE_DOSSIER'] : 'commun' ;
           $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-          $this->Image('./_img/note/'.$dossier.'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
+          $this->Image( Html::note_src($note) , $img_pos_x , $img_pos_y , $this->lomer_image_largeur , $this->lomer_image_hauteur , 'GIF' );
           // $this->SetXY($memo_x , $memo_y);
           // $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
         }

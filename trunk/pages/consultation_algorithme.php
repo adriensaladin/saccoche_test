@@ -99,10 +99,10 @@ foreach($tab_options as $value => $texte)
   </thead>
   <tbody>
     <tr><td>
-      <label class="tab mini" for="valeurRR">saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
-      <label class="tab mini" for="valeurR" >saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R']  ?>" /><br />
-      <label class="tab mini" for="valeurV" >saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
-      <label class="tab mini" for="valeurVV">saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
+      <label class="tab mini" for="valeurRR">saisie <img alt="" src="<?php echo $_SESSION['IMG_RR'] ?>" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
+      <label class="tab mini" for="valeurR" >saisie <img alt="" src="<?php echo $_SESSION['IMG_R' ] ?>" /> :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R' ] ?>" /><br />
+      <label class="tab mini" for="valeurV" >saisie <img alt="" src="<?php echo $_SESSION['IMG_V' ] ?>" /> :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V' ] ?>" /><br />
+      <label class="tab mini" for="valeurVV">saisie <img alt="" src="<?php echo $_SESSION['IMG_VV'] ?>" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
     </td><td>
       <select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
       <select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />

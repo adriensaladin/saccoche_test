@@ -39,5 +39,5 @@ $select_nom   = ($multiple) ? 'f_user'   : FALSE ;
 $option_first = ($multiple) ? FALSE      : ''    ;
 $selection    = ($multiple) ? $selection : FALSE ;
 
-exit( Form::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 ?>

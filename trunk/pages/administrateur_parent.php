@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Responsables légaux";
+$TITRE = Lang::_("Responsables légaux");
 ?>
 
 <div class="hc">

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Logo / Lien / Message";
+$TITRE = "Logo / Lien / Message"; // Pas de traduction car pas de choix de langue pour ce profil.
 
 // Récupérer le fichier d'infos du partenaire
 $fichier_chemin = 'info_'.$_SESSION['USER_ID'].'.php';

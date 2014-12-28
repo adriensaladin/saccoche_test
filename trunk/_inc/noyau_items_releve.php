@@ -565,6 +565,20 @@ if($type_individuel)
     $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
     $releve_HTML_individuel_javascript = '';
   }
+  if($make_csv)
+  {
+    $releve_CSV = 'Bilan '.$tab_titre[$releve_modele]."\r\n".'Exploitation tableur'."\r\n".$groupe_nom."\r\n".$texte_periode;
+    $separateur = ';';
+    $csv_head = $separateur.'nb items';
+    if($aff_etat_acquisition)
+    {
+      $csv_head .= $separateur.'moy. scores '.$info_ponderation_courte;
+    }
+    if( $aff_pourcentage_acquis )
+    {
+      $csv_head .= $separateur.'% items acquis';
+    }
+  }
   if($make_pdf)
   {
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
@@ -603,6 +617,7 @@ if($type_individuel)
         {
           // Intitulé
           if($make_html) { $releve_HTML_individuel .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>'.NL : '' ; }
+          if($make_csv)  { $releve_CSV .= "\r\n\r\n".$eleve_nom.' '.$eleve_prenom.$csv_head."\r\n"; }
           if($make_pdf)
           {
             if( ($make_officiel) && ($couleur=='non') )
@@ -627,9 +642,9 @@ if($type_individuel)
               {
                 if( ($make_html) || ($make_pdf) )
                 {
+                  $item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
                   if( ($make_pdf) && ($releve_modele!='matiere') )
                   {
-                    $item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
                     $releve_PDF->transdisciplinaire_ligne_matiere( $matiere_nom , $item_matiere_nb+$aff_moyenne_scores+$aff_pourcentage_acquis /*lignes_nb*/ );
                   }
                   if($make_html)
@@ -647,6 +662,10 @@ if($type_individuel)
                     $releve_HTML_table_head .= ($aff_etat_acquisition) ? '<th>score</th>' : '' ;
                     $releve_HTML_table_head .= '</tr></thead>'.NL;
                     $releve_HTML_table_body = '<tbody>'.NL;
+                  }
+                  if($make_csv)
+                  {
+                    $releve_CSV .= $matiere_nom.$separateur.$item_matiere_nb;
                   }
                   // Pour chaque item...
                   foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
@@ -763,30 +782,35 @@ if($type_individuel)
                     {
                       if($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== FALSE)
                       {
-                        $texte_bilan  = $tab_moyenne_scores_eleve[$matiere_id][$eleve_id].'%';
-                        $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5).'/20' : '' ;
+                        $pourcentage = $tab_moyenne_scores_eleve[$matiere_id][$eleve_id].'%';
+                        $texte_bilan = ($conversion_sur_20) ? $pourcentage.' soit '.sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5).'/20' : $pourcentage ;
                       }
                       else
                       {
+                        $pourcentage = '';
                         $texte_bilan = '---';
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->ligne_synthese('Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan); }
+                      if($make_csv)  { $releve_CSV .= $separateur.$pourcentage; }
                     }
                     // ... un pour le nombre d'items considérés acquis ou pas
                     if( $aff_pourcentage_acquis )
                     {
                       if($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== FALSE)
                       {
-                        $texte_bilan  = '('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].') : '.$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'%';
+                        $pourcentage = $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'%';
+                        $texte_bilan  = '('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].') : '.$pourcentage;
                         $texte_bilan .= ($conversion_sur_20) ? ' soit '.sprintf("%04.1f",$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id]/5).'/20' : '' ;
                       }
                       else
                       {
+                        $pourcentage = '';
                         $texte_bilan = '---';
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+                      if($make_csv)  { $releve_CSV .= $separateur.$pourcentage; }
                     }
                   }
                   if($make_html)
@@ -794,6 +818,11 @@ if($type_individuel)
                     $releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.NL.$releve_HTML_table_foot.'</tfoot>'.NL : '';
                     $releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan hsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
                     $releve_HTML_individuel_javascript .= '$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();';
+                  }
+                  if($make_csv)
+                  {
+                    $releve_CSV .= "\r\n";
+                    $separateur = ';';
                   }
                   if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) )
                   {
@@ -1206,9 +1235,10 @@ if($type_individuel)
   }
   // Ajout du javascript en fin de fichier
   $releve_HTML_individuel .= '<script type="text/javascript">'.$releve_HTML_individuel_javascript.'</script>'.NL;
-  // On enregistre les sorties HTML et PDF
+  // On enregistre les sorties HTML et PDF et CSV
   if($make_html) { FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.html' , $releve_HTML_individuel ); }
   if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf'  , $releve_PDF ); }
+  if($make_csv)  { FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv'  , To::csv($releve_CSV) ); }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

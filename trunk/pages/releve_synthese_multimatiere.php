@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Synthèse pluridisciplinaire";
+$TITRE = Lang::_("Synthèse pluridisciplinaire");
 ?>
 
 <?php

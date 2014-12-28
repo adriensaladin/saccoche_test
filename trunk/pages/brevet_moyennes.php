@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Étape n°3 - Calculer et contrôler les notes pour chaque élève";
+$TITRE = Lang::_("Étape n°3 - Calculer et contrôler les notes pour chaque élève");
 ?>
 
 <p>

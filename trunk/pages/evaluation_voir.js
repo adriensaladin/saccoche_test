@@ -36,6 +36,7 @@ $(document).ready
 
     var groupe_id   = 0;
     var groupe_type = '';
+    var nb_caracteres_max = 999;
 
     // tri des tableaux (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},3:{sorter:false},4:{sorter:false}} });
@@ -323,9 +324,10 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,4)!='<tr>')
+              var tab_response = responseHTML.split(']¤[');
+              if(tab_response[0]!='ok')
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+tab_response[0]+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
@@ -334,9 +336,13 @@ $(document).ready
                 $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
                 $('#msg_saisir').removeAttr("class").html("");
                 $('#f_devoir').val(devoir_id);
-                $('#table_saisir tbody').html(responseHTML);
+                $('#table_saisir tbody').html(tab_response[1]);
                 tableau_maj_voir();
                 $.fancybox( { 'href':'#zone_eval_saisir' , onStart:function(){$('#zone_eval_saisir').css("display","block");} , onClosed:function(){$('#zone_eval_saisir').css("display","none");} , 'margin':0 , 'modal':true , 'centerOnScroll':true } );
+                $('#f_msg_autre').val(tab_response[2]);
+                $('#f_msg_url'  ).val(tab_response[3]);
+                $('#f_msg_texte').focus().val(tab_response[4]);
+                afficher_textarea_reste( $('#f_msg_texte') , nb_caracteres_max );
               }
             }
           }
@@ -345,7 +351,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Réagir à la modification d'une note
+    // Réagir à la modification d'une note ou d'un commentaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var modification = false;
@@ -359,6 +365,28 @@ $(document).ready
         modification = true;
         $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
         $('#msg_saisir').removeAttr("class").html("");
+      }
+    );
+
+    $('#f_msg_texte').change
+    (
+      function()
+      {
+        modification = true;
+        $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+        $('#msg_saisir').removeAttr("class").html("");
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Indiquer le nombre de caractères restant autorisés dans le textarea
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#f_msg_texte').keyup
+    (
+      function()
+      {
+        afficher_textarea_reste( $(this) , nb_caracteres_max );
       }
     );
 

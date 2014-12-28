@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gérer les élèves";
+$TITRE = Lang::_("Gérer les élèves");
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gérer ses regroupements d'items";
+$TITRE = Lang::_("Gérer ses regroupements d'items");
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_items = new Array();' );

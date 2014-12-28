@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? "Fiches brevet" : "Notanet &amp; Fiches brevet";
+$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Fiches brevet") : Lang::_("Notanet &amp; Fiches brevet") ;
 ?>
 
 <?php if($_SESSION['USER_PROFIL_TYPE']!='professeur'): ?>

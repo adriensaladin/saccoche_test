@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gérer les administrateurs";
+$TITRE = Lang::_("Gérer les administrateurs");
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_login_modele      = new Array();' );

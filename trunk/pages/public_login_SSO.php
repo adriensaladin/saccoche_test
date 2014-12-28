@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Connexion SSO";
+$TITRE = "Connexion SSO"; // Pas de traduction car pas de choix de langue à ce niveau.
 
 /*
  * Cette page n'est pas (plus en fait) appelée directement.

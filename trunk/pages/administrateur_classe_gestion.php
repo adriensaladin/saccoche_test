@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gérer les classes";
+$TITRE = Lang::_("Gérer les classes");
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );

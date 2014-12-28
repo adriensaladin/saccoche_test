@@ -670,7 +670,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // liste des commentaires audio ou texte
-  $DB_TAB_MSG = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_commentaires($devoir_id);
+  $DB_TAB_MSG = DB_STRUCTURE_COMMENTAIRE::DB_lister_devoir_commentaires($devoir_id);
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -1381,7 +1381,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // liste des commentaires audio ou texte, si demandé avec les résultats
   if($with_result)
   {
-    $DB_TAB_MSG = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_commentaires($devoir_id);
+    $DB_TAB_MSG = DB_STRUCTURE_COMMENTAIRE::DB_lister_devoir_commentaires($devoir_id);
     if(!empty($DB_TAB_MSG))
     {
       foreach($DB_TAB_MSG as $DB_ROW)
@@ -1440,7 +1440,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
         $case_vide    = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
         $cartouche_HTM .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-        $cartouche_CSV .= To::csv($texte_entete)."\r\n";
+        $cartouche_CSV .= $texte_entete."\r\n";
         $cartouche_TEX .= To::latex($texte_entete)."\r\n";
         $cartouche_PDF->entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         if($cart_cases_nb==1)
@@ -1472,7 +1472,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
             $rows_htm['item'] .= '<td class="hc">'.html($tab_val_comp[0]).'</td>';
-            $rows_csv['item'] .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur;
+            $rows_csv['item'] .= '"'.$tab_val_comp[0].'"'.$separateur;
             $rows_tex['item'] .= '\begin{tabular}{c}'.To::latex($ref_matiere).'\\\\'.To::latex($ref_suite).'\end{tabular} & ';
             if($cart_cases_nb==1)
             {
@@ -1514,7 +1514,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         if($lignes_comm)
         {
           $row_htm_comm = '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
-          $row_csv_comm = To::csv($tab_user_comm[$user_id])."\r\n";
+          $row_csv_comm = $tab_user_comm[$user_id]."\r\n";
           $row_tex_comm = '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_HTM .= '<tr>'.implode('</tr><tr>',$rows_htm).'</tr>'.$row_htm_comm.'</tbody></table>';
@@ -1539,7 +1539,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           // ... avec une case à remplir
           $cartouche_HTM .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-          $cartouche_CSV .= To::csv($texte_entete)."\r\n";
+          $cartouche_CSV .= $texte_entete."\r\n";
           $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
         }
         else
@@ -1555,7 +1555,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.To::note_texte($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
           $cartouche_HTM .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
-          $cartouche_CSV .= To::csv($texte_entete).$separateur.$separateur.$cols_csv."\r\n";
+          $cartouche_CSV .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
           $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
           $cartouche_TEX .= ' & & '.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
         }
@@ -1569,14 +1569,14 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             {
               // ... avec une case à remplir
               $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note_image($note,$date_fr,$description,FALSE).'</td></tr>';
-              $cartouche_CSV .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur.'"'.To::note_texte($note).'"'."\r\n";
+              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.To::note_texte($note).'"'."\r\n";
               $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.To::note_texte($note).' \\\\'."\r\n".'\hline'."\r\n";
             }
             else
             {
               // ... avec 5 cases dont une à cocher
               $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td>';
-              $cartouche_CSV .= '"'.To::csv($tab_val_comp[0]).'"'.$separateur.'"'.To::csv($tab_val_comp[1]).'"'.$separateur;
+              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur;
               $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]);
               foreach($tab_codes as $note_code => $is_note )
               {
@@ -1604,7 +1604,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         if($lignes_comm)
         {
           $cartouche_HTM .= '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
-          $cartouche_CSV .= To::csv($tab_user_comm[$user_id])."\r\n";
+          $cartouche_CSV .= $tab_user_comm[$user_id]."\r\n";
           $cartouche_TEX .= '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_HTM .= '</tbody></table>';
@@ -1770,7 +1770,7 @@ if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
 
 if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_objet,array('audio','texte')) )
 {
-  $msg_url = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet);
+  $msg_url = DB_STRUCTURE_COMMENTAIRE::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet);
   if(empty($msg_url))
   {
     exit('Erreur : commentaire introuvable !');
@@ -1864,7 +1864,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
       $ext = 'txt';
     }
     $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_'.$msg_objet.'_'.$_SERVER['REQUEST_TIME'].'.'.$ext; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-    DB_STRUCTURE_PROFESSEUR::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , $url_dossier_devoir.$fichier_nom );
+    DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , $url_dossier_devoir.$fichier_nom );
     // et enregistrement du fichier
     FileSystem::ecrire_fichier( $chemin_devoir.$fichier_nom , $msg_data );
   }
@@ -1872,11 +1872,11 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
   {
     if($msg_autre=='oui')
     {
-      DB_STRUCTURE_PROFESSEUR::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , '' );
+      DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , '' );
     }
     else
     {
-      DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_commentaire( $devoir_id , $eleve_id );
+      DB_STRUCTURE_COMMENTAIRE::DB_supprimer_devoir_commentaire( $devoir_id , $eleve_id );
     }
   }
   // Retour

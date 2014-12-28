@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Droits du système de fichiers";
+$TITRE = "Droits du système de fichiers"; // Pas de traduction car pas de choix de langue pour ce profil.
 
 // Select umask
 $tab_umask = array(

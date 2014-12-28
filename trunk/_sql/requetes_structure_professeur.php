@@ -89,27 +89,6 @@ public static function DB_recuperer_devoir_prorietaire_identite($devoir_id)
 }
 
 /**
- * recuperer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @param string $msg_objet   texte | audio
- * @return array
- */
-public static function DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet)
-{
-  $jointure = 'jointure_'.$msg_objet;
-  $DB_SQL = 'SELECT '.$jointure.' ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_VAR = array(
-    ':devoir_id' => $devoir_id,
-    ':eleve_id'  => $eleve_id,
-  );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * tester_devoir_ponctuel_prof_by_ids
  *
  * @param int    $devoir_id
@@ -651,21 +630,6 @@ public static function DB_lister_devoir_saisies($devoir_id,$with_REQ)
 }
 
 /**
- * lister_devoir_commentaires
- *
- * @param int   $devoir_id
- * @return array
- */
-public static function DB_lister_devoir_commentaires($devoir_id)
-{
-  $DB_SQL = 'SELECT eleve_id, jointure_texte, jointure_audio ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
-  $DB_VAR = array(':devoir_id'=>$devoir_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Retourner les effectifs des classes / groupes
  *
  * @param int    $groupe_id   Pour restreindre à un groupe donné
@@ -980,29 +944,6 @@ public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,
     ':item_note'         => $item_note,
     ':item_info'         => $item_info,
     ':item_date_visible' => $item_date_visible_mysql,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * remplacer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @param string $msg_objet   texte | audio
- * @param string $msg_url
- * @return void
- */
-public static function DB_remplacer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet,$msg_url)
-{
-  $jointure = 'jointure_'.$msg_objet;
-  $DB_SQL = 'INSERT INTO sacoche_jointure_devoir_eleve( devoir_id, eleve_id, '.$jointure.') ';
-  $DB_SQL.= 'VALUES                                   (:devoir_id,:eleve_id,:'.$jointure.') ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE '.$jointure.'=:'.$jointure.' ';
-  $DB_VAR = array(
-    ':devoir_id'  => $devoir_id,
-    ':eleve_id'   => $eleve_id,
-    ':'.$jointure => $msg_url,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1558,24 +1499,6 @@ public static function DB_supprimer_saisie($eleve_id,$devoir_id,$item_id)
     ':eleve_id'  => $eleve_id,
     ':devoir_id' => $devoir_id,
     ':item_id'   => $item_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * supprimer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @return void
- */
-public static function DB_supprimer_devoir_commentaire($devoir_id,$eleve_id)
-{
-  $DB_SQL = 'DELETE FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_VAR = array(
-    ':devoir_id' => $devoir_id,
-    ':eleve_id'  => $eleve_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

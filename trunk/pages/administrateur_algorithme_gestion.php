@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Algorithme de calcul";
+$TITRE = Lang::_("Algorithme de calcul");
 ?>
 
 <?php

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Données personnelles";
+$TITRE = Lang::_("Données personnelles");
 
 if(isset($_SESSION['STOP_CNIL']))
 {

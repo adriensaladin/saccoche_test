@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Réglage des autorisations";
+$TITRE = Lang::_("Réglage des autorisations");
 
 // Tableau avec les noms des profils activés dans l'établissement
 $tab_profils_libelles = array();

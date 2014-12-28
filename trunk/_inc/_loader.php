@@ -207,13 +207,16 @@ if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
   exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
 }
 
+// Modules PHP requis
+define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , mbstring , mysql , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
+
 // Vérifier la présence des modules nécessaires
-$extensions_chargees = get_loaded_extensions();
-$extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mysql','session','zip','zlib');
-$extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
-if(count($extensions_manquantes))
+$tab_extensions_chargees = get_loaded_extensions();
+$tab_extensions_requises = explode( ' , ' , trim(PHP_LISTE_EXTENSIONS) );
+$tab_extensions_manquantes = array_diff( $tab_extensions_requises , $tab_extensions_chargees );
+if(count($tab_extensions_manquantes))
 {
-  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'.<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
+  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : <b>'.implode($tab_extensions_manquantes,' ; ').'</b>.<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
 }
 
 // Définir le décalage horaire par défaut de toutes les fonctions date/heure
@@ -265,6 +268,7 @@ define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
 define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
 define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);
+define('CHEMIN_DOSSIER_MENUS'         , CHEMIN_DOSSIER_SACOCHE.'menus'.DS);
 define('CHEMIN_DOSSIER_PAGES'         , CHEMIN_DOSSIER_SACOCHE.'pages'.DS);
 define('CHEMIN_DOSSIER_WEBSERVICES'   , CHEMIN_DOSSIER_SACOCHE.'webservices'.DS);
 define('CHEMIN_DOSSIER_CONFIG'        , CHEMIN_DOSSIER_PRIVATE.'config'.DS);
@@ -370,6 +374,7 @@ function SACoche_autoload($class_name)
     'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
     'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
     'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
+    'Lang'                        => '_lib'.DS.'gettext'.DS.'Lang.class.php' ,
     'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
     // Pour SimpleSAMLphp c'est plus compliqué, on fait un include directement dans les 2 fichiers concernés...
 
@@ -421,6 +426,7 @@ function SACoche_autoload($class_name)
 
     'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
     'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
+    'DB_STRUCTURE_COMMENTAIRE'    => '_sql'.DS.'requetes_structure_commentaire.php' ,
     'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
     'DB_STRUCTURE_DEMANDE'        => '_sql'.DS.'requetes_structure_demande.php' ,
     'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
@@ -669,6 +675,17 @@ define('PHOTO_DIMENSION_MAXI',144);
 // Avec une dimension maxi imposée de 120 pixels, on arrive à 4~5 Ko par photo par élève dans la base (en comptant le base64_encode).
 define('JPEG_QUALITY',90);
 
+// Traductions
+define('LOCALE_DEFAULT', 'fr_FR');
+define('LOCALE_CHARSET', 'UTF-8');
+define('LOCALE_DOMAINE', 'traductions');
+define('LOCALE_DIR'    , CHEMIN_DOSSIER_SACOCHE.'_lang');
+if(!defined('LC_MESSAGES'))
+{
+  // Si PHP n'a pas été compilé avec "libintl"...
+  define('LC_MESSAGES', 5);
+}
+
 // ============================================================================
 // Fonctions utilisées pour déterminer l'URL de base du serveur
 // ============================================================================
@@ -784,20 +801,33 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   }
   else
   {
+    // URL_DIR_SACOCHE peut ne pas être encore définie si sortie au début du loader.
+    if(defined('URL_DIR_SACOCHE'))
+    {
+      $chemin = URL_DIR_SACOCHE;
+    }
+    elseif(defined('APPEL_SITE_PROJET'))
+    {
+      $chemin = './sacoche/';
+    }
+    else
+    {
+      $chemin = './';
+    }
     echo'<!DOCTYPE html>'.NL;
     echo'<html lang="fr">'.NL;
     echo  '<head>'.NL;
-    echo    '<link rel="stylesheet" type="text/css" href="'.URL_DIR_SACOCHE.'_css/style.css" />'.NL;
+    echo    '<link rel="stylesheet" type="text/css" href="'.$chemin.'_css/style.css" />'.NL;
     echo    '<style type="text/css">#cadre_milieu{color:#D00}</style>'.NL;
     echo    '<title>SACoche » '.$titre.'</title>'.NL;
     echo  '</head>'.NL;
     echo  '<body>'.NL;
     echo    '<div id="cadre_milieu">'.NL;
-    echo      '<div class="hc"><img src="'.URL_DIR_SACOCHE.'_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
+    echo      '<div class="hc"><img src="'.$chemin.'_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>'.NL;
     echo      '<h1>'.$titre.'</h1>'.NL;
     echo      '<p>'.str_replace('<br />','</p><p>',$contenu).'</p>'.NL;
-        if($lien=='accueil') { echo'<p><a href="'.URL_DIR_SACOCHE.'index.php">Retour en page d\'accueil de SACoche.</a></p>'.NL; } 
-    elseif($lien=='install') { echo'<p><a href="'.URL_DIR_SACOCHE.'index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'.NL; } 
+        if($lien=='accueil') { echo'<p><a href="'.$chemin.'index.php">Retour en page d\'accueil de SACoche.</a></p>'.NL; } 
+    elseif($lien=='install') { echo'<p><a href="'.$chemin.'index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'.NL; } 
     echo    '</div>'.NL;
     echo  '</body>'.NL;
     echo'</html>'.NL;

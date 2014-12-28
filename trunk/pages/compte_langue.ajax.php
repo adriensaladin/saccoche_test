@@ -26,31 +26,41 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+
+$langue = (isset($_POST['f_langue'])) ? Clean::texte($_POST['f_langue']) : NULL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
+// Mettre à jour son choix de langue
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
-
-$tab_menu = array
-(
-  "Informations" => array
-  (
-    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    "Statistiques d'utilisation"  => array( 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
-  ),
-  "Paramétrages" => array
-  (
-    "Mot de passe"          => array( 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    "Logo / Lien / Message" => array( 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
-  ),
-);
+if($langue)
+{
+  // Vérifications
+  if($langue=='defaut')
+  {
+    $langue = '';
+  }
+  elseif(!is_dir(LOCALE_DIR.DS.$langue))
+  {
+    exit('Erreur : dossier de langue "'.$langue.'" non trouvé !');
+  }
+  // C'est ok...
+  DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_langue' , $langue );
+  // On modifie aussi la session
+  $_SESSION['USER_LANGUE'] = $langue ;
+  // sans oublier le menu
+  $locale = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : $_SESSION['ETABLISSEMENT']['LANGUE'] ;
+  Lang::setlocale( LC_MESSAGES, $locale );
+  SessionUser::memoriser_menu();
+  // Retour
+  exit('ok');
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Adaptations
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// RAS !
+exit('Erreur avec les données transmises !');
 
 ?>

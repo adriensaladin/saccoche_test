@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Bilan chronologique";
+$TITRE = Lang::_("Bilan chronologique");
 
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {

@@ -30,9 +30,14 @@
 // Il faut aussi indiquer le format page_section pour les appels ajax
 // //////////////////////////////////////////////////
 
+$tab_droits_profil_public                = array( 'public'=>1 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_tous                  = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 , 'developpeur'=>1 , 'partenaire'=>1 );
 $tab_droits_profil_identifie             = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 , 'developpeur'=>1 , 'partenaire'=>1 );
-$tab_droits_profil_public                = array( 'public'=>1 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
+$tab_droits_profil_etablissement         = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
+$tab_droits_profil_eleve_parent_prof_dir = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
+$tab_droits_profil_prof_dir_admin        = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
+$tab_droits_profil_prof_dir              = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
+$tab_droits_profil_dir_admin             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_eleve                 = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_parent                = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_professeur            = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
@@ -41,10 +46,6 @@ $tab_droits_profil_administrateur        = array( 'public'=>0 , 'eleve'=>0 , 'pa
 $tab_droits_profil_webmestre_developpeur = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>1 , 'developpeur'=>1 , 'partenaire'=>0 );
 $tab_droits_profil_webmestre             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>1 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_partenaire            = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>1 );
-$tab_droits_profil_prof_dir              = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
-$tab_droits_profil_prof_dir_admin        = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
-$tab_droits_profil_dir_admin             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
-$tab_droits_profil_eleve_parent_prof_dir = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 
 $tab_droits_par_page = array
 (
@@ -57,6 +58,8 @@ $tab_droits_par_page = array
   'compte_accueil'                          => $tab_droits_profil_identifie,
   'compte_email'                            => $tab_droits_profil_identifie,
   'compte_password'                         => $tab_droits_profil_identifie,
+  // Profils établissement
+  'compte_langue'                           => $tab_droits_profil_etablissement,
   // Profil public
   'public_accueil'                          => $tab_droits_profil_public,
   'public_installation'                     => $tab_droits_profil_public,

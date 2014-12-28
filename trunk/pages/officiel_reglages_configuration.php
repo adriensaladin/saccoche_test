@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Configuration des bilans officiels";
+$TITRE = Lang::_("Configuration des bilans officiels");
 
 $select_releve_appreciation_rubrique_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_releve_appreciation_rubrique_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR'] /*selection*/ , '' /*optgroup*/);
 $select_releve_appreciation_generale_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_releve_appreciation_generale_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR'] /*selection*/ , '' /*optgroup*/);

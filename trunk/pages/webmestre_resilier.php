@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Résilier l'inscription de l'établissement";
+$TITRE = "Résilier l'inscription de l'établissement"; // Pas de traduction car pas de choix de langue pour ce profil.
 
 // Page réservée aux installations mono-structure ; le menu webmestre d'une installation multi-structures ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='multi-structures')

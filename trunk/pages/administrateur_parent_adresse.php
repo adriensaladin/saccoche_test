@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Adresses des parents";
+$TITRE = Lang::_("Adresses des parents");
 ?>
 
 <?php

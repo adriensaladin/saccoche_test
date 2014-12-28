@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Changer son mot de passe";
+$TITRE = Lang::_("Changer son mot de passe");
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var MDP_LONGUEUR_MINI = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';' );

@@ -38,7 +38,7 @@ Cet outil <a target="_blank" href="http://dev.mysql.com/doc/refman/5.0/fr/check-
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 
 <?php
-$TITRE = "Analyser / Réparer la base"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Analyser / Réparer la base";
 list( $niveau_alerte , $messages ) = analyser_et_reparer_tables_base_etablissement();
 $tab_label = array(
   0 => array( 'class'=>'valide' , 'texte'=>'Aucune anomalie détectée.'                           ) ,
@@ -54,7 +54,7 @@ echo'<p>'.$messages.'</p>'.NL;
 <?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
 
 <?php
-$TITRE = "Analyser / Réparer les bases"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Analyser / Réparer les bases";
 $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , FALSE /*option_first*/ , FALSE , 'zones_geo' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 

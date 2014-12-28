@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Recherche ciblée");
+$TITRE = "Recherche ciblée";
 
 // Fabrication des éléments select du formulaire
 

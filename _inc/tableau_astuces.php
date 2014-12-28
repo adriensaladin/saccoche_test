@@ -28,11 +28,6 @@
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 // A priori pas utile pour les webmestres / parents / élèves.
 
-$astuce_bilans_officiels_appreciations  = '<p>Les <b>appréciations</b> intermédiaires et générales des <b>bilans officiels</b> peuvent être <b>préremplies</b> avec un modèle de contenu. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
-$astuce_bulletin_sans_moyennes          = '<p>Vous pouvez paramétrer <b>l\'absence de moyennes</b> pour <b>certaines matières</b> sur les <b>bulletins scolaires</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
-$astuce_autoevaluation                  = '<p>Lorsqu\'il s\'<b>auto-évalue</b>, l\'élève peut <b>commenter/justifier</b> ses choix. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_texte">Documentation</a></span></p>';
-$astuce_demande_evaluation              = '<p>Lorsqu\'il formule une <b>demande d\'évaluation</b>, l\'élève peut appuyer sa demande par <b>un commentaire</b> et/ou joindre <b>un document</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__demandes_evaluations#toggle_cote_eleves">Documentation</a></span></p>';
-$astuce_devoir_commentaire              = '<p>Vous pouvez associer à une évaluation, pour chaque élève, <b>un commentaire texte ou audio personnalisé</b> (consultable par les familles). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_texte">Documentation</a></span></p>';
 $astuce_evaluation_taux_remplissage     = '<p><em>SACoche</em> comporte un indicateur du <b>taux de saisie</b> par évaluation. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_indicateur_remplissage">Documentation</a></span></p>';
 $astuce_previsualisation_bulletin       = '<p><em>SACoche</em> permet de <b>simuler l\'impression PDF d\'un bilan officiel</b> sans attendre que toutes les données soient saisies. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_simuler_impression">Documentation</a></span></p>';
 $astuce_corriger_appreciation           = '<p><em>SACoche</em> permet d\'attribuer le droit de <b>corriger l\'appréciation d\'un collègue</b> sur un bulletin. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_erreurs_appreciations">Documentation</a></span></p>';
@@ -57,8 +52,6 @@ $astuce_authentification_ent            = '<p>On peut se connecter à <em>SACoch
 
 $tab_astuces = array(
   'administrateur' => array(
-    $astuce_bilans_officiels_appreciations,
-    $astuce_bulletin_sans_moyennes,
     $astuce_previsualisation_bulletin,
     $astuce_corriger_appreciation,
     $astuce_gestion_profils,
@@ -71,8 +64,6 @@ $tab_astuces = array(
     $astuce_authentification_ent,
   ),
   'directeur' => array(
-    $astuce_bilans_officiels_appreciations,
-    $astuce_bulletin_sans_moyennes,
     $astuce_previsualisation_bulletin,
     $astuce_corriger_appreciation,
     $astuce_photos,
@@ -85,9 +76,6 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
-    $astuce_autoevaluation,
-    $astuce_demande_evaluation,
-    $astuce_devoir_commentaire,
     $astuce_evaluation_taux_remplissage,
     $astuce_photos,
     $astuce_bulletin_scolaire,

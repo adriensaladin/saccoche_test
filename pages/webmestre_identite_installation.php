@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Identité de l'installation"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Identité de l'installation";
 ?>
 
 <?php

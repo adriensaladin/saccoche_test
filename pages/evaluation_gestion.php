@@ -78,7 +78,7 @@ $reception_todo = ($nb_items || $nb_users) ? 'true' : 'false' ;
 $TYPE = ($nb_items || $nb_users)                    ? 'selection' : $SECTION ;
 $TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
 
-$TITRE = ($TYPE=='groupe') ? Lang::_("Évaluer une classe ou un groupe") : Lang::_("Évaluer des élèves sélectionnés") ;
+$TITRE = ($TYPE=='groupe') ? "Évaluer une classe ou un groupe" : "Évaluer des élèves sélectionnés" ;
 
 // Dates par défaut
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
@@ -375,7 +375,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <?php echo str_replace( 'id="f_fond"'    , 'id="f_repart_fond"'    , $select_fond); ?>
   </fieldset></form>
   <p>
-    <span class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</span>
+    <span class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</span>
     <label id="ajax_msg_archiver_repart"></label>
   </p>
 </div>
@@ -415,7 +415,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <li class="voir"><span class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</span></li>
   </ul>
   <p class="ti">
-    <span class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</span><br />
+    <span class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</span><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label> <?php echo str_replace( 'id="f_couleur"' , 'id="f_deport_archivage_couleur"' , $select_couleur); ?> <?php echo str_replace( 'id="f_fond"'    , 'id="f_deport_archivage_fond"'    , $select_fond); ?>
   </p>
   <ul class="puce">

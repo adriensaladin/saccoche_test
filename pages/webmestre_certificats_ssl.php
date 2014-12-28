@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Vérification des certificats SSL"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Vérification des certificats SSL";
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 

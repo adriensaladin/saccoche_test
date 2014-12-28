@@ -13,7 +13,6 @@ CREATE TABLE sacoche_user (
   user_email          VARCHAR(63)       COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_login          VARCHAR(20)       COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_password       CHAR(32)          COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  user_langue         VARCHAR(5)        COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_daltonisme     TINYINT(1)        UNSIGNED                NOT NULL DEFAULT 0,
   user_tentative_date DATETIME                                           DEFAULT NULL ,
   user_connexion_date DATETIME                                           DEFAULT NULL ,

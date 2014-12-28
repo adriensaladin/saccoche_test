@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Étape n°1 - Indiquer la série des élèves concernés");
+$TITRE = "Étape n°1 - Indiquer la série des élèves concernés";
 
 // Fabrication des éléments select du formulaire
 $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();

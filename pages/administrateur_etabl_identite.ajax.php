@@ -51,7 +51,6 @@ $etablissement_telephone     = (isset($_POST['f_etablissement_telephone']))     
 $etablissement_fax           = (isset($_POST['f_etablissement_fax']))           ? Clean::texte($_POST['f_etablissement_fax'])            : '';
 $etablissement_courriel      = (isset($_POST['f_etablissement_courriel']))      ? Clean::texte($_POST['f_etablissement_courriel'])       : '';
 $etablissement_url           = (isset($_POST['f_etablissement_url']))           ? Clean::url($_POST['f_etablissement_url'])              : '';
-$etablissement_langue        = (isset($_POST['f_etablissement_langue']))        ? Clean::texte($_POST['f_etablissement_langue'])         : '';
 
 $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? Clean::entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
 
@@ -249,31 +248,6 @@ if( $mois_bascule_annee_scolaire )
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] = $mois_bascule_annee_scolaire;
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour la langue par défaut
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( $etablissement_langue )
-{
-  // Vérifications
-  if(!is_dir(LOCALE_DIR.DS.$etablissement_langue))
-  {
-    exit('Erreur : dossier de langue "'.$etablissement_langue.'" non trouvé !');
-  }
-  // C'est ok...
-  $tab_parametres = array();
-  $tab_parametres['etablissement_langue'] = $etablissement_langue;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-  // On modifie aussi la session
-  $_SESSION['ETABLISSEMENT']['LANGUE'] = $etablissement_langue;
-  // sans oublier le menu
-  $locale = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : $_SESSION['ETABLISSEMENT']['LANGUE'] ;
-  Lang::setlocale( LC_MESSAGES, $locale );
-  SessionUser::memoriser_menu();
-  // Retour
   exit('ok');
 }
 

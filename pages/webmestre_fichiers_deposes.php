@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Fichiers déposés"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Fichiers déposés";
 
 $tab_select_taille_max = array(
    100=>'100 Ko / audio 25 s',

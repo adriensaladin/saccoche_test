@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Statistiques globales");
+$TITRE = "Statistiques globales";
 
 list($personnel_nb,$eleve_nb,$parent_nb,$personnel_use,$eleve_use,$parent_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use) = DB_STRUCTURE_DIRECTEUR::DB_recuperer_statistiques();
 ?>

@@ -87,13 +87,6 @@ if(count(Session::$tab_message_erreur))
   $PAGE = ($_SESSION['USER_PROFIL_TYPE'] == 'public') ? 'public_accueil' : 'compte_accueil' ;
 }
 
-// Traductions ; test !empty($_SESSION['ETABLISSEMENT_LANGUE']) laissé un an le temps des MAJ --> à retirer en 2016.
-$locale = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : ( (!empty($_SESSION['ETABLISSEMENT']['LANGUE'])) ? $_SESSION['ETABLISSEMENT']['LANGUE'] : LOCALE_DEFAULT ) ;
-Lang::setlocale( LC_MESSAGES, $locale );
-Lang::bindtextdomain( LOCALE_DOMAINE, LOCALE_DIR );
-Lang::bind_textdomain_codeset( LOCALE_DOMAINE, LOCALE_CHARSET );
-Lang::textdomain( LOCALE_DOMAINE );
-
 // Alerte si navigateur trop ancien
 if(!empty($_SESSION['BROWSER']['alerte']))
 {

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Notation : codes, couleurs, légendes");
+$TITRE = "Notation : codes, couleurs, légendes";
 
 // Évaluation : symboles colorés, équivalents textes, légendes
 

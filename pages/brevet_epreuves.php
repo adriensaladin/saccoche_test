@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note");
+$TITRE = "Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note";
 ?>
 
 <p>

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Photos des élèves");
+$TITRE = "Photos des élèves";
 
 // Fabrication des éléments select du formulaire
 $select_groupe = HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ , FALSE /*tout*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);

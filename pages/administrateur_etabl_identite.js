@@ -447,58 +447,6 @@ $(document).ready
 
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire form_langue
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Alerter sur la nécessité de valider
-    $("#f_etablissement_langue").change
-    (
-      function()
-      {
-        $('#ajax_msg_langue').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
-      }
-    );
-
-    $('#bouton_valider_langue').click
-    (
-      function()
-      {
-        $("#bouton_valider_langue").prop('disabled',true);
-        $('#ajax_msg_langue').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_etablissement_langue='+$('#f_etablissement_langue option:selected').val(),
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $("#bouton_valider_langue").prop('disabled',false);
-              $('#ajax_msg_langue').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $("#bouton_valider_langue").prop('disabled',false);
-              if(responseHTML!='ok')
-              {
-                $('#ajax_msg_langue').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
-              {
-                $('#ajax_msg_langue').removeAttr("class").addClass("valide").html("Donnée enregistrée !");
-              }
-              return false;
-            }
-          }
-        );
-      }
-    );
-
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

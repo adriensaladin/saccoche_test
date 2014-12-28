@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Dates des périodes");
+$TITRE = "Dates des périodes";
 ?>
 
 <p class="astuce">

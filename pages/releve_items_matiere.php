@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Relevé d'items d'une matière");
+$TITRE = "Relevé d'items d'une matière";
 
 // L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 // L'élève ne choisit pas non plus son type de bilan (=>individuel), et les options du relevé sont prédéfinies.

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Test des droits MySQL"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Test des droits MySQL";
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')

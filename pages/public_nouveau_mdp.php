@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Génération d'un nouveau mot de passe"; // Pas de traduction car pas de choix de langue à ce niveau.
+$TITRE = "Génération d'un nouveau mot de passe";
 
 // Récupération du code
 $code_mdp = (isset($_GET['code_mdp'])) ? Clean::texte($_GET['code_mdp']) : '';

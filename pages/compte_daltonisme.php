@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Daltonisme");
+$TITRE = "Daltonisme";
 
 $checked_normal = $_SESSION['USER_DALTONISME'] ? '' : ' checked' ;
 $checked_dalton = $_SESSION['USER_DALTONISME'] ? ' checked' : '' ;

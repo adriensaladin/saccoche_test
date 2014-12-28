@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Mise en page des bilans officiels");
+$TITRE = "Mise en page des bilans officiels";
 
 $check_adresse   = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))   ? ' checked' : '' ;
 $check_telephone = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone')) ? ' checked' : '' ;

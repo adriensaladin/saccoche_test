@@ -93,7 +93,6 @@ INSERT INTO sacoche_parametre VALUES
 ( "etablissement_courriel"                           , "" ),
 ( "etablissement_denomination"                       , "" ),
 ( "etablissement_fax"                                , "" ),
-( "etablissement_langue"                             , "fr_FR" ),
 ( "etablissement_telephone"                          , "" ),
 ( "etablissement_url"                                , "" ),
 ( "gepi_certificat_empreinte"                        , "" ),

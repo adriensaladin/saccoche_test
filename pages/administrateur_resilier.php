@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Résilier l'inscription de l'établissement");
+$TITRE = "Résilier l'inscription de l'établissement";
 ?>
 
 <p class="astuce">Pour transmettre un rôle d'administrateur, il suffit de l'inscrire comme administrateur ou de lui donner vos identifiants.</p>

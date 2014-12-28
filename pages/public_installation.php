@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Procédure d'installation"; // Pas de traduction car pas de choix de langue à ce niveau.
+$TITRE = "Procédure d'installation";
 ?>
 
 <ul id="step">

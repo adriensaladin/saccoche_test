@@ -33,12 +33,6 @@ $eleve_id   = (isset($_POST['f_eleve']))      ? Clean::entier($_POST['f_eleve'])
 $date_debut = (isset($_POST['f_date_debut'])) ? Clean::date_fr($_POST['f_date_debut']) : '';
 $date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fin'])   : '';
 $devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])      : 0;
-$msg_data   = (isset($_POST['f_msg_data']))   ? Clean::texte($_POST['f_msg_data'])     : '';
-$msg_url    = (isset($_POST['f_msg_url']))    ? Clean::texte($_POST['f_msg_url'])      : '';
-$msg_autre  = (isset($_POST['f_msg_autre']))  ? Clean::texte($_POST['f_msg_autre'])    : '';
-
-$chemin_devoir      = CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
-$url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
@@ -164,7 +158,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   // Les commentaires texte ou audio
   $commentaire_texte = '';
   $commentaire_audio = '';
-  $DB_ROW = DB_STRUCTURE_COMMENTAIRE::DB_recuperer_devoir_commentaires($devoir_id,$eleve_id);
+  $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id);
   if(!empty($DB_ROW))
   {
     if($DB_ROW['jointure_texte'])
@@ -179,7 +173,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
       {
         $msg_data = cURL::get_contents($msg_url);
       }
-      $commentaire_texte = '<h3>Commentaire écrit</h3><textarea rows="10" cols="100" readonly>'.html($msg_data).'</textarea>';
+      $commentaire_texte = '<h3>Commentaire écrit</h3><textarea name="f_msg_data" id="f_msg_texte" rows="10" cols="100" readonly>'.html($msg_data).'</textarea>';
     }
     if($DB_ROW['jointure_audio'])
     {
@@ -230,33 +224,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   {
     $tab_radio[$DB_ROW['item_id']] = str_replace( 'value="'.$DB_ROW['saisie_note'].'"' , 'value="'.$DB_ROW['saisie_note'].'" checked' , $radio_boutons );
   }
-  // récupérer les commentaires texte ou audio
-  $msg_texte_url   = '';
-  $msg_texte_data  = '';
-  $msg_audio_autre = 'non';
-  $DB_ROW = DB_STRUCTURE_COMMENTAIRE::DB_recuperer_devoir_commentaires($devoir_id,$eleve_id);
-  if(!empty($DB_ROW))
-  {
-    if($DB_ROW['jointure_texte'])
-    {
-      $msg_texte_url = $DB_ROW['jointure_texte'];
-      if(strpos($msg_texte_url,URL_DIR_SACOCHE)===0)
-      {
-        $fichier_chemin = url_to_chemin($msg_texte_url);
-        $msg_texte_data = is_file($fichier_chemin) ? file_get_contents($fichier_chemin) : 'Erreur : fichier avec le contenu du commentaire non trouvé.' ;
-      }
-      else
-      {
-        $msg_texte_data = cURL::get_contents($msg_texte_url);
-      }
-    }
-    if($DB_ROW['jointure_audio'])
-    {
-      $msg_audio_autre = 'oui';
-    }
-  }
-  // lignes du tableau à retourner
-  $lignes = '';
+  // afficher les lignes
   foreach($tab_liste_item as $item_id)
   {
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
@@ -266,17 +234,16 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $boutons = (isset($tab_radio[$item_id])) ? $tab_radio[$item_id] : str_replace( 'value="X"' , 'value="X" checked' , $radio_boutons ) ;
     $boutons = str_replace( 'item_X' , 'item_'.$item_id , $boutons );
-    $lignes .= '<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.'</td></tr>';
+    echo'<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.'</td></tr>';
   }
-  // Retour
-  exit('ok'.']¤['.$lignes.']¤['.$msg_audio_autre.']¤['.$msg_texte_url.']¤['.$msg_texte_data);
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer des notes saisies (auto-évaluation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array('oui','non')) )
+if( ($action=='Enregistrer_saisies') && $devoir_id )
 {
   // On récupère les informations associées à ce devoir et on vérifie que l'élève est en droit de s'y auto-évaluer.
   $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_devoir_infos($devoir_id);
@@ -346,9 +313,11 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   }
   // Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
   $tab_nouveau_ajouter = array_filter($tab_post,'sans_rien');
-  //
   // Il n'y a plus qu'à mettre à jour la base
-  //
+  if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
+  {
+    exit('Aucune modification détectée !');
+  }
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
   $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   foreach($tab_nouveau_ajouter as $item_id => $note)
@@ -376,35 +345,6 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   {
     RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
   }
-  //
-  // On passe maintenant au commentaire texte
-  //
-  // Supprimer un éventuel fichier précédent
-  if( $msg_url && (mb_strpos($msg_url,$url_dossier_devoir)===0) )
-  {
-    // Il peut ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-    FileSystem::supprimer_fichier( url_to_chemin($msg_url) , TRUE /*verif_exist*/ );
-  }
-  // Mise à jour dans la base
-  if($msg_data)
-  {
-    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$_SESSION['USER_ID'].'_'.'texte'.'_'.$_SERVER['REQUEST_TIME'].'.'.'txt'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-    DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $_SESSION['USER_ID'] , 'texte' , $url_dossier_devoir.$fichier_nom );
-    // et enregistrement du fichier
-    FileSystem::ecrire_fichier( $chemin_devoir.$fichier_nom , $msg_data );
-  }
-  else
-  {
-    if($msg_autre=='oui')
-    {
-      DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $_SESSION['USER_ID'] , 'texte' , '' );
-    }
-    else
-    {
-      DB_STRUCTURE_COMMENTAIRE::DB_supprimer_devoir_commentaire( $devoir_id , $_SESSION['USER_ID'] );
-    }
-  }
-  // Terminé
   exit('ok');
 }
 

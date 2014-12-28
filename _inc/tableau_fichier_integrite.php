@@ -30,7 +30,7 @@ $tab_fichier_integrite = array(
   '_inc/_loader.php',
   '_inc/class.Session.php',
   '_inc/class.ServeurCommunautaire.php',
-  'menus/menu_professeur.php',
+  '_inc/menu_professeur.php',
   'pages/validation_socle_fichier.ajax.php',
   'pages/validation_socle_item.ajax.php',
   'pages/validation_socle_pilier.ajax.php',

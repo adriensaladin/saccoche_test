@@ -28,28 +28,31 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Menu [partenaire] à mettre en session
+// Menu [webmestre] à mettre en session
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Attention : en cas de changement d'indice d'un menu, répercuter la modif dans la partie Adaptations (en-dessous).
+// Le menu complet ; attention : en cas de changement du nom d'un menu, répercuter la modif dans tout le fichier (§ Adaptations).
 
 $tab_menu = array
 (
-  'information' => "Informations",
-  'parametrage' => "Paramétrages",
-);
-
-$tab_sous_menu = array
-(
-  'information' => array
+  "Informations" => array
   (
-    'compte_accueil'          => array( 'texte' => "Accueil"                    , 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    'partenaire_statistiques' => array( 'texte' => "Statistiques d'utilisation" , 'class' => 'statistiques'   , 'href' => 'page=partenaire_statistiques' ),
+    "Accueil"                     => array( 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'         ),
+    "Caractéristiques du serveur" => array( 'class' => 'serveur_info'   , 'href' => 'page=webmestre_info_serveur' ),
   ),
-  'parametrage' => array
+  "Administration du site" => array
   (
-    'compte_password'         => array( 'texte' => "Mot de passe"          , 'class' => 'compte_password'  , 'href' => 'page=compte_password'         ),
-    'partenaire_parametrages' => array( 'texte' => "Logo / Lien / Message" , 'class' => 'serveur_identite' , 'href' => 'page=partenaire_parametrages' ),
+    "Configuration d'un proxy"          => array( 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
+    "Test des droits MySQL"             => array( 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    "Droits du système de fichiers"     => array( 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
+    "Maintenance &amp; mise à jour"     => array( 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
+    "Analyser / Réparer les bases"      => array( 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
+    "Vérification des certificats SSL"  => array( 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
+    "Débogueur"                         => array( 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
+  ),
+  "Gestion des inscriptions" => array
+  ( // multi-structures uniquement
+    "Statistiques d'utilisation"   => array( 'class' => 'statistiques'         , 'href' => 'page=webmestre_statistiques'         ),
   ),
 );
 
@@ -57,6 +60,13 @@ $tab_sous_menu = array
 // Adaptations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// RAS !
+// Différences de menu [mono-structure] / [multi-structures]
+if(HEBERGEUR_INSTALLATION=='mono-structure')
+{
+  unset(
+    $tab_menu["Administration du site"]["Test des droits MySQL"] ,
+    $tab_menu["Gestion des inscriptions"]
+  );
+}
 
 ?>

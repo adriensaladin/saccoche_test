@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Caractéristiques du serveur"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Caractéristiques du serveur";
 
 echo InfoServeur::tableau_serveur_et_client();
 echo InfoServeur::tableau_versions_logicielles();

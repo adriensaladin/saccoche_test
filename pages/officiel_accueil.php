@@ -30,14 +30,14 @@ if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');
 
 $tab_types = array
 (
-  'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre_page'=>Lang::_("Relevé d'évaluations") , 'titre'=>"Relevé d'évaluations" , 'modif_rubrique'=>'les appréciations par matière' ) ,
-  'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre_page'=>Lang::_("Bulletin scolaire")    , 'titre'=>"Bulletin scolaire"    , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
-  'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 1") , 'titre'=>"Maîtrise du palier 1" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 2") , 'titre'=>"Maîtrise du palier 2" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 3") , 'titre'=>"Maîtrise du palier 3" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre'=>'Relevé d\'évaluations' , 'modif_rubrique'=>'les appréciations par matière' ) ,
+  'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre'=>'Bulletin scolaire'     , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
+  'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 1'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 2'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre'=>'Maîtrise du palier 3'  , 'modif_rubrique'=>'les appréciations par compétence' ) ,
 );
 
-$TITRE = $tab_types[$BILAN_TYPE]['titre_page'];
+$TITRE = $tab_types[$BILAN_TYPE]['titre'];
 
 // Indication des profils pouvant modifier le statut d'un bilan
 $profils_modifier_statut = 'administrateurs (de l\'établissement)<br />'.afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'br');
@@ -662,7 +662,7 @@ $date_plus1semaine = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y')))
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
-  <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
+  <p class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</p>
   <ul class="puce">
     <?php if($BILAN_TYPE=='bulletin'): ?>
       <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>

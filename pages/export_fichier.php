@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Export de données");
+$TITRE = "Export de données";
 
 Form::load_choix_memo();
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')

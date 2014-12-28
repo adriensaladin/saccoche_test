@@ -122,7 +122,6 @@ $make_brevet   = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
-$make_csv      = FALSE;
 $make_graph    = FALSE;
 
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Fiches brevet") :  Lang::_("Étape n°5 - Fiches brevet") ;
+$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? "Fiches brevet" :  "Étape n°5 - Fiches brevet" ;
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var TODAY_FR   = "'.TODAY_FR.'";' );
@@ -542,7 +542,7 @@ $date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")))
 
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
-  <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
+  <p class="noprint">Afin de préserver l'environnement, n'imprimer qu'en cas de nécessité !</p>
   <ul class="puce">
     <li><button id="imprimer_donnees_eleves_epreuves"  type="button" class="imprimer">Archiver / Imprimer</button> les appréciations par épreuve pour chaque élève.</li>
     <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les avis de synthèse pour chaque élève.</li>

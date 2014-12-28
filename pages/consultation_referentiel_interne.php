@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Référentiels en place (dans l'établissement)");
+$TITRE = "Référentiels en place (dans l'établissement)";
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
 {

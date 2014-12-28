@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Synthèses / Bilans");
+$TITRE = "Synthèses / Bilans";
 ?>
 
 <?php if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFIL_TYPE']=='directeur')&&(substr($SECTION,0,8)=='reglages')) ): ?>

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Statistiques d'utilisation (partenariat ENT)";
+$TITRE = "Statistiques d'utilisation (partenariat ENT)"; // Pas de traduction car pas de choix de langue pour ce profil.
 ?>
 
 <p class="astuce">

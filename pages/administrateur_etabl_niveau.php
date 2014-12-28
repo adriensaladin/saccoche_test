@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Niveaux";
+$TITRE = Lang::_("Niveaux");
 
 // Formulaire des familles de niveaux, en 2 catégories
 $select_niveau_famille = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_niveaux' /*optgroup*/);

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Transfert d'établissements";
+$TITRE = "Transfert d'établissements"; // Pas de traduction car pas de choix de langue pour ce profil.
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')

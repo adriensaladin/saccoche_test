@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Relevé d'items d'un enseignant";
+$TITRE = Lang::_("Relevé d'items d'un enseignant");
 ?>
 
 <?php

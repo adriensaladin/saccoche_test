@@ -26,8 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Identité de l'établissement";
+$TITRE = Lang::_("Identité de l'établissement");
 
+// Formulaire SELECT du mois de bascule de l'année scolaire
 $options_mois = '<option value="1">calquée sur l\'année civile</option>'
               . '<option value="2">bascule au 1er février</option>'
               . '<option value="3">bascule au 1er mars</option>'
@@ -41,6 +42,18 @@ $options_mois = '<option value="1">calquée sur l\'année civile</option>'
               . '<option value="11">bascule au 1er novembre</option>'
               . '<option value="12">bascule au 1er décembre</option>';
 $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'" selected' , $options_mois );
+
+// Formulaire SELECT du choix de la langue
+$tab_contenu = FileSystem::lister_contenu_dossier(LOCALE_DIR);
+$options_langue = '';
+foreach($tab_contenu as $contenu)
+{
+  if(is_dir(LOCALE_DIR.DS.$contenu))
+  {
+    $selected = ($contenu==$_SESSION['ETABLISSEMENT']['LANGUE']) ? ' selected' : '' ;
+    $options_langue .= '<option value="'.$contenu.'"'.$selected.'>'.$contenu.'</option>';
+  }
+}
 
 // Récupérer le logo, si présent.
 $li_logo = '<li>Pas de logo actuellement enregistré.</li>';
@@ -157,6 +170,15 @@ else
       <label class="tab" for="f_mois_bascule_annee_scolaire">Fonctionnement :</label><select id="f_mois_bascule_annee_scolaire" name="f_mois_bascule_annee_scolaire"><?php echo $options_mois; ?></select><br />
       <label class="tab">Affichage obtenu :</label><span class="i">&laquo;&nbsp;Année scolaire <span id="span_simulation"></span>&nbsp;&raquo;</span><br />
       <span class="tab"></span><button id="bouton_valider_annee_scolaire" type="button" class="parametre">Valider.</button><label id="ajax_msg_annee_scolaire">&nbsp;</label>
+    </p>
+  </form>
+
+  <form action="#" method="post" id="form_langue">
+    <hr />
+    <h2>Langue par défaut</h2>
+    <p>
+      <label class="tab" for="f_etablissement_langue">Langue :</label><select id="f_etablissement_langue" name="f_etablissement_langue"><?php echo $options_langue; ?></select><br />
+      <span class="tab"></span><button id="bouton_valider_langue" type="button" class="parametre">Valider.</button><label id="ajax_msg_langue">&nbsp;</label>
     </p>
   </form>
 

@@ -106,6 +106,7 @@ $make_brevet   = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
+$make_csv      = ($releve_individuel_format == 'eleve') ? TRUE : FALSE ;
 $make_graph    = FALSE;
 
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
@@ -127,6 +128,10 @@ else
   echo'<ul class="puce">'.NL;
   echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+  if($make_csv)
+  {
+    echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
+  }
   echo'</ul>'.NL;
 }
 

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Changer son adresse e-mail";
+$TITRE = Lang::_("Changer son adresse e-mail");
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']) )
 {

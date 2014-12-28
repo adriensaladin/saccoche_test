@@ -93,25 +93,6 @@ public static function DB_lister_devoir_profs_droit_saisie($devoir_id)
 }
 
 /**
- * recuperer_devoir_commentaire
- *
- * @param int    $devoir_id
- * @param int    $eleve_id
- * @return array
- */
-public static function DB_recuperer_devoir_commentaire($devoir_id,$eleve_id)
-{
-  $DB_SQL = 'SELECT jointure_texte, jointure_audio ';
-  $DB_SQL.= 'FROM sacoche_jointure_devoir_eleve ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
-  $DB_VAR = array(
-    ':devoir_id' => $devoir_id,
-    ':eleve_id'  => $eleve_id,
-  );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Lister les classes des élèves associés à un parent
  *
  * @param int $parent_id

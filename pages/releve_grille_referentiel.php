@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Grille d'items d'un référentiel";
+$TITRE = Lang::_("Grille d'items d'un référentiel");
 
 if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {

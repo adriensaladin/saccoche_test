@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Relevé d'items sélectionnés";
+$TITRE = Lang::_("Relevé d'items sélectionnés");
 ?>
 
 <?php

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Test de variables";
+$TITRE = "Test de variables"; // Pas de traduction car pas de choix de langue à ce niveau.
 ?>
 <p>
   Cette page aide à déterminer l'origine d'un problème d'affichage du site (bloquant en général la connexion).

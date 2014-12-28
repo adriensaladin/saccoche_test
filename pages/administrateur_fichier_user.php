@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Importer des fichiers d'utilisateurs";
+$TITRE = Lang::_("Importer des fichiers d'utilisateurs");
 ?>
 
 <?php

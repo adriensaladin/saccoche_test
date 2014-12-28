@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Redirection après déconnexion";
+$TITRE = Lang::_("Redirection après déconnexion");
 ?>
 
 <p>

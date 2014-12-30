@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -30,7 +30,7 @@
 
 $astuce_bilans_officiels_appreciations  = '<p>Les <b>appréciations</b> intermédiaires et générales des <b>bilans officiels</b> peuvent être <b>préremplies</b> avec un modèle de contenu. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
 $astuce_bulletin_sans_moyennes          = '<p>Vous pouvez paramétrer <b>l\'absence de moyennes</b> pour <b>certaines matières</b> sur les <b>bulletins scolaires</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
-$astuce_autoevaluation_commentaire      = '<p>Lorsqu\'il s\'<b>auto-évalue</b>, l\'élève peut <b>commenter/justifier</b> ses choix. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_autoeval">Documentation</a></span></p>';
+$astuce_autoevaluation                  = '<p>Lorsqu\'il s\'<b>auto-évalue</b>, l\'élève peut <b>commenter/justifier</b> ses choix. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_texte">Documentation</a></span></p>';
 $astuce_demande_evaluation              = '<p>Lorsqu\'il formule une <b>demande d\'évaluation</b>, l\'élève peut appuyer sa demande par <b>un commentaire</b> et/ou joindre <b>un document</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__demandes_evaluations#toggle_cote_eleves">Documentation</a></span></p>';
 $astuce_devoir_commentaire              = '<p>Vous pouvez associer à une évaluation, pour chaque élève, <b>un commentaire texte ou audio personnalisé</b> (consultable par les familles). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_texte">Documentation</a></span></p>';
 $astuce_evaluation_taux_remplissage     = '<p><em>SACoche</em> comporte un indicateur du <b>taux de saisie</b> par évaluation. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_indicateur_remplissage">Documentation</a></span></p>';
@@ -85,7 +85,7 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
-    $astuce_autoevaluation_commentaire,
+    $astuce_autoevaluation,
     $astuce_demande_evaluation,
     $astuce_devoir_commentaire,
     $astuce_evaluation_taux_remplissage,

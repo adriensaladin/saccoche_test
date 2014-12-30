@@ -1,7 +1,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -106,7 +106,7 @@ $(document).ready
           {
             if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#cadre_photo').html('<div>'+responseHTML+'</div><div style="margin-top:-20px"><button id="masquer_photo" type="button" class="annuler">Fermer</button></div>');
+              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
             }
             else
             {

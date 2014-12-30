@@ -1,7 +1,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -119,7 +119,7 @@ $(document).ready
       $("#bouton_valider").prop('disabled',false);
       if(responseHTML=='ok')
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Langue enregistrée !");
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Adresse enregistrée !");
       }
       else
       {

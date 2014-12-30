@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  *
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -773,7 +773,7 @@ public static function tester_prof_coordonnateur($prof_id,$matiere_id)
  */
 public static function tester_prof_langue_vivante($prof_id)
 {
-  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
   $DB_SQL = 'SELECT 1 ';
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'WHERE user_id=:user_id AND matiere_id IN('.implode(',',$tab_langues[100]['tab_matiere_id']).') ';

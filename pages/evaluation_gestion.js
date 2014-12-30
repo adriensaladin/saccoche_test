@@ -1,7 +1,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -1792,7 +1792,6 @@ $(document).ready
                 else
                 {
                   modification = false;
-                  $('#devoir_'+ref).parent().addClass("new");
                   $('#ajax_msg_ordonner').removeAttr("class").addClass("valide").html("Ordre enregistré !");
                   $('#fermer_zone_ordonner').removeAttr("class").addClass("retourner").html('Retour');
                 }
@@ -1858,7 +1857,6 @@ $(document).ready
                 }
                 else
                 {
-                  $('#devoir_'+ref).parent().addClass("new");
                   $('#ajax_msg_saisir_voir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
                   $('#fermer_zone_saisir_voir').removeAttr("class").addClass("retourner").html('Retour');
                   $('#kbd_27').removeAttr("class").addClass("img retourner");
@@ -2207,7 +2205,6 @@ $(document).ready
         else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
         var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
         $('#span_'+objet).html(lien);
-        $('#devoir_'+ref).parent().addClass("new");
         $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
         if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
         {
@@ -2262,7 +2259,6 @@ $(document).ready
                 else               { var alt='corrigé'; var numero=1; tab_corriges[ref] = ''; }
                 var lien        = '<img alt="'+alt+'" src="./_img/document/'+objet+'_non.png" />';
                 $('#span_'+objet).html(lien);
-                $('#devoir_'+ref).parent().addClass("new");
                 $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
               }
               activer_boutons_upload(ref);
@@ -2326,7 +2322,6 @@ $(document).ready
                   else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
                   var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
                   $('#span_'+objet).html(lien);
-                  $('#devoir_'+ref).parent().addClass("new");
                   $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
                 }
                 activer_boutons_upload(ref);
@@ -2373,7 +2368,6 @@ $(document).ready
               }
               else
               {
-                $('#devoir_'+ref).parent().addClass("new");
                 if(fini=='oui') { obj_lien.html('<span>'+txt_i+'</span><i>'+txt_span+'</i>').parent().addClass("bf"); }
                 else            { obj_lien.html('<span>'+txt_i+'</span><i>'+txt_span+'</i>').parent().removeClass("bf"); }
               }

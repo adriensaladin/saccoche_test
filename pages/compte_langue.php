@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -28,23 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = Lang::_("Choisir sa langue");
 
-// Charger $tab_langues_traduction
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');
 // Formulaire SELECT du choix de la langue
+$tab_contenu = FileSystem::lister_contenu_dossier(LOCALE_DIR);
 // On commence par une première option qui correspond au choix de l'établissement
-$selected = (empty($_SESSION['USER_LANGUE'])) ? ' selected' : '' ;
-$langue_nom = array_search( $_SESSION['ETABLISSEMENT']['LANGUE'] , $tab_langues_traduction );
-$options_langue  = '<optgroup label="Langue par défaut dans l\'établissement">';
-$options_langue .=   '<option value="defaut"'.$selected.'>'.$langue_nom.' ['.$_SESSION['ETABLISSEMENT']['LANGUE'].']</option>';
-$options_langue .= '</optgroup>';
-// On continue avec les langues sélectionnables
-$options_langue .= '<optgroup label="Langue sélectionnée">';
-foreach($tab_langues_traduction as $langue_nom => $langue_code)
+$selected = ( (empty($_SESSION['USER_LANGUE'])) || ($_SESSION['ETABLISSEMENT']['LANGUE']==$_SESSION['USER_LANGUE']) ) ? ' selected' : '' ;
+$options_langue = '<option value="defaut"'.$selected.'>Langue par défaut dans l\'établissement ('.$_SESSION['ETABLISSEMENT']['LANGUE'].')</option>';
+foreach($tab_contenu as $contenu)
 {
-  $selected = ($langue_code==$_SESSION['USER_LANGUE']) ? ' selected' : '' ;
-  $options_langue .= '<option value="'.$langue_code.'"'.$selected.'>'.$langue_nom.' ['.$langue_code.']</option>';
+  if( (is_dir(LOCALE_DIR.DS.$contenu)) && ($contenu!=$_SESSION['ETABLISSEMENT']['LANGUE']) )
+  {
+    $selected = ($contenu==$_SESSION['USER_LANGUE']) ? ' selected' : '' ;
+    $options_langue .= '<option value="'.$contenu.'"'.$selected.'>'.$contenu.'</option>';
+  }
 }
-$options_langue .= '</optgroup>';
 ?>
 
 <form action="#" method="post"><fieldset>

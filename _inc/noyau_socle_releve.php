@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -41,7 +41,7 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichie
 
 // Tableau des langues
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
 // Initialisation de tableaux

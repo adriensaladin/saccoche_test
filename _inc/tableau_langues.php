@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -39,20 +39,7 @@ $tab_langues[135] = array( 'valeur'=>135 , 'texte'=>'Néerlandais'    , 'tab_mat
 $tab_langues[122] = array( 'valeur'=>122 , 'texte'=>'Polonais'       , 'tab_matiere_id'=>array(9902, 313, 325, 337, 349, 361, 373, 385, 397) );
 $tab_langues[139] = array( 'valeur'=>139 , 'texte'=>'Portuguais'     , 'tab_matiere_id'=>array(9902, 311, 323, 335, 347, 359, 371, 383, 395) );
 $tab_langues[123] = array( 'valeur'=>123 , 'texte'=>'Russe'          , 'tab_matiere_id'=>array(9902, 314, 326, 338, 350, 362, 374, 386, 398) );
-$tab_langues[100] = array( 'valeur'=>100 , 'texte'=>'LV non choisie' , 'tab_matiere_id'=>array_unique(array_merge(
-  $tab_langues[109]['tab_matiere_id'],
-  $tab_langues[132]['tab_matiere_id'],
-  $tab_langues[201]['tab_matiere_id'],
-  $tab_langues[216]['tab_matiere_id'],
-  $tab_langues[101]['tab_matiere_id'],
-  $tab_langues[134]['tab_matiere_id'],
-  $tab_langues[127]['tab_matiere_id'],
-  $tab_langues[217]['tab_matiere_id'],
-  $tab_langues[135]['tab_matiere_id'],
-  $tab_langues[122]['tab_matiere_id'],
-  $tab_langues[139]['tab_matiere_id'],
-  $tab_langues[123]['tab_matiere_id']
-)) );
+$tab_langues[100] = array( 'valeur'=>100 , 'texte'=>'LV non choisie' , 'tab_matiere_id'=>array_unique(array_merge($tab_langues[109]['tab_matiere_id'],$tab_langues[132]['tab_matiere_id'],$tab_langues[201]['tab_matiere_id'],$tab_langues[216]['tab_matiere_id'],$tab_langues[101]['tab_matiere_id'],$tab_langues[134]['tab_matiere_id'],$tab_langues[127]['tab_matiere_id'],$tab_langues[217]['tab_matiere_id'],$tab_langues[135]['tab_matiere_id'],$tab_langues[122]['tab_matiere_id'],$tab_langues[139]['tab_matiere_id'],$tab_langues[123]['tab_matiere_id'])) );
 
 // Tableau avec la liste des piliers (compétences) / sections (domaines) /  items en rapport avec la pratique d'une langue vivante étrangère.
 

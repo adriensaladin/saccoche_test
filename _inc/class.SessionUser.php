@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2009-2015
+ * @copyright Thomas Crespin 2010-2014
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -217,7 +217,7 @@ class SessionUser
   }
 
   /**
-   * Enregistrer en session les informations authentifiant un utilisateur (sauf profils webmestre / développeur / partenaire).
+   * Enregistrer en session les informations authentifiant un utilisateur (sauf le webmestre).
    * 
    * @param int     $BASE
    * @param array   $DB_ROW   ligne issue de la table sacoche_user correspondant à l'utilisateur qui se connecte.
@@ -332,8 +332,6 @@ class SessionUser
     }
     // Enregistrer en session le numéro de la base.
     $_SESSION['BASE']                   = $BASE;
-    // C'est un utilisateur d'un établissement.
-    $_SESSION['USER_ETABLISSEMENT']     = TRUE;
     // Enregistrer en session les données associées au profil de l'utilisateur.
     $_SESSION['USER_PROFIL_SIGLE']      = $DB_ROW['user_profil_sigle'];
     $_SESSION['USER_PROFIL_TYPE']       = $DB_ROW['user_profil_type'];
@@ -425,8 +423,6 @@ class SessionUser
   {
     // Numéro de la base
     $_SESSION['BASE']                          = 0;
-    // Ce n'est pas un utilisateur d'un établissement.
-    $_SESSION['USER_ETABLISSEMENT']            = FALSE;
     // Données associées au profil de l'utilisateur.
     $_SESSION['USER_PROFIL_SIGLE']             = 'WBM';
     $_SESSION['USER_PROFIL_TYPE']              = 'webmestre';
@@ -457,8 +453,6 @@ class SessionUser
   {
     // Numéro de la base
     $_SESSION['BASE']                          = 0;
-    // Ce n'est pas un utilisateur d'un établissement.
-    $_SESSION['USER_ETABLISSEMENT']            = FALSE;
     // Données associées au profil de l'utilisateur.
     $_SESSION['USER_PROFIL_SIGLE']             = 'DVL';
     $_SESSION['USER_PROFIL_TYPE']              = 'developpeur';
@@ -489,8 +483,6 @@ class SessionUser
   {
     // Numéro de la base
     $_SESSION['BASE']                          = 0;
-    // Ce n'est pas un utilisateur d'un établissement.
-    $_SESSION['USER_ETABLISSEMENT']            = FALSE;
     // Données associées au profil de l'utilisateur.
     $_SESSION['USER_PROFIL_SIGLE']             = 'ENT';
     $_SESSION['USER_PROFIL_TYPE']              = 'partenaire';
@@ -589,27 +581,18 @@ class SessionUser
    */
   public static function memoriser_menu()
   {
-    $line_height = 30+1; // @see ./_css/style.css --> #menu li li a {line-height:30px}
-    $numero_menu = 0;
     require(CHEMIN_DOSSIER_MENUS.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu & $tab_sous_menu
-    $_SESSION['MENU'] = '<ul id="menu"><li><a class="boussole" href="#">'.Lang::_("MENU").'</a><ul>'.NL;
-    $nombre_menu = count($tab_menu);
+    $_SESSION['MENU'] = '<ul id="menu">'.NL;
     foreach($tab_menu as $menu_id => $menu_titre)
     {
-      $_SESSION['MENU'] .= '<li><a class="fleche" href="#">'.$menu_titre.'</a><ul>'.NL;
-      $nombre_sous_menu = count($tab_sous_menu[$menu_id]);
-      $premier_sous_menu = TRUE;
+      $_SESSION['MENU'] .= '<li><a class="menu" href="#">'.$menu_titre.'</a><ul>'.NL;
       foreach($tab_sous_menu[$menu_id] as $sous_menu_id => $tab)
       {
-        $nombre_cases_decalage = min( $numero_menu , $numero_menu-($nombre_menu-$nombre_sous_menu) );
-        $style = ($premier_sous_menu && $nombre_cases_decalage) ? ' style="margin-top:-'.($nombre_cases_decalage*$line_height).'px"' : '' ;
-        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'"'.$style.' href="./index.php?'.$tab['href'].'">'.$tab['texte'].'</a></li>'.NL;
-        $premier_sous_menu = FALSE;
+        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'" href="./index.php?'.$tab['href'].'">'.$tab['texte'].'</a></li>'.NL;
       }
       $_SESSION['MENU'] .= '</ul></li>'.NL;
-      $numero_menu++;
     }
-    $_SESSION['MENU'] .= '</ul></li></ul>'.NL;
+    $_SESSION['MENU'] .= '</ul>'.NL;
   }
 
 }

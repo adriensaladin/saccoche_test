@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2014-12-29 18:52+0100\n"
-"PO-Revision-Date: 2014-12-29 19:11+0100\n"
+"POT-Creation-Date: 2014-12-27 21:47+0100\n"
+"PO-Revision-Date: 2014-12-27 21:49+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: fr_FR\n"
@@ -16,13 +16,6 @@ msgstr ""
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-SearchPath-0: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\menus\n"
 "X-Poedit-SearchPath-1: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\pages\n"
-"X-Poedit-SearchPath-2: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\_inc\n"
-
-# Dans le sens du menu du logiciel, pas du menu de la cantine. :)
-# Laisser en majuscules.
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\_inc/class.SessionUser.php:587
-msgid "MENU"
-msgstr "MENU"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:38
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:38
@@ -212,7 +205,6 @@ msgstr "Périodes"
 msgid "Synthèses / Bilans"
 msgstr "Synthèses / Bilans"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:91
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:105
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
@@ -343,7 +335,6 @@ msgstr "Adresse e-mail"
 msgid "Daltonisme"
 msgstr "Daltonisme"
 
-# Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:66
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:60
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:60
@@ -592,7 +583,6 @@ msgstr "Responsables légaux"
 msgid "Adresses des parents"
 msgstr "Adresses des parents"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_eleve.php:29
 msgid "Parents &amp; élèves"
 msgstr "Parents &amp; élèves"
@@ -601,7 +591,6 @@ msgstr "Parents &amp; élèves"
 msgid "Gérer les parents"
 msgstr "Gérer les parents"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_classe_groupe.php:29
 msgid "Affecter les périodes aux classes &amp; groupes"
 msgstr "Affecter les périodes aux classes &amp; groupes"
@@ -610,17 +599,14 @@ msgstr "Affecter les périodes aux classes &amp; groupes"
 msgid "Gérer les périodes"
 msgstr "Gérer les périodes"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_classe.php:29
 msgid "Professeurs &amp; classes / Professeurs principaux"
 msgstr "Professeurs &amp; classes / Professeurs principaux"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_groupe.php:29
 msgid "Professeurs &amp; groupes"
 msgstr "Professeurs &amp; groupes"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_matiere.php:29
 msgid "Personnels &amp; matières / Personnels coordonnateurs"
 msgstr "Personnels &amp; matières / Personnels coordonnateurs"
@@ -701,51 +687,40 @@ msgstr "Astuce du moment"
 msgid "Protégeons l'environnement"
 msgstr "Protégeons l'environnement"
 
-# Conserver "%s".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:103
 #, php-format
 msgid "Bonjour %s."
 msgstr "Bonjour %s."
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:104
 msgid "Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!"
 msgstr "Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:105
 msgid "Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!"
 msgstr "Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:106
 msgid "Bonne navigation, et merci de votre fidélité&nbsp;!"
 msgstr "Bonne navigation, et merci de votre fidélité&nbsp;!"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:107
 msgid "Content de vous retrouver après cette pause de quelques jours&nbsp;!"
 msgstr "Content de vous retrouver après cette pause de quelques jours&nbsp;!"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:108
 msgid "Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!"
 msgstr "Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!"
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:109
 msgid "On ne s'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!"
 msgstr "On ne s'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!"
 
-# Conserver "%s".
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:115
 #, php-format
 msgid "Encore là %s&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!"
 msgstr "Encore là %s&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!"
 
-# Conserver "%s".
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:121
 #, php-format
 msgid "Toujours là %s&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!"
@@ -756,7 +731,6 @@ msgstr "Toujours là %s&nbsp;? Pas de souci, restez le temps que vous voulez&nbs
 msgid "Vous êtes dans l'environnement %s."
 msgstr "Vous êtes dans l'environnement %s."
 
-# Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:135
 msgid "Élève(s) associé(s) à votre compte&nbsp;:"
 msgstr "Élève(s) associé(s) à votre compte&nbsp;:"

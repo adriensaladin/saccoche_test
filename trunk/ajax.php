@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2009-2015
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -83,8 +83,8 @@ if($PAGE=='fermer_session')
 }
 
 // Traductions ; test !empty($_SESSION['ETABLISSEMENT_LANGUE']) laissé un an le temps des MAJ --> à retirer en 2016.
-$locale = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : ( (!empty($_SESSION['ETABLISSEMENT']['LANGUE'])) ? $_SESSION['ETABLISSEMENT']['LANGUE'] : LOCALE_DEFAULT ) ;
-Lang::setlocale( LC_MESSAGES, $locale );
+$LOCALE = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : ( (!empty($_SESSION['ETABLISSEMENT']['LANGUE'])) ? $_SESSION['ETABLISSEMENT']['LANGUE'] : LOCALE_DEFAULT ) ;
+Lang::setlocale( LC_MESSAGES, $LOCALE );
 Lang::bindtextdomain( LOCALE_DOMAINE, LOCALE_DIR );
 Lang::bind_textdomain_codeset( LOCALE_DOMAINE, LOCALE_CHARSET );
 Lang::textdomain( LOCALE_DOMAINE );

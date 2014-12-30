@@ -88,7 +88,7 @@ $(document).ready
           {
             if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#cadre_photo').html('<div>'+responseHTML+'</div><button id="masquer_photo" type="button" class="annuler">Fermer</button>');
+              $('#cadre_photo').html('<div>'+responseHTML+'</div><div style="margin-top:-20px"><button id="masquer_photo" type="button" class="annuler">Fermer</button></div>');
             }
             else
             {

@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2009-2015
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -53,7 +53,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $affichage = '';
   // Tableau des langues
   $tfoot = '';
-  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
   // Récupérer les données des élèves
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );

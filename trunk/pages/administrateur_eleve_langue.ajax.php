@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2009-2015
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -34,7 +34,7 @@ $langue = (isset($_POST['f_langue'])) ? Clean::entier($_POST['f_langue']) : 0 ;
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
 
 //
 // Modifier des associations

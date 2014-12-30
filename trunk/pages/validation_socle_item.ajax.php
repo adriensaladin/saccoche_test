@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2009-2015
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -59,7 +59,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   $affichage = '';
   // Tableau des langues
   $tfoot = '';
-  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
   $test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
   // Récupérer les données des élèves
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
@@ -267,7 +267,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
 {
   // Tableau des langues
-  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
   $test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
   // Récupération de la liste des résultats
   $tab_eval = array();  // [item_id][]['note'] => note

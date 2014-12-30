@@ -2,7 +2,7 @@
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
- * @copyright Thomas Crespin 2010-2014
+ * @copyright Thomas Crespin 2009-2015
  * 
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
@@ -43,16 +43,14 @@ $options_mois = '<option value="1">calquée sur l\'année civile</option>'
               . '<option value="12">bascule au 1er décembre</option>';
 $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'" selected' , $options_mois );
 
+// Charger $tab_langues_traduction
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');
 // Formulaire SELECT du choix de la langue
-$tab_contenu = FileSystem::lister_contenu_dossier(LOCALE_DIR);
 $options_langue = '';
-foreach($tab_contenu as $contenu)
+foreach($tab_langues_traduction as $langue_nom => $langue_code)
 {
-  if(is_dir(LOCALE_DIR.DS.$contenu))
-  {
-    $selected = ($contenu==$_SESSION['ETABLISSEMENT']['LANGUE']) ? ' selected' : '' ;
-    $options_langue .= '<option value="'.$contenu.'"'.$selected.'>'.$contenu.'</option>';
-  }
+  $selected = ($langue_code==$_SESSION['ETABLISSEMENT']['LANGUE']) ? ' selected' : '' ;
+  $options_langue .= '<option value="'.$langue_code.'"'.$selected.'>'.$langue_nom.' ['.$langue_code.']</option>';
 }
 
 // Récupérer le logo, si présent.

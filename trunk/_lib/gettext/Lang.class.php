@@ -162,6 +162,25 @@ class Lang
   // Méthodes publiques
   // //////////////////////////////////////////////////
 
+  /**
+   * Retourne la $locale à utiliser (méthode ajoutée).
+   */
+  public static function get_locale_used()
+  {
+    if(!empty($_SESSION['USER_LANGUE']))
+    {
+      return $_SESSION['USER_LANGUE'];
+    }
+    else if (!empty($_SESSION['ETABLISSEMENT']['LANGUE']))
+    {
+      return $_SESSION['ETABLISSEMENT']['LANGUE'];
+    }
+    else
+    {
+      return LOCALE_DEFAULT;
+    }
+  }
+
   // Custom implementation of the standard gettext related functions
 
   /**

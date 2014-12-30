@@ -38,7 +38,7 @@ $options_langue  = '<optgroup label="Langue par défaut dans l\'établissement">
 $options_langue .=   '<option value="defaut"'.$selected.'>'.$langue_nom.' ['.$_SESSION['ETABLISSEMENT']['LANGUE'].']</option>';
 $options_langue .= '</optgroup>';
 // On continue avec les langues sélectionnables
-$options_langue .= '<optgroup label="Langue sélectionnée">';
+$options_langue .= '<optgroup label="Autres langues sélectionnables">';
 foreach($tab_langues_traduction as $langue_nom => $langue_code)
 {
   $selected = ($langue_code==$_SESSION['USER_LANGUE']) ? ' selected' : '' ;

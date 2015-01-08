@@ -30,7 +30,9 @@
 $tab_langues_traduction = array(
   // 'Anglais - États-Unis' => 'en_US',
   // 'Anglais - Europe'     => 'en_150',
+  // 'Espagnol - Mexique'   => 'es_MX',
   'Français - France'    => 'fr_FR',
+  // 'Japonais - Japon'     => 'ja_JP',
   // 'Portugais - Brésil'   => 'pt_BR',
   // 'Vietnamien - Vietnam' => 'vi_VN',
 );

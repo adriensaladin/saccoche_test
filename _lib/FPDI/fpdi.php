@@ -1,6 +1,6 @@
 <?php
 //
-//  FPDI - Version 1.5.2
+//  FPDI - Version 1.5.1
 //
 //    Copyright 2004-2014 Setasign - Jan Slabon
 //
@@ -29,7 +29,7 @@ class FPDI extends FPDF_TPL
      *
      * @string
      */
-    const VERSION = '1.5.2';
+    const VERSION = '1.5.1';
 
     /**
      * Actual filename
@@ -138,15 +138,15 @@ class FPDI extends FPDF_TPL
 		return $this->PDFVersion;
 	}
     
-    /**
+	/**
      * Set the PDF version.
      *
      * @param string $version
      */
-    public function setPdfVersion($version = '1.3')
+	public function setPdfVersion($version = '1.3')
     {
-        $this->PDFVersion = sprintf('%.1F', $version);
-    }
+		$this->PDFVersion = $version;
+	}
 	
     /**
      * Import a page.
@@ -341,11 +341,7 @@ class FPDI extends FPDF_TPL
                 continue;
             }
             while(($n = key($this->_objStack[$filename])) !== null) {
-                try {
-                    $nObj = $this->currentParser->resolveObject($this->_objStack[$filename][$n][1]);
-                } catch (Exception $e) {
-                    $nObj = array(pdf_parser::TYPE_OBJECT, pdf_parser::TYPE_NULL);
-                }
+                $nObj = $this->currentParser->resolveObject($this->_objStack[$filename][$n][1]);
 
                 $this->_newobj($this->_objStack[$filename][$n][0]);
 

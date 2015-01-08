@@ -1,6 +1,6 @@
 <?php
 //
-//  FPDI - Version 1.5.2
+//  FPDI - Version 1.5.1
 //
 //    Copyright 2004-2014 Setasign - Jan Slabon
 //
@@ -705,13 +705,8 @@ class pdf_parser
                     $result[0] = self::TYPE_STREAM;
                 }
 
-            } else {
-                throw new Exception(
-                    sprintf("Unable to find object (%s, %s) at expected location.", $objSpec[1], $objSpec[2])
-                );
+                return $result;
             }
-
-            return $result;
         } else {
             return $objSpec;
         }

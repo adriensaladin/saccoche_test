@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
 "POT-Creation-Date: 2014-12-29 18:52+0100\n"
-"PO-Revision-Date: 2014-12-29 19:11+0100\n"
+"PO-Revision-Date: 2015-01-04 22:40+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: fr_FR\n"
@@ -707,45 +707,45 @@ msgstr "Protégeons l'environnement"
 msgid "Bonjour %s."
 msgstr "Bonjour %s."
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:104
 msgid "Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!"
 msgstr "Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!"
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:105
 msgid "Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!"
 msgstr "Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!"
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:106
 msgid "Bonne navigation, et merci de votre fidélité&nbsp;!"
 msgstr "Bonne navigation, et merci de votre fidélité&nbsp;!"
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:107
 msgid "Content de vous retrouver après cette pause de quelques jours&nbsp;!"
 msgstr "Content de vous retrouver après cette pause de quelques jours&nbsp;!"
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:108
 msgid "Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!"
 msgstr "Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!"
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:109
 msgid "On ne s'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!"
 msgstr "On ne s'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!"
 
 # Conserver "%s".
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:115
 #, php-format
 msgid "Encore là %s&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!"
 msgstr "Encore là %s&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!"
 
 # Conserver "%s".
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:121
 #, php-format
 msgid "Toujours là %s&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!"
@@ -756,7 +756,7 @@ msgstr "Toujours là %s&nbsp;? Pas de souci, restez le temps que vous voulez&nbs
 msgid "Vous êtes dans l'environnement %s."
 msgstr "Vous êtes dans l'environnement %s."
 
-# Conserver "&amp;".
+# Conserver "&nbsp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:135
 msgid "Élève(s) associé(s) à votre compte&nbsp;:"
 msgstr "Élève(s) associé(s) à votre compte&nbsp;:"

@@ -589,7 +589,7 @@ class SessionUser
    */
   public static function memoriser_menu()
   {
-    $line_height = 30+1; // @see ./_css/style.css --> #menu li li a {line-height:30px}
+    $line_height = 37+1; // @see ./_css/style.css --> #menu li li a {line-height:30px}
     $numero_menu = 0;
     require(CHEMIN_DOSSIER_MENUS.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu & $tab_sous_menu
     $_SESSION['MENU'] = '<ul id="menu"><li><a class="boussole" href="#">'.Lang::_("MENU").'</a><ul>'.NL;

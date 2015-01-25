@@ -82,7 +82,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -118,21 +118,22 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_valider").prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $("#bouton_valider").prop('disabled',false);
-      if(responseHTML=='ok')
+      if(responseJSON['statut']==true)
       {
+        $('#info_adresse').html(responseJSON['info_adresse']);
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Adresse enregistrée !");
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
       }
     }
 

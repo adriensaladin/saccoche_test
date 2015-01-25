@@ -363,31 +363,34 @@ class HtmlForm
   /**
    * Retourner un formulaire à insérer sur un bilan pour enchaîner sur la création d'un groupe de besoin ou d'une évaluation.
    * 
-   * @param string $format   'complet' | 'simplifié'
+   * @param string $cases   "eleves" | "eleves + eleves-items" | "eleves + eleves-items + items"
    * @return string
    */
-  public static function afficher_synthese_exploitation($format)
+  public static function afficher_synthese_exploitation($cases)
   {
-    return ($format=='complet') ?
+    $option_evaluer_items_commun = ($cases=='eleves + eleves-items + items') ? '<option value="evaluer_items_commun">Évaluer des élèves sur des items communs</option>' : '' ;
+    return ($cases=='eleves') ?
+    '<p>'.
+      '<label class="tab">Action <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher auparavant les cases adéquates." /> :</label>'.
+      '<button type="button" class="ajouter" name="evaluation_gestion">Préparer une évaluation.</button> '.
+      '<button type="button" class="ajouter" name="professeur_groupe_besoin">Constituer un groupe de besoin.</button> '.
+      '<label id="check_msg"></label>'.
+    '</p>'.NL
+    :
     '<p>'.
       '<label class="tab" for="f_action">Action :</label>'.
       '<select id="f_action" name="f_action">'.
         '<option value=""></option>'.
         '<option value="evaluer_items_perso">Évaluer des élèves sur des items personnalisés</option>'.
-        '<option value="evaluer_items_commun">Évaluer des élèves sur des items communs</option>'.
+        $option_evaluer_items_commun.
         '<option value="constituer_groupe_besoin">Constituer un groupe de besoin</option>'.
       '</select><br />'.
       '<span id="span_submit" class="hide">'.
         '<span class="tab"></span>Cocher les cases adéquates puis <button type="button" id="f_submit" class="parametre">accéder au formulaire</button>'.
         '<label id="check_msg"></label>'.
       '</span>'.
-    '</p>'.NL : 
-    '<p>'.
-      '<label class="tab">Action <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher auparavant les cases adéquates." /> :</label>'.
-      '<button type="button" class="ajouter" name="evaluation_gestion">Préparer une évaluation.</button> '.
-      '<button type="button" class="ajouter" name="professeur_groupe_besoin">Constituer un groupe de besoin.</button> '.
-      '<label id="check_msg"></label>'.
-    '</p>'.NL ;
+    '</p>'.NL
+    ;
   }
 
 }

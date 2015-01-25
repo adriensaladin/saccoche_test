@@ -91,7 +91,6 @@ if(empty($_POST['f_afficher']))
   </thead>
   <tbody>
     <?php
-    $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
     // Lister les élèves
     $tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
     $groupe_type = $tab_types[$groupe_type];
@@ -117,7 +116,7 @@ if(empty($_POST['f_afficher']))
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_sconet_elenoet']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
-        echo  '<td class="label">'.$tab_genre[$DB_ROW['user_genre']].'</td>';
+        echo  '<td class="label">'.Html::$tab_genre['enfant'][$DB_ROW['user_genre']].'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.$date_naissance.'</td>';

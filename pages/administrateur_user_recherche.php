@@ -74,6 +74,7 @@ Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
         <th>N° Sconet</th>
         <th>Référence</th>
         <th>Profil</th>
+        <th>Civ.</th>
         <th>Nom</th>
         <th>Prénom</th>
         <th>Login</th>
@@ -83,7 +84,7 @@ Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="12"></td></tr>
+      <tr><td class="nu" colspan="13"></td></tr>
   </tbody>
 </table>
 </div>
@@ -98,6 +99,7 @@ Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
     <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour un élève : ELEVE.ID_NATIONAL ou 'INE' de Siècle (ex-Sconet) ; 10 chiffres et une lettre.<br />Import tableur : référence pour rapprocher les comptes." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
   </p>
   <p>
+    <label class="tab" for="f_genre">Civilité / Genre :</label><select id="f_genre" name="f_genre"><option value="I"></option><option value="M">Monsieur / Masculin</option><option value="F">Madame / Féminin</option></select><br />
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
   </p>

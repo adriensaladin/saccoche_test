@@ -51,7 +51,7 @@ $courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_cou
 // Ajouter un nouveau personnel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_date || $sortie_date) )
+if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre]) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) && ($box_date || $sortie_date) )
 {
   // Vérifier le profil
   if( !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) || !in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil],array('professeur','directeur')) )
@@ -138,8 +138,9 @@ if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $n
       }
     }
   }
+  $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_date)
   {
@@ -152,7 +153,6 @@ if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $n
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':sortie_date'=>$sortie_date_mysql) );
   }
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
   echo  '<td class="label">'.html($id_ent).'</td>';
@@ -160,7 +160,7 @@ if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $n
   echo  '<td class="label">'.html($sconet_id).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
   echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
-  echo  '<td class="label">'.$tab_genre[$genre].'</td>';
+  echo  '<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>';
   echo  '<td class="label">'.html($nom).'</td>';
   echo  '<td class="label">'.html($prenom).'</td>';
   echo  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à relever le login généré !" /></td>';
@@ -178,7 +178,7 @@ if( ($action=='ajouter') && $profil && in_array($genre,array('I','M','F')) && $n
 // Modifier un personnel existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $profil && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_date || $sortie_date) )
+if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][$genre]) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) && ($box_date || $sortie_date) )
 {
   $tab_donnees = array();
   // Vérifier le profil
@@ -230,19 +230,28 @@ if( ($action=='modifier') && $id && $profil && in_array($genre,array('I','M','F'
   // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
   if($courriel)
   {
-    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id) )
+    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id);
+    if( $find_courriel )
     {
       exit('Erreur : adresse e-mail déjà utilisée !');
     }
-    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    if( $find_courriel === NULL )
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
+      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+      if(HEBERGEUR_INSTALLATION=='multi-structures')
       {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        $mail_domaine = tester_domaine_courriel_valide($courriel);
+        if($mail_domaine!==TRUE)
+        {
+          exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        }
       }
+      $tab_donnees[':email_origine'] = 'admin';
     }
+  }
+  else
+  {
+    $tab_donnees[':email_origine'] = '';
   }
   // Cas du mot de passe
   if(!$box_password)
@@ -274,7 +283,6 @@ if( ($action=='modifier') && $id && $profil && in_array($genre,array('I','M','F'
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   $checked = ($check) ? ' checked' : '' ;
   echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'"'.$checked.' /></td>';
   echo'<td class="label">'.html($id_ent).'</td>';
@@ -282,7 +290,7 @@ if( ($action=='modifier') && $id && $profil && in_array($genre,array('I','M','F'
   echo'<td class="label">'.html($sconet_id).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
   echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
-  echo'<td class="label">'.$tab_genre[$genre].'</td>';
+  echo'<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>';
   echo'<td class="label">'.html($nom).'</td>';
   echo'<td class="label">'.html($prenom).'</td>';
   echo'<td class="label">'.html($login).'</td>';

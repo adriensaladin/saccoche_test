@@ -1023,11 +1023,13 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   );
   $tab_repartition_nominatif   = array();
   $tab_repartition_quantitatif = array();
+  $tab_selection_nominatif     = array();
   // initialisation
   foreach($tab_item_id as $item_id=>$tab_infos_item)
   {
     $tab_repartition_nominatif[$item_id]   = $tab_init_nominatif;
     $tab_repartition_quantitatif[$item_id] = $tab_init_quantitatif;
+    $tab_selection_nominatif[$item_id]     = $tab_init_nominatif;
   }
   // remplissage
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_REQ*/ );
@@ -1038,12 +1040,15 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     {
       $note  = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $DB_ROW['saisie_note'] : 'X' ; // Regrouper ce qui n'est pas RR R V VV
       $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors RR R V VV
+      $checkbox_user = '<input type="checkbox" name="id_user[]" value="'.$DB_ROW['eleve_id'].'" />';
+      $checkbox_req  = '<input type="checkbox" name="id_req[]" value="'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" />';
       $tab_repartition_nominatif[$DB_ROW['item_id']][$note][] = $eleve;
       $tab_repartition_quantitatif[$DB_ROW['item_id']][$note]++;
+      $tab_selection_nominatif[$DB_ROW['item_id']][$note][] = $checkbox_user.$checkbox_req.' '.$eleve;
     }
   }
   //
-  // Sortie HTML
+  // Sorties HTML (affichage direct + page avec cases à cocher)
   //
   if($action=='voir_repart')
   {
@@ -1053,7 +1058,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     {
       $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note_image($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
     }
-    // assemblage / affichage du tableau avec la répartition quantitative
+    // PARTIE 1 : assemblage / affichage du tableau avec la répartition quantitative
     echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
     foreach($tab_item_id as $item_id=>$tab_infos_item)
     {
@@ -1070,7 +1075,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     echo'</tbody>';
     // Séparateur
     echo'<SEP>';
-    // assemblage / affichage du tableau avec la répartition nominative
+    // PARTIE 2 : assemblage / affichage du tableau avec la répartition nominative
     echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
     foreach($tab_item_id as $item_id=>$tab_infos_item)
     {
@@ -1085,6 +1090,36 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
       echo'</tr>';
     }
     echo'</tbody>';
+    // Séparateur
+    echo'<SEP>';
+    // PARTIE 3 : assemblage de la page HTML avec cases à cocher
+    $affichage_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
+    $affichage_HTML .= '<h1>Exploitation d\'une évaluation</h1>'.NL;
+    $affichage_HTML .= '<h2>'.$groupe_nom.' | '.$date_fr.' | '.$description.'</h2>'.NL;
+    $affichage_HTML .= '<hr />'.NL;
+    $affichage_HTML .= '<form id="form_synthese" action="#" method="post">'.NL;
+    $affichage_HTML .= '<table class="eval_exploitation">'.NL;
+    $affichage_HTML .= '<thead><tr>'.$affichage_repartition_head.'</tr></thead>'.NL;
+    $affichage_HTML .= '<tbody>';
+    foreach($tab_item_id as $item_id=>$tab_infos_item)
+    {
+      $affichage_HTML .= '<tr>';
+      $affichage_HTML .= '<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
+      foreach($tab_selection_nominatif[$item_id] as $code=>$tab_eleves)
+      {
+        $affichage_HTML .= '<td>'.implode('<br />',$tab_eleves).'</td>';
+      }
+      $affichage_HTML .= '</tr>';
+    }
+    $affichage_HTML .= '</tbody>'.NL;
+    $affichage_HTML .= '</table>'.NL;
+    $affichage_HTML .= HtmlForm::afficher_synthese_exploitation('eleves + eleves-items').'</form>'.NL;
+    // On enregistre la sortie HTML
+    $fichier_nom = 'evaluation_'.$devoir_id.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+    FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html' , $affichage_HTML );
+    // Affichage de l'adresse
+    echo'./releve_html.php?fichier='.$fichier_nom;
+    // Terminé !
     exit();
   }
   //

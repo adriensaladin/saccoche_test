@@ -679,6 +679,14 @@ table.scor_eval tbody.h td input.REQ  {background:#FFF url(../_img/note/commun/h
 table.scor_eval tbody.v td input.REQ  {background:#FFF url(../_img/note/commun/v/REQ.gif)  no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau d'exploitation des résultats d'une évaluation                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.eval_exploitation thead th {text-align:center}
+table.eval_exploitation tbody th {white-space:normal;font-weight:normal;text-align:left}
+table.eval_exploitation tbody td {vertical-align:middle;background:#EEF;font-size:90%}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

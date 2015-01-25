@@ -352,15 +352,18 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <h2>Voir les répartitions des élèves à une évaluation</h2>
   <p class="b" id="titre_voir_repart"></p>
   <hr />
+  <h3>Répartition quantitative des scores</h3>
+  <table id="table_voir_repart_quantitative" class="scor_eval">
+    <tbody><tr><td></td></tr></tbody>
+  </table>
+  <hr />
   <h3>Répartition nominative des scores</h3>
   <table id="table_voir_repart_nominative" class="scor_eval">
     <tbody><tr><td></td></tr></tbody>
   </table>
   <hr />
-  <h3>Répartition quantitative des scores</h3>
-  <table id="table_voir_repart_quantitative" class="scor_eval">
-    <tbody><tr><td></td></tr></tbody>
-  </table>
+  <h3>Exploitation</h3>
+  <p><a id="lien_repart_nominative" target="_blank" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
   <hr />
   <h3>Archivage PDF</h3>
   <form action="#" method="post" id="zone_archiver_repart"><fieldset>

@@ -854,8 +854,6 @@ if($version_base_structure_actuelle=='2014-12-22')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_langue VARCHAR(5) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER user_password ' );
     // ajout de paramètre
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_langue" , "fr_FR" )' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

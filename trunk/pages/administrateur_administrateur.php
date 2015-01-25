@@ -61,7 +61,6 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   </thead>
   <tbody>
     <?php
-    $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
     // Lister les administrateurs
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'administrateur' , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_id_gepi,user_genre,user_nom,user_prenom,user_login,user_email' /*liste_champs*/ , FALSE /*with_classe*/ );
     if(!empty($DB_TAB))
@@ -72,7 +71,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td>'.html($DB_ROW['user_id_ent']).'</td>';
         echo  '<td>'.html($DB_ROW['user_id_gepi']).'</td>';
-        echo  '<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>';
+        echo  '<td>'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>';
         echo  '<td>'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td>'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td>'.html($DB_ROW['user_login']).'</td>';

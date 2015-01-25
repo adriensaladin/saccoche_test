@@ -130,7 +130,6 @@ elseif($find_doublon) // (forcément)
     <?php
     if(!empty($DB_TAB))
     {
-      $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
       foreach($DB_TAB as $DB_ROW)
       {
         // Formater la date
@@ -145,7 +144,7 @@ elseif($find_doublon) // (forcément)
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$DB_ROW['user_profil_sigle']].'" /></td>';
-        echo  '<td class="label">'.$tab_genre[$DB_ROW['user_genre']].'</td>';
+        echo  '<td class="label">'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';

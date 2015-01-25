@@ -53,6 +53,7 @@ $tab_droits_par_page = array
   'fermer_session'                          => $tab_droits_profil_tous, // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
   'webservices'                             => $tab_droits_profil_tous,
   'calque_date_calendrier'                  => $tab_droits_profil_tous, // Aussi utilisé par un espace de gestion Sésamath extérieur
+  'public_test_variables'                   => $tab_droits_profil_tous, // Pour permettre un appel à cette page sans que cela déconnecte
   // Profils identifiés
   'conserver_session_active'                => $tab_droits_profil_identifie,
   'compte_accueil'                          => $tab_droits_profil_identifie,
@@ -65,7 +66,6 @@ $tab_droits_par_page = array
   'public_installation'                     => $tab_droits_profil_public,
   'public_logout_SSO'                       => $tab_droits_profil_public,
   'public_nouveau_mdp'                      => $tab_droits_profil_public,
-  'public_test_variables'                   => $tab_droits_profil_public,
   // Profil élève
   'evaluation_demande_eleve'                => $tab_droits_profil_eleve,
   'evaluation_demande_eleve_ajout'          => $tab_droits_profil_eleve,

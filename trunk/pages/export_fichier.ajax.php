@@ -44,7 +44,6 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -60,7 +59,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
     {
       $export_csv .= $DB_ROW['user_id']
         .$separateur.$DB_ROW['user_login']
-        .$separateur.$tab_genre[$DB_ROW['user_genre']]
+        .$separateur.Html::$tab_genre['enfant'][$DB_ROW['user_genre']]
         .$separateur.$DB_ROW['user_nom']
         .$separateur.$DB_ROW['user_prenom']
         .$separateur.$groupe_nom
@@ -68,7 +67,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
       $export_html .= '<tr>'
                        .'<td>'.$DB_ROW['user_id'].'</td>'
                        .'<td>'.html($DB_ROW['user_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
+                       .'<td>'.Html::$tab_genre['enfant'][$DB_ROW['user_genre']].'</td>'
                        .'<td>'.html($DB_ROW['user_nom']).'</td>'
                        .'<td>'.html($DB_ROW['user_prenom']).'</td>'
                        .'<td>'.html($groupe_nom).'</td>'
@@ -551,7 +550,6 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_eleves') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -608,7 +606,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
         .$separateur.$DB_ROW['user_sconet_elenoet']
         .$separateur.$DB_ROW['user_reference']
         .$separateur.$DB_ROW['user_login']
-        .$separateur.$tab_genre[$DB_ROW['user_genre']]
+        .$separateur.Html::$tab_genre['enfant'][$DB_ROW['user_genre']]
         .$separateur.$DB_ROW['user_nom']
         .$separateur.$DB_ROW['user_prenom']
         .$separateur.$date_fr
@@ -623,7 +621,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
                        .'<td>'.$DB_ROW['user_sconet_elenoet'].'</td>'
                        .'<td>'.html($DB_ROW['user_reference']).'</td>'
                        .'<td>'.html($DB_ROW['user_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
+                       .'<td>'.Html::$tab_genre['enfant'][$DB_ROW['user_genre']].'</td>'
                        .'<td>'.html($DB_ROW['user_nom']).'</td>'
                        .'<td>'.html($DB_ROW['user_prenom']).'</td>'
                        .'<td>'.$date_fr.'</td>'
@@ -651,7 +649,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_parents') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -714,7 +711,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
         .$separateur.$DB_ROW['parent_sconet_elenoet']
         .$separateur.$DB_ROW['parent_reference']
         .$separateur.$DB_ROW['parent_login']
-        .$separateur.$tab_genre[$DB_ROW['parent_genre']]
+        .$separateur.Html::$tab_genre['adulte'][$DB_ROW['parent_genre']]
         .$separateur.$DB_ROW['parent_nom']
         .$separateur.$DB_ROW['parent_prenom']
         .$separateur.$DB_ROW['enfant_id']
@@ -731,7 +728,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                        .'<td>'.$DB_ROW['parent_sconet_elenoet'].'</td>'
                        .'<td>'.html($DB_ROW['parent_reference']).'</td>'
                        .'<td>'.html($DB_ROW['parent_login']).'</td>'
-                       .'<td>'.$tab_genre[$DB_ROW['parent_genre']].'</td>'
+                       .'<td>'.Html::$tab_genre['adulte'][$DB_ROW['parent_genre']].'</td>'
                        .'<td>'.html($DB_ROW['parent_nom']).'</td>'
                        .'<td>'.html($DB_ROW['parent_prenom']).'</td>'
                        .'<td>'.$DB_ROW['enfant_id'].'</td>'
@@ -761,7 +758,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_professeurs') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
 {
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -809,7 +805,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
           .$separateur.$DB_ROW['user_sconet_elenoet']
           .$separateur.$DB_ROW['user_reference']
           .$separateur.$DB_ROW['user_login']
-          .$separateur.$tab_genre[$DB_ROW['user_genre']]
+          .$separateur.Html::$tab_genre['adulte'][$DB_ROW['user_genre']]
           .$separateur.$DB_ROW['user_nom']
           .$separateur.$DB_ROW['user_prenom']
           .$separateur.$DB_ROW['user_profil_sigle']
@@ -822,7 +818,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                          .'<td>'.$DB_ROW['user_sconet_elenoet'].'</td>'
                          .'<td>'.html($DB_ROW['user_reference']).'</td>'
                          .'<td>'.html($DB_ROW['user_login']).'</td>'
-                         .'<td>'.$tab_genre[$DB_ROW['user_genre']].'</td>'
+                         .'<td>'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>'
                          .'<td>'.html($DB_ROW['user_nom']).'</td>'
                          .'<td>'.html($DB_ROW['user_prenom']).'</td>'
                          .'<td>'.$DB_ROW['user_profil_sigle'].'</td>'

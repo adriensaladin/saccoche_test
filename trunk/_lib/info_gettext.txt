@@ -31,8 +31,8 @@ Fabriquer les fichiers de traduction
 ================================================================================
 
 Utiliser le logiciel libre "Poedit".
-- Sous ubuntu dans le gestionnaire de paquet rechercher et installer "poedit".
-- Sous windows ou Mac, ça se télécharge là: http://www.poedit.net/download.php
+- Sous Windows ou Mac, le télécharger sur le site officiel: http://www.poedit.net/download.php
+- Sous Ubuntu, dans le gestionnaire de paquets, rechercher et installer "poedit".
 
 En attendant un tutoriel perso actualisé, voir la vidéo à l'une des adresses suivantes entre 8:50 et 18:00.
 http://www.grafikart.fr/tutoriels/php/internationaliser-site-gettext-104
@@ -43,3 +43,12 @@ Le code d'une traduction ("locale") comporte
 - puis le caractère underscore ("_") puis
 - 2 lettres majuscules indiquant le pays, norme ISO 3166-2 : http://fr.wikipedia.org/wiki/ISO_3166-2
 Exemples : fr_FR ; en_US ; de_CH ; sr_CS ; ...
+
+Cependant, cela ne couvre pas toutes les langues.
+Par exemple pour le créole réunionnais
+http://fr.wikipedia.org/wiki/Cr%C3%A9ole_r%C3%A9unionnais
+Le code est à prendre dans la norme norme ISO 639-3.
+http://www-01.sil.org/iso639-3/codes.asp
+Ici c'est "rcf" donc "rcf_RE" si on ajoute le pays.
+http://www-01.sil.org/iso639-3/documentation.asp?id=rcf
+Mais il n'est pas connu de Poedit...

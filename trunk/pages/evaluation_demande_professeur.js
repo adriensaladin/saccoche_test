@@ -674,7 +674,7 @@ $(document).ready
             function()
             {
               this.checked = false;
-              $(this).parent().parent().removeAttr("class").children("td:last").prev().html('évaluation en préparation');
+              $(this).parent().parent().removeAttr("class").find('td').eq(9).html('évaluation en préparation');
             }
           );
           tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
@@ -687,7 +687,7 @@ $(document).ready
             function()
             {
               this.checked = false;
-              $(this).parent().parent().removeAttr("class").addClass("new").children("td:last").prev().html('demande non traitée');
+              $(this).parent().parent().removeAttr("class").addClass("new").find('td').eq(9).html('demande non traitée');
             }
           );
           tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas

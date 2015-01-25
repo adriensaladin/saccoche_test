@@ -46,7 +46,7 @@ $courriel     = (isset($_POST['f_courriel']))    ? Clean::courriel($_POST['f_cou
 // Ajouter un nouvel administrateur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) )
+if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom && $prenom && ($box_login || $login) && ($box_password || $password) )
 {
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
   if($id_ent)
@@ -112,14 +112,14 @@ if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $pren
       }
     }
   }
+  $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<tr id="id_'.$user_id.'" class="new">';
   echo  '<td>'.html($id_ent).'</td>';
   echo  '<td>'.html($id_gepi).'</td>';
-  echo  '<td>'.$tab_genre[$genre].'</td>';
+  echo  '<td>'.Html::$tab_genre['adulte'][$genre].'</td>';
   echo  '<td>'.html($nom).'</td>';
   echo  '<td>'.html($prenom).'</td>';
   echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le login !" /></td>';
@@ -137,7 +137,7 @@ if( ($action=='ajouter') && in_array($genre,array('I','M','F')) && $nom && $pren
 // Modifier un administrateur existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) )
+if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) && $nom && $prenom && ($box_login || $login) && ( $box_password || $password ) )
 {
   $tab_donnees = array();
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
@@ -168,19 +168,28 @@ if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom 
   // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
   if($courriel)
   {
-    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id) )
+    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id);
+    if( $find_courriel )
     {
       exit('Erreur : adresse e-mail déjà utilisée !');
     }
-    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    if( $find_courriel === NULL )
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
+      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+      if(HEBERGEUR_INSTALLATION=='multi-structures')
       {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        $mail_domaine = tester_domaine_courriel_valide($courriel);
+        if($mail_domaine!==TRUE)
+        {
+          exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        }
       }
+      $tab_donnees[':email_origine'] = 'admin';
     }
+  }
+  else
+  {
+    $tab_donnees[':email_origine'] = '';
   }
   // Cas du mot de passe
   if(!$box_password)
@@ -200,14 +209,19 @@ if( ($action=='modifier') && $id && in_array($genre,array('I','M','F')) && $nom 
   // Mettre à jour aussi éventuellement la session
   if($id==$_SESSION['USER_ID'])
   {
-    $_SESSION['USER_NOM']    = $nom ;
-    $_SESSION['USER_PRENOM'] = $prenom ;
+    $_SESSION['USER_GENRE']         = $genre ;
+    $_SESSION['USER_NOM']           = $nom ;
+    $_SESSION['USER_PRENOM']        = $prenom ;
+    $_SESSION['USER_EMAIL']         = $courriel ;
+    $_SESSION['USER_EMAIL_ORIGINE'] = isset($tab_donnees[':email_origine']) ? $tab_donnees[':email_origine'] : $_SESSION['USER_EMAIL_ORIGINE'] ; // si le mail n'a pas été changé alors il ne faut pas non plus modifier cette valeur
+    $_SESSION['USER_LOGIN']         = $login ;
+    $_SESSION['USER_ID_ENT']        = $id_ent ;
+    $_SESSION['USER_ID_GEPI']       = $id_gepi ;
   }
   // Afficher le retour
-  $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
   echo'<td>'.html($id_ent).'</td>';
   echo'<td>'.html($id_gepi).'</td>';
-  echo'<td>'.$tab_genre[$genre].'</td>';
+  echo'<td>'.Html::$tab_genre['adulte'][$genre].'</td>';
   echo'<td>'.html($nom).'</td>';
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';

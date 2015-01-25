@@ -112,7 +112,7 @@ public static function DB_recuperer_referentiels_themes()
  */
 public static function DB_rechercher_users($champ_nom,$champ_val)
 {
-  $DB_SQL = 'SELECT user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_email, user_login, user_sortie_date, user_id_ent, user_id_gepi, user_profil_nom_long_singulier ';
+  $DB_SQL = 'SELECT user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_email, user_login, user_sortie_date, user_id_ent, user_id_gepi, user_profil_nom_long_singulier ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_'.$champ_nom.' LIKE :champ_val ';
@@ -1000,7 +1000,7 @@ public static function DB_tester_periode_nom($periode_nom,$periode_id=FALSE)
  * @param string $champ_valeur   la valeur testée
  * @param int    $user_id        inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @param string $profil_type    si transmis alors recherche parmi les utilisateurs de même type de profil (sconet_id|sconet_elenoet|reference), sinon alors parmi tous les utilisateurs de l'établissement (login|id_ent|id_gepi)
- * @return null|bool             NULL si pas trouvé, FALSE si trouvé mais identique à $user_id transmis, TRUE si trouvé ($user_id non transmis ou différent)
+ * @return int
  */
 public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeur,$user_id=NULL,$profil_type=NULL)
 {
@@ -1009,18 +1009,14 @@ public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeu
   $DB_SQL.= ($profil_type) ? 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ' : '' ;
   $DB_SQL.= 'WHERE user_'.$champ_nom.'=:champ_valeur ';
   $DB_SQL.= ($profil_type) ? 'AND user_profil_type=:profil_type ' : '' ;
+  $DB_SQL.= ($user_id)     ? 'AND user_id!=:user_id ' : '' ;
   $DB_SQL.= 'LIMIT 1'; // utile
   $DB_VAR = array(
     ':champ_valeur' => $champ_valeur,
     ':profil_type'  => $profil_type,
     ':user_id'      => $user_id,
   );
-  $find_user_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  if($find_user_id!==NULL)
-  {
-    $find_user_id = ( $find_user_id && ($user_id!=$find_user_id) ) ? TRUE : FALSE ;
-  }
-  return $find_user_id;
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1233,7 +1229,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
  * On peut envisager une modification de "profil_sigle" entre personnels.
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':genre'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':email'=>$val , ':email_origine'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':genre'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':email'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 public static function DB_modifier_user($user_id,$DB_VAR)
@@ -1243,23 +1239,22 @@ public static function DB_modifier_user($user_id,$DB_VAR)
   {
     switch($key)
     {
-      case ':sconet_id'    : $tab_set[] = 'user_sconet_id='     .$key; break;
-      case ':sconet_num'   : $tab_set[] = 'user_sconet_elenoet='.$key; break;
-      case ':reference'    : $tab_set[] = 'user_reference='     .$key; break;
-      case ':profil_sigle' : $tab_set[] = 'user_profil_sigle='  .$key; break;
-      case ':genre'        : $tab_set[] = 'user_genre='         .$key; break;
-      case ':nom'          : $tab_set[] = 'user_nom='           .$key; break;
-      case ':prenom'       : $tab_set[] = 'user_prenom='        .$key; break;
-      case ':birth_date'   : $tab_set[] = 'user_naissance_date='.$key; break;
-      case ':email'        : $tab_set[] = 'user_email='         .$key; break;
-      case ':email_origine': $tab_set[] = 'user_email_origine=' .$key; break;
-      case ':login'        : $tab_set[] = 'user_login='         .$key; break;
-      case ':password'     : $tab_set[] = 'user_password='      .$key; break;
-      case ':daltonisme'   : $tab_set[] = 'user_daltonisme='    .$key; break;
-      case ':sortie_date'  : $tab_set[] = 'user_sortie_date='   .$key; break;
-      case ':classe'       : $tab_set[] = 'eleve_classe_id='    .$key; break;
-      case ':id_ent'       : $tab_set[] = 'user_id_ent='        .$key; break;
-      case ':id_gepi'      : $tab_set[] = 'user_id_gepi='       .$key; break;
+      case ':sconet_id'   : $tab_set[] = 'user_sconet_id='     .$key; break;
+      case ':sconet_num'  : $tab_set[] = 'user_sconet_elenoet='.$key; break;
+      case ':reference'   : $tab_set[] = 'user_reference='     .$key; break;
+      case ':profil_sigle': $tab_set[] = 'user_profil_sigle='  .$key; break;
+      case ':genre'       : $tab_set[] = 'user_genre='         .$key; break;
+      case ':nom'         : $tab_set[] = 'user_nom='           .$key; break;
+      case ':prenom'      : $tab_set[] = 'user_prenom='        .$key; break;
+      case ':birth_date'  : $tab_set[] = 'user_naissance_date='.$key; break;
+      case ':email'       : $tab_set[] = 'user_email='         .$key; break;
+      case ':login'       : $tab_set[] = 'user_login='         .$key; break;
+      case ':password'    : $tab_set[] = 'user_password='      .$key; break;
+      case ':daltonisme'  : $tab_set[] = 'user_daltonisme='    .$key; break;
+      case ':sortie_date' : $tab_set[] = 'user_sortie_date='   .$key; break;
+      case ':classe'      : $tab_set[] = 'eleve_classe_id='    .$key; break;
+      case ':id_ent'      : $tab_set[] = 'user_id_ent='        .$key; break;
+      case ':id_gepi'     : $tab_set[] = 'user_id_gepi='       .$key; break;
     }
   }
   $DB_SQL = 'UPDATE sacoche_user ';

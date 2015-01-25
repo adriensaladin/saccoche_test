@@ -105,12 +105,11 @@ Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var select_niveau="'.str_replace('"','\"',$select_niveau).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
 
-// Réception d'un formulaire depuis un tableau de synthèse bilan ou une évaluation
+// Réception d'un formulaire depuis un tableau de synthèse bilan
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
 $tab_users = Clean::map_entier($tab_users);
 $tab_users = array_filter($tab_users,'positif');
-$tab_users = array_unique($tab_users); // Car un envoi depuis une évaluation peut comporter plusieurs fois le même élève.
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
 $reception_todo = ($nb_users) ? 'true' : 'false' ;

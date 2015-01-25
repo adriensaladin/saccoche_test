@@ -54,7 +54,7 @@ $(document).ready
 // 
 // .css('display','...') utilisé en remplacement de hide() et show() car plus rapide quand il y a bcp d'éléments.
 // Ici, utiliser les fonctions de jQuery ralentissaient Firefox jusqu'à obtenir un boîte d'avertissement.
-// 
+// 'inline-block' permet d'avoir le checkbox sur la même ligne, mais 'block' semble plus adapté pour gagner en largeur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_action').change
@@ -66,19 +66,19 @@ $(document).ready
         var action = $('#f_action option:selected').val();
         if(action=='evaluer_items_perso')
         {
-          $('#form_synthese input[name=id_req\\[\\]]').css('display',display_mode); 
+          $('#form_synthese input[name=id_req\\[\\]]').css('display','block'); 
           $('#span_submit').show(0);
         }
         else if(action=='evaluer_items_commun')
         {
-          $('#form_synthese input[name=id_user\\[\\]]').css('display',display_mode);
-          $('#form_synthese input[name=id_item\\[\\]]').css('display',display_mode);
+          $('#form_synthese input[name=id_user\\[\\]]').css('display','block');
+          $('#form_synthese input[name=id_item\\[\\]]').css('display','block');
           $('#span_submit').show(0);
           
         }
         else if(action=='constituer_groupe_besoin')
         {
-          $('#form_synthese input[name=id_user\\[\\]]').css('display',display_mode);
+          $('#form_synthese input[name=id_user\\[\\]]').css('display','block');
           $('#span_submit').show(0);
         }
         else

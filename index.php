@@ -247,7 +247,7 @@ $body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;
 echo Layout::afficher_page_entete('prog-'.$body_class);
 if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
-  $lien_page_langue = ($_SESSION['USER_ETABLISSEMENT']) ? ' <a href="./index.php?page=compte_langue">['.Lang::get_locale_used().']</a>' : '' ;
+  $lien_page_langue = ($_SESSION['USER_ETABLISSEMENT']) ? ' <a href="./index.php?page=compte_langue">['.substr(Lang::get_locale_used(),0,2).']</a>' : '' ;
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
   echo'<div id="cadre_haut">'.NL;
   echo  '<a target="_blank" href="'.SERVEUR_PROJET.'" class="no_puce"><img id="logo" alt="SACoche" src="./_img/logo_petit_menu.png" width="154" height="39" /></a>'.NL;

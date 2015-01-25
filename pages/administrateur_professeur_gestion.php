@@ -88,6 +88,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   </thead>
   <tbody>
     <?php
+    $tab_genre = array( 'I'=>'' , 'M'=>'M.' , 'F'=>'Mme' );
     // Lister les personnels (professeurs, directeurs, etc.)
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('professeur','directeur') , $statut , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_reference,user_profil_sigle,user_profil_nom_long_singulier,user_genre,user_nom,user_prenom,user_login,user_email,user_sortie_date' /*liste_champs*/ , FALSE /*with_classe*/ );
     if(!empty($DB_TAB))
@@ -105,7 +106,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        echo  '<td class="label">'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>';
+        echo  '<td class="label">'.$tab_genre[$DB_ROW['user_genre']].'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_nom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';

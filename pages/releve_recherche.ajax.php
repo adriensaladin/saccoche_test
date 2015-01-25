@@ -384,7 +384,7 @@ $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" met
 $releve_html .= '<table class="bilan"><thead>'.NL.'<tr>'.$checkbox.'<th>Élève</th><th>État</th></tr>'.NL.'</thead><tbody>'.NL;
 $releve_html .= ($nb_resultats) ? implode(NL,$tab_tr).NL : '<tr><td colspan="2">aucun résultat</td></tr>'.NL ;
 $releve_html .= '</tbody></table>'.NL;
-$releve_html .= ($affichage_checkbox && $nb_resultats) ? HtmlForm::afficher_synthese_exploitation('eleves') : '' ;
+$releve_html .= ($affichage_checkbox && $nb_resultats) ? HtmlForm::afficher_synthese_exploitation('simplifié') : '' ;
 $releve_html .= ($affichage_checkbox) ? '</form>' : '' ;
 exit($releve_html);
 

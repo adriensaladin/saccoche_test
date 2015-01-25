@@ -120,7 +120,7 @@ $(document).ready
               else
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
-                $('#table_action tbody tr td[colspan=13]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#table_action tbody tr td[colspan=12]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
                 $('#table_action tbody').html(responseHTML);
                 tableau_maj();
                 $('#resultat').show(0);
@@ -158,10 +158,8 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , genre , nom , prenom , login , courriel , sortie_date_fr )
+    function afficher_form_gestion( id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , nom , prenom , login , courriel , sortie_date_fr )
     {
-      var tab_genre = { '' : 'I' , 'M.' : 'M' , 'Masculin' : 'M' , 'Mme' : 'F' , 'Féminin' : 'F' };
-      var opt_genre = ( typeof(tab_genre[genre]) !== 'undefined' ) ? tab_genre[genre] : 'I' ;
       $('#f_id').val(id);
       $('#f_id_ent').val(id_ent);
       $('#f_id_gepi').val(id_gepi);
@@ -169,7 +167,6 @@ $(document).ready
       $('#f_sconet_num').val(sconet_num);
       $('#f_reference').val(reference);
       $('#f_profil').val(profil);
-      $('#f_genre option[value='+opt_genre+']').prop('selected',true);
       $('#f_nom').val(nom);
       $('#f_prenom').val(prenom);
       $('#f_login').val(login);
@@ -207,12 +204,11 @@ $(document).ready
       var sconet_num     = objet_tds.eq( 3).html();
       var reference      = objet_tds.eq( 4).html();
       var profil         = objet_tds.eq( 5).html();
-      var genre          = objet_tds.eq( 6).html();
-      var nom            = objet_tds.eq( 7).html();
-      var prenom         = objet_tds.eq( 8).html();
-      var login          = objet_tds.eq( 9).html();
-      var courriel       = objet_tds.eq(10).html();
-      var sortie_date_fr = objet_tds.eq(11).html();
+      var nom            = objet_tds.eq( 6).html();
+      var prenom         = objet_tds.eq( 7).html();
+      var login          = objet_tds.eq( 8).html();
+      var courriel       = objet_tds.eq( 9).html();
+      var sortie_date_fr = objet_tds.eq(10).html();
       // Retirer une éventuelle balise image présente dans profil
       position_image = profil.indexOf('<');
       if (position_image!=-1)
@@ -220,7 +216,7 @@ $(document).ready
         profil = profil.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , sortie_date_fr );
+      afficher_form_gestion( id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , sortie_date_fr );
     };
 
     /**
@@ -276,7 +272,6 @@ $(document).ready
           f_sconet_id   : { required:false , digits:true , max:16777215 },
           f_sconet_num  : { required:false , digits:true , max:65535 },
           f_reference   : { required:false , maxlength:11 },
-          f_genre       : { required:false },
           f_nom         : { required:true , maxlength:25 },
           f_prenom      : { required:true , maxlength:25 },
           f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
@@ -290,7 +285,6 @@ $(document).ready
           f_sconet_id   : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
           f_sconet_num  : { digits:"N° Sconet : nombre entier inférieur à 2^16" },
           f_reference   : { maxlength:"référence de 11 caractères maximum" },
-          f_genre       : { },
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
           f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },

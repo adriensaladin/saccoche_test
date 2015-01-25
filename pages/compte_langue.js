@@ -120,7 +120,6 @@ $(document).ready
       if(responseHTML=='ok')
       {
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Langue enregistrée !");
-        document.location.href = './index.php?page=compte_langue';
       }
       else
       {

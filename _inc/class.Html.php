@@ -47,12 +47,6 @@ class Html
   private static $tab_legende_notes_speciales_texte  = array('ABS'=>'Absent','DISP'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
   public  static $tab_legende_notes_speciales_nombre = array('ABS'=>0       ,'DISP'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
 
-  // remarque : des tableaux réciproques sont aussi utilisés en javascript
-  public static $tab_genre = array(
-    'enfant' => array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' ) ,
-    'adulte' => array( 'I'=>'' , 'M'=>'M.'       , 'F'=>'Mme'     ) ,
-  );
-
   // //////////////////////////////////////////////////
   // Méthodes publiques
   // //////////////////////////////////////////////////
@@ -63,7 +57,7 @@ class Html
    * @param string $date   AAAA-MM-JJ ou JJ/MM/AAAA
    * @return string        JJ nom_du mois AAAA
    */
-  public static function date_texte($date)
+  public static function date($date)
   {
     if(mb_strpos($date,'-')) { list($annee,$mois,$jour) = explode('-',$date); }
     else                     { list($jour,$mois,$annee) = explode('/',$date); }
@@ -96,7 +90,7 @@ class Html
   {
     if(isset(Html::$tab_legende_notes_speciales_nombre[$note])) Html::$tab_legende_notes_speciales_nombre[$note]++;
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
-    $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date_texte($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $title = ( ($date!='') || ($info!='') ) ? ' title="'.html(html($info)).'<br />'.Html::date($date).'"' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     return (in_array($note,array('-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="'.Html::note_src($note).'" />';
   }
 

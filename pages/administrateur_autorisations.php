@@ -79,7 +79,7 @@ $tab_droits  = array
   "Adresse e-mail" => array
   (
     'tous',
-    array( 'droit_modifier_email' , "donner la priorité à l'utilisateur pour la modifier" , 'tous' ),
+    array( 'droit_modifier_email' , "modifier son adresse e-mail" , 'tous' ),
   ),
   "Gestion des référentiels de l'établissement" => array
   (

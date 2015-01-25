@@ -47,15 +47,10 @@ $options_mois = str_replace( '"'.$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'].'"' , 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');
 // Formulaire SELECT du choix de la langue
 $options_langue = '';
-foreach($tab_langues_traduction as $tab_langue)
+foreach($tab_langues_traduction as $langue_nom => $langue_code)
 {
-  if($tab_langue['statut']!=0)
-  {
-    $langue_pays_code = $tab_langue['langue']['code'].'_'.$tab_langue['pays']['code'];
-    $langue_pays_nom  = $tab_langue['langue']['nom'].' - '.$tab_langue['pays']['nom'];
-    $selected = ($langue_pays_code==$_SESSION['ETABLISSEMENT']['LANGUE']) ? ' selected' : '' ;
-    $options_langue .= '<option value="'.$langue_pays_code.'"'.$selected.'>'.$langue_pays_nom.' ['.$langue_pays_code.']</option>';
-  }
+  $selected = ($langue_code==$_SESSION['ETABLISSEMENT']['LANGUE']) ? ' selected' : '' ;
+  $options_langue .= '<option value="'.$langue_code.'"'.$selected.'>'.$langue_nom.' ['.$langue_code.']</option>';
 }
 
 // Récupérer le logo, si présent.

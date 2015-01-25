@@ -35,12 +35,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $tab_menu = array
 (
-  'information'         => Lang::_("Informations"),
-  'param_etablissement' => Lang::_("Paramétrages établissement"),
-  'param_utilisateurs'  => Lang::_("Paramétrages utilisateurs"),
-  'param_personnels'    => Lang::_("Paramétrages personnels"),
-  'admin_generale'      => Lang::_("Administration générale"),
-  'gestion_courante'    => Lang::_("Gestion courante"),
+  'information'       => Lang::_("Informations"),
+  'etablissement'     => Lang::_("Paramétrages établissement"),
+  'param_utilisateur' => Lang::_("Paramétrages utilisateurs"),
+  'admin_generale'    => Lang::_("Administration générale"),
+  'gestion_courante'  => Lang::_("Gestion courante"),
 );
 
 $tab_sous_menu = array
@@ -53,7 +52,7 @@ $tab_sous_menu = array
     'export_fichier'                   => array( 'texte' => Lang::_("Export de données")          , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     'administrateur_log_actions'       => array( 'texte' => Lang::_("Log des actions sensibles")  , 'class' => 'log_actions'      , 'href' => 'page=administrateur_log_actions'       ),
   ),
-  'param_etablissement' => array
+  'etablissement' => array
   (
     'administrateur_etabl_identite'     => array( 'texte' => Lang::_("Identité de l'établissement")            , 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
     'administrateur_etabl_connexion'    => array( 'texte' => Lang::_("Mode d'identification / Connecteur ENT") , 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
@@ -64,18 +63,15 @@ $tab_sous_menu = array
     'administrateur_codes_couleurs'     => array( 'texte' => Lang::_("Notation : codes, couleurs, légendes")   , 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_codes_couleurs'     ),
     'administrateur_algorithme_gestion' => array( 'texte' => Lang::_("Algorithme de calcul")                   , 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' ),
   ),
-  'param_utilisateurs' => array
+  'param_utilisateur' => array
   (
     'administrateur_etabl_profils'          => array( 'texte' => Lang::_("Choix des profils utilisateurs")       , 'class' => 'directeur'           , 'href' => 'page=administrateur_etabl_profils'          ),
     'administrateur_autorisations'          => array( 'texte' => Lang::_("Réglage des autorisations")            , 'class' => 'etabl_autorisations' , 'href' => 'page=administrateur_autorisations'          ),
     'administrateur_etabl_login'            => array( 'texte' => Lang::_("Format des identifiants de connexion") , 'class' => 'etabl_login'         , 'href' => 'page=administrateur_etabl_login'            ),
     'administrateur_etabl_duree_inactivite' => array( 'texte' => Lang::_("Délai avant déconnexion")              , 'class' => 'etabl_duree'         , 'href' => 'page=administrateur_etabl_duree_inactivite' ),
-  ),
-  'param_personnels' => array
-  (
-    'compte_password' => array( 'texte' => Lang::_("Mot de passe")                       , 'class' => 'compte_password' , 'href' => 'page=compte_password' ),
-    'compte_email'    => array( 'texte' => Lang::_("Adresse e-mail &amp; Notifications") , 'class' => 'mail'            , 'href' => 'page=compte_email'    ),
-    'compte_langue'   => array( 'texte' => Lang::_("Langue")                             , 'class' => 'compte_langue'   , 'href' => 'page=compte_langue'   ),
+    'compte_password'                       => array( 'texte' => Lang::_("Changer mon mot de passe")             , 'class' => 'compte_password'     , 'href' => 'page=compte_password'                       ),
+    'compte_email'                          => array( 'texte' => Lang::_("Changer mon adresse e-mail")           , 'class' => 'mail'                , 'href' => 'page=compte_email'                          ),
+    'compte_langue'                         => array( 'texte' => Lang::_("Choisir ma langue")                    , 'class' => 'compte_langue'       , 'href' => 'page=compte_langue'                         ),
   ),
   'admin_generale' => array
   (

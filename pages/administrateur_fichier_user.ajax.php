@@ -112,6 +112,9 @@ function afficher_etapes($import_origine,$import_profil)
   return $puces;
 }
 
+$tab_genre_enfant = array( 'I'=>'' , 'M'=>'Masc.' , 'F'=>'Fém.' );
+$tab_genre_adulte = array( 'I'=>'' , 'M'=>'M.'    , 'F'=>'Mme'  );
+
 function aff_champ($profil,$type,$val)
 {
   if($type!='genre')
@@ -120,11 +123,13 @@ function aff_champ($profil,$type,$val)
   }
   else if($profil=='eleve')
   {
-    return Html::$tab_genre['enfant'][$val];
+    global $tab_genre_enfant;
+    return $tab_genre_enfant[$val];
   }
   else
   {
-    return Html::$tab_genre['adulte'][$val];
+    global $tab_genre_adulte;
+    return $tab_genre_adulte[$val];
   }
 }
 
@@ -2102,7 +2107,6 @@ if( $step==52 )
           $tab_memo_analyse['ajouter'][$i_fichier]['prenom'],
           $birth_date,
           '', /* user_email */
-          '', /* user_email_origine */
           $login,
           crypter_mdp($password),
           $tab_memo_analyse['ajouter'][$i_fichier]['classe']

@@ -631,7 +631,6 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_prenom
  * @param string|NULL $user_naissance_date
  * @param string      $user_email
- * @param string      $user_email_origine
  * @param string      $user_login
  * @param string      $password_crypte
  * @param int         $eleve_classe_id facultatif, 0 si pas de classe ou profil non élève
@@ -639,10 +638,10 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_id_gepi    facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_genre,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_email_origine,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_genre,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
-  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
+  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
   $DB_VAR = array(
     ':user_sconet_id'      => $user_sconet_id,
     ':user_sconet_elenoet' => $user_sconet_elenoet,
@@ -653,7 +652,6 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
     ':user_prenom'         => $user_prenom,
     ':user_naissance_date' => $user_naissance_date,
     ':user_email'          => $user_email,
-    ':user_email_origine'  => $user_email_origine,
     ':user_login'          => $user_login,
     ':password_crypte'     => $password_crypte,
     ':eleve_classe_id'     => $eleve_classe_id,
@@ -722,7 +720,7 @@ public static function DB_modifier_parametres($tab_parametres)
 }
 
 /**
- * Modifier un de ses paramètres utilisateurs (adresse e-mail, langue, daltonisme, configuration page d'accueil).
+ * Modifier un de ses paramètres utilisateurs (daltonisme, adresse e-mail, configuration page d'accueil, ...).
  * La modification du mdp est gérée par une autre fonction
  *
  * @param int    $user_id
@@ -732,10 +730,8 @@ public static function DB_modifier_parametres($tab_parametres)
  */
 public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val)
 {
-  $user_email_origine = ($champ_val) ? 'user' : '' ;
-  $set_email_origine  = ($champ_nom=='user_email') ? ', user_email_origine="'.$user_email_origine.'" ' : '' ;
   $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET '.$champ_nom.'=:champ_val '.$set_email_origine;
+  $DB_SQL.= 'SET '.$champ_nom.'=:champ_val ';
   $DB_SQL.= 'WHERE user_id=:user_id ';
   $DB_VAR = array(
     ':user_id'   => $user_id,

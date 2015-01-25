@@ -54,10 +54,10 @@ $tab_sous_menu = array
   ),
   'parametrage' => array
   (
-    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                       , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
-    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail &amp; Notifications") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
-    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                         , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
-    'compte_langue'     => array( 'texte' => Lang::_("Langue")                             , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
+    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")   , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
+    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
+    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")     , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
+    'compte_langue'     => array( 'texte' => Lang::_("Langue")         , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
   ),
   'evaluation' => array
   (
@@ -101,6 +101,12 @@ if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
 if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
   $tab_sous_menu['parametrage']['compte_password']['class'] .= ' disabled';
+}
+
+// Changer son adresse e-mail (pas de restriction pour le profil [administrateur].
+if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']))
+{
+  $tab_sous_menu['parametrage']['compte_email']['class'] .= ' disabled';
 }
 
 // Grille d'items d'un référentiel.

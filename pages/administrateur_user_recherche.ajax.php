@@ -37,7 +37,6 @@ $sconet_id       = (isset($_POST['f_sconet_id']))     ? Clean::entier($_POST['f_
 $sconet_num      = (isset($_POST['f_sconet_num']))    ? Clean::entier($_POST['f_sconet_num'])    : 0;
 $reference       = (isset($_POST['f_reference']))     ? Clean::ref($_POST['f_reference'])        : '';
 $profil          = (isset($_POST['f_profil']))        ? Clean::texte($_POST['f_profil'])         : '';
-$genre           = (isset($_POST['f_genre']))         ? Clean::texte($_POST['f_genre'])          : '';
 $nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom'])              : '';
 $prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
 $login           = (isset($_POST['f_login']))         ? Clean::login($_POST['f_login'])          : '';
@@ -67,7 +66,6 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
     $_SESSION['tmp'] = array();
     foreach($DB_TAB as $DB_ROW)
     {
-      $genre_key = ($DB_ROW['user_profil_sigle']=='ELV') ? 'enfant' : 'adulte' ;
       $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
       // Formater la date
       $date_mysql  = $DB_ROW['user_sortie_date'];
@@ -80,7 +78,6 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       echo  '<td>'.html($DB_ROW['user_sconet_elenoet']).'</td>';
       echo  '<td>'.html($DB_ROW['user_reference']).'</td>';
       echo  '<td>'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-      echo  '<td>'.Html::$tab_genre[$genre_key][$DB_ROW['user_genre']].'</td>';
       echo  '<td>'.html($DB_ROW['user_nom']).'</td>';
       echo  '<td>'.html($DB_ROW['user_prenom']).'</td>';
       echo  '<td>'.html($DB_ROW['user_login']).'</td>';
@@ -99,9 +96,8 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
 // Modifier un utilisateur existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][$genre]) && $nom && $prenom && $login && ($box_sortie_date || $sortie_date) )
+if( ($action=='modifier') && $id && $profil && $nom && $prenom && $login && ($box_sortie_date || $sortie_date) )
 {
-  $tab_donnees = array();
   // Vérifier le profil
   if(!isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]))
   {
@@ -155,28 +151,19 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
   if($courriel)
   {
-    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id);
-    if( $find_courriel )
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id) )
     {
       exit('Erreur : adresse e-mail déjà utilisée !');
     }
-    if( $find_courriel === NULL )
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-      if(HEBERGEUR_INSTALLATION=='multi-structures')
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
       {
-        $mail_domaine = tester_domaine_courriel_valide($courriel);
-        if($mail_domaine!==TRUE)
-        {
-          exit('Erreur avec le domaine "'.$mail_domaine.'" !');
-        }
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }
-      $tab_donnees[':email_origine'] = 'admin';
     }
-  }
-  else
-  {
-    $tab_donnees[':email_origine'] = '';
   }
   // Cas de la date de sortie
   if($box_sortie_date)
@@ -189,41 +176,15 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
     $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
-  $tab_donnees += array(
-    ':sconet_id'   => $sconet_id,
-    ':sconet_num'  => $sconet_num,
-    ':reference'   => $reference,
-    ':genre'       => $genre,
-    ':nom'         => $nom,
-    ':prenom'      => $prenom,
-    ':email'       => $courriel,
-    ':login'       => $login,
-    ':id_ent'      => $id_ent,
-    ':id_gepi'     => $id_gepi,
-    ':sortie_date' => $sortie_date_mysql,
-  );
+  $tab_donnees = array(':sconet_id'=>$sconet_id,':sconet_num'=>$sconet_num,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':email'=>$courriel,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
-  // Mettre à jour aussi éventuellement la session
-  if($id==$_SESSION['USER_ID'])
-  {
-    $_SESSION['USER_GENRE']         = $genre ;
-    $_SESSION['USER_NOM']           = $nom ;
-    $_SESSION['USER_PRENOM']        = $prenom ;
-    $_SESSION['USER_EMAIL']         = $courriel ;
-    $_SESSION['USER_EMAIL_ORIGINE'] = isset($tab_donnees[':email_origine']) ? $tab_donnees[':email_origine'] : $_SESSION['USER_EMAIL_ORIGINE'] ; // si le mail n'a pas été changé alors il ne faut pas non plus modifier cette valeur
-    $_SESSION['USER_LOGIN']         = $login ;
-    $_SESSION['USER_ID_ENT']        = $id_ent ;
-    $_SESSION['USER_ID_GEPI']       = $id_gepi ;
-  }
   // Afficher le retour
-  $genre_key = ($profil=='ELV') ? 'enfant' : 'adulte' ;
   echo'<td>'.html($id_ent).'</td>';
   echo'<td>'.html($id_gepi).'</td>';
   echo'<td>'.html($sconet_id).'</td>';
   echo'<td>'.html($sconet_num).'</td>';
   echo'<td>'.html($reference).'</td>';
   echo'<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
-  echo'<td>'.Html::$tab_genre[$genre_key][$genre].'</td>';
   echo'<td>'.html($nom).'</td>';
   echo'<td>'.html($prenom).'</td>';
   echo'<td>'.html($login).'</td>';

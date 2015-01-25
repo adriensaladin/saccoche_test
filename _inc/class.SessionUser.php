@@ -350,7 +350,6 @@ class SessionUser
     $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];
     $_SESSION['USER_NAISSANCE_DATE']    = $DB_ROW['user_naissance_date'];
     $_SESSION['USER_EMAIL']             = $DB_ROW['user_email'];
-    $_SESSION['USER_EMAIL_ORIGINE']     = $DB_ROW['user_email_origine'];
     $_SESSION['USER_LOGIN']             = $DB_ROW['user_login'];
     $_SESSION['USER_LANGUE']            = $DB_ROW['user_langue'];
     $_SESSION['USER_DALTONISME']        = $DB_ROW['user_daltonisme'];

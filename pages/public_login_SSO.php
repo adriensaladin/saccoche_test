@@ -129,28 +129,24 @@ if($connexion_mode=='cas')
    * (genre xml parse error, ou à défaut invalid Response).
    * 
    * @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
-   * @param string $contenu_erreur_phpcas   La page d'erreur toute moche renvoyée par phpCAS
-   * @param string $msg_supplementaire      Du contenu supplémentaire ajouté juste avant le </body> (mettre les <p>)
+   * @param string $msg_sup (facultatif) Du contenu supplémentaire ajouté juste avant le </body> (mettre les <p>)
    */
-  function exit_CAS_Exception( $contenu_erreur_phpcas , $msg_supplementaire )
+  function exit_CAS_Exception($msg_sup='')
   {
-    if ($contenu_erreur_phpcas)
+    // on ne veut pas afficher ça mais notre jolie page
+    $content = ob_get_clean();
+    if ($content)
     {
-      // on ne veut pas afficher ça mais notre jolie page
       // cf CAS/Client.php:printHTMLHeader()
       $pattern = '/<html><head><title>([^<]*)<\/title><\/head><body><h1>[^<]*<\/h1>(.*)<\/body><\/html>/';
       $matches = array();
-      preg_match($pattern, $contenu_erreur_phpcas, $matches);
+      preg_match($pattern, $content, $matches);
       if (!empty($matches[1]))
       {
-        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_supplementaire /*contenu*/ );
+        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_sup /*contenu*/ );
       }
     }
-    // peut-on vraiment passer par là ?
-    else
-    {
-      exit_error( 'Problème authentification CAS' /*titre*/ , $msg_supplementaire /*contenu*/ );
-    }
+    // si on arrive là, c'est qu'on n'a pas trouvé le contenu, on laisse l'existant (a priori la page moche de phpCAS)
     exit();
   }
   /**
@@ -193,7 +189,7 @@ if($connexion_mode=='cas')
           {
             if (is_scalar($arg))
             {
-              $args_aff[] = html(str_replace(CHEMIN_DOSSIER_SACOCHE,'',$arg));
+              $args_aff[] = str_replace(CHEMIN_DOSSIER_SACOCHE,'',$arg);
             }
             elseif (is_array($arg))
             {
@@ -209,7 +205,7 @@ if($connexion_mode=='cas')
             }
           }
           // reste que des strings, on ajoute à la trace globale
-          $str_traces .= '( ' .implode(' , ', $args_aff) .' )';
+          $str_traces .= '(' .implode(', ', $args_aff) .')';
           unset($trace['args']);
         }
         else
@@ -322,7 +318,7 @@ if($connexion_mode=='cas')
   catch(CAS_Exception $e)
   {
     // Pour mettre fin au ob_start() ; cas 2/2 où il y a eu une erreur.
-    $contenu_erreur_phpcas = ob_get_clean();
+    ob_end_clean();
     // @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
     $msg_log = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
     $msg_log .= $e->getMessage();
@@ -333,16 +329,16 @@ if($connexion_mode=='cas')
       $msg_log .= ' avec la trace :'."\n".$puces_traces;
     }
     trigger_error($msg_log);
-    $msg_supplementaire = '<p>Cette erreur peut être due à des données invalides renvoyées par le serveur CAS.</p>'.$puces_traces;
+    $msg_screen = '<p>Cette erreur peut être due à des données invalides renvoyées par le serveur CAS.</p>'.$puces_traces;
     if (is_a($e, 'CAS_AuthenticationException'))
     {
-      exit_CAS_Exception( $contenu_erreur_phpcas , $msg_supplementaire );
+      exit_CAS_Exception($msg_screen);
     }
     else
     {
       // peut-on passer là ?
       trigger_error('phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté mais ce n\'est pas une CAS_AuthenticationException');
-      exit_error( 'Problème authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_supplementaire /*contenu*/ );
+      exit_error( 'Erreur d\'authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_screen /*contenu*/ );
     }
   }
   // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.

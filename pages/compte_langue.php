@@ -31,36 +31,25 @@ $TITRE = Lang::_("Choisir sa langue");
 // Charger $tab_langues_traduction
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');
 // Formulaire SELECT du choix de la langue
-$defaut_texte = '' ;
-// Langues sélectionnables
-$options_langue_selection = '<optgroup label="Autres langues sélectionnables">';
-foreach($tab_langues_traduction as $tab_langue)
-{
-  if($tab_langue['statut']!=0)
-  {
-    $langue_pays_code = $tab_langue['langue']['code'].'_'.$tab_langue['pays']['code'];
-    $langue_pays_nom  = $tab_langue['langue']['nom'].' - '.$tab_langue['pays']['nom'];
-    $selected = ($langue_pays_code==$_SESSION['USER_LANGUE']) ? ' selected' : '' ;
-    $options_langue_selection .= '<option value="'.$langue_pays_code.'"'.$selected.'>'.$langue_pays_nom.' ['.$langue_pays_code.']</option>';
-    if($langue_pays_code==$_SESSION['ETABLISSEMENT']['LANGUE'])
-    {
-      $defaut_texte = $langue_pays_nom ;
-    }
-  }
-}
-$options_langue_selection .= '</optgroup>';
-// Première option qui correspond au choix de l'établissement
+// On commence par une première option qui correspond au choix de l'établissement
 $selected = (empty($_SESSION['USER_LANGUE'])) ? ' selected' : '' ;
-$options_langue_defaut  = '<optgroup label="Langue par défaut dans l\'établissement">';
-$options_langue_defaut .=   '<option value="defaut"'.$selected.'>'.$defaut_texte.' ['.$_SESSION['ETABLISSEMENT']['LANGUE'].']</option>';
-$options_langue_defaut .= '</optgroup>';
+$langue_nom = array_search( $_SESSION['ETABLISSEMENT']['LANGUE'] , $tab_langues_traduction );
+$options_langue  = '<optgroup label="Langue par défaut dans l\'établissement">';
+$options_langue .=   '<option value="defaut"'.$selected.'>'.$langue_nom.' ['.$_SESSION['ETABLISSEMENT']['LANGUE'].']</option>';
+$options_langue .= '</optgroup>';
+// On continue avec les langues sélectionnables
+$options_langue .= '<optgroup label="Autres langues sélectionnables">';
+foreach($tab_langues_traduction as $langue_nom => $langue_code)
+{
+  $selected = ($langue_code==$_SESSION['USER_LANGUE']) ? ' selected' : '' ;
+  $options_langue .= '<option value="'.$langue_code.'"'.$selected.'>'.$langue_nom.' ['.$langue_code.']</option>';
+}
+$options_langue .= '</optgroup>';
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__traduction">DOC : Traductions / Langues</a></span></div>
-
-<hr />
-
 <form action="#" method="post"><fieldset>
-  <label class="tab" for="f_langue">Langue :</label><select id="f_langue" name="f_langue"><?php echo $options_langue_defaut.$options_langue_selection; ?></select><br />
+  <label class="tab" for="f_langue">Langue :</label><select id="f_langue" name="f_langue"><?php echo $options_langue; ?></select><br />
   <span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
+<hr />
+<div class="travaux">Fonctionnalité en développement ; finalisation et documentation à venir prochainement&hellip;</div>

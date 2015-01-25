@@ -81,9 +81,7 @@ Layout::add( 'js_file'  , './_js/script.js'            , 'pack' ); // La minific
 Layout::add( 'js_file'  , './pages/releve_html.js'     , 'pack' );
 
 // Ultimes constantes javascript
-$display = (substr($FICHIER,0,10)=='evaluation') ? 'inline-block' : 'block' ; // 'inline-block' permet d'avoir le checkbox sur la même ligne, mais 'block' est plus adapté pour gagner en largeur ou quand le contenu est centré
 Layout::add( 'js_inline_before' , 'var PAGE = "public_anti_maj_clock";' ); // Préfixe "public" pour indiquer que c'est une page accessible sans authentification.
-Layout::add( 'js_inline_before' , 'var display_mode = "'.$display.'";' );
 
 // Affichage
 echo Layout::afficher_page_entete('light');

@@ -558,18 +558,17 @@ $(document).ready
           {
             initialiser_compteur();
             var tab_response = responseHTML.split('<SEP>');
-            if( tab_response.length!=3 )
+            if( tab_response.length!=2 )
             {
               $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
               // Afficher la zone
-              $('#table_voir_repart_quantitative').html(tab_response[0]);
-              $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
               $('#table_voir_repart_nominative').html(tab_response[1]);
               $('#table_voir_repart_nominative tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
-              $('#lien_repart_nominative').attr('href',tab_response[2]);
+              $('#table_voir_repart_quantitative').html(tab_response[0]);
+              $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
               $('#ajax_msg_archiver_repart').removeAttr("class").html("");
               $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
             }

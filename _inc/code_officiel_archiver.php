@@ -501,28 +501,32 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
     $tab_nb_lignes[$eleve_id][0] = array_sum($tab_nb_lignes[$eleve_id]);
   }
   // Bloc des coordonnées de l'établissement (code repris de [code_officiel_imprimer.php] )
-  $tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))
+  $tab_etabl_coords = array();
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'denomination'))
   {
-    if($_SESSION['ETABLISSEMENT']['ADRESSE1']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
-    if($_SESSION['ETABLISSEMENT']['ADRESSE2']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
-    if($_SESSION['ETABLISSEMENT']['ADRESSE3']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
+    $tab_etabl_coords['denomination'] = $_SESSION['ETABLISSEMENT']['DENOMINATION'];
   }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone'))
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'adresse'))
   {
-    if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
+    if($_SESSION['ETABLISSEMENT']['ADRESSE1']) { $tab_etabl_coords['adresse1'] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
+    if($_SESSION['ETABLISSEMENT']['ADRESSE2']) { $tab_etabl_coords['adresse2'] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
+    if($_SESSION['ETABLISSEMENT']['ADRESSE3']) { $tab_etabl_coords['adresse3'] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
   }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'telephone'))
   {
-    if($_SESSION['ETABLISSEMENT']['FAX']) { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
+    if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
   }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'fax'))
   {
-    if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+    if($_SESSION['ETABLISSEMENT']['FAX']) { $tab_etabl_coords['fax'] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
   }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'courriel'))
   {
-    if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
+    if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords['courriel'] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+  }
+  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
+  {
+    if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords['url'] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
   }
   // Indication de l'année scolaire (code repris de [code_officiel_imprimer.php] )
   $mois_actuel    = date('n');
@@ -550,7 +554,6 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
     $archivage_tableau_PDF->recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] );
-    // $etabl_coords__bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_hauteur ) * 0.75 ) ;
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
       $tab_profs = isset($tab_saisies[$eleve_id][$rubrique_id]['professeur']) ? $tab_saisies[$eleve_id][$rubrique_id]['professeur'] : NULL ;

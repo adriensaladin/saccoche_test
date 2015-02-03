@@ -837,20 +837,20 @@ class PDF extends FPDF
   // Méthode pour afficher une signature ou un logo d'établissement d'un bilan officiel
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  private function afficher_image( $largeur_bloc , $hauteur_autorisee , $tab_image , $objet /* signature | logo */ )
+  private function afficher_image( $largeur_bloc , $hauteur_autorisee , $tab_image , $img_objet /* signature | logo | logo_seul */ )
   {
     list($img_contenu,$img_format,$img_largeur,$img_hauteur) = $tab_image;
     $img_largeur *= $this->coef_conv_pixel_to_mm;
     $img_hauteur *= $this->coef_conv_pixel_to_mm;
-    $coef_ratio_largeur = ($objet=='signature') ? 2 : min( $img_largeur/$img_hauteur , 2 ) ;
-    $largeur_autorisee  = $hauteur_autorisee * $coef_ratio_largeur;
+    $coef_ratio_largeur = ($img_objet=='signature') ? 2 : min( $img_largeur/$img_hauteur , 2 ) ;
+    $largeur_autorisee  = ($img_objet!='logo_seul') ? $hauteur_autorisee * $coef_ratio_largeur : $largeur_bloc;
     $coef_largeur = $largeur_autorisee / $img_largeur ;
     $coef_hauteur = $hauteur_autorisee / $img_hauteur ;
     $ratio = min( $coef_largeur , $coef_hauteur , 1 ) ;
     $img_largeur *= $ratio;
     $img_hauteur *= $ratio;
-    $retrait_x = ($objet=='signature') ? max($hauteur_autorisee,$img_largeur) : $img_largeur ;
-    $img_pos_x = ($objet=='signature') ? $this->GetX() + $largeur_bloc - $retrait_x : $this->GetX() ;
+    $retrait_x = ($img_objet=='signature') ? max($hauteur_autorisee,$img_largeur)       : $img_largeur  ;
+    $img_pos_x = ($img_objet=='signature') ? $this->GetX() + $largeur_bloc - $retrait_x : $this->GetX() ;
     $img_pos_y = $this->GetY() + ( $hauteur_autorisee - $img_hauteur ) / 2 ;
     $this->MemImage($img_contenu,$img_pos_x,$img_pos_y,$img_largeur,$img_hauteur,strtoupper($img_format));
     return $retrait_x;
@@ -1105,13 +1105,15 @@ class PDF extends FPDF
 
   public function officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_largeur )
   {
+    $nb_etabl_coords = count($tab_etabl_coords);
     $memoX = $this->GetX();
     $memoY = $this->GetY();
     // logo
     if($tab_etabl_logo)
     {
-      $hauteur_logo_autorisee = max( count($tab_etabl_coords) , 5 ) * 8*0.4 ;
-      $largeur_logo = $this->afficher_image( $bloc_largeur , $hauteur_logo_autorisee , $tab_etabl_logo , 'logo' );
+      $img_objet = ($nb_etabl_coords) ? 'logo' : 'logo_seul' ;
+      $hauteur_logo_autorisee = ($nb_etabl_coords) ? max( ($nb_etabl_coords) , 6 ) * 8*0.4 : 8 * 8*0.4 ;
+      $largeur_logo = $this->afficher_image( $bloc_largeur , $hauteur_logo_autorisee , $tab_etabl_logo , $img_objet );
       $this->SetXY($memoX+$largeur_logo,$memoY);
     }
     else
@@ -1121,24 +1123,16 @@ class PDF extends FPDF
     }
     // texte
     $bloc_hauteur_texte = 0 ;
-    foreach($tab_etabl_coords as $key => $ligne_etabl)
+    if($nb_etabl_coords)
     {
-      if($key==0)
+      foreach($tab_etabl_coords as $key => $ligne_etabl)
       {
-        // Nom de l'établissement
-        $taille_police = 11 ;
+        $taille_police = ($key=='denomination') ? 11 : 8 ;
         $ligne_hauteur = $taille_police*0.4 ;
         $this->SetFont('Arial' , '' , $taille_police);
+        $this->CellFit( $bloc_largeur-$largeur_logo , $ligne_hauteur , To::pdf($ligne_etabl) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+        $bloc_hauteur_texte += $ligne_hauteur ;
       }
-      elseif($key==1)
-      {
-        // A partir de la ligne suivante
-        $taille_police = 8 ;
-        $ligne_hauteur = $taille_police*0.4 ;
-        $this->SetFont('Arial' , '' , $taille_police);
-      }
-      $this->CellFit( $bloc_largeur-$largeur_logo , $ligne_hauteur , To::pdf($ligne_etabl) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-      $bloc_hauteur_texte += $ligne_hauteur ;
     }
     $hauteur_bloc = max($bloc_hauteur_texte,$hauteur_logo_autorisee);
     $this->SetY($memoY+$hauteur_bloc);
@@ -1346,7 +1340,7 @@ class PDF extends FPDF
     $memoX = $this->GetX();
     $memoY = $this->GetY();
     // signature
-    $largeur_signature = ($tab_image_tampon_signature) ? $this->afficher_image( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature , 'signature' ) : min(50,$hauteur_autorisee) ;
+    $largeur_signature = ($tab_image_tampon_signature) ? $this->afficher_image( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature , 'signature' /*img_objet*/ ) : min(50,$hauteur_autorisee) ;
     // contour cadre
     $this->SetXY($memoX,$memoY);
     $this->Cell( $largeur_autorisee , $hauteur_autorisee , '' , 1 /*bordure*/ , 2 /*br*/ , '' /*alignement*/ , FALSE /*fond*/ );

@@ -46,7 +46,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 98, // complète (% effectué)
+    'statut'     => 100, // complète (% effectué)
     'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
@@ -62,7 +62,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 0, // en attente
+    'statut'     => 100, // en attente
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(

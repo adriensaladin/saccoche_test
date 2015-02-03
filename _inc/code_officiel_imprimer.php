@@ -386,40 +386,44 @@ foreach($tab_eleve_id as $eleve_id)
 
 $tab_etabl_logo = NULL;
 $logo_hauteur = 0;
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'logo'))
 {
   $DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
   if(!empty($DB_ROW))
   {
     $tab_etabl_logo = array( base64_decode($DB_ROW['image_contenu']) , $DB_ROW['image_format'] , $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] );
-    $logo_hauteur = 5;
+    $logo_hauteur = 7;
   }
 }
 
 // Bloc des coordonnées de l'établissement
 
-$tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))
+$tab_etabl_coords = array();
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'denomination'))
 {
-  if($_SESSION['ETABLISSEMENT']['ADRESSE1']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
-  if($_SESSION['ETABLISSEMENT']['ADRESSE2']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
-  if($_SESSION['ETABLISSEMENT']['ADRESSE3']) { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
+  $tab_etabl_coords['denomination'] = $_SESSION['ETABLISSEMENT']['DENOMINATION'];
 }
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone'))
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'adresse'))
 {
-  if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
+  if($_SESSION['ETABLISSEMENT']['ADRESSE1']) { $tab_etabl_coords['adresse1'] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
+  if($_SESSION['ETABLISSEMENT']['ADRESSE2']) { $tab_etabl_coords['adresse2'] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
+  if($_SESSION['ETABLISSEMENT']['ADRESSE3']) { $tab_etabl_coords['adresse3'] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
 }
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'telephone'))
 {
-  if($_SESSION['ETABLISSEMENT']['FAX']) { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
+  if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
 }
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'fax'))
 {
-  if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+  if($_SESSION['ETABLISSEMENT']['FAX']) { $tab_etabl_coords['fax'] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
 }
-if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'courriel'))
 {
-  if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
+  if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords['courriel'] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+}
+if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
+{
+  if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords['url'] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
 }
 $etabl_coords__bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_hauteur ) * 0.75 ) ;
 

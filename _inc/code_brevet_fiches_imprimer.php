@@ -225,14 +225,14 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 
 // Bloc des coordonnées de l'établissement
 
-$tab_etabl_coords = array( 'denomination' => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
-if($_SESSION['ETABLISSEMENT']['ADRESSE1'])  { $tab_etabl_coords['adresse1']  = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
-if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords['adresse2']  = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
-if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords['adresse3']  = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
-if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
-if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords['fax']       = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords['courriel']  = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
-if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords['url']       = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
+$tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );
+if($_SESSION['ETABLISSEMENT']['ADRESSE1'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
+if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
+if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
+if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
+if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
+if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
 
 // académie, département, année
 

@@ -255,11 +255,6 @@ class HtmlMail
     $mailto.= ($mail_contenu) ? '&body='.$mail_contenu : '' ;
     $tab_unicode_valeurs = HtmlMail::utf8ToUnicode(str_replace(' ','%20',$mailto));
     $href = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
-    if(strpos($texte_lien,'@'))
-    {
-      $tab_unicode_valeurs = HtmlMail::utf8ToUnicode(str_replace(' ','%20',$texte_lien));
-      $texte_lien = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
-    }
     return '<a href="'.$href.'" class="lien_mail">'.$texte_lien.'</a>';
   }
 

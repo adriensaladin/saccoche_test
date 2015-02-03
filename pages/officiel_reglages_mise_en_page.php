@@ -28,13 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = Lang::_("Mise en page des bilans officiels");
 
-$check_denomination = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'denomination')) ? ' checked' : '' ;
-$check_adresse      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))      ? ' checked' : '' ;
-$check_telephone    = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone'))    ? ' checked' : '' ;
-$check_fax          = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))          ? ' checked' : '' ;
-$check_courriel     = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))     ? ' checked' : '' ;
-$check_url          = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))          ? ' checked' : '' ;
-$check_logo         = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))         ? ' checked' : '' ;
+$check_adresse   = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))   ? ' checked' : '' ;
+$check_telephone = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'telephone')) ? ' checked' : '' ;
+$check_fax       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'fax'))       ? ' checked' : '' ;
+$check_courriel  = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'courriel'))  ? ' checked' : '' ;
+$check_url       = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))       ? ' checked' : '' ;
+$check_logo      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))      ? ' checked' : '' ;
 
 $check_archive_ajout_message_copie      = ($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])      ? ' checked' : '' ;
 $check_archive_retrait_tampon_signature = ($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE']) ? ' checked' : '' ;
@@ -101,7 +100,6 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
   <h2>En-tête du document</h2>
   <p>
     <label class="tab">Infos établissement :</label>
-    <label for="f_coordonnees_denomination"><input type="checkbox" id="f_coordonnees_denomination" name="f_coordonnees[]" value="denomination"<?php echo $check_denomination ?> /> dénomination</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_adresse"><input type="checkbox" id="f_coordonnees_adresse" name="f_coordonnees[]" value="adresse"<?php echo $check_adresse ?> /> adresse</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_telephone"><input type="checkbox" id="f_coordonnees_telephone" name="f_coordonnees[]" value="telephone"<?php echo $check_telephone ?> /> téléphone</label>&nbsp;&nbsp;&nbsp;
     <label for="f_coordonnees_fax"><input type="checkbox" id="f_coordonnees_fax" name="f_coordonnees[]" value="fax"<?php echo $check_fax ?> /> fax</label>&nbsp;&nbsp;&nbsp;

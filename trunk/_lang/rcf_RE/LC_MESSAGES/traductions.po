@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
 "POT-Creation-Date: 2015-01-25 15:11+0100\n"
-"PO-Revision-Date: 2015-01-25 15:11+0100\n"
+"PO-Revision-Date: 2015-01-26 10:54+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: rcf_RE\n"
@@ -41,7 +41,7 @@ msgstr "Paramétrages zutilisateurs"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:41
 msgid "Paramétrages personnels"
-msgstr ""
+msgstr "Paramétrages pour ou mem"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:42
 msgid "Administration générale"
@@ -166,7 +166,7 @@ msgstr "Mot d' passe"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:64
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_email.php:29
 msgid "Adresse e-mail &amp; Notifications"
-msgstr ""
+msgstr "Adresse mel &amp; Notifications"
 
 # Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:78
@@ -650,11 +650,11 @@ msgstr "Bienvenue zot toute dan out léspasse a ou"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
 msgid "Items récents à retravailler"
-msgstr "Z'items récents à retravailler"
+msgstr "Z'items zordi  à retravailler"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
 msgid "Items récents à améliorer"
-msgstr "Z'items récents à améliorer"
+msgstr "Z'items zordi à améliorer"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:38
 msgid "Notes à saisir"

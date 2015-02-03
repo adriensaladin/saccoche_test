@@ -138,7 +138,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_bulletin_only_socle"                     , "0" ),
 ( "officiel_bulletin_prof_principal"                 , "0" ),
 ( "officiel_bulletin_retroactif"                     , "non" ),
-( "officiel_infos_etablissement"                     , "adresse,telephone,fax,courriel,url" ),
+( "officiel_infos_etablissement"                     , "denomination,adresse,telephone,fax,courriel,url" ),
 ( "officiel_infos_responsables"                      , "non" ),
 ( "officiel_marge_bas"                               , "10" ),
 ( "officiel_marge_droite"                            , "5" ),

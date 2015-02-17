@@ -128,7 +128,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #top_info span.profil_partenaire     {background-position: 1px -180px}
 #top_info span.profil_professeur     {background-position: 1px -200px}
 #top_info span.profil_webmestre      {background-position: 1px -220px}
-#top_info span.profil_developpeur    {background-position: 1px -240px}
+#top_info span.profil_developpeur    {background-position: 1px -220px} /* attention : même décalage */
 #top_info span.clock_fixe {background:#EEF 2px center no-repeat url("data:image/gif;base64,R0lGODlhEAAQAPZgALKzs0B0oM2mNvLKW/PTfTpslUd9q2WGoU2Gt7C2uVOPwlqYzdeZC+rFYMTFxeyqAPKxAKGhoStXeixYe/S1AMiyTnO8+sWbLXOcs/PQcteyRvbjquiwKGmexr2/wsypOfLPaPP9//P2+ez9/1qMvOzx8nCQxG6Zw3d+gER6sfj//4an09nj8XWs043C36XC4DZropzQ54Cgzun2/OPz+kl/sO75/uHv8uf6/7jDx2WbycHb8Ku+34ip2Je123ClznGXyKvS6/rqujZurtra2pOs1ZPL6YOLjHmi2f///9/1/6OuscLP0pSdnmuTvtrl55vD38zs+s/f79Pw+qbM41iFtNPT09Hf76ixi6G73Z3Bv5XA232pwofE7GuPv0l1oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUKAGAALAAAAAAQABAAAAfdgGBgEBQUgodghYgQA0IDFRaRFhUgBA+HjQ0fXUYxMUYuAgQZl2AEDQIuVC9FRVlUWhobHIIMF6o8LCUlLFlQWAIMghgtUDxJJU8qKiE+W1wdggstPiwhIk0lIgk7Ky0Lggo/KzM2KihLKDlTQD8Kggg6MjQzN0coTCNRJjoIggYkZOzAQSPHDRxKggAhYUBQgBoneoywESLEiBFITtQIcKhAiohSRIi4ssJJigKIwBxIQcKESy8kqhxICcaKBxgwhgyB8cWBg5QAiACYIKGohAlBEyCKEIGmIKaCAgEAOw==");} /* sacoche_clock_fixe */
 #top_info span.clock_anim {background:#EEF 2px center no-repeat url("data:image/gif;base64,R0lGODlhEAAQAPUFAKGhofLKXfL29n2Bgery8tri7kR9smWdyl19mW2RwpXG4oGhzp2+3vb6/yxZeer6/9ry+nm27rbK1jhtpZ2uws6lNG2ZvlWNvpW62s6ySFmJtnWu0qrS5jRlke76//////a2ALKysvKhme6hmfY0NO4kKPLSgfppZd6RDPZ1ccK+wvZQTOqBffLS1uqqAM7Kyup1dfKRieqVje5pYeqlMPLObfruvvaJgeqRifLm5vr2+tra2v/6+vLGWQAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMgAFACwAAAAAEAAQAAAGssBCAUQUGoegoytgC6BO0BOqZnIZmT3ULTYaxVIoU81aMGVFohj0JrrRTDQhCoUW5XS8XEzUo6GEM2wiHx85hB83IzMkQicxNy2EADofKi0nLIwFJ4o8hAMhAyoEJDKanCuUAgADL4WlJY1qkToqAoQtKyyxBSspIzCHhzOKvL0xMTCRHy0wLLtHBTA4iiskKyMyK9EFLyozLDIyLDAqKtEhOyEkJCXuJekhRwAA3EL0QkEAIfkEBTIAHwAsAQABAA4ADgAABo/Aj/CTiRgjmeEwUFEoOBwFpqJkPhkYDINDSQorGA6jQCAUGAwA1bJRMD5mYSO7OBw2mEJDABdQOAsbBxcbCw8eQhRCEAkbFwYHCxAPBAMfEg+MBwYGFwscmXAPDxwWjxMGFoYeDQ0eDwsWBhMfHakLBQICBQsJBh1DCAYaCcUJGhoISkIdE86oy0MO09RKQQA7");} /* sacoche_clock_anim */
 #top_info #clock {padding-right:3px;background:#EEF right top no-repeat url("data:image/gif;base64,R0lGODlhAwAPAPECAAAAAEZGRu0cJAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJMgACACwAAAAAAwAPAAACB5SPqcsCoQoAIfkEBTIAAAAsAAAAAAEAAQAAAgJEAQA7");} /* sacoche_clock_point */
@@ -277,20 +277,21 @@ span.retrecir_largeur     {background-position: 0 -100px}
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.rien64       {padding-left:70px}
-.accueil64    {background:transparent url(../_img/sprite_accueil64_1.png) 0 300px no-repeat;padding-left:70px;min-height:64px;max-height:500px}
-.alert64      {background-position: 0     0px}
-.ecolo64      {background-position: 0  -300px}
-.help64       {background-position: 0  -600px}
-.resultats64  {background-position: 0  -900px}
-.faiblesses64 {background-position: 0  -900px} /* attention : même décalage */
-.reussites64  {background-position: 0  -900px} /* attention : même décalage */
-.demandes64   {background-position: 0  -900px} /* attention : même décalage */
-.saisies64    {background-position: 0  -900px} /* attention : même décalage */
-.officiel64   {background-position: 0  -900px} /* attention : même décalage */
-.socle64      {background-position: 0  -900px} /* attention : même décalage */
-.messages64   {background-position: 0 -1200px}
-.user64       {background-position: 0 -1500px}
+.rien64          {padding-left:70px}
+.accueil64       {background:transparent url(../_img/sprite_accueil64_1.png) 0 300px no-repeat;padding-left:70px;min-height:64px;max-height:500px}
+.alert64         {background-position: 0     0px}
+.ecolo64         {background-position: 0  -300px}
+.help64          {background-position: 0  -600px}
+.resultats64     {background-position: 0  -900px}
+.faiblesses64    {background-position: 0  -900px} /* attention : même décalage */
+.reussites64     {background-position: 0  -900px} /* attention : même décalage */
+.demandes64      {background-position: 0  -900px} /* attention : même décalage */
+.saisies64       {background-position: 0  -900px} /* attention : même décalage */
+.officiel64      {background-position: 0  -900px} /* attention : même décalage */
+.socle64         {background-position: 0  -900px} /* attention : même décalage */
+.messages64      {background-position: 0 -1200px}
+.notifications64 {background-position: 0 -1200px} /* attention : même décalage */
+.user64          {background-position: 0 -1500px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */

@@ -109,7 +109,7 @@ class PDF_item_synthese extends PDF
       $this->premiere_page();
       if($this->officiel)
       {
-        // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
+        // Ecrire l'en-tête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet en-tête.
         list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
@@ -158,7 +158,7 @@ class PDF_item_synthese extends PDF
       }
       // On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
       $hauteur_dispo_par_page = $this->page_hauteur_moins_marges ;
-      $lignes_nb = ( $hauteur_entete / 4 ) + $eleve_nb_lignes + ($this->legende*1.5) ; // entête + synthèses + légendes
+      $lignes_nb = ( $hauteur_entete / 4 ) + $eleve_nb_lignes + ($this->legende*1.5) ; // en-tête + synthèses + légendes
       $hauteur_ligne_minimale = ($this->officiel) ? 4 : 3.5 ;
       $hauteur_ligne_maximale = $hauteur_ligne_minimale + 2;
       $nb_pages = 0;

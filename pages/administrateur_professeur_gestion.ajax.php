@@ -141,6 +141,8 @@ if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre])
   $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
   $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  // Pour les professeurs et directeurs, abonnement obligatoire aux signalements d'un souci pour une appréciation d'un bilan officiel
+  DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'bilan_officiel_appreciation' , 'accueil' );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_date)
   {

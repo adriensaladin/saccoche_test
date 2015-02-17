@@ -70,7 +70,6 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
       Layout::add( 'js_inline_before' , '// <![CDATA[' );
       foreach($DB_TAB as $DB_ROW)
       {
-        // Afficher une ligne du tableau
         $date_debut_affich    = convert_date_mysql_to_french($DB_ROW['message_debut_date']);
         $date_fin_affich      = convert_date_mysql_to_french($DB_ROW['message_fin_date']);
         $destinataires_liste  = str_replace(',','_',mb_substr($DB_ROW['message_destinataires'],1,-1));

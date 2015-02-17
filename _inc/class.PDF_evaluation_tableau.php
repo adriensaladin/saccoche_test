@@ -195,7 +195,7 @@ class PDF_evaluation_tableau extends PDF
   {
     // on calcule la hauteur de la case
     $this->cases_hauteur = $this->lignes_hauteur * max( 4 , max($tab_repartition_quantitatif) );
-    // On prend une nouvelle page PDF si besoin et y remettre la ligne d'entête si y a pas assez de place
+    // On prend une nouvelle page PDF si besoin et y remettre la ligne d'en-tête si y a pas assez de place
     if($this->GetY()>$this->marge_haut)
     {
       // on regarde s'il y a la place

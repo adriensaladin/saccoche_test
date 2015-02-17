@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action               = (isset($_POST['f_action']))               ? Clean::texte($_POST['f_action'])                 : '';
 $denomination         = (isset($_POST['f_denomination']))         ? Clean::texte($_POST['f_denomination'])           : '';
@@ -143,16 +142,16 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
     }
   }
   FileSystem::fabriquer_fichier_hebergeur_info( array(
-    'HEBERGEUR_DENOMINATION' => $denomination,
-    'HEBERGEUR_UAI'          => $uai,
-    'HEBERGEUR_ADRESSE_SITE' => $adresse_site,
-    'HEBERGEUR_LOGO'         => $logo,
-    'CNIL_NUMERO'            => $cnil_numero,
-    'CNIL_DATE_ENGAGEMENT'   => $cnil_date_engagement,
-    'CNIL_DATE_RECEPISSE'    => $cnil_date_recepisse,
-    'WEBMESTRE_NOM'          => $nom,
-    'WEBMESTRE_PRENOM'       => $prenom,
-    'WEBMESTRE_COURRIEL'     => $courriel,
+    'HEBERGEUR_DENOMINATION'   => $denomination,
+    'HEBERGEUR_UAI'            => $uai,
+    'HEBERGEUR_ADRESSE_SITE'   => $adresse_site,
+    'HEBERGEUR_LOGO'           => $logo,
+    'CNIL_NUMERO'              => $cnil_numero,
+    'CNIL_DATE_ENGAGEMENT'     => $cnil_date_engagement,
+    'CNIL_DATE_RECEPISSE'      => $cnil_date_recepisse,
+    'WEBMESTRE_NOM'            => $nom,
+    'WEBMESTRE_PRENOM'         => $prenom,
+    'WEBMESTRE_COURRIEL'       => $courriel,
   ) );
   if(HEBERGEUR_INSTALLATION=='mono-structure')
   {
@@ -163,8 +162,8 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
     DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   }
   // On modifie aussi la session
-  $_SESSION['USER_NOM']     = $nom ;
-  $_SESSION['USER_PRENOM']  = $prenom ;
+  $_SESSION['USER_NOM']    = $nom ;
+  $_SESSION['USER_PRENOM'] = $prenom ;
   exit('ok');
 }
 

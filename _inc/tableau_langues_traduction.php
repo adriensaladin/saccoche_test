@@ -54,7 +54,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // complète (% effectué)
+    'statut'     => 0, // en attente
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -62,12 +62,11 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // complète (% effectué)
+    'statut'     => 100, // en attente
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
       array( 'nom' => 'Xavier Courrian' , 'mail' => 'xavier.courrian@ac-bordeaux.fr' ),
-      array( 'nom' => 'Patricia Núñez'  , 'mail' => NULL ),
     ),
   ),
   array(
@@ -91,7 +90,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // complète (% effectué)
+    'statut'     => 69, // partielle (% effectué)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

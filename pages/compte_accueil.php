@@ -39,19 +39,18 @@ $masque_saisies    = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("No
 $masque_officiel   = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Bilans officiels ouverts à la saisie") : Lang::_("Nouveaux bilans officiels à consulter") ;
 
 $tab_accueil = array(
- 'user'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Informations d'accueil") ) ,
- 'alert'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
- 'notifications' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
- 'messages'      => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
- 'resultats'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Résultats récents") ) ,
- 'faiblesses'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
- 'reussites'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Items récents les mieux réussis") ) ,
- 'demandes'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Demandes d'évaluations") ) ,
- 'saisies'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_saisies ) ,
- 'officiel'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_officiel ) ,
- 'socle'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"" ) ,
- 'help'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Astuce du moment") ) ,
- 'ecolo'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Protégeons l'environnement") ) ,
+ 'user'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Informations d'accueil") ) ,
+ 'alert'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
+ 'messages'   => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
+ 'resultats'  => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Résultats récents") ) ,
+ 'faiblesses' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
+ 'reussites'  => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Items récents les mieux réussis") ) ,
+ 'demandes'   => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Demandes d'évaluations") ) ,
+ 'saisies'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_saisies ) ,
+ 'officiel'   => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_officiel ) ,
+ 'socle'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"" ) ,
+ 'help'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Astuce du moment") ) ,
+ 'ecolo'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Protégeons l'environnement") ) ,
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,21 +217,6 @@ else
   {
     $get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
     $tab_accueil['user']['contenu'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// [notifications] - Indication du nombre de notifications en attente
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
-{
-  $nb_notifications_non_vues = DB_STRUCTURE_NOTIFICATION::DB_compter_notifications_non_vues($_SESSION['USER_ID']);
-  if($nb_notifications_non_vues)
-  {
-    $s = ($nb_notifications_non_vues>1) ? 's' : '' ;
-    $tab_accueil['notifications']['contenu'] .= '<div class="b">'.Lang::_("Notifications en attente").'</div>';
-    $tab_accueil['notifications']['contenu'] .= '<p>Vous avez <a href="./index.php?page=consultation_notifications"><span class="b">'.$nb_notifications_non_vues.' notification'.$s.'</span></a> à consulter.</p>';
   }
 }
 

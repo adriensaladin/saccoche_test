@@ -53,7 +53,7 @@ if($version_base_structure_actuelle=='2014-12-28')
 
 if( ($version_base_structure_actuelle=='2015-01-21') || ($version_base_structure_actuelle=='2015-01-20') ) // un fichier indiquait un numéro de base erroné...
 {
-  if( (DB_STRUCTURE_MAJ_BASE::DB_version_base()=='2015-01-21') || (DB_STRUCTURE_MAJ_BASE::DB_version_base()=='2015-01-20') ) // du coup j'adapte aussi ce test-ci...
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
   {
     $version_base_structure_actuelle = '2015-02-03';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
@@ -61,73 +61,10 @@ if( ($version_base_structure_actuelle=='2015-01-21') || ($version_base_structure
     $officiel_infos_etablissement = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="officiel_infos_etablissement" ' );
     $officiel_infos_etablissement = ($officiel_infos_etablissement) ? 'denomination,'.$officiel_infos_etablissement : 'denomination' ;
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$officiel_infos_etablissement.'" WHERE parametre_nom="officiel_infos_etablissement"' );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-02-03 => 2015-02-17
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-02-03')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-02-17';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // nouvelle table [sacoche_abonnement]
-    $reload_sacoche_abonnement = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_abonnement.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // nouvelle table [sacoche_jointure_user_abonnement]
-    $reload_sacoche_jointure_user_abonnement = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_user_abonnement.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // nouvelle table [sacoche_notification]
-    $reload_sacoche_notification = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_notification.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
-    $DB_SQL = 'SELECT user_id FROM sacoche_user ';
-    $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-    $DB_SQL.= 'WHERE user_profil_type="administrateur" ';
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-    if(!empty($DB_TAB))
-    {
-      $DB_SQL = 'INSERT INTO sacoche_jointure_user_abonnement(user_id, abonnement_ref, jointure_mode) VALUES(:user_id,:abonnement_ref,:jointure_mode)';
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $DB_VAR = array(
-          ':user_id'        => $DB_ROW['user_id'],
-          ':abonnement_ref' => 'contact_externe',
-          ':jointure_mode'  => 'accueil',
-        );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      }
-    }
-    // Pour les professeurs et directeurs, abonnement obligatoire aux signalements d'un souci pour une appréciation d'un bilan officiel
-    $DB_SQL = 'SELECT user_id FROM sacoche_user ';
-    $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-    $DB_SQL.= 'WHERE user_profil_type IN("professeur","directeur") ';
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-    if(!empty($DB_TAB))
-    {
-      $DB_SQL = 'INSERT INTO sacoche_jointure_user_abonnement(user_id, abonnement_ref, jointure_mode) VALUES(:user_id,:abonnement_ref,:jointure_mode)';
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $DB_VAR = array(
-          ':user_id'        => $DB_ROW['user_id'],
-          ':abonnement_ref' => 'bilan_officiel_appreciation',
-          ':jointure_mode'  => 'accueil',
-        );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      }
-    }
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
+
 
 ?>

@@ -160,7 +160,7 @@ class PDF_item_releve extends PDF
       $this->legende_deja_affichee = FALSE; // Si multimatières, on n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
       if($this->officiel)
       {
-        // Ecrire l'en-tête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet en-tête.
+        // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
         list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
@@ -211,7 +211,7 @@ class PDF_item_releve extends PDF
       }
       // On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
       $hauteur_dispo_par_page = $this->page_hauteur_moins_marges ;
-      $lignes_nb = ( $hauteur_entete / 3 ) + $eleve_nb_lignes + ($this->legende*$this->legende_nb_lignes) ; // en-tête + matières(marge+intitulé) & lignes dont résumés + légendes
+      $lignes_nb = ( $hauteur_entete / 3 ) + $eleve_nb_lignes + ($this->legende*$this->legende_nb_lignes) ; // entête + matières(marge+intitulé) & lignes dont résumés + légendes
       $hauteur_ligne_minimale = ($this->officiel) ? 3.5 : 3 ;
       $hauteur_ligne_maximale = $hauteur_ligne_minimale + 2;
       $nb_pages = 0;

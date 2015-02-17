@@ -48,11 +48,10 @@ $tab_sous_menu = array
   'information' => array
   (
     'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                    , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
+    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")      , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
     'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion") , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     'export_fichier'                   => array( 'texte' => Lang::_("Export de données")          , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     'administrateur_log_actions'       => array( 'texte' => Lang::_("Log des actions sensibles")  , 'class' => 'log_actions'      , 'href' => 'page=administrateur_log_actions'       ),
-    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")       , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
-    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")      , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
   ),
   'param_etablissement' => array
   (
@@ -74,9 +73,9 @@ $tab_sous_menu = array
   ),
   'param_personnels' => array
   (
-    'compte_password' => array( 'texte' => Lang::_("Mot de passe")                     , 'class' => 'compte_password' , 'href' => 'page=compte_password' ),
-    'compte_email'    => array( 'texte' => Lang::_("Adresse e-mail &amp; Abonnements") , 'class' => 'mail'            , 'href' => 'page=compte_email'    ),
-    'compte_langue'   => array( 'texte' => Lang::_("Langue")                           , 'class' => 'compte_langue'   , 'href' => 'page=compte_langue'   ),
+    'compte_password' => array( 'texte' => Lang::_("Mot de passe")                       , 'class' => 'compte_password' , 'href' => 'page=compte_password' ),
+    'compte_email'    => array( 'texte' => Lang::_("Adresse e-mail &amp; Notifications") , 'class' => 'mail'            , 'href' => 'page=compte_email'    ),
+    'compte_langue'   => array( 'texte' => Lang::_("Langue")                             , 'class' => 'compte_langue'   , 'href' => 'page=compte_langue'   ),
   ),
   'admin_generale' => array
   (

@@ -204,7 +204,7 @@ class SessionUser
       return array('Identification réussie mais ce compte est desactivé !',array());
     }
     // Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
-    if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_type'],array('webmestre','administrateur')) )
+    if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_sigle'],array('webmestre','administrateur')) )
     {
       DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
     }

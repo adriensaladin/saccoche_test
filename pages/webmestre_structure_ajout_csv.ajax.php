@@ -192,8 +192,6 @@ if( ($action=='ajouter') && $num && $max )
   // Insérer le compte administrateur dans la base de cette structure
   $password = fabriquer_mdp();
   $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
-  // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
-  DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
   $courriel_contenu = ( $courriel_envoi || $courriel_copie ) ? Webmestre::contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE ) : '' ;
   $courriel_titre   = ( $courriel_envoi || $courriel_copie ) ? 'Création compte - Inscription n°'.$base_id : '' ;

@@ -50,15 +50,14 @@ $tab_sous_menu = array
     'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")  , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
     'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")  , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
     'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")    , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")  , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
     'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place") , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
   ),
   'parametrage' => array
   (
-    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                     , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
-    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail &amp; Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
-    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                       , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
-    'compte_langue'     => array( 'texte' => Lang::_("Langue")                           , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
+    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                       , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
+    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail &amp; Notifications") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
+    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                         , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
+    'compte_langue'     => array( 'texte' => Lang::_("Langue")                             , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
   ),
   'evaluation' => array
   (

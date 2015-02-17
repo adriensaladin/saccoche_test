@@ -1098,7 +1098,6 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $affichage_HTML .= '<h2>'.$groupe_nom.' | '.$date_fr.' | '.$description.'</h2>'.NL;
     $affichage_HTML .= '<hr />'.NL;
     $affichage_HTML .= '<form id="form_synthese" action="#" method="post">'.NL;
-    $affichage_HTML .= HtmlForm::afficher_synthese_exploitation('eleves + eleves-items').NL;
     $affichage_HTML .= '<table class="eval_exploitation">'.NL;
     $affichage_HTML .= '<thead><tr>'.$affichage_repartition_head.'</tr></thead>'.NL;
     $affichage_HTML .= '<tbody>';
@@ -1114,7 +1113,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     }
     $affichage_HTML .= '</tbody>'.NL;
     $affichage_HTML .= '</table>'.NL;
-    $affichage_HTML .= '</form>'.NL;
+    $affichage_HTML .= HtmlForm::afficher_synthese_exploitation('eleves + eleves-items').'</form>'.NL;
     // On enregistre la sortie HTML
     $fichier_nom = 'evaluation_'.$devoir_id.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html' , $affichage_HTML );
@@ -1692,7 +1691,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   // Parcourir les lignes suivantes et mémoriser les scores
   $retour = '|';
   unset($tab_lignes[0]);
-  $scores_autorises = '1234AaDdNnEeFfRrPp';
+  $scores_autorises = '1234AaDdNnPp';
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = str_getcsv($ligne_contenu,$separateur);

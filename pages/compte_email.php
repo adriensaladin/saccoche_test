@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Adresse e-mail &amp; Abonnements");
+$TITRE = Lang::_("Adresse e-mail &amp; Notifications");
 
 $info_origine = '';
 $info_edition = '';
@@ -57,19 +57,6 @@ else
   $info_origine = '<span class="astuce">Il n\y a pas d\'adresse actuellement enregistrée.</span>';
 }
 
-if(COURRIEL_NOTIFICATION=='non')
-{
-  $info_envoi_notifications = '<label class="alerte">Le webmestre du serveur a désactivé l\'envoi des notifications par courriel.</label>' ;
-}
-elseif(!$_SESSION['USER_EMAIL'])
-{
-  $info_envoi_notifications = '<label class="alerte">Les envois par courriel seront remplacés par une indication en page d\'accueil tant que l\'adresse n\'est pas renseignée.</label>' ;
-}
-else
-{
-  $info_envoi_notifications = '<label class="valide">Votre adresse étant renseignée, vous pouvez opter pour des envois par courriel.</label>' ;
-}
-
 ?>
 
 <p>
@@ -85,72 +72,13 @@ else
   <?php echo $info_origine ?><br />
   <?php echo $info_edition ?>
 </p>
-<form id="form_courriel" action="#" method="post"><fieldset>
-  <p><label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="<?php echo html($_SESSION['USER_EMAIL']); ?>" size="50" maxlength="63" /></p>
-  <p><span class="tab"></span><input name="f_action" type="hidden" value="courriel" /><button id="bouton_valider" type="submit" class="mdp_perso"<?php echo $disabled ?>>Valider.</button><label id="ajax_msg_courriel">&nbsp;</label></p>
+<form action="#" method="post"><fieldset>
+  <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="<?php echo html($_SESSION['USER_EMAIL']); ?>" size="50" maxlength="63" /><br />
+  <span class="tab"></span><input name="f_action" type="hidden" value="courriel" /><button id="bouton_valider" type="submit" class="mdp_perso"<?php echo $disabled ?>>Valider le changement.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <hr />
 
-<h2>Abonnement aux notifications (profil <?php echo html($_SESSION['USER_PROFIL_TYPE']); ?>)</h2>
+<h2>Abonnement aux notifications</h2>
 
-<p id="info_abonnement_mail">
-  <?php echo $info_envoi_notifications ?>
-</p>
-
-<div class="travaux">Fonctionnalité encore en développement ; finalisation et documentation à venir prochainement&hellip;</div>
-
-<?php if(FALSE): ?>
-
-<form id="form_abonnements" action="#" method="post">
-  <table id="table_abonnements" class="form">
-    <thead>
-      <tr>
-        <th class="hc">Description</th>
-        <th class="hc">non merci</th>
-        <th class="hc">indication<br />en page d'accueil</th>
-        <th class="hc">envoi<br />par courriel</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $tab_choix = array( 'non' , 'accueil' , 'courriel' );
-      $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_abonnements_profil( $_SESSION['USER_PROFIL_TYPE'] , $_SESSION['USER_ID'] );
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $DB_ROW['jointure_mode'] = is_null($DB_ROW['jointure_mode']) ? 'non' : $DB_ROW['jointure_mode'] ;
-        echo'<tr><td>'.$DB_ROW['abonnement_descriptif'].'</td>';
-        foreach($tab_choix as $radio_key)
-        {
-          $checked  = ($radio_key==$DB_ROW['jointure_mode']) ? ' checked' : '' ;
-          if($radio_key=='non')
-          {
-            $disabled = ($DB_ROW['abonnement_obligatoire']) ? ' disabled' : '' ;
-          }
-          else if($radio_key=='accueil')
-          {
-            $disabled = ($DB_ROW['abonnement_courriel_only']) ? ' disabled' : '' ;
-          }
-          else
-          {
-            $disabled = '' ;
-          }
-          echo'<td class="hc"><input type="radio" name="'.$DB_ROW['abonnement_ref'].'" id="'.$DB_ROW['abonnement_ref'].'X'.$radio_key.'" value="'.$radio_key.'"'.$checked.$disabled.' /></td>';
-        }
-        echo'</tr>';
-      }
-      ?>
-    </tbody>
-  </table>
-  <p>
-    <span class="tab"></span><button id="bouton_abonner" type="button" class="parametre">Valider.</button><label id="ajax_msg_abonnements">&nbsp;</label>
-  </p>
-</form>
-
-<?php endif; ?>
-
-<hr />
-
-<p class="astuce">
-  Les notifications archivées sont accessibles par le menu <a href="./index.php?page=consultation_notifications">[Informations] [Notifications reçues]</a>.
-</p>
+<div class="travaux">Fonctionnalité en développement ; finalisation et documentation à venir prochainement&hellip;</div>

@@ -81,7 +81,7 @@ class PDF_socle_releve extends PDF
       {
         if($this->officiel)
         {
-          // Ecrire l'en-tête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet en-tête.
+          // Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet entête.
           list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
           $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
           // Bloc adresse en positionnement contraint

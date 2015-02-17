@@ -2096,6 +2096,8 @@ $(document).ready
       else
       {
         initialiser_compteur();
+        var nb_notes_remontees = 0;
+        var nb_notes_reportees = 0;
         if(responseHTML.length>2)
         {
           responseHTML = responseHTML.substring(1);
@@ -2105,12 +2107,14 @@ $(document).ready
             tab_valeur = tab_resultat[i].split('.');
             if(tab_valeur.length==3)
             {
+              nb_notes_remontees++;
               var eleve_id = tab_valeur[0];
               var item_id  = tab_valeur[1];
               var score    = tab_valeur[2];
               champ = $('#table_saisir_voir input[name='+item_id+'x'+eleve_id+']');
               if(champ.length)
               {
+                nb_notes_reportees++;
                 switch (score)
                 {
                   case '1': champ.val('RR'  ).removeAttr("class").addClass('RR'  ); break;
@@ -2131,7 +2135,9 @@ $(document).ready
             }
           }
         }
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html("Tableau complété ; n'oubliez pas d'enregistrer le tableau de saisies !");
+        var s_remontees = (nb_notes_remontees>1) ? 's' : '' ;
+        var s_reportees = (nb_notes_remontees>1) ? 's' : '' ;
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" saisie"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
       }
     }
 

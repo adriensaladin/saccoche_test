@@ -72,7 +72,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
   {
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a class="lost" href="#lost_webmestre">[ Identifiants oubliés ! ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" href="#lost_webmestre">[ Identifiants perdus ]</a>'.NL;
   }
   elseif($profil=='partenaire')
   {
@@ -82,7 +82,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a class="lost" href="#lost_partenaire">[ Identifiants oubliés ! ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" href="#lost_partenaire">[ Identifiants perdus ]</a>'.NL;
   }
   elseif($profil=='developpeur')
   {
@@ -94,7 +94,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a class="lost" href="#lost_structure">[ Identifiants oubliés ! ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" href="#lost_structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact administrateur ]</a>'.NL;
   }
   else
   {
@@ -106,7 +106,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '</fieldset>'.NL;
     $affichage .= '<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span id="lien_lost" class="hide"><span class="tab"></span><a class="lost" href="#lost_structure">[ Identifiants oubliés ! ]</a></span>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" class="hide" href="#lost_structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact administrateur ]</a>'.NL;
   }
   return $affichage;
 }
@@ -314,9 +314,6 @@ if( ($action=='demande_mdp') && ($courriel!='') && ( ($BASE>0) || (HEBERGEUR_INS
   $user_pass_key = crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']);
   $code_mdp = ($BASE) ? $user_pass_key.'g'.$BASE : $user_pass_key ;
   DB_STRUCTURE_PUBLIC::DB_modifier_user_password_or_key ($DB_ROW['user_id'] , '' /*user_password*/ , $user_pass_key /*user_pass_key*/ );
-  $AdresseIP = Session::get_IP();
-  $HostName  = gethostbyaddr($AdresseIP);
-  $UserAgent = Session::get_UserAgent();
   $mail_contenu = 'Bonjour,'."\r\n";
   $mail_contenu.= "\r\n";
   $mail_contenu.= 'Une demande de nouveaux identifiants vient d\'être formulée concernant le compte SACoche ayant cette adresse de courriel :'."\r\n";
@@ -324,18 +321,8 @@ if( ($action=='demande_mdp') && ($courriel!='') && ( ($BASE>0) || (HEBERGEUR_INS
   $mail_contenu.= "\r\n";
   $mail_contenu.= 'Pour confirmer la génération d\'un nouveau mot de passe, veuillez cliquer sur ce lien :'."\r\n";
   $mail_contenu.= URL_DIR_SACOCHE.'?code_mdp='.$code_mdp."\r\n";
-  $mail_contenu.= "\r\n";
-  $mail_contenu.= 'Si vous n\'êtes pas à l\'origine de cette demande, alors il s\'agit d\'une mauvaise plaisanterie !'."\r\n";
-  $mail_contenu.= 'Dans ce cas, merci d\'ignorer ce message.'."\r\n";
-  $mail_contenu.= "\r\n";
-  $mail_contenu.= 'Voici pour information les informations relatives à la connexion internet utilisée :'."\r\n";
-  $mail_contenu.= 'Adresse IP --> '.$AdresseIP."\r\n";
-  $mail_contenu.= 'Nom d\'hôte --> '.$HostName."\r\n";
-  $mail_contenu.= 'Navigateur --> '.$UserAgent."\r\n";
-  $mail_contenu.= "\r\n";
-  $mail_contenu.= '--'."\r\n";
-  $mail_contenu.= 'SACoche - '.HEBERGEUR_DENOMINATION."\r\n";
-  $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu );
+  $mail_contenu.= fabriquer_texte_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $DB_ROW['user_email'] );
+  $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu , $DB_ROW['user_email'] /*replyto*/ );
   if(!$courriel_bilan)
   {
     exit_json( FALSE , 'Erreur lors de l\'envoi du courriel !' );

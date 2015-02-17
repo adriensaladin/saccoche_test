@@ -32,6 +32,9 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
+// La classe Sesamail a besoin d'info pour définir son $default_sender.
+require(CHEMIN_FICHIER_CONFIG_INSTALL);
+
 // Fonctions
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 

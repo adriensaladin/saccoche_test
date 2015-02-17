@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2015-01-25 15:12+0100\n"
-"PO-Revision-Date: 2015-01-25 15:13+0100\n"
+"POT-Creation-Date: 2015-02-06 17:43+0100\n"
+"PO-Revision-Date: 2015-02-06 17:43+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: vi_VN\n"
@@ -34,23 +34,23 @@ msgstr "Thông tin"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:39
 msgid "Paramétrages établissement"
-msgstr ""
+msgstr "Thiết lập, cài đặt tên xác thực và mã trường"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:40
 msgid "Paramétrages utilisateurs"
-msgstr ""
+msgstr "Thiết lập, cài đặt tên xác thực của người sử dụng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:41
 msgid "Paramétrages personnels"
-msgstr ""
+msgstr "Cài đặt tên xác thực của giáo viên, cán bộ giáo dục"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:42
 msgid "Administration générale"
-msgstr ""
+msgstr "Quản trị chung"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:43
 msgid "Gestion courante"
-msgstr ""
+msgstr "Quản lý học sinh đến / đi"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:50
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:50
@@ -85,22 +85,22 @@ msgstr "Xuất dữ liệu"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:54
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_log_actions.php:29
 msgid "Log des actions sensibles"
-msgstr ""
+msgstr "Lưu lại các thao tác nhạy cảm"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:58
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_identite.php:29
 msgid "Identité de l'établissement"
-msgstr "Tên và mã trường"
+msgstr "Tên xác thực của trường"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:59
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_connexion.php:29
 msgid "Mode d'identification / Connecteur ENT"
-msgstr ""
+msgstr "Chế độ định danh tính / Kết nối ENT"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:60
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_deconnexion.php:29
 msgid "Redirection après déconnexion"
-msgstr ""
+msgstr "Địa chỉ sẽ đến sau khi đăng xuất"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:61
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_niveau.php:29
@@ -130,27 +130,27 @@ msgstr "Nhận xét, đánh giá: ký hiệu, màu sắc, chú thích"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_algorithme_gestion.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_algorithme.php:29
 msgid "Algorithme de calcul"
-msgstr "Các bước làm tính "
+msgstr "Quy tắc các bước làm tính "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:69
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_profils.php:29
 msgid "Choix des profils utilisateurs"
-msgstr ""
+msgstr "Lựa chọn chức năng người sử dụng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:70
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_autorisations.php:29
 msgid "Réglage des autorisations"
-msgstr ""
+msgstr "Điều tiết quyền đăng nhập"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:71
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_login.php:29
 msgid "Format des identifiants de connexion"
-msgstr ""
+msgstr "Quy tắc ký hiệu trong thiết lập danh tính người đăng nhập"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:72
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_duree_inactivite.php:29
 msgid "Délai avant déconnexion"
-msgstr ""
+msgstr "Thời gian còn lại trước khi đăng xuất"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:76
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:63
@@ -167,7 +167,7 @@ msgstr "Mật khẩu"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:64
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_email.php:29
 msgid "Adresse e-mail &amp; Notifications"
-msgstr ""
+msgstr "Địa chỉ  thư điện tử &amp; Thông báo"
 
 # Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:78
@@ -181,27 +181,27 @@ msgstr "Ngôn ngữ"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:82
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_dump.php:29
 msgid "Sauvegarder / Restaurer la base"
-msgstr ""
+msgstr "Bảo vệ / phục hồi một cơ sở dữ liệu"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:83
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_nettoyage.php:29
 msgid "Nettoyer / Initialiser la base"
-msgstr ""
+msgstr "Vệ sinh / Khởi tạo lại một cơ sở dữ liệu"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:84
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_fichier_user.php:29
 msgid "Importer des fichiers d'utilisateurs"
-msgstr ""
+msgstr "Nhập các phiếu thông tin của người sử dụng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:85
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_fichier_identifiant.php:29
 msgid "Importer / Imposer des identifiants"
-msgstr ""
+msgstr "Nhập / Lập sẵn tên tài khoản"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:86
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:82
 msgid "Import / Export des validations"
-msgstr ""
+msgstr "Nhập / Xuất các kết quả đã được hợp thức"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:87
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:67
@@ -213,11 +213,11 @@ msgstr "Thông tin tại trang chủ"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:88
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_blocage.php:29
 msgid "Blocage des connexions"
-msgstr ""
+msgstr "Chặn các đăng nhập"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:89
 msgid "Résilier l'inscription"
-msgstr ""
+msgstr "Hủy bỏ một đăng ký "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:93
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode.php:29
@@ -235,7 +235,7 @@ msgstr "Tổng hợp / đánh giá kết quả học tập"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:105
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
 msgid "Notanet &amp; Fiches brevet"
-msgstr ""
+msgstr "Notanet &amp; Hồ sơ chuẩn bị cho thi tốt nghiệp THCS"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:96
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:29
@@ -260,7 +260,7 @@ msgstr "PHHS"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_gestion.php:29
 msgid "Professeurs / Personnels"
-msgstr "Giáo viên/CBNV"
+msgstr "Giáo viên/ Cán bộ giáo dục"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:101
 msgid "Administrateurs"
@@ -269,7 +269,7 @@ msgstr "Quản trị hệ thống"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:102
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_user_recherche.php:29
 msgid "Rechercher un utilisateur"
-msgstr ""
+msgstr "Tìm kiếm người sử dụng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:39
@@ -331,7 +331,7 @@ msgstr "Các tập hợp tham chiếu được chia sẻ"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:56
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_stats_globales.php:29
 msgid "Statistiques globales"
-msgstr ""
+msgstr "Thống kê tổng quát"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:59
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:59
@@ -492,7 +492,7 @@ msgstr "Đề nghị kiểm tra, đánh giá của học sinh"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:80
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:79
 msgid "Archives consultables"
-msgstr "Kết quả lưu trữ có thể tra cứu"
+msgstr "Kết quả học tập lưu trữ bạn có thể tra cứu"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:40
 msgid "Référentiels (gestion)"
@@ -530,7 +530,7 @@ msgstr "Đánh giá kết quả học tập của những học sinh được l�
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:82
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_ponctuelle.php:29
 msgid "Évaluer un élève à la volée"
-msgstr " Kiểm tra đánh giá không báo trước "
+msgstr "Kiểm tra đánh giá không báo trước "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:97
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_selection.php:29
@@ -540,7 +540,7 @@ msgstr "Bảng kê các năng lực được lựa chọn"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:99
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_professeur.php:29
 msgid "Relevé d'items d'un enseignant"
-msgstr "Bảng kê các năng lực đã được một giáo viên khác sử dụng để đánh giá"
+msgstr "Bảng kê các năng lực đã được một giáo viên khác sử dụng để đánh giá học sinh"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:115
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
@@ -550,27 +550,27 @@ msgstr "Hồ sơ chuẩn bị cho thi tốt nghiệp THCS"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_administrateur.php:29
 msgid "Gérer les administrateurs"
-msgstr ""
+msgstr "Quản lý, tổ chức người quản trị"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe_gestion.php:29
 msgid "Gérer les classes"
-msgstr ""
+msgstr "Quản lý, tổ chức các lớp"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_classe.php:29
 msgid "Affecter les élèves aux classes"
-msgstr ""
+msgstr "Phân bố học sinh vào các lớp"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_gestion.php:29
 msgid "Gérer les élèves"
-msgstr ""
+msgstr "Quản lý học sinh"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_groupe.php:29
 msgid "Affecter les élèves aux groupes"
-msgstr ""
+msgstr "Phân bố học sinh vào các nhóm"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_langue.php:29
 msgid "Choisir la langue étrangère pour le socle commun"
-msgstr ""
+msgstr "Chọn ngoại ngữ 1 cho phần kiến thức nền chung"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_photo.php:29
 msgid "Photos des élèves"
@@ -578,7 +578,7 @@ msgstr "Ảnh học sinh"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe_gestion.php:29
 msgid "Gérer les groupes"
-msgstr ""
+msgstr "Quản lý, tổ chức các nhóm"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent.php:29
 msgid "Responsables légaux"
@@ -595,55 +595,55 @@ msgstr "Phụ huynh &amp; học sinh"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_gestion.php:29
 msgid "Gérer les parents"
-msgstr ""
+msgstr "Quản lý, thiết lập tài khoản cho phụ huynh, tên học sinh kết nối "
 
 # Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_classe_groupe.php:29
 msgid "Affecter les périodes aux classes &amp; groupes"
-msgstr ""
+msgstr "Phân bố các phân kỳ học tập cho các lớp &amp; các nhóm "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_gestion.php:29
 msgid "Gérer les périodes"
-msgstr ""
+msgstr "Quản lý, tổ chức các phân kỳ học tập"
 
 # Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_classe.php:29
 msgid "Professeurs &amp; classes / Professeurs principaux"
-msgstr ""
+msgstr "Giáo viên &amp; lớp / Giáo viên chủ nhiệm lớp"
 
 # Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_groupe.php:29
 msgid "Professeurs &amp; groupes"
-msgstr ""
+msgstr "Giáo viên &amp; nhóm "
 
 # Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_matiere.php:29
 msgid "Personnels &amp; matières / Personnels coordonnateurs"
-msgstr ""
+msgstr "Phân bố giáo viên, nhân sự &amp; bộ môn / Phân bố giáo viên, nhân sự điều phối "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_resilier.php:29
 msgid "Résilier l'inscription de l'établissement"
-msgstr ""
+msgstr "Hủy bỏ tên trường đã đăng ký "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_epreuves.php:29
 msgid "Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note"
-msgstr ""
+msgstr "Bước 2 - Chỉ dẫn các tham chiếu sẽ sử dụng và cách tính toán để biết điểm số tương ứng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_fiches.php:29
 msgid "Étape n°5 - Fiches brevet"
-msgstr ""
+msgstr "Bước 5 - Tập hợp hồ sơ chuẩn bị cho kỳ thi tốt nghiệp THCS"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_moyennes.php:29
 msgid "Étape n°3 - Calculer et contrôler les notes pour chaque élève"
-msgstr ""
+msgstr "Bước 3 - Tính toán và kiểm soát điểm đã cho đối với mỗi học sinh"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_notanet.php:29
 msgid "Étape n°4 - Générer le fichier d'export pour Notanet"
-msgstr ""
+msgstr "Bước 4 -   Lập các phiếu thông tin sẽ xuất cho Notanet"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_series.php:29
 msgid "Étape n°1 - Indiquer la série des élèves concernés"
-msgstr ""
+msgstr "Bước 1 - Chỉ báo phân luồng đối với những học sinh liên quan"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:29
 msgid "Bienvenue dans votre espace identifié"
@@ -651,11 +651,11 @@ msgstr "Chào mừng bạn đã vào trang thông tin cá nhân của mình"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
 msgid "Items récents à retravailler"
-msgstr "Các kỹ năng vừa học cần củng cố lại"
+msgstr "Các kỹ năng vừa học cần được củng cố lại"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
 msgid "Items récents à améliorer"
-msgstr "Các kỹ năng vừa học cần cải thiện hơn"
+msgstr "Các kỹ năng vừa học cần được cải thiện hơn"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:38
 msgid "Notes à saisir"
@@ -667,7 +667,7 @@ msgstr "Bài tự đánh giá đang thực hiện"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:39
 msgid "Bilans officiels ouverts à la saisie"
-msgstr ""
+msgstr "Bảng tổng kết chính thức được mở để cho giáo viên ghi nhận xét "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:39
 msgid "Nouveaux bilans officiels à consulter"
@@ -691,7 +691,7 @@ msgstr "Yêu cầu kiểm tra, đánh giá"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:52
 msgid "Astuce du moment"
-msgstr " Cách làm hay của ngày "
+msgstr "Cách làm hay của ngày "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:53
 msgid "Protégeons l'environnement"
@@ -750,12 +750,12 @@ msgstr "Bạn vẫn ở đây %s&nbsp;? Không sao, bạn cứ ở lại chừng
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:124
 #, php-format
 msgid "Vous êtes dans l'environnement %s."
-msgstr "Bạn đang ở trong môi trường %s."
+msgstr "Bạn đang ở cương vị %s."
 
 # Conserver "&amp;".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:135
 msgid "Élève(s) associé(s) à votre compte&nbsp;:"
-msgstr "Học sinh liên kết với tài khoản của bạn&nbsp;:"
+msgstr "(Các) học sinh liên kết với tài khoản của bạn&nbsp;:"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:244
 msgid "Message"
@@ -767,7 +767,7 @@ msgstr "Để bảo vệ môi trường, bạn chỉ in khi thật cần thiết
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:490
 msgid "Le saviez-vous ?"
-msgstr "Bạn đã biết chưa ?"
+msgstr "Bạn đã biết cách này chưa ?"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_langue.php:29
 msgid "Choisir sa langue"
@@ -791,23 +791,23 @@ msgstr "Các tập hợp tham chiếu đã được thiết lập (của nhà tr
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_configuration.php:29
 msgid "Configuration des bilans officiels"
-msgstr ""
+msgstr "Giao diện bảng tổng kết đánh giá chính thức"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_format_synthese.php:29
 msgid "Format de synthèse par référentiel"
-msgstr ""
+msgstr "Mức độ tập hợp qua các tham chiếu"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_mise_en_page.php:29
 msgid "Mise en page des bilans officiels"
-msgstr ""
+msgstr "Lên trang các bảng tổng kết đánh giá chính thức"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_ordre_matieres.php:29
 msgid "Ordre d'affichage des matières"
-msgstr ""
+msgstr "Thứ tự thông báo các môn học trong một phiếu điểm"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_voir_archive.php:29
 msgid "Archives consultables des bilans officiels"
-msgstr "Phần lưu trữ kết quả đánh giá học tập chính thức có thể tra cứu "
+msgstr "Phần lưu trữ kết quả đánh giá học tập chính thức bạn có thể tra cứu "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_groupe_besoin.php:29
 msgid "Gérer ses groupes de besoin"
@@ -819,7 +819,7 @@ msgstr "Đánh giá kết quả đạt được theo thứ tự thời gian"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_fichier.php:29
 msgid "Import / Export de validations du socle"
-msgstr ""
+msgstr "Nhập / Xuất các kết quả tiếp thu kiến thức nền đã được xác thực "
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_pilier.php:29
 msgid "Valider les compétences (piliers) du socle"

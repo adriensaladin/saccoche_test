@@ -36,8 +36,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $tab_menu = array
 (
   'information'   => "Informations",
-  'admin_site'    => "Administration du site",
-  'gestion_multi' => "Gestion des inscriptions", // multi-structures uniquement
+  'param_serveur' => "Paramétrages serveur",
 );
 
 $tab_sous_menu = array
@@ -46,20 +45,18 @@ $tab_sous_menu = array
   (
     'compte_accueil'         => array( 'texte' => "Accueil"                     , 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'         ),
     'webmestre_info_serveur' => array( 'texte' => "Caractéristiques du serveur" , 'class' => 'serveur_info'   , 'href' => 'page=webmestre_info_serveur' ),
+    'webmestre_statistiques' => array( 'texte' => "Statistiques d'utilisation"  , 'class' => 'statistiques'   , 'href' => 'page=webmestre_statistiques' ), // multi-structures uniquement
   ),
-  'admin_site' => array
+  'param_serveur' => array
   (
-    'webmestre_configuration_proxy'      => array( 'texte' => "Configuration d'un proxy"         , 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
-    'webmestre_database_test'            => array( 'texte' => "Test des droits MySQL"            , 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
-    'webmestre_configuration_filesystem' => array( 'texte' => "Droits du système de fichiers"    , 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
-    'webmestre_maintenance'              => array( 'texte' => "Maintenance &amp; mise à jour"    , 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
-    'webmestre_structure_bdd_repair'     => array( 'texte' => "Analyser / Réparer les bases"     , 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
-    'webmestre_certificats_ssl'          => array( 'texte' => "Vérification des certificats SSL" , 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
-    'webmestre_debug'                    => array( 'texte' => "Débogueur"                        , 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
-  ),
-  'gestion_multi' => array
-  (
-    'webmestre_statistiques' => array( 'texte' => "Statistiques d'utilisation" , 'class' => 'statistiques' , 'href' => 'page=webmestre_statistiques' ),
+    'webmestre_configuration_proxy'      => array( 'texte' => "Configuration d'un proxy"          , 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
+    'webmestre_mail_bounces'             => array( 'texte' => "Adresse de rebond &amp; Test mail" , 'class' => 'newsletter'           , 'href' => 'page=webmestre_mail_bounces'             ),
+    'webmestre_database_test'            => array( 'texte' => "Test des droits MySQL"             , 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    'webmestre_configuration_filesystem' => array( 'texte' => "Droits du système de fichiers"     , 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
+    'webmestre_maintenance'              => array( 'texte' => "Maintenance &amp; Mise à jour"     , 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
+    'webmestre_structure_bdd_repair'     => array( 'texte' => "Analyser / Réparer les bases"      , 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
+    'webmestre_certificats_ssl'          => array( 'texte' => "Vérification des certificats SSL"  , 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
+    'webmestre_debug'                    => array( 'texte' => "Débogueur"                         , 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
   ),
 );
 
@@ -71,8 +68,8 @@ $tab_sous_menu = array
 if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
   unset(
-    $tab_sous_menu['admin_site']['webmestre_database_test'] ,
-    $tab_menu['gestion_multi']
+    $tab_sous_menu['information']['webmestre_statistiques'] ,
+    $tab_sous_menu['param_serveur']['webmestre_database_test']
   );
 }
 

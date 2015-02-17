@@ -155,16 +155,28 @@ $(document).ready
       }
     );
 
-    // Clic sur le lien [ Identifiants oubliés ! ]
+    // Clic sur le lien [ Identifiants perdus ! ]
     $('#form_auth').on
     (
       'click',
-      'a.lost',
+      '#lien_lost',
       function()
       {
         var ancre = extract_hash( $(this).attr('href') );
         $('#form_auth').hide();
         $('#'+ancre+', #form_lost').show();
+        return false;
+      }
+    );
+
+    // Clic sur le lien [ Contacter un administrateur ? ]
+    $('#form_auth').on
+    (
+      'click',
+      '#contact_admin',
+      function()
+      {
+        document.location.href = './index.php?page=public_contact_admin'+'&base='+$('#f_base').val();
         return false;
       }
     );

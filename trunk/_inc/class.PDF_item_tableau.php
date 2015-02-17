@@ -44,7 +44,7 @@ class PDF_item_tableau extends PDF
     $this->taille_police     = $this->cases_largeur*0.8;
     $this->taille_police     = min($this->taille_police,10); // pas plus de 10
     $this->taille_police     = max($this->taille_police,5);  // pas moins de 5
-    $this->cases_hauteur     = ($this->page_hauteur_moins_marges - 2 - $hauteur_entete) / ($lignes_nb+2+$etiquette_facteur); // -2 pour une petite marge - entête ; 2 lignes ajoutées + identité/item
+    $this->cases_hauteur     = ($this->page_hauteur_moins_marges - 2 - $hauteur_entete) / ($lignes_nb+2+$etiquette_facteur); // -2 pour une petite marge - en-tête ; 2 lignes ajoutées + identité/item
     $this->etiquette_hauteur = $etiquette_facteur * $this->cases_hauteur;
     $this->cases_hauteur     = min($this->cases_hauteur,10); // pas plus de 10
     $this->cases_hauteur     = max($this->cases_hauteur,3);  // pas moins de 3
@@ -68,7 +68,7 @@ class PDF_item_tableau extends PDF
     // Période
     $this->SetFont('Arial' , '' , 8);
     $this->Cell( $this->page_largeur-$this->marge_gauche-$this->marge_droite , 4 , To::pdf($texte_periode) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-    // On se positionne sous l'entête
+    // On se positionne sous l'en-tête
     $this->SetXY($this->marge_gauche , $this->marge_haut+$hauteur_entete);
     $this->SetFont('Arial' , '' , $this->taille_police);
   }

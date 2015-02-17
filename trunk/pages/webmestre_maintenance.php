@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Maintenance &amp; mise à jour"; // Pas de traduction car pas de choix de langue pour ce profil.
+$TITRE = "Maintenance &amp; Mise à jour"; // Pas de traduction car pas de choix de langue pour ce profil.
 
 // Initialisation de l'état de l'accès
 $blocage_msg = LockAcces::tester_blocage('webmestre',0);

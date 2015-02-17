@@ -407,6 +407,7 @@ class FileSystem
       'HEBERGEUR_UAI',
       'HEBERGEUR_ADRESSE_SITE',
       'HEBERGEUR_LOGO',
+      'HEBERGEUR_MAILBOX_BOUNCE',
       'CNIL_NUMERO',
       'CNIL_DATE_ENGAGEMENT',
       'CNIL_DATE_RECEPISSE',
@@ -431,6 +432,7 @@ class FileSystem
       'SYSTEME_UMASK',
       'CONTACT_MODIFICATION_USER',
       'CONTACT_MODIFICATION_MAIL',
+      'COURRIEL_NOTIFICATION',
     );
     $longueur_constante_maxi = 26;
     $fichier_contenu = '<?php'.NL;

@@ -437,7 +437,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n";
     $texte.= 'Responsable SACoche pour Sésamath'."\r\n";
     $texte.= "\r\n";
-    $courriel_bilan = Sesamail::mail( $DB_ROW2['structure_contact_courriel'] , $titre , $texte );
+    $courriel_bilan = Sesamail::mail( $DB_ROW2['structure_contact_courriel'] , $titre , $texte ); // Ce serait mieux si le Reply-To était MAIL_SACOCHE_CONTACT mais cette contante n'est pas connue ici...
     if(!$courriel_bilan)
     {
       exit_json( FALSE , 'Envoi du courriel infructueux !' );

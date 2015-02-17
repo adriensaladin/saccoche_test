@@ -57,12 +57,14 @@ $tab_droits_par_page = array
   // Profils identifiés
   'conserver_session_active'                => $tab_droits_profil_identifie,
   'compte_accueil'                          => $tab_droits_profil_identifie,
-  'compte_email'                            => $tab_droits_profil_identifie,
   'compte_password'                         => $tab_droits_profil_identifie,
   // Profils établissement
+  'compte_email'                            => $tab_droits_profil_etablissement,
   'compte_langue'                           => $tab_droits_profil_etablissement,
+  'consultation_notifications'              => $tab_droits_profil_etablissement,
   // Profil public
   'public_accueil'                          => $tab_droits_profil_public,
+  'public_contact_admin'                    => $tab_droits_profil_public,
   'public_installation'                     => $tab_droits_profil_public,
   'public_logout_SSO'                       => $tab_droits_profil_public,
   'public_nouveau_mdp'                      => $tab_droits_profil_public,
@@ -144,11 +146,13 @@ $tab_droits_par_page = array
   'webmestre_database_test'                 => $tab_droits_profil_webmestre_developpeur,
   'webmestre_debug'                         => $tab_droits_profil_webmestre_developpeur,
   'webmestre_info_serveur'                  => $tab_droits_profil_webmestre_developpeur,
+  'webmestre_mail_bounces'                  => $tab_droits_profil_webmestre_developpeur,
   'webmestre_maintenance'                   => $tab_droits_profil_webmestre_developpeur,
   'webmestre_statistiques'                  => $tab_droits_profil_webmestre_developpeur,
   'webmestre_structure_bdd_repair'          => $tab_droits_profil_webmestre_developpeur,
   // Profil webmestre
   'webmestre_contact_modification'          => $tab_droits_profil_webmestre,
+  'webmestre_envoi_notifications'           => $tab_droits_profil_webmestre,
   'webmestre_fichiers_deposes'              => $tab_droits_profil_webmestre,
   'webmestre_geographie'                    => $tab_droits_profil_webmestre,
   'webmestre_identite_installation'         => $tab_droits_profil_webmestre,

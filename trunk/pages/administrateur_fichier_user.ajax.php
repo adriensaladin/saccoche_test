@@ -2107,6 +2107,11 @@ if( $step==52 )
           crypter_mdp($password),
           $tab_memo_analyse['ajouter'][$i_fichier]['classe']
         );
+        if($import_profil=='professeur')
+        {
+          // Pour les professeurs et directeurs, abonnement obligatoire aux signalements d'un souci pour une appréciation d'un bilan officiel
+          DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'bilan_officiel_appreciation' , 'accueil' );
+        }
         $tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
         $nb_add++;
         $tab_password[$user_id] = $password;

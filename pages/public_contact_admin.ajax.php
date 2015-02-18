@@ -47,6 +47,15 @@ if( !$nom || !$prenom || !$courriel|| !$message || ( (HEBERGEUR_INSTALLATION=='m
 
 if(!$code)
 {
+  // Anti-robot light (sans système de CAPTCHA nécessitant une intervention de l'utilisateur)
+  $delai = 10; // Délai minimum à respecter (en secondes)
+  if( isset($_SESSION['TMP']['CAPTCHA']) && ($_SERVER['REQUEST_TIME']-$_SESSION['TMP']['CAPTCHA'])<$delai )
+  {
+    $_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
+    exit_json( FALSE , 'Trop rapide ! Robot ? Veuillez patienter '.$delai.'s supplémentaires.' );
+  }
+  unset($_SESSION['TMP']['CAPTCHA']);
+
   // On vérifie le domaine du serveur mail même en mode mono-structures parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
   $mail_domaine = tester_domaine_courriel_valide($courriel);
   if($mail_domaine!==TRUE)

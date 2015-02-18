@@ -82,6 +82,9 @@ else
   $liens_autres_profils = '<a class="anti_h2" href="index.php?webmestre">accès webmestre</a>';
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
 }
+
+// Anti-robot light (sans système de CAPTCHA nécessitant une intervention de l'utilisateur), pour éviter des envois intempestifs de courriels
+$_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
 ?>
 
 <h1 class="identification"><?php echo $h1_identification ?><?php echo $liens_autres_profils ?></h1>

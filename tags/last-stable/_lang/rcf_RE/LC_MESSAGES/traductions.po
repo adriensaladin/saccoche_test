@@ -1,0 +1,845 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SACoche\n"
+"POT-Creation-Date: 2015-02-19 18:02+0100\n"
+"PO-Revision-Date: 2015-02-19 18:02+0100\n"
+"Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
+"Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
+"Language: rcf_RE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\menus\n"
+"X-Poedit-SearchPath-1: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\pages\n"
+"X-Poedit-SearchPath-2: D:\\WEB\\www\\sites_SESAMATH_PRINCIPAL\\site_sesamath__sacoche\\trunk\\sacoche\\_inc\n"
+
+# Dans le sens du menu du logiciel, pas du menu de la cantine. :)
+# Laisser en majuscules.
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\_inc/class.SessionUser.php:596
+msgid "MENU"
+msgstr "MENU"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:38
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:38
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:38
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:38
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:38
+msgid "Informations"
+msgstr "Zinformations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:39
+msgid "Paramétrages établissement"
+msgstr "Paramétrages lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:40
+msgid "Paramétrages utilisateurs"
+msgstr "Paramétrages zutilisateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:41
+msgid "Paramétrages personnels"
+msgstr "Paramétrages pour ou mem"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:42
+msgid "Administration générale"
+msgstr "Administration zénérale"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:43
+msgid "Gestion courante"
+msgstr "Zestion courante"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:50
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:50
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:49
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:49
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:51
+msgid "Accueil"
+msgstr "Accueil"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:51
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:53
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:54
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_date_connexion.php:29
+msgid "Date de dernière connexion"
+msgstr "Date out dernière connexion"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:52
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:55
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:56
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/export_fichier.php:29
+msgid "Export de données"
+msgstr "Envoa là zot données"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:53
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_log_actions.php:29
+msgid "Log des actions sensibles"
+msgstr "Log des actions sensibles"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:54
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:56
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:53
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:53
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:57
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_notifications.php:29
+msgid "Notifications reçues"
+msgstr ""
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:55
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:57
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:54
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:54
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:58
+msgid "Référentiels en place"
+msgstr "Référentiel zen place"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:59
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_identite.php:29
+msgid "Identité de l'établissement"
+msgstr "Identité zot lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:60
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_connexion.php:29
+msgid "Mode d'identification / Connecteur ENT"
+msgstr "Mode d'identification / Connecteur ENT"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:61
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_deconnexion.php:29
+msgid "Redirection après déconnexion"
+msgstr "Redirection après déconnexion"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:62
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_niveau.php:29
+msgid "Niveaux"
+msgstr "Niveaux"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:63
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_matiere.php:29
+msgid "Matières"
+msgstr "Matières"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:64
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_palier.php:29
+msgid "Paliers du socle"
+msgstr "Paliers du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:65
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_codes_couleurs.php:29
+msgid "Notation : codes, couleurs, légendes"
+msgstr "Notation : codes, couleurs, légendes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:66
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:52
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:51
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:51
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:53
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_algorithme_gestion.php:29
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_algorithme.php:29
+msgid "Algorithme de calcul"
+msgstr "Algorithme de calcul"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:70
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_profils.php:29
+msgid "Choix des profils utilisateurs"
+msgstr "Choix de zot band' zutilisateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:71
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_autorisations.php:29
+msgid "Réglage des autorisations"
+msgstr "Réglage de zot zautorisations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:72
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_login.php:29
+msgid "Format des identifiants de connexion"
+msgstr "Format de zot band' zidentifiants de connexion"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:73
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_duree_inactivite.php:29
+msgid "Délai avant déconnexion"
+msgstr "Délai avant déconnexion"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:77
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:64
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:58
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:58
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:64
+msgid "Mot de passe"
+msgstr "Mot d' passe"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:78
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:65
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:59
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:59
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:65
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_email.php:29
+msgid "Adresse e-mail & Abonnements"
+msgstr ""
+
+# Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:79
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:67
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:61
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:61
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:67
+msgid "Langue"
+msgstr "Lang"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:83
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_dump.php:29
+msgid "Sauvegarder / Restaurer la base"
+msgstr "Gard / Remett zot base"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:84
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_nettoyage.php:29
+msgid "Nettoyer / Initialiser la base"
+msgstr "Nettoaye / Refé zot base"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:85
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_fichier_user.php:29
+msgid "Importer des fichiers d'utilisateurs"
+msgstr "Ramèn là toute zot fichiers zutilisateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:86
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_fichier_identifiant.php:29
+msgid "Importer / Imposer des identifiants"
+msgstr "Ramèn / Impoz toute zot identifiants"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:87
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:83
+msgid "Import / Export des validations"
+msgstr "Mett là / Envoa là bas toute zot validations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:88
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:68
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:68
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_message.php:29
+msgid "Messages d'accueil"
+msgstr "Messazes d'accueil"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:89
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_blocage.php:29
+msgid "Blocage des connexions"
+msgstr "Blocaze toute zot connexions"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:90
+msgid "Résilier l'inscription"
+msgstr "Arèt out linscription"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:94
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode.php:29
+msgid "Périodes"
+msgstr "Périodes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:95
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:70
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel.php:29
+msgid "Synthèses / Bilans"
+msgstr "Synthèzes / Bilans"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:96
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:106
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
+msgid "Notanet & Fiches brevet"
+msgstr "Notanet & Fiches brevet"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:97
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:29
+msgid "Classes"
+msgstr "Classes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:98
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:29
+msgid "Groupes"
+msgstr "Groupes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:99
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:29
+msgid "Élèves"
+msgstr "Marmailles lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:100
+msgid "Parents"
+msgstr "Granmoun"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:101
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:29
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_gestion.php:29
+msgid "Professeurs / Personnels"
+msgstr "Professeurs / Personnels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:102
+msgid "Administrateurs"
+msgstr "Zadministrateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:103
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_user_recherche.php:29
+msgid "Rechercher un utilisateur"
+msgstr "Recherch in utilisateur"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:39
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:39
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:39
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:39
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl.php:29
+msgid "Paramétrages"
+msgstr "Paramétrages"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:40
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:40
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:40
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:41
+msgid "Évaluations"
+msgstr "Zévaluations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:41
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:42
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:29
+msgid "Validation du socle"
+msgstr "Validation du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:42
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:41
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:41
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:43
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:29
+msgid "Relevés / Synthèses"
+msgstr "Toute zot List / Toute zot Synthèzes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:43
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:42
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:42
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:44
+msgid "Bilans officiels"
+msgstr "Toute zot Bilans officiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:51
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:50
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:50
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:52
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_cnil.php:29
+msgid "Données personnelles"
+msgstr "Toute out données a ou"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:54
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:52
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:52
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:55
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_groupe_periode.php:29
+msgid "Dates des périodes"
+msgstr "Dates toute zot périodes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:58
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:59
+msgid "Référentiels partagés"
+msgstr "Référentiels partazés"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:59
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_stats_globales.php:29
+msgid "Statistiques globales"
+msgstr "Statistiques globales"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:60
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:60
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_trombinoscope.php:29
+msgid "Trombinoscope"
+msgstr "Têt zot toute !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:66
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:60
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:60
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:66
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_daltonisme.php:29
+msgid "Daltonisme"
+msgstr "Daltonisme"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:69
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:70
+msgid "Regroupements d'items"
+msgstr "Regroupements z'items"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:74
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_nombre_saisies.php:29
+msgid "Nombre de saisies"
+msgstr "Nombre de saisies"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:75
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:65
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:65
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:84
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_voir.php:29
+msgid "Liste des évaluations"
+msgstr "Toute zot zévaluations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:79
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:88
+msgid "Choisir la langue étrangère"
+msgstr "Choizi in lang zétrangère"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:80
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:89
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_item.php:29
+msgid "Valider les items du socle"
+msgstr "Valid band' zitems du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:81
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:90
+msgid "Valider les compétences du socle"
+msgstr "Valid toute zot compétences du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:82
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:91
+msgid "Annuler une compétence validée"
+msgstr "Annul in compétence validée"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:87
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:95
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_recherche.php:29
+msgid "Recherche ciblée"
+msgstr "Recherche ciblée"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:88
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:70
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:69
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:96
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_grille_referentiel.php:29
+msgid "Grille d'items d'un référentiel"
+msgstr "Grille z'items d'in référentiel"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:89
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:71
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:70
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:97
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_matiere.php:29
+msgid "Relevé d'items d'une matière"
+msgstr "List z'items pour in matière"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:90
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:72
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:71
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:99
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_multimatiere.php:29
+msgid "Relevé d'items pluridisciplinaire"
+msgstr "List z'items toute mélanzés"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:93
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:75
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:74
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:103
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_synthese_matiere.php:29
+msgid "Synthèse d'une matière"
+msgstr "Synthèze pour in matière"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:94
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:76
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:75
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:104
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_synthese_multimatiere.php:29
+msgid "Synthèse pluridisciplinaire"
+msgstr "Synthèze toute mélanzée"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:95
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:77
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:76
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:105
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_socle.php:29
+msgid "Relevé de maîtrise du socle"
+msgstr "List de maîtrise du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:96
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:106
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_synthese_socle.php:29
+msgid "Synthèse de maîtrise du socle"
+msgstr "Synthèze de maîtrise du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:100
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:110
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_assiduite.php:29
+msgid "Absences / Retards"
+msgstr "Absences / Retards"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:101
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:111
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_accueil.php:33
+msgid "Relevé d'évaluations"
+msgstr "List toute zévaluations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:102
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:112
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_accueil.php:34
+msgid "Bulletin scolaire"
+msgstr "Bulletin scolaire"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:103
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:113
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_accueil.php:35
+msgid "Maîtrise du palier 1"
+msgstr "Maîtrise du palier 1"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:104
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:114
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_accueil.php:36
+msgid "Maîtrise du palier 2"
+msgstr "Maîtrise du palier 2"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:105
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:115
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_accueil.php:37
+msgid "Maîtrise du palier 3"
+msgstr "Maîtrise du palier 3"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:66
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:80
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_demande_eleve.php:29
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_demande_professeur.php:29
+msgid "Demandes d'évaluations formulées"
+msgstr "Demandes zévaluations par ou mem"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:81
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:80
+msgid "Archives consultables"
+msgstr "Zarchives consultables"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:40
+msgid "Référentiels (gestion)"
+msgstr "Référentiels (zestion)"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:69
+msgid "Groupes de besoin"
+msgstr "Groupes de bezoin"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:74
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_referentiel_gestion.php:29
+msgid "Créer / paramétrer les référentiels"
+msgstr "Fabrik / arranj toute zot référentiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:75
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_referentiel_edition.php:29
+msgid "Modifier le contenu des référentiels"
+msgstr "Arranj lintérieur de zot référentiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:76
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_referentiel_ressources.php:29
+msgid "Associer des ressources aux items"
+msgstr "Mett band' ressources avec zitems"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:81
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_gestion.php:81
+msgid "Évaluer une classe ou un groupe"
+msgstr "Nott in classe ou in groupe"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:82
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_gestion.php:81
+msgid "Évaluer des élèves sélectionnés"
+msgstr "Nott band' marmailles lécol ke ou la choizi"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:83
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_ponctuelle.php:29
+msgid "Évaluer un élève à la volée"
+msgstr "Nott in marmaille lécol ke ou la atrapé"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:98
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_selection.php:29
+msgid "Relevé d'items sélectionnés"
+msgstr "List z'items sélectionnés"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:100
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items_professeur.php:29
+msgid "Relevé d'items d'un enseignant"
+msgstr "List z'items d'in enseignant"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:116
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_fiches.php:29
+msgid "Fiches brevet"
+msgstr "Fiches brevet"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_administrateur.php:29
+msgid "Gérer les administrateurs"
+msgstr "Zére band' zadministrateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe_gestion.php:29
+msgid "Gérer les classes"
+msgstr "Zére zot classes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_classe.php:29
+msgid "Affecter les élèves aux classes"
+msgstr "Met band marmailles lécol dand' classes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_gestion.php:29
+msgid "Gérer les élèves"
+msgstr "Zére band' marmailles lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_groupe.php:29
+msgid "Affecter les élèves aux groupes"
+msgstr "Met' band' marmailles  lécol dand' groupes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_langue.php:29
+msgid "Choisir la langue étrangère pour le socle commun"
+msgstr "Choizi out lang zétrangère pour le socle commun"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_photo.php:29
+msgid "Photos des élèves"
+msgstr "Fotos band' marmailles lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe_gestion.php:29
+msgid "Gérer les groupes"
+msgstr "Zére zot groupes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent.php:29
+msgid "Responsables légaux"
+msgstr "Responsables légaux"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_adresse.php:29
+msgid "Adresses des parents"
+msgstr "Adresses band' granmoun"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_eleve.php:29
+msgid "Parents & élèves"
+msgstr "Granmoun & marmailles lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_gestion.php:29
+msgid "Gérer les parents"
+msgstr "Zére toute grandmoun"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_classe_groupe.php:29
+msgid "Affecter les périodes aux classes & groupes"
+msgstr "Mett les périodes avec band' classes & groupes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_gestion.php:29
+msgid "Gérer les périodes"
+msgstr "Zére toute lé périod"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_classe.php:29
+msgid "Professeurs & classes / Professeurs principaux"
+msgstr "Professeurs & classes / Professeurs principaux"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_groupe.php:29
+msgid "Professeurs & groupes"
+msgstr "Professeurs & groupes"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_matiere.php:29
+msgid "Personnels & matières / Personnels coordonnateurs"
+msgstr "Personnels & matières / Personnels coordonnateurs"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_resilier.php:29
+msgid "Résilier l'inscription de l'établissement"
+msgstr "Arèt linscription de out lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_epreuves.php:29
+msgid "Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note"
+msgstr "Étape #2 - Indik koman utiliz toute band' zot référentiels et koman zot enlev in note"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_fiches.php:29
+msgid "Étape n°5 - Fiches brevet"
+msgstr "Étape #5 - Fiches brevet"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_moyennes.php:29
+msgid "Étape n°3 - Calculer et contrôler les notes pour chaque élève"
+msgstr "Étape #3 - Calcul et surveil toute zot band' notes pour chak marmaille lécol"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_notanet.php:29
+msgid "Étape n°4 - Générer le fichier d'export pour Notanet"
+msgstr "Étape #4 - Zénér le fichier pour envoa dand' Notanet"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_series.php:29
+msgid "Étape n°1 - Indiquer la série des élèves concernés"
+msgstr "Étape #1 - Indik toute band' marmailles lécol concernés"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:29
+msgid "Bienvenue dans votre espace identifié"
+msgstr "Bienvenue zot toute dan out léspasse a ou"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
+msgid "Items récents à retravailler"
+msgstr "Z'items zordi  à retravailler"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:37
+msgid "Items récents à améliorer"
+msgstr "Z'items zordi à améliorer"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:38
+msgid "Notes à saisir"
+msgstr "Notes a tapé"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:38
+msgid "Auto-évaluations en cours"
+msgstr "Zévaluations ou mem en train fèr"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:39
+msgid "Bilans officiels ouverts à la saisie"
+msgstr "Bilans officiels zouverts à la saisie"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:39
+msgid "Nouveaux bilans officiels à consulter"
+msgstr "Nouveaux bilans officiels à consulter"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:42
+msgid "Informations d'accueil"
+msgstr "Informations d'accueil"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:46
+msgid "Résultats récents"
+msgstr "Résultats zordi"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:48
+msgid "Items récents les mieux réussis"
+msgstr "Z'items zordi les mieux réussis"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:49
+msgid "Demandes d'évaluations"
+msgstr "Demandes z'évaluations"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:53
+msgid "Astuce du moment"
+msgstr "Astuce astèr"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:54
+msgid "Protégeons l'environnement"
+msgstr "Abim pa la natir"
+
+# Conserver "%s".
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:104
+#, php-format
+msgid "Bonjour %s."
+msgstr "Bonzour %s."
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:105
+msgid "Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !"
+msgstr "Content connait a ou ; bon visit dand' <em>SACoch</em> !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:106
+msgid "Déjà de retour ? Décidément on ne se quitte plus !"
+msgstr "Zot lé déza rovni ? Eh ben ou larg pi nou !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:107
+msgid "Bonne navigation, et merci de votre fidélité !"
+msgstr "Bon navigation, et merci rest a nou fidéle !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:108
+msgid "Content de vous retrouver après cette pause de quelques jours !"
+msgstr "Content de retrouv a ou depui tou' ce temps !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:109
+msgid "Quel plaisir de vous revoir : le temps semble long sans vous !"
+msgstr "Sa fé plaizir vouar a ou : le temps lété long san a zot !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:110
+msgid "On ne s'était pas vu depuis trop longtemps : vous nous avez manqué !"
+msgstr "Sa fé longtemp la pa vi a ou : ou la mank a nou !"
+
+# Conserver "%s".
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:116
+#, php-format
+msgid "Encore là %s ? Vous avez raison, faîtes comme chez vous !"
+msgstr "Encor là %s ? Zot la raizon, fait com dan ton caz !"
+
+# Conserver "%s".
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:122
+#, php-format
+msgid "Toujours là %s ? Pas de souci, restez le temps que vous voulez !"
+msgstr "Touzour là %s ? Inkiète pa ou, rest le temps kou veu !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:125
+#, php-format
+msgid "Vous êtes dans l'environnement %s."
+msgstr "Zot i lé dan lendroa %s."
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:136
+msgid "Élève(s) associé(s) à votre compte :"
+msgstr " Marmaille(s) lécol avec out compte :"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:234
+msgid "Notifications à consulter"
+msgstr ""
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:260
+msgid "Message"
+msgstr "Messaze"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:268
+msgid "Afin de préserver l'environnement, n'imprimer que si nécessaire !"
+msgstr "Pou pa abim la natir, gach pa papier !"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:506
+msgid "Le saviez-vous ?"
+msgstr "Zot i coné sa ?"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_langue.php:29
+msgid "Choisir sa langue"
+msgstr "Choizi zot lang"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_password.php:29
+msgid "Changer son mot de passe"
+msgstr "Chang out mot d' passe"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_selection_items.php:29
+msgid "Gérer ses regroupements d'items"
+msgstr "Zére zot regroupements z'items"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_referentiel_externe.php:29
+msgid "Référentiels partagés (serveur communautaire)"
+msgstr "Référentiels partazés (serveur pour tout le moun)"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_referentiel_interne.php:29
+msgid "Référentiels en place (dans l'établissement)"
+msgstr "Référentiels zen place (dan zot lécol)"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_configuration.php:29
+msgid "Configuration des bilans officiels"
+msgstr "Configuration toute zot bilans officiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_format_synthese.php:29
+msgid "Format de synthèse par référentiel"
+msgstr "Format de synthèze par référentiel"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_mise_en_page.php:29
+msgid "Mise en page des bilans officiels"
+msgstr "Mise en paze de toute zot bilans officiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_reglages_ordre_matieres.php:29
+msgid "Ordre d'affichage des matières"
+msgstr "Ordre d'affichaze band' matières"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_voir_archive.php:29
+msgid "Archives consultables des bilans officiels"
+msgstr "Zarchives consultables de toute zot bilans officiels"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_groupe_besoin.php:29
+msgid "Gérer ses groupes de besoin"
+msgstr "Zére zot groupes d' bezoin"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_bilan_chronologique.php:29
+msgid "Bilan chronologique"
+msgstr "Bilan dand' temps"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_fichier.php:29
+msgid "Import / Export de validations du socle"
+msgstr "Ramèn là / Envoa là bas toute zot validations du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_pilier.php:29
+msgid "Valider les compétences (piliers) du socle"
+msgstr "Valid toute zot band' compétences (piliers) du socle"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_pilier_annuler.php:29
+msgid "Annuler une compétence validée du socle"
+msgstr "Annul in compétence validée du socle"
+
+#~ msgid "Adresse e-mail & Notifications"
+#~ msgstr "Adresse mel & Notifications"
+
+#~ msgid "Changer mon mot de passe"
+#~ msgstr "Chang mon mot d' passe"
+
+#~ msgid "Changer mon adresse e-mail"
+#~ msgstr "Chang mon adresse mel"
+
+#~ msgid "Choisir ma langue"
+#~ msgstr "Choizi mon lang"
+
+#~ msgid "Adresse e-mail"
+#~ msgstr "Adresse mel"
+
+#~ msgid "Changer son adresse e-mail"
+#~ msgstr "Chang out adresse mel"

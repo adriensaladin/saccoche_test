@@ -56,7 +56,7 @@ $tab_langues_traduction = array(
   array(
     'statut'     => 0, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
-    'pays'       => array( 'code' => 'ES' , 'nom' => 'Colombie' ),
+    'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
       array( 'nom' => 'Amaël Kervarrec' , 'mail' => 'amael.kervarrec@lfcali.edu.co' ),
     ),

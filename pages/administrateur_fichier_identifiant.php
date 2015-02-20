@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Importer / Imposer des identifiants");
+$TITRE = html(Lang::_("Importer / Imposer des identifiants"));
 ?>
 
 <?php

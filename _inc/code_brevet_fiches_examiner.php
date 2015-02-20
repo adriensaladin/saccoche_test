@@ -132,6 +132,7 @@ foreach($tab_brevet_serie as $serie_ref)
     $tab_brevet_serie[$serie_ref] = $DB_ROW['brevet_serie_nom'];
     $tab_brevet_epreuve[$serie_ref][$DB_ROW['brevet_epreuve_code']] = $DB_ROW['brevet_epreuve_nom'];
   }
+  $tab_brevet_epreuve[$serie_ref][CODE_BREVET_EPREUVE_TOTAL] = 'Avis de synthèse';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,12 +145,22 @@ foreach($tab_brevet_serie as $serie_ref)
 // - seules les appréciations sont donc à étudier, et elles sont retournées avec les notes, il est donc facile de lister les manques
 
 $tab_resultat_examen = array();
+$tab_matiere_epreuve = array();
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   if( (in_array($DB_ROW['brevet_serie_ref'].'_'.$DB_ROW['brevet_epreuve_code'],$tab_rubrique)) && (!$DB_ROW['saisie_appreciation']) && ($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_brevet_serie']==$DB_ROW['brevet_serie_ref']) )
   {
-    $tab_resultat_examen[$tab_brevet_serie[$DB_ROW['brevet_serie_ref']].' - '.$tab_brevet_epreuve[$DB_ROW['brevet_serie_ref']][$DB_ROW['brevet_epreuve_code']]][] = 'Absence d\'appréciation pour '.html($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_nom'].' '.$tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_prenom']);
+    $rubrique_nom = $tab_brevet_serie[$DB_ROW['brevet_serie_ref']].' - '.$tab_brevet_epreuve[$DB_ROW['brevet_serie_ref']][$DB_ROW['brevet_epreuve_code']];
+    $tab_resultat_examen[$rubrique_nom][] = 'Absence d\'appréciation pour '.html($tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_nom'].' '.$tab_eleve_infos[$DB_ROW['eleve_id']]['eleve_prenom']);
+    $tab_matiere = explode(',',$DB_ROW['matieres_id']);
+    foreach($tab_matiere as $matieres_id)
+    {
+      if($matieres_id) // Pour éviter "Avis de synthèse" qui n'a pas d'identifiant matière
+      {
+        $tab_matiere_epreuve[$matieres_id][$rubrique_nom] = TRUE;
+      }
+    }
   }
 }
 
@@ -164,13 +175,53 @@ if(!$nb_pb_rubriques)
 }
 else
 {
+  // Tentative d'indication des collègues potentiellement concernés
+  $tab_rubrique_profs = array();
+  $listing_matieres = implode(',',array_keys($tab_matiere_epreuve));
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_professeurs_eleves_matieres( $classe_id , $liste_eleve_id , $listing_matieres );
+  if(!empty($DB_TAB))
+  {
+    $tab_tmp = array();
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_tmp[$DB_ROW['matiere_id']][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
+    }
+    foreach($tab_tmp as $matiere_id => $tab_profs)
+    {
+      foreach($tab_matiere_epreuve[$matiere_id] as $rubrique_nom => $boolean)
+      {
+        foreach($tab_profs as $prof)
+        {
+          $tab_rubrique_profs[$rubrique_nom][] = $prof;
+        }
+      }
+    }
+    foreach($tab_rubrique_profs as $rubrique_nom => $tab_profs)
+    {
+      $nb_profs = count($tab_profs);
+      if($nb_profs==1)
+      {
+        $tab_rubrique_profs[$rubrique_nom] = '['.current($tab_profs).']';
+      }
+      else if($nb_profs<=3)
+      {
+        $tab_rubrique_profs[$rubrique_nom] = '['.implode(' ; ',$tab_profs).']';
+      }
+      else
+      {
+        $tab_rubrique_profs[$rubrique_nom] = '['.$nb_profs.' professeurs]';
+      }
+    }
+  }
+  // Affichage du retour
   $nb_pb_saisies = count($tab_resultat_examen,COUNT_RECURSIVE) - $nb_pb_rubriques ;
   $sr = ($nb_pb_rubriques>1) ? 's' : '' ;
   $ss = ($nb_pb_saisies>1)   ? 's' : '' ;
   echo'<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>';
   foreach($tab_resultat_examen as $rubrique_nom => $tab)
   {
-    echo'<h3>'.html($rubrique_nom).'</h3>';
+    $rubrique_indication = isset($tab_rubrique_profs[$rubrique_nom]) ? $rubrique_nom.' '.$tab_rubrique_profs[$rubrique_nom] : $rubrique_nom ;
+    echo'<h3>'.html($rubrique_indication).'</h3>';
     echo'<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>';
   }
   exit();

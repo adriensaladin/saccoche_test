@@ -604,7 +604,7 @@ if($type_synthese)
   $releve_PDF->entete($tab_titre,$matiere_et_niveau,''/*texte_periode*/);
   // 1ère ligne
   $releve_PDF->ligne_tete_cellule_debut();
-  $th = ($tableau_synthese_format=='eleve') ? 'Elève' : 'Item' ;
+  $th = ($tableau_synthese_format=='eleve') ? 'Élève' : 'Item' ;
   $releve_HTML_table_head = '<thead><tr><th>'.$th.'</th>';
   if($tableau_synthese_format=='eleve')
   {

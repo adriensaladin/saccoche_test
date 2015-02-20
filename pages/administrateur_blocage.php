@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Blocage des connexions");
+$TITRE = html(Lang::_("Blocage des connexions"));
 
 // Initialisation de l'état de l'accès
 $blocage_msg = LockAcces::tester_blocage('administrateur',$_SESSION['BASE']);

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Délai avant déconnexion");
+$TITRE = html(Lang::_("Délai avant déconnexion"));
 
 // Options du formulaire select
 $options = '';

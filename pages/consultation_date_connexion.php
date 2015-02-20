@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Date de dernière connexion");
+$TITRE = html(Lang::_("Date de dernière connexion"));
 ?>
 
 <?php

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Notifications reçues");
+$TITRE = html(Lang::_("Notifications reçues"));
 
 $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : '[Paramétrages personnels]' ;
 ?>

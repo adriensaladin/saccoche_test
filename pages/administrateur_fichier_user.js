@@ -363,6 +363,31 @@ $(document).ready
         else
         {
           var f_step = $(this).attr('href').substring(5);
+          // Grouper les données des groupes dans un champ unique par groupe afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
+          // En effet, un lycée peut avoir plus de 300 groupes, et avec 4 champs par groupe on dépasse la limitation usuelle de 1000 champs...
+          var f_del = new Array();
+          var f_add = new Array();
+          var sep = encodeURIComponent(']¤[');
+          $("#form_bilan input:checked").each
+          (
+            function()
+            {
+              var tab_infos = $(this).attr('id').split('_');
+              var mode = tab_infos[0];
+              var id   = tab_infos[1];
+              if(mode=='del')
+              {
+                f_del.push(id);
+              }
+              else if(mode=='add')
+              {
+                var ref = $('#add_ref_'+id).val();
+                var niv = $('#add_niv_'+id).val();
+                var nom = $('#add_nom_'+id).val();
+                f_add.push(id+sep+niv+sep+encodeURIComponent(ref)+sep+encodeURIComponent(nom));
+              }
+            }
+          );
           $('#form_bilan fieldset table').hide(0);
           $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
           $.ajax
@@ -370,7 +395,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_mode='+f_mode+'&'+$("#form_bilan").serialize(),
+              data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_mode='+f_mode+'&f_del='+f_del+'&f_add='+f_add,
               dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {

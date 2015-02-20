@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Format des identifiants de connexion");
+$TITRE = html(Lang::_("Format des identifiants de connexion"));
 
 // Options du formulaire select
 $options = '';

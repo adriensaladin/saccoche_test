@@ -49,14 +49,14 @@ $tab_sous_menu = array
   ),
   'param_serveur' => array
   (
-    'webmestre_configuration_proxy'      => array( 'texte' => "Configuration d'un proxy"         , 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
-    'webmestre_mail_bounces'             => array( 'texte' => "Adresse de rebond & Test mail"    , 'class' => 'newsletter'           , 'href' => 'page=webmestre_mail_bounces'             ),
-    'webmestre_database_test'            => array( 'texte' => "Test des droits MySQL"            , 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
-    'webmestre_configuration_filesystem' => array( 'texte' => "Droits du système de fichiers"    , 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
-    'webmestre_maintenance'              => array( 'texte' => "Maintenance & Mise à jour"        , 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
-    'webmestre_structure_bdd_repair'     => array( 'texte' => "Analyser / Réparer les bases"     , 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
-    'webmestre_certificats_ssl'          => array( 'texte' => "Vérification des certificats SSL" , 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
-    'webmestre_debug'                    => array( 'texte' => "Débogueur"                        , 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
+    'webmestre_configuration_proxy'      => array( 'texte' => "Configuration d'un proxy"          , 'class' => 'serveur_proxy'        , 'href' => 'page=webmestre_configuration_proxy'      ),
+    'webmestre_mail_bounces'             => array( 'texte' => "Adresse de rebond &amp; Test mail" , 'class' => 'newsletter'           , 'href' => 'page=webmestre_mail_bounces'             ),
+    'webmestre_database_test'            => array( 'texte' => "Test des droits MySQL"             , 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
+    'webmestre_configuration_filesystem' => array( 'texte' => "Droits du système de fichiers"     , 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
+    'webmestre_maintenance'              => array( 'texte' => "Maintenance &amp; Mise à jour"     , 'class' => 'serveur_maintenance'  , 'href' => 'page=webmestre_maintenance'              ),
+    'webmestre_structure_bdd_repair'     => array( 'texte' => "Analyser / Réparer les bases"      , 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
+    'webmestre_certificats_ssl'          => array( 'texte' => "Vérification des certificats SSL"  , 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
+    'webmestre_debug'                    => array( 'texte' => "Débogueur"                         , 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
   ),
 );
 

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Étape n°4 - Générer le fichier d'export pour Notanet");
+$TITRE = html(Lang::_("Étape n°4 - Générer le fichier d'export pour Notanet"));
 
 // Test présence INE
 $nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();

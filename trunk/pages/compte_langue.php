@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Choisir sa langue");
+$TITRE = html(Lang::_("Choisir sa langue"));
 
 // Charger $tab_langues_traduction
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');

@@ -41,6 +41,11 @@ $TITRE = "Adresse de rebond &amp; Test mail"; // Pas de traduction car pas de ch
   Pour ces raisons, il est recommander d'indiquer ci-dessous <a href="http://fr.wikipedia.org/wiki/Bounce_address" target="_blank">une adresse de rebond</a>.<br />
   Si vous ignorez celle de votre serveur, vous pouvez faire envoyer un courriel puis regarder le code source du message et y chercher l'en-tête <em>Return-Path</em>.
 </p>
+<p>
+  L'adresse de rebond étant parfois utilisée par <em>SACoche</em> comme adresse d'expéditeur, elle doit correspondre à un domaine valide.<br />
+  En effet, les DNS du domaine de l'adresse d'expéditeur sont susceptibles d'être interrogés par le serveur recevant le mail pour vérifier son authenticité.
+</p>
+
 <?php if($_SESSION['USER_PROFIL_TYPE']=='webmestre'): ?>
 <p class="astuce">
   Consultez aussi le menu <a href="./index.php?page=webmestre_envoi_notifications">[Paramétrages établissement] [Courriels de notification]</a>.

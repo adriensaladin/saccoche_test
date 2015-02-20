@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Rechercher un utilisateur");
+$TITRE = html(Lang::_("Rechercher un utilisateur"));
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Affecter les périodes aux classes &amp; groupes");
+$TITRE = html(Lang::_("Affecter les périodes aux classes & groupes"));
 ?>
 
 <?php

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Import / Export de validations du socle");
+$TITRE = html(Lang::_("Import / Export de validations du socle"));
 ?>
 
 <?php

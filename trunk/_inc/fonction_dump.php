@@ -129,7 +129,14 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations();
     foreach($DB_TAB as $DB_ROW)
     {
-      $nb_lignes_maxi_for_table = ($DB_ROW['Name']!='sacoche_image') ? $nb_lignes_maxi : $nb_lignes_maxi / 100 ;
+      // $nb_lignes_maxi est prévu pour "sacoche_saisie" qui comporte beaucoup de lignes, mais les tables avec des champs longs deviennent lourdes avec moins de lignes
+      switch($DB_ROW['Name'])
+      {
+        case 'sacoche_image'           : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;
+        case 'sacoche_user'            : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
+        case 'sacoche_officiel_saisie' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  2; break;
+        default                        : $nb_lignes_maxi_for_table = $nb_lignes_maxi;
+      }
       $nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi_for_table) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
       for($numero_boucle=0 ; $numero_boucle<$nombre_boucles ; $numero_boucle++)
       {
@@ -139,7 +146,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
     if($etape==1)
     {
       // Fin de la première étape
-      return'Sauvegarde de la base en cours ; étape réalisée';
+      return'Sauvegarde de la base en cours ; étape n°'.sprintf("%02u",$etape).' réalisée';
     }
   }
   // Créer les fichiers sql table par table, et morceau par morceau...
@@ -182,7 +189,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
     }
     if($etape>0)
     {
-      return'Sauvegarde de la base en cours ; étape réalisée';
+      return'Sauvegarde de la base en cours ; étape n°'.sprintf("%02u",$etape).' réalisée';
     }
     else
     {
@@ -297,7 +304,7 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
   if($i_stop<$nb_fichiers)
   {
     // Ce n'est pas la dernière étape
-    return'Restauration de la base en cours ; étape réalisée';
+    return'Restauration de la base en cours ; étape n°'.sprintf("%02u",$etape).' réalisée';
   }
   else
   {

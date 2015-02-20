@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Format de synthèse par référentiel");
+$TITRE = html(Lang::_("Format de synthèse par référentiel"));
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC : Réglages synthèses &amp; bilans &rarr; Format de synthèse adapté suivant chaque référentiel</a></span></div>

@@ -55,10 +55,10 @@ $tab_sous_menu = array
   ),
   'parametrage' => array
   (
-    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                     , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
-    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail &amp; Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
-    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                       , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
-    'compte_langue'     => array( 'texte' => Lang::_("Langue")                           , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
+    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                 , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
+    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail & Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
+    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                   , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
+    'compte_langue'     => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
   ),
   'evaluation' => array
   (

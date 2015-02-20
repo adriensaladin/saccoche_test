@@ -30,11 +30,11 @@ if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');
 
 $tab_types = array
 (
-  'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre_page'=>Lang::_("Relevé d'évaluations") , 'titre'=>"Relevé d'évaluations" , 'modif_rubrique'=>'les appréciations par matière' ) ,
-  'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre_page'=>Lang::_("Bulletin scolaire")    , 'titre'=>"Bulletin scolaire"    , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
-  'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 1") , 'titre'=>"Maîtrise du palier 1" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 2") , 'titre'=>"Maîtrise du palier 2" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>Lang::_("Maîtrise du palier 3") , 'titre'=>"Maîtrise du palier 3" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre_page'=>html(Lang::_("Relevé d'évaluations")) , 'titre'=>"Relevé d'évaluations" , 'modif_rubrique'=>'les appréciations par matière' ) ,
+  'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre_page'=>html(Lang::_("Bulletin scolaire"))    , 'titre'=>"Bulletin scolaire"    , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
+  'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 1")) , 'titre'=>"Maîtrise du palier 1" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 2")) , 'titre'=>"Maîtrise du palier 2" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
+  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 3")) , 'titre'=>"Maîtrise du palier 3" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
 );
 
 $TITRE = $tab_types[$BILAN_TYPE]['titre_page'];

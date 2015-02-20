@@ -1263,7 +1263,7 @@ if($type_synthese)
   $releve_PDF->entete($tab_titre[$releve_modele],$matiere_et_groupe,$texte_periode);
   // 1ère ligne
   $releve_PDF->ligne_tete_cellule_debut();
-  $th = ($tableau_synthese_format=='eleve') ? 'Elève' : 'Item' ;
+  $th = ($tableau_synthese_format=='eleve') ? 'Élève' : 'Item' ;
   $releve_HTML_table_head = '<thead><tr><th>'.$th.'</th>';
   if($tableau_synthese_format=='eleve')
   {
@@ -1396,7 +1396,7 @@ if($type_synthese)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Elaboration du bulletin (moyenne et/ou appréciation) en HTML + CSV pour GEPI + Formulaire pour report prof
+// Elaboration du bulletin (moyenne et/ou appréciation) en HTML et PDF + CSV pour GEPI + Formulaire pour report prof
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $type_bulletin && $make_html )
@@ -1435,6 +1435,8 @@ if( $type_bulletin && $make_html )
     }
   }
   $bulletin_body = '';
+  $bulletin_PDF = new PDF_item_bulletin( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond );
+  $bulletin_PDF->initialiser_et_entete( $eleve_nb , $matiere_nom.' - '.$groupe_nom , $texte_periode , $info_ponderation_complete );
   $bulletin_csv_entete = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";  // Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
   $tab_bulletin_csv_gepi = array_fill_keys( array('note_appreciation','note','appreciation_PA','appreciation_MS') , $bulletin_csv_entete );
   // Pour chaque élève...
@@ -1447,7 +1449,8 @@ if( $type_bulletin && $make_html )
       $note            = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id]     !== FALSE) ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                           : '-' ;
       $appreciation_PA = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== FALSE) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
       $appreciation_MS = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id]     !== FALSE) ? ( ($conversion_sur_20) ? 'Moyenne des scores : '.$tab_moyenne_scores_eleve[$matiere_id][$eleve_id].'%'.' soit '.str_replace('.',',',sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)).'/20.' : 'Moyenne des scores de '.$tab_moyenne_scores_eleve[$matiere_id][$eleve_id].'%.' ) : '-' ;
-      $bulletin_body  .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation_PA.'</td></tr>'.NL;
+      $bulletin_body  .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td class="hc">'.$note.'</td><td class="hc">'.$appreciation_PA.'</td></tr>'.NL;
+      $bulletin_PDF->ligne_eleve( $eleve_nom.' '.$eleve_prenom , $note , $appreciation_PA );
       $note            = str_replace('.',',',$note); // Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
       $tab_bulletin_csv_gepi['note_appreciation'] .= $eleve_id_gepi.';'.$note.';'.$appreciation_PA."\r\n";
       $tab_bulletin_csv_gepi['note']              .= $eleve_id_gepi.';'.$note."\r\n";
@@ -1479,17 +1482,20 @@ if( $type_bulletin && $make_html )
       $bulletin_form = '<li>Report forcé vers un bulletin sans objet : aucune moyenne chiffrée n\'a pu être produite.</li>';
     }
   }
-  $bulletin_head  = '<thead><tr><th>Elève</th><th>Moyenne '.$info_ponderation_complete.' sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'.NL;
+  $moyenne_affichee = sprintf("%04.1f",$moyenne_moyenne_scores/5);
+  $bulletin_PDF->derniere_ligne( $info_ponderation_complete , $moyenne_affichee , $moyenne_pourcentage_acquis );
+  $bulletin_head  = '<thead><tr><th>Élève</th><th>Moyenne '.$info_ponderation_complete.' sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'.NL;
   $bulletin_body  = '<tbody>'.NL.$bulletin_body.'</tbody>'.NL;
-  $bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.sprintf("%04.1f",$moyenne_moyenne_scores/5).'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'.NL;
+  $bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.$moyenne_affichee.'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'.NL;
   $bulletin_html  = '<h1>Bilan disciplinaire</h1>';
   $bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
   $bulletin_html .= '<h2>'.$texte_periode.'</h2>';
-  $bulletin_html .= '<h2>Tableau de notes sur 20</h2>';
+  $bulletin_html .= '<h2>Moyenne sur 20 / Élément d\'appréciation</h2>';
   $bulletin_html .= '<table id="export20" class="hsort">'.NL.$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'.NL;
   $bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>'.NL;
-  // On enregistre la sortie HTML et CSV
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.html',$bulletin_html);
+  // On enregistre les sorties HTML / PDF / CSV
+  FileSystem::ecrire_fichier(   CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.html',$bulletin_html);
+  FileSystem::ecrire_sortie_PDF(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf' ,$bulletin_PDF );
   foreach($tab_bulletin_csv_gepi as $type_donnees => $bulletin_csv_gepi_contenu)
   {
     FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin_'.$type_donnees,$fichier_nom).'.csv',utf8_decode($bulletin_csv_gepi_contenu));

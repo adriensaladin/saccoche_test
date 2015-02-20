@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = Lang::_("Log des actions sensibles");
+$TITRE = html(Lang::_("Log des actions sensibles"));
 ?>
 
 <p class="astuce">Les actions sensibles sont enregistrées, ce qui permet aux administrateurs de rechercher quel compte est fautif en cas de problème...</p>

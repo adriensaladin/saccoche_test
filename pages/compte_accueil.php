@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Bienvenue dans votre espace identifié"));
+$TITRE = Lang::_("Bienvenue dans votre espace identifié");
 
 /*
  * Tableau des rubriques
@@ -34,24 +34,24 @@ $TITRE = html(Lang::_("Bienvenue dans votre espace identifié"));
  * ( la mémorisation de leur état s'effectue dans sacoche_user.user_param_accueil sauf pour "messages" qui se fait dans sacoche_message.message_dests_cache )
  */
 
-$masque_faiblesses = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Items récents à retravailler"))         : html(Lang::_("Items récents à améliorer")) ;
-$masque_saisies    = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Notes à saisir"))                       : html(Lang::_("Auto-évaluations en cours")) ;
-$masque_officiel   = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Bilans officiels ouverts à la saisie")) : html(Lang::_("Nouveaux bilans officiels à consulter")) ;
+$masque_faiblesses = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Items récents à retravailler")         : Lang::_("Items récents à améliorer") ;
+$masque_saisies    = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Notes à saisir")                       : Lang::_("Auto-évaluations en cours") ;
+$masque_officiel   = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Bilans officiels ouverts à la saisie") : Lang::_("Nouveaux bilans officiels à consulter") ;
 
 $tab_accueil = array(
- 'user'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Informations d'accueil")) ) ,
+ 'user'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Informations d'accueil") ) ,
  'alert'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'notifications' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'messages'      => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
- 'resultats'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Résultats récents")) ) ,
+ 'resultats'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Résultats récents") ) ,
  'faiblesses'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
- 'reussites'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Items récents les mieux réussis")) ) ,
- 'demandes'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Demandes d'évaluations")) ) ,
+ 'reussites'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Items récents les mieux réussis") ) ,
+ 'demandes'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Demandes d'évaluations") ) ,
  'saisies'       => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_saisies ) ,
  'officiel'      => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_officiel ) ,
  'socle'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>"" ) ,
- 'help'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Astuce du moment")) ) ,
- 'ecolo'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Protégeons l'environnement")) ) ,
+ 'help'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Astuce du moment") ) ,
+ 'ecolo'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>Lang::_("Protégeons l'environnement") ) ,
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,28 +101,28 @@ $tab_accueil['user']['contenu'] = '';
 // infos connexion (pas si webmestre ni partenaire)
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Bonjour %s."),'<b>'.html($_SESSION['USER_PRENOM']).'</b>')).' ';
-  if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user']['contenu'] .= html(Lang::_("Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !")).'</p>'; }
-  elseif($_SESSION['DELAI_CONNEXION']<  43200 /*0.5*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Déjà de retour ? Décidément on ne se quitte plus !")).'</p>'; }
-  elseif($_SESSION['DELAI_CONNEXION']< 108000 /*  2*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Bonne navigation, et merci de votre fidélité !")).'</p>'; }
-  elseif($_SESSION['DELAI_CONNEXION']< 604800 /*  7*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Content de vous retrouver après cette pause de quelques jours !")).'</p>'; }
-  elseif($_SESSION['DELAI_CONNEXION']<3024000 /* 35*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Quel plaisir de vous revoir : le temps semble long sans vous !")).'</p>'; }
-  else                                                         { $tab_accueil['user']['contenu'] .= html(Lang::_("On ne s'était pas vu depuis trop longtemps : vous nous avez manqué !")).'</p>'; }
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(Lang::_("Bonjour %s."),'<b>'.html($_SESSION['USER_PRENOM']).'</b>').' ';
+  if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user']['contenu'] .= Lang::_("Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!").'</p>'; }
+  elseif($_SESSION['DELAI_CONNEXION']<  43200 /*0.5*24*3600*/) { $tab_accueil['user']['contenu'] .= Lang::_("Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!").'</p>'; }
+  elseif($_SESSION['DELAI_CONNEXION']< 108000 /*  2*24*3600*/) { $tab_accueil['user']['contenu'] .= Lang::_("Bonne navigation, et merci de votre fidélité&nbsp;!").'</p>'; }
+  elseif($_SESSION['DELAI_CONNEXION']< 604800 /*  7*24*3600*/) { $tab_accueil['user']['contenu'] .= Lang::_("Content de vous retrouver après cette pause de quelques jours&nbsp;!").'</p>'; }
+  elseif($_SESSION['DELAI_CONNEXION']<3024000 /* 35*24*3600*/) { $tab_accueil['user']['contenu'] .= Lang::_("Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!").'</p>'; }
+  else                                                         { $tab_accueil['user']['contenu'] .= Lang::_("On ne s'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!").'</p>'; }
   unset( $_SESSION['FIRST_CONNEXION'] , $_SESSION['DELAI_CONNEXION'] );
   $_SESSION['DEUXIEME_PASSAGE'] = TRUE;
 }
 elseif(isset($_SESSION['DEUXIEME_PASSAGE']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Encore là %s ? Vous avez raison, faîtes comme chez vous !"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>'));
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(Lang::_("Encore là %s&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
   unset($_SESSION['DEUXIEME_PASSAGE']);
   $_SESSION['PASSAGES_SUIVANTS'] = TRUE;
 }
 elseif(isset($_SESSION['PASSAGES_SUIVANTS']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Toujours là %s ? Pas de souci, restez le temps que vous voulez !"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>'));
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(Lang::_("Toujours là %s&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
 }
 // infos profil
-$tab_accueil['user']['contenu'] .= '<p>'.html(sprintf(Lang::_("Vous êtes dans l'environnement %s."),'<b>'.$_SESSION['USER_PROFIL_NOM_LONG'].'</b>')).'</p>';
+$tab_accueil['user']['contenu'] .= '<p>'.sprintf(Lang::_("Vous êtes dans l'environnement %s."),'<b>'.$_SESSION['USER_PROFIL_NOM_LONG'].'</b>').'</p>';
 // infos selon profil
 if($_SESSION['USER_PROFIL_TYPE']=='parent')
 {
@@ -133,7 +133,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
     {
       $tab_nom_enfants[] =html($DB_ROW['texte']);
     }
-    $tab_accueil['user']['contenu'] .= '<p>'.html(Lang::_("Élève(s) associé(s) à votre compte :")).' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b></p>';
+    $tab_accueil['user']['contenu'] .= '<p>'.Lang::_("Élève(s) associé(s) à votre compte&nbsp;:").' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b></p>';
   }
   else
   {
@@ -231,8 +231,8 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
   if($nb_notifications_non_vues)
   {
     $s = ($nb_notifications_non_vues>1) ? 's' : '' ;
-    $tab_accueil['notifications']['contenu'] .= '<div class="b">'.html(Lang::_("Notifications à consulter")).'</div>';
-    $tab_accueil['notifications']['contenu'] .= '<p>Vous avez <a href="./index.php?page=consultation_notifications"><span class="b">'.$nb_notifications_non_vues.' notification'.$s.'</span></a> non vues.</p>';
+    $tab_accueil['notifications']['contenu'] .= '<div class="b">'.Lang::_("Notifications en attente").'</div>';
+    $tab_accueil['notifications']['contenu'] .= '<p>Vous avez <a href="./index.php?page=consultation_notifications"><span class="b">'.$nb_notifications_non_vues.' notification'.$s.'</span></a> à consulter.</p>';
   }
 }
 
@@ -257,7 +257,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages']['contenu'][$DB_ROW['message_id']] = array(
-        'titre'   => html(Lang::_("Message")).' ('.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
+        'titre'   => Lang::_("Message").' ('.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
         'message' => make_lien(nl2br(html($DB_ROW['message_contenu']))),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
@@ -265,7 +265,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
   }
   if( (!count($tab_accueil['messages']['contenu'])) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') )
   {
-    $tab_accueil['ecolo']['contenu'] = '<p class="b"><TG> '.html(Lang::_("Afin de préserver l'environnement, n'imprimer que si nécessaire !")).'</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
+    $tab_accueil['ecolo']['contenu'] = '<p class="b"><TG> '.Lang::_("Afin de préserver l'environnement, n'imprimer que si nécessaire !").'</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
   }
 }
 
@@ -503,7 +503,7 @@ if($astuce_nombre)
   $i_alea = mt_rand(0,99) / 100; // nombre aléatoire entre 0,00 et 0,99
   $i_dist = pow($i_alea,$coef_distorsion) ; // distorsion pour accentuer le nombre de résultats proches de 0
   $indice = (int)floor($astuce_nombre*$i_dist);
-  $tab_accueil['help']['contenu'] .= '<p class="b"><TG> '.html(Lang::_("Le saviez-vous ?")).'</p>'.$tab_astuces[$_SESSION['USER_PROFIL_TYPE']][$indice];
+  $tab_accueil['help']['contenu'] .= '<p class="b"><TG> '.Lang::_("Le saviez-vous ?").'</p>'.$tab_astuces[$_SESSION['USER_PROFIL_TYPE']][$indice];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

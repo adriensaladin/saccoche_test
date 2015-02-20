@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Liste des évaluations"));
+$TITRE = Lang::_("Liste des évaluations");
 
 // Réception d'id transmis via un lien en page d'accueil.
 $auto_voir_devoir_id   = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;

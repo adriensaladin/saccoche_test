@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Associer des ressources aux items"));
+$TITRE = Lang::_("Associer des ressources aux items");
 
 // Acces serveur communautaire
 $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;

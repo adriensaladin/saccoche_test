@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Gérer ses groupes de besoin"));
+$TITRE = Lang::_("Gérer ses groupes de besoin");
 
 $tab_groupe_proprio = array();
 $tab_groupe_associe = array();

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Ordre d'affichage des matières"));
+$TITRE = Lang::_("Ordre d'affichage des matières");
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_ordre_matieres">DOC : Réglages synthèses &amp; bilans &rarr; Ordre d'affichage des matières</a></span></div>

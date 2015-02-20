@@ -69,11 +69,8 @@ if($courriel)
   $message .= 'Sans doute la conséquence une adresse erronée dans votre base d\'utilisateurs ?'."\r\n";
   $message .= 'Merci d\'y regarder et me tenir au courant.'."\r\n";
   $message .= 'Cordialement.'."\r\n";
+  
 }
-
-// Anti-robot light (sans système de CAPTCHA nécessitant une intervention de l'utilisateur), pour éviter des envois intempestifs de courriels
-$_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
-
 ?>
 <form id="form_contact" action="#" method="post">
   <div id="step1">
@@ -84,13 +81,13 @@ $_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
     <label class="tab" for="f_courriel"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Un code de confirmation y sera envoyé.<br />Vérifiez bien votre saisie !" /> Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="<?php echo html($courriel) ?>" size="30" maxlength="63" /><br />
     <label for="f_message" class="tab">Message :</label><textarea name="f_message" id="f_message" rows="9" cols="55"><?php echo html($message) ?></textarea><br />
     <span class="tab"></span><label id="f_message_reste"></label><br />
-    <span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Enregistrer.</button><label id="ajax_msg_envoyer" class="astuce">Un code de confirmation vous sera alors envoyé.</label>
+    <span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Enregistrer et m'envoyer un code de confirmation.</button><label id="ajax_msg_envoyer">&nbsp;</label>
   </div>
   <div id="step2" class="hide">
     <h2>Étape 2/2 - Confirmation</h2>
     <p class="astuce">Veuillez saisir le code qui vient d'être envoyé à l'adresse <b id="report_courriel"></b>.</p>
     <label class="tab" for="f_code">Code :</label><input id="f_code" name="f_code" type="text" value="" size="10" maxlength="8" /><input id="f_md5" name="f_md5" type="hidden" value="" /><br />
-    <span class="tab"></span><button id="f_bouton_confirmer" type="submit" class="valider">Valider.</button><label id="ajax_msg_confirmer" class="astuce">Votre message sera ensuite transmis aux administrateur.</label>
+    <span class="tab"></span><button id="f_bouton_confirmer" type="submit" class="valider">Valider la transmission de mon message.</button><label id="ajax_msg_confirmer">&nbsp;</label>
   </div>
   <div id="step3" class="hide">
     <p><label class="valide">Votre message a été transmis <span id="span_admin_nb"></span> (établissement <em><?php echo html($structure_denomination) ?></em>).</label></p>

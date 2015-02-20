@@ -125,23 +125,6 @@ if($version_base_structure_actuelle=='2015-02-03')
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
       }
     }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-02-17 => 2015-02-18
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-02-17')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-02-18';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // La table [sacoche_notification] peut ne pas avoir été créée à cause de la directive DEFAULT CURRENT_TIMESTAMP qui ne passe pas partout pour un champ DATETIME
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_notification.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }

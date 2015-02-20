@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Identité de l'établissement"));
+$TITRE = Lang::_("Identité de l'établissement");
 
 // Formulaire SELECT du mois de bascule de l'année scolaire
 $options_mois = '<option value="1">calquée sur l\'année civile</option>'

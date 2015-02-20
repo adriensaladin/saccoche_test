@@ -522,8 +522,7 @@ class Session
     {
       if( ( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) ) && !empty($_POST) )
       {
-        $explication = (substr($page,0,7)!='public_') ? 'Plusieurs onglets ouverts avec des sessions incompatibles ?' : 'Session perdue ?' ;
-        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton CSRF invalide.<br />'.$explication /*contenu*/ );
+        exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ );
       }
     }
   }

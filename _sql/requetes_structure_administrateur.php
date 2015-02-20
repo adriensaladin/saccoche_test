@@ -1026,32 +1026,31 @@ public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeu
 /**
  * rechercher_login_disponible (parmi tout le personnel de l'établissement)
  *
- * @param string $login_pris
+ * @param string $login
  * @return string
  */
-public static function DB_rechercher_login_disponible($login_pris)
+public static function DB_rechercher_login_disponible($login)
 {
-  $nb_chiffres = max(1 , 20-mb_strlen($login_pris) );
+  $nb_chiffres = 20-mb_strlen($login);
+  $max_result = 0;
   do
   {
-    $login_tronque = mb_substr($login_pris,0,20-$nb_chiffres);
+    $login = mb_substr($login,0,20-$nb_chiffres);
     $DB_SQL = 'SELECT user_login ';
     $DB_SQL.= 'FROM sacoche_user ';
     $DB_SQL.= 'WHERE user_login LIKE :user_login';
-    $DB_VAR = array( ':user_login' => $login_tronque.'%' );
+    $DB_VAR = array( ':user_login' => $login.'%' );
     $DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $max_result = pow(10,$nb_chiffres);
-    $nb_chiffres += 1;
+    $max_result += pow(10,$nb_chiffres);
   }
   while (count($DB_COL)>=$max_result);
-  $login_nombre = 1;
+  $j=0;
   do
   {
-    $login_disponible = $login_tronque.$login_nombre;
-    $login_nombre++;
+    $j++;
   }
-  while (in_array($login_disponible,$DB_COL));
-  return $login_disponible ;
+  while (in_array($login.$j,$DB_COL));
+  return $login.$j ;
 }
 
 /**

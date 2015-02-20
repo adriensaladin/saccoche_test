@@ -58,7 +58,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_info').html(responseHTML);
+              $('#ajax_info').append(responseHTML);
               initialiser_compteur();
               if(responseHTML.indexOf('en cours')!=-1)
               {
@@ -203,7 +203,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_info').html(responseHTML);
+              $('#ajax_info').append(responseHTML);
               initialiser_compteur();
               if(responseHTML.indexOf('en cours')!=-1)
               {

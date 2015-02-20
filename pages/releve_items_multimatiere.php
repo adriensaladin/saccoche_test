@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Relevé d'items pluridisciplinaire"));
+$TITRE = Lang::_("Relevé d'items pluridisciplinaire");
 ?>
 
 <?php

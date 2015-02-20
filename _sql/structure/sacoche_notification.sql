@@ -8,7 +8,7 @@ CREATE TABLE sacoche_notification (
   abonnement_ref          VARCHAR(30)                                         COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   notification_attente_id VARCHAR(30)                                         COLLATE utf8_unicode_ci          DEFAULT NULL   COMMENT "En cas de modification, pour retrouver une notification non encore envoyée ; passé à NULL une fois la notification envoyée.",
   notification_statut     ENUM("attente","consultable","consultée","envoyée") COLLATE utf8_unicode_ci NOT NULL DEFAULT "attente",
-  notification_date       DATETIME                                                                             DEFAULT NULL ,
+  notification_date       DATETIME                                                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   notification_contenu    TEXT                                                COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (notification_id),
   KEY user_id (user_id),

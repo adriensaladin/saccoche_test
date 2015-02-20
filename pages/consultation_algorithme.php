@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Algorithme de calcul"));
+$TITRE = Lang::_("Algorithme de calcul");
 
 if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME']))
 {

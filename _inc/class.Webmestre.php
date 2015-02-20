@@ -67,7 +67,7 @@ class Webmestre
   }
 
   /**
-   * Supprimer une structure (mode mono-structure)
+   * Supprimer une structure (mode mono-structures)
    *
    * @param void
    * @return void

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Adresse e-mail & Abonnements"));
+$TITRE = Lang::_("Adresse e-mail &amp; Abonnements");
 
 $info_origine = '';
 $info_edition = '';

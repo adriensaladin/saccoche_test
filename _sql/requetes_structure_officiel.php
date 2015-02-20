@@ -241,37 +241,6 @@ public static function DB_recuperer_officiel_assiduite( $periode_id , $eleve_id 
 }
 
 /**
- * Retourner une liste de professeurs rattachés à des élèves (d'une classe donnée) et des matières données.
- *
- * @param int    $classe_id
- * @param string $liste_eleve_id
- * @param string $liste_matiere_id
- * @return array
- */
-public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $liste_eleve_id , $liste_matiere_id )
-{
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  // On connait la classe ($classe_id), donc on commence par récupérer les groupes éventuels associés à aux élèves
-  $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE user_id IN('.$liste_eleve_id.') AND groupe_type=:type2 ';
-  $DB_VAR = array( ':type2' => 'groupe' );
-  $liste_groupe_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  $liste_groupes = (!$liste_groupe_id) ? $classe_id : $classe_id.','.$liste_groupe_id ;
-  // Maintenant qu'on a les matières et la classe / les groupes, on cherche les profs à la fois dans sacoche_jointure_user_matiere et sacoche_jointure_user_groupe .
-  // On part de sacoche_jointure_user_matiere qui ne contient que des profs.
-  $DB_SQL = 'SELECT DISTINCT CONCAT(matiere_id,"_",user_id) AS concat_id, matiere_id, user_id, user_nom, user_prenom ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-  $DB_SQL.= 'WHERE matiere_id IN('.$liste_matiere_id.') AND groupe_id IN('.$liste_groupes.') AND user_sortie_date>NOW() ';
-  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * lister_bilan_officiel_fichiers
  *
  * @param string $officiel_type  rien pour tous les types

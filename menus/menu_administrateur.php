@@ -74,9 +74,9 @@ $tab_sous_menu = array
   ),
   'param_personnels' => array
   (
-    'compte_password' => array( 'texte' => Lang::_("Mot de passe")                 , 'class' => 'compte_password' , 'href' => 'page=compte_password' ),
-    'compte_email'    => array( 'texte' => Lang::_("Adresse e-mail & Abonnements") , 'class' => 'mail'            , 'href' => 'page=compte_email'    ),
-    'compte_langue'   => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'   , 'href' => 'page=compte_langue'   ),
+    'compte_password' => array( 'texte' => Lang::_("Mot de passe")                     , 'class' => 'compte_password' , 'href' => 'page=compte_password' ),
+    'compte_email'    => array( 'texte' => Lang::_("Adresse e-mail &amp; Abonnements") , 'class' => 'mail'            , 'href' => 'page=compte_email'    ),
+    'compte_langue'   => array( 'texte' => Lang::_("Langue")                           , 'class' => 'compte_langue'   , 'href' => 'page=compte_langue'   ),
   ),
   'admin_generale' => array
   (
@@ -91,16 +91,16 @@ $tab_sous_menu = array
   ),
   'gestion_courante' => array
   (
-    'administrateur_periode'        => array( 'texte' => Lang::_("Périodes")                  , 'class' => 'periode'           , 'href' => 'page=administrateur_periode'        ),
-    'officiel_reglages'             => array( 'texte' => Lang::_("Synthèses / Bilans")        , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
-    'brevet_accueil'                => array( 'texte' => Lang::_("Notanet & Fiches brevet")   , 'class' => 'officiel_brevet'   , 'href' => 'page=brevet&amp;section=accueil'    ),
-    'administrateur_classe'         => array( 'texte' => Lang::_("Classes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_classe'         ),
-    'administrateur_groupe'         => array( 'texte' => Lang::_("Groupes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_groupe'         ),
-    'administrateur_eleve'          => array( 'texte' => Lang::_("Élèves")                    , 'class' => 'eleve'             , 'href' => 'page=administrateur_eleve'          ),
-    'administrateur_parent'         => array( 'texte' => Lang::_("Parents")                   , 'class' => 'parent'            , 'href' => 'page=administrateur_parent'         ),
-    'administrateur_professeur'     => array( 'texte' => Lang::_("Professeurs / Personnels")  , 'class' => 'professeur'        , 'href' => 'page=administrateur_professeur'     ),
-    'administrateur_administrateur' => array( 'texte' => Lang::_("Administrateurs")           , 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' ),
-    'administrateur_user_recherche' => array( 'texte' => Lang::_("Rechercher un utilisateur") , 'class' => 'user_recherche'    , 'href' => 'page=administrateur_user_recherche' ),
+    'administrateur_periode'        => array( 'texte' => Lang::_("Périodes")                    , 'class' => 'periode'           , 'href' => 'page=administrateur_periode'        ),
+    'officiel_reglages'             => array( 'texte' => Lang::_("Synthèses / Bilans")          , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
+    'brevet_accueil'                => array( 'texte' => Lang::_("Notanet &amp; Fiches brevet") , 'class' => 'officiel_brevet'   , 'href' => 'page=brevet&amp;section=accueil'    ),
+    'administrateur_classe'         => array( 'texte' => Lang::_("Classes")                     , 'class' => 'groupe'            , 'href' => 'page=administrateur_classe'         ),
+    'administrateur_groupe'         => array( 'texte' => Lang::_("Groupes")                     , 'class' => 'groupe'            , 'href' => 'page=administrateur_groupe'         ),
+    'administrateur_eleve'          => array( 'texte' => Lang::_("Élèves")                      , 'class' => 'eleve'             , 'href' => 'page=administrateur_eleve'          ),
+    'administrateur_parent'         => array( 'texte' => Lang::_("Parents")                     , 'class' => 'parent'            , 'href' => 'page=administrateur_parent'         ),
+    'administrateur_professeur'     => array( 'texte' => Lang::_("Professeurs / Personnels")    , 'class' => 'professeur'        , 'href' => 'page=administrateur_professeur'     ),
+    'administrateur_administrateur' => array( 'texte' => Lang::_("Administrateurs")             , 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' ),
+    'administrateur_user_recherche' => array( 'texte' => Lang::_("Rechercher un utilisateur")   , 'class' => 'user_recherche'    , 'href' => 'page=administrateur_user_recherche' ),
   ),
 );
 

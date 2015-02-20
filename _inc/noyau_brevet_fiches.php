@@ -40,7 +40,7 @@ $fichier_nom = 'fiche_brevet_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom
 
 // Initialisation de tableaux
 
-$tab_eleve_infos    = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,eleve_genre,date_naissance,eleve_brevet_serie)
+$tab_eleve_infos    = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_brevet_serie)
 $tab_matiere        = array();  // [matiere_id] => matiere_nom
 $tab_brevet_serie   = array();  // [serie_ref] => serie_nom
 $tab_brevet_epreuve = array();  // [serie_ref][epreuve_code] => epreuve_nom, epreuve_obligatoire, epreuve_note_chiffree, epreuve_point_sup_10, epreuve_note_comptee, epreuve_coefficient, choix_matieres
@@ -116,7 +116,7 @@ foreach($tab_brevet_serie as $serie_ref)
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
+  $prof_info = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
   $tab_eleve_saisie[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = array( 'matieres_id'=>$DB_ROW['matieres_id'] , 'prof_id'=>$DB_ROW['prof_id'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_classe( $classe_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
@@ -245,7 +245,7 @@ if($make_pdf)
 // Pour chaque élève...
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_genre $date_naissance $eleve_brevet_serie
+  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_brevet_serie
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   $eleve_brevet_serie_initiale = $eleve_brevet_serie{0};
   // Initialisation / Intitulé

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Nombre de saisies"));
+$TITRE = Lang::_("Nombre de saisies");
 ?>
 
 <div class="astuce">Il s'agit du nombre de notes saisies au cours de cette année scolaire.</div>

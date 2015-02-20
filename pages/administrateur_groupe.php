@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Groupes"));
+$TITRE = Lang::_("Groupes");
 ?>
 
 <div class="hc">

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Validation du socle"));
+$TITRE = Lang::_("Validation du socle");
 ?>
 
 <?php

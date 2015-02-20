@@ -54,7 +54,6 @@ if( ($action=='sauvegarder') && $etape )
   $texte_etape = sauvegarder_tables_base_etablissement($dossier_temp,$etape);
   if(strpos($texte_etape,'terminée'))
   {
-    $class = "valide";
     // Débloquer l'application
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Zipper les fichiers de svg
@@ -63,15 +62,10 @@ if( ($action=='sauvegarder') && $etape )
     // Supprimer le dossier temporaire
     FileSystem::supprimer_dossier($dossier_temp);
   }
-  else
-  {
-    $class = "loader";
-    $top_arrivee = microtime(TRUE);
-    $duree = number_format($top_arrivee - $top_depart,2,',','');
-    $texte_etape .= ' en '.$duree.'s';
-  }
   // Afficher le retour
-  echo'<li><label class="'.$class.'">'.$texte_etape.'.</label></li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">'.$texte_etape.' en '.$duree.'s.</label></li>';
   if(strpos($texte_etape,'terminée'))
   {
     echo'<li><a target="_blank" href="'.URL_DIR_DUMP.$fichier_zip_nom.'"><span class="file file_zip">Récupérer le fichier de sauvegarde au format ZIP.</span></a></li>';
@@ -140,21 +134,15 @@ if( ($action=='restaurer') && $etape )
   $texte_etape = restaurer_tables_base_etablissement($dossier_temp,$etape);
   if(strpos($texte_etape,'terminée'))
   {
-    $class = "valide";
     // Débloquer l'application
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Supprimer le dossier temporaire
     FileSystem::supprimer_dossier($dossier_temp);
   }
-  else
-  {
-    $class = "loader";
-    $top_arrivee = microtime(TRUE);
-    $duree = number_format($top_arrivee - $top_depart,2,',','');
-    $texte_etape .= ' en '.$duree.'s';
-  }
   // Afficher le retour
-  echo'<li><label class="'.$class.'">'.$texte_etape.'.</label></li>';
+  $top_arrivee = microtime(TRUE);
+  $duree = number_format($top_arrivee - $top_depart,2,',','');
+  echo'<li><label class="valide">'.$texte_etape.' en '.$duree.'s.</label></li>';
   exit();
 }
 

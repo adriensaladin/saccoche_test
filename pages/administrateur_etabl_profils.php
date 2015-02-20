@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Choix des profils utilisateurs"));
+$TITRE = Lang::_("Choix des profils utilisateurs");
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_profils">DOC : Choix des profils utilisateurs</a></span></div>

@@ -78,7 +78,7 @@ $reception_todo = ($nb_items || $nb_users) ? 'true' : 'false' ;
 $TYPE = ($nb_items || $nb_users)                    ? 'selection' : $SECTION ;
 $TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
 
-$TITRE = ($TYPE=='groupe') ? html(Lang::_("Évaluer une classe ou un groupe")) : html(Lang::_("Évaluer des élèves sélectionnés")) ;
+$TITRE = ($TYPE=='groupe') ? Lang::_("Évaluer une classe ou un groupe") : Lang::_("Évaluer des élèves sélectionnés") ;
 
 // Dates par défaut
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après

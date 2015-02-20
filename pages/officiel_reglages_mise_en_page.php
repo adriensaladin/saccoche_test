@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Mise en page des bilans officiels"));
+$TITRE = Lang::_("Mise en page des bilans officiels");
 
 $check_denomination = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'denomination')) ? ' checked' : '' ;
 $check_adresse      = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'adresse'))      ? ' checked' : '' ;

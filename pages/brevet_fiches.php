@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Fiches brevet")) :  html(Lang::_("Étape n°5 - Fiches brevet")) ;
+$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? Lang::_("Fiches brevet") :  Lang::_("Étape n°5 - Fiches brevet") ;
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var TODAY_FR   = "'.TODAY_FR.'";' );

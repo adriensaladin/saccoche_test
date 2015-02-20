@@ -61,13 +61,13 @@ $tab_sous_menu = array
   ),
   'parametrage' => array
   (
-    'compte_password'        => array( 'texte' => Lang::_("Mot de passe")                 , 'class' => 'compte_password'   , 'href' => 'page=compte_password'               ),
-    'compte_email'           => array( 'texte' => Lang::_("Adresse e-mail & Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'                  ),
-    'compte_daltonisme'      => array( 'texte' => Lang::_("Daltonisme")                   , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme'             ),
-    'compte_langue'          => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'                 ),
-    'compte_message'         => array( 'texte' => Lang::_("Messages d'accueil")           , 'class' => 'message_accueil'   , 'href' => 'page=compte_message'                ),
-    'compte_selection_items' => array( 'texte' => Lang::_("Regroupements d'items")        , 'class' => 'item_selection'    , 'href' => 'page=compte_selection_items'        ),
-    'officiel_reglages'      => array( 'texte' => Lang::_("Synthèses / Bilans")           , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
+    'compte_password'        => array( 'texte' => Lang::_("Mot de passe")                     , 'class' => 'compte_password'   , 'href' => 'page=compte_password'               ),
+    'compte_email'           => array( 'texte' => Lang::_("Adresse e-mail &amp; Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'                  ),
+    'compte_daltonisme'      => array( 'texte' => Lang::_("Daltonisme")                       , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme'             ),
+    'compte_langue'          => array( 'texte' => Lang::_("Langue")                           , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'                 ),
+    'compte_message'         => array( 'texte' => Lang::_("Messages d'accueil")               , 'class' => 'message_accueil'   , 'href' => 'page=compte_message'                ),
+    'compte_selection_items' => array( 'texte' => Lang::_("Regroupements d'items")            , 'class' => 'item_selection'    , 'href' => 'page=compte_selection_items'        ),
+    'officiel_reglages'      => array( 'texte' => Lang::_("Synthèses / Bilans")               , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
   ),
   'evaluation' => array
   (
@@ -97,13 +97,13 @@ $tab_sous_menu = array
   ),
   'officiel' => array
   (
-    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")      , 'class' => 'officiel_assiduite' , 'href' => 'page=officiel&amp;section=assiduite'        ),
-    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")    , 'class' => 'officiel_releve'    , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
-    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")       , 'class' => 'officiel_bulletin'  , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
-    'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1")    , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
-    'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2")    , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
-    'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")    , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
-    'brevet_accueil'            => array( 'texte' => Lang::_("Notanet & Fiches brevet") , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=accueil'            ),
+    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")          , 'class' => 'officiel_assiduite' , 'href' => 'page=officiel&amp;section=assiduite'        ),
+    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")        , 'class' => 'officiel_releve'    , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
+    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")           , 'class' => 'officiel_bulletin'  , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
+    'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1")        , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
+    'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2")        , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
+    'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")        , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
+    'brevet_accueil'            => array( 'texte' => Lang::_("Notanet &amp; Fiches brevet") , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=accueil'            ),
   ),
 );
 

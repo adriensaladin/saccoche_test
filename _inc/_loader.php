@@ -402,7 +402,6 @@ function SACoche_autoload($class_name)
     'PDF_evaluation_tableau'      => '_inc'.DS.'class.PDF_evaluation_tableau.php' ,
     'PDF_fiche_brevet'            => '_inc'.DS.'class.PDF_fiche_brevet.php' ,
     'PDF_grille_referentiel'      => '_inc'.DS.'class.PDF_grille_referentiel.php' ,
-    'PDF_item_bulletin'           => '_inc'.DS.'class.PDF_item_bulletin.php' ,
     'PDF_item_releve'             => '_inc'.DS.'class.PDF_item_releve.php' ,
     'PDF_item_synthese'           => '_inc'.DS.'class.PDF_item_synthese.php' ,
     'PDF_item_tableau'            => '_inc'.DS.'class.PDF_item_tableau.php' ,

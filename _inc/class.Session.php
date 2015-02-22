@@ -435,8 +435,12 @@ class Session
     'conserver_session_active',
     'evaluation_demande_eleve_ajout',
     'fermer_session',
-    // sans objet (sans besoin d'identification) + sinon si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
+    // sans objet (sans besoin d'identification)
+    // + si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
+    // + par ailleurs ces pages testent $_SESSION['FORCEBRUTE'][$PAGE] et affichent un message approprié en cas de manque
     'public_accueil',
+    'public_contact_admin',
+    'public_identifiants_perdus',
     // sans objet car pas de formulaire
     'force_download', 
     'public_login_SSO', 

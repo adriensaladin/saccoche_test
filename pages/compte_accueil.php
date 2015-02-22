@@ -101,7 +101,7 @@ $tab_accueil['user']['contenu'] = '';
 // infos connexion (pas si webmestre ni partenaire)
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Bonjour %s."),'<b>'.html($_SESSION['USER_PRENOM']).'</b>')).' ';
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Bonjour %s.")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>').' ';
   if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user']['contenu'] .= html(Lang::_("Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !")).'</p>'; }
   elseif($_SESSION['DELAI_CONNEXION']<  43200 /*0.5*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Déjà de retour ? Décidément on ne se quitte plus !")).'</p>'; }
   elseif($_SESSION['DELAI_CONNEXION']< 108000 /*  2*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Bonne navigation, et merci de votre fidélité !")).'</p>'; }
@@ -113,16 +113,16 @@ if(isset($_SESSION['DELAI_CONNEXION']))
 }
 elseif(isset($_SESSION['DEUXIEME_PASSAGE']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Encore là %s ? Vous avez raison, faîtes comme chez vous !"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>'));
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Encore là %s ? Vous avez raison, faîtes comme chez vous !")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
   unset($_SESSION['DEUXIEME_PASSAGE']);
   $_SESSION['PASSAGES_SUIVANTS'] = TRUE;
 }
 elseif(isset($_SESSION['PASSAGES_SUIVANTS']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.html(sprintf(Lang::_("Toujours là %s ? Pas de souci, restez le temps que vous voulez !"),'<b>'.html($_SESSION['USER_PRENOM']).'</b>'));
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Toujours là %s ? Pas de souci, restez le temps que vous voulez !")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
 }
 // infos profil
-$tab_accueil['user']['contenu'] .= '<p>'.html(sprintf(Lang::_("Vous êtes dans l'environnement %s."),'<b>'.$_SESSION['USER_PROFIL_NOM_LONG'].'</b>')).'</p>';
+$tab_accueil['user']['contenu'] .= '<p>'.sprintf(html(Lang::_("Vous êtes dans l'environnement %s.")),'<b>'.$_SESSION['USER_PROFIL_NOM_LONG'].'</b>').'</p>';
 // infos selon profil
 if($_SESSION['USER_PROFIL_TYPE']=='parent')
 {

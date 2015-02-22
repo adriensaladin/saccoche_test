@@ -228,8 +228,8 @@ public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
  */
 public static function DB_ajouter_zone($geo_ordre,$geo_nom)
 {
-  $DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
-  $DB_SQL.= 'VALUES(:geo_ordre,:geo_nom)';
+  $DB_SQL = 'INSERT INTO sacoche_geo( geo_ordre, geo_nom) ';
+  $DB_SQL.= 'VALUES(                 :geo_ordre,:geo_nom)';
   $DB_VAR = array(
     ':geo_ordre' => $geo_ordre,
     ':geo_nom'   => $geo_nom,
@@ -257,8 +257,8 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
   $chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
   if($base_id==0)
   {
-    $DB_SQL = 'INSERT INTO sacoche_structure(geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
-    $DB_SQL.= 'VALUES(:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
+    $DB_SQL = 'INSERT INTO sacoche_structure( geo_id, structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
+    $DB_SQL.= 'VALUES(                       :geo_id,:structure_uai,         :localisation,         :denomination,         :contact_nom,         :contact_prenom,         :contact_courriel,          '.$chaine_date.')';
     $DB_VAR = array(
       ':geo_id'           => $geo_id,
       ':structure_uai'    => $structure_uai,
@@ -274,8 +274,8 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
   }
   else
   {
-    $DB_SQL = 'INSERT INTO sacoche_structure(sacoche_base,geo_id,structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
-    $DB_SQL.= 'VALUES(:base_id,:geo_id,:structure_uai,:localisation,:denomination,:contact_nom,:contact_prenom,:contact_courriel,'.$chaine_date.')';
+    $DB_SQL = 'INSERT INTO sacoche_structure(sacoche_base, geo_id, structure_uai,structure_localisation,structure_denomination,structure_contact_nom,structure_contact_prenom,structure_contact_courriel,structure_inscription_date) ';
+    $DB_SQL.= 'VALUES(                           :base_id,:geo_id,:structure_uai,         :localisation,         :denomination,         :contact_nom,         :contact_prenom,         :contact_courriel,          '.$chaine_date.')';
     $DB_VAR = array(
       ':base_id'          => $base_id,
       ':geo_id'           => $geo_id,
@@ -306,7 +306,7 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
 public static function DB_ajouter_partenaire_conventionne($denomination,$nom,$prenom,$courriel,$password_crypte,$connecteurs)
 {
   $DB_SQL = 'INSERT INTO sacoche_partenaire(partenaire_denomination,partenaire_nom,partenaire_prenom,partenaire_courriel,partenaire_password,partenaire_connecteurs) ';
-  $DB_SQL.= 'VALUES(:denomination,:nom,:prenom,:courriel,:password_crypte,:connecteurs)';
+  $DB_SQL.= 'VALUES(                                  :denomination,          :nom,          :prenom,          :courriel,   :password_crypte,          :connecteurs)';
   $DB_VAR = array(
     ':denomination'    => $denomination,
     ':nom'             => $nom,
@@ -375,7 +375,8 @@ public static function DB_modifier_parametre($parametre_nom,$parametre_valeur)
 public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
 {
   $DB_SQL = 'UPDATE sacoche_structure ';
-  $DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
+  $DB_SQL.= 'SET geo_id=:geo_id, structure_uai=:structure_uai, structure_localisation=:localisation, structure_denomination=:denomination, ';
+  $DB_SQL.= 'structure_contact_nom=:contact_nom, structure_contact_prenom=:contact_prenom, structure_contact_courriel=:contact_courriel ';
   $DB_SQL.= 'WHERE sacoche_base=:base_id ';
   $DB_VAR = array(
     ':base_id'          => $base_id,
@@ -404,7 +405,7 @@ public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$lo
 public static function DB_modifier_partenaire_conventionne($partenaire_id,$denomination,$nom,$prenom,$courriel,$connecteurs)
 {
   $DB_SQL = 'UPDATE sacoche_partenaire ';
-  $DB_SQL.= 'SET partenaire_denomination=:denomination,partenaire_nom=:nom,partenaire_prenom=:prenom,partenaire_courriel=:courriel,partenaire_connecteurs=:connecteurs ';
+  $DB_SQL.= 'SET partenaire_denomination=:denomination, partenaire_nom=:nom, partenaire_prenom=:prenom, partenaire_courriel=:courriel, partenaire_connecteurs=:connecteurs ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
   $DB_VAR = array(
     ':partenaire_id' => $partenaire_id,

@@ -32,21 +32,11 @@ $(document).ready
   {
 
     // initialisation
-    var ajax_id = '#ajax_msg_envoyer';
-    $('#f_nom').focus();
-    afficher_textarea_reste( $('#f_message') , 2000 );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Indiquer le nombre de caractères restant autorisés dans le textarea
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#f_message').keyup
-    (
-      function()
-      {
-        afficher_textarea_reste( $(this) , 2000 );
-      }
-    );
+    if( !$('#f_courriel').length )
+    {
+      return false;
+    }
+    $('#f_courriel').focus();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Gestion CAPTCHA
@@ -91,11 +81,11 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire (saisie & confirmation)
+// Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('form');
+    var formulaire = $('#form_lost');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
     var validation = formulaire.validate
@@ -104,22 +94,14 @@ $(document).ready
         rules :
         {
           f_base     : { required:true },
-          f_nom      : { required:true , maxlength:25 },
-          f_prenom   : { required:true , maxlength:25 },
           f_courriel : { required:true , email:true , maxlength:63 },
-          f_message  : { required:true , minlength:100 },
-          f_captcha  : { required:true },
-          f_code     : { required:function(){return $("#f_md5").val()!='';}, digits:true , rangelength:[8,8] }
+          f_captcha  : { required:true }
         },
         messages :
         {
           f_base     : { required:"établissement manquant" },
-          f_nom      : { required:"nom manquant"      , maxlength:"25 caractères maximum" },
-          f_prenom   : { required:"prénom manquant"   , maxlength:"25 caractères maximum" },
           f_courriel : { required:"adresse manquante" , email:"adresse invalide", maxlength:"63 caractères maximum" },
-          f_message  : { required:"contenu manquant"  , minlength:"contenu insuffisant" },
-          f_captcha  : { required:"réponse manquante" },
-          f_code     : { required:"code manquant"     , digits:"chiffres uniquement", rangelength:"8 chiffres requis" }
+          f_captcha  : { required:"réponse manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -135,7 +117,7 @@ $(document).ready
       dataType : 'json',
       clearForm : false,
       resetForm : false,
-      target : ajax_id,
+      target : "#ajax_msg_envoyer",
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -154,12 +136,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $(ajax_id).removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_envoyer').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $(ajax_id).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_envoyer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -168,7 +150,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $(ajax_id).removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_envoyer').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -177,28 +159,12 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        if( ajax_id == '#ajax_msg_envoyer' )
-        {
-          $(ajax_id).removeAttr("class").addClass("valide").html("");
-          $('#report_courriel').html( $("#f_courriel").val() );
-          $('#f_md5').val( responseJSON['value'] );
-          $('#step1').hide();
-          $('#step2').show();
-          $('#f_code').focus();
-          ajax_id = '#ajax_msg_confirmer';
-        }
-        else if( ajax_id == '#ajax_msg_confirmer' )
-        {
-          $(ajax_id).removeAttr("class").addClass("valide").html("");
-          $('#span_admin_nb').html( responseJSON['value'] );
-          $('#f_md5').val('');
-          $('#step2').hide();
-          $('#step3').show();
-        }
+        $('#form_lost').hide();
+        $('#lost_confirmation').show();
       }
       else
       {
-        $(ajax_id).removeAttr("class").addClass("alerte").html(responseJSON['value']);
+        $('#ajax_msg_envoyer').removeAttr("class").addClass("alerte").html(responseJSON['value']);
         if( responseJSON['value'].substring(0,15) == 'Ordre incorrect' )
         {
           $('#captcha_init').children('button').click();

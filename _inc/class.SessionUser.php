@@ -40,27 +40,9 @@ class SessionUser
    */
   public static function tester_authentification_webmestre($password)
   {
-    // Si tentatives trop rapprochées...
-    $delai_tentative_secondes = $_SERVER['REQUEST_TIME'] - WEBMESTRE_ERREUR_DATE ;
-    if($delai_tentative_secondes<3)
-    {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
-      return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
-    }
-    elseif($delai_tentative_secondes<10)
-    {
-      $delai_attente_restant = 10-$delai_tentative_secondes ;
-      return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
-    }
-    // Si mdp incorrect...
+    global $PAGE;
     $password_crypte = crypter_mdp($password);
-    if($password_crypte!=WEBMESTRE_PASSWORD_MD5)
-    {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
-      return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
-    }
-    // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return'ok';
+    return ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? 'ok' : 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' ;
   }
 
   /**
@@ -72,27 +54,7 @@ class SessionUser
    */
   public static function tester_authentification_developpeur($password)
   {
-    // Si tentatives trop rapprochées...
-    $delai_tentative_secondes = $_SERVER['REQUEST_TIME'] - WEBMESTRE_ERREUR_DATE ;
-    if($delai_tentative_secondes<3)
-    {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
-      return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
-    }
-    elseif($delai_tentative_secondes<10)
-    {
-      $delai_attente_restant = 10-$delai_tentative_secondes ;
-      return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
-    }
-    // Si mdp incorrect...
-    $auth_result = ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
-    if($auth_result!='ok')
-    {
-      FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>$_SERVER['REQUEST_TIME']) );
-      return $auth_result;
-    }
-    // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return'ok';
+    return ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
   }
 
   /**
@@ -109,32 +71,18 @@ class SessionUser
     // Si id non trouvé...
     if(empty($DB_ROW))
     {
-      return array('Partenaire introuvable !',array());
-    }
-    // Si tentatives trop rapprochées...
-    if($DB_ROW['partenaire_tentative_date']!==NULL) // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
-    {
-      if($DB_ROW['delai_tentative_secondes']<3)
-      {
-        DB_WEBMESTRE_PUBLIC::DB_enregistrer_partenaire_date_tentative($DB_ROW['partenaire_id']);
-        return array('Calmez-vous et patientez 10s avant la prochaine tentative !',array());
-      }
-      elseif($DB_ROW['delai_tentative_secondes']<10)
-      {
-        $delai_attente_restant = 10 - $DB_ROW['delai_tentative_secondes'] ;
-        return array('Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.',array());
-      }
+      return array( 'Partenaire introuvable !' , array() );
     }
     // Si mdp incorrect...
     if($DB_ROW['partenaire_password']!=crypter_mdp($password))
     {
-      DB_WEBMESTRE_PUBLIC::DB_enregistrer_partenaire_date_tentative($DB_ROW['partenaire_id']);
-      return array('Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.',array());
+      global $PAGE;
+      return array( 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' , array() );
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le partenariat sélectionné si identification avec succès
     setcookie( COOKIE_PARTENAIRE /*name*/ , $DB_ROW['partenaire_id'] /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return array('ok',$DB_ROW);
+    return array( 'ok' , $DB_ROW );
   }
 
   /**
@@ -178,42 +126,28 @@ class SessionUser
     }
     // Blocage éventuel par le webmestre ou un administrateur ou l'automate
     LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil_sigle'] );
-    // Si tentatives trop rapprochées...
-    if($DB_ROW['user_tentative_date']!==NULL) // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
-    {
-      if($DB_ROW['delai_tentative_secondes']<3)
-      {
-        DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'tentative' , $DB_ROW['user_id'] );
-        return array('Calmez-vous et patientez 10s avant la prochaine tentative !',array());
-      }
-      elseif($DB_ROW['delai_tentative_secondes']<10)
-      {
-        $delai_attente_restant = 10 - $DB_ROW['delai_tentative_secondes'] ;
-        return array('Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.',array());
-      }
-    }
     // Si mdp incorrect...
     if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
     {
-      DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'tentative' , $DB_ROW['user_id'] );
-      return array('Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.',array());
+      global $PAGE;
+      return array( 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' , array() );
     }
     // Si compte desactivé...
     if($DB_ROW['user_sortie_date']<=TODAY_MYSQL)
     {
-      return array('Identification réussie mais ce compte est desactivé !',array());
+      return array( 'Identification réussie mais ce compte est desactivé !' , array() );
     }
     // Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
     if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_type'],array('webmestre','administrateur')) )
     {
-      DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
+      DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion($DB_ROW['user_id']);
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
     setcookie( COOKIE_STRUCTURE /*name*/ , $BASE /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
     setcookie( COOKIE_AUTHMODE /*name*/ , $mode_connection /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return array('ok',$DB_ROW);
+    return array( 'ok' , $DB_ROW );
   }
 
   /**

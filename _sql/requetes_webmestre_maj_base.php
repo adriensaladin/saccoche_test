@@ -210,6 +210,22 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     }
   }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2014-06-19 => 2015-02-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_webmestre_actuelle=='2014-06-19')
+{
+  // Actualisation date de version
+  $version_base_webmestre_actuelle = '2015-02-22';
+  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+  // suppression du champ [partenaire_tentative_date] de la table [sacoche_partenaire]
+  if(empty($reload_sacoche_partenaire))
+  {
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_partenaire DROP partenaire_tentative_date ' );
+  }
+}
+
 }
 
 }

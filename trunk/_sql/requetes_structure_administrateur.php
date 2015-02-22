@@ -1230,7 +1230,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * Les champs "tentative_date" et "connexion_date" sont traités avec DB_enregistrer_date().
+ * Le champ "connexion_date" est traité avec DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion().
  * On peut envisager une modification de "profil_sigle" entre personnels.
  *
  * @param int     $user_id

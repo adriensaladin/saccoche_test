@@ -200,7 +200,6 @@ if( $step==41 )
       'WEBMESTRE_PRENOM'           => $prenom,
       'WEBMESTRE_COURRIEL'         => $courriel,
       'WEBMESTRE_PASSWORD_MD5'     => crypter_mdp($password),
-      'WEBMESTRE_ERREUR_DATE'      => 0,
       'SERVEUR_PROXY_USED'         => '',
       'SERVEUR_PROXY_NAME'         => '',
       'SERVEUR_PROXY_PORT'         => '',

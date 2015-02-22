@@ -62,7 +62,7 @@ $(document).ready
           {
             if(responseJSON['statut']==true)
             {
-              $("#form_auth fieldset").html(responseJSON['value']);
+              $("#fieldset_auth").html(responseJSON['value']);
               curseur();
             }
             else
@@ -76,7 +76,7 @@ $(document).ready
     chargement();
 
     // Choix dans le formulaire des structures => Afficher le formulaire de la structure
-    $('#form_auth').on
+    $('#fieldset_auth').on
     (
       'click',
       '#f_choisir',
@@ -102,7 +102,7 @@ $(document).ready
               $('button').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $("#form_auth fieldset").html(responseJSON['value']);
+                $("#fieldset_auth").html(responseJSON['value']);
                 curseur();
               }
               else
@@ -116,7 +116,7 @@ $(document).ready
     );
 
     // Clic sur le lien pour changer de structure
-    $('#form_auth').on
+    $('#fieldset_auth').on
     (
       'click',
       '#f_changer',
@@ -142,7 +142,7 @@ $(document).ready
               $('#f_changer').show();
               if(responseJSON['statut']==true)
               {
-                $("#form_auth fieldset").html(responseJSON['value']);
+                $("#fieldset_auth").html(responseJSON['value']);
                 curseur();
               }
               else
@@ -156,46 +156,34 @@ $(document).ready
     );
 
     // Clic sur le lien [ Identifiants perdus ! ]
-    $('#form_auth').on
+    $('#fieldset_auth').on
     (
       'click',
       '#lien_lost',
       function()
       {
+        var base = $('#f_base').length ? $('#f_base').val() : 0 ;
         var ancre = extract_hash( $(this).attr('href') );
-        $('#form_auth').hide();
-        $('#'+ancre+', #form_lost').show();
+        document.location.href = './index.php?page=public_identifiants_perdus'+'&base='+base+'&profil='+ancre;
         return false;
       }
     );
 
     // Clic sur le lien [ Contacter un administrateur ? ]
-    $('#form_auth').on
+    $('#fieldset_auth').on
     (
       'click',
       '#contact_admin',
       function()
       {
-        document.location.href = './index.php?page=public_contact_admin'+'&base='+$('#f_base').val();
+        var base = $('#f_base').length ? $('#f_base').val() : 0 ;
+        document.location.href = './index.php?page=public_contact_admin'+'&base='+base;
         return false;
       }
     );
 
-    // Clic sur le bouton [Retour au formulaire d'identification]
-    $('#form_lost').on
-    (
-      'click',
-      '#quit_lost',
-      function()
-      {
-        $('#lost_structure, #lost_webmestre, #lost_confirmation, #lost_partenaire, #form_lost').hide();
-        $('#ajax_msg_lost').removeAttr("class").html('');
-        $('#form_auth').show();
-      }
-    );
-
     // Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
-    $('#form_auth').on
+    $('#fieldset_auth').on
     (
       'change',
       'input[type=radio]',
@@ -252,66 +240,12 @@ $(document).ready
       }
     );
 
-    // Demande pour obtenir la génération de nouveaux identifiants
-    $('#form_lost').on
-    (
-      'click',
-      '#submit_lost',
-      function()
-      {
-        var f_courriel = $('#f_courriel_lost').val();
-        if(!f_courriel)
-        {
-          $('#ajax_msg_lost').removeAttr("class").addClass("erreur").html('adresse manquante');
-          $('#f_courriel_lost').focus();
-          return false;
-        }
-        if(!testMail(f_courriel))
-        {
-          $('#ajax_msg_lost').removeAttr("class").addClass("erreur").html('adresse invalide');
-          $('#f_courriel_lost').focus();
-          return false;
-        }
-        $('#ajax_msg_lost').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('button').prop('disabled',true);
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=demande_mdp'+'&f_base='+$('#f_base').val()+'&f_courriel='+encodeURIComponent(f_courriel),
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button').prop('disabled',false);
-              $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              $('button').prop('disabled',false);
-              if(responseJSON['statut']==true)
-              {
-                $('#lost_structure').hide();
-                $('#lost_confirmation').show();
-              }
-              else
-              {
-                $('#ajax_msg_lost').removeAttr("class").addClass("alerte").html(responseJSON['value']);
-              }
-            }
-          }
-        );
-      }
-    );
-
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire de validation de ses identifiants
+// Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire = $('form');
+    var formulaire = $('#form_auth');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
     var validation = formulaire.validate

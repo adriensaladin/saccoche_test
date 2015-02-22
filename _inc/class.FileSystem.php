@@ -396,7 +396,7 @@ class FileSystem
   /**
    * Fabriquer ou mettre à jour le fichier de configuration de l'hébergement (gestion par le webmestre)
    * 
-   * @param array $tab_constantes_modifiees => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
+   * @param array tableau $constante_nom => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
    * @return void
    */
   public static function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
@@ -415,6 +415,7 @@ class FileSystem
       'WEBMESTRE_PRENOM',
       'WEBMESTRE_COURRIEL',
       'WEBMESTRE_PASSWORD_MD5',
+      'WEBMESTRE_ERREUR_DATE',
       'SERVEUR_PROXY_USED',
       'SERVEUR_PROXY_NAME',
       'SERVEUR_PROXY_PORT',

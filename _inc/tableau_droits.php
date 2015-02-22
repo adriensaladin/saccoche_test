@@ -65,7 +65,6 @@ $tab_droits_par_page = array
   // Profil public
   'public_accueil'                          => $tab_droits_profil_public,
   'public_contact_admin'                    => $tab_droits_profil_public,
-  'public_identifiants_perdus'              => $tab_droits_profil_public,
   'public_installation'                     => $tab_droits_profil_public,
   'public_logout_SSO'                       => $tab_droits_profil_public,
   'public_nouveau_mdp'                      => $tab_droits_profil_public,

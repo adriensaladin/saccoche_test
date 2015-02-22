@@ -33,24 +33,12 @@ $nom      = (isset($_POST['f_nom']))      ? Clean::nom(     $_POST['f_nom']     
 $prenom   = (isset($_POST['f_prenom']))   ? Clean::prenom(  $_POST['f_prenom']  ) : '';
 $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : '';
 $message  = (isset($_POST['f_message']))  ? Clean::texte(   $_POST['f_message'] ) : '';
-$captcha  = (isset($_POST['f_captcha']))  ? Clean::texte(   $_POST['f_captcha'] ) : '';
 $code     = (isset($_POST['f_code']))     ? Clean::entier(  $_POST['f_code']    ) : 0 ;
 $md5      = (isset($_POST['f_md5']))      ? Clean::login(   $_POST['f_md5']     ) : '';
 
-if( !$nom || !$prenom || !$courriel || !$message || ( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE ) || ( $code && !$md5 ) || ( $md5 && !$code ) )
+if( !$nom || !$prenom || !$courriel|| !$message || ( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE ) || ( $code && !$md5 ) || ( $md5 && !$code ) )
 {
   exit_json( FALSE , 'Erreur avec les données transmises !' );
-}
-
-// Protection contre les robots (pour éviter des envois intempestifs de courriels)
-if(!isset($_SESSION['TMP']['CAPTCHA']))
-{
-  exit_json( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
-}
-else if( $_SERVER['REQUEST_TIME'] - $_SESSION['TMP']['CAPTCHA']['TIME'] < $_SESSION['TMP']['CAPTCHA']['DELAI'] )
-{
-  $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-  exit_json( FALSE , 'Sécurité : patienter '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s avant une nouvelle tentative.' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,13 +47,15 @@ else if( $_SERVER['REQUEST_TIME'] - $_SESSION['TMP']['CAPTCHA']['TIME'] < $_SESS
 
 if(!$code)
 {
-  // On vérifie le captcha.
-  if( $captcha != $_SESSION['TMP']['CAPTCHA']['SOLUCE'] )
+  // Anti-robot light (sans système de CAPTCHA nécessitant une intervention de l'utilisateur)
+  $delai = 10; // Délai minimum à respecter (en secondes)
+  if( isset($_SESSION['TMP']['CAPTCHA']) && ($_SERVER['REQUEST_TIME']-$_SESSION['TMP']['CAPTCHA'])<$delai )
   {
-    $_SESSION['TMP']['CAPTCHA']['DELAI']++;
-    $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-    exit_json( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
+    $_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
+    exit_json( FALSE , 'Trop rapide ! Robot ? Veuillez patienter '.$delai.'s supplémentaires.' );
   }
+  unset($_SESSION['TMP']['CAPTCHA']);
+
   // On vérifie le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
   $mail_domaine = tester_domaine_courriel_valide($courriel);
   if($mail_domaine!==TRUE)
@@ -100,9 +90,7 @@ if($code)
   // On vérifie le code
   if( md5($code.$BASE.$courriel) != $md5 )
   {
-    $_SESSION['TMP']['CAPTCHA']['DELAI']++;
-    $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-    exit_json( FALSE , 'Code incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
+    exit_json( FALSE , 'Code incorrect !' );
   }
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')

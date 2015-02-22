@@ -71,6 +71,7 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
     if(empty($user_identifiant)) return NULL;
   }
   $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, ';
+  $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_tentative_date)) AS delai_tentative_secondes, '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
   $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
@@ -129,15 +130,20 @@ public static function DB_lister_parametres($listing_param='')
 }
 
 /**
- * Modifier la date de connexion
+ * Modifier la date de connexion ou de tentative de connexion
  *
+ * @param string  $champ   'connexion' | 'tentative'
  * @param int     $user_id
  * @return void
  */
-public static function DB_enregistrer_date_connexion($user_id)
+public static function DB_enregistrer_date($champ,$user_id)
 {
   $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET user_connexion_date=NOW(), user_pass_key="" ';
+  $DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';
+  if($champ=='connexion')
+  {
+    $DB_SQL.= ', user_pass_key="" ';
+  }
   $DB_SQL.= 'WHERE user_id=:user_id ';
   $DB_VAR = array(':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

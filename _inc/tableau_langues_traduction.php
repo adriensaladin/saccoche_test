@@ -37,7 +37,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 70, // en attente
+    'statut'     => 17, // en attente
     'langue'     => array( 'code' => 'en'  , 'nom' => 'Anglais' ),
     'pays'       => array( 'code' => '150' , 'nom' => 'Europe' ),
     'traducteur' => array(
@@ -51,14 +51,6 @@ $tab_langues_traduction = array(
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
       array( 'nom' => 'Joël Macé' , 'mail' => 'joel.mace@ac-versailles.fr' ),
-    ),
-  ),
-  array(
-    'statut'     => 100, // complète (% effectué)
-    'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
-    'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
-    'traducteur' => array(
-      array( 'nom' => 'Amaël Kervarrec' , 'mail' => 'amael.kervarrec@lfcali.edu.co' ),
     ),
   ),
   array(

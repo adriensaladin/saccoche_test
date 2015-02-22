@@ -599,40 +599,6 @@ function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_max
 }
 
 /**
- * Renvoyer les balises images à afficher et la chaine solution à mettre en session.
- * 
- * @return array   [$html_imgs,$captcha_soluce]
- */
-function captcha()
-{
-  $tab_base64 = array(
-    0 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI4hI+pwe3fDJxPQjStWxV0HxzdpoXliYJMSqpmC0euKM/2TcYrqpv2t3O9PrTcpWikUEpKouKJKAAAOw==',
-    1 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAIzhI+pwe3fDJxPznNBtlV3DHHMEnql6YipOqKr21JgJ7OBfdv4vNZw7ssES5Qi0LhRKBMFADs=',
-    2 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI4hI+pwe3fDJxP1gRtVOA6xIDbpwUHSW3dmIrhOrlvLM9XiZJ4rqYm/APSdBxesMjyZYTKF+eJKAAAOw==',
-    3 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI3hI+pwe3fDJxPQjStWxV0HxzdpoXliYJMebHsio1tHKmZa4t1zvfkB7OZZrof8UZJDpU3hVNRAAA7',
-    4 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI2hI+pwe3fDJxPTgRtPvviCngcuH2OFiXdKY0sGLopGwYygyqmXeN63iutREMhiYJEIWG/JqAAADs=',
-    5 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI4hI+pwe3fDJxPOmUjqJjzTQUZc4QiSI7T2EFse6EnWsbmbJt1Gsv72QP9gMEhsbiS3TRLF+aZKAAAOw==',
-    6 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI5hI+pwe3fDJxPQjStU6D2bR0e+DFiVAYnpaZc5r4jGmpmjIPkjvJ37PmsbpdEEWbrsSjJJY0DPRQAADs=',
-    7 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI2hI+pwe3fDJxPRnWcZThfegGaCAYeR1InWq5mCrkvKG+V/U3yrONs7PvdYKMeMVcCJo2dJqAAADs=',
-    8 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI4hI+pwe3fDJxPQjStWxV0HxzdpoXliYJMaYIieSVxjI2ky6Y3HOn9t8qpejXeZ/ijKFnKm+KZKAAAOw==',
-    9 => 'R0lGODlhFAAUAIAAAGZm/93d/yH5BAEKAAAALAAAAAAUABQAAAI4hI+pwe3fDJxPQjStWxV0HxzdpoXliYJMSqrmt4qRaypuOSckle/9H4PVRh+Zr5ih8Y7Lou1pKAAAOw==',
-  );
-  $rand_keys   = str_shuffle('0123456789');
-  $rand_values = str_shuffle('abcdefghijklmnopqrstuvxyz');
-  $tab_values = array();
-  $html_imgs = '';
-  for( $i=1 ; $i<=6 ; $i++ )
-  {
-    $key   = $rand_keys{$i};
-    $value = $rand_values{$i};
-    $tab_values[$key] = $value;
-    $html_imgs .= '<img class="captcha" id="cap_'.$value.'" src="data:image/gif;base64,'.$tab_base64[$key].'" />';
-  }
-  ksort($tab_values);
-  $captcha_soluce = implode('',$tab_values);
-  return array($html_imgs,$captcha_soluce);
-}
-/**
  * Passer d'une date MySQL AAAA-MM-JJ à une date française JJ/MM/AAAA.
  *
  * @param string $date_mysql AAAA-MM-JJ

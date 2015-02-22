@@ -71,13 +71,9 @@ if($courriel)
   $message .= 'Cordialement.'."\r\n";
 }
 
-// Protection contre les robots (pour éviter des envois intempestifs de courriels)
-list($html_imgs,$captcha_soluce) = captcha();
-$_SESSION['TMP']['CAPTCHA'] = array(
-  'TIME'   => $_SERVER['REQUEST_TIME'] ,
-  'DELAI'  => 7, // en secondes, est ensuite incrémenté en cas d'erreur
-  'SOLUCE' => $captcha_soluce,
-);
+// Anti-robot light (sans système de CAPTCHA nécessitant une intervention de l'utilisateur), pour éviter des envois intempestifs de courriels
+$_SESSION['TMP']['CAPTCHA'] = $_SERVER['REQUEST_TIME'];
+
 ?>
 <form id="form_contact" action="#" method="post">
   <div id="step1">
@@ -86,7 +82,6 @@ $_SESSION['TMP']['CAPTCHA'] = array(
     <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" /><br />
     <label class="tab" for="f_courriel"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Un code de confirmation y sera envoyé.<br />Vérifiez bien votre saisie !" /> Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="<?php echo html($courriel) ?>" size="30" maxlength="63" /><br />
-    <label class="tab">Anti-robot :</label><span id="captcha_game">Cliquer du plus petit au plus grand <?php echo $html_imgs ?></span><span id="captcha_init" class="hide">Ordre enregistré. <button type="button" class="actualiser">Recommencer.</button></span><input id="f_captcha" name="f_captcha" type="text" value="" /><br />
     <label for="f_message" class="tab">Message :</label><textarea name="f_message" id="f_message" rows="9" cols="55"><?php echo html($message) ?></textarea><br />
     <span class="tab"></span><label id="f_message_reste"></label><br />
     <span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Enregistrer.</button><label id="ajax_msg_envoyer" class="astuce">Un code de confirmation vous sera alors envoyé.</label>
@@ -101,7 +96,5 @@ $_SESSION['TMP']['CAPTCHA'] = array(
     <p><label class="valide">Votre message a été transmis <span id="span_admin_nb"></span> (établissement <em><?php echo html($structure_denomination) ?></em>).</label></p>
   </div>
 </form>
-
 <hr />
-
-<div class="hc"><a href="./index.php?base=<?php echo $BASE ?>">[ Retour en page d'accueil ]</a></div>
+<div class="hc"><a href="./index.php">[ Retour en page d'accueil ]</a></div>

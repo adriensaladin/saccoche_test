@@ -48,48 +48,6 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Gestion CAPTCHA
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var captcha_count  = 0;
-    var captcha_length = 6;
-    var captcha_string = '';
-
-    // Clic sur une image
-    $('#captcha_game').on
-    (
-      'click',
-      'img',
-      function()
-      {
-        captcha_string += $(this).attr('id').substring(4); // cap_
-        captcha_count++;
-        $(this).hide(0);
-        if(captcha_count==captcha_length)
-        {
-          $('#f_captcha').val(captcha_string);
-          $('#captcha_game').hide(0);
-          $('#captcha_init').show(0);
-        }
-      }
-    );
-
-    // Clic sur le bouton pour recommencer
-    $('#captcha_init').on
-    (
-      'click',
-      'button',
-      function()
-      {
-        captcha_count  = 0;
-        captcha_string = '';
-        $('#f_captcha').val('');
-        $('#captcha_init').hide(0);
-        $('#captcha_game').show(0).children('img').show(0);
-      }
-    );
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire (saisie & confirmation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +66,6 @@ $(document).ready
           f_prenom   : { required:true , maxlength:25 },
           f_courriel : { required:true , email:true , maxlength:63 },
           f_message  : { required:true , minlength:100 },
-          f_captcha  : { required:true },
           f_code     : { required:function(){return $("#f_md5").val()!='';}, digits:true , rangelength:[8,8] }
         },
         messages :
@@ -118,7 +75,6 @@ $(document).ready
           f_prenom   : { required:"prénom manquant"   , maxlength:"25 caractères maximum" },
           f_courriel : { required:"adresse manquante" , email:"adresse invalide", maxlength:"63 caractères maximum" },
           f_message  : { required:"contenu manquant"  , minlength:"contenu insuffisant" },
-          f_captcha  : { required:"réponse manquante" },
           f_code     : { required:"code manquant"     , digits:"chiffres uniquement", rangelength:"8 chiffres requis" }
         },
         errorElement : "label",
@@ -199,10 +155,6 @@ $(document).ready
       else
       {
         $(ajax_id).removeAttr("class").addClass("alerte").html(responseJSON['value']);
-        if( responseJSON['value'].substring(0,15) == 'Ordre incorrect' )
-        {
-          $('#captcha_init').children('button').click();
-        }
       }
     }
 

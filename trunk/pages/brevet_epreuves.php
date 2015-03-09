@@ -117,7 +117,7 @@ foreach($DB_TAB_series as $DB_ROW)
     echo'<label class="tab" for="'.$f_nom_matieres.'_text">Référentiel(s) :</label><input id="'.$f_nom_matieres.'_text" type="text" value="'.implode(' ; ',$tab_matieres_input_texte).'" size="50" readonly /><q class="modifier" title="Modifier la ou les matière(s)."></q><input id="'.$f_nom_matieres.'_id" name="'.$f_nom_matieres.'" type="hidden" value="'.implode(',',$tab_matieres_input_hidden).'"'.$requis_class.' /> '.$requis_texte.NL;
     echo'</p>'.NL;
   }
-  echo'<p><label class="tab"></label><button id="bouton_valider_'.$DB_ROW['brevet_serie_ref'].'" type="button" class="parametre">Valider les paramètres pour cette série.</button><label id="ajax_msg_'.$DB_ROW['brevet_serie_ref'].'">&nbsp;</label></p>'.NL;
+  echo'<p><span class="tab"></span><button id="bouton_valider_'.$DB_ROW['brevet_serie_ref'].'" type="button" class="parametre">Valider les paramètres pour cette série.</button><label id="ajax_msg_'.$DB_ROW['brevet_serie_ref'].'">&nbsp;</label></p>'.NL;
   echo'</form><hr />'.NL;
 }
 ?>

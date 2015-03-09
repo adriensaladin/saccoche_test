@@ -37,7 +37,7 @@ $notification_id = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])  
 
 if( ($action=='memoriser_consultation') && $notification_id )
 {
-  $is_modif = DB_STRUCTURE_NOTIFICATION::DB_modifier_statut( $notification_id , $_SESSION['USER_ID'] );
+  $is_modif = DB_STRUCTURE_NOTIFICATION::DB_modifier_statut( $notification_id , $_SESSION['USER_ID'] , 'consultée' );
   // Afficher le retour
   if($is_modif)
   {

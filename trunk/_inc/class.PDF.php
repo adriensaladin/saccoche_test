@@ -1163,23 +1163,31 @@ class PDF extends FPDF
     return $bloc_hauteur;
   }
 
-  public function officiel_ligne_tag( $eleve_genre , $date_naissance , $tag_date_heure_initiales , $ligne_largeur )
+  public function officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $ligne_largeur )
   {
+    $element_largeur = $ligne_largeur / ( 3 - intval(empty($date_naissance)) - intval(empty($eleve_INE)) );
     // Date de naissance
     if($date_naissance)
     {
       if($eleve_genre=='M') { $ne_le = 'né le '; } else if($eleve_genre=='F') { $ne_le = 'née le '; } else { $ne_le = 'né(e) le '; }
-      $ligne_largeur = $ligne_largeur / 2;
-      $taille_police = 7 ;
+      $taille_police = 8 ;
       $ligne_hauteur = $taille_police*0.4 ;
       $this->SetFont('Arial' , '' , $taille_police);
-      $this->Cell( $ligne_largeur , $ligne_hauteur , To::pdf($ne_le.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($ne_le.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    }
+    // INE
+    if($eleve_INE)
+    {
+      $taille_police = 8 ;
+      $ligne_hauteur = $taille_police*0.4 ;
+      $this->SetFont('Arial' , '' , $taille_police);
+      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($eleve_INE) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
     }
     // Tag date heure initiales
     $taille_police = 5 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $this->SetFont('Arial' , '' , $taille_police);
-    $this->Cell( $ligne_largeur , $ligne_hauteur , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
   }
 
   public function officiel_bloc_adresse_position_libre( $tab_adresse , $bloc_largeur )

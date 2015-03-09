@@ -51,6 +51,7 @@ $(document).ready
       $('#f_destinataires_nombre').val(destinataires_nombre);
       $('#f_destinataires_liste').val(destinataires_liste);
       $('#f_message_info').val(message_info);
+      $('#f_message_longueur').val(message_contenu.length);
       $('#f_message_contenu').val(message_contenu);
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un message d'accueil");
@@ -67,7 +68,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
     }
 
     /**
@@ -387,6 +388,7 @@ $(document).ready
       {
         var message_contenu = $("#f_message").val();
         $('#f_message_info').val(message_contenu.substring(0,50));
+        $('#f_message_longueur').val(message_contenu.length);
         $('#f_message_contenu').val(message_contenu);
         $('#annuler_message').click();
       }
@@ -401,7 +403,7 @@ $(document).ready
     (
       function()
       {
-        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
         return false;
       }
     );
@@ -419,17 +421,19 @@ $(document).ready
       {
         rules :
         {
-          f_debut_date           : { required:true , dateITA:true },
-          f_fin_date             : { required:true , dateITA:true },
-          f_destinataires_nombre : { isWord:'destinataire' },
-          f_message_info         : { minlength:10 } // On ne peut pas contrôler la longueur de f_message_contenu car il n'y a pas de vérifications sur un champ caché.
+          f_debut_date          : { required:true , dateITA:true },
+          f_fin_date            : { required:true , dateITA:true },
+          f_destinataires_liste : { required:true },
+          f_message_longueur    : { min:1 , range: [15, 1000] },
+          f_mode_discret        : { required:false }
         },
         messages :
         {
-          f_debut_date           : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
-          f_fin_date             : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
-          f_destinataires_nombre : { isWord:"destinataire(s) manquant(s)" },
-          f_message_info         : { minlength:"contenu manquant / insuffisant" }
+          f_debut_date          : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
+          f_fin_date            : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
+          f_destinataires_liste : { required:"destinataire(s) manquant(s)" },
+          f_message_longueur    : { min:"contenu manquant" , range:"contenu insuffisant" },
+          f_mode_discret        : { }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -456,15 +460,8 @@ $(document).ready
     (
       function()
       {
-        if (!please_wait)
-        {
-          $(this).ajaxSubmit(ajaxOptions);
-          return false;
-        }
-        else
-        {
-          return false;
-        }
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
       }
     ); 
 
@@ -475,7 +472,6 @@ $(document).ready
       var readytogo = validation.form();
       if(readytogo)
       {
-        please_wait = true;
         $('#form_gestion button').prop('disabled',true);
         $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
@@ -485,7 +481,6 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      please_wait = false;
       $('#form_gestion button').prop('disabled',false);
       $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
@@ -494,7 +489,6 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
-      please_wait = false;
       $('#form_gestion button').prop('disabled',false);
       if(responseHTML.substring(0,2)!='<t')
       {
@@ -527,9 +521,6 @@ $(document).ready
         mode = false;
       }
     }
-
-    // Retirer l'option vide (laissée pour la conformité...)
-    $('#f_destinataires').html('');
 
   }
 );

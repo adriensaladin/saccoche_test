@@ -32,7 +32,7 @@
 class PDF_item_bulletin extends PDF
 {
 
-  public function initialiser_et_entete( $eleve_nb , $matiere_et_groupe , $texte_periode , $info_ponderation_complete )
+  public function initialiser_et_entete( $titre_nom , $eleve_nb , $matiere_et_groupe , $texte_periode , $info_ponderation_complete )
   {
     // initialisation
     $this->cases_largeur  = floor( $this->page_largeur_moins_marges / 3 );
@@ -44,10 +44,10 @@ class PDF_item_bulletin extends PDF
     $this->SetAutoPageBreak(FALSE);
     // en-tête
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
-    $titre = 'Bilan disciplinaire - Moyenne sur 20 / Élément d\'appréciation';
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($titre)             , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($matiere_et_groupe) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_periode)     , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $titre = 'Bilan '.$titre_nom.' - Moyenne sur 20 / Élément d\'appréciation';
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($titre)             , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($matiere_et_groupe) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_periode)     , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->SetFont('Arial' , '' , $this->taille_police);
     // première ligne
     $this->choisir_couleur_fond('gris_moyen');

@@ -84,7 +84,7 @@ class PDF_item_synthese extends PDF
     }
   }
 
-  public function entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes)
+  public function entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes)
   {
     $this->eleve_nom    = $eleve_nom;
     $this->eleve_prenom = $eleve_prenom;
@@ -141,7 +141,7 @@ class PDF_item_synthese extends PDF
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
         // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
-        $this->officiel_ligne_tag($eleve_genre,$date_naissance,$tag_date_heure_initiales,$bloc_titre_largeur);
+        $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $bloc_titre_largeur );
         // Bloc adresse en positionnement libre
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {

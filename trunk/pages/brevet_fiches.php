@@ -83,11 +83,13 @@ $affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 
 $tab_etats = array
 ( // le <span> supplémentaire sert pour appliquer un style css
-  '1vide'     => '<span>Vide (fermé)</span>',
-  '2rubrique' => '<span>Saisies Profs</span>',
-  '3synthese' => '<span>Saisie Synthèse</span>',
-  '4complet'  => '<span>Complet (fermé)</span>',
+  '1vide'     => 'Vide (fermé)',
+  '2rubrique' => 'Saisies Profs',
+  '3synthese' => 'Saisie Synthèse',
+  '4complet'  => 'Complet (fermé)',
 );
+
+$annee_session_brevet = annee_session_brevet();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération et traitement des données postées, si formulaire soumis
@@ -96,15 +98,95 @@ $tab_etats = array
 
 if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
-  $tab_ids  = (isset($_POST['classe_ids'])) ? explode(',',$_POST['classe_ids'])  : array() ;
-  $new_etat = (isset($_POST['etat']))       ? Clean::texte($_POST['etat'])       : '' ;
+  $tab_ids  = (isset($_POST['classe_ids']))   ? explode(',',$_POST['classe_ids'])  : array() ;
+  $new_etat = (isset($_POST['etat']))         ? Clean::texte($_POST['etat'])       : '' ;
+  $discret  = (isset($_POST['mode_discret'])) ? TRUE                               : FALSE ;
   $tab_ids = array_intersect( array_filter( Clean::map_entier($tab_ids) , 'positif' ) , $tab_classes_concernees );
   if( count($tab_ids) && isset($tab_etats[$new_etat]) )
   {
     Session::verifier_jeton_anti_CSRF($PAGE);
+    // Concernant les notifications, on liste déjà s'il y a des utilisateurs qui s'y seraient abonnés
+    $abonnement_ref = 'fiche_brevet_statut';
+    $abonnes_nb = 0;
+    if( !$discret && in_array($new_etat,array('2rubrique','3synthese')) )
+    {
+      $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref );
+      $abonnes_nb = count($DB_TAB);
+      if($abonnes_nb)
+      {
+        $tab_abonnes = array();
+        $tab_profils = array();
+        // On récupère les infos au passage
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $notification_statut = ( (COURRIEL_NOTIFICATION=='oui') && ($DB_ROW['jointure_mode']=='courriel') && $DB_ROW['user_email'] ) ? 'envoyée' : 'consultable' ;
+          $tab_abonnes[$DB_ROW['user_id']] = array(
+            'statut'   => $notification_statut,
+            'mailto'   => $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>',
+            'courriel' => $DB_ROW['user_email'],
+            'contenu'  => '',
+          );
+          $tab_profils[$DB_ROW['user_profil_type']][] = $DB_ROW['user_id'];
+        }
+        // Récupération du nom des classes (sans fignoler)
+        $tab_classes = array();
+        $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $tab_classes[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
+        }
+        // Récupération des profs ou directeurs par classe
+        $tab_profs_par_classe = array();
+        if(!empty($tab_profils['directeur']))
+        {
+          // Les directeurs sont rattachés à toutes les classes
+          foreach($tab_classes as $classe_id => $classe_nom)
+          {
+            $tab_profs_par_classe[$classe_id] = $tab_profils['directeur'];
+          }
+        }
+        if(!empty($tab_profils['professeur']))
+        {
+          // Les professeurs ne sont rattachés qu'à certaines classes
+          $listing_profs_id   = implode(',',$tab_profils['professeur']);
+          $listing_groupes_id = implode(',',array_keys($tab_classes));
+          $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id);
+          foreach($DB_TAB as $DB_ROW)
+          {
+            $tab_profs_par_classe[$DB_ROW['groupe_id']][] = $DB_ROW['user_id'];
+          }
+        }
+      }
+    }
+    // On passe au traitement des données reçues
+    $auteur = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
     foreach($tab_ids as $classe_id)
     {
-      DB_STRUCTURE_BREVET::DB_modifier_brevet_classe_etat($classe_id,$new_etat);
+      $is_modif = DB_STRUCTURE_BREVET::DB_modifier_brevet_classe_etat($classe_id,$new_etat);
+      if( $is_modif && $abonnes_nb && isset($tab_profs_par_classe[$classe_id]) )
+      {
+        $texte = 'Statut ['.$tab_etats[$new_etat].'] appliqué par '.$auteur.' à [Fiches brevet] [Session '.$annee_session_brevet.'] ['.$tab_classes[$classe_id].'].'."\r\n";
+        foreach($tab_profs_par_classe[$classe_id] as $user_id)
+        {
+          $tab_abonnes[$user_id]['contenu'] .= $texte;
+        }
+      }
+    }
+    // On termine par le log et l'envoi des notifications
+    if($abonnes_nb)
+    {
+      foreach($tab_abonnes as $user_id => $tab)
+      {
+        if($tab['contenu'])
+        {
+          DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_visible( $user_id , $abonnement_ref , $tab['statut'] , $tab['contenu'] );
+          if($tab['statut']=='envoyée')
+          {
+            $tab['contenu'] .= Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $tab['courriel'] );
+            $courriel_bilan = Sesamail::mail( $tab['mailto'] , 'Notification - Bilan officiel, étape de saisie' , $tab['contenu'] , $tab['mailto'] );
+          }
+        }
+      }
     }
   }
 }
@@ -160,8 +242,6 @@ if(is_array($DB_TAB))
 // Mais attention, les fiches brevet ne sont définies que sur les classes, pas sur des groupes (car il ne peut y avoir qu'une seule fiche brevet par élève).
 // Alors quand les professeurs sont associés à des groupes, il faut chercher de quelle(s) classe(s) proviennent les élèves et proposer autant de choix partiels... sur ces classes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$annee_session_brevet = annee_session_brevet();
 
 $tab_classe = array(); // tableau important avec les droits [classe_id][0|groupe_id]
 $tab_groupe = array(); // tableau temporaire avec les noms des groupes du prof
@@ -262,7 +342,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
 {
   $etat = $tab_classe_etat[$classe_id];
   // État
-  $affich_etat = '<span class="off_etat '.substr($etat,1).'">'.$tab_etats[$etat].'</span>';
+  $affich_etat = '<span class="off_etat '.substr($etat,1).'"><span>'.$tab_etats[$etat].'</span></span>';
   // images action : vérification
   if( ($etat=='2rubrique') || ($etat=='3synthese') )
   {
@@ -401,13 +481,16 @@ if($affichage_formulaire_statut)
   $tab_radio = array();
   foreach($tab_etats as $etat_id => $etat_text)
   {
-    $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'">'.$etat_text.'</span></label>';
+    $tab_radio[] = '<label for="etat_'.$etat_id.'"><input id="etat_'.$etat_id.'" name="etat" type="radio" value="'.$etat_id.'" /> <span class="off_etat '.substr($etat_id,1).'"><span>'.$etat_text.'</span></span></label>';
   }
-  echo'<form action="#" method="post" id="cadre_statut">'.NL;
-  echo  '<h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>'.NL;
-  echo  '<div>'.implode('<br />',$tab_radio).'</div>'.NL;
-  echo  '<p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>'.NL;
-  echo'</form>'.NL;
+  echo'
+    <form action="#" method="post" id="cadre_statut">
+      <h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>
+      <div>'.implode('<br />',$tab_radio).'</div>
+      <p><label for="mode_discret"><input id="mode_discret" name="mode_discret" type="checkbox" value="1" /> Mode discret <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher pour éviter l\'envoi de notifications aux abonnés." /></label></p>
+      <p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
+    </form>
+  ';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,7 +594,6 @@ foreach($tab_brevet_series as $brevet_serie_ref => $brevet_serie_nom)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire pour signaler ou corriger une faute dans une appréciation.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-$date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")));
 ?>
 
 <form action="#" method="post" id="zone_signaler_corriger" class="hide" onsubmit="return false">
@@ -520,14 +602,11 @@ $date_plus1semaine = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y")))
   </div>
   <div id="section_signaler">
     <div>
-      <input type="hidden" value="<?php echo TODAY_FR ?>" name="f_debut_date" id="f_debut_date" />
-      <input type="hidden" value="<?php echo $date_plus1semaine ?>" name="f_fin_date" id="f_fin_date" />
-      <input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
+      <input type="hidden" value="" name="f_destinataire_id" id="f_destinataire_id" />
       <input type="hidden" value="signaler_faute|corriger_faute" name="f_action" id="f_action" />
       <label for="f_message_contenu" class="tab">Message informatif :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="100"></textarea><br />
       <span class="tab"></span><label id="f_message_contenu_reste"></label>
     </div>
-    <p class="astuce">Le message est affiché en page d'accueil du collègue concerné pendant une semaine (jusqu'au <?php echo $date_plus1semaine ?>).</p>
   </div>
   <p>
     <span class="tab"></span><button id="valider_signaler_corriger" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler_corriger" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler_corriger">&nbsp;</label>

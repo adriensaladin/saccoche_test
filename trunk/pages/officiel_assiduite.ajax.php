@@ -40,10 +40,10 @@ $fichier_dest = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'.'.$exten
 $fichier_memo = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'_extraction.'.$extension_fichier_dest ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de Sconet Absences
+// Réception et analyse d'un fichier d'import issu de Sconet Absences ou de Siècle Vie Scolaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='import_sconet') && $periode_id )
+if( ( ($action=='import_siecle') || ($action=='import_sconet') ) && $periode_id )
 {
   // Récupération du fichier (zip ou pas)
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
@@ -102,14 +102,6 @@ if( ($action=='import_sconet') && $periode_id )
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
   // On affiche la demande de confirmation
   exit('ok'.']¤['.html($date_export).']¤['.html($periode_libelle).']¤['.html($periode_date_debut).']¤['.html($periode_date_fin));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réception et analyse d'un fichier d'import issu de Siècle Vie Scolaire
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='import_siecle') && $periode_id )
-{
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

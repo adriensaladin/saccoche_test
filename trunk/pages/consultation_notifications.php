@@ -66,7 +66,7 @@ $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : 
         echo  '<td>'.$datetime_affich.'</td>';
         echo  '<td>'.$DB_ROW['notification_statut'].'</td>';
         echo  '<td>'.$DB_ROW['abonnement_objet'].'</td>';
-        echo  '<td class="i">'.html(mb_substr($DB_ROW['notification_contenu'],0,50)).' [...]</td>';
+        echo  '<td class="i">'.html(afficher_texte_tronque($DB_ROW['notification_contenu'],60)).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="voir" title="Consulter la notification complète."></q>';
         echo  '</td>';
@@ -87,6 +87,6 @@ $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : 
 
 <div id="div_notification" class="hide">
   <h3>Notification du <span id="report_date"></span></h3>
-  <textarea id="textarea_notification" rows="20" cols="80"></textarea><br />
+  <textarea id="textarea_notification" rows="25" cols="100"></textarea><br />
   <label id="ajax_save">&nbsp;</label>
 </form>

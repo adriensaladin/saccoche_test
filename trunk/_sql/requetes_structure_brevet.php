@@ -265,7 +265,7 @@ public static function DB_modifier_epreuve_choix($serie_ref , $epreuve_code , $c
  *
  * @param int     $classe_id
  * @param string  $new_etat
- * @return void
+ * @return int     0 ou 1 si modifié
  */
 public static function DB_modifier_brevet_classe_etat($classe_id , $new_etat)
 {
@@ -277,6 +277,7 @@ public static function DB_modifier_brevet_classe_etat($classe_id , $new_etat)
     ':fiche_brevet' => $new_etat,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**

@@ -61,9 +61,36 @@ if( in_array( $section , array('brevet_fiches_saisir','brevet_fiches_examiner','
 
 if( ($action=='signaler_faute') || ($action=='corriger_faute') )
 {
-  $_POST['f_action']='ajouter';
-  require(CHEMIN_DOSSIER_PAGES.'compte_message.ajax.php');
-  exit(); // Normalement, on n'arrive pas jusque là.
+  $destinataire_id = (isset($_POST['f_destinataire_id'])) ? Clean::entier($_POST['f_destinataire_id']) : 0;
+  $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu'])  : '' ;
+  if( !$destinataire_id || !$message_contenu )
+  {
+    exit('Erreur avec les données transmises !');
+  }
+  // Notification (qui est envoyée de suite)
+  $abonnement_ref = 'bilan_officiel_appreciation';
+  $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref , $destinataire_id );
+  $destinataires_nb = count($DB_TAB);
+  if(!$destinataires_nb)
+  {
+    // Normalement impossible, l'abonnement des personnels à ce type de de notification étant obligatoire
+    exit('Erreur : destinataire non trouvé !');
+  }
+  $notification_debut = ($action=='signaler_faute') ? 'Signalement effectué par ' : 'Correction apportée par ' ;
+  $notification_contenu = $notification_debut.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
+  foreach($DB_TAB as $DB_ROW)
+  {
+    // 1 seul passage en fait
+    $notification_statut = ( (COURRIEL_NOTIFICATION=='oui') && ($DB_ROW['jointure_mode']=='courriel') && $DB_ROW['user_email'] ) ? 'envoyée' : 'consultable' ;
+    DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_visible( $DB_ROW['user_id'] , $abonnement_ref , $notification_statut , $notification_contenu );
+    if($notification_statut=='envoyée')
+    {
+      $destinataire = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
+      $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $DB_ROW['user_email'] );
+      $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation fiche brevet' , $notification_contenu , $destinataire );
+    }
+  }
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

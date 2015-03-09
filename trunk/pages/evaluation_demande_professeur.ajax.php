@@ -44,6 +44,7 @@ $description   = (isset($_POST['f_description']))   ? Clean::texte($_POST['f_des
 $devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_devoir'])          : '';
 $suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])           : '';
 $message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])         : '' ;
+$devoir_saisie = (isset($_POST['devoir_saisie']))   ? TRUE                                      : FALSE ;
 
 $score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])            : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 
@@ -100,6 +101,8 @@ list($devoir_id,$devoir_groupe_id) = (substr_count($devoir_ids,'_')==1) ? explod
 $tab_td_score_bad = array( '<td class="hc'       ,                                                                                         '</td>' );
 $tab_td_score_bon = array( '<td class="hd label' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' );
 
+$abonnement_ref = 'demande_evaluation_prof';
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste de demandes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +114,8 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
 {
   $retour = '';
   // Récupérer la liste des élèves concernés
-  $DB_TAB = ($selection_groupe) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1,$eleves_ordre='alpha') : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']) ;
+  $DB_TAB = ($selection_groupe) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement( $tab_types[$groupe_type] , $groupe_id , 1 /*user_statut*/ , 'alpha' /*eleves_ordre*/ )
+                                : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] ) ;
   if(!is_array($DB_TAB))
   {
     exit($DB_TAB);  // Aucun élève trouvé. | Aucun élève ne vous est affecté.
@@ -195,6 +199,9 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
 
 if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (isset($tab_types[$groupe_type])) && $groupe_id ) ) && $date && $date_visible && $date_autoeval && $description && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
+  $date_mysql          = convert_date_french_to_mysql($date);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
+  $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
   if($qui=='select')
   {
@@ -202,9 +209,6 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
     $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('eval','',0);
   }
   // Insérer l'enregistrement de l'évaluation
-  $date_mysql          = convert_date_french_to_mysql($date);
-  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
-  $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   $doc_sujet   = '';
   $doc_corrige = '';
   $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre='alpha' );
@@ -221,11 +225,13 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
+  $tab_item_for_user = array();
   $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
     DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
+    $tab_item_for_user[$eleve_id][] = $item_id;
   }
   // Pour terminer, on change le statut des demandes ou on les supprime
   $listing_demande_id = implode(',',$tab_demande_id);
@@ -237,6 +243,33 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   {
     DB_STRUCTURE_DEMANDE::DB_supprimer_demandes_devoir($listing_demande_id);
   }
+  // Notifications (rendues visibles ultérieurement à cause de la potentielle date de visibilité future du devoir)
+  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
+  if($listing_abonnes)
+  {
+    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+    $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
+    $notification_contenu.= 'Y accéder : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id;
+    $tab_item_infos = array();
+    $tab_abonnes = explode(',',$listing_abonnes);
+    foreach($tab_abonnes as $abonne_id)
+    {
+      foreach($tab_item_for_user[$abonne_id] as $item_id)
+      {
+        if(!isset($tab_item_infos[$item_id]))
+        {
+          // Récupérer la référence et le nom de l'item
+          $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
+          $tab_item_infos[$item_id] = $DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
+        }
+        $notification_intro = 'Demande '.$tab_item_infos[$item_id].' acceptée.'."\r\n\r\n";
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , $devoir_id , $notification_date , $notification_intro.$notification_contenu );
+      }
+    }
+  }
+  // Retour
   $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
   exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$groupe_id);
 }
@@ -245,8 +278,10 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
 // Compléter une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (isset($tab_types[$groupe_type])) ) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible )
+if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (isset($tab_types[$groupe_type])) ) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible && $description )
 {
+  $date_mysql         = convert_date_french_to_mysql($date);
+  $date_visible_mysql = convert_date_french_to_mysql($date_visible);
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
   if($qui=='select')
   {
@@ -256,13 +291,13 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   // Maintenant on peut modifier les items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
   // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
-  $date_mysql         = convert_date_french_to_mysql($date);
-  $date_visible_mysql = convert_date_french_to_mysql($date_visible);
+  $tab_item_for_user = array();
   $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
     DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
+    $tab_item_for_user[$eleve_id][] = $item_id;
   }
   // Pour terminer, on change le statut des demandes ou on les supprime
   $listing_demande_id = implode(',',$tab_demande_id);
@@ -274,6 +309,33 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   {
     DB_STRUCTURE_DEMANDE::DB_supprimer_demandes_devoir($listing_demande_id);
   }
+  // Notifications (rendues visibles ultérieurement à cause de la potentielle date de visibilité future du devoir)
+  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
+  if($listing_abonnes)
+  {
+    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+    $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
+    $notification_contenu.= 'Y accéder : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id;
+    $tab_item_infos = array();
+    $tab_abonnes = explode(',',$listing_abonnes);
+    foreach($tab_abonnes as $abonne_id)
+    {
+      foreach($tab_item_for_user[$abonne_id] as $item_id)
+      {
+        if(!isset($tab_item_infos[$item_id]))
+        {
+          // Récupérer la référence et le nom de l'item
+          $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
+          $tab_item_infos[$item_id] = $DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
+        }
+        $notification_intro = 'Demande '.$tab_item_infos[$item_id].' acceptée.'."\r\n\r\n";
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , $devoir_id , $notification_date , $notification_intro.$notification_contenu );
+      }
+    }
+  }
+  // Retour
   $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
   exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$devoir_groupe_id);
 }
@@ -287,6 +349,7 @@ if( ( ($action=='changer_prof') || ($action=='changer_eleve') ) && $nb_demandes 
   $listing_demande_id = implode(',',$tab_demande_id);
   $statut = substr($action,8);
   DB_STRUCTURE_DEMANDE::DB_modifier_demandes_statut($listing_demande_id,$statut,$message);
+  // Retour
   exit('ok');
 }
 
@@ -298,6 +361,44 @@ if( ($action=='retirer') && $nb_demandes )
 {
   $listing_demande_id = implode(',',$tab_demande_id);
   DB_STRUCTURE_DEMANDE::DB_supprimer_demandes_devoir($listing_demande_id);
+  // Notifications (rendues visibles ultérieurement à cause de la potentielle date de visibilité future du devoir)
+  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
+  if($listing_abonnes)
+  {
+    $tab_item_for_user = array();
+    foreach($tab_user_item as $key)
+    {
+      list($eleve_id,$item_id) = explode('x',$key);
+      $tab_item_for_user[$eleve_id][] = $item_id;
+    }
+    if(!$devoir_saisie)
+    {
+      $notification_contenu = 'retirée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
+    }
+    else
+    {
+      $notification_contenu = 'évaluée directement par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=evaluation_voir&devoir_id='.$devoir_saisie;
+    }
+    $tab_item_infos = array();
+    $tab_abonnes = explode(',',$listing_abonnes);
+    foreach($tab_abonnes as $abonne_id)
+    {
+      foreach($tab_item_for_user[$abonne_id] as $item_id)
+      {
+        if(!isset($tab_item_infos[$item_id]))
+        {
+          // Récupérer la référence et le nom de l'item
+          $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
+          $tab_item_infos[$item_id] = $DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
+        }
+        $notification_intro = 'Demande '.$tab_item_infos[$item_id].' ';
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , $devoir_saisie , NULL , $notification_intro.$notification_contenu );
+      }
+    }
+  }
+  // Retour
   exit('ok');
 }
 

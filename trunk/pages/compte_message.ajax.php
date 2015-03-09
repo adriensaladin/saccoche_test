@@ -40,6 +40,7 @@ $message_id      = (isset($_POST['f_id']))              ? Clean::entier($_POST['
 $date_debut_fr   = (isset($_POST['f_debut_date']))      ? Clean::date_fr($_POST['f_debut_date'])    : '';
 $date_fin_fr     = (isset($_POST['f_fin_date']))        ? Clean::date_fr($_POST['f_fin_date'])      : '';
 $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu']) : '' ;
+$mode_discret    = (isset($_POST['f_mode_discret']))    ? TRUE                                      : FALSE ;
 
 // Contrôler la liste des destinataires transmis
 $tab_destinataires = (isset($_POST['f_destinataires_liste'])) ? explode('_',$_POST['f_destinataires_liste']) : array() ;
@@ -52,6 +53,8 @@ $tab_ids  = (isset($_POST['f_ids'])) ? explode('_',$_POST['f_ids']) : array() ;
 $tab_ids  = Clean::map_entier($tab_ids);
 $tab_ids  = array_filter($tab_ids,'positif');
 $nb_ids   = count($tab_ids);
+
+$abonnement_ref = 'message_accueil';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'utilisateurs ou de destinataires
@@ -86,13 +89,28 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
     exit('Date de fin antérieure à la date de début !');
   }
   $message_id = DB_STRUCTURE_COMMUN::DB_ajouter_message($_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  // Notifications (rendues visibles ultérieurement)
+  if(!$mode_discret)
+  {
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_destinataires) );
+    if($listing_abonnes)
+    {
+      $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
+      $notification_contenu = 'Message de '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".make_lien($message_contenu,'mail')."\r\n";
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , $message_id , $notification_date , $notification_contenu );
+      }
+    }
+  }
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
   echo'<tr id="id_'.$message_id.'" class="new">';
   echo  '<td>'.$date_debut_fr.'</td>';
   echo  '<td>'.$date_fin_fr.'</td>';
   echo  '<td>'.$destinataires_nombre.'</td>';
-  echo  '<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
+  echo  '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>';
   echo  '<td class="nu">';
   echo    '<q class="modifier" title="Modifier ce message."></q>';
   echo    '<q class="supprimer" title="Supprimer ce message."></q>';
@@ -117,12 +135,28 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
     exit('Date de fin antérieure à la date de début !');
   }
   DB_STRUCTURE_COMMUN::DB_modifier_message($message_id,$_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  // Notifications (rendues visibles ultérieurement)
+  if(!$mode_discret)
+  {
+    DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref , $message_id );
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_destinataires) );
+    if($listing_abonnes)
+    {
+      $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
+      $notification_contenu = 'Message de '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".make_lien($message_contenu,'mail')."\r\n";
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , $message_id , $notification_date , $notification_contenu );
+      }
+    }
+  }
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
   echo'<td>'.$date_debut_fr.'</td>';
   echo'<td>'.$date_fin_fr.'</td>';
   echo'<td>'.$destinataires_nombre.'</td>';
-  echo'<td>'.html(mb_substr($message_contenu,0,50)).'</td>';
+  echo'<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>';
   echo'<td class="nu">';
   echo  '<q class="modifier" title="Modifier ce message."></q>';
   echo  '<q class="supprimer" title="Supprimer ce message."></q>';
@@ -140,6 +174,8 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
 if( ($action=='supprimer') && $message_id )
 {
   DB_STRUCTURE_COMMUN::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
+  // Notifications (rendues visibles ultérieurement)
+  DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref , $message_id );
   // Afficher le retour
   exit('<td>ok</td>');
 }

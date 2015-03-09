@@ -66,10 +66,10 @@ $select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_
   <p><label class="tab" for="f_groupe">Élèves :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /></p>
   <label class="tab" for="f_critere_objet">Critère observé :</label><?php echo $select_critere_objet ?><br />
   <span id="span_matiere_items" class="hide">
-    <label class="tab">Item(s) matière(s) :</label><input id="f_matiere_items_nombre" name="f_matiere_items_nombre" size="10" type="text" value="" readonly /><input id="f_matiere_items_liste" name="f_matiere_items_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q><br />
+    <label class="tab">Item(s) matière(s) :</label><input id="f_matiere_items_nombre" name="f_matiere_items_nombre" size="10" type="text" value="" readonly /><input id="f_matiere_items_liste" name="f_matiere_items_liste" type="text" value="" class="invisible" /><q class="choisir_compet" title="Voir ou choisir les items."></q><br />
   </span>
   <span id="span_socle_item" class="hide">
-    <label class="tab">Item du socle :</label><input id="f_socle_item_nom" name="f_socle_item_nom" size="90" maxlength="256" type="text" value="" readonly /><input id="f_socle_item_id" name="f_socle_item_id" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />
+    <label class="tab">Item du socle :</label><input id="f_socle_item_nom" name="f_socle_item_nom" size="90" maxlength="256" type="text" value="" readonly /><input id="f_socle_item_id" name="f_socle_item_id" type="text" value="0" class="invisible" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />
   </span>
   <span id="span_socle_pilier" class="hide">
     <label class="tab" for="f_select_pilier">Compétence (socle) :</label><?php echo $select_piliers ?><br />

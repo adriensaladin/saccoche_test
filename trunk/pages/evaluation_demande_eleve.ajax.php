@@ -50,7 +50,7 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
   $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
   // Ajout aux flux RSS des profs concernés
   $titre = 'Demande retirée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
-  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
+  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'".'."\r\n";
   $guid  = 'demande_'.$demande_id.'_del';
   if($prof_id)
   {
@@ -59,12 +59,30 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
   else
   {
     // On récupère les profs...
+    $tab_prof_id = array();
     $DB_TAB = DB_STRUCTURE_DEMANDE::DB_recuperer_professeurs_eleve_matiere( $_SESSION['USER_ID'] , $_SESSION['ELEVE_CLASSE_ID'] , $matiere_id );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
       {
+        $tab_prof_id[] = $DB_ROW['user_id'];
         RSS::modifier_fichier_prof($DB_ROW['user_id'],$titre,$texte,$guid);
+      }
+    }
+  }
+  // Notifications (rendues visibles ultérieurement) ; on récupère des données conçues pour le flux RSS ($texte , $tab_prof_id)
+  $abonnement_ref = 'demande_evaluation_eleve';
+  $listing_profs = ($prof_id) ? $prof_id : ( (!empty($tab_prof_id)) ? implode(',',$tab_prof_id) : NULL ) ;
+  if($listing_profs)
+  {
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_profs );
+    if($listing_abonnes)
+    {
+      $notification_contenu = $texte;
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu , 'compléter' , TRUE /*sep*/ );
       }
     }
   }

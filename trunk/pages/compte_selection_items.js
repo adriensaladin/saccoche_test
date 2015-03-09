@@ -68,7 +68,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
       if(mode=='ajouter') { $('#f_nom').focus(); }
     }
 
@@ -180,7 +180,7 @@ $(document).ready
     (
       function()
       {
-        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
         return false;
       }
     );
@@ -223,20 +223,19 @@ $(document).ready
       {
         rules :
         {
-          f_nom           : { required:true , maxlength:60 },
-          f_compet_nombre : { isWord:'item' }
+          f_nom          : { required:true , maxlength:60 },
+          f_compet_liste : { required:true }
         },
         messages :
         {
-          f_nom           : { required:"nom manquant" , maxlength:"60 caractères maximum" },
-          f_compet_nombre : { isWord:"item(s) manquant(s)" }
+          f_nom          : { required:"nom manquant" , maxlength:"60 caractères maximum" },
+          f_compet_liste : { required:"item(s) manquant(s)" }
         },
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.attr("id")=='f_compet_nombre') { element.next().next().after(error); }
-          else {element.after(error);}
+          element.after(error);
         }
       }
     );

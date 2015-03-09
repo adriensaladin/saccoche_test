@@ -68,8 +68,8 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <label class="tab" for="f_choix_principal">Origine :</label>
     <select id="f_choix_principal" name="f_choix_principal">
       <option value=""></option>
-      <option value="import_sconet">Sconet Absences</option>
       <option value="import_siecle">Siècle Vie Scolaire</option>
+      <option value="import_sconet">Sconet Absences</option>
       <option value="import_gepi">GEPI Absences 2</option>
       <option value="import_pronote">Pronote</option>
     </select>
@@ -79,7 +79,8 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <li>Indiquer le fichier <em>SIECLE_exportAbsence.xml</em> : <button type="button" id="import_sconet" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_sconet">&nbsp;</label></li>
   </ul>
   <ul class="puce hide" id="puce_import_siecle">
-    <li><span class="danger"><em>Siècle Vie Scolaire</em> ne dispose pas de fonctionnalité d'export&nbsp;! Une demande d'évolution a été déposée auprès de l'équipe nationale&hellip;<button type="button" id="import_siecle" class="hide">Parcourir...</button></span></li>
+    <li><span class="astuce"><em>Siècle Vie Scolaire</em> permet un export des absences et des retards à compter de sa version 15.1 de février 2015.</span></li>
+    <li>Indiquer le fichier <em>eleves_JJMMAAAA_HHhMM.xml</em> : <button type="button" id="import_siecle" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_siecle">&nbsp;</label></li>
   </ul>
   <ul class="puce hide" id="puce_import_gepi">
     <li>Indiquer le fichier <em>extraction_abs_plus_*.csv</em> : <button type="button" id="import_gepi" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_gepi">&nbsp;</label></li>

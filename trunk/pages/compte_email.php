@@ -54,7 +54,7 @@ if( $_SESSION['USER_EMAIL'] && $_SESSION['USER_EMAIL_ORIGINE'] )
 }
 else
 {
-  $info_origine = '<span class="astuce">Il n\y a pas d\'adresse actuellement enregistrée.</span>';
+  $info_origine = '<span class="astuce">Il n\'y a pas d\'adresse actuellement enregistrée.</span>';
 }
 
 if(COURRIEL_NOTIFICATION=='non')
@@ -63,7 +63,7 @@ if(COURRIEL_NOTIFICATION=='non')
 }
 elseif(!$_SESSION['USER_EMAIL'])
 {
-  $info_envoi_notifications = '<label class="alerte">Les envois par courriel seront remplacés par une indication en page d\'accueil tant que l\'adresse n\'est pas renseignée.</label>' ;
+  $info_envoi_notifications = '<label class="alerte">Les envois par courriel seront remplacés par des indications en page d\'accueil tant que votre adresse de courriel ne sera pas renseignée.</label>' ;
 }
 else
 {
@@ -71,6 +71,8 @@ else
 }
 
 ?>
+
+<div class="travaux">Fonctionnalité encore en développement ; documentation à venir prochainement&hellip;</div>
 
 <p>
   <span class="astuce">Les adresses e-mail ne sont utilisées que par l'application et ne sont pas visibles des autres utilisateurs à l'exception des administrateurs.</span><br />
@@ -98,9 +100,11 @@ else
   <?php echo $info_envoi_notifications ?>
 </p>
 
-<div class="travaux">Fonctionnalité encore en développement ; finalisation et documentation à venir prochainement&hellip;</div>
+<?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
 
-<?php if(FALSE): ?>
+<div class="travaux">Pour l'administrateur, les deux premiers choix ne sont pas encore développés ; finalisation en cours&hellip;</div>
+
+<?php endif; ?>
 
 <form id="form_abonnements" action="#" method="post">
   <table id="table_abonnements" class="form">
@@ -115,10 +119,11 @@ else
     <tbody>
       <?php
       $tab_choix = array( 'non' , 'accueil' , 'courriel' );
-      $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_abonnements_profil( $_SESSION['USER_PROFIL_TYPE'] , $_SESSION['USER_ID'] );
+      $DB_TAB  = DB_STRUCTURE_NOTIFICATION::DB_lister_abonnements_profil( $_SESSION['USER_PROFIL_TYPE'] , $_SESSION['USER_ID'] );
+      $DB_JOIN = DB_STRUCTURE_NOTIFICATION::DB_lister_abonnements_user( $_SESSION['USER_ID'] );
       foreach($DB_TAB as $DB_ROW)
       {
-        $DB_ROW['jointure_mode'] = is_null($DB_ROW['jointure_mode']) ? 'non' : $DB_ROW['jointure_mode'] ;
+        $DB_ROW['jointure_mode'] = isset($DB_JOIN[$DB_ROW['abonnement_ref']]) ? $DB_JOIN[$DB_ROW['abonnement_ref']]['jointure_mode'] : 'non' ;
         echo'<tr><td>'.$DB_ROW['abonnement_descriptif'].'</td>';
         foreach($tab_choix as $radio_key)
         {
@@ -146,8 +151,6 @@ else
     <span class="tab"></span><button id="bouton_abonner" type="button" class="parametre">Valider.</button><label id="ajax_msg_abonnements">&nbsp;</label>
   </p>
 </form>
-
-<?php endif; ?>
 
 <hr />
 

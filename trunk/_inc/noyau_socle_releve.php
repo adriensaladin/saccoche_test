@@ -50,7 +50,7 @@ $tab_pilier       = array();  // [pilier_id] => pilier_nom;
 $tab_section      = array();  // [pilier_id][section_id] => section_nom;
 $tab_socle        = array();  // [section_id][socle_id] => socle_nom;
 $tab_entree_id    = array();  // [i] => entree_id
-$tab_eleve_infos  = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_langue)
+$tab_eleve_infos  = array();  // [eleve_id] => array(eleve_INE,eleve_nom,eleve_prenom,date_naissance,eleve_langue)
 $tab_eval         = array();  // [eleve_id][socle_id][item_id][]['note'] => note
 $tab_item         = array();  // [item_id] => array(item_ref,item_nom,item_cart,matiere_id,calcul_methode,calcul_limite);
 $tab_user_entree  = array();  // [eleve_id][entree_id] => array(etat,date,info);
@@ -123,6 +123,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
     'eleve_genre'    => $_SESSION['USER_GENRE'],
     'date_naissance' => $_SESSION['USER_NAISSANCE_DATE'],
     'eleve_langue'   => $_SESSION['ELEVE_LANGUE'],
+    'eleve_INE'      => NULL,
   );
 }
 elseif($groupe_id && count($tab_eleve_id))
@@ -138,6 +139,7 @@ else
     'eleve_genre'    => 'I',
     'date_naissance' => NULL,
     'eleve_langue'   => 0,
+    'eleve_INE'      => NULL,
   );
 }
 
@@ -418,7 +420,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
       else
       {
-        if($key==0)
+        if(!isset($tab_nb_lignes_par_pilier[$pilier_id]))
         {
           $tab_nb_lignes_par_pilier[$pilier_id] = 1;
           if(isset($tab_section[$pilier_id]))
@@ -495,7 +497,7 @@ if($make_pdf)
 // Pour chaque élève...
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_langue
+  extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_langue
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
@@ -517,7 +519,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
       $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
       $tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
-      $releve_PDF->entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+      $releve_PDF->entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
     }
     if($make_html)
     {

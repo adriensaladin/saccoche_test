@@ -30,7 +30,9 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action
 
 $action         = (isset($_POST['f_action']))         ? $_POST['f_action']                                : '';
 $matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_matiere_id'])             : 0;
+$matiere_nom    = (isset($_POST['f_matiere_nom']))    ? Clean::texte($_POST['f_matiere_nom'])             : '';
 $niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])              : 0;
+$niveau_nom     = (isset($_POST['f_niveau_nom']))     ? Clean::texte($_POST['f_niveau_nom'])              : '';
 $structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])           : 0;
 $nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])            : -1; // Changer le nb de demandes
 $partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : NULL; // Changer l'état de partage
@@ -130,7 +132,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
     exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
-  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
   exit( str_replace('◄DATE►',Html::date_texte(TODAY_MYSQL),$tab_partage[$partage]) );
@@ -156,16 +158,85 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
     exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
-  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL,':information'=>$information) );
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date_texte(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fonction utilisée pour enregistrer des notifications
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function notifications_referentiel_edition($matiere_id,$notification_contenu)
+{
+  $abonnement_ref = 'referentiel_edition';
+  $listing_profs = DB_STRUCTURE_REFERENTIEL::DB_recuperer_autres_professeurs_matiere( $matiere_id, $_SESSION['USER_ID'] );
+  if($listing_profs)
+  {
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_profs );
+    if($listing_abonnes)
+    {
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu , 'compléter' , FALSE /*sep*/ );
+      }
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ajouter un référentiel
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id && $matiere_nom && $niveau_nom )
+{
+  if( DB_STRUCTURE_REFERENTIEL::DB_tester_referentiel($matiere_id,$niveau_id) )
+  {
+    exit('Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Actualisez cette page.');
+  }
+  if($referentiel_id==0)
+  {
+    // C'est une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
+    $partage = ($partageable) ? 'non' : 'hs' ;
+    DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
+  }
+  elseif($referentiel_id>0)
+  {
+    // C'est une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
+    if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
+    {
+      exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
+    }
+    // Récupérer le référentiel
+    $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id );
+    if(mb_substr($arbreXML,0,6)=='Erreur')
+    {
+      exit($arbreXML);
+    }
+    // L'analyser
+    $test_XML_valide = ServeurCommunautaire::verifier_arborescence_XML($arbreXML);
+    if($test_XML_valide!='ok')
+    {
+      exit($test_XML_valide);
+    }
+    DB_STRUCTURE_REFERENTIEL::DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
+    $partage = ($partageable) ? 'bof' : 'hs' ;
+    DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
+  }
+  // Notifications (rendues visibles ultérieurement)
+  $action = ($referentiel_id) ? 'a importé un nouveau référentiel' : 'a créé un nouveau référentiel vierge' ;
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' '.$action.' ['.$matiere_nom.'] ['.$niveau_nom.'].'."\r\n";
+  notifications_referentiel_edition( $matiere_id , $notification_contenu );
+  // Retour
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage )
+if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage && $matiere_nom && $niveau_nom )
 {
   // S'il était partagé, il faut le retirer du serveur communautaire
   if($partage=='oui')
@@ -182,7 +253,11 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage )
   }
   DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id);
   // Log de l'action
-  SACocheLog::ajouter('Suppression d\'un référentiel (matière '.$matiere_id.' / niveau '.$niveau_id.').');
+  SACocheLog::ajouter('Suppression du référentiel ['.$matiere_nom.'] ['.$niveau_nom.'].');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le référentiel ['.$matiere_nom.'] ['.$niveau_nom.'].'."\r\n";
+  notifications_referentiel_edition( $matiere_id , $notification_contenu );
+  // Retour
   exit('ok');
 }
 
@@ -190,15 +265,15 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage )
 // Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='calculer') && $matiere_id && $niveau_id )
+if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $niveau_nom )
 {
   if( is_null($methode) || is_null($limite) || is_null($retroactif) )
   {
     exit('Erreur avec les données transmises !');
   }
-  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
-      if($retroactif=='non')    { $texte_retroactif = '(sur la période)';        }
-  elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';       }
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
+      if($retroactif=='non')    { $texte_retroactif = '(sur la période)';       }
+  elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';      }
   elseif($retroactif=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
   if($limite==1)  // si une seule saisie prise en compte
   {
@@ -223,55 +298,14 @@ if( ($action=='calculer') && $matiere_id && $niveau_id )
     $nb_best = (int)substr($methode,-1);
     $retour = ($limite==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$limite.' dernières '.$texte_retroactif.'.';
   }
+  // Notifications (rendues visibles ultérieurement)
+  if($is_modif)
+  {
+    $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a modifié le mode de calcul du référentiel ['.$matiere_nom.'] ['.$niveau_nom.'] par :'."\r\n".str_replace('&times;','x',$retour)."\r\n";
+    notifications_referentiel_edition( $matiere_id , $notification_contenu );
+  }
+  // Retour
   exit('ok'.$retour);
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un référentiel
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id )
-{
-  if( DB_STRUCTURE_REFERENTIEL::DB_tester_referentiel($matiere_id,$niveau_id) )
-  {
-    exit('Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Actualisez cette page.');
-  }
-  if($referentiel_id==0)
-  {
-    // C'est une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
-    $partage = ($partageable) ? 'non' : 'hs' ;
-    DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
-    exit('ok');
-  }
-  elseif($referentiel_id>0)
-  {
-    // C'est une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
-    if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
-    {
-      exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
-    }
-    // Récupérer le référentiel
-    $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id );
-    if(mb_substr($arbreXML,0,6)=='Erreur')
-    {
-      exit($arbreXML);
-    }
-    // L'analyser
-    $test_XML_valide = ServeurCommunautaire::verifier_arborescence_XML($arbreXML);
-    if($test_XML_valide!='ok')
-    {
-      exit($test_XML_valide);
-    }
-    DB_STRUCTURE_REFERENTIEL::DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
-    $partage = ($partageable) ? 'bof' : 'hs' ;
-    DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
-    exit('ok');
-  }
-  else
-  {
-    // C'est une demande de dupliquer le référentiel d'un autre établissement, mais rien n'est transmis (normalement impossible)
-    exit('Erreur avec les données transmises !');
-  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

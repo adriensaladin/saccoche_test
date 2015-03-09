@@ -626,48 +626,33 @@ class FileSystem
    */
   public static function nettoyer_fichiers_temporaires($BASE)
   {
-    // On essaye de faire en sorte que plusieurs nettoyages ne se lancent pas simultanément (sinon on trouve des warning php dans les logs)
-    $fichier_lock = CHEMIN_DOSSIER_TMP.'lock.txt';
-    if(!file_exists($fichier_lock))
+    // On verifie que certains sous-dossiers existent :
+    $tab_sous_dossier = array(
+      CHEMIN_DOSSIER_DEVOIR ,       // n'a été ajouté qu'en mars 2012,
+      CHEMIN_DOSSIER_DEVOIR.$BASE.DS ,
+      CHEMIN_DOSSIER_OFFICIEL ,     // n'a été ajouté qu'en mai 2012,
+      CHEMIN_DOSSIER_OFFICIEL.$BASE.DS ,
+      CHEMIN_DOSSIER_PARTENARIAT ,  // n'a été ajouté qu'en juin 2013,
+    );
+    foreach($tab_sous_dossier as $sous_dossier)
     {
-      FileSystem::ecrire_fichier($fichier_lock,'');
-      // On verifie que certains sous-dossiers existent :
-      $tab_sous_dossier = array(
-        CHEMIN_DOSSIER_DEVOIR ,       // n'a été ajouté qu'en mars 2012,
-        CHEMIN_DOSSIER_DEVOIR.$BASE.DS ,
-        CHEMIN_DOSSIER_OFFICIEL ,     // n'a été ajouté qu'en mai 2012,
-        CHEMIN_DOSSIER_OFFICIEL.$BASE.DS ,
-        CHEMIN_DOSSIER_PARTENARIAT ,  // n'a été ajouté qu'en juin 2013,
-      );
-      foreach($tab_sous_dossier as $sous_dossier)
+      if(!is_dir($sous_dossier))
       {
-        if(!is_dir($sous_dossier))
-        {
-          FileSystem::creer_dossier($sous_dossier);
-          FileSystem::ecrire_fichier($sous_dossier.'index.htm','Circulez, il n\'y a rien à voir par ici !');
-        }
-      }
-      $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 36 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,  10080     ); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
-      FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
-      FileSystem::supprimer_fichier($fichier_lock);
-    }
-    // Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
-    else
-    {
-      if( $_SERVER['REQUEST_TIME'] - filemtime($fichier_lock) > 30 )
-      {
-        FileSystem::supprimer_fichier($fichier_lock);
+        FileSystem::creer_dossier($sous_dossier);
+        FileSystem::ecrire_fichier($sous_dossier.'index.htm','Circulez, il n\'y a rien à voir par ici !');
       }
     }
+    $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 36 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,  10080     ); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
   }
 
   /**

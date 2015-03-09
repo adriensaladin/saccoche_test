@@ -246,15 +246,12 @@ $(document).ready
       else
       {
         $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
-        if(f_action=='import_sconet')
+        if( (f_action=='import_sconet') || (f_action=='import_siecle') )
         {
           $('#sconet_date_export').html(tab_infos[1]);
           $('#sconet_libelle'    ).html(tab_infos[2]);
           $('#sconet_date_debut' ).html(tab_infos[3]);
           $('#sconet_date_fin'   ).html(tab_infos[4]);
-        }
-        else if(f_action=='import_siecle')
-        {
         }
         else if(f_action=='import_gepi')
         {

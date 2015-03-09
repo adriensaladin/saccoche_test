@@ -44,6 +44,8 @@ $type_individuel | $type_synthese | $type_bulletin
 $releve_modele [ matiere | selection | multimatiere | professeur ]
 */
 
+$matiere_et_groupe = ($releve_modele=='matiere') ? $matiere_nom.' - '.$groupe_nom : $groupe_nom ;
+
 // Chemins d'enregistrement
 
 $fichier_nom = ($make_action!='imprimer') ? 'releve_item_'.$releve_modele.'_'.Clean::fichier($groupe_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
@@ -55,7 +57,7 @@ $calcul_acquisitions = ( $type_synthese || $type_bulletin || $aff_etat_acquisiti
 
 $tab_item_infos       = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite,calcul_retroactif);
 $tab_matiere_item     = array();  // [matiere_id][item_id] => item_nom
-$tab_eleve_infos      = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance,eleve_id_gepi)
+$tab_eleve_infos      = array();  // [eleve_id] => array(eleve_INE,eleve_nom,eleve_prenom,date_naissance,eleve_id_gepi)
 $tab_matiere          = array();  // [matiere_id] => array(matiere_nom,matiere_nb_demandes)
 $tab_eval             = array();  // [eleve_id][matiere_id][item_id][devoir] OU [matiere_id][item_id][eleve_id][devoir] => array(note,date,info)
 
@@ -202,7 +204,13 @@ $liste_item = implode( ',' , array_keys($tab_item_infos) );
 
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_eleve_infos[$_SESSION['USER_ID']] = array('eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM'],'date_naissance'=>NULL,'eleve_id_gepi'=>$_SESSION['USER_ID_GEPI']);
+  $tab_eleve_infos[$_SESSION['USER_ID']] = array(
+    'eleve_nom'      => $_SESSION['USER_NOM'],
+    'eleve_prenom'   => $_SESSION['USER_PRENOM'],
+    'date_naissance' => NULL,
+    'eleve_id_gepi'  => $_SESSION['USER_ID_GEPI'],
+    'eleve_INE'      => NULL,
+  );
 }
 else
 {
@@ -602,7 +610,7 @@ if($type_individuel)
     // Pour chaque élève...
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     {
-      extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
+      extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
       $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
       if($make_officiel)
       {
@@ -629,7 +637,7 @@ if($type_individuel)
             }
             $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
             $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
-            $releve_PDF->entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+            $releve_PDF->entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
           }
           // Pour chaque matiere...
           foreach($tab_matiere as $matiere_id => $tab)
@@ -1247,7 +1255,6 @@ if($type_individuel)
 
 if($type_synthese)
 {
-  $matiere_et_groupe = ($releve_modele=='matiere') ? $matiere_nom.' - '.$groupe_nom : $groupe_nom ;
   $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>'.NL;
   $releve_HTML_synthese .= '<h2>'.html($matiere_et_groupe).'</h2>'.NL;
@@ -1257,8 +1264,8 @@ if($type_synthese)
   }
   // Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
   // On définit l'orientation la plus adaptée
-  $orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
-  $releve_PDF = new PDF_item_tableau( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , 'oui' /*legende*/ );
+  $orientation_auto = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
+  $releve_PDF = new PDF_item_tableau( $make_officiel , $orientation_auto , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , 'oui' /*legende*/ );
   $releve_PDF->initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
   $releve_PDF->entete($tab_titre[$releve_modele],$matiere_et_groupe,$texte_periode);
   // 1ère ligne
@@ -1436,13 +1443,13 @@ if( $type_bulletin && $make_html )
   }
   $bulletin_body = '';
   $bulletin_PDF = new PDF_item_bulletin( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond );
-  $bulletin_PDF->initialiser_et_entete( $eleve_nb , $matiere_nom.' - '.$groupe_nom , $texte_periode , $info_ponderation_complete );
+  $bulletin_PDF->initialiser_et_entete( $tab_titre[$releve_modele] , $eleve_nb , $matiere_et_groupe , $texte_periode , $info_ponderation_complete );
   $bulletin_csv_entete = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";  // Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
   $tab_bulletin_csv_gepi = array_fill_keys( array('note_appreciation','note','appreciation_PA','appreciation_MS') , $bulletin_csv_entete );
   // Pour chaque élève...
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
-    extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
+    extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $eleve_id_gepi
     // Si cet élève a été évalué...
     if(isset($tab_eval[$eleve_id]))
     {
@@ -1487,8 +1494,8 @@ if( $type_bulletin && $make_html )
   $bulletin_head  = '<thead><tr><th>Élève</th><th>Moyenne '.$info_ponderation_complete.' sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'.NL;
   $bulletin_body  = '<tbody>'.NL.$bulletin_body.'</tbody>'.NL;
   $bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.$moyenne_affichee.'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'.NL;
-  $bulletin_html  = '<h1>Bilan disciplinaire</h1>';
-  $bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
+  $bulletin_html  = '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>';
+  $bulletin_html .= '<h2>'.html($matiere_et_groupe).'</h2>';
   $bulletin_html .= '<h2>'.$texte_periode.'</h2>';
   $bulletin_html .= '<h2>Moyenne sur 20 / Élément d\'appréciation</h2>';
   $bulletin_html .= '<table id="export20" class="hsort">'.NL.$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'.NL;

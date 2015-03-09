@@ -187,12 +187,14 @@ if( ($ACTION=='imprimer') && ($etape==2) )
   Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
   // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( $BILAN_TYPE , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) );
+  $tab_notif = array();
   foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     list( $eleve_identite , $page_plage ) = $tab_tirages[0];
     if(!isset($DB_TAB[$eleve_id]))
     {
       DB_STRUCTURE_OFFICIEL::DB_ajouter_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
+      $tab_notif[$eleve_id] = $eleve_id;
     }
     else
     {
@@ -203,6 +205,34 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     $releve_pdf = new PDFMerger;
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
   }
+  // Notifications (rendues visibles ultérieurement parce que plus simple comme cela)
+  $abonnement_ref = 'bilan_officiel_visible';
+  $is_acces_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
+  $is_acces_enfant = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
+  if( $is_acces_parent || $is_acces_enfant )
+  {
+    $listing_eleves = implode(',',array_keys($tab_notif));
+    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
+    if($listing_abonnes)
+    {
+      $notification_contenu = 'Bilan officiel disponible : ['.$classe_nom.'] ['.$tab_types[$BILAN_TYPE]['titre'].'] ['.$periode_nom.'].'."\r\n\r\n";
+      $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=officiel_voir_archive';
+      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      {
+        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        {
+          if( ( $is_acces_parent && $notification_intro_eleve ) || ( $is_acces_enfant && !$notification_intro_eleve ) )
+          {
+            DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu );
+          }
+        }
+      }
+    }
+  }
+  // Retour
   exit('ok');
 }
 

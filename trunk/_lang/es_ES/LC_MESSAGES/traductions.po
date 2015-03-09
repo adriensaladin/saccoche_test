@@ -707,8 +707,8 @@ msgid "Bonjour %s."
 msgstr "Hola %s."
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:105
-msgid "Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !"
-msgstr "Encantado de conocerlo ; "
+msgid "Heureux de faire votre connaissance ; bonne découverte de SACoche !"
+msgstr "Encantado de conocerlo ; buena experiencia de SACoche !"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:106
 msgid "Déjà de retour ? Décidément on ne se quitte plus !"

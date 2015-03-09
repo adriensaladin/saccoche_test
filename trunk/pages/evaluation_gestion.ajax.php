@@ -41,6 +41,7 @@ $date_fr          = (isset($_POST['f_date_fr']))          ? Clean::date_fr($_POS
 $date_visible     = (isset($_POST['f_date_visible']))     ? Clean::date_fr($_POST['f_date_visible'])        : ''; // JJ/MM/AAAA ou "identique" (est alors transformé en 00/00/0000)
 $date_autoeval    = (isset($_POST['f_date_autoeval']))    ? Clean::date_fr($_POST['f_date_autoeval'])       : ''; // JJ/MM/AAAA mais peut valoir 00/00/0000
 $description      = (isset($_POST['f_description']))      ? Clean::texte($_POST['f_description'])           : '';
+$mode_discret     = (isset($_POST['f_mode_discret']))     ? TRUE                                            : FALSE ;
 $doc_sujet        = (isset($_POST['f_doc_sujet']))        ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $doc_corrige      = (isset($_POST['f_doc_corrige']))      ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $groupe           = (isset($_POST['f_groupe']))           ? Clean::texte($_POST['f_groupe'])                : '';
@@ -131,6 +132,10 @@ foreach($tmp_tab as $valeur)
 $nb_profs   = count($tab_profs);
 // Liste des notes transmises
 $tab_notes  = (isset($_POST['f_notes'])) ? explode(',',$_POST['f_notes']) : array() ;
+
+$abonnement_ref_edition = 'devoir_edition';
+$abonnement_ref_partage = 'devoir_prof_partage';
+$abonnement_ref_saisie  = 'devoir_saisie';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
@@ -297,7 +302,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 // Ajouter une nouvelle évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $date && $date_visible && $date_autoeval && ( ($groupe_type && $groupe_id) || $nb_eleves ) && $nb_items && in_array($eleves_ordre,array('alpha','classe')) )
+if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $date && $date_visible && $date_autoeval && $description && ( ($groupe_type && $groupe_id) || $nb_eleves ) && $nb_items && in_array($eleves_ordre,array('alpha','classe')) )
 {
   $date_mysql          = convert_date_french_to_mysql($date);
   $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
@@ -368,7 +373,22 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   if($nb_profs)
   {
     // Affecter tous les profs choisis
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id2 , $tab_profs , 'creer' );
+    $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id2 , $tab_profs , 'creer' );
+    // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
+    $listing_profs = implode(',',array_keys($tab_retour));
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
+    if($listing_abonnes)
+    {
+      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+      $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
+      $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
+      $notification_lien = "\r\n".'Pour y accéder : '.$adresse_connexion.'page=evaluation_gestion&section='.$type;
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_partage , $devoir_id2 , NULL , $notification_contenu.$tab_texte_etat[$tab_profs[$abonne_id]].$notification_lien );
+      }
+    }
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id2 , $tab_items , 'dupliquer' , $devoir_id );
@@ -385,6 +405,29 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   }
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
+  // Notifications (rendues visibles ultérieurement)
+  if(!$mode_discret)
+  {
+    $listing_eleves = ($type=='selection') ? implode(',',$tab_eleves) : DB_STRUCTURE_PROFESSEUR::DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id ) ;
+    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
+    if($listing_abonnes)
+    {
+      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+      $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      {
+        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        {
+          $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id2.'&eleve_id='.$eleve_id;
+          DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id2 , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+        }
+      }
+    }
+  }
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
@@ -435,7 +478,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 // Modifier une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date && $date_visible && $date_autoeval && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) && in_array($eleves_ordre,array('alpha','classe')) )
+if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date && $date_visible && $date_autoeval && $description && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) && in_array($eleves_ordre,array('alpha','classe')) )
 {
   $date_mysql          = convert_date_french_to_mysql($date);
   $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
@@ -528,7 +571,36 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     if($nb_profs)
     {
       // Mofifier les affectations des profs choisis
-      DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'substituer' );
+      $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_prof( $devoir_id , $tab_profs , 'substituer' );
+      if(!empty($tab_retour))
+      {
+        // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
+        $listing_profs = implode(',',array_keys($tab_retour));
+        $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
+        if($listing_abonnes)
+        {
+          $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+          $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
+          $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
+          $notification_lien = "\r\n".'Pour y accéder : '.$adresse_connexion.'page=evaluation_gestion&section='.$type;
+          $tab_abonnes = explode(',',$listing_abonnes);
+          foreach($tab_abonnes as $abonne_id)
+          {
+            if($tab_retour[$abonne_id]=='insert')
+            {
+              DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_partage , $devoir_id , NULL , $notification_contenu.$tab_texte_etat[$tab_profs[$abonne_id]].$notification_lien );
+            }
+            elseif($tab_retour[$abonne_id]=='update')
+            {
+              DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref_partage , $devoir_id , NULL , $notification_contenu.$tab_texte_etat[$tab_profs[$abonne_id]].$notification_lien , 'remplacer' );
+            }
+            elseif($tab_retour[$abonne_id]=='delete')
+            {
+              DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_partage , $devoir_id , $abonne_id );
+            }
+          }
+        }
+      }
     }
     else
     {
@@ -542,6 +614,32 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $nb_saisies_effectuees = DB_STRUCTURE_PROFESSEUR::DB_lister_nb_saisies_par_evaluation($devoir_id);
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
+  // Notifications : il peut falloir adapter les dates de toutes celles qui sont dépendantes de la date de visibilité du devoir.
+  $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+  DB_STRUCTURE_NOTIFICATION::DB_modifier_attente_date_devoir( $devoir_id , $notification_date );
+  // Notifications (rendues visibles ultérieurement)
+  if(!$mode_discret)
+  {
+    DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_edition , $devoir_id );
+    $listing_eleves = ($type=='selection') ? implode(',',$tab_eleves) : DB_STRUCTURE_PROFESSEUR::DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id ) ;
+    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
+    if($listing_abonnes)
+    {
+      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      {
+        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        {
+          $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+          DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+        }
+      }
+    }
+  }
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
@@ -613,6 +711,8 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
   // on supprime l'évaluation avec ses saisies
   DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies( $devoir_id );
   SACocheLog::ajouter('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
+  // Notifications (rendues visibles ultérieurement)
+  DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_edition , $devoir_id );
   // Afficher le retour
   exit('<td>ok</td>');
 }
@@ -825,11 +925,169 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mettre à jour les items acquis par les élèves à une évaluation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible && $description && count($tab_notes) )
+{
+  // Tester les droits
+  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
+  if($proprio_id==$_SESSION['USER_ID'])
+  {
+    $niveau_droit = 4; // propriétaire
+  }
+  elseif($profs_liste) // forcément
+  {
+    $search_liste = '_'.$profs_liste.'_';
+    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      $niveau_droit = 3; // modifier
+    }
+    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      $niveau_droit = 2; // saisir
+    }
+    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
+    {
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
+    }
+    else
+    {
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
+    }
+  }
+  else
+  {
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
+  }
+  // On y va
+  $nb_saisies_possibles  = 0;
+  $nb_saisies_effectuees = 0;
+  // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
+  // On récupère les notes transmises dans $tab_post
+  $tab_post = array();
+  foreach($tab_notes as $key_note)
+  {
+    list( $key , $note ) = explode('_',$key_note);
+    list( $item_id , $eleve_id ) = explode('x',$key);
+    if( (int)$item_id && (int)$eleve_id )
+    {
+      $tab_post[$item_id.'x'.$eleve_id] = $note;
+      $nb_saisies_possibles++;
+      $nb_saisies_effectuees += ( ($note!='X') && ($note!='REQ') ) ? 1 : 0 ;
+    }
+  }
+  // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
+  // $tab_demande_supprimer sert à supprimer des demandes d'élèves dont on met une note.
+  $tab_nouveau_modifier = array();
+  $tab_nouveau_supprimer = array();
+  $tab_demande_supprimer = array();
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
+    if(isset($tab_post[$key])) // Test nécessaire si élève ou item évalués dans ce devoir, mais retiré depuis (donc non transmis dans la nouvelle saisie, mais à conserver).
+    {
+      if($tab_post[$key]!=$DB_ROW['saisie_note'])
+      {
+        if($tab_post[$key]=='X')
+        {
+          // valeur de la base à supprimer... sauf en cas d'évaluation partagée :
+          // en effet, dans ce cas, plusieurs collègues peuvent co-saisir en même temps,
+          // il est plus prudent de ne pas écraser des notes qui viendraient d'être enregistrées par des collègues,
+          // quitte à se passer de la possibilité de retirer une note saisie par un collègue,
+          // dans ce cas il faut d'abord la modifier (la modification restant possible) pour s'attribuer la paternité de la saisie, avant de la supprimer.
+          // (mais bon, on touche là à une situation rarissime..)
+          if( $DB_ROW['prof_id']==$_SESSION['USER_ID'])
+          {
+            $tab_nouveau_supprimer[$key] = $key;
+          }
+        }
+        else
+        {
+          // valeur de la base à modifier
+          $tab_nouveau_modifier[$key] = $tab_post[$key];
+          if($DB_ROW['saisie_note']=='REQ')
+          {
+            // demande d'évaluation à supprimer
+            $tab_demande_supprimer[$key] = $key;
+          }
+        }
+      }
+      unset($tab_post[$key]);
+    }
+  }
+  // Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
+  $tab_nouveau_ajouter = array_filter($tab_post,'sans_rien');
+  // Il n'y a plus qu'à mettre à jour la base
+  if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
+  {
+    exit('Aucune modification détectée !');
+  }
+  // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+  $date_mysql         = convert_date_french_to_mysql($date_fr);
+  $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : convert_date_french_to_mysql($date_visible);
+  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
+  $tab_notif = array();
+  foreach($tab_nouveau_ajouter as $key => $note)
+  {
+    list($item_id,$eleve_id) = explode('x',$key);
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $date_mysql , $note , $info , $date_visible_mysql );
+    $tab_notif[$eleve_id] = $eleve_id;
+  }
+  foreach($tab_nouveau_modifier as $key => $note)
+  {
+    list($item_id,$eleve_id) = explode('x',$key);
+    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $note , $info );
+    $tab_notif[$eleve_id] = $eleve_id;
+  }
+  foreach($tab_nouveau_supprimer as $key => $key)
+  {
+    list($item_id,$eleve_id) = explode('x',$key);
+    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie( $eleve_id , $devoir_id , $item_id );
+    $tab_notif[$eleve_id] = $eleve_id;
+  }
+  foreach($tab_demande_supprimer as $key => $key)
+  {
+    list($item_id,$eleve_id) = explode('x',$key);
+    DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_eleve_item( $eleve_id , $item_id );
+  }
+  // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
+  $listing_eleves = implode(',',array_keys($tab_notif));
+  $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+  $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );
+  if($listing_abonnes)
+  {
+    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+    $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+    foreach($tab_abonnes as $abonne_id => $tab_abonne)
+    {
+      foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+      {
+        $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+        DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien , 'remplacer' );
+      }
+    }
+  }
+  // Retour
+  $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
+  $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
+  $remplissage_class2   = ($fini=='oui') ? ' bf' : '' ;
+  $remplissage_contenu  = ($fini=='oui') ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
+  $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
+  $remplissage_lien2    = '</a>';
+  exit('<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Générer un csv à récupérer pour une saisie déportée, vide ou plein.
 // Générer un pdf contenant un tableau de saisie, vide ou plein.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_scores_rempli_csv','generer_tableau_scores_vierge_pdf','generer_tableau_scores_rempli_pdf')) && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) && $couleur && $fond ) // $description et $groupe_nom sont aussi transmis
+if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_scores_rempli_csv','generer_tableau_scores_vierge_pdf','generer_tableau_scores_rempli_pdf')) && $devoir_id && $groupe_id && $date_fr && $description && in_array($eleves_ordre,array('alpha','classe')) && $couleur && $fond ) // $groupe_nom est aussi transmis
 {
   list( , , , $remplissage , $format ) = explode('_',$action);
   $tab_scores  = array(); // tableau bi-dimensionnel [id_item][id_user]
@@ -975,7 +1233,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
 // Voir ou Archiver la répartition, nominative ou quantitative, des élèves par item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $groupe_id && $date_fr ) // $description et $groupe_nom sont aussi transmis
+if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $groupe_id && $date_fr && $description ) // $groupe_nom est aussi transmis
 {
   // liste des items
   $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
@@ -1214,143 +1472,10 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour les items acquis par les élèves à une évaluation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible && count($tab_notes) )
-{
-  // Tester les droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
-  if($proprio_id==$_SESSION['USER_ID'])
-  {
-    $niveau_droit = 4; // propriétaire
-  }
-  elseif($profs_liste) // forcément
-  {
-    $search_liste = '_'.$profs_liste.'_';
-    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 3; // modifier
-    }
-    elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 2; // saisir
-    }
-    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
-    }
-    else
-    {
-      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
-    }
-  }
-  else
-  {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
-  }
-  // On y va
-  $nb_saisies_possibles  = 0;
-  $nb_saisies_effectuees = 0;
-  // Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
-  // On récupère les notes transmises dans $tab_post
-  $tab_post = array();
-  foreach($tab_notes as $key_note)
-  {
-    list( $key , $note ) = explode('_',$key_note);
-    list( $item_id , $eleve_id ) = explode('x',$key);
-    if( (int)$item_id && (int)$eleve_id )
-    {
-      $tab_post[$item_id.'x'.$eleve_id] = $note;
-      $nb_saisies_possibles++;
-      $nb_saisies_effectuees += ( ($note!='X') && ($note!='REQ') ) ? 1 : 0 ;
-    }
-  }
-  // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
-  // $tab_demande_supprimer sert à supprimer des demandes d'élèves dont on met une note.
-  $tab_nouveau_modifier = array();
-  $tab_nouveau_supprimer = array();
-  $tab_demande_supprimer = array();
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
-    if(isset($tab_post[$key])) // Test nécessaire si élève ou item évalués dans ce devoir, mais retiré depuis (donc non transmis dans la nouvelle saisie, mais à conserver).
-    {
-      if($tab_post[$key]!=$DB_ROW['saisie_note'])
-      {
-        if($tab_post[$key]=='X')
-        {
-          // valeur de la base à supprimer... sauf en cas d'évaluation partagée :
-          // en effet, dans ce cas, plusieurs collègues peuvent co-saisir en même temps,
-          // il est plus prudent de ne pas écraser des notes qui viendraient d'être enregistrées par des collègues,
-          // quitte à se passer de la possibilité de retirer une note saisie par un collègue,
-          // dans ce cas il faut d'abord la modifier (la modification restant possible) pour s'attribuer la paternité de la saisie, avant de la supprimer.
-          // (mais bon, on touche là à une situation rarissime..)
-          if( $DB_ROW['prof_id']==$_SESSION['USER_ID'])
-          {
-            $tab_nouveau_supprimer[$key] = $key;
-          }
-        }
-        else
-        {
-          // valeur de la base à modifier
-          $tab_nouveau_modifier[$key] = $tab_post[$key];
-          if($DB_ROW['saisie_note']=='REQ')
-          {
-            // demande d'évaluation à supprimer
-            $tab_demande_supprimer[$key] = $key;
-          }
-        }
-      }
-      unset($tab_post[$key]);
-    }
-  }
-  // Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
-  $tab_nouveau_ajouter = array_filter($tab_post,'sans_rien');
-  // Il n'y a plus qu'à mettre à jour la base
-  if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
-  {
-    exit('Aucune modification détectée !');
-  }
-  // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
-  $date_mysql         = convert_date_french_to_mysql($date_fr);
-  $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : convert_date_french_to_mysql($date_visible);
-  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
-  foreach($tab_nouveau_ajouter as $key => $note)
-  {
-    list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $date_mysql , $note , $info , $date_visible_mysql );
-  }
-  foreach($tab_nouveau_modifier as $key => $note)
-  {
-    list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $note , $info );
-  }
-  foreach($tab_nouveau_supprimer as $key => $key)
-  {
-    list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie( $eleve_id , $devoir_id , $item_id );
-  }
-  foreach($tab_demande_supprimer as $key => $key)
-  {
-    list($item_id,$eleve_id) = explode('x',$key);
-    DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_eleve_item( $eleve_id , $item_id );
-  }
-  $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
-  $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
-  $remplissage_class2   = ($fini=='oui') ? ' bf' : '' ;
-  $remplissage_contenu  = ($fini=='oui') ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
-  $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
-  $remplissage_lien2    = '</a>';
-  exit('<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imprimer un cartouche d'une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur && $fond && in_array($eleves_ordre,array('alpha','classe')) )
+if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $description && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur && $fond && in_array($eleves_ordre,array('alpha','classe')) )
 {
   Form::save_choix('evaluation_cartouche');
   $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
@@ -1845,9 +1970,10 @@ if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_o
 // Enregistrer un commentaire texte ou audio
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $devoir_id && $eleve_id && in_array($msg_autre,array('oui','non')) )
+if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $devoir_id && $eleve_id && in_array($msg_autre,array('oui','non')) && $date_visible && $description )
 {
   $msg_objet = substr($action,-5);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
   // Tester les droits
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id==$_SESSION['USER_ID'])
@@ -1901,6 +2027,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
     }
     $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_'.$msg_objet.'_'.$_SERVER['REQUEST_TIME'].'.'.$ext; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
     DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , $url_dossier_devoir.$fichier_nom );
+    $presence = TRUE;
     // et enregistrement du fichier
     FileSystem::ecrire_fichier( $chemin_devoir.$fichier_nom , $msg_data );
   }
@@ -1909,10 +2036,37 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
     if($msg_autre=='oui')
     {
       DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , '' );
+      $presence = TRUE;
     }
     else
     {
       DB_STRUCTURE_COMMENTAIRE::DB_supprimer_devoir_commentaire( $devoir_id , $eleve_id );
+      $presence = FALSE;
+    }
+  }
+  // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
+  $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($eleve_id);
+  $listing_users = ($listing_parents) ? $eleve_id.','.$listing_parents : $eleve_id ;
+  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );
+  if($listing_abonnes)
+  {
+    $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_lien = 'Voir le détail : '.Sesamail::adresse_lien_direct_debut().'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+    $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+    foreach($tab_abonnes as $abonne_id => $tab_abonne)
+    {
+      foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+      {
+        if($presence)
+        {
+          DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref_saisie , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien , 'remplacer' );
+        }
+        else
+        {
+          DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_saisie , $devoir_id , $abonne_id );
+        }
+      }
     }
   }
   // Retour

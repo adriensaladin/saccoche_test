@@ -594,7 +594,7 @@ span.select_multiple label {display:block;white-space:nowrap;padding-left:1px;pa
 span.select_multiple label.check {color:#FFF;background-color:#88F}
 span.check_multiple {display:inline-block;vertical-align:middle;line-height:20px}
 
-#f_captcha{width:1px;height:0;border:none} /* astuce pour avoir un champ invisible sans être caché ou avoir une longueur nulle, sinon jquery.validate.js l'ignore */
+input.invisible{width:1px;height:0;border:none} /* astuce pour avoir un champ invisible sans être de type hidden ou caché ou avoir une longueur nulle, sinon jquery.validate.js l'ignore */
 img.captcha{width:20px;height:20px;background-color:#66F;margin:auto 5px 1px 5px}
 img.captcha:hover{cursor:pointer;background-color:#D41}
 

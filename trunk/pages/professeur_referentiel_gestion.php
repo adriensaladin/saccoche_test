@@ -318,7 +318,7 @@ foreach($tab_options as $val)
 <form action="#" method="post" id="form_gestion" class="hide">
   <h2>Modifier le partage d'un référentiel | Mettre à jour sur le serveur de partage la dernière version d'un référentiel | Modifier le mode de calcul d'un référentiel | Supprimer un référentiel</h2>
   <p>
-    <label class="tab">Référentiel :</label><em id="referentiel_infos"></em>
+    <label class="tab">Référentiel :</label><em id="referentiel_infos"></em><input id="f_matiere_nom" name="f_matiere_nom" type="hidden" value="" /><input id="f_niveau_nom" name="f_niveau_nom" type="hidden" value="" />
   </p>
   <div id="gestion_partager">
     <div id="ligne_partage">
@@ -358,7 +358,7 @@ foreach($tab_options as $val)
     </p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ids" name="f_ids" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ids" name="f_ids" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 

@@ -106,6 +106,6 @@ else
   <h2>Supprimer une demande d'évaluation</h2>
   <p>Confirmez-vous la suppression de la demande &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_demande_id" name="f_demande_id" type="hidden" value="" /><input id="f_item_id" name="f_item_id" type="hidden" value="" /><input id="f_matiere_id" name="f_matiere_id" type="hidden" value="" /><input id="f_prof_id" name="f_prof_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_demande_id" name="f_demande_id" type="hidden" value="" /><input id="f_item_id" name="f_item_id" type="hidden" value="" /><input id="f_matiere_id" name="f_matiere_id" type="hidden" value="" /><input id="f_prof_id" name="f_prof_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>

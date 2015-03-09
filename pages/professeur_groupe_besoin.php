@@ -146,7 +146,7 @@ Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$t
         $eleves_nombre = count($tab_td['eleve']);
         $profs_nombre  = count($tab_td['professeur']);
         $eleves_texte  = ($eleves_nombre>1) ? $eleves_nombre.' élèves' : '1 élève' ;
-        $profs_texte   = ($profs_nombre>1)  ? $profs_nombre.' collègues' : 'moi seul' ;
+        $profs_texte   = ($profs_nombre>1)  ? $profs_nombre .' profs'  : 'moi seul' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$groupe_id.'">';
         echo  '<td>'.$tab_td['niveau'].'</td>';
@@ -165,7 +165,7 @@ Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$t
     }
     else
     {
-      echo'<tr><td class="nu" colspan="5"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="4"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -219,10 +219,10 @@ else
       <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="20" maxlength="20" />
     </p>
     <p>
-      <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q>
+      <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><input id="f_eleve_liste" name="f_eleve_liste" type="text" value="" class="invisible" />
     </p>
     <p>
-      <label class="tab" for="f_prof_nombre">Collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q>
+      <label class="tab" for="f_prof_nombre">Collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" />
     </p>
   </div>
   <div id="gestion_delete">
@@ -230,7 +230,7 @@ else
     <p>Confirmez-vous la suppression du groupe de besoin &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 

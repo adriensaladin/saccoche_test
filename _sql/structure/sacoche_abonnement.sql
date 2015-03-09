@@ -15,19 +15,20 @@ CREATE TABLE sacoche_abonnement (
 ALTER TABLE sacoche_abonnement DISABLE KEYS;
 
 INSERT INTO sacoche_abonnement VALUES 
-("message_accueil"            , 0, 1, "professeur,directeur,parent,eleve", "message d'accueil"                   , "Message d'accueil nouveau ou modifié."),
-("bilan_officiel_statut"      , 0, 0, "professeur,directeur"             , "bilan officiel, étape de saisie"     , "Changement de statut d'un bilan officiel."),
-("bilan_officiel_appreciation", 1, 0, "professeur,directeur"             , "bilan officiel, souci d'appréciation", "Signalement d'un souci pour une appréciation d'un bilan officiel."),
-("referentiel_edition"        , 0, 0, "professeur"                       , "modification de référentiel"         , "Modification de référentiel (y compris import / suppression)."),
-("demande_evaluation_eleve"   , 0, 1, "professeur"                       , "demande d'évaluation formulée"       , "Demande d'évaluation formulée ou retirée."),
-("devoir_autoevaluation_eleve", 0, 0, "professeur"                       , "auto-évaluation effectuée"           , "Auto-évaluation effectuée par un élève."),
-("devoir_prof_partage"        , 0, 0, "professeur"                       , "devoir partagé"                      , "Partage d'un devoir par un collègue."),
-("devoir_edition"             , 0, 0, "parent,eleve"                     , "devoir préparé"                      , "Création ou modification d'un devoir."), -- si la date de visibilité le permet
-("devoir_saisie"              , 0, 0, "parent,eleve"                     , "saisie de résultats"                 , "Saisie de notes ou de commentaires d'une évaluation."), -- si la date de visibilité le permet
-("demande_evaluation_prof"    , 0, 1, "eleve"                            , "demande d'évaluation traitée"        , "Demande d'évaluation traitée (préparation d'un devoir ou rejet)."),
-("bilan_officiel_visible"     , 0, 1, "parent,eleve"                     , "bilan officiel disponible"           , "Bilan officiel disponible au format PDF."), -- uniquement si droit d`accès
-("action_sensible"            , 0, 0, "administrateur"                   , "action sensible effectuée"           , "Action sensible effectuée par un enseignant."),
-("action_admin"               , 0, 0, "administrateur"                   , "action d'administration"             , "Action effectuée par un autre administrateur."),
-("contact_externe"            , 1, 0, "administrateur"                   , "contact externe"                     , "Contact effectué depuis la page d'authentification");
+("message_accueil"            , 0, 1, "professeur,directeur,parent,eleve", "Message d'accueil"                  , "Message d'accueil nouveau ou modifié."), -- si la date de visibilité le permet
+("fiche_brevet_statut"        , 0, 0, "professeur,directeur"             , "Fiche brevet, étape de saisie"      , "Ouverture d'étape de saisie d'une fiche brevet."),
+("bilan_officiel_statut"      , 0, 0, "professeur,directeur"             , "Bilan officiel, étape de saisie"    , "Ouverture d'étape de saisie d'un bilan officiel."),
+("bilan_officiel_appreciation", 1, 0, "professeur,directeur"             , "Bilan officiel, erreur appréciation", "Signalement d'un souci pour une appréciation d'un bilan officiel."),
+("referentiel_edition"        , 0, 0, "professeur"                       , "Modification de référentiel"        , "Modification de référentiel (y compris import / suppression)."),
+("demande_evaluation_eleve"   , 0, 1, "professeur"                       , "Demande d'évaluation formulée"      , "Demande d'évaluation formulée ou retirée."),
+("devoir_autoevaluation_eleve", 0, 0, "professeur"                       , "Auto-évaluation effectuée"          , "Auto-évaluation effectuée par un élève."),
+("devoir_prof_partage"        , 0, 0, "professeur"                       , "Devoir partagé"                     , "Partage d'un devoir par un collègue."),
+("devoir_edition"             , 0, 0, "parent,eleve"                     , "Devoir préparé"                     , "Création ou modification d'un devoir."), -- si la date de visibilité le permet
+("devoir_saisie"              , 0, 0, "parent,eleve"                     , "Saisie de résultats"                , "Saisie de notes ou de commentaires d'une évaluation."), -- si la date de visibilité le permet
+("demande_evaluation_prof"    , 0, 1, "eleve"                            , "Demande d'évaluation traitée"       , "Demande d'évaluation traitée (préparation d'un devoir ou rejet)."), -- si la date de visibilité le permet
+("bilan_officiel_visible"     , 0, 1, "parent,eleve"                     , "Bilan officiel disponible"          , "Bilan officiel disponible au format PDF."), -- uniquement si droit d`accès
+("action_sensible"            , 0, 0, "administrateur"                   , "Action sensible effectuée"          , "Action sensible effectuée par un enseignant."),
+("action_admin"               , 0, 0, "administrateur"                   , "Action d'administration"            , "Action effectuée par un autre administrateur."),
+("contact_externe"            , 1, 0, "administrateur"                   , "Contact externe"                    , "Contact effectué depuis la page d'authentification");
 
 ALTER TABLE sacoche_abonnement ENABLE KEYS;

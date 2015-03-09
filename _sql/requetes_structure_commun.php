@@ -1683,13 +1683,9 @@ public static function DB_OPT_enfants_parent($parent_id)
   $DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, eleve_classe_id AS classe_id ';
   $DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':parent_id'   => $parent_id,
-    ':profil_type' => 'eleve',
-  );
+  $DB_VAR = array( ':parent_id' => $parent_id );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève n\'est associé à votre compte !' ;
 }

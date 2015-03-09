@@ -409,7 +409,7 @@ $(document).ready
           f_conversion_sur_20  : { required:false },
           f_synthese_format    : { required:true },
           f_tri_mode           : { required:true },
-          f_compet_nombre      : { isWord:'item' },
+          f_compet_liste       : { required:true },
           f_groupe             : { required:true },
           'f_eleve[]'          : { required:true },
           f_eleves_ordre       : { required:true },
@@ -441,7 +441,7 @@ $(document).ready
           f_conversion_sur_20  : { },
           f_synthese_format    : { required:"choix manquant" },
           f_tri_mode           : { required:"choix manquant" },
-          f_compet_nombre      : { isWord:"item(s) manquant(s)" },
+          f_compet_liste       : { required:"item(s) manquant(s)" },
           f_groupe             : { required:"groupe manquant" },
           'f_eleve[]'          : { required:"élève(s) manquant(s)" },
           f_eleves_ordre       : { required:"ordre manquant" },
@@ -468,7 +468,7 @@ $(document).ready
         errorPlacement : function(error,element)
         {
           if(element.is("select")) {element.after(error);}
-          else if(element.attr("type")=="text") {element.next().next().after(error);}
+          else if(element.attr("type")=="text") {element.next().after(error);}
           else if(element.attr("type")=="hidden") {element.next().after(error);}
           else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().next().next().after(error);}

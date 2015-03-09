@@ -215,7 +215,11 @@ $(document).ready
         var limite      = tab_calcul_limite[    id_mat_niv];
         var retroactif  = tab_calcul_retroactif[id_mat_niv];
         var information = tab_information[      id_mat_niv];
-        $('#referentiel_infos').html( $(this).parent().parent().parent().parent().prev('h2').html() + '&nbsp;||&nbsp;' + $(this).parent().prev().prev().prev().html() );
+        var matiere_nom = $(this).parent().parent().parent().parent().prev('h2').html();
+        var niveau_nom  = $(this).parent().prev().prev().prev().html();
+        $('#referentiel_infos').html( matiere_nom + '&nbsp;||&nbsp;' + niveau_nom );
+        $('#f_matiere_nom').val(matiere_nom);
+        $('#f_niveau_nom').val(niveau_nom);
         $('#f_action').val(mode);
         $('#f_ids').val(ids);
         if( ( tab_ids[1] <= ID_MATIERE_PARTAGEE_MAX ) && ( tab_ids[2] <= ID_NIVEAU_PARTAGE_MAX ) )
@@ -813,8 +817,10 @@ $(document).ready
     (
       function()
       {
-        var matiere_id = $('#matiere_id').val();
-        var niveau_id  = $('#f_niveau_create option:selected').val();
+        var matiere_id  = $('#matiere_id').val();
+        var matiere_nom = $('#h2_'+matiere_id).html();
+        var niveau_id   = $('#f_niveau_create option:selected').val();
+        var niveau_nom  = $('#f_niveau_create option:selected').text();
         if(!niveau_id)
         {
           $('#ajax_msg_choisir').removeAttr("class").addClass("erreur").html('Choisir un niveau !');
@@ -830,7 +836,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=ajouter_referentiel_etablissement'+'&f_ids=ids_'+matiere_id+'_'+niveau_id+'&f_referentiel_id='+referentiel_id,
+            data : 'csrf='+CSRF+'&f_action=ajouter_referentiel_etablissement'+'&f_ids=ids_'+matiere_id+'_'+niveau_id+'&f_referentiel_id='+referentiel_id+'&f_matiere_nom='+encodeURIComponent(matiere_nom)+'&f_niveau_nom='+encodeURIComponent(niveau_nom),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

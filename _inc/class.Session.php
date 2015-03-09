@@ -219,13 +219,13 @@ class Session
       else
       {
         // accès direct à une page réservée, onglets incompatibles ouverts, inactivité, disque plein, chemin invalide, ...
-        Session::$tab_message_erreur[] = $message.' Veuillez vous (re)-connecter.';
+        Session::$tab_message_erreur[] = $message.' Veuillez vous (re)connecter.';
       }
     }
     // si ajax
     else
     {
-      $conseil = ( $test_get || $test_cookie ) ? ' Veuillez actualiser la page.' : ' Veuillez vous (re)-connecter.' ;
+      $conseil = ( $test_get || $test_cookie ) ? ' Veuillez actualiser la page.' : ' Veuillez vous (re)connecter.' ;
       exit_error( 'Session perdue / expirée' /*titre*/ , $message.$conseil /*contenu*/ );
     }
   }
@@ -363,7 +363,8 @@ class Session
         if(!Session::$tab_droits_page['public'])
         {
           // 2.3.1. Espace non identifié => Espace identifié : redirection pour identification
-          Session::exit_sauf_SSO('Authentification manquante ou perdue (onglets incompatibles ouverts ?).'); // Pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
+          $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
+          Session::exit_sauf_SSO('Authentification manquante ou perdue (onglets incompatibles ouverts ?).');
         }
         else
         {

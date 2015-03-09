@@ -102,6 +102,28 @@ public static function DB_recuperer_referentiel_partage_etat($matiere_id,$niveau
 }
 
 /**
+ * DB_recuperer_autres_professeurs_matiere
+ *
+ * @param int    $matiere_id
+ * @param int    $user_id
+ * @return string
+ */
+public static function DB_recuperer_autres_professeurs_matiere($matiere_id,$user_id)
+{
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
+  // Go
+  $DB_SQL = 'SELECT CONVERT( GROUP_CONCAT(user_id SEPARATOR ",") , CHAR) AS identifiants ';
+  $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND user_id!=:user_id';
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':user_id'    => $user_id,
+  );
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_recuperer_domaine_ordre_max
  *
  * @param int    $matiere_id
@@ -406,7 +428,7 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
  * @param int     $matiere_id
  * @param int     $niveau_id
  * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':calcul_retroactif'=>$val , ':mode_synthese'=>$val , ':information'=>$information );
- * @return void
+ * @return int    nb de lignes modifiées (0|1)
  */
 public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 {
@@ -421,6 +443,7 @@ public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
   $DB_VAR[':matiere_id'] = $matiere_id;
   $DB_VAR[':niveau_id'] = $niveau_id;
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**

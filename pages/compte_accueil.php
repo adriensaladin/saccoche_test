@@ -102,7 +102,7 @@ $tab_accueil['user']['contenu'] = '';
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
   $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Bonjour %s.")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>').' ';
-  if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user']['contenu'] .= html(Lang::_("Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !")).'</p>'; }
+  if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user']['contenu'] .= html(Lang::_("Heureux de faire votre connaissance ; bonne découverte de SACoche !")).'</p>'; }
   elseif($_SESSION['DELAI_CONNEXION']<  43200 /*0.5*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Déjà de retour ? Décidément on ne se quitte plus !")).'</p>'; }
   elseif($_SESSION['DELAI_CONNEXION']< 108000 /*  2*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Bonne navigation, et merci de votre fidélité !")).'</p>'; }
   elseif($_SESSION['DELAI_CONNEXION']< 604800 /*  7*24*3600*/) { $tab_accueil['user']['contenu'] .= html(Lang::_("Content de vous retrouver après cette pause de quelques jours !")).'</p>'; }
@@ -232,7 +232,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
   {
     $s = ($nb_notifications_non_vues>1) ? 's' : '' ;
     $tab_accueil['notifications']['contenu'] .= '<div class="b">'.html(Lang::_("Notifications à consulter")).'</div>';
-    $tab_accueil['notifications']['contenu'] .= '<p>Vous avez <a href="./index.php?page=consultation_notifications"><span class="b">'.$nb_notifications_non_vues.' notification'.$s.'</span></a> non vues.</p>';
+    $tab_accueil['notifications']['contenu'] .= '<p>Vous avez <a href="./index.php?page=consultation_notifications"><span class="b">'.$nb_notifications_non_vues.' notification'.$s.'</span></a> non vue'.$s.'.</p>';
   }
 }
 
@@ -245,20 +245,12 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_destinataire($_SESSION['USER_ID']);
   if(!empty($DB_TAB))
   {
-    // En attendant un éventuel textarea enrichi pour la saisie des messages (mais est-ce que ça ne risquerait pas de faire une page d'accueil folklorique ?), une petite fonction pour fabriquer des liens...
-    // Format attendu : [desciptif|adresse|target]
-    function make_lien($texte)
-    {
-      $masque_recherche = '#\[([^\|]+)\|([^\|]+)\|([^\|]*)\]#' ;
-      $masque_remplacement = '<a href="$2" target="$3">$1</a>';
-      return str_replace( array('target="_blank"','target=""') , array('target="_blank"','') , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
-    }
     foreach($DB_TAB as $key => $DB_ROW)
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages']['contenu'][$DB_ROW['message_id']] = array(
         'titre'   => html(Lang::_("Message")).' ('.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
-        'message' => make_lien(nl2br(html($DB_ROW['message_contenu']))),
+        'message' => make_lien(nl2br(html($DB_ROW['message_contenu'])),'html'),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
     }
@@ -278,7 +270,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   $nb_jours_consideres = 7;
   $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
   $nb_eleves = count($tab_eleves);
-  foreach($tab_eleves as $eleve_num => $tab_eleve_info)
+  foreach($tab_eleves as $tab_eleve_info)
   {
     $eleve_id  = $tab_eleve_info['valeur'];
     $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_derniers_devoirs_eleve_avec_notes_saisies( $eleve_id , $nb_jours_consideres );
@@ -290,12 +282,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       }
       $tab_accueil['resultats']['nombre'] += count($DB_TAB);
       $tab_accueil['resultats']['contenu'].= '<ul class="puce p">';
-      $param_eleve_num = ($nb_eleves>1) ? '&amp;eleve_num='.$eleve_num          : '' ;
-      $text_eleve_nom  = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
+      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id : '' ;
+      $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
       foreach($DB_TAB as $DB_ROW)
       {
         $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_num.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['resultats']['contenu'].= '</ul>';
     }

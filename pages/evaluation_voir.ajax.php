@@ -370,11 +370,28 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   // Ajout aux flux RSS des profs concernés
   $tab_profs_rss = array_merge( array($devoir_proprio_id) , DB_STRUCTURE_ELEVE::DB_lister_devoir_profs_droit_saisie($devoir_id) );
   $titre = 'Autoévaluation effectuée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
-  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'"';
+  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'".'."\r\n";
+  $texte.= ($msg_data) ? 'Commentaire :'."\r\n".$msg_data."\r\n" : 'Pas de commentaire saisi.'."\r\n" ;
   $guid  = 'autoeval_'.$devoir_id.'_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME']; // obligé d'ajouter un time pour unicité au cas où un élève valide 2x l'autoévaluation
   foreach($tab_profs_rss as $prof_id)
   {
     RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
+  }
+  // Notifications (rendues visibles ultérieurement) ; on récupère des données conçues pour le flux RSS ($texte , $tab_profs_rss)
+  $abonnement_ref = 'devoir_autoevaluation_eleve';
+  $listing_profs = implode(',',$tab_profs_rss);
+  if($listing_profs)
+  {
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_profs );
+    if($listing_abonnes)
+    {
+      $notification_contenu = $texte;
+      $tab_abonnes = explode(',',$listing_abonnes);
+      foreach($tab_abonnes as $abonne_id)
+      {
+        DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu , 'compléter' , TRUE /*sep*/ );
+      }
+    }
   }
   //
   // On passe maintenant au commentaire texte

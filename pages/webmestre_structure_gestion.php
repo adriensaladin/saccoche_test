@@ -139,7 +139,7 @@ if(empty($_POST['f_afficher']))
     <p>Confirmez-vous la suppression de l'établissement &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="" /><input id="f_acces" name="f_acces" type="hidden" value="" /><input id="f_check" name="f_check" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 
@@ -150,7 +150,7 @@ if(empty($_POST['f_afficher']))
     <label class="tab" for="f_admin_id">Administrateur :</label><select id="f_admin_id" name="f_admin_id"><option></option></select>
   </p>
   <p>
-    <label class="tab"></label><input id="f_mdp_copie" name="f_courriel_copie" type="checkbox" value="1" /><label for="f_mdp_copie"> envoyer une copie à <?php echo html(WEBMESTRE_COURRIEL); ?></label>
+    <span class="tab"></span><input id="f_mdp_copie" name="f_courriel_copie" type="checkbox" value="1" /><label for="f_mdp_copie"> envoyer une copie à <?php echo html(WEBMESTRE_COURRIEL); ?></label>
   </p>
   <p>
     <button id="valider_generer_mdp" type="button" class="valider">Valider.</button> <button id="fermer_zone_generer_mdp" type="button" class="annuler">Annuler.</button> <label id="ajax_msg_generer_mdp">&nbsp;</label>

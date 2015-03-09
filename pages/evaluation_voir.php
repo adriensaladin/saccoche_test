@@ -29,11 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Liste des évaluations"));
 
 // Réception d'id transmis via un lien en page d'accueil.
-$auto_voir_devoir_id   = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
-$auto_select_eleve_num = isset($_GET['eleve_num']) ? Clean::entier($_GET['eleve_num']) : FALSE ;
-$auto_mode             = isset($_GET['autoeval'])  ? 'saisir'                          : 'voir' ;
-
-$auto_select_eleve_id = ( ($auto_select_eleve_num!==FALSE) && !empty($_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]) ) ? $_SESSION['OPT_PARENT_ENFANTS'][$auto_select_eleve_num]['valeur'] : FALSE ;
+$auto_voir_devoir_id  = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
+$auto_select_eleve_id = isset($_GET['eleve_id'])  ? Clean::entier($_GET['eleve_id'])  : FALSE ;
+$auto_mode            = isset($_GET['autoeval'])  ? 'saisir'                          : 'voir' ;
 
 // Fabrication des éléments select du formulaire
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')

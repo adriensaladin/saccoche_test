@@ -226,8 +226,8 @@ $(document).ready
         {
           f_groupe                   : { required:true },
           f_critere_objet            : { required:true },
-          f_matiere_items_nombre     : { required:function(){return matiere_items_requis;} },
-          f_socle_item_nom           : { required:function(){return socle_item_requis;} },
+          f_matiere_items_liste      : { required:function(){return matiere_items_requis;} },
+          f_socle_item_id            : { required:function(){return socle_item_requis;} , min:1 },
           f_select_pilier            : { required:function(){return socle_pilier_requis;} },
           f_mode                     : { required:function(){return mode_requis;} },
           'f_matiere[]'              : { required:function(){return mode_manuel;} },
@@ -238,8 +238,8 @@ $(document).ready
         {
           f_groupe                   : { required:"groupe manquant" },
           f_critere_objet            : { required:"objet manquant" },
-          f_matiere_items_nombre     : { required:"item(s) manquant(s)" },
-          f_socle_item_nom           : { required:"item manquant" },
+          f_matiere_items_liste      : { required:"item(s) manquant(s)" },
+          f_socle_item_id            : { required:"item manquant" , min:"item manquant" },
           f_select_pilier            : { required:"compétence manquante" },
           f_mode                     : { required:"choix manquant" },
           'f_matiere[]'              : { required:"matière(s) manquante(s)" },
@@ -251,7 +251,7 @@ $(document).ready
         errorPlacement : function(error,element)
         {
           if(element.is("select"))                  {element.after(error);}
-          else if(element.attr("type")=="text")     {element.next().next().after(error);}
+          else if(element.attr("type")=="text")     {element.next().after(error);}
           else if(element.attr("type")=="radio")    {element.parent().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
         }

@@ -44,7 +44,7 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$synthese_modele.
 
 $tab_item        = array();  // [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,calcul_retroactif,synthese_ref);
 $tab_liste_item  = array();  // [i] => item_id
-$tab_eleve_infos = array();  // [eleve_id] => array(eleve_nom,eleve_prenom,date_naissance)
+$tab_eleve_infos = array();  // [eleve_id] => array(eleve_INE,eleve_nom,eleve_prenom,date_naissance)
 $tab_matiere     = array();  // [matiere_id] => array(matiere_nom,matiere_nb_demandes)
 $tab_synthese    = array();  // [synthese_ref] => synthese_nom
 $tab_eval        = array();  // [eleve_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
@@ -165,6 +165,7 @@ else
     'eleve_prenom'   => '',
     'eleve_genre'    => 'I',
     'date_naissance' => NULL,
+    'eleve_INE'      => NULL,
   );
 }
 $eleve_nb = count( $tab_eleve_infos , COUNT_NORMAL );
@@ -412,7 +413,7 @@ if($make_pdf)
 // Pour chaque élève...
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-  extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+  extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
   $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
@@ -440,7 +441,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
         $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
         $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$synthese_modele] , $texte_periode , $texte_precision , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
-        $releve_PDF->entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
+        $releve_PDF->entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
       }
       // On passe en revue les matières...
       foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)

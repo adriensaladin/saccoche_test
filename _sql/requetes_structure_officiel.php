@@ -58,6 +58,7 @@ public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_
 /**
  * recuperer_pays_majoritaire
  *
+ * @param void
  * @return string
  */
 public static function DB_recuperer_pays_majoritaire()

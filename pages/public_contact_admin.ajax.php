@@ -82,7 +82,7 @@ if(!$code)
   $mail_contenu.= 'Pour confirmer l\'envoi du message aux administrateurs, veuillez saisir le code suivant dans le formulaire :'."\r\n";
   $mail_contenu.= "\r\n";
   $mail_contenu.= $code."\r\n";
-  $mail_contenu.= fabriquer_texte_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $courriel );
+  $mail_contenu.= Sesamail::texte_pied_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $courriel );
   $courriel_bilan = Sesamail::mail( $courriel , 'Contact administrateurs - Code de confirmation' , $mail_contenu , $courriel /*replyto*/ );
   if(!$courriel_bilan)
   {
@@ -114,14 +114,20 @@ if($code)
     }
   }
   // Notification (qui a la particularité d'être envoyée de suite, et avec tous les admins en destinataires du mail)
-  $notification_contenu = 'Message de '.$prenom.' '.$nom.' ('.$courriel.') :'."\r\n\r\n".$message."\r\n";
-  $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires('contact_externe');
-  $admin_nb = count($DB_TAB);
+  $abonnement_ref = 'contact_externe';
+  $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref );
+  $destinataires_nb = count($DB_TAB);
+  if(!$destinataires_nb)
+  {
+    // Normalement impossible, l'abonnement des admins à ce type de de notification étant obligatoire
+    exit_json( FALSE , 'Aucun destinataire trouvé.' );
+  }
   $tab_destinataires = array();
+  $notification_contenu = 'Message de '.$prenom.' '.$nom.' ('.$courriel.') :'."\r\n\r\n".$message."\r\n";
   foreach($DB_TAB as $DB_ROW)
   {
     $notification_statut = ( (COURRIEL_NOTIFICATION=='oui') && ($DB_ROW['jointure_mode']=='courriel') && $DB_ROW['user_email'] ) ? 'envoyée' : 'consultable' ;
-    $notification_id = DB_STRUCTURE_NOTIFICATION::DB_ajouter_log( $DB_ROW['user_id'] , 'contact_externe' , NULL /*attente_id*/ , $notification_statut , NULL /*date*/ , $notification_contenu );
+    DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_visible( $DB_ROW['user_id'] , $abonnement_ref , $notification_statut , $notification_contenu );
     if($notification_statut=='envoyée')
     {
       $tab_destinataires[] = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
@@ -134,15 +140,12 @@ if($code)
      * - le numéro de base n'est pas en session
      * - envoi possible à plusieurs destinataires simultanéments
      * - notification obligatoire et immédiate
-     * Du coup, le paramètre 'notif_individuelle' n'est pas transmis dans le tableau pour fabriquer_texte_courriel().
-     * 
-     * @param string $courriel
-     * @return string
+     * Du coup, le paramètre 'notif_individuelle' n'est pas transmis dans le tableau pour texte_pied_courriel().
      */
-    $notification_contenu .= fabriquer_texte_courriel( array('no_reply','signature') );
+    $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','signature') );
     $courriel_bilan = Sesamail::mail( $tab_destinataires , 'Notification - Contact externe' , $notification_contenu , $tab_destinataires );
   }
-  $admin_txt = ($admin_nb>1) ? 'aux '.$admin_nb.' administrateurs' : 'à l\'administrateur' ;
+  $admin_txt = ($destinataires_nb>1) ? 'aux '.$destinataires_nb.' administrateurs' : 'à l\'administrateur' ;
   exit_json( TRUE , $admin_txt );
 }
 

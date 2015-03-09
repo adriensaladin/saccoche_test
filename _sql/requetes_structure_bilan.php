@@ -538,11 +538,11 @@ public static function DB_lister_result_eleves_palier_sans_infos_items( $liste_e
  * @param bool     $with_gepi
  * @param bool     $with_langue
  * @param bool     $with_brevet_serie
- * @return array|string                le tableau est de la forme [eleve_id] => array('eleve_nom'=>...,'eleve_prenom'=>...,'eleve_genre'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
+ * @return array|string                le tableau est de la forme [eleve_id] => array('eleve_INE'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_genre'=>...,'date_naissance'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...,'eleve_brevet_serie'=>...);
  */
 public static function DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , $with_gepi , $with_langue , $with_brevet_serie )
 {
-  $DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_genre AS eleve_genre , user_naissance_date AS date_naissance ';
+  $DB_SQL = 'SELECT user_id AS eleve_id , user_reference AS eleve_INE , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_genre AS eleve_genre , user_naissance_date AS date_naissance ';
   $DB_SQL.= ($with_gepi)         ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
   $DB_SQL.= ($with_langue)       ? ', eleve_langue '                  : '' ;
   $DB_SQL.= ($with_brevet_serie) ? ', eleve_brevet_serie '            : '' ;

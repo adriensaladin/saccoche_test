@@ -1133,8 +1133,8 @@ $(document).ready
           var input_value = ( $('#avis_conseil_classe').text() == 'Avis favorable' ) ? 'F' : 'D' ;
           input_avis_conseil = '<input type="hidden" name="f_avis_conseil" id="f_avis_conseil" value="'+input_value+'" />';
         }
-        var message_contenu = $('h1').text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
-        $('#f_destinataires_liste').val(prof_id);
+        var message_contenu = $('h1').text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
+        $('#f_destinataire_id').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation
         if(objet=='corriger')
         {
@@ -1147,14 +1147,14 @@ $(document).ready
             $('#section_signaler').hide(0);
           }
           var nb_lignes = parseInt(memo_long_max/100,10);
-          message_contenu += 'je me suis permis de corriger son appréciation en remplaçant " .......... " par " .......... ".';
+          message_contenu += 'je me suis permis de corriger l\'appréciation en remplaçant " .......... " par " .......... ".';
           $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label>'+input_avis_conseil+'</div>').show(0);
           $('#f_appreciation').focus().html(unescapeHtml(appreciation_contenu));
           afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
         }
         else if(objet=='signaler')
         {
-          message_contenu += 'je pense qu\'il y a un souci dans son appréciation "'+appreciation_contenu+'" : ..........';
+          message_contenu += 'je pense qu\'il y a un souci dans l\'appréciation "'+appreciation_contenu+'" : ..........';
           $('#section_corriger').html("").hide(0);
           $('#section_signaler').show(0);
         }
@@ -1203,7 +1203,7 @@ $(document).ready
         $('#zone_signaler_corriger button').prop('disabled',true);
         $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var action  = $('#f_action').val();
-        var prof_id = $('#f_destinataires_liste').val();
+        var prof_id = $('#f_destinataire_id').val();
         // Signaler la faute (signalement simple, ou signalement d'une correction)
         if( prof_id != USER_ID )
         {
@@ -1223,21 +1223,17 @@ $(document).ready
               success : function(responseHTML)
               {
                 initialiser_compteur();
-                if(responseHTML.substring(0,4)!='<tr ')
+                $('#zone_signaler_corriger button').prop('disabled',false);
+                if(responseHTML!='ok')
                 {
-                  $('#zone_signaler_corriger button').prop('disabled',false);
                   $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html(responseHTML);
                   return false;
                 }
-                else
+                else if(action=='signaler_faute')
                 {
-                  if(action=='signaler_faute')
-                  {
-                    $('#zone_signaler_corriger button').prop('disabled',false);
-                    $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
-                    $('#annuler_signaler_corriger').click();
-                    return false;
-                 }
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
+                  $('#annuler_signaler_corriger').click();
+                  return false;
                 }
               }
             }

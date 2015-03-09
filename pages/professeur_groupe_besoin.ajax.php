@@ -71,13 +71,13 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
   // Affecter les élèves et les profs au groupe
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'creer' /*mode*/ , 0 /*devoir_id*/ );
   // Remettre le prof responsable (si partagé avec d'autres collègues)
-  if($indice!==FALSE)
+  if($indice)
   {
     $tab_profs[$indice] = $_SESSION['USER_ID'];
   }
   // Afficher le retour
   $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
-  $profs_texte   = ($nb_profs>1)  ? $nb_profs .' profs'  : 'moi seul' ;
+  $profs_texte   = ($nb_profs>1)  ? $nb_profs.' collègues'   : 'moi seul' ;
   echo'<tr id="id_'.$groupe_id.'" class="new">';
   echo  '<td>{{NIVEAU_NOM}}</td>';
   echo  '<td>'.html($groupe_nom).'</td>';
@@ -110,13 +110,13 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
   // Mettre les affectations des élèves et des profs au groupe
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'substituer' /*mode*/ , 0 /*devoir_id*/ );
   // Remettre le prof responsable (si partagé avec d'autres collègues)
-  if($indice!==FALSE)
+  if($indice)
   {
     $tab_profs[$indice] = $_SESSION['USER_ID'];
   }
   // Afficher le retour
   $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
-  $profs_texte   = ($nb_profs>1)  ? $nb_profs .' profs'  : 'moi seul' ;
+  $profs_texte   = ($nb_profs>1)  ? $nb_profs.' collègues'   : 'moi seul' ;
   echo'<td>{{NIVEAU_NOM}}</td>';
   echo'<td>'.html($groupe_nom).'</td>';
   echo'<td>'.$eleves_texte.'</td>';

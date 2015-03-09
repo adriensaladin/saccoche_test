@@ -85,10 +85,6 @@ $(document).ready
       {
         $('#f_date').val(tab_infos[0]);
         $('#f_date_visible').val(tab_infos[1]);
-        if( $("#f_quoi option:selected").val() == 'completer')
-        {
-          $('#f_description').val(tab_infos[2]);
-        }
         // Simuler un clic sur #box_date pour un appel de maj_visible() deconne (dans maj_visible() le test .is(':checked') ne renvoie pas ce qui est attendu) :
         /*
         if( ( (tab_infos[0]==tab_infos[1])&&(!$('#box_date').is(':checked')) ) || ( (tab_infos[0]!=tab_infos[1])&&($('#box_date').is(':checked')) ) )
@@ -423,14 +419,14 @@ $(document).ready
       {
         $('#bilan').hide();
         quoi = $("#f_quoi option:selected").val();
-        if(quoi=='completer')                        {maj_evaluation();}
-        if( (quoi=='creer') || (quoi=='completer') ) {$("#step_qui").show(0);}       else {$("#step_qui").hide(0);}
-        if(quoi=='saisir')                           {$("#step_saisir").show(0);}    else {$("#step_saisir").hide(0);}
-        if(quoi=='creer')                            {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
-        if(quoi=='completer')                        {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
-        if( (quoi=='creer') || (quoi=='completer') ) {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
-        if( (quoi!='') && (quoi!='saisir') )         {$("#step_message").show(0);}   else {$("#step_message").hide(0);}
-        if(quoi!='')                                 {$("#step_valider").show(0);}
+        if(quoi=='completer')                                     {maj_evaluation();}
+        if( (quoi=='creer') || (quoi=='completer') )              {$("#step_qui").show(0);}       else {$("#step_qui").hide(0);}
+        if(quoi=='saisir')                                        {$("#step_saisir").show(0);}    else {$("#step_saisir").hide(0);}
+        if(quoi=='creer')                                         {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
+        if(quoi=='completer')                                     {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
+        if( (quoi=='creer') || (quoi=='completer') )              {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
+        if( (quoi!='') && (quoi!='retirer') && (quoi!='saisir') ) {$("#step_message").show(0);}   else {$("#step_message").hide(0);}
+        if(quoi!='')                                              {$("#step_valider").show(0);}
       }
     );
 
@@ -568,14 +564,15 @@ $(document).ready
       {
         rules :
         {
+          // "required:true" ne fonctionne pas sur "f_prof_liste" car type hidden
           f_ids           : { required:true },
           f_quoi          : { required:true },
           f_qui           : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
           f_date          : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
           f_date_visible  : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_date').is(':checked')));} , dateITA:true },
           f_date_autoeval : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_autoeval').is(':checked')));} , dateITA:true },
-          f_description   : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} , maxlength:60 },
-          f_prof_liste    : { required:false },
+          f_description   : { required:false , maxlength:60 },
+          f_prof_nombre   : { required:false },
           f_devoir        : { required:function(){return $("#f_quoi").val()=='completer';} },
           f_suite         : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
           f_message       : { required:false }
@@ -588,11 +585,11 @@ $(document).ready
           f_date          : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_description   : { required:"nom manquant" , maxlength:"60 caractères maximum" },
-          f_prof_liste    : { },
+          f_description   : { maxlength:"60 caractères maximum" },
+          f_prof_nombre   : { },
           f_devoir        : { required:"évaluation manquante" },
           f_suite         : { required:"suite manquante" },
-          f_message       : { }
+          f_message       : {  }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -802,7 +799,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=retirer'+'&devoir_saisie='+devoir_id+'&'+'ids='+$('#ids').val(),
+          data : 'csrf='+CSRF+'&f_action=retirer'+'&'+'ids='+$('#ids').val(),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {

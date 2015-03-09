@@ -270,8 +270,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     <span class="tab"></span><span class="astuce">Les dates sont basées sur l'année scolaire définie dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider_ajout" type="button" class="valider">Valider.</button> <button id="bouton_annuler_ajout" type="button" class="annuler">Annuler.</button><br />
-    <span class="tab"></span><label id="ajax_msg_ajout">&nbsp;</label>
+    <label class="tab"></label><button id="bouton_valider_ajout" type="button" class="valider">Valider.</button> <button id="bouton_annuler_ajout" type="button" class="annuler">Annuler.</button><br />
+    <label class="tab"></label><label id="ajax_msg_ajout">&nbsp;</label>
   </p>
 </form>
 

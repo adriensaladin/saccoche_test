@@ -83,9 +83,9 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
 <form id="form_lost" action="#" method="post">
   <h2>Cas n°1 : une adresse de courriel est associée à votre compte</h2>
   <p>Alors utilisez ce formulaire afin d'obtenir de nouveaux identifiants :</p>
-  <div><label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" /><em><?php echo html($structure_denomination) ?></em></div>
-  <div><label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" /></div>
-  <div><label class="tab">Anti-robot :</label><span id="captcha_game">Cliquer du plus petit au plus grand <?php echo $html_imgs ?></span><span id="captcha_init" class="hide">Ordre enregistré. <button type="button" class="actualiser">Recommencer.</button></span><input id="f_captcha" name="f_captcha" type="text" value="" class="invisible" /></div>
+  <p><label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" /><em><?php echo html($structure_denomination) ?></em></p>
+  <p><label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" /></p>
+  <p><label class="tab">Anti-robot :</label><span id="captcha_game">Cliquer du plus petit au plus grand <?php echo $html_imgs ?></span><span id="captcha_init" class="hide">Ordre enregistré. <button type="button" class="actualiser">Recommencer.</button></span><input id="f_captcha" name="f_captcha" type="text" value="" /></p>
   <p><span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_envoyer"></label></p>
   <hr />
   <h2>Cas n°2 : vous n'aviez pas d'adresse de courriel renseignée</h2>
@@ -106,7 +106,7 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
 
 <?php if($PROFIL=='partenaire'): ?>
 <p class="astuce">Un "partenaire" est ici une collectivité qui a signé une convention avec <em>Sésamath</em> pour l'usage d'un connecteur ENT sur cet hébergement.</p>
-<p>Si vraiment vous êtes dans cette situation, alors prenez contact avec <em>Sésamath</em>...</p><?php /* Les personnes concernées se comptent sur le doigt de la main et sauront nous trouver si besoin ! */ ?>
+<p>Si vraiment vous êtes dans cette situation, alors prenez contact avec Sésamath...</p><?php /* Les personnes concernées se comptent sur le doigt de la main et sauront nous trouver si besoin ! */ ?>
 <?php endif; ?>
 
 <hr />

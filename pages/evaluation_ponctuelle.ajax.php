@@ -126,13 +126,11 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     // 'ajouter' plutôt que 'creer' car en cas d'ajout puis de suppression d'une note à un élève, un élève peut se retrouver déjà affecté à un devoir sans qu'il n'y ait de note trouvée
     DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_eleve( $devoir_id , $groupe_id , array($eleve_id) , 'ajouter' );
   }
-  $notif_eleve = FALSE;
   if($presence_saisie==FALSE)
   {
     if($note_val!='X')
     {
       DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , TODAY_MYSQL , $note_val , $info , TODAY_MYSQL );
-      $notif_eleve = TRUE;
     }
   }
   else
@@ -140,34 +138,10 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     if($note_val=='X')
     {
       DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie( $eleve_id , $devoir_id , $item_id );
-      $notif_eleve = TRUE;
     }
     elseif($presence_saisie!=$note_val)
     {
       DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id , $item_id , $note_val , $info );
-      $notif_eleve = TRUE;
-    }
-  }
-  // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
-  if($notif_eleve)
-  {
-    $abonnement_ref = 'devoir_saisie';
-    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($eleve_id);
-    $listing_users = ($listing_parents) ? $eleve_id.','.$listing_parents : $eleve_id ;
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
-    if($listing_abonnes)
-    {
-      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
-      $notification_contenu = 'Saisie "à la volée" enregistrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
-      foreach($tab_abonnes as $abonne_id => $tab_abonne)
-      {
-        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
-        {
-          $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
-          DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , $devoir_id , NULL , $notification_intro_eleve.$notification_contenu.$notification_lien , 'remplacer' );
-        }
-      }
     }
   }
   // Afficher le retour

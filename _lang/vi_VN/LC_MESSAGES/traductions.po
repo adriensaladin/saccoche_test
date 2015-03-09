@@ -707,8 +707,8 @@ msgid "Bonjour %s."
 msgstr "Xin chào %s."
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:105
-msgid "Heureux de faire votre connaissance ; bonne découverte de SACoche !"
-msgstr "Rất vui được làm quen với bạn ; chúc bạn có những khám phá thú vị với SACoche !"
+msgid "Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em> !"
+msgstr "Rất vui được làm quen với bạn ; chúc bạn có những khám phá thú vị với <em>SACoche</em> !"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:106
 msgid "Déjà de retour ? Décidément on ne se quitte plus !"

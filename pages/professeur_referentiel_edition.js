@@ -31,6 +31,8 @@
 var tab_entite_nom   = new Array('&sup2;','&sup3;','&times;','&divide;','&minus;','&pi;','&rarr;','&radic;','&infin;','&asymp;','&ne;','&le;','&ge;');
 var tab_entite_val   = new Array('²'     ,'³'     ,'×'      ,'÷'       ,'–'      ,'π'   ,'→'     ,'√'      ,'∞'      ,'≈'      ,'≠'   ,'≤'   ,'≥'   );
 var imax             = tab_entite_nom.length;
+var memo_text_delete = '';
+var memo_objet       = null;
 function entity_convert(string)
 {
   for(i=0;i<imax;i++)
@@ -54,11 +56,7 @@ $(document).ready
   {
 
     // initialisation
-    var memo_text_delete = '';
-    var memo_objet       = null;
     var matiere_id = 0;
-    var matiere_nom = '';
-    var element_nom = '';
     var objet = false;
     var images = new Array();
     images[1]  = '';
@@ -309,22 +307,20 @@ $(document).ready
         contexte = $(this).attr('class').substring(0,2);
         afficher_masquer_images_action('hide');
         // On créé le formulaire à valider
+        var matiere_nom = $('#zone_elaboration_referentiel h2').text();
         switch(contexte)
         {
           case 'n1' :  // domaine
-            element_nom = $(this).parent().children('span').text();
             alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
             texte1 = 'ce domaine';
-            texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
+            texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+$(this).parent().children('span').text()+'&nbsp;&raquo;';
             break;
           case 'n2' :  // thème
-            element_nom = $(this).parent().children('span').text();
             alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
             texte1 = 'ce thème';
-            texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
+            texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+$(this).parent().children('span').text()+'&nbsp;&raquo;';
             break;
           case 'n3' :  // item
-            element_nom = $(this).parent().children('b').text();
             alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
             texte1 = 'cet item';
             texte2 = 'l\'item sélectionné';
@@ -573,7 +569,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            data : 'csrf='+CSRF+'&action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -698,7 +694,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=edit'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            data : 'csrf='+CSRF+'&action=edit'+'&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -817,7 +813,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
+          data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -855,8 +851,7 @@ $(document).ready
         //
         li = $('q.annuler[data-action=fusionner]').parent();
         li_id_depart = li.attr('id');
-        element_id  = li_id_depart.substring(3);
-        element_nom = li.children('b').text();
+        element_id = li_id_depart.substring(3);
         // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
         tab_id = new Array();
         while(li.next().length)
@@ -868,8 +863,7 @@ $(document).ready
         // Element d'arrivée
         //
         li_id_arrivee = $(this).parent().attr('id');
-        element2_id  = li_id_arrivee.substring(3);
-        element2_nom = $(this).parent().children('b').text();
+        element2_id = li_id_arrivee.substring(3);
         // Envoi des infos en ajax pour le traitement de la demande
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -877,7 +871,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=fus'+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom)+'&nom2='+encodeURIComponent(element2_nom),
+            data : 'csrf='+CSRF+'&action=fus'+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -921,7 +915,6 @@ $(document).ready
         // On récupère l'id de l'élément concerné (domaine ou theme ou item)
         contexte = li_id_depart.substring(0,2);
         element_id = li_id_depart.substring(3);
-        element_nom = (contexte=='n3') ? li.children('b').text() : li.children('span').text() ;
         // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
         tab_id = new Array();
         while(li.next().length)
@@ -990,7 +983,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=move'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
+            data : 'csrf='+CSRF+'&action=move'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1310,15 +1303,13 @@ $(document).ready
     (
       function()
       {
-        var groupe_nom_initial = $('#select_action_groupe_deplacer_id_initial option:selected').text();
-        var groupe_nom_final   = $('#select_action_groupe_deplacer_id_final option:selected').text();
         $('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize()+'&groupe_nom_initial='+encodeURIComponent(groupe_nom_initial)+'&groupe_nom_final='+encodeURIComponent(groupe_nom_final),
+            data : 'csrf='+CSRF+'&action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

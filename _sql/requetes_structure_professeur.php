@@ -89,43 +89,12 @@ public static function DB_recuperer_devoir_prorietaire_identite($devoir_id)
 }
 
 /**
- * Retourner une chaine avec les id des élèves d'une classe ou d'un groupe
- *
- * @param string $groupe_type    "classe" | "groupe"
- * @param int    $groupe_id      id du niveau ou de la classe ou du groupe
- * @return string
- */
-public static function DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id )
-{
-  if($groupe_type=='classe')
-  {
-    $join_groupe = '';
-    $where_groupe = 'AND eleve_classe_id=:groupe ';
-  }
-  else
-  {
-    $join_groupe = 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-    $where_groupe = 'AND sacoche_jointure_user_groupe.groupe_id=:groupe ';
-  }
-  $DB_SQL = 'SELECT CONVERT( GROUP_CONCAT(user_id SEPARATOR ",") , CHAR) AS identifiants ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= $join_groupe;
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() '.$where_groupe;
-  $DB_VAR = array(
-    ':profil_type' => 'eleve',
-    ':groupe' => $groupe_id,
-  );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * tester_devoir_ponctuel_prof_by_ids
  *
  * @param int    $devoir_id
  * @param int    $prof_id
  * @param int    $groupe_id
- * @return bool
+ * @return array
  */
 public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id,$groupe_id)
 {
@@ -140,7 +109,7 @@ public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id
     ':groupe_id'  => $groupe_id,
     ':type4'      => 'eval',
   );
-  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1255,11 +1224,10 @@ public static function DB_modifier_liaison_devoir_item($devoir_id,$tab_items,$mo
  * @param int    $devoir_id
  * @param array  $tab_profs   tableau [id_prof->droit]
  * @param string $mode        {creer} => insertion dans un nouveau devoir || {substituer} => maj avec update / delete / insert
- * @return array   sert pour ensuite effectuer des mises à jour de notifications
+ * @return void
  */
 public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mode)
 {
-  $tab_retour = array();
   if($mode=='creer')
   {
     // Insertion des droits
@@ -1273,9 +1241,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
         ':droit'     => $droit,
       );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      $tab_retour[$prof_id] = 'insert';
     }
-    return $tab_retour;
   }
   elseif($mode=='substituer')
   {
@@ -1291,7 +1257,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
     {
       if(isset($tab_old_droits[$prof_id]))
       {
-        if($tab_old_droits[$prof_id]['jointure_droit']!=$droit)
+        if($tab_old_droits[$prof_id]!=$droit)
         {
           // -> modification de droit
           $DB_SQL = 'UPDATE sacoche_jointure_devoir_prof ';
@@ -1303,7 +1269,6 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
             ':droit'     => $droit,
           );
           DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-          $tab_retour[$prof_id] = 'update';
         }
         unset($tab_old_droits[$prof_id]);
       }
@@ -1318,7 +1283,6 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
           ':droit'     => $droit,
         );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-        $tab_retour[$prof_id] = 'insert';
       }
     }
     // -> on observe $tab_old_droits pour rechercher ce qui reste
@@ -1330,12 +1294,7 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
       $DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id IN('.$chaine_prof_id.')';
       $DB_VAR = array(':devoir_id'=>$devoir_id);
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      foreach($tab_old_droits as $prof_id => $tab)
-      {
-        $tab_retour[$prof_id] = 'delete';
-      }
     }
-    return $tab_retour;
   }
 }
 

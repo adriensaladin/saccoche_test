@@ -1664,7 +1664,7 @@ public static function DB_modifier_liaison_groupe_periode($groupe_id,$periode_id
  * @param int      $periode_id   id de la période
  * @param string   $champ        officiel_releve | officiel_bulletin | officiel_palier1 | officiel_palier2 | officiel_palier3
  * @param string   $etat         nouvel état
- * @return int     0 ou 1 si modifié
+ * @return void
  */
 public static function DB_modifier_bilan_officiel($groupe_id,$periode_id,$champ,$etat)
 {
@@ -1677,7 +1677,6 @@ public static function DB_modifier_bilan_officiel($groupe_id,$periode_id,$champ,
     ':etat'       => $etat,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**

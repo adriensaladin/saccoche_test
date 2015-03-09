@@ -179,7 +179,7 @@ $(document).ready
       $('#alerte_groupe').hide(0);
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
       if(mode=='ajouter') { $('#f_description').focus(); }
     }
 
@@ -833,7 +833,7 @@ $(document).ready
     (
       function()
       {
-        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         return false;
       }
     );
@@ -1886,16 +1886,16 @@ $(document).ready
       {
         rules :
         {
+          // "required:true" ne fonctionne pas sur "f_eleve_liste" & "f_prof_liste" & "f_compet_liste" car type hidden
           f_date          : { required:true , dateITA:true },
           f_date_visible  : { required:function(){return !$('#box_visible').is(':checked');} , dateITA:true },
           f_date_autoeval : { required:function(){return !$('#box_autoeval').is(':checked');} , dateITA:true },
           f_groupe        : { required:true },
-          f_eleve_liste   : { required:true },
+          f_eleve_nombre  : { isWord:'élève' },
           f_eleves_ordre  : { required:true },
-          f_description   : { required:true , maxlength:60 },
-          f_prof_liste    : { required:false },
-          f_compet_liste  : { required:true },
-          f_mode_discret  : { required:false },
+          f_description   : { required:false , maxlength:60 },
+          f_prof_nombre   : { required:false },
+          f_compet_nombre : { isWord:'item' },
           f_doc_sujet     : { required:false , url:true },
           f_doc_corrige   : { required:false , url:true }
         },
@@ -1905,12 +1905,11 @@ $(document).ready
           f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_groupe        : { required:"groupe manquant" },
-          f_eleve_liste   : { required:"élève(s) manquant(s)" },
+          f_eleve_nombre  : { isWord:"élève(s) manquant(s)" },
           f_eleves_ordre  : { required:"ordre manquant" },
-          f_description   : { required:"nom manquant" , maxlength:"60 caractères maximum" },
-          f_prof_liste    : { },
-          f_compet_liste  : { required:"item(s) manquant(s)" },
-          f_mode_discret  : { },
+          f_description   : { maxlength:"60 caractères maximum" },
+          f_prof_nombre   : { },
+          f_compet_nombre : { isWord:"item(s) manquant(s)" },
           f_doc_sujet     : { url:" URL sujet invalide" },
           f_doc_corrige   : { url:" URL corrigé invalide" }
         },
@@ -1918,7 +1917,7 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if('.f_date.f_date_visible.f_date_autoeval.'.indexOf('.'+element.attr("id")+'.')!=-1) { element.next().after(error); }
+          if('.f_date.f_date_visible.f_date_autoeval.f_eleve_nombre.f_prof_nombre.f_compet_nombre.'.indexOf('.'+element.attr("id")+'.')!=-1) { element.next().after(error); }
           else {element.after(error);}
         }
       }
@@ -2843,7 +2842,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=enregistrer_texte'+'&f_prof_liste='+tab_profs[ref]+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_description='+encodeURIComponent($("#saisir_voir_description").val())+'&'+$("#zone_enregistrer_texte").serialize(),
+            data : 'csrf='+CSRF+'&f_action=enregistrer_texte'+'&f_prof_liste='+tab_profs[ref]+'&'+$("#zone_enregistrer_texte").serialize(),
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -2893,7 +2892,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=enregistrer_audio'+'&f_prof_liste='+tab_profs[ref]+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_description='+encodeURIComponent($("#saisir_voir_description").val())+'&'+$("#zone_enregistrer_audio").serialize(),
+          data : 'csrf='+CSRF+'&f_action=enregistrer_audio'+'&f_prof_liste='+tab_profs[ref]+'&'+$("#zone_enregistrer_audio").serialize(),
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {

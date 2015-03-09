@@ -157,44 +157,6 @@ if($version_base_structure_actuelle=='2015-02-18')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // suppression du champ [user_tentative_date] de la table [sacoche_user]
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP user_tentative_date ' );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-02-22 => 2015-02-25
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-02-22')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-02-25';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modif table [sacoche_notification]
-    if(empty($reload_sacoche_notification))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_notification CHANGE notification_attente_id notification_attente_id MEDIUMINT(8) NULL DEFAULT NULL COMMENT "En cas de modification, pour retrouver une notification non encore envoyée ; passé à NULL une fois la notification envoyée." ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_notification ADD INDEX notification_statut(notification_statut) ' );
-    }
-     // modif table [sacoche_abonnement]
-    if(empty($reload_sacoche_abonnement))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_abonnement VALUES( "fiche_brevet_statut", 0, 0, "professeur,directeur", "Fiche brevet, étape de saisie", "Ouverture d\'étape de saisie d\'une fiche brevet." )' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Message d\'accueil" WHERE abonnement_ref="message_accueil" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Bilan officiel, étape de saisie", abonnement_descriptif="Ouverture d\'étape de saisie d\'un bilan officiel." WHERE abonnement_ref="bilan_officiel_statut" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Bilan officiel, erreur appréciation" WHERE abonnement_ref="bilan_officiel_appreciation" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Modification de référentiel" WHERE abonnement_ref="referentiel_edition" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Demande d\'évaluation formulée" WHERE abonnement_ref="demande_evaluation_eleve" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Auto-évaluation effectuée" WHERE abonnement_ref="devoir_autoevaluation_eleve" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Devoir partagé" WHERE abonnement_ref="devoir_prof_partage" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Devoir préparé" WHERE abonnement_ref="devoir_edition" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Saisie de résultats" WHERE abonnement_ref="devoir_saisie" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Demande d\'évaluation traitée" WHERE abonnement_ref="demande_evaluation_prof" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Bilan officiel disponible" WHERE abonnement_ref="bilan_officiel_visible" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Action sensible effectuée" WHERE abonnement_ref="action_sensible" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Action d\'administration" WHERE abonnement_ref="action_admin" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Contact externe" WHERE abonnement_ref="contact_externe" ' );
-    }
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }

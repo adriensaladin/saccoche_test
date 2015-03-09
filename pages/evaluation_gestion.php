@@ -212,16 +212,13 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
         <span id="alerte_groupe" class="hide danger b">Attention : si vous modifiez le groupe, alors les notes de l'évaluation seront effacées !<br />En cas de même évaluation sur plusieurs groupes, il faut la <span class="u">dupliquer</span> et non la <span class="u">modifier</span>.</span><br />
       <?php endif; ?>
       <?php if($TYPE=='selection'): ?>
-        <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q> <?php echo $select_eleves_ordre ?><input id="f_eleve_liste" name="f_eleve_liste" type="text" value="" class="invisible" /><br />
+        <label class="tab" for="f_eleve_nombre">Élèves :</label><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /> <?php echo $select_eleves_ordre ?><q class="choisir_eleve" title="Voir ou choisir les élèves."></q><br />
       <?php endif; ?>
-      <label class="tab" for="f_prof_nombre">Partage collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q id="choisir_prof" class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="text" value="" class="invisible" />
+      <label class="tab" for="f_prof_nombre">Partage collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q id="choisir_prof" class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" />
       <span id="choisir_prof_non" class="astuce">Choix restreint au propriétaire de l'évaluation.</span>
     <p>
       <label class="tab" for="f_description">Description :</label><input id="f_description" name="f_description" type="text" value="" size="50" maxlength="60" /><br />
-      <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><q class="choisir_compet" title="Voir ou choisir les items."></q><input id="f_compet_liste" name="f_compet_liste" type="text" value="" class="invisible" />
-    </p>
-    <p>
-      <label class="tab" for="f_mode_discret">Mode discret :</label><label for="f_mode_discret"><input id="f_mode_discret" name="f_mode_discret" type="checkbox" value="1" /> Cocher pour éviter l'envoi de notifications aux abonnés.</label>
+      <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><q class="choisir_compet" title="Voir ou choisir les items."></q><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" />
     </p>
     <p class="astuce">
       Sujet et corrigé de l'évaluation peuvent être joints depuis l'interface principale.
@@ -234,7 +231,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
     <p>Confirmez-vous la suppression de l'évaluation &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>
-    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ref" name="f_ref" type="hidden" value="" /><input id="f_type" name="f_type" type="hidden" value="<?php echo $TYPE; ?>" /><input id="f_fini" name="f_fini" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
+    <label class="tab"></label><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_ref" name="f_ref" type="hidden" value="" /><input id="f_type" name="f_type" type="hidden" value="<?php echo $TYPE; ?>" /><input id="f_fini" name="f_fini" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>
 </form>
 

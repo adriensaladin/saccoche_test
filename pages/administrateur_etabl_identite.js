@@ -840,14 +840,10 @@ $(document).ready
         var id_key_uai = $(this).parent().attr('id').substr(3); // id ; key ; uai séparés par '_' ; attention, le n°UAI peut être vide...
         var denomination = $(this).parent().text();
         var tab_infos = id_key_uai.split('_');
-        $('#f_sesamath_id' ).val(tab_infos[0]);
-        $('#f_sesamath_id2').val(tab_infos[0]);
-        $('#f_sesamath_key' ).val(tab_infos[1]);
-        $('#f_sesamath_key2').val(tab_infos[1]);
-        $('#f_sesamath_uai' ).val(tab_infos[2]); // (peut être vide)
-        $('#f_sesamath_uai2').val(tab_infos[2]); // (peut être vide)
-        $('#f_sesamath_type_nom' ).val(denomination);
-        $('#f_sesamath_type_nom2').val(denomination);
+        $('#f_sesamath_id').val(tab_infos[0]);
+        $('#f_sesamath_key').val(tab_infos[1]);
+        $('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
+        $('#f_sesamath_type_nom').val(denomination);
         $('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
         initialiser_compteur();
         $('#rechercher_annuler').click();

@@ -206,27 +206,30 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
   }
   // Notifications (rendues visibles ultérieurement parce que plus simple comme cela)
-  $abonnement_ref = 'bilan_officiel_visible';
-  $is_acces_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
-  $is_acces_enfant = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
-  if( $is_acces_parent || $is_acces_enfant )
+  if(!empty($tab_notif))
   {
-    $listing_eleves = implode(',',array_keys($tab_notif));
-    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
-    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
-    if($listing_abonnes)
+    $abonnement_ref = 'bilan_officiel_visible';
+    $is_acces_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
+    $is_acces_enfant = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? TRUE : FALSE ;
+    if( $is_acces_parent || $is_acces_enfant )
     {
-      $notification_contenu = 'Bilan officiel disponible : ['.$classe_nom.'] ['.$tab_types[$BILAN_TYPE]['titre'].'] ['.$periode_nom.'].'."\r\n\r\n";
-      $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=officiel_voir_archive';
-      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
-      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      $listing_eleves = implode(',',$tab_notif);
+      $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+      $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+      $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
+      if($listing_abonnes)
       {
-        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        $notification_contenu = 'Bilan officiel disponible : ['.$classe_nom.'] ['.$tab_types[$BILAN_TYPE]['titre'].'] ['.$periode_nom.'].'."\r\n\r\n";
+        $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=officiel_voir_archive';
+        $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+        foreach($tab_abonnes as $abonne_id => $tab_abonne)
         {
-          if( ( $is_acces_parent && $notification_intro_eleve ) || ( $is_acces_enfant && !$notification_intro_eleve ) )
+          foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
           {
-            DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu );
+            if( ( $is_acces_parent && $notification_intro_eleve ) || ( $is_acces_enfant && !$notification_intro_eleve ) )
+            {
+              DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu );
+            }
           }
         }
       }

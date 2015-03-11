@@ -1053,7 +1053,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
     DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_eleve_item( $eleve_id , $item_id );
   }
   // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
-  $listing_eleves = implode(',',array_keys($tab_notif));
+  $listing_eleves = implode(',',$tab_notif);
   $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
   $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );

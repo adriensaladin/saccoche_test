@@ -79,7 +79,7 @@ if(!$code)
   // Le courriel
   $mail_contenu = 'Bonjour,'."\r\n";
   $mail_contenu.= "\r\n";
-  $mail_contenu.= 'Pour confirmer l\'envoi du message aux administrateurs, veuillez saisir le code suivant dans le formulaire :'."\r\n";
+  $mail_contenu.= 'Pour confirmer l\'envoi du message aux administrateurs SACoche de l\'établissement scolaire sélectionné, veuillez saisir le code suivant dans le formulaire :'."\r\n";
   $mail_contenu.= "\r\n";
   $mail_contenu.= $code."\r\n";
   $mail_contenu.= Sesamail::texte_pied_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $courriel );

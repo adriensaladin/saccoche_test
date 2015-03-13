@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Contacter un administrateur"; // Pas de traduction car pas de choix de langue à ce niveau.
+$TITRE = "Contacter les administrateurs d'un établissement scolaire"; // Pas de traduction car pas de choix de langue à ce niveau.
 
 // Récupération du numéro de base
 $BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : 0 ;
@@ -79,6 +79,8 @@ $_SESSION['TMP']['CAPTCHA'] = array(
   'SOLUCE' => $captcha_soluce,
 );
 ?>
+
+<?php if($BASE!=ID_DEMO): ?>
 <form id="form_contact" action="#" method="post">
   <div id="step1">
     <h2>Étape 1/2 - Saisie des informations</h2>
@@ -101,6 +103,15 @@ $_SESSION['TMP']['CAPTCHA'] = array(
     <p><label class="valide">Votre message a été transmis <span id="span_admin_nb"></span> (établissement <em><?php echo html($structure_denomination) ?></em>).</label></p>
   </div>
 </form>
+<?php endif; ?>
+
+<?php if($BASE==ID_DEMO): ?>
+<p class="danger">Vous vous êtes visiblement égaré&nbsp;!</p>
+<p class="astuce">Il n'y a aucune raison de contacter les administrateurs de l'<b>établissement de démonstration</b> car il s'agit d'un établissement virtuel&hellip;</p>
+<ul class="puce">
+  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>" target="_blank">le site officiel du projet <em>SACoche</em></a> pour tout renseignement ou besoin de contact.</li>
+</ul>
+<?php endif; ?>
 
 <hr />
 

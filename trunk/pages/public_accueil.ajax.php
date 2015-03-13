@@ -94,7 +94,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a id="lien_lost" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact administrateur ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
   }
   else
   {
@@ -106,7 +106,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '</fieldset>'.NL;
     $affichage .= '<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a id="lien_lost" class="hide" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact administrateur ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" class="hide" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
   }
   return $affichage;
 }

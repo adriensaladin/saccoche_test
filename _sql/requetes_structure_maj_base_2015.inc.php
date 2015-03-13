@@ -223,23 +223,4 @@ if($version_base_structure_actuelle=='2015-02-25')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-03-10 => 2015-03-13
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-03-10')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-03-13';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // Le renseignement de la description de l'évaluation était auparavant facultatif.
-    // Il est devenu obligatoire depuis la version 2015-02-09.
-    // Donc si une évaluation a été paramétrée antérieurement sans description, cela pose souci lors d'actions ultérieures sur cette évaluation.
-    // La solution est d'ajouter la description manquante.
-    // On s'y emploie automatiquement ici.
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_info="sans titre" WHERE devoir_info="" ' );
-  }
-}
-
 ?>

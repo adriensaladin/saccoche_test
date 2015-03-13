@@ -643,6 +643,7 @@ define('COOKIE_STRUCTURE' ,'SACoche-etablissement' ); // nom du cookie servant �
 define('COOKIE_AUTHMODE'  ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_PARTENAIRE','SACoche-partenaire'    ); // nom du cookie servant à retenir le partenaire sélectionné, afin de ne pas à avoir à le sélectionner de nouveau (convention ENT sur serveur Sésamath uniquement).
 define('COOKIE_MEMOGET'   ,'SACoche-memoget'       ); // nom du cookie servant à retenir des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd...
+define('COOKIE_TEST'      ,'SACoche-test-cookie'   ); // nom du cookie servant à tester si les cookies s'enregistrent bien, pour éviter une boucle SSO...
 
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php

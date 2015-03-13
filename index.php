@@ -31,6 +31,23 @@
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
 
+// En théorie, si l'utilisateur refuse les cookies de SACoche mais accepte ceux de l'ENT, une demande de connexion SSO peut entraîner des boucles de redirections (la session n'étant pas retrouvée).
+if(empty($_COOKIE[COOKIE_TEST]))
+{
+  setcookie( COOKIE_TEST /*name*/ , TRUE /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+  if(isset($_GET['sso']))
+  {
+    if(!isset($_GET['cookie']))
+    {
+      exit_redirection(URL_BASE.$_SERVER['REQUEST_URI'].'&cookie');
+    }
+    else
+    {
+      exit_error( 'Risque de redirections en boucle' /*titre*/ , 'Pour utiliser <em>SACoche</em> vous devez configurer l\'acceptation des cookies par votre navigateur.' /*contenu*/ );
+    }
+  }
+}
+
 // Mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd
 // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
 if(isset($_GET['memoget']))

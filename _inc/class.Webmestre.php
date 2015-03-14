@@ -182,7 +182,7 @@ class Webmestre
     $texte.= SERVEUR_GUIDE_ADMIN."\r\n";
     $texte.= "\r\n";
     $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n";
-    $texte.= SERVEUR_CONTACT."\r\n";
+    $texte.= SERVEUR_ECHANGER."\r\n";
     $texte.= "\r\n";
     $texte.= 'Bonne découverte de SACoche !'."\r\n";
     $texte.= 'Cordialement,'."\r\n";
@@ -232,7 +232,7 @@ class Webmestre
     $texte.= SERVEUR_GUIDE_ADMIN."\r\n";
     $texte.= "\r\n";
     $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n";
-    $texte.= SERVEUR_CONTACT."\r\n";
+    $texte.= SERVEUR_ECHANGER."\r\n";
     $texte.= "\r\n";
     $texte.= 'Cordialement,'."\r\n";
     $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n";
@@ -266,7 +266,7 @@ class Webmestre
     $texte.= 'Pour modifier l\'identité de la personne référente (nom, prénom ou courriel), il suffit de nous communiquer ses coordonnées.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n";
-    $texte.= SERVEUR_CONTACT."\r\n";
+    $texte.= SERVEUR_ECHANGER."\r\n";
     $texte.= "\r\n";
     $texte.= 'Cordialement,'."\r\n";
     $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n";
@@ -301,7 +301,7 @@ class Webmestre
     $texte.= 'Pour modifier l\'identité de la personne référente (nom, prénom ou courriel), il suffit de nous communiquer ses coordonnées.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions (inscription préalable requise) :'."\r\n";
-    $texte.= SERVEUR_CONTACT."\r\n";
+    $texte.= SERVEUR_ECHANGER."\r\n";
     $texte.= "\r\n";
     $texte.= 'Cordialement,'."\r\n";
     $texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n";

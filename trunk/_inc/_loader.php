@@ -608,7 +608,7 @@ define('SERVEUR_LPC_SIGNATURE'  ,SERVEUR_SSL   .'/appel_externe.php');   // URL 
 define('SERVEUR_TELECHARGEMENT' ,SERVEUR_PROJET.'/telechargement.php');  // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
 define('SERVEUR_VERSION'        ,SERVEUR_PROJET.'/sacoche/VERSION.txt'); // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_CNIL'           ,SERVEUR_PROJET.'/?page=cnil');          // URL de la page "CNIL (données personnelles)"
-define('SERVEUR_CONTACT'        ,SERVEUR_PROJET.'/?page=contact');       // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_ECHANGER'       ,SERVEUR_PROJET.'/?page=echanger');      // URL de la page "Où échanger autour de SACoche ?"
 define('SERVEUR_GUIDE_ENT'      ,SERVEUR_PROJET.'/?page=ent');           // URL de la page "Mode d'identification & Guide d'intégration aux ENT"
 define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?page=guide_admin');   // URL de la page "Guide de démarrage (administrateur de SACoche)"
 define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?page=guide_rentree'); // URL de la page "Guide de changement d'année (administrateur de SACoche)"

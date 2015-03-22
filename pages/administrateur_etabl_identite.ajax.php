@@ -163,7 +163,7 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
 
 if( $etablissement_denomination )
 {
-  // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if( ($etablissement_courriel) && (HEBERGEUR_INSTALLATION=='multi-structures') )
   {
     $mail_domaine = tester_domaine_courriel_valide($etablissement_courriel);

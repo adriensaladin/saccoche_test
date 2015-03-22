@@ -42,27 +42,18 @@ if( ($action=='courriel') && ($courriel!==NULL) )
   {
     exit_json( FALSE , 'Erreur : droit insuffisant, contactez un administrateur !' );
   }
-  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($courriel)
   {
-    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$_SESSION['USER_ID']);
-    if( $find_courriel )
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      exit_json( FALSE , 'Erreur : adresse e-mail déjà utilisée !' );
-    }
-    if( $find_courriel === NULL )
-    {
-      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-      if(HEBERGEUR_INSTALLATION=='multi-structures')
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
       {
-        $mail_domaine = tester_domaine_courriel_valide($courriel);
-        if($mail_domaine!==TRUE)
-        {
-          exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
-        }
+        exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }
-      $email_origine = 'user';
     }
+    $email_origine = 'user';
   }
   else
   {

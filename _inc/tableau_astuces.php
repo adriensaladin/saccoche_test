@@ -26,8 +26,9 @@
  */
 
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
-// A priori pas utile pour les webmestres / parents / élèves.
 
+$astuce_email_notifications             = '<p>Vous pouvez <a href="index.php?page=compte_email"><b>renseigner votre adresse e-mail</b></a> et vous abonner pour <a href="index.php?page=consultation_notifications"><b>recevoir des notifications</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__email_notifications#toggle_gestion_utilisateur">Documentation</a></span></p>';
+$astuce_traductions                     = '<p>Le menu est disponible dans <a href="index.php?page=compte_langue"><b>plusieurs langues</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__traduction">Documentation</a></span></p>';
 $astuce_bilans_officiels_appreciations  = '<p>Les <b>appréciations</b> intermédiaires et générales des <b>bilans officiels</b> peuvent être <b>préremplies</b> avec un modèle de contenu. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
 $astuce_bulletin_sans_moyennes          = '<p>Vous pouvez paramétrer <b>l\'absence de moyennes</b> pour <b>certaines matières</b> sur les <b>bulletins scolaires</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
 $astuce_autoevaluation_commentaire      = '<p>Lorsqu\'il s\'<b>auto-évalue</b>, l\'élève peut <b>commenter/justifier</b> ses choix. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_autoeval">Documentation</a></span></p>';
@@ -55,8 +56,11 @@ $astuce_date_connexion                  = '<p>Vous pouvez <a href="./index.php?p
 $astuce_faq_b2i                         = '<p><em>SACoche</em> peut être utilisé pour <b>l\'évaluation du B2i</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=faq_documentation__evaluer_b2i">Documentation</a></span></p>';
 $astuce_authentification_ent            = '<p>On peut se connecter à <em>SACoche</em> en utilisant <b>l\'authentification de plusieurs ENT</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification">Documentation</a></span></p>';
 
+// Ranger de la plus récente à la plus ancienne (la fréquence d'apparition étant liée à l'actualité de l'astuce)
 $tab_astuces = array(
   'administrateur' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
     $astuce_bilans_officiels_appreciations,
     $astuce_bulletin_sans_moyennes,
     $astuce_previsualisation_bulletin,
@@ -71,6 +75,8 @@ $tab_astuces = array(
     $astuce_authentification_ent,
   ),
   'directeur' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
     $astuce_bilans_officiels_appreciations,
     $astuce_bulletin_sans_moyennes,
     $astuce_previsualisation_bulletin,
@@ -85,6 +91,8 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
     $astuce_autoevaluation_commentaire,
     $astuce_demande_evaluation,
     $astuce_devoir_commentaire,
@@ -103,7 +111,21 @@ $tab_astuces = array(
     $astuce_date_connexion,
     $astuce_devoir_ordonner_items,
     $astuce_faq_b2i,
-  )
+  ),
+  'eleve' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
+    $astuce_demande_evaluation,
+  ),
+  'parent' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
+    $astuce_demande_evaluation,
+  ),
+  'administrateur' => array(
+    $astuce_email_notifications,
+    $astuce_traductions,
+  ),
 );
 
 ?>

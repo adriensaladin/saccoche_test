@@ -37,7 +37,7 @@ $send_check_non = (COURRIEL_NOTIFICATION=='non') ? ' checked' : '' ;
 <p>
   Sur les installations de type multi-structures, <em>SACoche</em> a besoin d'envoyer des courriels (inscription, newsletter, envoi identifiants administrateur, &hellip;).<br />
   <em>SACoche</em> dispose aussi d'une fonctionnalité de renvoi d'un mot de passe par courriel en cas de perte, sans intervention d'une tierce personne.<br />
-  Ces fonctionnalités, essentielles, ne peuvent être désactivées.
+  Ces fonctionnalités, essentielles, ne peuvent pas être désactivées.
 </p>
 <p>
   Au sein des établissements, <em>SACoche</em> dispose aussi d'une fonctionnalité de réception par courriel de diverses notifications, au choix des utilisateurs.<br />

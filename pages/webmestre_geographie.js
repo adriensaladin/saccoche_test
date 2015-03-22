@@ -252,7 +252,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=4]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
           case 'dupliquer':
             $('#table_action tbody').append(responseHTML);
             break;

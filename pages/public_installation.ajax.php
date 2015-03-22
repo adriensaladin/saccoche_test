@@ -176,7 +176,7 @@ if( $step==41 )
   $password     = (isset($_POST['f_password1']))    ? Clean::password($_POST['f_password1']) : '';
   if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
   {
-    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+    // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
     if($installation=='multi-structures')
     {
       $mail_domaine = tester_domaine_courriel_valide($courriel);

@@ -265,7 +265,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_niveau='+niveau_id,
+            data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_id='+niveau_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -284,7 +284,7 @@ $(document).ready
                 var pos_par_fer = texte.lastIndexOf(')');
                 var niveau_nom  = texte.substring(pos_separe,pos_par_ouv-1);
                 var niveau_ref  = texte.substring(pos_par_ouv+1,pos_par_fer);
-                $('#zone_partage table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
                 $('#add_'+niveau_id).removeAttr("class").addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
                 tableau_maj_partage();
@@ -443,7 +443,7 @@ $(document).ready
             var niveau_ref = tab_infos[2];
             var niveau_nom = tab_infos[3];
             new_tr = '<tr id="id_'+niveau_id+'" class="new"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="modifier" title="Modifier ce niveau."></q><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>';
-            $('#zone_perso table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#zone_perso table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
             $('#zone_perso table.form tbody').prepend(new_tr);
             $('#f_niveau_avant').append('<option value="'+niveau_id+'">'+niveau_nom+' ('+niveau_ref+')</option>');
             $('#f_niveau_apres').append('<option value="'+niveau_id+'">'+niveau_nom+' ('+niveau_ref+')</option>');

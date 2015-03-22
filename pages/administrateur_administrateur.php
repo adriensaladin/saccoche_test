@@ -86,7 +86,8 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
     }
     else
     {
-      echo'<tr><td class="nu" colspan="9"></td></tr>'.NL; // Normalement impossible, puisqu'on est justement connecté comme administrateur !
+      // Normalement impossible, puisqu'on est justement connecté comme administrateur !
+      echo'<tr class="vide"><td class="nu" colspan="8"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

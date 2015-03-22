@@ -31,7 +31,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action     = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])    : '';
 $famille_id = (isset($_POST['f_famille']))  ? Clean::entier($_POST['f_famille'])  : 0 ;
 $motclef    = (isset($_POST['f_motclef']))  ? Clean::texte($_POST['f_motclef'])   : '' ;
-$matiere_id = (isset($_POST['f_matiere']))  ? Clean::entier($_POST['f_matiere'])  : 0 ;
 $id_avant   = (isset($_POST['f_id_avant'])) ? Clean::entier($_POST['f_id_avant']) : 0;
 $id_apres   = (isset($_POST['f_id_apres'])) ? Clean::entier($_POST['f_id_apres']) : 0;
 $id         = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])       : 0;
@@ -85,9 +84,9 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
 // Ajouter un choix de matière partagée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter_partage') && $matiere_id )
+if( ($action=='ajouter_partage') && $id )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($matiere_id,1);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,1);
   exit('ok');
 }
 
@@ -126,29 +125,33 @@ if( ($action=='modifier') && $id && $ref && $nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer une matière partagée || Supprimer une matière spécifique existante
+// Retirer une matière partagée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function retirer_ou_supprimer_matiere($id)
+if( ($action=='supprimer') && $id && $nom && ($id<=ID_MATIERE_PARTAGEE_MAX) )
 {
-  if($id>ID_MATIERE_PARTAGEE_MAX)
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
-    // Log de l'action
-    SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id.').');
-    SACocheLog::ajouter('Suppression des référentiels associés (matière '.$id.').');
-  }
-  else
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
-    // Log de l'action
-    SACocheLog::ajouter('Retrait d\'une matière partagée (n°'.$id.').');
-  }
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
+  // Log de l'action
+  SACocheLog::ajouter('Retrait de la matière partagée "'.$nom.'" (n°'.$id.').');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a retiré la matière partagée "'.$nom.'" (n°'.$id.').'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  // Afficher le retour
+  exit(']¤['.$id);
 }
 
-if( ($action=='supprimer') && $id )
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Supprimer une matière spécifique existante
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='supprimer') && $id && $nom && ($id>ID_MATIERE_PARTAGEE_MAX) )
 {
-  retirer_ou_supprimer_matiere($id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
+  // Log de l'action
+  SACocheLog::ajouter('Suppression de la matière spécifique "'.$nom.'" (n°'.$id.') et donc des référentiels associés.');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé la matière spécifique "'.$nom.'" (n°'.$id.') et donc les référentiels associés.'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   exit(']¤['.$id);
 }
@@ -168,6 +171,9 @@ if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=
   }
   // Log de l'action
   SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé des référentiels d\'une matière ('.$id_avant.' -> '.$id_apres.').'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
   retirer_ou_supprimer_matiere($id_avant);
   exit('ok');

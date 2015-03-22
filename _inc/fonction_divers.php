@@ -785,13 +785,14 @@ function test_droit_specifique_restreint($listing_droits_sigles,$restriction)
  * @param string $listing_droits_sigles
  * @param int    $matiere_coord_or_groupe_pp_connu   si le droit comporte une restriction aux coordonnateurs matières | professeurs principaux, on peut déja connaitre et transmettre l'info (soit pour au moins une matière | classe, soit pour une matière | classe donnée)
  * @param int    $matiere_id_or_groupe_id_a_tester   si le droit comporte une restriction aux coordonnateurs matières | professeurs principaux, et si $matiere_coord_or_groupe_pp_connu n'est pas transmis, on peut chercher si le droit est bon soit pour une matière | classe donnée, soit pour au moins une matière | classe
- * @param bool   $forcer_parent                TRUE pour forcer à tester un profil parent au lieu du profil de l'utilisateur
+ * @param string $forcer_profil_sigle                pour forcer à tester un profil donné au lieu du profil de l'utilisateur
+ * @param string $forcer_profil_type                pour forcer à tester un profil donné au lieu du profil de l'utilisateur
  * @return bool
  */
-function test_user_droit_specifique($listing_droits_sigles,$matiere_coord_or_groupe_pp_connu=NULL,$matiere_id_or_groupe_id_a_tester=0,$forcer_parent=FALSE)
+function test_user_droit_specifique( $listing_droits_sigles , $matiere_coord_or_groupe_pp_connu=NULL , $matiere_id_or_groupe_id_a_tester=0 , $forcer_profil_sigle=NULL , $forcer_profil_type=NULL )
 {
-  $user_profil_sigle = (!$forcer_parent) ? $_SESSION['USER_PROFIL_SIGLE'] : 'TUT'    ;
-  $user_profil_type  = (!$forcer_parent) ? $_SESSION['USER_PROFIL_TYPE']  : 'parent' ;
+  $user_profil_sigle = (!$forcer_profil_sigle) ? $_SESSION['USER_PROFIL_SIGLE'] : $forcer_profil_sigle ;
+  $user_profil_type  = (!$forcer_profil_type)  ? $_SESSION['USER_PROFIL_TYPE']  : $forcer_profil_type  ;
   $tableau_droits_sigles = explode(',',$listing_droits_sigles);
   $test_droit = in_array($user_profil_sigle,$tableau_droits_sigles);
   if( $test_droit && ($user_profil_type=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') && test_droit_specifique_restreint($listing_droits_sigles,'ONLY_PP') )

@@ -310,7 +310,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tr = responseHTML.substring(0,position_script);
             $('#table_action tbody').prepend(new_tr);

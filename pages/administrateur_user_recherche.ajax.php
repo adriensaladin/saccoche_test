@@ -152,27 +152,18 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     exit('Erreur : login déjà existant !');
   }
-  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
+  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($courriel)
   {
-    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id);
-    if( $find_courriel )
+    if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      exit('Erreur : adresse e-mail déjà utilisée !');
-    }
-    if( $find_courriel === NULL )
-    {
-      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
-      if(HEBERGEUR_INSTALLATION=='multi-structures')
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
       {
-        $mail_domaine = tester_domaine_courriel_valide($courriel);
-        if($mail_domaine!==TRUE)
-        {
-          exit('Erreur avec le domaine "'.$mail_domaine.'" !');
-        }
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }
-      $tab_donnees[':email_origine'] = 'admin';
     }
+    $tab_donnees[':email_origine'] = 'admin';
   }
   else
   {
@@ -196,7 +187,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
     ':genre'       => $genre,
     ':nom'         => $nom,
     ':prenom'      => $prenom,
-    ':email'       => $courriel,
+    ':courriel'    => $courriel,
     ':login'       => $login,
     ':id_ent'      => $id_ent,
     ':id_gepi'     => $id_gepi,

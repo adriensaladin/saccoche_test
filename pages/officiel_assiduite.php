@@ -114,7 +114,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <p class="astuce">Ce fichier comporte les données de <b id="gepi_eleves_nb"></b> élève(s).</p>
   </div>
   <div class="hide" id="comfirm_import_pronote">
-    <p class="astuce">Ce fichier comporte les <b id="pronote_objet"></b> de <b id="pronote_eleves_nb"></b> élève(s) entre le <b id="pronote_date_debut"></b> et le <b id="pronote_date_fin"</p>
+    <p class="astuce">Ce fichier comporte les <b id="pronote_objet"></b> de <b id="pronote_eleves_nb"></b> élève(s) entre le <b id="pronote_date_debut"></b> et le <b id="pronote_date_fin"></b></p>
   </div>
   <p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b id="periode_import"></b> ?</p>
   <form action="#" method="post">

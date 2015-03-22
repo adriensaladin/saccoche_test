@@ -120,7 +120,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
     }
     else
     {
-      echo'<tr><td class="nu" colspan="14"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="13"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

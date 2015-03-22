@@ -192,7 +192,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
     </tr>
   </thead>
   <tbody>
-    <tr class="vide"><td class="nu probleme" colspan="9">Cliquer sur l'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td><td class="nu"></td></tr>
+    <tr><td class="nu probleme" colspan="10">Cliquer sur l'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>
   </tbody>
 </table>
 

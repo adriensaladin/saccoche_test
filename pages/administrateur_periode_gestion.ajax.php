@@ -82,15 +82,12 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une période existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && $id && $nom )
+else if( ($action=='supprimer') && $id )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
   // Log de l'action
-  SACocheLog::ajouter('Suppression de la période "'.$nom.'" (n°'.$id.'), et donc des bilans officiels associés.');
-  // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé la période "'.$nom.'" (n°'.$id.'), et donc les bilans officiels associés.'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  SACocheLog::ajouter('Suppression d\'une période (n°'.$id.'), avec les bilans officiels associés.');
   // Afficher le retour
   echo'<td>ok</td>';
 }

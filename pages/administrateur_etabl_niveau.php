@@ -67,7 +67,7 @@ Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTA
       }
       else
       {
-        echo'<tr class="vide"><td class="nu" colspan="2"></td><td class="nu"></td></tr>'.NL;
+        echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
       }
       ?>
     </tbody>
@@ -106,7 +106,7 @@ Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTA
       }
       else
       {
-        echo'<tr class="vide"><td class="nu" colspan="2"></td><td class="nu"></td></tr>'.NL;
+        echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
       }
       ?>
     </tbody>

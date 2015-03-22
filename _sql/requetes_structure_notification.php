@@ -507,46 +507,5 @@ public static function DB_supprimer_log_anciens()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
-/**
- * Enregistrer une action sensible.
- *
- * @param string   $notification_contenu
- * @return void
- */
-public static function enregistrer_action_sensible($notification_contenu)
-{
-  $abonnement_ref = 'action_sensible';
-  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref );
-  if($listing_abonnes)
-  {
-    $tab_abonnes = explode(',',$listing_abonnes);
-    foreach($tab_abonnes as $abonne_id)
-    {
-      DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu , 'compléter' , FALSE /*sep*/ );
-    }
-  }
-}
-
-/**
- * Enregistrer une action effectuée par un autre administrateur.
- *
- * @param string   $notification_contenu
- * @param int      $admin_id
- * @return void
- */
-public static function enregistrer_action_admin($notification_contenu,$admin_id)
-{
-  $abonnement_ref = 'action_admin';
-  $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $admin_id , FALSE );
-  if($listing_abonnes)
-  {
-    $tab_abonnes = explode(',',$listing_abonnes);
-    foreach($tab_abonnes as $abonne_id)
-    {
-      DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref , 0 , NULL , $notification_contenu , 'compléter' , FALSE /*sep*/ );
-    }
-  }
-}
-
 }
 ?>

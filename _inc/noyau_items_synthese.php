@@ -236,9 +236,7 @@ $nb_syntheses_total = 0 ;
 // Pour chaque élève...
 if(empty($is_appreciation_groupe))
 {
-  $forcer_profil_sigle = ($make_officiel) ? 'TUT'    : NULL ;
-  $forcer_profil_type  = ($make_officiel) ? 'parent' : NULL ;
-  $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
+  $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // Si cet élève a été évalué...

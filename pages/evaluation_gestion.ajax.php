@@ -291,7 +291,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   }
   else
   {
-    echo'<tr class="vide"><td class="nu probleme" colspan="9">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td><td class="nu"></td></tr>';
+    echo'<tr><td class="nu probleme" colspan="10">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td></tr>';
   }
   
   echo'<SCRIPT>'.$script;
@@ -693,7 +693,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
 // Supprimer une évaluation existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) && $description )
+if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) )
 {
   // Vérification des droits
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
@@ -710,10 +710,8 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
   }
   // on supprime l'évaluation avec ses saisies
   DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies( $devoir_id );
-  SACocheLog::ajouter('Suppression du devoir "'.$description.'" (n°'.$devoir_id.'), et donc aussi des saisies associées.');
+  SACocheLog::ajouter('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
   // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé son devoir "'.$description.'" (n°'.$devoir_id.'), et donc aussi les saisies associées.'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_edition , $devoir_id );
   // Afficher le retour
   exit('<td>ok</td>');

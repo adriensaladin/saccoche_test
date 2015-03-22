@@ -74,7 +74,7 @@ if( (HEBERGEUR_INSTALLATION=='mono-structure') || (!IS_HEBERGEMENT_SESAMATH) )
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="6"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="7"></td></tr>'.NL;
     }
     ?>
   </tbody>

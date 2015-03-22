@@ -76,25 +76,17 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'DELAI'   => 5, // en secondes, est ensuite incrémenté en cas d'erreur
   'CAPTCHA' => $captcha_soluce,
 );
-
-$is_etablissement_virtuel = IS_HEBERGEMENT_SESAMATH && ( ($BASE==ID_DEMO) || ($BASE>=CONVENTION_ENT_ID_ETABL_MAXI) || (substr($structure_denomination,0,5)=='Voir ') ) ? TRUE : FALSE ;
 ?>
 
-<?php if( ($PROFIL=='structure') && (!$is_etablissement_virtuel) ): ?>
+
+<?php if($PROFIL=='structure'): ?>
 <form id="form_lost" action="#" method="post">
   <h2>Cas n°1 : une adresse de courriel est associée à votre compte</h2>
-  <div id="step1">
-    <p>Alors utilisez ce formulaire afin d'obtenir de nouveaux identifiants :</p>
-    <div><label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" /><em><?php echo html($structure_denomination) ?></em></div>
-    <div><label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" /></div>
-    <div><label class="tab">Anti-robot :</label><span id="captcha_game">Cliquer du plus petit au plus grand <?php echo $html_imgs ?></span><span id="captcha_init" class="hide">Ordre enregistré. <button type="button" class="actualiser">Recommencer.</button></span><input id="f_captcha" name="f_captcha" type="text" value="" class="invisible" /></div>
-    <p><span class="tab"></span><button id="f_bouton_rechercher" type="submit" class="rechercher">Rechercher.</button><label id="ajax_msg_rechercher"></label></p>
-  </div>
-  <div id="step2" class="hide">
-    <p>Confirmez ou sélectionnez le compte concerné :</p>
-    <label class="tab" for="f_user">Utilisateur :</label><select id="f_user" name="f_user"><option value="-1"></option></select>
-    <p><span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_envoyer"></label></p>
-  </div>
+  <p>Alors utilisez ce formulaire afin d'obtenir de nouveaux identifiants :</p>
+  <div><label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" /><em><?php echo html($structure_denomination) ?></em></div>
+  <div><label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" /></div>
+  <div><label class="tab">Anti-robot :</label><span id="captcha_game">Cliquer du plus petit au plus grand <?php echo $html_imgs ?></span><span id="captcha_init" class="hide">Ordre enregistré. <button type="button" class="actualiser">Recommencer.</button></span><input id="f_captcha" name="f_captcha" type="text" value="" class="invisible" /></div>
+  <p><span class="tab"></span><button id="f_bouton_envoyer" type="submit" class="mail_envoyer">Envoyer.</button><label id="ajax_msg_envoyer"></label></p>
   <hr />
   <h2>Cas n°2 : vous n'aviez pas d'adresse de courriel renseignée</h2>
   <p>
@@ -104,16 +96,6 @@ $is_etablissement_virtuel = IS_HEBERGEMENT_SESAMATH && ( ($BASE==ID_DEMO) || ($B
 <p id="lost_confirmation" class="hide">
   <label class="valide">Courriel envoyé à l'adresse indiquée : consultez votre boite aux lettres électronique.</label>
 </p>
-<?php endif; ?>
-
-<?php if( ($PROFIL=='structure') && ($is_etablissement_virtuel) ): ?>
-
-<p class="danger">Vous vous êtes visiblement égaré&nbsp;!</p>
-<p class="astuce">Il n'y a aucune raison de demander un nouveau mot de passe pour un utilisateur de l'établissement <em>"<?php echo html($structure_denomination) ?>"</em> car il s'agit d'une structure virtuelle&hellip;</p>
-<ul class="puce">
-  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>/index.php?page=utilisation__serveur_sesamath__demo" target="_blank">le site officiel du projet <em>SACoche</em></a> pour tout renseignement concernant l'établissement de démonstration.</li>
-</ul>
-
 <?php endif; ?>
 
 <?php if($PROFIL=='webmestre'): ?>

@@ -83,15 +83,12 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une classe existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && $id && $nom )
+else if( ($action=='supprimer') && $id )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'classe' , TRUE /*with_devoir*/ );
   // Log de l'action
-  SACocheLog::ajouter('Suppression de la classe "'.$nom.'" (n°'.$id.'), et donc des devoirs associés.');
-  // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé la classe "'.$nom.'" (n°'.$id.'), et donc les devoirs associés.'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  SACocheLog::ajouter('Suppression d\'un groupe (classe '.$id.'), avec les devoirs associés.');
   // Afficher le retour
   echo'<td>ok</td>';
 }

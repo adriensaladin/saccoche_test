@@ -262,7 +262,6 @@ if( ($action=='del') && isset($tab_contexte[$contexte]) && $matiere_id && $eleme
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
   exit('ok');
 }
@@ -320,7 +319,6 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a fusionné dans le référentiel ['.$matiere_nom.'] :'."\r\n".$nom.' -> '.$nom2."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
   exit('ok');
 }

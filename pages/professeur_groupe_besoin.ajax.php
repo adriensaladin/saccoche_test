@@ -135,15 +135,12 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
 // Supprimer un groupe de besoin existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $groupe_id && $groupe_nom )
+if( ($action=='supprimer') && $groupe_id )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
   // Log de l'action
-  SACocheLog::ajouter('Suppression du regroupement "'.$groupe_nom.'" (besoin n°'.$groupe_id.'), et donc des devoirs associés.');
-  // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé son regroupement "'.$groupe_nom.'" (besoin n°'.$groupe_id.'), et donc les devoirs associés.'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
+  SACocheLog::ajouter('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
   // Afficher le retour
   exit('<td>ok</td>');
 }

@@ -63,7 +63,7 @@ $TITRE = html(Lang::_("Gérer les périodes"));
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="2"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr><td class="nu" colspan="3"></td></tr>'.NL;
     }
     ?>
   </tbody>

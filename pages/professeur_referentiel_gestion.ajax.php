@@ -164,7 +164,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fonctions utilisées pour enregistrer des notifications
+// Fonction utilisée pour enregistrer des notifications
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function notifications_referentiel_edition($matiere_id,$notification_contenu)
@@ -257,7 +257,6 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage && $matiere_
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le référentiel ['.$matiere_nom.'] ['.$niveau_nom.'].'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
   exit('ok');
 }

@@ -402,7 +402,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
+            $('#table_action tbody tr td[colspan=5]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var niveau_nom = $('#f_niveau option:selected').text();
             var new_tr = responseHTML.substring(0,position_script).replace('<td>{{NIVEAU_NOM}}</td>','<td>'+'<i>'+tab_niveau_ordre[niveau_nom]+'</i>'+niveau_nom+'</td>');

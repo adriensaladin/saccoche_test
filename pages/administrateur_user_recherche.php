@@ -84,7 +84,7 @@ Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
       </tr>
     </thead>
     <tbody>
-      <tr class="vide"><td class="nu" colspan="12"></td><td class="nu"></td></tr>
+      <tr><td class="nu" colspan="13"></td></tr>
   </tbody>
 </table>
 </div>

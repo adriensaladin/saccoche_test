@@ -344,11 +344,9 @@ $(document).ready
         (
           function()
           {
-            var infos = $(this).attr('id');
-            var mode = infos.substring(0,3);
-            if( mode == 'add' )
+            if( $(this).attr('id').substring(0,3) == 'add' )
             {
-              var ref = infos.substring(4);
+              var ref = $(this).attr('id').substring(4);
               if( (!$('#'+'add_niv_'+ref).val()) || (!$('#'+'add_nom_'+ref).val()) )
               {
                 nb_pb++;
@@ -374,14 +372,14 @@ $(document).ready
           (
             function()
             {
-              var infos = $(this).attr('id');
-              var mode = infos.substring(0,3);
-              var id   = infos.substring(4); // add_ | del_
-              if( mode == 'del' )
+              var tab_infos = $(this).attr('id').split('_');
+              var mode = tab_infos[0];
+              var id   = tab_infos[1];
+              if(mode=='del')
               {
                 f_del.push(id);
               }
-              else if( mode == 'add' )
+              else if(mode=='add')
               {
                 var ref = $('#add_ref_'+id).val();
                 var niv = $('#add_niv_'+id).val();

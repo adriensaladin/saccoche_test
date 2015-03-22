@@ -95,9 +95,14 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
       exit('Erreur : mot de passe trop court pour ce profil !');
     }
   }
-  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
   if($courriel)
   {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel) )
+    {
+      exit('Erreur : adresse e-mail déjà utilisée !');
+    }
+    // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
       $mail_domaine = tester_domaine_courriel_valide($courriel);
@@ -162,18 +167,27 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
     }
     $tab_donnees[':login'] = $login;
   }
-  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  // Vérifier que l'adresse e-mail est disponible (parmi tous les utilisateurs de l'établissement)
   if($courriel)
   {
-    if(HEBERGEUR_INSTALLATION=='multi-structures')
+    $find_courriel = DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('email',$courriel,$id);
+    if( $find_courriel )
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
-      {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
-      }
+      exit('Erreur : adresse e-mail déjà utilisée !');
     }
-    $tab_donnees[':email_origine'] = 'admin';
+    if( $find_courriel === NULL )
+    {
+      // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+      if(HEBERGEUR_INSTALLATION=='multi-structures')
+      {
+        $mail_domaine = tester_domaine_courriel_valide($courriel);
+        if($mail_domaine!==TRUE)
+        {
+          exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        }
+      }
+      $tab_donnees[':email_origine'] = 'admin';
+    }
   }
   else
   {
@@ -186,12 +200,12 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   }
   // Mettre à jour l'enregistrement
   $tab_donnees += array(
-    ':genre'    => $genre,
-    ':nom'      => $nom,
-    ':prenom'   => $prenom,
-    ':courriel' => $courriel,
-    ':id_ent'   => $id_ent,
-    ':id_gepi'  => $id_gepi,
+    ':genre'   => $genre,
+    ':nom'     => $nom,
+    ':prenom'  => $prenom,
+    ':email'   => $courriel,
+    ':id_ent'  => $id_ent,
+    ':id_gepi' => $id_gepi,
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
   // Mettre à jour aussi éventuellement la session
@@ -226,7 +240,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
 // Retirer un administrateur existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $id && $nom && $prenom )
+if( ($action=='supprimer') && $id )
 {
   if($id==$_SESSION['USER_ID'])
   {
@@ -235,10 +249,7 @@ if( ($action=='supprimer') && $id && $nom && $prenom )
   // Supprimer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id , $profil );
   // Log de l'action
-  SACocheLog::ajouter('Suppression de l\'utilisateur '.$nom.' '.$prenom.' ('.$profil.' '.$id.').');
-  // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé l\'utilisateur '.$nom.' '.$prenom.' ('.$profil.' '.$id.').'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  SACocheLog::ajouter('Suppression d\'un utilisateur ('.$profil.' '.$id.').');
   // Afficher le retour
   exit('<td>ok</td>');
 }

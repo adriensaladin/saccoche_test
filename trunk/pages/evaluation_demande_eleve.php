@@ -96,7 +96,7 @@ else
     }
     else
     {
-      echo'<tr><td class="nu" colspan="8"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="8"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

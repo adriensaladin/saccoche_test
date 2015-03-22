@@ -72,12 +72,9 @@ else
 
 ?>
 
-<div class="travaux">Fonctionnalité encore en développement ; documentation à venir prochainement&hellip;</div>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__email_notifications">DOC : Adresse e-mail / Abonnements / Notifications</a></span></p>
 
-<p>
-  <span class="astuce">Les adresses e-mail ne sont utilisées que par l'application et ne sont pas visibles des autres utilisateurs à l'exception des administrateurs.</span><br />
-  <span class="astuce">Si vous avez plusieurs comptes <em>SACoche</em> (profils d'accès multiples...), ils ne peuvent pas être associés à la même adresse de courriel.</span>
-</p>
+<p class="astuce">Les adresses e-mail ne sont utilisées que par l'application et ne sont pas visibles des autres utilisateurs à l'exception des administrateurs.</p>
 
 <hr />
 
@@ -99,12 +96,6 @@ else
 <p id="info_abonnement_mail">
   <?php echo $info_envoi_notifications ?>
 </p>
-
-<?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
-
-<div class="travaux">Pour l'administrateur, les deux premiers choix ne sont pas encore développés ; finalisation en cours&hellip;</div>
-
-<?php endif; ?>
 
 <form id="form_abonnements" action="#" method="post">
   <table id="table_abonnements" class="form">

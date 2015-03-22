@@ -120,7 +120,7 @@ $(document).ready
               else
               {
                 $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
-                $('#table_action tbody tr td[colspan=13]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#table_action tbody').html(responseHTML);
                 tableau_maj();
                 $('#resultat').show(0);

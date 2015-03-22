@@ -82,15 +82,31 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
 }
 
 /**
- * Récuperer, à partir d'une adresse email ou d'un code transmis, quelques données d'un utilisateur demandant la génération d'un nouveau mdp
+ * Lister les utilisateurs à partir d'une adresse mail
  *
- * @param string $champ_nom   user_email | user_pass_key
+ * @param string $user_email
+ * @return array
+ */
+public static function DB_lister_user_for_mail($user_email)
+{
+  $DB_SQL = 'SELECT user_id, user_nom, user_prenom, user_profil_nom_court_singulier ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_email=:user_email ';
+  $DB_VAR = array(':user_email'=>$user_email);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Récuperer, à partir d'un identifiant ou d'un code transmis, quelques données d'un utilisateur demandant la génération d'un nouveau mdp
+ *
+ * @param string $champ_nom   user_id | user_pass_key
  * @param void   $champ_val
  * @return array
  */
 public static function DB_recuperer_user_for_new_mdp($champ_nom,$champ_val)
 {
-  $DB_SQL = 'SELECT user_id, user_email, user_login, user_password, user_connexion_date ';
+  $DB_SQL = 'SELECT user_id, user_nom, user_prenom, user_email, user_login, user_password, user_connexion_date ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'WHERE '.$champ_nom.'=:champ_val ';
   // LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne

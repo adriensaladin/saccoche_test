@@ -67,8 +67,10 @@ if($action=='reintegrer')
 if($action=='supprimer')
 {
   // Récupérer le profil des utilisateurs indiqués, vérifier qu'ils sont déjà sortis et qu'on y a pas glissé l'id d'un administrateur
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_profil_sigle,user_sortie_date' , '' /*avec_info*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_nom,user_prenom,user_profil_sigle,user_sortie_date' , '' /*avec_info*/ );
   $tab_user_id = array();
+  $notification_contenu = '';
+  $notification_intro = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'];
   foreach($DB_TAB as $DB_ROW)
   {
     if( ($DB_ROW['user_sortie_date']<=TODAY_MYSQL) && ($DB_ROW['user_profil_sigle']!='ADM') )
@@ -76,9 +78,16 @@ if($action=='supprimer')
       DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil_sigle'] );
       $tab_user_id[] = $DB_ROW['user_id'];
       // Log de l'action
-      SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
+      SACocheLog::ajouter('Suppression de l\'utilisateur '.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
+      $notification_contenu .= $notification_intro.' a supprimé l\'utilisateur '.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').'."\r\n";
     }
   }
+  // Notifications (rendues visibles ultérieurement)
+  if($notification_contenu)
+  {
+    DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  }
+  // Retour
   $retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte coché n\'est supprimable ! Il faut d\'abord les retirer pour leur affecter une date de sortie...' ;
   exit($retour);
 }

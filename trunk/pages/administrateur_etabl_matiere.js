@@ -332,7 +332,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_matiere='+matiere_id,
+            data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_id='+matiere_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -351,7 +351,7 @@ $(document).ready
                 var pos_par_fer = texte.lastIndexOf(')');
                 var matiere_nom = texte.substring(pos_separe,pos_par_ouv-1);
                 var matiere_ref = texte.substring(pos_par_ouv+1,pos_par_fer);
-                $('#zone_partage table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
                 $('#add_'+matiere_id).removeAttr("class").addClass("ajouter_non").attr('title',"Matière déjà choisie.");
                 tableau_maj_partage();
@@ -575,7 +575,7 @@ $(document).ready
             var matiere_ref = tab_infos[2];
             var matiere_nom = tab_infos[3];
             new_tr = '<tr id="id_'+matiere_id+'" class="new"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td></tr>';
-            $('#zone_perso table.form tbody tr td[colspan=3]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#zone_perso table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
             $('#zone_perso table.form tbody').prepend(new_tr);
             $('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');

@@ -2008,7 +2008,7 @@ $(document).ready
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody tr td[colspan=10]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+            $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
           case 'dupliquer':
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tds = responseHTML.substring(0,position_script);
@@ -3220,7 +3220,7 @@ $(document).ready
     function retour_form_valide_prechoix(responseHTML)
     {
       initialiser_compteur();
-      if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='<SCRIPT>') )
+      if(responseHTML.substring(0,3)!='<tr')
       {
         $('#ajax_msg_prechoix').removeAttr("class").addClass("alerte").html(responseHTML);
       }

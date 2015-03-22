@@ -108,7 +108,7 @@ if($action=='purger')
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$DB_ROW['user_profil_sigle']);
       // Log de l'action
-      SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
+      SACocheLog::ajouter('Suppression d\'un utilisateur au compte désactivé depuis plus de 3 ans ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
     }
   }
   // Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
@@ -118,6 +118,9 @@ if($action=='purger')
   DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a exécuté la purge annuelle de la base (initialisation de début d\'année).'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   echo'<li><label class="valide">Évaluations et dépendances supprimées (saisies associées conservées).</label></li>'.NL;
   echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL;
@@ -146,6 +149,9 @@ if($action=='supprimer')
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_validations();
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé toutes les notes et les validations enregistrées.'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>'.NL;
   echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>'.NL;

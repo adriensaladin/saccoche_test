@@ -165,7 +165,7 @@ Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$t
     }
     else
     {
-      echo'<tr><td class="nu" colspan="4"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="4"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

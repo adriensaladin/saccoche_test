@@ -135,6 +135,9 @@ if( ($action=='restaurer') && $etape )
   {
     // Bloquer l'application
     LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Restauration de la base en cours.');
+    // Notifications (rendues visibles ultérieurement)
+    $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a lancé une restauration de la base de données.'."\r\n";
+    DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   }
   // Restaurer des fichiers de svg et mettre la base à jour si besoin.
   $texte_etape = restaurer_tables_base_etablissement($dossier_temp,$etape);

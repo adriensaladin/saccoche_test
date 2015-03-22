@@ -83,12 +83,15 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer un groupe existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && $id )
+else if( ($action=='supprimer') && $id && $nom )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
   // Log de l'action
-  SACocheLog::ajouter('Suppression d\'un regroupement (groupe '.$id.'), avec les devoirs associés.');
+  SACocheLog::ajouter('Suppression du groupe "'.$nom.'" (n°'.$id.'), et donc des devoirs associés.');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le groupe "'.$nom.'" (n°'.$id.'), et donc les devoirs associés.'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   echo'<td>ok</td>';
 }

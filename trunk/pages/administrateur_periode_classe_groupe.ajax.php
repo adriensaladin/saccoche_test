@@ -37,6 +37,38 @@ $tab_select_classes_groupes = (isset($_POST['select_classes_groupes'])) ? ( (is_
 $tab_select_periodes        = array_filter( Clean::map_entier($tab_select_periodes)        , 'positif' );
 $tab_select_classes_groupes = array_filter( Clean::map_entier($tab_select_classes_groupes) , 'positif' );
 
+$tab_groupe    = array();
+$tab_periode   = array();
+$tab_jointure  = array();
+$tab_graphique = array();
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes.
+// 1/2 - On commence les premières requêtes dès maintenant afin d'avoir les noms des groupes et des périodes à disposition.
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Récupérer la liste des classes & groupes, dans l'ordre des niveaux
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux();
+if(empty($DB_TAB))
+{
+  exit('Aucune classe et aucun groupe ne sont enregistrés !');
+}
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_groupe[$DB_ROW['groupe_id']]    = $DB_ROW['groupe_nom'];
+  $tab_graphique[$DB_ROW['groupe_id']] = '';
+}
+// Récupérer la liste des périodes, dans l'ordre choisi par l'admin
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+if(empty($DB_TAB))
+{
+  exit('Aucune période n\'est enregistrée !');
+}
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_periode[$DB_ROW['periode_id']] = $DB_ROW['periode_nom'];
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter des périodes à des classes & groupes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,47 +98,31 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 
 elseif($action=='retirer')
 {
+  $notification_contenu = '';
+  $notification_intro = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'];
   foreach($tab_select_periodes as $periode_id)
   {
     foreach($tab_select_classes_groupes as $groupe_id)
     {
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , FALSE );
       // Log de l'action
-      SACocheLog::ajouter('Suppression d\'une association période (n°'.$periode_id.') / regroupement (n°'.$groupe_id.'), avec les bilans officiels associés.');
+      SACocheLog::ajouter('Suppression de l\'association période "'.$tab_periode[$periode_id].'" (n°'.$periode_id.') / regroupement "'.$tab_groupe[$groupe_id].'" (n°'.$groupe_id.'), et donc des bilans officiels associés.');
+      $notification_contenu .= $notification_intro.' a supprimé l\'association période "'.$tab_periode[$periode_id].'" (n°'.$periode_id.') / regroupement "'.$tab_groupe[$groupe_id].'" (n°'.$groupe_id.'), et donc les bilans officiels associés.'."\r\n";
     }
+  }
+  // Notifications (rendues visibles ultérieurement)
+  if($notification_contenu)
+  {
+    DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage du bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes
+// Bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes.
+// 2/2 - On poursuit avec les requêtes suivantes (associations) et l'affichage.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 echo'<hr />'.NL;
-$tab_groupe    = array();
-$tab_periode   = array();
-$tab_jointure  = array();
-$tab_graphique = array();
-// Récupérer la liste des classes & groupes, dans l'ordre des niveaux
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux();
-if(empty($DB_TAB))
-{
-  exit('Aucune classe et aucun groupe ne sont enregistrés !');
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  $tab_groupe[$DB_ROW['groupe_id']]    = '<th>'.html($DB_ROW['groupe_nom']).'</th>';
-  $tab_graphique[$DB_ROW['groupe_id']] = '';
-}
-// Récupérer la liste des périodes, dans l'ordre choisi par l'admin
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-if(empty($DB_TAB))
-{
-  exit('Aucune période n\'est enregistrée !');
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  $tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
-}
 // Récupérer l'amplitude complète sur l'ensemble des périodes
 $DB_ROW = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_amplitude_periodes();
 $tout_debut     = ($DB_ROW['tout_debut'])     ? $DB_ROW['tout_debut']     : '2000-01-01' ;
@@ -148,13 +164,18 @@ foreach($DB_TAB as $DB_ROW)
   // graphique (fin)
 }
 // Fabrication du tableau résultant
-foreach($tab_groupe as $groupe_id => $groupe_text)
+foreach($tab_groupe as $groupe_id => $groupe_nom)
 {
-  foreach($tab_periode as $periode_id => $periode_text)
+  $tab_groupe[$groupe_id] = '<th>'.html($groupe_nom).'</th>';
+  foreach($tab_periode as $periode_id => $periode_nom)
   {
     $tab_groupe[$groupe_id] .= (isset($tab_jointure[$groupe_id][$periode_id])) ? '<td>'.$tab_jointure[$groupe_id][$periode_id].'</td>' : '<td class="hc">-</td>' ;
   }
   $tab_groupe[$groupe_id] .= '<td>'.$tab_graphique[$groupe_id].'</td>';
+}
+foreach($tab_periode as $periode_id => $periode_nom)
+{
+  $tab_periode[$periode_id] = '<th>'.html($periode_nom).'</th>';
 }
 // Affichage du tableau résultant
 echo'<table>'.NL;

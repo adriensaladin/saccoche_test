@@ -304,7 +304,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 $('#ajax_msg_ajout').removeAttr("class").addClass("valide").html("Convention ajoutée !");
-                $('#table_action tbody tr td[colspan=7]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML ; IE8 bugue si on n'indique que [colspan]
+                $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#table_action tbody').prepend(responseJSON['tr']);
                 var convention_id = responseJSON['convention_id'];
                 var first_time    = 'oui';

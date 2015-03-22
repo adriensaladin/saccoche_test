@@ -30,7 +30,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $action     = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])    : '';
 $famille_id = (isset($_POST['f_famille']))  ? Clean::entier($_POST['f_famille'])  : 0 ;
-$niveau_id  = (isset($_POST['f_niveau']))   ? Clean::entier($_POST['f_niveau'])   : 0 ;
 $id         = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])       : 0;
 $ref        = (isset($_POST['f_ref']))      ? Clean::ref($_POST['f_ref'])         : '';
 $nom        = (isset($_POST['f_nom']))      ? Clean::texte($_POST['f_nom'])       : '';
@@ -55,9 +54,9 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 // Ajouter un choix de niveau partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter_partage') && $niveau_id )
+if( ($action=='ajouter_partage') && $id )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($niveau_id,1);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,1);
   exit('ok');
 }
 
@@ -96,41 +95,35 @@ if( ($action=='modifier') && $id && $ref && $nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un niveau partagé || Supprimer un niveau spécifique existant
+// Retirer un niveau partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function retirer_ou_supprimer_niveau($id)
+if( ($action=='supprimer') && $id && $nom && ($id<=ID_NIVEAU_PARTAGE_MAX) )
 {
-  if($id>ID_NIVEAU_PARTAGE_MAX)
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_niveau_specifique($id);
-    // Log de l'action
-    SACocheLog::ajouter('Suppression d\'un niveau spécifique (n°'.$id.').');
-    SACocheLog::ajouter('Suppression des référentiels associés (niveau '.$id.').');
-  }
-  else
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,0);
-    // Log de l'action
-    SACocheLog::ajouter('Retrait d\'un niveau partagé (n°'.$id.').');
-  }
-}
-
-if( ($action=='supprimer') && $id )
-{
-  retirer_ou_supprimer_niveau($id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,0);
+  // Log de l'action
+  SACocheLog::ajouter('Retrait du niveau partagé "'.$nom.'" (n°'.$id.').');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a retiré le niveau partagé "'.$nom.'" (n°'.$id.').'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un niveau
+// Supprimer un niveau spécifique existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='supprimer') && $niveau_id )
+if( ($action=='supprimer') && $id && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($niveau_id,0);
-  exit('ok');
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_niveau_specifique($id);
+  // Log de l'action
+  SACocheLog::ajouter('Suppression du niveau spécifique "'.$nom.'" (n°'.$id.') et donc des référentiels associés.');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le niveau spécifique "'.$nom.'" (n°'.$id.') et donc les référentiels associés.'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
+  // Afficher le retour
+  exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

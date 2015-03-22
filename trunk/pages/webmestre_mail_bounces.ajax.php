@@ -37,7 +37,7 @@ $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']
 
 if($action=='EnregistrerBounce')
 {
-  // On ne vérifie le domaine du serveur mail qu'en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
+  // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
     if($bounce)

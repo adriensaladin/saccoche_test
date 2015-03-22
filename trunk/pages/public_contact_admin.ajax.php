@@ -66,7 +66,7 @@ if(!$code)
     $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
     exit_json( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
   }
-  // On vérifie le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
+  // Vérifier le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
   $mail_domaine = tester_domaine_courriel_valide($courriel);
   if($mail_domaine!==TRUE)
   {

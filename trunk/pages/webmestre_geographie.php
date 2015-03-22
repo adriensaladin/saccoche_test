@@ -73,7 +73,7 @@ if(HEBERGEUR_INSTALLATION=='mono-structure')
     }
     else
     {
-      echo'<tr><td class="nu" colspan="4"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="3"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

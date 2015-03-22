@@ -84,12 +84,12 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une zone existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && ($id>1) )
+else if( ($action=='supprimer') && ($id>1) && $nom )
 {
   // Effacer l'enregistrement
   DB_WEBMESTRE_WEBMESTRE::DB_supprimer_zone($id);
   // Log de l'action
-  SACocheLog::ajouter('Suppression d\'une zone géographique (n°'.$id.').');
+  SACocheLog::ajouter('Suppression de la zone géographique "'.$nom.'" (n°'.$id.').');
   // Afficher le retour
   echo'<td>ok</td>';
 }

@@ -94,7 +94,7 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
     }
     else
     {
-      echo'<tr><td class="nu" colspan="5"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="4"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>

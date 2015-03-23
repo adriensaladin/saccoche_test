@@ -157,7 +157,7 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
         $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
         $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($individu->NOM_USAGE);
         $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($individu->PRENOM);
-        $tab_users_fichier['courriel'    ][$i_fichier] = NULL;
+        $tab_users_fichier['courriel'    ][$i_fichier] = '';
         $tab_users_fichier['classe'      ][$i_fichier] = array();
         $tab_users_fichier['groupe'      ][$i_fichier] = array();
         $tab_users_fichier['matiere'     ][$i_fichier] = array();
@@ -841,7 +841,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
         $tab_users_fichier['nom'         ][] = Clean::nom($nom);
         $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
         $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
-        $tab_users_fichier['courriel'    ][] = NULL;
+        $tab_users_fichier['courriel'    ][] = '';
         $tab_users_fichier['classe'      ][] = $i_classe;
         if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
         {

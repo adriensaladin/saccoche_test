@@ -380,6 +380,7 @@ function SACoche_autoload($class_name)
 
     'Browser'                     => '_inc'.DS.'class.Browser.php' ,
     'Clean'                       => '_inc'.DS.'class.Clean.php' ,
+    'Cookie'                      => '_inc'.DS.'class.Cookie.php' ,
     'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
     'cURL'                        => '_inc'.DS.'class.cURL.php' ,
     'Erreur500'                   => '_inc'.DS.'class.Erreur500.php' ,
@@ -526,6 +527,7 @@ if(DEBUG>3)
 // ============================================================================
 
 $host = getServerUrl();
+define('HOST'    ,$host);
 define('URL_BASE',getServerProtocole().$host.getServerPort($host));
 
 // ============================================================================
@@ -834,6 +836,12 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     echo    '</div>'.NL;
     echo  '</body>'.NL;
     echo'</html>'.NL;
+  }
+  // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
+  // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
+  if(isset($_COOKIE[COOKIE_MEMOGET]))
+  {
+    Cookie::effacer(COOKIE_MEMOGET);
   }
   exit();
 }

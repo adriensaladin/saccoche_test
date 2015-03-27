@@ -196,8 +196,6 @@ if($version_base_structure_actuelle=='2015-02-22')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Action d\'administration" WHERE abonnement_ref="action_admin" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_abonnement SET abonnement_objet="Contact externe" WHERE abonnement_ref="contact_externe" ' );
     }
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 
@@ -239,6 +237,38 @@ if($version_base_structure_actuelle=='2015-03-10')
     // La solution est d'ajouter la description manquante.
     // On s'y emploie automatiquement ici.
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_info="sans titre" WHERE devoir_info="" ' );
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-03-13 => 2015-03-24
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-03-13')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-03-24';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Modif champs type EUNM dans sacoche_jointure_groupe_periode et sacoche_groupe
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' ALTER TABLE sacoche_jointure_groupe_periode CHANGE officiel_releve officiel_releve ENUM("","1vide","2rubrique","3synthese","4complet","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_bulletin officiel_bulletin ENUM("","1vide","2rubrique","3synthese","4complet","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier1 officiel_palier1 ENUM("","1vide","2rubrique","3synthese","4complet","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier2 officiel_palier2 ENUM("","1vide","2rubrique","3synthese","4complet","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier3 officiel_palier3 ENUM("","1vide","2rubrique","3synthese","4complet","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' ALTER TABLE sacoche_groupe CHANGE fiche_brevet fiche_brevet ENUM( "","1vide","2rubrique","3synthese","4complet","4synthese","5complet" ) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_releve="5complet"  WHERE officiel_releve="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_releve="4synthese" WHERE officiel_releve="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_bulletin="5complet"  WHERE officiel_bulletin="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_bulletin="4synthese" WHERE officiel_bulletin="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier1="5complet"  WHERE officiel_palier1="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier1="4synthese" WHERE officiel_palier1="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier2="5complet"  WHERE officiel_palier2="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier2="4synthese" WHERE officiel_palier2="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier3="5complet"  WHERE officiel_palier3="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_jointure_groupe_periode SET officiel_palier3="4synthese" WHERE officiel_palier3="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_groupe SET fiche_brevet="5complet"  WHERE fiche_brevet="4complet" '  );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' UPDATE sacoche_groupe SET fiche_brevet="4synthese" WHERE fiche_brevet="3synthese" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' ALTER TABLE sacoche_jointure_groupe_periode CHANGE officiel_releve officiel_releve ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_bulletin officiel_bulletin ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier1 officiel_palier1 ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier2 officiel_palier2 ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", CHANGE officiel_palier3 officiel_palier3 ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , ' ALTER TABLE sacoche_groupe CHANGE fiche_brevet fiche_brevet ENUM( "","1vide","2rubrique","3mixte","4synthese","5complet" ) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

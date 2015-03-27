@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
+$OBJET        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
 $ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
 $mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
 $classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
@@ -55,7 +55,7 @@ $tab_mode   = array('texte','graphique');
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!in_array($objet,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -75,7 +75,7 @@ if(!$BILAN_ETAT)
 {
   exit('Fiche brevet introuvable !');
 }
-if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese','voir2rubrique','voir3synthese')))
+if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese'))) // 'voir2rubrique','voir3mixte','voir4synthese' semble obsolète
 {
   exit('Fiche brevet interdite d\'accès pour cette action !');
 }
@@ -85,7 +85,7 @@ if(!$DB_ROW['listing_user_id'])
 }
 
 // Si un personnel accède à la saisie de synthèse, il ne faut pas seulement récupérer les données qui concerne ses matières.
-$liste_matiere_id = ($BILAN_ETAT=='2rubrique') ? $liste_matiere_id : '' ;
+$liste_matiere_id = ( ($OBJET=='modifier') || ($BILAN_ETAT=='2rubrique') ) ? $liste_matiere_id : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas 1 : enregistrement d'une appréciation
@@ -127,7 +127,7 @@ if($ACTION=='supprimer_appr')
     exit('Erreur avec les données transmises !');
   }
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , 0 /*prof_id*/ , '' /*appreciation*/ );
-  $ACTION = ($BILAN_ETAT=='2rubrique') ? '<button type="button" class="ajouter">Ajouter l\'appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button>' ;
+  $ACTION = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? '<button type="button" class="ajouter">Ajouter l\'appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button>' ;
   exit('<div class="hc">'.$ACTION.'</div>');
 }
 
@@ -160,11 +160,11 @@ if($ACTION=='initialiser')
     exit('Aucun élève concerné dans ce regroupement !');
   }
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
-  $form_choix_eleve .= ($objet=='tamponner') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
+  $form_choix_eleve .= ($OBJET=='tamponner') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
   $eleve_id = $tab_eleve_id[0];
   // sous-titre
-  $sous_titre = ($BILAN_ETAT=='3synthese') ? 'Éditer l\'avis de synthèse' : 'Éditer les appréciations par épreuve' ;
+  $sous_titre = ($ACTION=='tamponner') ? 'Éditer l\'avis de synthèse' : 'Éditer les appréciations par épreuve' ;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,10 +172,10 @@ if($ACTION=='initialiser')
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$make_action = 'saisir';
-$make_html   = ( ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
+$make_action = $OBJET; // 'modifier' || 'tamponner' (et plus seulement 'saisir')
+$make_html   = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf    = FALSE;
-$make_graph  = ( ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$make_graph  = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
 $js_graph    = '';
 $droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 

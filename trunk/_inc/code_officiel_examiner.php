@@ -80,7 +80,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+if(!in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }

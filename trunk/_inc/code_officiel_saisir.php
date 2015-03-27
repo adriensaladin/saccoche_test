@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])               : '';
+$OBJET        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])               : '';
 $ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])              : '';
 $BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])          : '';
 $mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])                : '';
@@ -70,7 +70,7 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($BILAN_TYPE!='bulletin')&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($BILAN_TYPE!='bulletin')&&($ACTION!='initialiser') ) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -97,13 +97,13 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese','voir2rubrique','voir3synthese')))
+if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese'))) // 'voir2rubrique','voir3mixte','voir4synthese' semble obsolète
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }
 
 // Si un personnel accède à la saisie de synthèse, il ne faut pas seulement récupérer les données qui concerne ses matières.
-$liste_matiere_id = ($BILAN_ETAT=='2rubrique') ? $liste_matiere_id : '' ;
+$liste_matiere_id = ( ($OBJET=='modifier') || ($BILAN_ETAT=='2rubrique') ) ? $liste_matiere_id : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas 1 : enregistrement d'une appréciation ou d'une note
@@ -133,7 +133,7 @@ if($ACTION=='corriger_faute')
 
 if($ACTION=='enregistrer_note')
 {
-  if( ($moyenne<0) || ($BILAN_ETAT=='3synthese') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
+  if( ($moyenne<0) || ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
     exit('Erreur avec les données transmises !');
   }
@@ -157,14 +157,14 @@ if($ACTION=='supprimer_appr')
   $saisie_type        = ($eleve_id) ? 'eleve' : 'classe' ;
   $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
   DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type );
-  $ACTION = ($BILAN_ETAT=='2rubrique') ? '<button type="button" class="ajouter">Ajouter une appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale.</button>' ;
+  $ACTION = ($rubrique_id!=0) ? '<button type="button" class="ajouter">Ajouter une appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale.</button>' ;
   exit('<div class="hc">'.$ACTION.'</div>');
 }
 
 if($ACTION=='supprimer_note')
 {
   // Il s'agit de la supprimer définitivement et de ne pas la recalculer : on insère une note vide
-  if( ($BILAN_ETAT=='3synthese') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
+  if( ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
     exit('Erreur avec les données transmises !');
   }
@@ -180,7 +180,7 @@ if($ACTION=='supprimer_note')
 
 if($ACTION=='recalculer_note')
 {
-  if( ($BILAN_ETAT=='3synthese') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
+  if( ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
     exit('Erreur avec les données transmises !');
   }
@@ -218,11 +218,11 @@ if($ACTION=='initialiser')
     $tab_eleve_id[] = $DB_ROW['user_id'];
   }
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
-  $form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
+  $form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
   $eleve_id = ($BILAN_TYPE=='bulletin') ? 0 : $tab_eleve_id[0];
   // sous-titre
-  if($BILAN_ETAT=='3synthese')
+  if($ACTION=='tamponner')
   {
     $sous_titre = 'Éditer l\'appréciation générale';
   }
@@ -334,11 +334,11 @@ if( $affichage_prof_principal )
 
 $make_officiel = TRUE;
 $make_brevet   = FALSE;
-$make_action   = 'saisir';
-$make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
+$make_action   = $OBJET; // 'modifier' || 'tamponner' (et plus seulement 'saisir')
+$make_html     = ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf      = FALSE;
 $make_csv      = FALSE;
-$make_graph    = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$make_graph    = ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
 $js_graph = '';
 $droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 

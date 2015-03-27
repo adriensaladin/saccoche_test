@@ -475,9 +475,9 @@ $titre1 = ($mode=='manuel') ? 'Relevé de maîtrise du socle commun [matières r
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
 if($make_html)
 {
-  $bouton_print_appr = ($make_officiel)                                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
-  $bouton_print_test = (!empty($is_bouton_test_impression))                 ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
+  $bouton_print_appr = ($make_officiel)                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
+  $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
+  $bouton_import_csv = ($make_action=='saisir')             ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>'.NL;
@@ -634,11 +634,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   extract($tab);  // $prof_info $appreciation $note
                   $actions = '';
-                  if( ($make_action=='modifier') && ($prof_id==$_SESSION['USER_ID']) )
+                  if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) )
                   {
                     $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
                   }
-                  elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
+                  elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
                   {
                     if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                     if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
@@ -646,7 +646,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $releve_HTML .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'.NL;
                 }
               }
-              if($make_action=='modifier')
+              if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
               {
                 if(!isset($tab_saisie[$eleve_id][$pilier_id][$_SESSION['USER_ID']]))
                 {
@@ -672,7 +672,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
       }
       // État de maîtrise du socle - Synthèse générale
-      if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR']) && ( ($make_action=='tamponner') || ($make_action=='consulter') ) )
+      if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
       {
         if($make_html)
         {
@@ -702,18 +702,18 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           {
             extract($tab_appreciation_generale);  // $prof_info $appreciation $note
             $actions = '';
-            if($make_action=='tamponner') // Pas de test ($prof_id_appreciation_generale==$_SESSION['USER_ID']) car l'appréciation générale est unique avec saisie partagée.
+            if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) // Pas de test ($prof_id_appreciation_generale==$_SESSION['USER_ID']) car l'appréciation générale est unique avec saisie partagée.
             {
               $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
             }
-            elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
+            elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
             {
               if($prof_id_appreciation_generale!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
               if($droit_corriger_appreciation)                         { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
             }
             $releve_HTML .= '<tr id="appr_0_'.$prof_id_appreciation_generale.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'.NL;
           }
-          elseif($make_action=='tamponner')
+          elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
           {
             $releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td>'.$case_valid.'</tr>'.NL;
           }

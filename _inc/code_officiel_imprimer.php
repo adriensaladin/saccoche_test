@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$OBJET       = (isset($_POST['f_objet']))       ? Clean::texte($_POST['f_objet'])       : '';
+$objet       = (isset($_POST['f_objet']))       ? Clean::texte($_POST['f_objet'])       : '';
 $ACTION      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
 $BILAN_TYPE  = (isset($_POST['f_bilan_type']))  ? Clean::texte($_POST['f_bilan_type'])  : '';
 $periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])    : 0;
@@ -63,7 +63,7 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || !$periode_id || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || !$periode_id || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -84,7 +84,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if( ($BILAN_ETAT!='5complet') && empty($is_test_impression) )
+if( ($BILAN_ETAT!='4complet') && empty($is_test_impression) )
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }
@@ -112,7 +112,7 @@ if($ACTION=='initialiser')
     $tab_eleve_td[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
   }
   // (re)calculer les moyennes des élèves (matières et générales), ainsi que les moyennes de classe (matières et générales).
-  if( ($OBJET=='imprimer') && ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
+  if( ($objet=='imprimer') && ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
   {
     // Attention ! On doit calculer des moyennes de classe, pas de groupe !
     if(!$is_sous_groupe)
@@ -136,7 +136,7 @@ if($ACTION=='initialiser')
   $_SESSION['tmp_droit_voir_archive'] = array(); // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
   foreach($tab_eleve_id as $eleve_id)
   {
-    if($OBJET=='imprimer')
+    if($objet=='imprimer')
     {
       $checked            = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
       $td_date_generation = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']) : 'Non' ;
@@ -146,7 +146,7 @@ if($ACTION=='initialiser')
       echo'<td class="label hc">'.$td_date_generation.'</td>';
       echo'</tr>';
     }
-    elseif($OBJET=='voir_archive')
+    elseif($objet=='voir_archive')
     {
       if(!isset($DB_TAB[$eleve_id]))
       {

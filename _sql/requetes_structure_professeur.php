@@ -743,10 +743,11 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode ON sacoche_user.eleve_classe_id=sacoche_jointure_groupe_periode.groupe_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
-  $DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND officiel_bulletin IN("2rubrique","3mixte") ';
+  $DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND officiel_bulletin=:etat ';
   $DB_SQL.= 'GROUP BY periode_id ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_VAR = array(':etat'=>'2rubrique');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

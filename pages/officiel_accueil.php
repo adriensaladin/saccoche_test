@@ -56,9 +56,8 @@ $tab_etats = array
   '0absence'  => 'indéfini',
   '1vide'     => 'Vide (fermé)',
   '2rubrique' => 'Saisies Profs',
-  '3mixte'    => 'Saisies Mixtes',
-  '4synthese' => 'Saisie Synthèse',
-  '5complet'  => 'Complet (fermé)',
+  '3synthese' => 'Saisie Synthèse',
+  '4complet'  => 'Complet (fermé)',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +76,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
     // Concernant les notifications, on liste déjà s'il y a des utilisateurs qui s'y seraient abonnés
     $abonnement_ref = 'bilan_officiel_statut';
     $abonnes_nb = 0;
-    if( !$discret && in_array($new_etat,array('2rubrique','3mixte','4synthese')) )
+    if( !$discret && in_array($new_etat,array('2rubrique','3synthese')) )
     {
       $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref );
       $abonnes_nb = count($DB_TAB);
@@ -371,7 +370,7 @@ foreach($DB_TAB as $DB_ROW)
   {
     $icone_verification = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire."></q>' ;
   }
-  elseif(in_array($etat,array('3mixte','4synthese')))
+  elseif($etat=='3synthese')
   {
     $icone_verification = ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) || ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet car bilan configuré sans saisie intermédiaire ni de synthèse."></q>' ;
   }
@@ -386,7 +385,7 @@ foreach($DB_TAB as $DB_ROW)
     {
       $icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
     }
-    elseif( ($etat=='5complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
+    elseif( ($etat=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
     {
       $icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
     }
@@ -404,7 +403,7 @@ foreach($DB_TAB as $DB_ROW)
   {
     $icone_voir_pdf = '<q class="voir_archive_non" title="Accès restreint aux copies des impressions PDF :<br />'.$profils_archives_pdf.'."></q>';
   }
-  elseif($etat!='5complet')
+  elseif($etat!='4complet')
   {
     $icone_voir_pdf = '<q class="voir_archive_non" title="Consultation du bilan imprimé sans objet (bilan déclaré non finalisé)."></q>';
   }
@@ -431,7 +430,7 @@ foreach($DB_TAB as $DB_ROW)
     // images action : saisie
     if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
     {
-      if(in_array($etat,array('2rubrique','3mixte')))
+      if($etat=='2rubrique')
       {
         $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '<q class="modifier" title="Saisir '.$tab_types[$BILAN_TYPE]['modif_rubrique'].'."></q>' : '<q class="modifier_non" title="Bilan configuré sans saisie intermédiaire."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
       }
@@ -447,7 +446,7 @@ foreach($DB_TAB as $DB_ROW)
     // images action : tamponner
     if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
     {
-      if(in_array($etat,array('3mixte','4synthese')))
+      if($etat=='3synthese')
       {
         $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
       }
@@ -463,7 +462,7 @@ foreach($DB_TAB as $DB_ROW)
     // images action : impression
     if($tab_droits['droit_impression_pdf'])
     {
-      $icone_impression = ($etat=='5complet') ? '<q class="imprimer" title="Imprimer le bilan (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois le bilan déclaré complet."></q>' ;
+      $icone_impression = ($etat=='4complet') ? '<q class="imprimer" title="Imprimer le bilan (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois le bilan déclaré complet."></q>' ;
     }
     else
     {
@@ -517,7 +516,7 @@ if($affichage_formulaire_statut)
   echo'
     <form action="#" method="post" id="cadre_statut">
       <h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>
-      <div>'.implode('</div><div>',$tab_radio).'</div>
+      <div>'.implode('<br />',$tab_radio).'</div>
       <p><label for="mode_discret"><input id="mode_discret" name="mode_discret" type="checkbox" value="1" /> Mode discret <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher pour éviter l\'envoi de notifications aux abonnés." /></label></p>
       <p><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
     </form>
@@ -560,7 +559,7 @@ elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
   }
   $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 }
-// Choix de vérifier ou pas l'appréciation générale ; le test (in_array($etat,array('3mixte','4synthese'))) dépend de chaque classe...
+// Choix de vérifier ou pas l'appréciation générale ; le test ($etat=='3synthese') dépend de chaque classe...
 $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ? '' : ' disabled' ;
 $tab_checkbox_rubriques[0] = '<label for="rubrique_0"><input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /> <i>Appréciation de synthèse générale</i></label><br />';
 // Présenter les rubriques en colonnes de hauteur raisonnables

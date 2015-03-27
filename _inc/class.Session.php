@@ -301,7 +301,7 @@ class Session
     // Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
     $_SESSION = array();
     session_unset();
-    Cookie::effacer(session_name());
+    setcookie( session_name() /*name*/ , '' /*value*/ , $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     if($is_initialized)
     {
       session_destroy();

@@ -37,7 +37,7 @@ if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) &&
 // Supprimer le cookie avec le mode d'identification, servant à une reconnexion SSO, devenu inutile puisque déconnecté à présent.
 if(isset($_COOKIE[COOKIE_AUTHMODE]))
 {
-  Cookie::effacer(COOKIE_AUTHMODE);
+  setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, $_SERVER['REQUEST_TIME']-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
 }
 
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations.

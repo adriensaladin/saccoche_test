@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet      = (isset($_POST['f_objet']))      ? Clean::texte($_POST['f_objet'])      : '';
+$OBJET      = (isset($_POST['f_objet']))      ? Clean::texte($_POST['f_objet'])      : '';
 $ACTION     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])     : '';
 $BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? Clean::texte($_POST['f_bilan_type']) : '';
 $mode       = (isset($_POST['f_mode']))       ? Clean::texte($_POST['f_mode'])       : '';
@@ -85,7 +85,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) )
+if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='5complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) )
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }

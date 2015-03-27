@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
 "POT-Creation-Date: 2015-02-19 18:02+0100\n"
-"PO-Revision-Date: 2015-02-19 18:02+0100\n"
-"Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
+"PO-Revision-Date: 2015-03-26 10:02+0700\n"
+"Last-Translator: Gilles Claudel <claudelgilles0768@gmail.com>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: vi_VN\n"
 "MIME-Version: 1.0\n"
@@ -86,7 +86,7 @@ msgstr "Lưu lại các thao tác nhạy cảm"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:57
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_notifications.php:29
 msgid "Notifications reçues"
-msgstr ""
+msgstr "Các thông báo đã nhận"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:55
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:57
@@ -139,7 +139,7 @@ msgstr "Nhận xét, đánh giá: ký hiệu, màu sắc, chú thích"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_algorithme_gestion.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_algorithme.php:29
 msgid "Algorithme de calcul"
-msgstr "Quy tắc các bước làm tính "
+msgstr "Cách thức tính kết quả trung bình giúp đánh giá việc lĩnh hội các kỹ năng"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:70
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_profils.php:29
@@ -176,7 +176,7 @@ msgstr "Mật khẩu"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:65
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_email.php:29
 msgid "Adresse e-mail & Abonnements"
-msgstr ""
+msgstr "Địa chỉ thư điện tử (E-mail) và đăng ký đặt thông tin"
 
 # Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:79
@@ -753,7 +753,7 @@ msgstr "(Các) học sinh liên kết với tài khoản của bạn :"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:234
 msgid "Notifications à consulter"
-msgstr ""
+msgstr "Các thông báo chưa xem"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:260
 msgid "Message"
@@ -805,7 +805,7 @@ msgstr "Thứ tự thông báo các môn học trong một phiếu điểm"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel_voir_archive.php:29
 msgid "Archives consultables des bilans officiels"
-msgstr "Phần lưu trữ kết quả đánh giá học tập chính thức bạn có thể tra cứu "
+msgstr "Phần lưu trữ kết quả đánh giá học tập chính thức bạn có thể tra cứu được"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/professeur_groupe_besoin.php:29
 msgid "Gérer ses groupes de besoin"

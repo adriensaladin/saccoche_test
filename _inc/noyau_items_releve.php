@@ -562,9 +562,9 @@ if($type_individuel)
   $jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   if($make_html)
   {
-    $bouton_print_appr = ($make_officiel)                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
-    $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-    $bouton_import_csv = ($make_action=='saisir')             ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
+    $bouton_print_appr = ($make_officiel)                                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
+    $bouton_print_test = (!empty($is_bouton_test_impression))                 ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
+    $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>'.NL;
@@ -643,7 +643,7 @@ if($type_individuel)
           foreach($tab_matiere as $matiere_id => $tab)
           {
             extract($tab); // $matiere_nom $matiere_nb_demandes
-            if( (!$make_officiel) || (($make_action=='saisir')&&($BILAN_ETAT=='2rubrique')&&(in_array($matiere_id,$tab_matiere_id))) || (($make_action=='saisir')&&($BILAN_ETAT=='3synthese')) || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
+            if( (!$make_officiel) || (($make_action=='modifier')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='tamponner') || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
             {
               // Si cet élève a été évalué dans cette matière...
               if(isset($tab_eval[$eleve_id][$matiere_id]))
@@ -861,11 +861,11 @@ if($type_individuel)
                       {
                         extract($tab);  // $prof_info $appreciation $note
                         $actions = '';
-                        if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) )
+                        if( ($make_action=='modifier') && ($prof_id==$_SESSION['USER_ID']) )
                         {
                           $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
                         }
-                        elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+                        elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
                         {
                           if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                           if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
@@ -873,7 +873,7 @@ if($type_individuel)
                         $appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
                       }
                     }
-                    if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
+                    if($make_action=='modifier')
                     {
                       if(!isset($tab_saisie[$eleve_id][$matiere_id][$_SESSION['USER_ID']]))
                       {
@@ -897,7 +897,7 @@ if($type_individuel)
             }
           }
           // Relevé de notes - Synthèse générale
-          if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']) && ( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') ) )
+          if( ($make_officiel) && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']) && ( ($make_action=='tamponner') || ($make_action=='consulter') ) )
           {
             if($make_html)
             {
@@ -925,18 +925,18 @@ if($type_individuel)
               {
                 extract($tab_appreciation_generale);  // $prof_info $appreciation $note
                 $actions = '';
-                if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) // Pas de test ($prof_id_appreciation_generale==$_SESSION['USER_ID']) car l'appréciation générale est unique avec saisie partagée.
+                if($make_action=='tamponner') // Pas de test ($prof_id_appreciation_generale==$_SESSION['USER_ID']) car l'appréciation générale est unique avec saisie partagée.
                 {
                   $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
                 }
-                elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+                elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
                 {
                   if($prof_id_appreciation_generale!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                   if($droit_corriger_appreciation)                         { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
                 }
                 $releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id_appreciation_generale.'"><td class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
               }
-              elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
+              elseif($make_action=='tamponner')
               {
                 $releve_HTML_individuel .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'"><td class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td></tr>'.NL;
               }

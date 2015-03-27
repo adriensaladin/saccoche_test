@@ -284,7 +284,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       {
         extract($tab_eleve_saisie[$eleve_id][$epreuve_code]); // $matieres_id $prof_id $prof_info $appreciation $note
         $tab_matieres_utilisees = explode(',',$matieres_id);
-        if( (($make_action=='saisir')&&($BILAN_ETAT=='3synthese')) || (($make_action=='saisir')&&($BILAN_ETAT=='2rubrique')&&(count(array_intersect($tab_matieres_utilisees,$tab_matiere_id)))) || (($make_action=='examiner')&&(in_array($eleve_brevet_serie.'_'.$epreuve_code,$tab_rubrique))) || ($make_action=='consulter') || ($make_action=='imprimer') )
+        if( ($make_action=='tamponner') || (($make_action=='modifier')&&(count(array_intersect($tab_matieres_utilisees,$tab_matiere_id)))) || (($make_action=='examiner')&&(in_array($eleve_brevet_serie.'_'.$epreuve_code,$tab_rubrique))) || ($make_action=='consulter') || ($make_action=='imprimer') )
         {
           // Fiche brevet - Interface graphique
           if( $make_graph && $epreuve_note_chiffree )
@@ -308,18 +308,18 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             if($appreciation)
             {
               $actions = '';
-              if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
+              if($make_action=='modifier')
               {
                 $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
               }
-              elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+              elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
               {
                 if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
                 if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
               }
               $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.$epreuve_code.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'.NL;
             }
-            if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
+            if($make_action=='modifier')
             {
               if(!$appreciation)
               {
@@ -362,7 +362,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       $avis_conseil_classe = $appreciation{0};
       $appreciation = mb_substr($appreciation,2);
     }
-    if( ($BILAN_ETAT=='3synthese') || ($make_action=='consulter') )
+    if( ($make_action=='tamponner') || ($make_action=='consulter') )
     {
       if( ($make_html) || ($make_graph) )
       {
@@ -374,11 +374,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         if($appreciation)
         {
           $actions = '';
-          if( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
+          if($make_action=='tamponner')
           {
             $actions .= ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
           }
-          elseif(in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+          elseif(in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
           {
             if($prof_id!=$_SESSION['USER_ID']) { $actions .= ' <button type="button" class="signaler">Signaler une faute</button>'; }
             if($droit_corriger_appreciation)   { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
@@ -386,7 +386,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $txt_avis_conseil_classe = ($avis_conseil_classe=='F') ? 'Avis favorable' : 'Doit faire ses preuves' ;
           $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$actions.'</div><div class="appreciation">'.html($appreciation).'</div><div id="avis_conseil_classe" class="b">'.html($txt_avis_conseil_classe).'</div></td></tr>'.NL;
         }
-        elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
+        elseif($make_action=='tamponner')
         {
           $fiche_brevet_HTML .= '<tr id="appr_'.$eleve_brevet_serie.'_'.CODE_BREVET_EPREUVE_TOTAL.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button></div></td></tr>'.NL;
         }

@@ -498,7 +498,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       }
       $tab_nb_lignes[$eleve_id][$rubrique_id] = max($nb_lignes_premiere_colonne,$nb_lignes_derniere_colonne);
     }
-    $tab_nb_lignes[$eleve_id][0] = array_sum($tab_nb_lignes[$eleve_id]);
+    $tab_nb_lignes[$eleve_id][0] = isset($tab_nb_lignes[$eleve_id]) ? array_sum($tab_nb_lignes[$eleve_id]) : 1 ;
   }
   // Bloc des coordonnées de l'établissement (code repris de [code_officiel_imprimer.php] )
   $tab_etabl_coords = array();
@@ -559,7 +559,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       $tab_profs = isset($tab_saisies[$eleve_id][$rubrique_id]['professeur']) ? $tab_saisies[$eleve_id][$rubrique_id]['professeur'] : NULL ;
       $moyenne_eleve  = $tab_moyennes[$rubrique_id][$eleve_id] ;
       $moyenne_classe = $tab_moyennes[$rubrique_id][0] ;
-      $tab_appreciations = $tab_saisies[$eleve_id][$rubrique_id]['appreciation'];
+      $tab_appreciations = isset($tab_saisies[$eleve_id][$rubrique_id]['appreciation']) ? $tab_saisies[$eleve_id][$rubrique_id]['appreciation'] : array() ;
       $archivage_tableau_PDF->recapitulatif_rubrique( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_profs , $moyenne_eleve , $moyenne_classe , $tab_appreciations );
     }
   }

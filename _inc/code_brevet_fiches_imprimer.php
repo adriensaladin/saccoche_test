@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet     = (isset($_POST['f_objet']))  ? Clean::texte($_POST['f_objet'])   : '';
+$OBJET     = (isset($_POST['f_objet']))  ? Clean::texte($_POST['f_objet'])   : '';
 $ACTION    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
 $classe_id = (isset($_POST['f_classe'])) ? Clean::entier($_POST['f_classe']) : 0;
 $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
@@ -51,7 +51,7 @@ $annee_session_brevet = annee_session_brevet();
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!in_array($objet,$tab_objet)) || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -71,7 +71,7 @@ if(!$BILAN_ETAT)
 {
   exit('Fiche brevet introuvable !');
 }
-if( ($BILAN_ETAT!='4complet') && empty($is_test_impression) )
+if( ($BILAN_ETAT!='5complet') && empty($is_test_impression) )
 {
   exit('Fiche brevet interdite d\'accès pour cette action !');
 }
@@ -116,7 +116,7 @@ if($ACTION=='initialiser')
   $_SESSION['tmp_droit_voir_archive'] = array(); // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
   foreach($tab_eleve_id as $eleve_id)
   {
-    if($objet=='imprimer')
+    if($OBJET=='imprimer')
     {
       $checked    = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
       $archive_td = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']) : 'Non' ;
@@ -126,7 +126,7 @@ if($ACTION=='initialiser')
       echo'<td class="label hc">'.$archive_td.'</td>';
       echo'</tr>';
     }
-    elseif($objet=='voir_archive')
+    elseif($OBJET=='voir_archive')
     {
       if(!isset($DB_TAB[$eleve_id]))
       {

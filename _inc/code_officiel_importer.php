@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
+$OBJET        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
 $ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
 $BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
 $periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
@@ -65,7 +65,7 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || !$periode_id || !$classe_id )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || !$periode_id || !$classe_id )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -87,7 +87,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese')))
+if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese')))
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }
@@ -107,7 +107,7 @@ if($ACTION!='enregistrer_saisie_csv')
 
   // Rubriques concernées
   $tab_rubriques = array() ;
-  if($BILAN_ETAT=='2rubrique')
+  if($OBJET=='modifier')
   {
     $DB_TAB = (in_array($BILAN_TYPE,array('releve','bulletin'))) ? DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_ID'] ) : DB_STRUCTURE_SOCLE::DB_recuperer_piliers( (int)substr($BILAN_TYPE,-1) );
     foreach($DB_TAB as $DB_ROW)
@@ -115,7 +115,7 @@ if($ACTION!='enregistrer_saisie_csv')
       $tab_rubriques[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];
     }
   }
-  else if($BILAN_ETAT=='3synthese')
+  else if($OBJET=='tamponner')
   {
     $tab_rubriques = array( 0 => 'Synthèse générale' ) ;
   }
@@ -148,7 +148,7 @@ if($ACTION=='generer_csv_vierge')
 {
   $groupe_nom = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
   $export_csv = $BILAN_TYPE.'_'.$BILAN_ETAT.'_'.$_SESSION['USER_ID'].'_'.$periode_id.'_'.$groupe_id.$separateur.'Saisie déportée - '.$tab_types[$BILAN_TYPE]['titre'].' - '.$periode_nom.' - '.$groupe_nom."\r\n\r\n";
-  $with_note = ( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] && ($BILAN_ETAT=='2rubrique') ) ? TRUE : FALSE ;
+  $with_note = ( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] && ($OBJET=='modifier') ) ? TRUE : FALSE ;
   $type_note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? 'Note' : 'Pourcentage' ;
   $rubrique_ligne_fin = ($with_note) ? $type_note.$separateur.'Appréciation' : 'Appréciation' ;
   foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
@@ -219,7 +219,7 @@ if($ACTION=='uploader_saisie_csv')
   // On y va
   $rubrique_id = NULL;
   $tab_donnees_csv = array(); // [rubrique_id][eleve_id][type(moyenne|appreciation)] => [valeur][idem|insert|update]
-  $with_note = ( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] && ($BILAN_ETAT=='2rubrique') ) ? TRUE : FALSE ;
+  $with_note = ( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] && ($OBJET=='modifier') ) ? TRUE : FALSE ;
   $nb_colonnes = ($with_note) ? 4 : 3 ;
   foreach ($tab_lignes as $ligne_contenu)
   {
@@ -236,7 +236,7 @@ if($ACTION=='uploader_saisie_csv')
         // Une nouvelle rubrique ; on vérifie sa validité
         if($ref1_objet=='rubrique')
         {
-          if( ( $ref1_valeur && ($BILAN_ETAT=='2rubrique') && isset($tab_rubriques[$ref1_valeur]) ) || ( !$ref1_valeur && ($BILAN_ETAT=='3synthese') ) )
+          if( ( $ref1_valeur && ($OBJET=='modifier') && isset($tab_rubriques[$ref1_valeur]) ) || ( !$ref1_valeur && ($OBJET=='tamponner') ) )
           {
             $rubrique_id = $ref1_valeur;
             $longueur_maxi = ($rubrique_id) ? $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR'] : $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR'] ;
@@ -429,7 +429,7 @@ if($ACTION=='enregistrer_saisie_csv')
     {
       if(isset($tab_saisies['moyenne']))
       {
-        if( ($tab_saisies['moyenne']>=0) && ($BILAN_ETAT=='2rubrique') && ($BILAN_TYPE=='bulletin') && ($rubrique_id>0) )
+        if( ($tab_saisies['moyenne']>=0) && ($OBJET=='modifier') && ($BILAN_TYPE=='bulletin') && ($rubrique_id>0) )
         {
           enregistrer_note( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $tab_saisies['moyenne'] );
           $nb_modifs++;
@@ -437,7 +437,7 @@ if($ACTION=='enregistrer_saisie_csv')
       }
       if(isset($tab_saisies['appreciation']))
       {
-        if( ($tab_saisies['appreciation']) && ( ($rubrique_id>0) || ($BILAN_ETAT=='3synthese') ) )
+        if( ($tab_saisies['appreciation']) && ( ($rubrique_id>0) || ($OBJET=='tamponner') ) )
         {
           enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $_SESSION['USER_ID'] , $tab_saisies['appreciation'] );
           $nb_modifs++;

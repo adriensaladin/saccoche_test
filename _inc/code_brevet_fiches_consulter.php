@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$objet     = (isset($_POST['f_objet']))  ? Clean::texte($_POST['f_objet'])   : '';
+$OBJET     = (isset($_POST['f_objet']))  ? Clean::texte($_POST['f_objet'])   : '';
 $ACTION    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
 $mode      = (isset($_POST['f_mode']))   ? Clean::texte($_POST['f_mode'])    : '';
 $classe_id = (isset($_POST['f_classe'])) ? Clean::entier($_POST['f_classe']) : 0;

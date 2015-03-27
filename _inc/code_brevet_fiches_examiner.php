@@ -61,7 +61,7 @@ if(!$BILAN_ETAT)
 {
   exit('Fiche brevet introuvable !');
 }
-if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+if(!in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
 {
   exit('Fiche brevet interdite d\'accès pour cette action !');
 }

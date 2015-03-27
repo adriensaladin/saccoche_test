@@ -85,8 +85,9 @@ $tab_etats = array
 ( // le <span> supplémentaire sert pour appliquer un style css
   '1vide'     => 'Vide (fermé)',
   '2rubrique' => 'Saisies Profs',
-  '3synthese' => 'Saisie Synthèse',
-  '4complet'  => 'Complet (fermé)',
+  '3mixte'    => 'Saisies Mixtes',
+  '4synthese' => 'Saisie Synthèse',
+  '5complet'  => 'Complet (fermé)',
 );
 
 $annee_session_brevet = annee_session_brevet();
@@ -108,7 +109,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
     // Concernant les notifications, on liste déjà s'il y a des utilisateurs qui s'y seraient abonnés
     $abonnement_ref = 'fiche_brevet_statut';
     $abonnes_nb = 0;
-    if( !$discret && in_array($new_etat,array('2rubrique','3synthese')) )
+    if( !$discret && in_array($new_etat,array('2rubrique','3mixte','4synthese')) )
     {
       $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref );
       $abonnes_nb = count($DB_TAB);
@@ -344,7 +345,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
   // État
   $affich_etat = '<span class="off_etat '.substr($etat,1).'"><span>'.$tab_etats[$etat].'</span></span>';
   // images action : vérification
-  if( ($etat=='2rubrique') || ($etat=='3synthese') )
+  if(in_array($etat,array('2rubrique','3mixte','4synthese')))
   {
     $icone_verification = '<q class="detailler" title="Rechercher les saisies manquantes."></q>';
   }
@@ -373,7 +374,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
   {
     $icone_voir_pdf = '<q class="voir_archive_non" title="Accès restreint aux copies des impressions PDF :<br />'.$profils_archives_pdf.'."></q>';
   }
-  elseif($etat!='4complet')
+  elseif($etat!='5complet')
   {
     $icone_voir_pdf = '<q class="voir_archive_non" title="Consultation de la fiche imprimée sans objet (fiche déclarée non finalisée)."></q>';
   }
@@ -400,7 +401,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
     // images action : saisie
     if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
     {
-      if($etat=='2rubrique')
+      if(in_array($etat,array('2rubrique','3mixte')))
       {
         $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<q class="modifier" title="Saisir les appréciations par épreuve."></q>' : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
       }
@@ -416,7 +417,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
     // images action : tamponner
     if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
     {
-      if($etat=='3synthese')
+      if(in_array($etat,array('3mixte','4synthese')))
       {
         $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
       }
@@ -432,7 +433,7 @@ foreach($tab_classe as $classe_id => $tab_groupes)
     // images action : impression
     if($tab_droits['droit_impression_pdf'])
     {
-      $icone_impression = ($etat=='4complet') ? '<q class="imprimer" title="Imprimer la fiche (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois la fiche déclarée complète."></q>' ;
+      $icone_impression = ($etat=='5complet') ? '<q class="imprimer" title="Imprimer la fiche (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois la fiche déclarée complète."></q>' ;
     }
     else
     {
@@ -486,7 +487,7 @@ if($affichage_formulaire_statut)
   echo'
     <form action="#" method="post" id="cadre_statut">
       <h3>Accès / Statut : <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour les cases cochées du tableau (classes uniquement)." /></h3>
-      <div>'.implode('<br />',$tab_radio).'</div>
+      <div>'.implode('</div><div>',$tab_radio).'</div>
       <p><label for="mode_discret"><input id="mode_discret" name="mode_discret" type="checkbox" value="1" /> Mode discret <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Cocher pour éviter l\'envoi de notifications aux abonnés." /></label></p>
       <p><input id="classe_ids" name="classe_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
     </form>

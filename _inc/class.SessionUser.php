@@ -76,7 +76,7 @@ class SessionUser
       return array( 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' , array() );
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le partenariat sélectionné si identification avec succès
-    setcookie( COOKIE_PARTENAIRE /*name*/ , $DB_ROW['partenaire_id'] /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
+    Cookie::definir( COOKIE_PARTENAIRE , $DB_ROW['partenaire_id'] , 31536000 /* 60*60*24*365 = 1 an */ );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
     return array( 'ok' , $DB_ROW );
   }
@@ -139,9 +139,9 @@ class SessionUser
       DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion($DB_ROW['user_id']);
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-    setcookie( COOKIE_STRUCTURE /*name*/ , $BASE /*value*/ , $_SERVER['REQUEST_TIME']+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
+    Cookie::definir( COOKIE_STRUCTURE , $BASE , 31536000 /* 60*60*24*365 = 1 an */ );
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
-    setcookie( COOKIE_AUTHMODE /*name*/ , $mode_connection /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+    Cookie::definir( COOKIE_AUTHMODE , $mode_connection );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
     return array( 'ok' , $DB_ROW );
   }

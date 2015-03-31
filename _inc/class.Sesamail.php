@@ -663,43 +663,24 @@ class Sesamail
 
 
   /**
-   * Renvoie une URL pour un lien profond vers un espace identifié.
+   * Renvoie un texte comportant divers éléments pour la fin du courriel.
    * 
-   * @param string   $query_string   sans "?" initial ni de param de base ou de sso
+   * @param array   $tab_elements   peut contenir les valeurs 'excuses_derangement' , 'info_connexion' , 'no_reply' ,  'notif_individuelle' , 'signature'
+   * @param string  $courriel       facultatif, seulement requis pour 'excuses_derangement' & 'notif_individuelle' 
    * @return string
    */
-  public static function adresse_lien_profond($get_param)
+  public static function adresse_lien_direct_debut()
   {
-    // GET à ajouter pour le type de connexion et le numéro de la base (si besoin)
+    $get = '?';
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      $get_connexion = ($_SESSION['CONNEXION_MODE']!='normal') ? 'sso='.$_SESSION['BASE'].'&' : 'base='.$_SESSION['BASE'].'&' ;
+      $get .= ($_SESSION['CONNEXION_MODE']!='normal') ? 'sso='.$_SESSION['BASE'].'&' : 'base='.$_SESSION['BASE'].'&' ;
     }
     else if($_SESSION['CONNEXION_MODE']!='normal')
     {
-      $get_connexion = 'sso&' ;
+      $get .= 'sso&' ;
     }
-    else if($_SESSION['CONNEXION_MODE']!='normal')
-    {
-      $get_connexion = '' ;
-    }
-    // assemblage selon le mode de connexion
-    if($_SESSION['CONNEXION_MODE']!='shibboleth')
-    {
-       // SACoche gère la mémorisation de la page demandée en utilisant $_SESSION['MEMO_GET'].
-      $query_string = '?'.$get_connexion.$get_param;
-    }
-    else
-    {
-       // Le "maquillage" dans un memoget est obligatoire sur le serveur de Bordeaux,
-       // sinon (transmission du param "sso") le serveur shibbolisé redirige vers l'authentification
-       // avant que PHP ne prenne la main pour enregistrer les valeurs GET que le service d'authentification externe perd
-       // (bug lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...)
-       // Dans ce cas, SACoche utilise un ccokie : @see Cookie::save_get_and_exit_reload() + Cookie::load_get()
-      $query_string = '?memoget='.urlencode($get_connexion.$get_param);
-    }
-    // retour
-    return URL_DIR_SACOCHE.$query_string;
+    return URL_DIR_SACOCHE.$get;
   }
 
   /**
@@ -737,15 +718,15 @@ class Sesamail
       $texte .= "\r\n";
       $texte .= '______________________________________________________________________'."\r\n";
       $texte .= "\r\n";
-      $texte .= 'L\'expéditeur de ce courriel est une machine, merci de NE PAS répondre au message.'."\r\n";
+      $texte .= 'L\'expéditeur de ce courriel est une machine, merci de NE PAS lui répondre.'."\r\n";
     }
     // texte avec l'indication pour modifier ses abonnements et un lien pour signaler une réception anormale
     if(in_array( 'notif_individuelle' , $tab_elements ))
     {
-      $texte .= "\r\n";
-      $texte .= 'Modifier vos abonnements :'   ."\r\n".Sesamail::adresse_lien_profond('page=compte_email')."\r\n";
-      $texte .= 'Consulter vos notifications :'."\r\n".Sesamail::adresse_lien_profond('page=consultation_notifications')."\r\n";
-      $texte .= 'Signaler un courriel erroné :'."\r\n".URL_DIR_SACOCHE.'?'.'base=' .$_SESSION['BASE'].'&page=public_contact_admin&courriel='.$courriel."\r\n";
+      $get_key = ($_SESSION['CONNEXION_MODE']!='normal') ? 'sso=' : 'base=' ;
+      $texte .= 'Modifier vos abonnements : '   .Sesamail::adresse_lien_direct_debut().'page=compte_email'."\r\n";
+      $texte .= 'Consulter vos notifications : '.Sesamail::adresse_lien_direct_debut().'page=consultation_notifications'."\r\n";
+      $texte .= 'Signaler un envoi anormal : '  .URL_DIR_SACOCHE.'?'.'base=' .$_SESSION['BASE'].'&page=public_contact_admin&courriel='.$courriel."\r\n";
     }
     // texte avec la signature "SACoche"
     if(in_array( 'signature' , $tab_elements ))

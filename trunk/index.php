@@ -166,12 +166,6 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 // Authentification requise par SSO
 if(Session::$_sso_redirect)
 {
-  // Forcer si cela n'a pas déjà été fait la mémorisation de paramètres multiples transmis en GET pour les retrouver par la suite dans le cas où le service d'authentification externe en perd
-  // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
-  if(!isset($_COOKIE[COOKIE_MEMOGET]))
-  {
-    Cookie::save_get_and_exit_reload( $_SERVER['QUERY_STRING'] );
-  }
   require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
 }
 
@@ -181,6 +175,7 @@ if(isset($_COOKIE[COOKIE_MEMOGET]))
 {
   Cookie::effacer(COOKIE_MEMOGET);
 }
+
 // Authentification pour le compte d'une application tierce
 if(isset($_GET['url_redirection']))
 {

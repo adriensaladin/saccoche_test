@@ -247,11 +247,10 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
   if($listing_abonnes)
   {
-    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
-    $notification_contenu.= 'Y accéder : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id;
+    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
     $tab_abonnes = explode(',',$listing_abonnes);
     foreach($tab_abonnes as $abonne_id)
@@ -313,11 +312,10 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
   if($listing_abonnes)
   {
-    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
-    $notification_contenu.= 'Y accéder : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id;
+    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
     $tab_abonnes = explode(',',$listing_abonnes);
     foreach($tab_abonnes as $abonne_id)
@@ -365,6 +363,7 @@ if( ($action=='retirer') && $nb_demandes )
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
   if($listing_abonnes)
   {
+    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id=');
     $tab_item_for_user = array();
     foreach($tab_user_item as $key)
     {
@@ -379,7 +378,7 @@ if( ($action=='retirer') && $nb_demandes )
     else
     {
       $notification_contenu = 'évaluée directement par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-      $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=evaluation_voir&devoir_id='.$devoir_saisie;
+      $notification_contenu.= 'Y accéder :'."\r\n".$adresse_lien_profond.$devoir_saisie;
     }
     $tab_item_infos = array();
     $tab_abonnes = explode(',',$listing_abonnes);

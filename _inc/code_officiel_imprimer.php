@@ -220,7 +220,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
       if($listing_abonnes)
       {
         $notification_contenu = 'Bilan officiel disponible : ['.$classe_nom.'] ['.$tab_types[$BILAN_TYPE]['titre'].'] ['.$periode_nom.'].'."\r\n\r\n";
-        $notification_contenu.= 'Y accéder : '.Sesamail::adresse_lien_direct_debut().'page=officiel_voir_archive';
+        $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=officiel_voir_archive');
         $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
         foreach($tab_abonnes as $abonne_id => $tab_abonne)
         {

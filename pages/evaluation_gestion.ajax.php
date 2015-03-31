@@ -379,10 +379,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
     if($listing_abonnes)
     {
-      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
       $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
       $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
-      $notification_lien = "\r\n".'Pour y accéder : '.$adresse_connexion.'page=evaluation_gestion&section='.$type;
+      $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_gestion&section='.$type);
       $tab_abonnes = explode(',',$listing_abonnes);
       foreach($tab_abonnes as $abonne_id)
       {
@@ -414,7 +413,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
     if($listing_abonnes)
     {
-      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id2.'&eleve_id=');
       $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
       $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
@@ -422,7 +421,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
       {
         foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
         {
-          $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id2.'&eleve_id='.$eleve_id;
+          $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
           DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id2 , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
         }
       }
@@ -579,10 +578,9 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
         $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
         if($listing_abonnes)
         {
-          $adresse_connexion = Sesamail::adresse_lien_direct_debut();
           $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
           $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
-          $notification_lien = "\r\n".'Pour y accéder : '.$adresse_connexion.'page=evaluation_gestion&section='.$type;
+          $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_gestion&section='.$type);
           $tab_abonnes = explode(',',$listing_abonnes);
           foreach($tab_abonnes as $abonne_id)
           {
@@ -627,14 +625,14 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
     if($listing_abonnes)
     {
-      $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id=');
       $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)
       {
         foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
         {
-          $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+          $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
           DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
         }
       }
@@ -1061,7 +1059,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );
   if($listing_abonnes)
   {
-    $adresse_connexion = Sesamail::adresse_lien_direct_debut();
+    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id=');
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
@@ -1069,7 +1067,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
     {
       foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
       {
-        $notification_lien = 'Voir le détail : '.$adresse_connexion.'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+        $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
         DB_STRUCTURE_NOTIFICATION::DB_modifier_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien , 'remplacer' );
       }
     }
@@ -2054,7 +2052,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
   {
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-    $notification_lien = 'Voir le détail : '.Sesamail::adresse_lien_direct_debut().'page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id;
+    $notification_lien = 'Voir le détail :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id);
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
     foreach($tab_abonnes as $abonne_id => $tab_abonne)
     {

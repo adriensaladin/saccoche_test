@@ -325,6 +325,7 @@ class Session
       if(!Session::$tab_droits_page['public'])
       {
         // 1.1. Demande d'accès à une page réservée (donc besoin d'identification) : session perdue / expirée, ou demande d'accès direct (lien profond) -> redirection pour une nouvelle identification
+        $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
         Session::exit_sauf_SSO('Session absente / perdue / expirée / incompatible.'); // Si SSO au prochain coup on ne passera plus par là.
       }
       else

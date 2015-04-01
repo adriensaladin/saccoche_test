@@ -97,7 +97,7 @@ if(!$BILAN_ETAT)
 {
   exit('Bilan introuvable !');
 }
-if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese','voir2rubrique','voir3mixte','voir4synthese'))) //  'voir*' est transmis dans le cas d'une correction de faute
+if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese'))) // 'voir2rubrique','voir3mixte','voir4synthese' semble obsolète
 {
   exit('Bilan interdit d\'accès pour cette action !');
 }

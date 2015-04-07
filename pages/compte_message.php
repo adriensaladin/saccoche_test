@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Messages d'accueil"));
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 $select_groupe = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_profil = '<option value="">&nbsp;</option>';
+$select_profil = '<option value=""></option>';
 $select_profil.= ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<option value="administrateur">Administrateurs</option>' : '' ;
 $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))) ? '<option value="directeur">Directeurs</option>' : '' ;
 $select_profil.= '<option value="professeur">Professeurs</option>' ;

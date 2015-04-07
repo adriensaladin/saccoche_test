@@ -43,7 +43,7 @@ $geo_id = (isset($_POST['f_geo_id'])) ? Clean::entier($_POST['f_geo_id']) : -1 ;
 $select_f_geo    = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE   /*selection*/ , '' /*optgroup*/);
 $select_f_geo_id = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_lister_zones() , 'f_geo_id' /*select_nom*/ , '' /*option_first*/ , $geo_id /*selection*/ , '' /*optgroup*/);
 $selected = ($geo_id===0) ? ' selected' : '' ;
-$select_f_geo_id = str_replace( '<option value="">&nbsp;</option>' , '<option value="">&nbsp;</option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
+$select_f_geo_id = str_replace( '<option value=""></option>' , '<option value=""></option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );

@@ -152,9 +152,8 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
   if($notif_eleve)
   {
     $abonnement_ref = 'devoir_saisie';
-    $listing_eleves = (string)$eleve_id;
-    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
-    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($eleve_id);
+    $listing_users = ($listing_parents) ? $eleve_id.','.$listing_parents : $eleve_id ;
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
     if($listing_abonnes)
     {

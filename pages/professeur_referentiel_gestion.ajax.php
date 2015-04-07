@@ -118,12 +118,6 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   if($partage=='oui')
   {
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
-    $nb_item = count($DB_TAB);
-    if($nb_item<5)
-    {
-      $s = ($nb_item>1) ? 's' : '' ;
-      exit('Référentiel vide ou presque ('.$nb_item.' item'.$s.') : son partage n\'apparaît pas pertinent.');
-    }
     $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
     $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   }
@@ -156,12 +150,6 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
   }
   // Envoyer le référentiel vers le serveur de partage
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
-  $nb_item = count($DB_TAB);
-  if($nb_item<5)
-  {
-    $s = ($nb_item>1) ? 's' : '' ;
-    exit('Référentiel vide ou presque ('.$nb_item.' item'.$s.') : son partage n\'apparaît pas pertinent.');
-  }
   $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
   $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   // Analyse de la réponse retournée par le serveur de partage

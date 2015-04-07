@@ -353,7 +353,7 @@ elseif( $step==51 )
     if(count($tab_tables))
     {
       // Si on a pu lister les bases accessible, on affiche un select
-      $options = '<option value="">&nbsp;</option>';
+      $options = '<option value=""></option>';
       foreach($tab_tables as $table)
       {
         $options .= '<option value="'.html($table).'">'.html($table).'</option>';

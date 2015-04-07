@@ -1293,9 +1293,8 @@ if($type_synthese)
     }
   }
   $releve_PDF->ligne_tete_cellules_fin();
-  $entete_vide   = ($repeter_entete)     ? '<th class="nu">&nbsp;</th>' : '' ;
   $checkbox_vide = ($affichage_checkbox) ? '<th class="nu">&nbsp;</th>' : '' ;
-  $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$entete_vide.$checkbox_vide.'</tr></thead>'.NL;
+  $releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'.NL;
   // lignes suivantes
   $releve_HTML_table_body = '';
   if($tableau_synthese_format=='eleve')
@@ -1304,8 +1303,7 @@ if($type_synthese)
     {
       extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
       $releve_PDF->ligne_corps_cellule_debut( $eleve_nom.' '.$eleve_prenom );
-      $entete = '<td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
-      $releve_HTML_table_body .= '<tr>'.$entete;
+      $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
       foreach($tab_matiere_item as $matiere_id=>$tab_item)  // Pour chaque item...
       {
         foreach($tab_item as $item_id=>$item_nom)
@@ -1323,9 +1321,8 @@ if($type_synthese)
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
       $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
-      $col_entete   = ($repeter_entete) ? $entete : '' ;
-      $col_checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
-      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$col_entete.$col_checkbox.'</tr>'.NL;
+      $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
+      $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
     }
   }
   else
@@ -1335,8 +1332,7 @@ if($type_synthese)
       foreach($tab_item as $item_id=>$item_nom)
       {
         $releve_PDF->ligne_corps_cellule_debut( $tab_item_infos[$item_id][0]['item_ref'] );
-        $entete = '<td title="'.html(html($tab_item_infos[$item_id][0]['item_nom'])).'">'.html($tab_item_infos[$item_id][0]['item_ref']).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        $releve_HTML_table_body .= '<tr>'.$entete;
+        $releve_HTML_table_body .= '<tr><td title="'.html(html($tab_item_infos[$item_id][0]['item_nom'])).'">'.html($tab_item_infos[$item_id][0]['item_ref']).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
         {
           $score = (isset($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] : FALSE ;
@@ -1347,9 +1343,8 @@ if($type_synthese)
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
         $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
-        $col_entete   = ($repeter_entete) ? $entete : '' ;
-        $col_checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
-        $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$col_entete.$col_checkbox.'</tr>'.NL;
+        $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
+        $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$checkbox.'</tr>'.NL;
       }
     }
   }
@@ -1358,8 +1353,7 @@ if($type_synthese)
   $releve_PDF->lignes_pied_cellules_debut( $info_ponderation_courte );
   $releve_HTML_table_foot1 = '<tr><th>moy. scores '.$info_ponderation_courte.' [*]</th>';
   $releve_HTML_table_foot2 = '<tr><th>% items acquis [**]</th>';
-  $row_entete   = ($repeter_entete)     ? '<tr><th class="nu">&nbsp;</th>' : '' ;
-  $row_checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;
+  $checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;
   if($tableau_synthese_format=='eleve')
   {
     foreach($tab_matiere_item as $matiere_id=>$tab_item)  // Pour chaque item...
@@ -1371,8 +1365,7 @@ if($type_synthese)
         $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
         $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
         $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
-        $row_entete   .= ($repeter_entete) ? '<th class="hc" title="'.html(html($tab_item_infos[$item_id][0]['item_nom'])).'"><img alt="'.html($tab_item_infos[$item_id][0]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item_infos[$item_id][0]['item_ref']).'&amp;size=8" /></th>' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        $row_checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
+        $checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
       }
     }
   }
@@ -1385,27 +1378,25 @@ if($type_synthese)
       $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
       $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
       $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
-      $row_entete   .= ($repeter_entete) ? '<th class="hc"><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>' : '' ;
-      $row_checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
+      $checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
     }
   }
   // les deux dernières cases (moyenne des moyennes)
   $colspan  = ($tableau_synthese_format=='eleve') ? $item_nb : $eleve_nb ;
+  $last_col = ($affichage_checkbox) ? '<td class="nu"></td>' : '' ;
   $releve_PDF->ligne_corps_cellules_fin($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
-  $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$entete_vide.$checkbox_vide.'</tr>'.NL;
-  $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$entete_vide.$checkbox_vide.'</tr>'.NL;
-  $row_entete   .= ($repeter_entete)     ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$entete_vide.$checkbox_vide.'</tr>'.NL : '' ;
-  $row_checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$entete_vide.$checkbox_vide.'</tr>'.NL : '' ;
-  $releve_HTML_table_foot = '<tfoot>'.NL.'<tr class="vide"><td class="nu" colspan="'.$colspan.'">&nbsp;</td><td class="nu"></td><td class="nu" colspan="2"></td>'.$entete_vide.$checkbox_vide.'</tr>'.NL.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$row_entete.$row_checkbox.'</tfoot>'.NL;
+  $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL;
+  $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$checkbox_vide.'</tr>'.NL;
+  $checkbox .= ($affichage_checkbox) ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$checkbox_vide.'</tr>'.NL : '' ;
+  $releve_HTML_table_foot = '<tfoot>'.NL.'<tr class="vide"><td class="nu" colspan="'.$colspan.'">&nbsp;</td><td class="nu"></td><td class="nu" colspan="2"></td>'.$last_col.'</tr>'.NL.$releve_HTML_table_foot1.$releve_HTML_table_foot2.$checkbox.'</tfoot>'.NL;
   // pour la sortie HTML, on peut placer les tableaux de synthèse au début
   $num_hide = ($tableau_synthese_format=='eleve') ? $item_nb+1 : $eleve_nb+1 ;
-  $num_hide_add1 = ($affichage_checkbox || $repeter_entete) ? ','.($num_hide+3).':{sorter:false}' : '' ;
-  $num_hide_add2 = ($affichage_checkbox && $repeter_entete) ? ','.($num_hide+4).':{sorter:false}' : '' ;
+  $num_hide_add = ($affichage_checkbox) ? ','.($num_hide+3).':{sorter:false}' : '' ;
   $releve_HTML_synthese .= '<hr />'.NL.'<h2>SYNTHESE (selon l\'objet et le mode de tri choisis)</h2>'.NL;
   $releve_HTML_synthese .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
   $releve_HTML_synthese .= '<table id="table_s" class="bilan_synthese vsort">'.NL.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>'.NL;
   $releve_HTML_synthese .= ($affichage_checkbox) ? HtmlForm::afficher_synthese_exploitation('eleves + eleves-items + items').'</form>'.NL : '';
-  $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add1.$num_hide_add2.'} });</script>'.NL; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
+  $releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'.NL; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
   // On enregistre les sorties HTML et PDF
   FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.html' , $releve_HTML_synthese );
   FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf'  , $releve_PDF );

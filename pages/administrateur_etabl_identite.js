@@ -533,7 +533,7 @@ $(document).ready
           },
           success : function(responseHTML)
           {
-            if(responseHTML.substring(0,17)=='<option value="">')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,26)=='<option value=""></option>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_geo1').html(responseHTML).fadeIn('fast').focus();
@@ -569,7 +569,7 @@ $(document).ready
           success : function(responseHTML)
           {
             $('#f_recherche_geo select').prop('disabled',false);
-            if(responseHTML.substring(0,17)=='<option value="">')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,26)=='<option value=""></option>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_geo2').html(responseHTML).fadeIn('fast').focus();
@@ -605,7 +605,7 @@ $(document).ready
           success : function(responseHTML)
           {
             $('#f_recherche_geo select').prop('disabled',false);
-            if(responseHTML.substring(0,17)=='<option value="">')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseHTML.substring(0,26)=='<option value=""></option>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
               $('#f_geo3').html(responseHTML).fadeIn('fast').focus();
@@ -705,9 +705,9 @@ $(document).ready
         if(mode=='geo')
         {
           $('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          $('#f_geo1').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
-          $('#f_geo2').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
-          $('#f_geo3').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+          $('#f_geo1').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+          $('#f_geo2').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+          $('#f_geo3').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
           $("#f_recherche_uai").hide();
           $("#f_recherche_geo").show();
           maj_geo1();
@@ -732,8 +732,8 @@ $(document).ready
       function()
       {
         $("#f_recherche_resultat").html('<li></li>').hide();
-        $('#f_geo2').html('<option value="">&nbsp;</option>').fadeOut('fast');
-        $('#f_geo3').html('<option value="">&nbsp;</option>').fadeOut('fast');
+        $('#f_geo2').html('<option value=""></option>').fadeOut('fast');
+        $('#f_geo3').html('<option value=""></option>').fadeOut('fast');
         var geo1_val = $("#f_geo1").val();
         if(geo1_val)
         {
@@ -757,7 +757,7 @@ $(document).ready
       function()
       {
         $("#f_recherche_resultat").html('<li></li>').hide();
-        $('#f_geo3').html('<option value="">&nbsp;</option>').fadeOut('fast');
+        $('#f_geo3').html('<option value=""></option>').fadeOut('fast');
         var geo1_val = $("#f_geo1").val();
         var geo2_val = $("#f_geo2").val();
         if(geo1_val && geo2_val)

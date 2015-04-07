@@ -67,7 +67,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <label class="tab" for="f_periode_import">Période :</label><select id="f_periode_import" name="f_periode_import"><?php echo $select_periode ?></select><br />
     <label class="tab" for="f_choix_principal">Origine :</label>
     <select id="f_choix_principal" name="f_choix_principal">
-      <option value="">&nbsp;</option>
+      <option value=""></option>
       <option value="import_siecle">Siècle Vie Scolaire</option>
       <option value="import_sconet">Sconet Absences</option>
       <option value="import_gepi">GEPI Absences 2</option>

@@ -58,7 +58,7 @@ if($action=='select_logo')
       $options_logo .= '<option value="'.html($file).'"'.$selected.'>'.html($file).'</option>';
     }
   }
-  $options_logo = ($options_logo) ? '<option value="">&nbsp;</option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
+  $options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
   exit($options_logo);
 }
 

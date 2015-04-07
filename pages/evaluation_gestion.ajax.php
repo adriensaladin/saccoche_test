@@ -2045,9 +2045,8 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
     }
   }
   // Notifications (rendues visibles ultérieurement) ; le mode discret ne d'applique volontairement pas ici car les modifications sont chirurgicales
-  $listing_eleves = (string)$eleve_id;
-  $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
-  $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+  $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($eleve_id);
+  $listing_users = ($listing_parents) ? $eleve_id.','.$listing_parents : $eleve_id ;
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );
   if($listing_abonnes)
   {

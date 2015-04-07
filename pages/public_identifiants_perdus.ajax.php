@@ -87,7 +87,7 @@ if($user_id==-1)
   }
   else
   {
-    $options = '<option value="">&nbsp;</option>';
+    $options = '<option value=""></option>';
     foreach($DB_TAB as $DB_ROW)
     {
       $options .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_profil_nom_court_singulier'].')').'</option>';

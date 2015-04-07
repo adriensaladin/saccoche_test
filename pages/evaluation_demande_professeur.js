@@ -335,7 +335,7 @@ $(document).ready
 
     function maj_evaluation()
     {
-      $("#f_devoir").html('<option value="">&nbsp;</option>');
+      $("#f_devoir").html('<option value=""></option>');
       $('#ajax_maj1').removeAttr("class").addClass("loader").html("En cours&hellip;");
       eval_type = $('#f_qui option:selected').val();
       groupe_id = $("#f_groupe_id").val();

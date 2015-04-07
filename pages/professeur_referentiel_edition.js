@@ -1186,7 +1186,7 @@ $(document).ready
       {
         $('#select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
         $('#groupe_modifier_avertissement').show(0);
-        $('#select_action_groupe_deplacer_id_initial').html('<option value="">&nbsp;</option>');
+        $('#select_action_groupe_deplacer_id_initial').html('<option value=""></option>');
         lister_options_select( action_groupe.substring(9) , 'select_action_groupe_deplacer_id_initial' , 0 );
       }
     };
@@ -1212,7 +1212,7 @@ $(document).ready
         }
         else
         {
-          $('#select_action_groupe_modifier_id').html('<option value="">&nbsp;</option>');
+          $('#select_action_groupe_modifier_id').html('<option value=""></option>');
           lister_options_select( modifier_objet , 'select_action_groupe_modifier_id' , 0 );
         }
       }
@@ -1270,7 +1270,7 @@ $(document).ready
           $('#select_action_deplacer_explication option[value='+option_a_desactiver+']').prop('disabled',true);
           $('#select_action_deplacer_explication option[value='+option_a_activer+']').prop('disabled',false).prop('selected',true);
           $('#select_action_deplacer_explication').show(0);
-          $('#select_action_groupe_deplacer_id_final').html('<option value="">&nbsp;</option>');
+          $('#select_action_groupe_deplacer_id_final').html('<option value=""></option>');
           lister_options_select( granulosite , 'select_action_groupe_deplacer_id_final' , matiere_id_a_eviter );
         }
       }

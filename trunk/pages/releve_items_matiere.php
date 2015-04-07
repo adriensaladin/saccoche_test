@@ -70,6 +70,7 @@ $check_aff_socle          = (Form::$tab_choix['aff_socle'])              ? ' che
 $check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
 $check_aff_domaine        = (Form::$tab_choix['aff_domaine'])            ? ' checked' : '' ;
 $check_aff_theme          = (Form::$tab_choix['aff_theme'])              ? ' checked' : '' ;
+$check_repeter_entete     = (Form::$tab_choix['repeter_entete'])         ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
@@ -154,6 +155,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     </span>
     <span id="options_synthese" class="<?php echo $class_form_synthese ?>">
       <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
+      <span class="tab"></span><label for="f_repeter_entete"><input type="checkbox" id="f_repeter_entete" name="f_repeter_entete" value="1"<?php echo $check_repeter_entete ?> /> Répéter les entêtes de lignes et de colonnes (grand tableau, format <em>html</em>)</label><br />
     </span>
   </p>
   <p class="<?php echo $class_form_eleve ?>">

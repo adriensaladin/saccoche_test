@@ -76,7 +76,7 @@ $(document).ready
     }
     function changer_groupe()
     {
-      $("#select_eleve").html('<option value=""></option>').hide();
+      $("#select_eleve").html('<option value="">&nbsp;</option>').hide();
       var groupe_val = $("#f_groupe option:selected").val();
       if(groupe_val)
       {

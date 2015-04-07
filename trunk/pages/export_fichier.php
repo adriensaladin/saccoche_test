@@ -77,7 +77,7 @@ else
 <hr />
 
 <form action="#" method="post" id="form_export"><fieldset>
-  <p><label class="tab" for="f_type">Type de données :</label><select id="f_type" name="f_type"><option value=""></option><?php echo $select_type ?></select></p>
+  <p><label class="tab" for="f_type">Type de données :</label><select id="f_type" name="f_type"><option value="">&nbsp;</option><?php echo $select_type ?></select></p>
   <div id="div_groupe" class="hide"><label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /></div>
   <div id="div_matiere" class="hide"><label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /></div>
   <div id="div_palier" class="hide"><label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /></div>

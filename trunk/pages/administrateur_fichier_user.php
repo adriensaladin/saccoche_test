@@ -63,7 +63,7 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
   <fieldset>
     <label class="tab" for="f_choix_principal">Catégorie :</label>
     <select id="f_choix_principal" name="f_choix_principal">
-      <option value=""></option>
+      <option value="">&nbsp;</option>
       <optgroup label="Fichiers extraits de Siècle / STS-Web (recommandé pour le second degré)">
         <option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
         <option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>

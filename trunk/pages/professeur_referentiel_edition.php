@@ -98,21 +98,21 @@ else
     Layout::add( 'js_inline_before' , 'var listing_id_matieres_autorisees = ",'.implode(',',$tab_matiere_droit).',";' );
     echo'<p>'.NL;
     echo'<select id="select_action_groupe_choix" name="select_action_groupe">'
-          .'<option value=""></option>'
+          .'<option value="">&nbsp;</option>'
           .'<option value="modifier_coefficient">Modifier tous les coefficients des items</option>'
           .'<option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option>'
           .'<option value="deplacer_domaine">Déplacer tout le domaine</option>'
           .'<option value="deplacer_theme">Déplacer tout le thème</option>'
         .'</select>'.NL;
     echo'<select id="select_action_groupe_modifier_objet" name="select_action_groupe_modifier_objet" class="hide">'
-          .'<option value=""></option>'
+          .'<option value="">&nbsp;</option>'
           .'<option value="referentiel">du référentiel</option>'
           .'<option value="domaine">du domaine</option>'
           .'<option value="theme">du thème</option>'
         .'</select>'.NL;
     echo'<select id="select_action_groupe_modifier_id" name="select_action_groupe_modifier_id" class="hide"></select>'.NL;
     echo'<select id="select_action_groupe_modifier_coef" name="select_action_groupe_modifier_coef" class="hide">'
-          .'<option value=""></option>'
+          .'<option value="">&nbsp;</option>'
           .'<option value="0">à 0</option>'
           .'<option value="1">à 1</option>'
           .'<option value="2">à 2</option>'
@@ -136,7 +136,7 @@ else
           .'<option value="20">à 20</option>'
         .'</select>'.NL;
     echo'<select id="select_action_groupe_modifier_cart" name="select_action_groupe_modifier_cart" class="hide">'
-          .'<option value=""></option>'
+          .'<option value="">&nbsp;</option>'
           .'<option value="1">à "oui"</option>'
           .'<option value="0">à "non"</option>'
         .'</select>'.NL;

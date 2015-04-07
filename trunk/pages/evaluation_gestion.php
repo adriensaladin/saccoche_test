@@ -148,7 +148,7 @@ $AUDIO_DUREE_MAX = min( 120 , FICHIER_TAILLE_MAX/4 );
 // Javascript
 Layout::add( 'js_inline_before' , 'var AUDIO_DUREE_MAX = '.$AUDIO_DUREE_MAX.';' );
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
-Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value=""></option>'.$select_eleve).'";' );
+Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value="">&nbsp;</option>'.$select_eleve).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
 
 Form::load_choix_memo();

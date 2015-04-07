@@ -279,9 +279,9 @@ $(document).ready
         if(PROFIL_TYPE=='directeur')
         {
           matiere_id = $("#f_matiere").val();
-          $("#f_matiere").html('<option value=""></option>').hide();
+          $("#f_matiere").html('<option value="">&nbsp;</option>').hide();
         }
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
@@ -312,7 +312,7 @@ $(document).ready
         groupe_id    = $("#f_groupe option:selected").val();
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }

@@ -165,7 +165,7 @@ $(document).ready
 
     function maj_niveau()
     {
-      $("#f_niveau").html('<option value=""></option>').hide();
+      $("#f_niveau").html('<option value="">&nbsp;</option>').hide();
       var matiere_val = $("#f_matiere").val();
       if(!matiere_val)
       {
@@ -331,7 +331,7 @@ $(document).ready
     (
       function()
       {
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
@@ -355,7 +355,7 @@ $(document).ready
         groupe_id    = $("#f_groupe option:selected").val();
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
@@ -412,63 +412,65 @@ $(document).ready
       {
         rules :
         {
-          'f_type[]'      : { required:true },
-          f_remplissage   : { required:true },
-          f_colonne_bilan : { required:true },
-          f_colonne_vide  : { required:true },
-          f_tri_objet     : { required:true },
-          f_tri_mode      : { required:true },
-          f_retroactif    : { required:true },
-          f_matiere       : { required:true },
-          f_niveau        : { required:true },
-          f_groupe        : { required:function(){return !$('#f_type_generique').is(':checked');} },
-          'f_eleve[]'     : { required:function(){return $("#f_groupe").val()!=0;} },
-          f_eleves_ordre  : { required:function(){return $("#f_groupe").val()!=0;} },
-          f_periode       : { required:function(){return periode_requise;} },
-          f_date_debut    : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
-          f_date_fin      : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
-          f_restriction   : { required:false },
-          f_coef          : { required:false },
-          f_socle         : { required:false },
-          f_lien          : { required:false },
-          f_orientation   : { required:true },
-          f_couleur       : { required:true },
-          f_fond          : { required:true },
-          f_legende       : { required:true },
-          f_marge_min     : { required:true },
-          f_pages_nb      : { required:true },
-          f_cases_nb      : { required:true },
-          f_cases_larg    : { required:true }
+          'f_type[]'       : { required:true },
+          f_remplissage    : { required:true },
+          f_colonne_bilan  : { required:true },
+          f_colonne_vide   : { required:true },
+          f_tri_objet      : { required:true },
+          f_tri_mode       : { required:true },
+          f_repeter_entete : { required:false },
+          f_retroactif     : { required:true },
+          f_matiere        : { required:true },
+          f_niveau         : { required:true },
+          f_groupe         : { required:function(){return !$('#f_type_generique').is(':checked');} },
+          'f_eleve[]'      : { required:function(){return $("#f_groupe").val()!=0;} },
+          f_eleves_ordre   : { required:function(){return $("#f_groupe").val()!=0;} },
+          f_periode        : { required:function(){return periode_requise;} },
+          f_date_debut     : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
+          f_date_fin       : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
+          f_restriction    : { required:false },
+          f_coef           : { required:false },
+          f_socle          : { required:false },
+          f_lien           : { required:false },
+          f_orientation    : { required:true },
+          f_couleur        : { required:true },
+          f_fond           : { required:true },
+          f_legende        : { required:true },
+          f_marge_min      : { required:true },
+          f_pages_nb       : { required:true },
+          f_cases_nb       : { required:true },
+          f_cases_larg     : { required:true }
         },
         messages :
         {
-          'f_type[]'      : { required:"type(s) manquant(s)" },
-          f_remplissage   : { required:"contenu manquant" },
-          f_colonne_bilan : { required:"contenu manquant" },
-          f_colonne_vide  : { required:"contenu manquant" },
-          f_tri_objet     : { required:"choix manquant" },
-          f_tri_mode      : { required:"choix manquant" },
-          f_retroactif    : { required:"choix manquant" },
-          f_matiere       : { required:"matière manquante" },
-          f_niveau        : { required:"niveau manquant" },
-          f_groupe        : { required:"classe/groupe manquant" },
-          'f_eleve[]'     : { required:"élève(s) manquant(s)" },
-          f_eleves_ordre  : { required:"ordre manquant" },
-          f_periode       : { required:"période manquante" },
-          f_date_debut    : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_date_fin      : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_restriction   : { },
-          f_coef          : { },
-          f_socle         : { },
-          f_lien          : { },
-          f_orientation   : { required:"orientation manquante" },
-          f_couleur       : { required:"couleur manquante" },
-          f_fond          : { required:"fond manquant" },
-          f_legende       : { required:"légende manquante" },
-          f_marge_min     : { required:"marge mini manquante" },
-          f_pages_nb      : { required:"choix manquant" },
-          f_cases_nb      : { required:"nombre manquant" },
-          f_cases_larg    : { required:"largeur manquante" }
+          'f_type[]'       : { required:"type(s) manquant(s)" },
+          f_remplissage    : { required:"contenu manquant" },
+          f_colonne_bilan  : { required:"contenu manquant" },
+          f_colonne_vide   : { required:"contenu manquant" },
+          f_tri_objet      : { required:"choix manquant" },
+          f_tri_mode       : { required:"choix manquant" },
+          f_repeter_entete : { },
+          f_retroactif     : { required:"choix manquant" },
+          f_matiere        : { required:"matière manquante" },
+          f_niveau         : { required:"niveau manquant" },
+          f_groupe         : { required:"classe/groupe manquant" },
+          'f_eleve[]'      : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre   : { required:"ordre manquant" },
+          f_periode        : { required:"période manquante" },
+          f_date_debut     : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+          f_date_fin       : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+          f_restriction    : { },
+          f_coef           : { },
+          f_socle          : { },
+          f_lien           : { },
+          f_orientation    : { required:"orientation manquante" },
+          f_couleur        : { required:"couleur manquante" },
+          f_fond           : { required:"fond manquant" },
+          f_legende        : { required:"légende manquante" },
+          f_marge_min      : { required:"marge mini manquante" },
+          f_pages_nb       : { required:"choix manquant" },
+          f_cases_nb       : { required:"nombre manquant" },
+          f_cases_larg     : { required:"largeur manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",

@@ -85,7 +85,7 @@ $(document).ready
       function()
       {
         $('#bloc_niveau , #bloc_item , #zone_validation').hide();
-        $('#f_niveau').html('<option value=""></option>');
+        $('#f_niveau').html('<option value="">&nbsp;</option>');
         var matiere_val = $("#f_matiere").val();
         if(matiere_val)
         {
@@ -140,7 +140,7 @@ $(document).ready
       function()
       {
         $('#bloc_item , #zone_validation').hide();
-        $('#f_item').html('<option value=""></option>');
+        $('#f_item').html('<option value="">&nbsp;</option>');
         var matiere_val = $("#f_matiere").val();
         var niveau_val = $("#f_niveau").val();
         if(matiere_val && niveau_val)
@@ -196,7 +196,7 @@ $(document).ready
       function()
       {
         $('#bloc_eleve , #zone_validation').hide();
-        $('#f_eleve').html('<option value=""></option>');
+        $('#f_eleve').html('<option value="">&nbsp;</option>');
         var groupe_id = $("#f_classe").val();
         if(groupe_id)
         {

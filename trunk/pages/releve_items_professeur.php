@@ -65,6 +65,7 @@ $check_aff_socle          = (Form::$tab_choix['aff_socle'])              ? ' che
 $check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
 $check_aff_domaine        = (Form::$tab_choix['aff_domaine'])            ? ' checked' : '' ;
 $check_aff_theme          = (Form::$tab_choix['aff_theme'])              ? ' checked' : '' ;
+$check_repeter_entete     = (Form::$tab_choix['repeter_entete'])         ? ' checked' : '' ;
 $tab_groupes   = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 $tab_periodes  = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
@@ -105,6 +106,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </span>
   <span id="options_synthese" class="<?php echo $class_form_synthese ?>">
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
+    <span class="tab"></span><label for="f_repeter_entete"><input type="checkbox" id="f_repeter_entete" name="f_repeter_entete" value="1"<?php echo $check_repeter_entete ?> /> Répéter les entêtes de lignes et de colonnes (grand tableau, format <em>html</em>)</label><br />
   </span>
   <span id="option_with_coef" class="<?php echo $class_form_with_coef ?>">
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Concerne le relevé individuel avec moyenne des scores, la synthèse collective, la moyenne d'un bulletin.<br />La question se pose notamment dans le cas d'items issus de référentiels de plusieurs matières." /> Coefficients :</label><label for="f_with_coef"><input type="checkbox" id="f_with_coef" name="f_with_coef" value="1"<?php echo $check_with_coef ?> /> Prise en compte des coefficients</label><br />

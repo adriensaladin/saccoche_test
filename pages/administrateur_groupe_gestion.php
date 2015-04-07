@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Gérer les groupes"));
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );
 
-$select_niveau = '<option value=""></option>';
+$select_niveau = '<option value="">&nbsp;</option>';
 
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
 if(!empty($DB_TAB))

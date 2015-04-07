@@ -48,7 +48,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
   <fieldset>
     <label class="tab" for="f_choix_principal">Objectif :</label>
     <select id="f_choix_principal" name="f_choix_principal">
-      <option value=""></option>
+      <option value="">&nbsp;</option>
       <option value="new_loginmdp">Générer de nouveaux identifiants SACoche.</option>
       <option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
       <option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
@@ -66,7 +66,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
       <tr>
         <td class="nu" style="width:30em;text-align:left">
           <div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil">
-            <option value=""></option>
+            <option value="">&nbsp;</option>
             <option value="eleves">élèves</option>
             <option value="parents">responsables légaux</option>
             <option value="professeurs">professeurs</option>

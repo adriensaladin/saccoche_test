@@ -63,7 +63,7 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
   <fieldset>
     <label class="tab" for="f_choix_principal">Procédure :</label>
     <select id="f_choix_principal" name="f_choix_principal">
-      <option value=""></option>
+      <option value="">&nbsp;</option>
       <optgroup label="Exporter un fichier">
         <option value="export_lpc">à destination de Sconet-LPC</option>
         <option value="export_sacoche">à destination de SACoche</option>

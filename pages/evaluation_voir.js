@@ -88,7 +88,7 @@ $(document).ready
       {
         // Pour un directeur ou un professeur, on met à jour f_eleve
         // Pour un élève ou un parent cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         $('#ajax_msg').removeAttr("class").html('');
         $('#zone_eval_choix').hide();
         groupe_id = $("#f_groupe option:selected").val();

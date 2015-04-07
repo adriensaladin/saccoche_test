@@ -77,7 +77,7 @@ if(count($tab_groupes_base['ref']))
 $lignes_add = '';
 if(count($tab_groupes_fichier['ref']))
 {
-  $select_niveau = '<option value=""></option>';
+  $select_niveau = '<option value="">&nbsp;</option>';
   $tab_niveau_ref = array();
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
   foreach($DB_TAB as $DB_ROW)

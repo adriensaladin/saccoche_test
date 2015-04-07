@@ -49,6 +49,7 @@ $aff_pourcentage_acquis   = (isset($_POST['f_pourcentage_acquis'])) ? 1         
 $conversion_sur_20        = (isset($_POST['f_conversion_sur_20']))  ? 1                                                : 0;
 $tableau_synthese_format  = (isset($_POST['f_synthese_format']))    ? Clean::texte($_POST['f_synthese_format'])        : '';
 $tableau_tri_mode         = (isset($_POST['f_tri_mode']))           ? Clean::texte($_POST['f_tri_mode'])               : '';
+$repeter_entete           = (isset($_POST['f_repeter_entete']))     ? 1                                                : 0;
 $with_coef                = 1; // Il n'y a qu'une matière, on prend en compte les coefficients.
 $groupe_id                = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom               = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';

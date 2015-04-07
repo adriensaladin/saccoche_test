@@ -356,7 +356,7 @@ $(document).ready
     (
       function()
       {
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
@@ -380,7 +380,7 @@ $(document).ready
         groupe_id    = $("#f_groupe option:selected").val();
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
-        $("#f_eleve").html('<option value=""></option>').parent().hide();
+        $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
@@ -407,6 +407,7 @@ $(document).ready
           f_conversion_sur_20  : { required:false },
           f_synthese_format    : { required:true },
           f_tri_mode           : { required:true },
+          f_repeter_entete     : { required:false },
           f_groupe             : { required:true },
           'f_eleve[]'          : { required:true },
           f_eleves_ordre       : { required:true },
@@ -440,6 +441,7 @@ $(document).ready
           f_conversion_sur_20  : { },
           f_synthese_format    : { required:"choix manquant" },
           f_tri_mode           : { required:"choix manquant" },
+          f_repeter_entete     : { },
           f_groupe             : { required:"groupe manquant" },
           'f_eleve[]'          : { required:"élève(s) manquant(s)" },
           f_eleves_ordre       : { required:"ordre manquant" },

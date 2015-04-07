@@ -49,6 +49,7 @@ $check_only_socle        = (Form::$tab_choix['only_socle'])           ? ' checke
 $check_aff_coef          = (Form::$tab_choix['aff_coef'])             ? ' checked' : '' ;
 $check_aff_socle         = (Form::$tab_choix['aff_socle'])            ? ' checked' : '' ;
 $check_aff_lien          = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
+$check_repeter_entete    = (Form::$tab_choix['repeter_entete'])       ? ' checked' : '' ;
 $class_form_generique    = (Form::$tab_choix['type_generique'])       ? 'hide'     : 'show' ;
 $class_form_individuel   = (Form::$tab_choix['type_individuel'])      ? 'show'     : 'hide' ;
 $class_form_synthese     = (Form::$tab_choix['type_synthese'])        ? 'show'     : 'hide' ;
@@ -166,6 +167,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
       </span>
       <span id="options_synthese" class="<?php echo $class_form_synthese ?>">
         <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
+        <span class="tab"></span><label for="f_repeter_entete"><input type="checkbox" id="f_repeter_entete" name="f_repeter_entete" value="1"<?php echo $check_repeter_entete ?> /> Répéter les entêtes de lignes et de colonnes (grand tableau, format <em>html</em>)</label><br />
       </span>
     </span>
   </p>

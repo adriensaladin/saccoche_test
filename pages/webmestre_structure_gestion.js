@@ -211,7 +211,7 @@ $(document).ready
             }
             else
             {
-              $('#f_admin_id').html('<option value=""></option>'+responseHTML);
+              $('#f_admin_id').html('<option value="">&nbsp;</option>'+responseHTML);
               $.fancybox( { 'href':'#zone_generer_mdp' , onStart:function(){$('#zone_generer_mdp').css("display","block");} , onClosed:function(){$('#zone_generer_mdp').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
             }
           }

@@ -143,7 +143,7 @@ $(document).ready
 
     var maj_eleve = function()
     {
-      $("#f_eleve").html('<option value=""></option>').parent().hide();
+      $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
       groupe_id = $("#f_groupe option:selected").val();
       if(groupe_id)
       {

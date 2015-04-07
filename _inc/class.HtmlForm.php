@@ -69,7 +69,7 @@ class HtmlForm
     elseif($option_first==='')
     {
       // ... avec une option initiale vierge
-      $options = (!$multiple) ? '<option value=""></option>' : '' ;
+      $options = (!$multiple) ? '<option value="">&nbsp;</option>' : '' ; // "&nbsp;" pour éviter l'erreur de conformité HTML ("Element option without attribute label must not be empty").
     }
     else
     {
@@ -380,7 +380,7 @@ class HtmlForm
     '<p>'.
       '<label class="tab" for="f_action">Action :</label>'.
       '<select id="f_action" name="f_action">'.
-        '<option value=""></option>'.
+        '<option value="">&nbsp;</option>'.
         '<option value="evaluer_items_perso">Évaluer des élèves sur des items personnalisés</option>'.
         $option_evaluer_items_commun.
         '<option value="constituer_groupe_besoin">Constituer un groupe de besoin</option>'.

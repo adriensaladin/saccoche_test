@@ -100,8 +100,8 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
+      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+      if(!$is_domaine_valide)
       {
         exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }
@@ -167,8 +167,8 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      $mail_domaine = tester_domaine_courriel_valide($courriel);
-      if($mail_domaine!==TRUE)
+      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+      if(!$is_domaine_valide)
       {
         exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }

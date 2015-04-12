@@ -115,8 +115,8 @@ if($action=='importer_csv')
         $tab_erreur['mail']['nb']++;
       }
       // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-      $mail_domaine = tester_domaine_courriel_valide($contact_courriel);
-      if($mail_domaine!==TRUE)
+      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+      if(!$is_domaine_valide)
       {
         $tab_erreur['mail']['nb']++;
       }

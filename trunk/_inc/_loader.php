@@ -453,6 +453,7 @@ function SACoche_autoload($class_name)
   if(defined('APPEL_SITE_PROJET'))
   {
     $tab_classes_projet = array(
+      'Blacklist'       => 'class.Blacklist.php' ,
       'DB_PROJET'       => 'class.requetes_DB_projet.php' ,
       'ProjetAdmin'     => 'class.ProjetAdmin.php' ,
       'ServeurSesamath' => 'class.ServeurSesamath.php' ,

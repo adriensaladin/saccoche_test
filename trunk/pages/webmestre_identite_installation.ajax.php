@@ -135,8 +135,8 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    $mail_domaine = tester_domaine_courriel_valide($courriel);
-    if($mail_domaine!==TRUE)
+    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+    if(!$is_domaine_valide)
     {
       exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }

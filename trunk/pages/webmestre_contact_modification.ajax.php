@@ -40,8 +40,8 @@ if( in_array($f_user,array('oui','non')) && in_array($f_mail,array('oui','non','
   if($f_mail=='domaine')
   {
     // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-    $mail_domaine = tester_domaine_courriel_valide('username@'.$f_domaine);
-    if($mail_domaine!==TRUE)
+    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide('username@'.$f_domaine);
+    if(!$is_domaine_valide)
     {
       exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }

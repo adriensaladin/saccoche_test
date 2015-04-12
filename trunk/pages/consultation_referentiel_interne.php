@@ -94,7 +94,12 @@ if(!empty($DB_TAB))
 }
 
 // On récupère la liste des référentiels par matière et niveau
-$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+$tab_partage = array(
+  'oui' => '<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />',
+  'non' => '<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />',
+  'bof' => '<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />',
+  'hs'  => '<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />',
+);
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
 if(!empty($DB_TAB))
 {

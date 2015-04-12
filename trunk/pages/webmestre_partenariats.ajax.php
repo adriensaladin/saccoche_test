@@ -42,8 +42,8 @@ $connecteurs   = (isset($_POST['f_connecteurs']))  ? Clean::texte($_POST['f_conn
 if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $connecteurs )
 {
   // Vérifier le domaine du serveur mail (hébergement Sésamath donc serveur ouvert sur l'extérieur).
-  $mail_domaine = tester_domaine_courriel_valide($courriel);
-  if($mail_domaine!==TRUE)
+  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  if(!$is_domaine_valide)
   {
     exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }
@@ -85,8 +85,8 @@ if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $co
 if( ($action=='modifier') && $partenaire_id && $denomination && $nom && $prenom && $courriel && $connecteurs )
 {
   // Vérifier le domaine du serveur mail (hébergement Sésamath donc serveur ouvert sur l'extérieur).
-  $mail_domaine = tester_domaine_courriel_valide($courriel);
-  if($mail_domaine!==TRUE)
+  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  if(!$is_domaine_valide)
   {
     exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }

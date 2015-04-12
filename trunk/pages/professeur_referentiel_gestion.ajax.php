@@ -43,6 +43,19 @@ $information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_i
 $referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id'])         : -1; // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 $ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                                   : '';
 
+function compter_items($DB_TAB)
+{
+  $nb_item = 0;
+  foreach($DB_TAB as $DB_ROW)
+  {
+    if($DB_ROW['item_id']!==NULL)
+    {
+      $nb_item++;
+    }
+  }
+  return $nb_item;
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier le nb de demandes autorisées pour une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,11 +131,11 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   if($partage=='oui')
   {
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
-    $nb_item = count($DB_TAB);
+    $nb_item = compter_items($DB_TAB);
     if($nb_item<5)
     {
       $s = ($nb_item>1) ? 's' : '' ;
-      exit('Référentiel vide ou presque ('.$nb_item.' item'.$s.') : son partage n\'apparaît pas pertinent.');
+      exit('Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.');
     }
     $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
     $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
@@ -140,7 +153,12 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   // Tout s'est bien passé si on arrive jusque là...
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
-  $tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+  $tab_partage = array(
+    'oui' => '<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />',
+    'non' => '<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />',
+    'bof' => '<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />',
+    'hs'  => '<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />',
+  );
   exit( str_replace('◄DATE►',Html::date_texte(TODAY_MYSQL),$tab_partage[$partage]) );
 }
 
@@ -160,7 +178,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
   if($nb_item<5)
   {
     $s = ($nb_item>1) ? 's' : '' ;
-    exit('Référentiel vide ou presque ('.$nb_item.' item'.$s.') : son partage n\'apparaît pas pertinent.');
+    exit('Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.');
   }
   $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
   $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );

@@ -47,8 +47,8 @@ if( ($action=='courriel') && ($courriel!==NULL) )
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
-      if(!$is_domaine_valide)
+      $mail_domaine = tester_domaine_courriel_valide($courriel);
+      if($mail_domaine!==TRUE)
       {
         exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }

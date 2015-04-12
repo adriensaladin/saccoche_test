@@ -42,8 +42,8 @@ if($action=='EnregistrerBounce')
   {
     if($bounce)
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($bounce);
-      if(!$is_domaine_valide)
+      $mail_domaine = tester_domaine_courriel_valide($bounce);
+      if($mail_domaine!==TRUE)
       {
         exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }
@@ -59,8 +59,8 @@ if($action=='EnregistrerBounce')
 
 if( ($action=='TestEnvoiCourriel') && $courriel )
 {
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
-  if(!$is_domaine_valide)
+  $mail_domaine = tester_domaine_courriel_valide($courriel);
+  if($mail_domaine!==TRUE)
   {
     exit('Erreur avec le domaine "'.$mail_domaine.'" ou serveur extérieur injoignable !');
   }

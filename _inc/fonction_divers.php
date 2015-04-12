@@ -466,13 +466,14 @@ function tester_courriel($courriel)
  * Vérifier que le domaine du serveur mail peut recevoir des mails, c'est à dire qu'il a un serveur de mail déclaré dans les DNS).
  * Ça évite tous les domaines avec une coquille du genre @gmaill.com, @hoatmail.com, @gmaol.com, @laoste.net, etc.
  *
- * @param string $mail_adresse
- * @return bool|string $mail_domaine   TRUE | le domaine en cas de problème
+ * @param string              $mail_adresse
+ * @return array(string,bool) le domaine + TRUE|FALSE
  */
 function tester_domaine_courriel_valide($mail_adresse)
 {
   $mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
-  return ( ( function_exists('getmxrr') && getmxrr($mail_domaine, $tab_mxhosts) ) || (@fsockopen($mail_domaine,25,$errno,$errstr,5)) ) ? TRUE : $mail_domaine ;
+  $is_domaine_valide = ( ( function_exists('getmxrr') && getmxrr($mail_domaine, $tab_mxhosts) ) || (@fsockopen($mail_domaine,25,$errno,$errstr,5)) ) ? TRUE : FALSE ;
+  return array($mail_domaine,$is_domaine_valide);
 }
 
 /**

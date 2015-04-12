@@ -140,8 +140,8 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
       exit('Erreur avec le domaine qui est restreint à "'.CONTACT_MODIFICATION_MAIL.'" par le webmestre.');
     }
     // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-    $mail_domaine = tester_domaine_courriel_valide($contact_courriel);
-    if($mail_domaine!==TRUE)
+    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+    if(!$is_domaine_valide)
     {
       exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }
@@ -166,8 +166,8 @@ if( $etablissement_denomination )
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if( ($etablissement_courriel) && (HEBERGEUR_INSTALLATION=='multi-structures') )
   {
-    $mail_domaine = tester_domaine_courriel_valide($etablissement_courriel);
-    if($mail_domaine!==TRUE)
+    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($etablissement_courriel);
+    if(!$is_domaine_valide)
     {
       exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }

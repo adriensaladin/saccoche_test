@@ -28,6 +28,10 @@ INSERT INTO sacoche_niveau VALUES
 (   6, 0,  1,  68,    "P3S",            "", "Cycle SEGPA"),
 (   3, 0,  1,  69,     "P3",            "", "Cycle Collège"),
 (   4, 0,  1, 199,     "P4",            "", "Cycle Lycée"),
+( 100, 0,  1, 140,    "CAP",            "", "Cycle CAP"),
+( 110, 0,  1, 150,    "BEP",            "", "Cycle BEP"),
+( 120, 0,  1, 160,    "PRO",            "", "Cycle Bac Pro"),
+( 140, 0,  1, 180,    "BTS",            "", "Cycle BTS"),
 
 -- Primaire
 

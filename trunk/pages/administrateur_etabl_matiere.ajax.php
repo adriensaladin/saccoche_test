@@ -28,14 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])    : '';
-$famille_id = (isset($_POST['f_famille']))  ? Clean::entier($_POST['f_famille'])  : 0 ;
-$motclef    = (isset($_POST['f_motclef']))  ? Clean::texte($_POST['f_motclef'])   : '' ;
-$id_avant   = (isset($_POST['f_id_avant'])) ? Clean::entier($_POST['f_id_avant']) : 0;
-$id_apres   = (isset($_POST['f_id_apres'])) ? Clean::entier($_POST['f_id_apres']) : 0;
-$id         = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])       : 0;
-$ref        = (isset($_POST['f_ref']))      ? Clean::ref($_POST['f_ref'])         : '';
-$nom        = (isset($_POST['f_nom']))      ? Clean::texte($_POST['f_nom'])       : '';
+$action     = (isset($_POST['f_action']))    ? Clean::texte($_POST['f_action'])    : '';
+$famille_id = (isset($_POST['f_famille']))   ? Clean::entier($_POST['f_famille'])  : 0 ;
+$motclef    = (isset($_POST['f_motclef']))   ? Clean::texte($_POST['f_motclef'])   : '' ;
+$id_avant   = (isset($_POST['f_id_avant']))  ? Clean::entier($_POST['f_id_avant']) : 0;
+$id_apres   = (isset($_POST['f_id_apres']))  ? Clean::entier($_POST['f_id_apres']) : 0;
+$id         = (isset($_POST['f_id']))        ? Clean::entier($_POST['f_id'])       : 0;
+$ref        = (isset($_POST['f_ref']))       ? Clean::ref($_POST['f_ref'])         : '';
+$nom        = (isset($_POST['f_nom']))       ? Clean::texte($_POST['f_nom'])       : '';
+$nom_avant  = (isset($_POST['f_nom_avant'])) ? Clean::texte($_POST['f_nom_avant']) : '';
+$nom_apres  = (isset($_POST['f_nom_apres'])) ? Clean::texte($_POST['f_nom_apres']) : '';
 
 $tab_id = (isset($_POST['tab_id']))   ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
@@ -160,22 +162,31 @@ if( ($action=='supprimer') && $id && $nom && ($id>ID_MATIERE_PARTAGEE_MAX) )
 // Déplacer les référentiels d'une matière vers une autre
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=$id_apres) )
+if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=$id_apres) && $nom_avant && $nom_apres )
 {
-  // Déplacement après vérification que c'est possible matière de destination vierge de données)
+  // Déplacement après vérification que c'est possible (matière de destination vierge de données)
   // 
   $is_ok = DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
   if(!$is_ok)
   {
     exit('Erreur : la nouvelle matière contient déjà des données !');
   }
-  // Log de l'action
-  SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
-  // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé des référentiels d\'une matière ('.$id_avant.' -> '.$id_apres.').'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
-  retirer_ou_supprimer_matiere($id_avant);
+  if($id_avant>ID_MATIERE_PARTAGEE_MAX)
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id_avant);
+    $log_fin = 'avec suppression de la matière spécifique "'.$nom_avant.'"';
+  }
+  else
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id_avant,0);
+    $log_fin = 'avec retrait de la matière partagée "'.$nom_avant.'"';
+  }
+  // Log de l'action
+  SACocheLog::ajouter('Déplacement des référentiels de "'.$nom_avant.'" ('.$id_avant.') vers "'.$nom_apres.'" ('.$id_apres.'), '.$log_fin.'.');
+  // Notifications (rendues visibles ultérieurement)
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé des référentiels de "'.$nom_avant.'" ('.$id_avant.') vers "'.$nom_apres.'" ('.$id_apres.'), '.$log_fin.'.'."\r\n";
+  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   exit('ok');
 }
 

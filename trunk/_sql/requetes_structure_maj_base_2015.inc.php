@@ -272,4 +272,25 @@ if($version_base_structure_actuelle=='2015-03-13')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-03-24 => 2015-04-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-03-24')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-04-22';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // niveaux ajoutés
+    if(empty($reload_sacoche_niveau))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 100, 0,  1, 140, "CAP", "", "Cycle CAP") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 110, 0,  1, 150, "BEP", "", "Cycle BEP") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 120, 0,  1, 160, "PRO", "", "Cycle Bac Pro") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 140, 0,  1, 180, "BTS", "", "Cycle BTS") ' );
+    }
+  }
+}
+
 ?>

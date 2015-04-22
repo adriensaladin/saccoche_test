@@ -395,8 +395,6 @@ $(document).ready
           $('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner des matières différentes !");
           return false;
         }
-        var matiere_nom_avant = $("#f_matiere_avant option:selected").text();
-        var matiere_nom_apres = $("#f_matiere_apres option:selected").text();
         $('button').prop('disabled',true);
         $('#ajax_msg_move').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
@@ -404,7 +402,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=deplacer_referentiels'+'&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres+'&f_nom_avant='+encodeURIComponent(matiere_nom_avant)+'&f_nom_apres='+encodeURIComponent(matiere_nom_apres),
+            data : 'csrf='+CSRF+'&f_action=deplacer_referentiels'+'&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {

@@ -29,13 +29,37 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Personnels & matières / Personnels coordonnateurs"));
 ?>
 
+<?php
+// Fabrication des éléments select du formulaire
+$select_prof    = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config') , 'f_prof'    /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+$select_matiere = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()            , 'f_matiere' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+?>
+
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs et personnels</a></span></p>
 
 <hr />
 
+<form action="#" method="post" id="form_select">
+  <table><tr>
+    <td class="nu" style="width:25em">
+      <b>Professeurs :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
+      <span id="f_prof" class="select_multiple"><?php echo $select_prof ?></span>
+    </td>
+    <td class="nu" style="width:20em">
+      <b>Matières :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
+      <span id="f_matiere" class="select_multiple"><?php echo $select_matiere; ?></span>
+    </td>
+    <td class="nu" style="width:25em">
+      <p><button id="ajouter" type="button" class="groupe_ajouter">Ajouter ces associations.</button></p>
+      <p><button id="retirer" type="button" class="groupe_retirer">Retirer ces associations.</button></p>
+      <p><label id="ajax_msg">&nbsp;</label></p>
+    </td>
+  </tr></table>
+</form>
+
 <?php
 // Deux requêtes préliminaires pour ne pas manquer les matières sans professeurs et les professeurs sans matières
-$tab_principal         = array(); // [i_matiere][i_prof]
+$tab_js                = 'var tab_join = new Array();'; // [i_matiere][i_prof] => 1 | 2
 $tab_matieres          = array();
 $tab_profs             = array();
 $tab_profs_par_matiere = array();
@@ -54,7 +78,7 @@ if(empty($DB_TAB))
 $compteur = 0 ;
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_principal[$DB_ROW['matiere_id']][0] = '<th>'.html($DB_ROW['matiere_nom']).'</th>';
+  $tab_js .= 'tab_join['.$DB_ROW['matiere_id'].'] = new Array();';
   $tab_matieres[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);
   $tab_profs_par_matiere[$DB_ROW['matiere_id']] = '';
   $tab_lignes_matieres[floor($compteur/8)][] = $DB_ROW['matiere_id'];
@@ -79,42 +103,20 @@ foreach($DB_TAB as $DB_ROW)
   $compteur++;
 }
 
-// Initialiser les jointures
-foreach($tab_matieres as $matiere_id => $matiere_nom)
-{
-  foreach($tab_profs as $user_id => $user_nom)
-  {
-    $tab_principal[$matiere_id][$user_id] = '<td class="off" title="'.$user_nom.'<br />'.$matiere_nom.'"><input type="checkbox" value="'.$user_id.'" /></td>';
-  }
-}
-
 // Récupérer la liste des jointures
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
 foreach($DB_TAB as $DB_ROW)
 {
   if( (isset($tab_profs[$DB_ROW['user_id']])) && (isset($tab_matieres[$DB_ROW['matiere_id']])) )
   {
-    $tab_principal[$DB_ROW['matiere_id']][$DB_ROW['user_id']] = '<td class="on" title="'.$tab_profs[$DB_ROW['user_id']].'<br />'.$tab_matieres[$DB_ROW['matiere_id']].'"><input type="checkbox" value="'.$DB_ROW['user_id'].'" checked /></td>';
     $checked = ($DB_ROW['jointure_coord']) ? ' checked' : '' ;
     $classe  = ($DB_ROW['jointure_coord']) ? 'on' : 'off' ;
+    $js_val  = ($DB_ROW['jointure_coord']) ? 2 : 1 ;
+    $tab_js .= 'tab_join['.$DB_ROW['matiere_id'].']['.$DB_ROW['user_id'].']='.$js_val.';';
     $tab_profs_par_matiere[$DB_ROW['matiere_id']] .= '<div id="mp_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['user_id'].'" class="'.$classe.'"><input type="checkbox" id="'.$DB_ROW['matiere_id'].'mp'.$DB_ROW['user_id'].'" value=""'.$checked.' /> <label for="'.$DB_ROW['matiere_id'].'mp'.$DB_ROW['user_id'].'">'.$tab_profs[$DB_ROW['user_id']].'</label></div>';
     $tab_matieres_par_prof[$DB_ROW['user_id']]   .= '<div id="pm_'.$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id'].'" class="'.$classe.'"><input type="checkbox" id="'.$DB_ROW['user_id'].'pm'.$DB_ROW['matiere_id'].'" value=""'.$checked.' /> <label for="'.$DB_ROW['user_id'].'pm'.$DB_ROW['matiere_id'].'">'.$tab_matieres[$DB_ROW['matiere_id']].'</label></div>';
   }
 }
-
-// Début du formulaire
-echo'<form action="#" method="post">'.NL;
-
-// Affichage du tableau principal
-echo'<table id="autocheckbox">'.NL;
-echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>'.NL;
-unset($tab_principal[0]);
-echo'<tbody>'.NL;
-foreach($tab_principal as $matiere_id => $tab_colonnes)
-{
-  echo'<tr id="tr_'.$matiere_id.'">'.implode($tab_colonnes).'</tr>'.NL;
-}
-echo'</tbody></table>'.NL;
 
 // Assemblage du tableau des personnels par matière
 $TH = array();
@@ -178,7 +180,7 @@ foreach($tab_lignes_profs as $ligne_id => $tab_user)
   echo'</table>'.NL;
 }
 
-// Fin du formulaire
-echo'</form>'.NL;
+// Javascript
+Layout::add( 'js_inline_before' , $tab_js);
 
 ?>

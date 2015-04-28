@@ -96,6 +96,10 @@ if($connexion_mode=='cas')
   if ($cas_serveur_url_login)    { phpCAS::setServerLoginURL($cas_serveur_url_login); }
   if ($cas_serveur_url_logout)   { phpCAS::setServerLogoutURL($cas_serveur_url_logout); }
   if ($cas_serveur_url_validate) { phpCAS::setServerServiceValidateURL($cas_serveur_url_validate); }
+  // Suite à des attaques DDOS, Kosmos a décidé en avril 2015 de filtrer les requêtes en bloquant toutes celles sans User-Agent.
+  // C'est idiot car cette valeur n'est pas fiable, n'importe qui peut présenter n'importe quel User-Agent !
+  // En attendant qu'ils appliquent un remède plus intelligent, et au cas où un autre prestataire aurait la même mauvaise idée, on envoie un User-Agent bidon (défini dans le loader)...
+  phpCAS::setExtraCurlOption(CURLOPT_USERAGENT , CURL_AGENT);
   // Appliquer un proxy si défini par le webmestre ; voir cURL::get_contents() pour les commentaires.
   if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
   {

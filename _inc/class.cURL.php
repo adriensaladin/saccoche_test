@@ -68,7 +68,6 @@ class cURL
     curl_setopt($this->handle, CURLOPT_FAILONERROR, TRUE);       // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
     curl_setopt($this->handle, CURLOPT_TIMEOUT, $this->timeout); // Le temps maximum d'exécution de la fonction cURL (en s) ; éviter de monter cette valeur pour libérer des ressources plus rapidement : 'classiquement', le serveur doit répondre en qq ms, donc si au bout de 5s il a pas répondu c'est qu'il ne répondra plus, alors pas la peine de bloquer une connexion et de la RAM pendant plus longtemps.
     curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
-    curl_setopt($this->handle, CURLOPT_USERAGENT , CURL_AGENT);  // Envoyer un User-Agent (défini dans le loader) car il est arrivé qu'un prestataire ENT bloque les requêtes sans User-Agent (ce qui est idiot car cette valeur n'est pas fiable, n'importe qui peut présenter n'importe quel User-Agent !).
   }
 
   /**

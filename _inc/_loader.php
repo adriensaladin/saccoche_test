@@ -692,6 +692,10 @@ if(!defined('LC_MESSAGES'))
   define('LC_MESSAGES', 5);
 }
 
+// Pour les appels cURL, dont ceux effectués par phpCAS
+define('CURL_AGENT' , 'SACoche '.URL_INSTALL_SACOCHE);
+
+
 // ============================================================================
 // Fonctions utilisées pour déterminer l'URL de base du serveur
 // ============================================================================

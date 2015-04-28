@@ -31,70 +31,157 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Ajouter / Retirer une affectation à une classe
+    // Initialisation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#autocheckbox input[type=checkbox]').click
+    // Il est plus simple d'initialiser à 0 les valeurs manquantes que de tenter d'ajouter et surtout de supprimer des éléments par la suite
+    var tab_classe = new Array(); $("#f_classe input").each(function(){tab_classe.push($(this).val());});
+    var tab_prof   = new Array(); $("#f_prof   input").each(function(){tab_prof.push($(this).val());});
+    // On compare par rapport au tableau js pour savoir ce qui a changé
+    for ( var key_classe in tab_classe )
+    {
+      for ( var key_prof in tab_prof )
+      {
+        var classe_id = tab_classe[key_classe];
+        var prof_id   = tab_prof[key_prof];
+        if(typeof(tab_join[classe_id][prof_id])=='undefined')
+        {
+          tab_join[classe_id][prof_id] = 0;
+        }
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Alerter au changement d'un élément de formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#form_select').on
+    (
+      'change',
+      'select, input',
+      function()
+      {
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos choix !");
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Réagir au clic sur un bouton (soumission du formulaire)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#ajouter , #retirer').click
     (
       function()
       {
-        var obj_bouton = $(this);
-        var action     = (obj_bouton.is(':checked')) ? 'ajouter' : 'retirer' ;
-        var user_id    = obj_bouton.val();
-        var classe_id  = obj_bouton.parent().parent().attr('id').substring(3);
-        var check_old  = (action=='ajouter') ? false : true ;
-        var class_old  = (action=='ajouter') ? 'off' : 'on' ;
-        var class_new  = (action=='ajouter') ? 'on' : 'off' ;
-        obj_bouton.hide(0).parent().removeAttr('class').addClass('load');
+        var action = $(this).attr('id');
+        if( !$("#f_prof input:checked").length || !$("#f_classe input:checked").length )
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
+          return false;
+        }
+        // On récupère les id des profs et des classes concernés
+        var select_classe = new Array(); $("#f_classe input:checked").each(function(){select_classe.push($(this).val());});
+        var select_prof   = new Array(); $("#f_prof   input:checked").each(function(){select_prof.push($(this).val());});
+        // On compare par rapport au tableau js pour savoir ce qui a changé
+        var tab_modifs = new Array();
+        for ( var key_classe in select_classe )
+        {
+          for ( var key_prof in select_prof )
+          {
+            var classe_id = select_classe[key_classe];
+            var prof_id   = select_prof[key_prof];
+            if( ( (tab_join[classe_id][prof_id]==0) && (action=='ajouter') ) || ( (tab_join[classe_id][prof_id]>0) && (action=='retirer') ) )
+            {
+              tab_modifs.push(classe_id+'_'+prof_id);
+            }
+          }
+        }
+        if(!tab_modifs.length)
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Aucune nouveauté détectée !");
+          return false;
+        }
+        // On envoie les changements
+        $('#form_select button').prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
-            url  : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&classe_id='+classe_id,
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+action+'&tab_modifs='+tab_modifs,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $('#form_select button').prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
             success : function(responseHTML)
             {
+              initialiser_compteur();
+              $('#form_select button').prop('disabled',false);
               if(responseHTML!='ok')
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-                obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                obj_bouton.show(0).parent().removeAttr('class').addClass(class_new);
-                // MAJ tableaux bilans : lignes
-                if(action=='ajouter')
-                {
-                  var prof_nom   = $('#th_'+user_id).children('img').attr('alt');
-                  var classe_nom = $('#tr_'+classe_id+' th').html();
-                  $('#cpb_'+classe_id).append('<div id="cp_'+classe_id+'_'+user_id+'" class="off"><input type="checkbox" id="'+classe_id+'cp'+user_id+'" value="" /> <label for="'+classe_id+'cp'+user_id+'">'+prof_nom+'</label></div>');
-                  $('#pcb_'+user_id).append('<div id="pc_'+user_id+'_'+classe_id+'" class="off"><input type="checkbox" id="'+user_id+'pc'+classe_id+'" value="" /> <label for="'+user_id+'pc'+classe_id+'">'+classe_nom+'</label></div>');
-                }
-                else if(action=='retirer')
-                {
-                  $('#cp_'+classe_id+'_'+user_id).remove();
-                  $('#pc_'+user_id+'_'+classe_id).remove();
-                }
-                // MAJ tableaux bilans : totaux
-                var nb_profs = $('#cpb_'+classe_id+' div').length;
-                var nb_classes = $('#pcb_'+user_id+' div').length;
-                var s_profs = (nb_profs>1) ? 's' : '' ;
-                var s_classes = (nb_classes>1) ? 's' : '' ;
-                $('#cpf_'+classe_id).html(nb_profs+' professeur'+s_profs);
-                $('#pcf_'+user_id).html(nb_classes+' classe'+s_classes);
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                maj_tableaux(action,tab_modifs);
               }
             }
           }
         );
       }
     );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mettre à jour les tableaux bilans et le javascript
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function maj_tableaux(action,tab_modifs)
+    {
+      var total_classe = new Array();
+      var total_prof   = new Array();
+      // lignes et javascript
+      for ( var key in tab_modifs )
+      {
+        var id_modifs = tab_modifs[key].split('_');
+        var classe_id = id_modifs[0];
+        var prof_id   = id_modifs[1];
+        id_modifs[0];
+        if(action=='ajouter')
+        {
+          var prof_nom   = $('#f_prof_'+prof_id    ).parent().text();
+          var classe_nom = $('#f_classe_'+classe_id).parent().text();
+          $('#cpb_'+classe_id).append('<div id="cp_'+classe_id+'_'+prof_id+'" class="off"><input type="checkbox" id="'+classe_id+'cp'+prof_id+'" value="" /> <label for="'+classe_id+'cp'+prof_id+'">'+prof_nom+'</label></div>');
+          $('#pcb_'+prof_id  ).append('<div id="pc_'+prof_id+'_'+classe_id+'" class="off"><input type="checkbox" id="'+prof_id+'pc'+classe_id+'" value="" /> <label for="'+prof_id+'pc'+classe_id+'">'+classe_nom+'</label></div>');
+          tab_join[classe_id][prof_id] = 1;
+        }
+        else if(action=='retirer')
+        {
+          $('#cp_'+classe_id+'_'+prof_id).remove();
+          $('#pc_'+prof_id+'_'+classe_id).remove();
+          tab_join[classe_id][prof_id] = 0;
+        }
+        total_classe[classe_id] = true;
+        total_prof[prof_id]     = true;
+      }
+      // totaux
+      for ( var classe_id in total_classe )
+      {
+        var nb_profs = $('#cpb_'+classe_id+' div').length;
+        var s_profs = (nb_profs>1) ? 's' : '' ;
+        $('#cpf_'+classe_id).html(nb_profs+' professeur'+s_profs);
+      }
+      for ( var prof_id in total_prof )
+      {
+        var nb_classes = $('#pcb_'+prof_id+' div').length;
+        var s_classes = (nb_classes>1) ? 's' : '' ;
+        $('#pcf_'+prof_id).html(nb_classes+' classe'+s_classes);
+      }
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Ajouter / Retirer une affectation en tant que professeur principal
@@ -109,19 +196,20 @@ $(document).ready
         var obj_bouton = $(this);
         var action     = (obj_bouton.is(':checked')) ? 'ajouter_pp' : 'retirer_pp' ;
         var tab_id     = obj_bouton.parent().attr('id').split('_');
-        var user_id    = (tab_id[0]=='pc') ? tab_id[1] : tab_id[2] ;
+        var prof_id    = (tab_id[0]=='pc') ? tab_id[1] : tab_id[2] ;
         var classe_id  = (tab_id[0]=='cp') ? tab_id[1] : tab_id[2] ;
         var check_old  = (action=='ajouter_pp') ? false : true ;
         var check_new  = (action=='ajouter_pp') ? true : false ;
         var class_old  = (action=='ajouter_pp') ? 'off' : 'on' ;
         var class_new  = (action=='ajouter_pp') ? 'on' : 'off' ;
+        var js_val     = (action=='ajouter_pp') ? 2 : 1 ;
         obj_bouton.prop('disabled',true).parent().removeAttr('class').addClass('load');
         $.ajax
         (
           {
             type : 'POST',
             url  : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&classe_id='+classe_id,
+            data : 'csrf='+CSRF+'&f_action='+action+'&prof_id='+prof_id+'&classe_id='+classe_id,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -139,9 +227,10 @@ $(document).ready
               else
               {
                 obj_bouton.prop('disabled',false).parent().removeAttr('class').addClass(class_new);
-                // MAJ tableaux bilans
-                var id_autre = (tab_id[0]=='cp') ? user_id+'pc'+classe_id : classe_id+'cp'+user_id ;
+                // MAJ tableaux bilans et javascript
+                var id_autre = (tab_id[0]=='cp') ? prof_id+'pc'+classe_id : classe_id+'cp'+prof_id ;
                 $('#'+id_autre).prop('checked',check_new).parent().removeAttr('class').addClass(class_new);
+                tab_join[classe_id][prof_id] = js_val;
               }
             }
           }

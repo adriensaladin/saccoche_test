@@ -28,30 +28,28 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action    = (isset($_POST['action']))    ? $_POST['action']                  : '' ;
-$groupe_id = (isset($_POST['groupe_id'])) ? Clean::entier($_POST['groupe_id']) : 0 ;
-$user_id   = (isset($_POST['user_id']))   ? Clean::entier($_POST['user_id'])   : 0 ;
+$action     = (isset($_POST['f_action']))   ? $_POST['f_action']                : ''      ;
+$tab_modifs = (isset($_POST['tab_modifs'])) ? explode(',',$_POST['tab_modifs']) : array() ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un professeur à un groupe
+// Ajouter | Retirer un professeur à un groupe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && ($groupe_id) && ($user_id) )
+if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',TRUE);
+  $etat = ($action=='ajouter') ? TRUE : FALSE ;
+  foreach($tab_modifs as $key => $id_modifs)
+  {
+    list($groupe_id,$prof_id) = explode('_',$id_modifs);
+    $groupe_id = Clean::entier($groupe_id);
+    $prof_id   = Clean::entier($prof_id);
+    if($groupe_id && $prof_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $prof_id , 'professeur' , $groupe_id , 'groupe' , $etat );
+    }
+  }
   exit('ok');
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un professeur à un groupe
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='retirer') && ($groupe_id) && ($user_id) )
-{
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$groupe_id,'groupe',FALSE);
-  exit('ok');
-}
-
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...

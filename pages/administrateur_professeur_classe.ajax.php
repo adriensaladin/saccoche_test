@@ -28,47 +28,39 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action    = (isset($_POST['action']))    ? $_POST['action']                  : '' ;
-$classe_id = (isset($_POST['classe_id'])) ? Clean::entier($_POST['classe_id']) : 0 ;
-$user_id   = (isset($_POST['user_id']))   ? Clean::entier($_POST['user_id'])   : 0 ;
+$action     = (isset($_POST['f_action']))   ? $_POST['f_action']                 : '';
+$classe_id  = (isset($_POST['classe_id']))  ? Clean::entier($_POST['classe_id']) : 0 ;
+$prof_id    = (isset($_POST['prof_id']))    ? Clean::entier($_POST['prof_id'])   : 0 ;
+$tab_modifs = (isset($_POST['tab_modifs'])) ? explode(',',$_POST['tab_modifs'])  : array() ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un professeur à une classe
+// Ajouter | Retirer un professeur à une classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && ($classe_id) && ($user_id) )
+if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',TRUE);
+  $etat = ($action=='ajouter') ? TRUE : FALSE ;
+  foreach($tab_modifs as $key => $id_modifs)
+  {
+    list($classe_id,$prof_id) = explode('_',$id_modifs);
+    $classe_id = Clean::entier($classe_id);
+    $prof_id   = Clean::entier($prof_id);
+    if($classe_id && $prof_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $prof_id , 'professeur' , $classe_id , 'classe' , $etat );
+    }
+  }
   exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un professeur à une classe
+// Ajouter | Retirer une affectation en tant que professeur principal
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='retirer') && ($classe_id) && ($user_id) )
+if( in_array($action,array('ajouter_pp','retirer_pp')) && ($classe_id) && ($prof_id) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',FALSE);
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter une affectation en tant que professeur principal
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='ajouter_pp') && ($classe_id) && ($user_id) )
-{
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,TRUE);
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer une affectation en tant que professeur principal
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='retirer_pp') && ($classe_id) && ($user_id) )
-{
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,FALSE);
+  $etat = ($action=='ajouter_pp') ? TRUE : FALSE ;
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal( $prof_id , $classe_id , $etat );
   exit('ok');
 }
 

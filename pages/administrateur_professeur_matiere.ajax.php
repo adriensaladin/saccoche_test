@@ -28,47 +28,39 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['action']))     ? $_POST['action']                   : '' ;
+$action     = (isset($_POST['f_action']))   ? $_POST['f_action']                  : '';
 $matiere_id = (isset($_POST['matiere_id'])) ? Clean::entier($_POST['matiere_id']) : 0 ;
-$user_id    = (isset($_POST['user_id']))    ? Clean::entier($_POST['user_id'])    : 0 ;
+$prof_id    = (isset($_POST['prof_id']))    ? Clean::entier($_POST['prof_id'])    : 0 ;
+$tab_modifs = (isset($_POST['tab_modifs'])) ? explode(',',$_POST['tab_modifs'])   : array() ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter un professeur à une matière
+// Ajouter | Retirer un professeur à une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && ($matiere_id) && ($user_id) )
+if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,TRUE);
+  $etat = ($action=='ajouter') ? TRUE : FALSE ;
+  foreach($tab_modifs as $key => $id_modifs)
+  {
+    list($matiere_id,$prof_id) = explode('_',$id_modifs);
+    $matiere_id = Clean::entier($matiere_id);
+    $prof_id   = Clean::entier($prof_id);
+    if($matiere_id && $prof_id)
+    {
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere( $prof_id , $matiere_id , $etat );
+    }
+  }
   exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer un professeur à une matière
+// Ajouter | Retirer une affectation en tant que professeur coordonnateur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='retirer') && ($matiere_id) && ($user_id) )
+if( in_array($action,array('ajouter_coord','retirer_coord')) && ($matiere_id) && ($prof_id) )
 {
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,FALSE);
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ajouter une affectation en tant que professeur coordonnateur
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='ajouter_coord') && ($matiere_id) && ($user_id) )
-{
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,TRUE);
-  exit('ok');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Retirer une affectation en tant que professeur coordonnateur
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='retirer_coord') && ($matiere_id) && ($user_id) )
-{
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,FALSE);
+  $etat = ($action=='ajouter_coord') ? TRUE : FALSE ;
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur( $prof_id , $matiere_id , $etat );
   exit('ok');
 }
 

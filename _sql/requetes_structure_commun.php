@@ -1445,7 +1445,7 @@ public static function DB_OPT_directeurs_etabl()
 /**
  * Retourner un tableau [valeur texte] des professeurs actuels de l'établissement
  *
- * @param string $groupe_type   facultatif ; valeur parmi [all] [niveau] [classe] [groupe] 
+ * @param string $groupe_type   facultatif ; valeur parmi [all] [niveau] [classe] [groupe] [config]
  * @param int    $groupe_id     facultatif ; id du niveau ou de la classe ou du groupe
  * @return array|string
  */
@@ -1461,6 +1461,11 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
     case 'all' :
       $from  = 'FROM sacoche_user ';
       $ljoin.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+      break;
+    case 'config' : // équivalent de [all] mais sans les personnels automatiquement rattachés à tous les groupes (documentalistes, CPE, etc.)
+      $from  = 'FROM sacoche_user ';
+      $ljoin.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+      $where.= 'AND user_profil_join_groupes="config" ';
       break;
     case 'niveau' :
       $from  = 'FROM sacoche_groupe ';

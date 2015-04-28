@@ -29,13 +29,37 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Professeurs & classes / Professeurs principaux"));
 ?>
 
+<?php
+// Fabrication des éléments select du formulaire
+$select_prof   = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config')       , 'f_prof'   /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+$select_classe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/) , 'f_classe' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+?>
+
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span></p>
 
 <hr />
 
+<form action="#" method="post" id="form_select">
+  <table><tr>
+    <td class="nu" style="width:25em">
+      <b>Professeurs :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
+      <span id="f_prof" class="select_multiple"><?php echo $select_prof ?></span>
+    </td>
+    <td class="nu" style="width:20em">
+      <b>Classes :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
+      <span id="f_classe" class="select_multiple"><?php echo $select_classe; ?></span>
+    </td>
+    <td class="nu" style="width:25em">
+      <p><button id="ajouter" type="button" class="groupe_ajouter">Ajouter ces associations.</button></p>
+      <p><button id="retirer" type="button" class="groupe_retirer">Retirer ces associations.</button></p>
+      <p><label id="ajax_msg">&nbsp;</label></p>
+    </td>
+  </tr></table>
+</form>
+
 <?php
 // Deux requêtes préliminaires pour ne pas manquer les classes sans professeurs et les professeurs sans classes
-$tab_principal        = array(); // [i_classe][i_prof]
+$tab_js               = 'var tab_join = new Array();'; // [i_classe][i_prof] => 1 | 2
 $tab_classes          = array();
 $tab_profs            = array();
 $tab_profs_par_classe = array();
@@ -50,10 +74,9 @@ if(empty($DB_TAB))
   echo'<p class="danger">Aucune classe trouvée !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_principal[$DB_ROW['groupe_id']][0] = '<th>'.html($DB_ROW['groupe_nom']).'</th>';
+  $tab_js .= 'tab_join['.$DB_ROW['groupe_id'].'] = new Array();';
   $tab_classes[$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
   $tab_profs_par_classe[$DB_ROW['groupe_id']] = '';
   $tab_lignes_classes[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
@@ -68,7 +91,6 @@ if(!empty($DB_TAB))
   {
     if($DB_ROW['user_profil_join_groupes']=='config')
     {
-      $tab_principal[0][$DB_ROW['user_id']] = '<th id="th_'.$DB_ROW['user_id'].'"><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'" /></th>';
       $tab_profs[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
       $tab_classes_par_prof[$DB_ROW['user_id']] = '';
       $tab_lignes_profs[floor($compteur/8)][] = $DB_ROW['user_id'];
@@ -82,41 +104,19 @@ if(!count($tab_profs))
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-// Initialiser les jointures
-foreach($tab_classes as $classe_id => $classe_nom)
-{
-  foreach($tab_profs as $user_id => $user_nom)
-  {
-    $tab_principal[$classe_id][$user_id] = '<td class="off" title="'.$user_nom.'<br />'.$classe_nom.'"><input type="checkbox" value="'.$user_id.'" /></td>';
-  }
-}
-
 // Récupérer la liste des jointures
 $liste_profs_id   = implode(',',array_keys($tab_profs));
 $liste_classes_id = implode(',',array_keys($tab_classes));
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($liste_profs_id,$liste_classes_id);
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_principal[$DB_ROW['groupe_id']][$DB_ROW['user_id']] = '<td class="on" title="'.$tab_profs[$DB_ROW['user_id']].'<br />'.$tab_classes[$DB_ROW['groupe_id']].'"><input type="checkbox" value="'.$DB_ROW['user_id'].'" checked /></td>';
   $checked = ($DB_ROW['jointure_pp']) ? ' checked' : '' ;
   $classe  = ($DB_ROW['jointure_pp']) ? 'on' : 'off' ;
+  $js_val  = ($DB_ROW['jointure_pp']) ? 2 : 1 ;
+  $tab_js .= 'tab_join['.$DB_ROW['groupe_id'].']['.$DB_ROW['user_id'].']='.$js_val.';';
   $tab_profs_par_classe[$DB_ROW['groupe_id']] .= '<div id="cp_'.$DB_ROW['groupe_id'].'_'.$DB_ROW['user_id'].'" class="'.$classe.'"><input type="checkbox" id="'.$DB_ROW['groupe_id'].'cp'.$DB_ROW['user_id'].'" value=""'.$checked.' /> <label for="'.$DB_ROW['groupe_id'].'cp'.$DB_ROW['user_id'].'">'.$tab_profs[$DB_ROW['user_id']].'</label></div>';
   $tab_classes_par_prof[$DB_ROW['user_id']]   .= '<div id="pc_'.$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id'].'" class="'.$classe.'"><input type="checkbox" id="'.$DB_ROW['user_id'].'pc'.$DB_ROW['groupe_id'].'" value=""'.$checked.' /> <label for="'.$DB_ROW['user_id'].'pc'.$DB_ROW['groupe_id'].'">'.$tab_classes[$DB_ROW['groupe_id']].'</label></div>';
 }
-
-// Début du formulaire
-echo'<form action="#" method="post">'.NL;
-
-// Affichage du tableau principal
-echo'<table id="autocheckbox">'.NL;
-echo'<thead><tr><td class="nu"></td>'.implode($tab_principal[0]).'</tr></thead>'.NL;
-unset($tab_principal[0]);
-echo'<tbody>';
-foreach($tab_principal as $classe_id => $tab_colonnes)
-{
-  echo'<tr id="tr_'.$classe_id.'">'.implode($tab_colonnes).'</tr>'.NL;
-}
-echo'</tbody></table>'.NL;
 
 // Assemblage du tableau des profs par classe
 $TH = array();
@@ -180,7 +180,7 @@ foreach($tab_lignes_profs as $ligne_id => $tab_user)
   echo'</table>'.NL;
 }
 
-// Fin du formulaire
-echo'</form>'.NL;
+// Javascript
+Layout::add( 'js_inline_before' , $tab_js);
 
 ?>

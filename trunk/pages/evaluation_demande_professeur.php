@@ -171,7 +171,7 @@ $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select
   <hr />
   <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Associer des collègues à une évaluation.</a></span>
   <hr />
-  <?php echo HtmlForm::afficher_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
+  <?php echo HtmlForm::afficher_select_collegues( TRUE /*only_profs*/ , array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 

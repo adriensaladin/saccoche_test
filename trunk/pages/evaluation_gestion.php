@@ -216,6 +216,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
       <?php endif; ?>
       <label class="tab" for="f_prof_nombre">Partage collègues :</label><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="" readonly /><q id="choisir_prof" class="choisir_prof" title="Voir ou choisir les collègues."></q><input id="f_prof_liste" name="f_prof_liste" type="text" value="" class="invisible" />
       <span id="choisir_prof_non" class="astuce">Choix restreint au propriétaire de l'évaluation.</span>
+    </p>
     <p>
       <label class="tab" for="f_description">Description :</label><input id="f_description" name="f_description" type="text" value="" size="50" maxlength="60" /><br />
       <label class="tab" for="f_compet_nombre">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="" readonly /><q class="choisir_compet" title="Voir ou choisir les items."></q><input id="f_compet_liste" name="f_compet_liste" type="text" value="" class="invisible" />
@@ -274,7 +275,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
   <hr />
   <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">DOC : Associer des collègues à une évaluation.</a></span>
   <hr />
-  <?php echo HtmlForm::afficher_select_collegues( array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
+  <?php echo HtmlForm::afficher_select_collegues( TRUE /*only_profs*/ , array( 1=>'v' , 2=>'s' , 3=>'m' ) ) ?>
   <div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 

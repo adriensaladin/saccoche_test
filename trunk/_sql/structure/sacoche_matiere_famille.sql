@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS sacoche_matiere_famille;
 CREATE TABLE sacoche_matiere_famille (
   matiere_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
   matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques ; 4 = Enseignements complémentaires",
-  matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  matiere_famille_nom       VARCHAR(55) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (matiere_famille_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -56,12 +56,14 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 43, 3, "Gestion des entreprises"),
 ( 44, 3, "Publicité"),
 ( 45, 3, "Métiers des arts appliqués (suite)"),
+( 46, 3, "Métiers d'art (suite)"),
 ( 50, 3, "Langue technique"),
 ( 60, 3, "Activités hippiques"),
 ( 61, 3, "Commercialisation"),
 ( 62, 3, "Élevage et soins aux animaux"),
 ( 63, 3, "Environnement - aménagement de l'espace"),
 ( 64, 3, "Équipements pour l'agriculture"),
+( 65, 3, "Disciplines professionnelles de l'enseignement agricole"),
 ( 66, 3, "Production"),
 ( 67, 3, "Services"),
 ( 68, 3, "Transformation"),

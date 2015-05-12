@@ -213,7 +213,7 @@ $matiere_liste = str_replace( ',' , '_' , $_SESSION['OFFICIEL']['BULLETIN_MOYENN
       <span id="span_moyenne_generale" class="<?php echo $class_span_bulletin_moyenne_generale ?>">
         <label for="f_bulletin_moyenne_generale"><input type="checkbox" id="f_bulletin_moyenne_generale" name="f_bulletin_moyenne_generale" value="1"<?php echo $check_bulletin_moyenne_generale ?> /> Moyenne générale</label>&nbsp;&nbsp;&nbsp;
       </span><br />
-      <span class="tab"></span><input id="f_matiere_nombre" name="f_matiere_nombre" size="40" type="text" value="<?php echo $matiere_nombre ?>" readonly /><input id="f_matiere_liste" name="f_matiere_liste" type="text" value="<?php echo $matiere_liste ?>" class="invisible" /><q class="choisir_compet" title="Voir ou choisir les matieres sans moyennes.">
+      <span class="tab"></span><input id="f_matiere_nombre" name="f_matiere_nombre" size="40" type="text" value="<?php echo $matiere_nombre ?>" readonly /><input id="f_matiere_liste" name="f_matiere_liste" type="text" value="<?php echo $matiere_liste ?>" class="invisible" /><q class="choisir_compet" title="Voir ou choisir les matieres sans moyennes."></q>
     </span><br />
     <label class="tab">Impression :</label><?php echo $select_bulletin_couleur ?> <?php echo $select_bulletin_fond ?> <?php echo $select_bulletin_legende ?>
   </p>

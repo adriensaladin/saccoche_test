@@ -283,14 +283,15 @@ class HtmlForm
   /**
    * Retourner, sur une ou plusieurs colonnes, une liste HTML ordonnée des professeurs, avec un formulaire de choix d'un attribut pour chacun.
    *
+   * @param string  $only_profs
    * @param array   $tab_options
    * @return string
    */
-  public static function afficher_select_collegues($tab_options)
+  public static function afficher_select_collegues($only_profs , $tab_options)
   {
     $affichage = '';
     // Affichage de la liste des professeurs
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl();
+    $DB_TAB = ($only_profs) ? DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/ );
     if(is_string($DB_TAB))
     {
       echo $DB_TAB;

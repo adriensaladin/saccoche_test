@@ -2070,7 +2070,10 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
     $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_selection_item ';
-    $DB_SQL.= 'WHERE user_id=:user_id';
+    $DB_SQL.= 'WHERE proprio_id=:user_id';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    $DB_SQL = 'DELETE FROM sacoche_jointure_selection_prof ';
+    $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'UPDATE sacoche_demande ';
     $DB_SQL.= 'SET prof_id=0 ';
@@ -2320,7 +2323,7 @@ public static function DB_corriger_anomalies()
   // Recherche d'anomalies : sélections d'items associées à un professeur supprimé...
   $DB_SQL = 'DELETE sacoche_selection_item ';
   $DB_SQL.= 'FROM sacoche_selection_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_selection_item.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Sélections d\'items' );

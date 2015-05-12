@@ -653,8 +653,6 @@ if($version_base_structure_actuelle=='2014-11-18')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9371, 0, 0,  93, 0, 255, "LMN", "Mélanésien nengone")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9372, 0, 0,  93, 0, 255, "LMD", "Mélanésien paici")' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9373, 0, 0,  93, 0, 255, "CRE", "Créole")' );
-      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
     // Si une matière similaire spécifique est trouvée, alors la convertir...
     $tab_convert = array();

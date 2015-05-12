@@ -1402,9 +1402,13 @@ public static function DB_OPT_selection_items($user_id)
 {
   $DB_SQL = 'SELECT REPLACE(TRIM(BOTH "," FROM selection_item_liste),",","_") AS valeur, selection_item_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_selection_item ';
-  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_prof USING (selection_item_id) ';
+  $DB_SQL.= 'WHERE ( sacoche_selection_item.proprio_id=:proprio_id OR sacoche_jointure_selection_prof.prof_id=:prof_id ) ';
   $DB_SQL.= 'ORDER BY selection_item_nom ASC';
-  $DB_VAR = array(':user_id'=>$user_id);
+  $DB_VAR = array(
+    ':proprio_id' => $user_id,
+    ':prof_id'    => $user_id,
+  );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'avez mémorisé aucune sélection d\'items.' ;
 }

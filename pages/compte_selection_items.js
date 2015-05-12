@@ -37,7 +37,7 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},3:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{1:{sorter:false},2:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -46,34 +46,13 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , selection_id , nom , compet_nombre , compet_liste , prof_nombre , prof_liste , proprio_id )
+    function afficher_form_gestion( mode , id , nom , compet_nombre , compet_liste )
     {
-      // Éviter, en cas de duplication d'un regroupement dont on n'est pas le propriétaire, de se retrouver avec des complications
-      // (droit du propriétaire d'origine ? regroupements en exemplaires multiples pour les autres ?)
-      if( (mode=='dupliquer') && (user_id!=proprio_id) )
-      {
-        prof_nombre = 'non';
-        prof_liste = '';
-      }
-      // Choix des collègues à masquer en cas de modification d'un regroupement dont on n'est pas le propriétaire
-      // (ingérable sinon : on apparait comme propriétaire, le vrai propriétaire n'apparait pas comme tel...)
-      if( (mode=='modifier') && (user_id!=proprio_id) )
-      {
-        $('#choisir_prof').hide(0);
-        $('#choisir_prof_non').show(0);
-      }
-      else
-      {
-        $('#choisir_prof').show(0);
-        $('#choisir_prof_non').hide(0);
-      }
       $('#f_action').val(mode);
-      $('#f_id').val(selection_id);
+      $('#f_id').val(id);
       $('#f_nom').val(nom);
       $('#f_compet_nombre').val(compet_nombre);
       $('#f_compet_liste').val(compet_liste);
-      $('#f_prof_nombre').val(prof_nombre);
-      $('#f_prof_liste').val(prof_liste);
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un regroupements d'items");
       if(mode!='supprimer')
@@ -90,7 +69,7 @@ $(document).ready
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
       $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
-      if( (mode=='ajouter') || (mode=='dupliquer') ) { $('#f_nom').focus(); }
+      if(mode=='ajouter') { $('#f_nom').focus(); }
     }
 
     /**
@@ -101,33 +80,30 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*selection_id*/ , '' /*nom*/ , 'aucun' /*compet_nombre*/ , '' /*compet_liste*/ , 'non' /*prof_nombre*/ , '' /*prof_liste*/ , user_id /*proprio_id*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*nom*/ , 'aucun' /*compet_nombre*/ , '' /*compet_liste*/ );
     };
 
     /**
-     * Modifier | Dupliquer une sélection d'items : mise en place du formulaire
+     * Modifier un message : mise en place du formulaire
      * @return void
      */
-    var modifier_dupliquer = function()
+    var modifier = function()
     {
       mode = $(this).attr('class');
       var objet_tr      = $(this).parent().parent();
       var objet_tds     = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      var selection_id  = objet_tr.attr('id').substring(3); // "id_" + ref
+      var id            = objet_tr.attr('id').substring(3);
       var nom           = objet_tds.eq(0).html();
       var compet_nombre = objet_tds.eq(1).html();
-      var prof_nombre   = objet_tds.eq(2).text().trim();
-      var proprio_id    = objet_tds.eq(2).attr('id').substring(8); // "proprio_" + ref
-      // liste des profs et des items
-      var prof_liste    = tab_profs[selection_id];
-      var compet_liste  = tab_items[selection_id];
+      // liste des items
+      var compet_liste  = tab_items[id];
       // Afficher le formulaire
-      afficher_form_gestion( mode , selection_id , unescapeHtml(nom) , compet_nombre , compet_liste , prof_nombre , prof_liste , proprio_id );
+      afficher_form_gestion( mode , id , unescapeHtml(nom) , compet_nombre , compet_liste );
     };
 
     /**
-     * Supprimer une sélection d'items : mise en place du formulaire
+     * Supprimer un message : mise en place du formulaire
      * @return void
      */
     var supprimer = function()
@@ -136,10 +112,10 @@ $(document).ready
       var objet_tr      = $(this).parent().parent();
       var objet_tds     = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      var selection_id  = objet_tr.attr('id').substring(3);
+      var id            = objet_tr.attr('id').substring(3);
       var nom           = objet_tds.eq(0).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , selection_id , unescapeHtml(nom) , '' /*compet_nombre*/ , '' /*compet_liste*/ , '' /*prof_nombre*/ , '' /*prof_liste*/ , user_id /*proprio_id*/ );
+      afficher_form_gestion( mode , id , unescapeHtml(nom) , '' /*compet_nombre*/ , '' /*compet_liste*/ );
     };
 
     /**
@@ -184,107 +160,23 @@ $(document).ready
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
     };
 
-    /**
-     * Choisir les professeurs associés à une sélection : mise en place du formulaire
-     * @return void
-     */
-    var choisir_prof = function()
-    {
-      selectionner_profs_option( $('#f_prof_liste').val() );
-      // Afficher la zone
-      $.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-      $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
-    };
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#table_action').on( 'click' , 'q.ajouter'        , ajouter );
-    $('#table_action').on( 'click' , 'q.modifier'       , modifier_dupliquer );
-    $('#table_action').on( 'click' , 'q.dupliquer'      , modifier_dupliquer );
+    $('#table_action').on( 'click' , 'q.modifier'       , modifier );
     $('#table_action').on( 'click' , 'q.supprimer'      , supprimer );
 
     $('#form_gestion').on( 'click' , '#bouton_annuler'  , annuler );
     $('#form_gestion').on( 'click' , '#bouton_valider'  , function(){formulaire.submit();} );
     $('#form_gestion').on( 'keyup' , 'input,select'     , function(e){intercepter(e);} );
     $('#form_gestion').on( 'click' , 'q.choisir_compet' , choisir_compet );
-    $('#form_gestion').on( 'click' , 'q.choisir_prof'   , choisir_prof );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Indiquer au survol une liste de profs associés à une évaluation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#table_action').on
-    (
-      'mouseover',
-      'img.bulle_profs',
-      function()
-      {
-        var obj_image  = $(this);
-        var selection_id = obj_image.parent().parent().attr('id').substring(3); // "id_" + ref
-        var proprio_id   = obj_image.parent().attr('id').substring(8); // "proprio_" + ref
-        var prof_liste   = tab_profs[selection_id];
-        var tab_texte    = new Array();;
-        if(prof_liste.length)
-        {
-          prof_liste += '_z'+proprio_id;
-          var tab_val = prof_liste.split('_');
-          for(i in tab_val)
-          {
-            var val_option = tab_val[i].substring(0,1);
-            var id_prof    = tab_val[i].substring(1);
-            var id_select  = 'p'+'_'+id_prof;
-            if($('#'+id_select).length)
-            {
-              tab_texte[i] = $('#'+id_select).next().next().text();
-            }
-            else
-            {
-              tab_texte[i] = 'collègue n°'+id_prof+'... ?';
-            }
-          }
-          tab_texte.sort();
-        }
-        obj_image.attr( 'title' , tab_texte.join('<br />') );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Modification du select par lot pour tous les profs
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('input[name=prof_check_all]').click
-    (
-      function()
-      {
-        var valeur = $(this).val();
-        $('#zone_profs').find('select').find('option[value='+valeur+']').prop('selected',true);
-        $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_'+valeur);
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Modification du select pour choisir un droit à un prof
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_profs').on
-    (
-      'change',
-      'select',
-      function()
-      {
-        var val_option = $(this).find('option:selected').val();
-        $(this).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le cadre des items associés à une sélection (annuler / retour)
-    // Clic sur le bouton pour fermer le cadre des professeurs associés à une sélection (annuler / retour)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#annuler_compet , #annuler_profs').click
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur le bouton pour fermer le cadre des items associés à une sélection (annuler / retour)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    $('#annuler_compet').click
     (
       function()
       {
@@ -293,10 +185,9 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour valider le choix des items associés à une sélection
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur le bouton pour valider le choix des items associés à une sélection
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
     $('#valider_compet').click
     (
       function()
@@ -319,38 +210,6 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour valider le choix des profs associés à une sélection
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#valider_profs').click
-    (
-      function()
-      {
-        var liste = '';
-        var nombre = 0;
-        $('#zone_profs').find('select').each
-        (
-          function()
-          {
-            var val_option = $(this).find('option:selected').val();
-            if( (val_option!='x') && (val_option!='z') )
-            {
-              var tab_val = $(this).attr('id').split('_');
-              var id_prof = tab_val[1];
-              liste += val_option+id_prof+'_';
-              nombre++;
-            }
-          }
-        );
-        liste  = (!nombre) ? '' : liste.substring(0,liste.length-1) ;
-        nombre = (!nombre) ? 'non' : (nombre+1)+' collègues' ;
-        $('#f_prof_liste').val(liste);
-        $('#f_prof_nombre').val(nombre);
-        $('#annuler_profs').click();
-      }
-    );
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,14 +224,12 @@ $(document).ready
         rules :
         {
           f_nom          : { required:true , maxlength:60 },
-          f_compet_liste : { required:true },
-          f_prof_liste   : { required:false }
+          f_compet_liste : { required:true }
         },
         messages :
         {
           f_nom          : { required:"nom manquant" , maxlength:"60 caractères maximum" },
-          f_compet_liste : { required:"item(s) manquant(s)" },
-          f_prof_liste   : { }
+          f_compet_liste : { required:"item(s) manquant(s)" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -454,7 +311,6 @@ $(document).ready
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
-          case 'dupliquer':
             var position_script = responseHTML.lastIndexOf('<SCRIPT>');
             var new_tr = responseHTML.substring(0,position_script);
             $('#table_action tbody').prepend(new_tr);

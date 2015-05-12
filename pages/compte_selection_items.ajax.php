@@ -39,63 +39,33 @@ $tab_items = Clean::map_entier($tab_items);
 $tab_items = array_filter($tab_items,'positif');
 $nb_items = count($tab_items);
 
-// Contrôler la liste des profs transmis
-$tab_profs   = array();
-$tab_droits  = array( 'v'=>'voir' , 'm'=>'modifier' );
-$profs_liste = (isset($_POST['f_prof_liste'])) ? $_POST['f_prof_liste'] : '' ;
-$tmp_tab     = ($profs_liste) ? explode('_',$profs_liste) : array() ;
-foreach($tmp_tab as $valeur)
-{
-  $droit   = $valeur{0};
-  $id_prof = (int)substr($valeur,1);
-  if( isset($tab_droits[$droit]) && ($id_prof>0) && ( ($action!='dupliquer') || ($id_prof!=$_SESSION['USER_ID']) ) )
-  {
-    $tab_profs[$id_prof] = $tab_droits[$droit];
-  }
-  else
-  {
-    $profs_liste = str_replace( array( '_'.$valeur , $valeur.'_' , $valeur ) , '' , $profs_liste );
-  }
-}
-$nb_profs   = count($tab_profs);
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter une nouvelle sélection d'items
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $selection_nom && $nb_items && $origine )
+if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 {
-  // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom( $selection_nom ) )
+  // Vérifier que le nom de la sélection d'items est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom) )
   {
-    exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
+    exit('Erreur : nom de la sélection d\'items déjà pris !');
   }
-  // Insérer l'enregistrement ; y associe automatiquement le prof, en propriétaire de la sélection
-  $selection_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items( $_SESSION['USER_ID'] , $selection_nom , $tab_items );
-  if($nb_profs)
-  {
-    // Affecter tous les profs choisis
-    $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_selection_items_prof( $selection_id2 , $tab_profs , 'creer' );
-  }
+  // Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
+  $selection_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items($_SESSION['USER_ID'],$selection_nom,$tab_items);
   // Afficher le retour
   if($origine==$PAGE)
   {
     $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-    $profs_nombre = ($nb_profs) ? ($nb_profs+1).' collègues' : 'non' ;
-    $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-    echo'<tr id="id_'.$selection_id2.'" class="new">';
+    echo'<tr id="id_'.$selection_id.'" class="new">';
     echo  '<td>'.html($selection_nom).'</td>';
     echo  '<td>'.$items_texte.'</td>';
-    echo  '<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>';
     echo  '<td class="nu">';
     echo    '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
-    echo    '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>';
     echo    '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
     echo  '</td>';
     echo'</tr>';
     echo'<SCRIPT>';
-    echo'tab_items["'.$selection_id2.'"]="'.implode('_',$tab_items).'";';
-    echo'tab_profs["'.$selection_id2.'"]="'.$profs_liste.'";';
+    echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
   }
   else
   {
@@ -110,76 +80,23 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $select
 
 if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 {
-  // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom( $selection_nom , $selection_id ) )
+  // Vérifier que le nom de la sélection d'items est disponible
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom,$selection_id) )
   {
-    exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
+    exit('Erreur : nom de sélection d\'items déjà existant !');
   }
-  // Tester les droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_id( $selection_id );
-  if($proprio_id==$_SESSION['USER_ID'])
-  {
-    $niveau_droit = 4; // propriétaire
-    $proprietaire_genre  = $_SESSION['USER_GENRE'];
-    $proprietaire_nom    = $_SESSION['USER_NOM'];
-    $proprietaire_prenom = $_SESSION['USER_PRENOM'];
-  }
-  elseif($profs_liste) // forcément
-  {
-    $search_liste = '_'.$profs_liste.'_';
-    if( strpos( $search_liste, '_m'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      $niveau_droit = 3; // modifier
-    }
-    elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
-    {
-      exit('Erreur : droit insuffisant attribué sur la sélection n°'.$selection_id.' (niveau 1 au lieu de 3) !'); // voir
-    }
-    else
-    {
-      exit('Erreur : droit attribué sur la sélection n°'.$selection_id.' non trouvé !');
-    }
-    $DB_ROW = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_identite( $selection_id );
-    $proprietaire_genre  = $DB_ROW['user_genre'];
-    $proprietaire_nom    = $DB_ROW['user_nom'];
-    $proprietaire_prenom = $DB_ROW['user_prenom'];
-  }
-  else
-  {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur la sélection n°'.$selection_id.' !');
-  }
-  $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items( $selection_id , $selection_nom , $tab_items );
-  // sacoche_jointure_selection_prof ; à restreindre en cas de modification d'une sélection dont on n'est pas le propriétaire
-  if($proprio_id==$_SESSION['USER_ID'])
-  {
-    if($nb_profs)
-    {
-      // Mofifier les affectations des profs choisis
-      $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_selection_items_prof( $selection_id , $tab_profs , 'substituer' );
-    }
-    else
-    {
-      // Au cas où on aurait retiré les droits à tous
-      DB_STRUCTURE_PROFESSEUR::DB_supprimer_liaison_selection_items_prof( $selection_id );
-    }
-  }
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items($selection_id,$selection_nom,$tab_items);
   // Afficher le retour
   $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-  $profs_nombre = ($nb_profs) ? ($nb_profs+1).' collègues' : 'non' ;
-  $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
   echo'<td>'.html($selection_nom).'</td>';
   echo'<td>'.$items_texte.'</td>';
-  echo'<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>';
   echo'<td class="nu">';
-  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette sélection d\'items."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
-  echo '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>';
-  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de la sélection ('.html($proprietaire_identite).')."></q>' ;
+  echo  '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
+  echo  '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
   echo'</td>';
   echo'<SCRIPT>';
   echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
-  echo'tab_profs["'.$selection_id.'"]="'.$profs_liste.'";';
   exit();
 }
 
@@ -189,14 +106,8 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 
 if( ($action=='supprimer') && $selection_id )
 {
-  // Vérification des droits
-  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_id( $selection_id );
-  if($proprio_id!=$_SESSION['USER_ID'])
-  {
-    exit('Erreur : vous n\'êtes pas propriétaire de la sélection n°'.$selection_id.' !');
-  }
   // Effacer l'enregistrement
-  DB_STRUCTURE_PROFESSEUR::DB_supprimer_selection_items( $selection_id );
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_selection_items($selection_id);
   // Afficher le retour
   exit('<td>ok</td>');
 }

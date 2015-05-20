@@ -407,7 +407,7 @@ $(document).ready
     // Clic sur le lien pour mettre à jour les acquisitions à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#valider_saisir').click
+    $('#valider_saisir').click // live est utilisé pour prendre en compte les nouveaux éléments créés
     (
       function()
       {

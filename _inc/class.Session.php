@@ -230,24 +230,23 @@ class Session
     }
   }
 
-  // //////////////////////////////////////////////////
-  // Méthodes publiques - Gestion de la session
-  // //////////////////////////////////////////////////
-
   /*
    * Lancer en cascade les processus pour repartir avec une nouvelle session
-   * Rendue publique car appelée directement lors du basculement d'un compte à un autre
    * 
    * @param bool   $memo_GET   Pour réinjecter les paramètres après authentification SACoche (pour une authentification SSO, c'est déjà automatique)
    * @return void
    */
-  public static function close__open_new__init($memo_GET)
+  private static function close__open_new__init($memo_GET)
   {
     Session::close();
     Session::open_new();
     Session::init();
     $_SESSION['MEMO_GET'] = ( $memo_GET && !empty($_GET) ) ? $_GET : NULL ;
   }
+
+  // //////////////////////////////////////////////////
+  // Méthodes publiques - Gestion de la session
+  // //////////////////////////////////////////////////
 
   /**
    * Vérifier le droit d'accès à une page donnée.

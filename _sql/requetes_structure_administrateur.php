@@ -1230,8 +1230,9 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * Le champ "connexion_date" est traité avec DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion().
- * On peut envisager une modification de "profil_sigle" entre personnels.
+ * - Le champ "connexion_date" est traité avec DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion().
+ * - On peut envisager une modification de "profil_sigle" entre personnels.
+ * - La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
  * @param int     $user_id
  * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':genre'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':courriel'=>$val , ':email_origine'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
@@ -1272,6 +1273,8 @@ public static function DB_modifier_user($user_id,$DB_VAR)
 
 /**
  * Rendre une liste de comptes actifs ou inactifs en changeant la date de sortie
+ *
+ * La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
  * @param array   $tab_user_id
  * @param bool    $statut
@@ -1976,6 +1979,8 @@ public static function DB_supprimer_jointures_parents_for_eleves($listing_eleve_
 
 /**
  * Supprimer un utilisateur avec tout ce qui en dépend
+ *
+ * La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
  * @param int    $user_id
  * @param string $user_profil_sigle

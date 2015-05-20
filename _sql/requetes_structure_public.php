@@ -36,7 +36,7 @@ class DB_STRUCTURE_PUBLIC extends DB
 /**
  * Récuperer, à partir d'un identifiant, les données d'un utilisateur tentant de se connecter (le mdp est comparé ensuite)
  *
- * @param string $mode_connection   'normal' | 'cas' | 'shibboleth' | 'siecle' | 'vecteur_parent' | 'gepi' | ...
+ * @param string $mode_connection   'normal' | 'cas' | 'shibboleth' | 'siecle' | 'vecteur_parent' | 'gepi' | 'switch'
  * @param string $user_identifiant
  * @param string $parent_nom      facultatif, seulement pour $mode_connection = 'vecteur_parent'
  * @param string $parent_prenom   facultatif, seulement pour $mode_connection = 'vecteur_parent'
@@ -52,6 +52,7 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
     case 'siecle'         : $champ = 'user_sconet_id'; break;
     case 'vecteur_parent' : $champ = 'user_id';        break; // C'est le user_sconet_id de l'élève qui est transmis, mais le user_id du parent trouvé qui est finalement utilisé dans la requête.
     case 'gepi'           : $champ = 'user_id_gepi';   break;
+    case 'switch'         : $champ = 'user_id';        break;
   }
   if($mode_connection=='vecteur_parent')
   {
@@ -70,11 +71,12 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$user_i
     $user_identifiant = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     if(empty($user_identifiant)) return NULL;
   }
-  $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, ';
+  $DB_SQL = 'SELECT sacoche_user.*, sacoche_user_profil.*, sacoche_groupe.groupe_nom, user_switch_id, ';
   $DB_SQL.= 'TIME_TO_SEC(TIMEDIFF(NOW(),sacoche_user.user_connexion_date)) AS delai_connexion_secondes  '; // TIMEDIFF() est plafonné à 839h, soit ~35j, mais peu importe ici.
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_switch ON user_switch_liste LIKE CONCAT("%,",user_id,",%") ';
   $DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
   // LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
   $DB_VAR = array(':identifiant'=>$user_identifiant);

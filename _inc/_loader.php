@@ -437,6 +437,7 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
     'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
+    'DB_STRUCTURE_SWITCH'         => '_sql'.DS.'requetes_structure_switch.php' ,
 
     'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
     'DB_WEBMESTRE_MAJ_BASE'       => '_sql'.DS.'requetes_webmestre_maj_base.php' ,
@@ -880,7 +881,14 @@ function exit_json( $statut , $value=NULL )
 {
   $tab_statut = array( 'statut' => $statut ) ;
   $tab_valeur = is_array($value) ? $value : array( 'value' => $value ) ;
-  exit( json_encode( array_merge($tab_statut,$tab_valeur) ) );
+  $json_retour = json_encode( array_merge($tab_statut,$tab_valeur) );
+  // Normalement, le serveur Sésamath ne gzip pas les "petites" réponses (<512 ou 1024 octets).
+  // Mais c'est basé sur le Content-Length, donc s'il n'y en a pas, il gzip toujours.
+  // Du coup, quand PHP renvoie du json, c'est mieux d'indiquer Content-Length.
+  // Ça ne devrait pas changer grand chose, mais ça ne peut pas faire de mal.
+  header('Content-Type: application/json');
+  header('Content-Length: '.strlen($json_retour));
+  exit($json_retour);
 }
 
 ?>

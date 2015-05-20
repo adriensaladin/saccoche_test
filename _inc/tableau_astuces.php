@@ -27,6 +27,9 @@
 
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 
+$astuce_bascule_compte                  = '<p>Si vous avez plusieurs comptes, vous pouvez <a href="index.php?page=compte_switch"><b>basculer de l\'un à l\'autre</b></a> sans vous ré-identifier. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__comptes_multiples">Documentation</a></span></p>';
+$astuce_partage_regroupements           = '<p>Vous pouvez <b>partager</b> avec des collègues vos <a href="index.php?page=compte_selection_items"><b>regroupements d\'items</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__gestion_regroupements_items#toggle_partage">Documentation</a></span></p>';
+$astuce_officiel_saisie_mixte           = '<p>Les bilans officiels et les fiches brevet disposent d\'un nouveau statut <b>"saisie mixte"</b> (permettant l\'accès simultané en saisie aux appréciations intermédiaires et de synthèse). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_bulletin_scolaire#toggle_etapes_processus">Documentation</a></span></p>';
 $astuce_email_notifications             = '<p>Vous pouvez <a href="index.php?page=compte_email"><b>renseigner votre adresse e-mail</b></a> et vous abonner pour <a href="index.php?page=consultation_notifications"><b>recevoir des notifications</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__email_notifications#toggle_gestion_utilisateur">Documentation</a></span></p>';
 $astuce_traductions                     = '<p>Le menu est disponible dans <a href="index.php?page=compte_langue"><b>plusieurs langues</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__traduction">Documentation</a></span></p>';
 $astuce_bilans_officiels_appreciations  = '<p>Les <b>appréciations</b> intermédiaires et générales des <b>bilans officiels</b> peuvent être <b>préremplies</b> avec un modèle de contenu. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">Documentation</a></span></p>';
@@ -41,7 +44,7 @@ $astuce_gestion_profils                 = '<p>Vous pouvez gérer des profils sup
 $astuce_duree_session                   = '<p>Vous pouvez paramétrer <b>la durée de vie d\'une session</b> (avant déconnexion) <b>jusqu\'a 2 heures</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_delai_deconnexion">Documentation</a></span></p>';
 $astuce_photos                          = '<p><em>SACoche</em> permet de gérer les <b>photos des élèves</b> : outil trombinoscope, aide pour les bulletins. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__photos_eleves">Documentation</a></span></p>';
 $astuce_bulletin_scolaire               = '<p><em>SACoche</em> permet d\'éditer des <b>bulletins scolaires</b> (avec appréciations, moyennes, coordonnées établissement et parents, signature numérique). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_bulletin_scolaire">Documentation</a></span></p>';
-$astuce_panneau_affichage               = '<p>Vous pouvez <b>programmer l\'affichage d\'un message à destination d\'utilisateurs ciblés</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__messages_accueil">Documentation</a></span></p>';
+$astuce_panneau_affichage               = '<p>Vous pouvez <b>programmer l\'affichage d\'un message</b> à destination d\'utilisateurs ciblés. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__messages_accueil">Documentation</a></span></p>';
 $astuce_memorisation_selection_items    = '<p>Vous pouvez <b>mémoriser des regroupements d\'items</b> pour les années suivantes ou des bilans ciblés. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__gestion_regroupements_items">Documentation</a></span></p>';
 $astuce_devoir_autoevaluation           = '<p>Vous pouvez permettre aux élèves de <b>s\'autoévaluer sur un devoir</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_autoeval">Documentation</a></span></p>';
 $astuce_devoir_joindre_fichiers         = '<p>Vous pouvez joindre ou référencer <b>un sujet et un corrigé</b> à une évaluation. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_fichiers">Documentation</a></span></p>';
@@ -59,6 +62,8 @@ $astuce_authentification_ent            = '<p>On peut se connecter à <em>SACoch
 // Ranger de la plus récente à la plus ancienne (la fréquence d'apparition étant liée à l'actualité de l'astuce)
 $tab_astuces = array(
   'administrateur' => array(
+    $astuce_bascule_compte,
+    $astuce_officiel_saisie_mixte,
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_bilans_officiels_appreciations,
@@ -75,6 +80,8 @@ $tab_astuces = array(
     $astuce_authentification_ent,
   ),
   'directeur' => array(
+    $astuce_bascule_compte,
+    $astuce_officiel_saisie_mixte,
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_bilans_officiels_appreciations,
@@ -91,6 +98,8 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
+    $astuce_bascule_compte,
+    $astuce_partage_regroupements,
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_autoevaluation_commentaire,
@@ -112,19 +121,15 @@ $tab_astuces = array(
     $astuce_devoir_ordonner_items,
     $astuce_faq_b2i,
   ),
-  'eleve' => array(
-    $astuce_email_notifications,
-    $astuce_traductions,
-    $astuce_demande_evaluation,
-  ),
   'parent' => array(
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_demande_evaluation,
   ),
-  'administrateur' => array(
+  'eleve' => array(
     $astuce_email_notifications,
     $astuce_traductions,
+    $astuce_demande_evaluation,
   ),
 );
 

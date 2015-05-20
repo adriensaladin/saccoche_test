@@ -111,6 +111,8 @@ if($action=='purger')
       SACocheLog::ajouter('Suppression d\'un utilisateur au compte désactivé depuis plus de 3 ans ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
     }
   }
+  // Retirer dans les liaisons entre comptes ceux qui sont désactivés ou supprimés
+  DB_STRUCTURE_SWITCH::DB_supprimer_liaisons_obsoletes();
   // Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
@@ -127,7 +129,8 @@ if($action=='purger')
   echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL;
   echo'<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL;
   echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>'.NL;
-  echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Bascules entres comptes inactifs ou supprimés retirées.</label></li>'.NL;
+  echo'<li><label class="valide">Demandes d\'évaluations résiduelles supprimées.</label></li>'.NL;
   echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');

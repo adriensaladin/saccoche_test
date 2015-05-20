@@ -53,9 +53,8 @@ if( ($action=='basculer') && $user_id )
   }
   // C'est ok
   $auth_DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur( 'switch'  ,$user_id );
-  $BASE = $_SESSION['BASE'];
   Session::close__open_new__init( FALSE /*memo_GET*/ );
-  SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
+  SessionUser::initialiser_utilisateur($_SESSION['BASE'],$auth_DB_ROW);
   exit_json( TRUE );
 }
 

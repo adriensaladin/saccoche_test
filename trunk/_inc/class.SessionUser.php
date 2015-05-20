@@ -273,6 +273,7 @@ class SessionUser
     $_SESSION['USER_DUREE_INACTIVITE']  = (int) $DB_ROW['user_profil_duree_inactivite'];
     // Enregistrer en session les données personnelles de l'utilisateur.
     $_SESSION['USER_ID']                = (int) $DB_ROW['user_id'];
+    $_SESSION['USER_SWITCH_ID']         = $DB_ROW['user_switch_id'];
     $_SESSION['USER_GENRE']             = $DB_ROW['user_genre'];
     $_SESSION['USER_NOM']               = $DB_ROW['user_nom'];
     $_SESSION['USER_PRENOM']            = $DB_ROW['user_prenom'];

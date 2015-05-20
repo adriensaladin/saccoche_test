@@ -61,6 +61,7 @@ $tab_droits_par_page = array
   // Profils établissement
   'compte_email'                            => $tab_droits_profil_etablissement,
   'compte_langue'                           => $tab_droits_profil_etablissement,
+  'compte_switch'                           => $tab_droits_profil_etablissement,
   'consultation_notifications'              => $tab_droits_profil_etablissement,
   // Profil public
   'public_accueil'                          => $tab_droits_profil_public,

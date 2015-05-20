@@ -42,6 +42,7 @@ class Layout
   const META_AUTHOR        = 'Thomas Crespin pour Sésamath';
   const META_ROBOTS        = 'index,follow';
   const FLUX_RSS_LINK      = SERVEUR_RSS;
+  const FRAME_RESTRICTION  = FALSE; // FALSE | 'DENY' | 'SAMEORIGIN' -> Pour interdire sans sommation ni explication l'affichage dans un cadre.
   const OPENGRAPH_URL_BASE = NULL; // Non définissable ici ; voir inserer_meta_opengraph()
   const OPENGRAPH_IMAGE    = '/_img/logo_grand.gif';
   const DOSSIER_TMP_URL    = NULL; // Non définissable ici ; voir compacter()
@@ -573,6 +574,21 @@ class Layout
     // Content Security Policy
     // @see http://www.html5rocks.com/en/tutorials/security/content-security-policy/ & http://www.w3.org/TR/CSP/#directives
     header('Content-Security-Policy: '.Layout::header_CSP_directives());
+    // Réduire l'exposition aux attaques du type "clickjacking" / "framesniffing"
+    // Attention : cela donne une page blanche en cas d'inclusion dans un frame, sans avertissement à l'utilisateur
+    // @see http://www.cert.ssi.gouv.fr/site/CERTA-2011-ACT-007/ & https://www.owasp.org/index.php/Clickjacking
+    if(Layout::FRAME_RESTRICTION)
+    {
+      header('X-Frame-Options: '.Layout::FRAME_RESTRICTION);
+    }
+    // Contrer l'exploitation malveillante du MIME Sniffing.
+    // Cependant, ici cela ne s'applique qu'au fichier PHP, ce qui est peu intéressant : mieux vaut le configurer au niveau du serveur (pour les images etc.)
+    // @see https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    header('X-Content-Type-Options: nosniff');
+    // S'assurer que le navigateur du client fasse son maximum pour prévenir d'une attaque de type XSS
+    // @see https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    header('X-XSS-Protection: 1; mode=block');
+    // on passe au contenu
     $retour = '';
     $retour.= '<!DOCTYPE html>'.NL;
     $retour.= '<html lang="fr">'.NL;

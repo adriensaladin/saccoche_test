@@ -30,69 +30,101 @@ $(document).ready
   function()
   {
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
     var mode = false;
-    var id = 0;
-    var nom_prenom = '';
-    var td_resp = false;
 
-    // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{6:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,0]] ] ); };
-    var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
-    // tableau_tri(); // Ne pas trier volontairement c'est déjà trié à la sortie PHP et pour la recherche levenshtein il faut conserver un tri élève
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Basculer vers un autre compte
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#table_action').on
+    (
+      'click',
+      'a',
+      function()
+      {
+        var user_id = $(this).attr('href').substring(4); // "#id_" + ref
+        $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=basculer&f_user_id='+user_id,
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              if(responseJSON['statut']==true)
+              {
+                $.fancybox( '<label class="valide">'+"Bascule réussie ; actualisation en cours&hellip;"+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
+                document.location.reload();
+              }
+              else
+              {
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
+              }
+            }
+          }
+        );
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , nom_prenom , ligne1 , ligne2 , ligne3 , ligne4 , code_postal , commune , pays )
+    function afficher_form_gestion( mode , user_id , message_info )
     {
       $('#f_action').val(mode);
-      $('#f_id').val(id);
-      $('#gestion_identite').html(nom_prenom);
-      $('#f_ligne1').val(ligne1);
-      $('#f_ligne2').val(ligne2);
-      $('#f_ligne3').val(ligne3);
-      $('#f_ligne4').val(ligne4);
-      $('#f_code_postal').val(code_postal);
-      $('#f_commune').val(commune);
-      $('#f_pays').val(pays);
+      $('#f_user_id').val(user_id);
       // pour finir
+      $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une liaison");
+      if(mode=='ajouter')
+      {
+        $('#gestion_ajouter').show(0);
+        $('#gestion_supprimer').hide(0);
+      }
+      else
+      {
+        $('#gestion_delete_liaison').html(message_info);
+        $('#gestion_ajouter').hide(0);
+        $('#gestion_supprimer').show(0);
+      }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-      $('#f_ligne1').focus();
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
+      if(mode=='ajouter') { $('#f_login').focus(); }
     }
 
     /**
-     * Modifier | Ajouter une adresse : mise en place du formulaire
+     * Ajouter une liaison : mise en place du formulaire
      * @return void
      */
-    var modifier = function()
+    var ajouter = function()
     {
-      var objet_tr   = $(this).parent().parent();
-      var objet_tds  = objet_tr.find('td');
-      // Récupérer les informations de la ligne concernée
-      var reference  = objet_tr.attr('id').substring(3);
-          mode       = (reference.substring(0,1)=='M') ? 'modifier' : 'ajouter' ;
-          id         = reference.substring(1);
-          td_resp    = objet_tds.eq(0);
-          nom_prenom = objet_tds.eq(1).html();
-      var obj_lignes = objet_tds.eq(2).find('span');
-      var code_postal= objet_tds.eq(3).html();
-      var commune    = objet_tds.eq(4).html();
-      var pays       = objet_tds.eq(5).html();
-      // Extirper les 4 lignes d'adresses
-      var ligne1     = obj_lignes.eq(0).html();
-      var ligne2     = obj_lignes.eq(1).html();
-      var ligne3     = obj_lignes.eq(2).html();
-      var ligne4     = obj_lignes.eq(3).html();
+      mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(nom_prenom) , unescapeHtml(ligne1) , unescapeHtml(ligne2) , unescapeHtml(ligne3) , unescapeHtml(ligne4) , code_postal , unescapeHtml(commune) , unescapeHtml(pays) );
+      afficher_form_gestion( mode , '' /*user_id*/ , 'aucun' /*message_info*/ );
+    };
+
+    /**
+     * Supprimer une liaison : mise en place du formulaire
+     * @return void
+     */
+    var supprimer = function()
+    {
+      mode = $(this).attr('class');
+      var objet_tr     = $(this).parent().parent();
+      var objet_tds    = objet_tr.find('td');
+      // Récupérer les informations de la ligne concernée
+      var user_id      = objet_tr.attr('id').substring(3);
+      var message_info = objet_tds.eq(0).text()+" ("+objet_tds.eq(1).text()+")";
+      // Afficher le formulaire
+      afficher_form_gestion( mode , user_id , message_info );
     };
 
     /**
@@ -128,14 +160,19 @@ $(document).ready
 // Appel des fonctions en fonction des événements
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').on( 'click' , 'q.modifier'      , modifier );
+    $('#table_action').on( 'click' , 'q.ajouter'       , ajouter );
+    $('#table_action').on( 'click' , 'q.supprimer'     , supprimer );
 
     $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
     $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
-    $('#form_gestion').on( 'keyup' , 'input,select'    , function(e){intercepter(e);} );
+    $('#form_gestion').on( 'keyup' , 'input'           , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+// Basculer vers un autre compte
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du deuxième formulaire : Ajouter une liaison | Retirer une liaison
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
@@ -147,27 +184,18 @@ $(document).ready
       {
         rules :
         {
-          f_ligne1      : { required:false , maxlength:50 },
-          f_ligne2      : { required:false , maxlength:50 },
-          f_ligne3      : { required:false , maxlength:50 },
-          f_ligne4      : { required:false , maxlength:50 },
-          f_code_postal : { required:false , maxlength:10 },
-          f_commune     : { required:false , maxlength:45 },
-          f_pays        : { required:false , maxlength:35 }
+          f_login    : { required:function(){return mode=='ajouter';} , maxlength:20 },
+          f_password : { required:function(){return mode=='ajouter';} , maxlength:20 }
         },
         messages :
         {
-          f_ligne1      : { maxlength:"50 caractères maxi par élément d'adresse" },
-          f_ligne2      : { maxlength:"50 caractères maxi par élément d'adresse" },
-          f_ligne3      : { maxlength:"50 caractères maxi par élément d'adresse" },
-          f_ligne4      : { maxlength:"50 caractères maxi par élément d'adresse" },
-          f_code_postal : { maxlength:"Code postal : 10 caractères maximum" },
-          f_commune     : { maxlength:"Commune : 45 caractères maximum" },
-          f_pays        : { maxlength:"Pays : 35 caractères maximum" }
+          f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
+          f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -176,10 +204,10 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
-      target : "#ajax_msg_gestion",
+      target : "#ajax_ajouter",
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -190,17 +218,10 @@ $(document).ready
     (
       function()
       {
-        if (!please_wait)
-        {
-          $(this).ajaxSubmit(ajaxOptions);
-          return false;
-        }
-        else
-        {
-          return false;
-        }
+        $(this).ajaxSubmit(ajaxOptions);
+        return false;
       }
-    ); 
+    );
 
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
@@ -209,7 +230,6 @@ $(document).ready
       var readytogo = validation.form();
       if(readytogo)
       {
-        please_wait = true;
         $('#form_gestion button').prop('disabled',true);
         $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
@@ -219,36 +239,24 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
-      please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseHTML.substring(0,2)!='<t')
+      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+        var msg = (mode=='ajouter') ? 'Liaison réussie' : 'Retrait réussi' ;
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html(msg+" ; actualisation en cours&hellip;");
+        document.location.reload();
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        $('#temp_td').html(td_resp); // Pour ne pas perdre l'objet avec l'infobulle, on est obligé de le copier ailleurs avant le html qui suit.
-        switch (mode)
-        {
-          case 'ajouter':
-            $('#id_A'+id).addClass("new").attr('id','id_M'+id).html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
-            break;
-          case 'modifier':
-            $('#id_M'+id).addClass("new").html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
-            break;
-        }
-        $.fancybox.close();
-        mode = false;
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseJSON['value']);
       }
     }
 

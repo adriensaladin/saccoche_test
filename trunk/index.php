@@ -255,7 +255,8 @@ $body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;
 echo Layout::afficher_page_entete('prog-'.$body_class);
 if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
-  $lien_page_langue = ($_SESSION['USER_ETABLISSEMENT']) ? ' <a href="./index.php?page=compte_langue">['.Lang::get_locale_used().']</a>' : '' ;
+  $lien_page_langue = ($_SESSION['USER_ETABLISSEMENT'])     ? ' <a href="./index.php?page=compte_langue">['.Lang::get_locale_used().']</a>' : '' ;
+  $lien_page_switch = (!empty($_SESSION['USER_SWITCH_ID'])) ? '<a href="./index.php?page=compte_switch"><span class="top switch">'.$_SESSION['USER_PROFIL_NOM_COURT'].'</span></a>' : $_SESSION['USER_PROFIL_NOM_COURT'] ;
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
   echo'<div id="cadre_haut">'.NL;
   echo  '<a target="_blank" href="'.SERVEUR_PROJET.'" class="no_puce"><img id="logo" alt="SACoche" src="./_img/logo_petit_menu.png" width="154" height="39" /></a>'.NL;
@@ -263,7 +264,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
   echo    $_SESSION['MENU'];
   echo    '<div>'.NL;
   echo      '<span class="top home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span><br />'.NL;
-  echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL_NOM_COURT'].')'.$lien_page_langue.'</span>'.NL;
+  echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$lien_page_switch.')'.$lien_page_langue.'</span>'.NL;
   echo    '</div>'.NL;
   echo    '<div>'.NL;
   echo      '<span class="top clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span><br />'.NL;

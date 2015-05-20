@@ -46,15 +46,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // complète (% effectué)
-    'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
-    'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
-    'traducteur' => array(
-      array( 'nom' => 'Joël Macé' , 'mail' => 'joel.mace@ac-versailles.fr' ),
-    ),
-  ),
-  array(
-    'statut'     => 100, // complète (% effectué)
+    'statut'     => 99, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
@@ -62,7 +54,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 98, // complète (% effectué)
+    'statut'     => 97, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -70,7 +62,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 98, // complète (% effectué)
+    'statut'     => 97, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
@@ -99,7 +91,15 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // complète (% effectué)
+    'statut'     => 99, // complète (% effectué)
+    'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
+    'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
+    'traducteur' => array(
+      array( 'nom' => 'Joël Macé' , 'mail' => 'joel.mace@ac-versailles.fr' ),
+    ),
+  ),
+  array(
+    'statut'     => 99, // complète (% effectué)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

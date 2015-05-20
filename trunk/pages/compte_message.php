@@ -101,7 +101,7 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
 </table>
 
 <form action="#" method="post" id="form_gestion" class="hide">
-  <h2>Ajouter | Modifier un message d'accueil</h2>
+  <h2>Ajouter | Modifier | Supprimer un message d'accueil</h2>
   <div id="gestion_edit">
     <p>
       <label class="tab" for="f_debut_date">Date de début :</label><input id="f_debut_date" name="f_debut_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />

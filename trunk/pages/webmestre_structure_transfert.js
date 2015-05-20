@@ -149,8 +149,6 @@ $(document).ready
       );
     }
 
-    // live est utilisé pour prendre en compte les nouveaux éléments html créés
-
     $('#puce_info_export').on
     (
       'click',

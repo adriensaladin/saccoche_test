@@ -788,7 +788,7 @@ table.notanet td {height:30px}
 td.br{background-color:#F99}
 td.bj{background-color:#FD3}
 td.bv{background-color:#9F9}
-td.bf{background-color:#9F9} /* A mettre en dernier pour surcharger les précédents */
+td.bf{background-color:#8D8} /* A mettre en dernier pour surcharger les précédents */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau webmestre présentant les statistiques                                             */

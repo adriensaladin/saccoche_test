@@ -614,12 +614,13 @@ public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_d
  */
 public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
@@ -638,11 +639,12 @@ public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$nive
  */
 public static function DB_supprimer_referentiel_domaine($domaine_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
   $DB_SQL.= 'WHERE domaine_id=:domaine_id';
@@ -659,10 +661,11 @@ public static function DB_supprimer_referentiel_domaine($domaine_id)
  */
 public static function DB_supprimer_referentiel_theme($theme_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_theme ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
   $DB_SQL.= 'WHERE theme_id=:theme_id';
@@ -683,10 +686,11 @@ public static function DB_supprimer_referentiel_theme($theme_id)
 public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
 {
   // Supprimer l'item à fusionner et les demandes d'évaluations associées
-  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande';
+  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande, sacoche_jointure_selection_item';
   // Dans le cas d'une fusion, PAS ENCORE les jointures aux devoirs ni les saisies
   $DB_SQL.= ($with_notes) ? ', sacoche_jointure_devoir_item, sacoche_saisie ' : ' ' ;
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= ($with_notes) ? 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ' : '' ;
   $DB_SQL.= ($with_notes) ? 'LEFT JOIN sacoche_saisie USING (item_id) ' : '' ;
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';

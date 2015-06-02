@@ -1252,10 +1252,12 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   }
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_item_id = array(); // pas indispensable, mais plus lisible
+  $tab_user_order = array(); // pour trier les répartition nominatives
   // noms prénoms des élèves
-  foreach($DB_TAB_USER as $DB_ROW)
+  foreach($DB_TAB_USER as $key => $DB_ROW)
   {
     $tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+    $tab_user_order[$DB_ROW['user_id']] = $key;
   }
   // noms des items
   foreach($DB_TAB_ITEM as $DB_ROW)
@@ -1300,9 +1302,27 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
       $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors RR R V VV
       $checkbox_user = '<input type="checkbox" name="id_user[]" value="'.$DB_ROW['eleve_id'].'" />';
       $checkbox_req  = '<input type="checkbox" name="id_req[]" value="'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" />';
-      $tab_repartition_nominatif[$DB_ROW['item_id']][$note][] = $eleve;
+      $tab_repartition_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $eleve;
       $tab_repartition_quantitatif[$DB_ROW['item_id']][$note]++;
-      $tab_selection_nominatif[$DB_ROW['item_id']][$note][] = $checkbox_user.$checkbox_req.' '.$eleve;
+      $tab_selection_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $checkbox_user.$checkbox_req.' '.$eleve;
+    }
+  }
+  // Tri des tableaux nominatifs par ordre alphabétique des élèves pour chaque catégorie
+  // La fonction tri_clefs() utilisée avec uksort() trie les élèves par ordre alphabétique à partir de leur identifiant.
+  function tri_clefs($key1, $key2)
+  {
+    global $tab_user_order;
+    return $tab_user_order[$key1] - $tab_user_order[$key2];
+  }
+  foreach($tab_item_id as $item_id=>$tab_infos_item)
+  {
+    foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
+    {
+      uksort( $tab_repartition_nominatif[$item_id][$code] , 'tri_clefs' );
+    }
+    foreach($tab_selection_nominatif[$item_id] as $code=>$tab_eleves)
+    {
+      uksort( $tab_selection_nominatif[$item_id][$code] , 'tri_clefs' );
     }
   }
   //

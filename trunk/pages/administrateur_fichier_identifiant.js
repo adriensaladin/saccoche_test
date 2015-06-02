@@ -58,16 +58,15 @@ $(document).ready
         $('#ajax_retour').html("&nbsp;");
         // Puis afficher ce qu'il faut
         var objet = $(this).val();
-        switch (objet)
+        if(objet=='new_loginmdp')
         {
-          case 'new_loginmdp' : maj_eleve_birth(); maj_f_user(); $('#fieldset_new_loginmdp').show(); break;
-          case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
-          case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
-          case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
-          case 'import_id_laclasse'   : $('#fieldset_import_id_laclasse').show();   break;
-          case 'import_id_ent_normal' : $('#fieldset_import_id_ent_normal').show(); break;
-          case 'import_id_ent_cas'    : $('#fieldset_import_id_ent_cas').show();    break;
-          case 'import_id_gepi'       : $('#fieldset_import_id_gepi').show();       break;
+          maj_eleve_birth();
+          maj_f_user();
+          $('#fieldset_'+objet).show();
+        }
+        else if(objet.substring(0,7)=='import_')
+        {
+          $('#fieldset_'+objet).show();
         }
       }
     );

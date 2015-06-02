@@ -217,7 +217,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   $liste_item_id = implode(',',$tab_liste_item);
   // boutons radio
   $tab_radio_boutons = array();
-  $tab_notes = array( 'X' , 'RR' , 'R' , 'V' , 'VV' ); // , 'NN' , 'NE' , 'NF' , 'NR' , 'ABS' , 'DISP' , 'REQ'
+  $tab_notes = array( 'X' , 'ABS' , 'RR' , 'R' , 'V' , 'VV' ); // , 'NN' , 'NE' , 'NF' , 'NR' , 'DISP' , 'REQ'
   foreach($tab_notes as $note)
   {
     $tab_radio_boutons[] = '<label for="item_X_'.$note.'"><input type="radio" id="item_X_'.$note.'" name="item_X" value="'.$note.'"><br /><img alt="'.$note.'" src="'.Html::note_src($note).'" /></label>';

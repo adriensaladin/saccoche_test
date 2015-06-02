@@ -2325,13 +2325,6 @@ public static function DB_corriger_anomalies()
   $DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_groupe.groupe_id IS NULL) ) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Évaluations' );
-  // Recherche d'anomalies : sélections d'items associées à un professeur supprimé...
-  $DB_SQL = 'DELETE sacoche_selection_item ';
-  $DB_SQL.= 'FROM sacoche_selection_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_selection_item.proprio_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Sélections d\'items' );
   // Recherche d'anomalies : messages associés à un utilisateur supprimé...
   $DB_SQL = 'DELETE sacoche_message ';
   $DB_SQL.= 'FROM sacoche_message ';
@@ -2339,6 +2332,19 @@ public static function DB_corriger_anomalies()
   $DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Messages d\'accueil' );
+  // Recherche d'anomalies : bascules vers un compte désactivé ou supprimé...
+  $tab_bilan[] = compte_rendu( DB_STRUCTURE_SWITCH::DB_supprimer_liaisons_obsoletes() , 'Bascules entre comptes' );
+  // Recherche d'anomalies : sélections d'items associées à un professeur supprimé...
+  $DB_SQL = 'DELETE sacoche_selection_item ';
+  $DB_SQL.= 'FROM sacoche_selection_item ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_selection_item.proprio_id=sacoche_user.user_id ';
+  $DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Sélections d\'items sans propriétaire' );
+  // Recherche d'anomalies : jointures sélection/item à un item supprimé...
+  $tab_bilan[] = compte_rendu( DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_jointures_items_obsoletes() , 'Jointures sélection/item' );
+  // Recherche d'anomalies : sélections d'items associées à aucun item...
+  $tab_bilan[] = compte_rendu( DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_selections_items_obsoletes() , 'Sélections d\'items sans item' );
   // Recherche d'anomalies : jointures période/groupe associées à une période ou un groupe supprimé...
   $DB_SQL = 'DELETE sacoche_jointure_groupe_periode ';
   $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';

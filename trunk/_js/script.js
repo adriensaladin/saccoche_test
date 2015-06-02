@@ -280,11 +280,12 @@ function imprimer(contenu)
  */
 function cocher_matieres_items(matieres_items_liste)
 {
+  var $zone_matieres_items = $('#zone_matieres_items');
   // Replier tout sauf le plus haut niveau
-  $('#zone_matieres_items ul').css("display","none");
-  $('#zone_matieres_items ul.ul_m1').css("display","block");
+  $zone_matieres_items.find('ul').css("display","none");
+  $zone_matieres_items.find('ul.ul_m1').css("display","block");
   // Décocher tout
-  $("#zone_matieres_items input[type=checkbox]").each
+  $zone_matieres_items.find('input[type=checkbox]').each
   (
     function()
     {
@@ -297,14 +298,14 @@ function cocher_matieres_items(matieres_items_liste)
     var tab_id = matieres_items_liste.split('_');
     for(i in tab_id)
     {
-      id = 'id_'+tab_id[i];
-      if($('#'+id).length)
+      var $item_id = $('#item_'+tab_id[i]);
+      if($item_id.length)
       {
-        $('#'+id).prop('checked',true);
-        $('#'+id).closest('ul.ul_n3').css("display","block");  // les items
-        $('#'+id).closest('ul.ul_n2').css("display","block");  // le thème
-        $('#'+id).closest('ul.ul_n1').css("display","block");  // le domaine
-        $('#'+id).closest('ul.ul_m2').css("display","block");  // le niveau
+        $item_id.prop('checked',true);
+        $item_id.closest('ul.ul_n3').css("display","block");  // les items
+        $item_id.closest('ul.ul_n2').css("display","block");  // le thème
+        $item_id.closest('ul.ul_n1').css("display","block");  // le domaine
+        $item_id.closest('ul.ul_m2').css("display","block");  // le niveau
       }
     }
   }
@@ -318,14 +319,15 @@ function cocher_matieres_items(matieres_items_liste)
  */
 function memoriser_selection_matieres_items(selection_items_nom)
 {
+  var $ajax_msg = $('#ajax_msg_memo');
   if(!selection_items_nom)
   {
-    $('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
+    $ajax_msg.removeAttr("class").addClass("erreur").html("nom manquant");
     $("#f_liste_items_nom").focus();
     return false;
   }
   var compet_liste = '';
-  $("#zone_matieres_items input[type=checkbox]:checked").each
+  $('#zone_matieres_items').find('input[type=checkbox]:checked').each
   (
     function()
     {
@@ -334,11 +336,11 @@ function memoriser_selection_matieres_items(selection_items_nom)
   );
   if(!compet_liste)
   {
-    $('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
+    $ajax_msg.removeAttr("class").addClass("erreur").html("Aucun item coché !");
     return false;
   }
   var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-  $('#ajax_msg_memo').removeAttr("class").addClass("loader").html("En cours&hellip;");
+  $ajax_msg.removeAttr("class").addClass("loader").html("En cours&hellip;");
   $.ajax
   (
     {
@@ -348,20 +350,20 @@ function memoriser_selection_matieres_items(selection_items_nom)
       dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
-        $('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+        $ajax_msg.removeAttr("class").addClass("alerte").html("Échec de la connexion !");
       },
       success : function(responseHTML)
       {
         initialiser_compteur();
         if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
         {
-          $('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+          $ajax_msg.removeAttr("class").addClass("valide").html("Sélection mémorisée.");
           $("#f_selection_items option:disabled").remove();
           $("#f_selection_items").append(responseHTML);
         }
         else
         {
-          $('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
+          $ajax_msg.removeAttr("class").addClass("alerte").html(responseHTML);
           $("#f_liste_items_nom").focus();
         }
       }
@@ -377,16 +379,17 @@ function memoriser_selection_matieres_items(selection_items_nom)
  */
 function cocher_socle_item(socle_item_id)
 {
+  var $zone_socle_item = $('#zone_socle_item');
   // Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
   if(cocher_socle_item_first_appel)
   {
-    $('#zone_socle_item ul').css("display","none");
-    $('#zone_socle_item ul.ul_m1').css("display","block");
+    $zone_socle_item.find('ul').css("display","none");
+    $zone_socle_item.find('ul.ul_m1').css("display","block");
     cocher_socle_item_first_appel = false;
   }
-  $('#zone_socle_item ul.ul_n1').css("display","block"); // zone "Hors socle" éventuelle
+  $zone_socle_item.find('ul.ul_n1').css("display","block"); // zone "Hors socle" éventuelle
   // Décocher tout
-  $("#zone_socle_item input[type=radio]").each
+  $zone_socle_item.find('input[type=radio]').each
   (
     function()
     {
@@ -394,21 +397,22 @@ function cocher_socle_item(socle_item_id)
     }
   );
   // Cocher ce qui doit l'être (initialisation)
+  var $socle_id = $('#socle_'+socle_item_id);
   if(socle_item_id!='0')
   {
-    if($('#socle_'+socle_item_id).length)
+    if($socle_id.length)
     {
-      $('#socle_'+socle_item_id).prop('checked',true);
-      $('#socle_'+socle_item_id).closest('ul.ul_n3').css("display","block");  // les items
-      $('#socle_'+socle_item_id).closest('ul.ul_n2').css("display","block");  // la section
-      $('#socle_'+socle_item_id).closest('ul.ul_n1').css("display","block");  // le pilier
+      $socle_id.prop('checked',true);
+      $socle_id.closest('ul.ul_n3').css("display","block");  // les items
+      $socle_id.closest('ul.ul_n2').css("display","block");  // la section
+      $socle_id.closest('ul.ul_n1').css("display","block");  // le pilier
     }
   }
   else
   {
     $('#socle_0').prop('checked',true);
   }
-  $('#socle_'+socle_item_id).focus();
+  $socle_id.focus();
 }
 
 var cocher_socle_item_first_appel = true;
@@ -421,11 +425,12 @@ var cocher_socle_item_first_appel = true;
  */
 function cocher_eleves(eleve_liste)
 {
+  var $zone_eleve = $('#zone_eleve');
   // Replier les classes
-    $('#zone_eleve ul').css("display","none");
-    $('#zone_eleve ul.ul_m1').css("display","block");
+    $zone_eleve.find('ul').css("display","none");
+    $zone_eleve.find('ul.ul_m1').css("display","block");
   // Décocher tout
-  $("#zone_eleve input[type=checkbox]").each
+  $zone_eleve.find('input[type=checkbox]').each
   (
     function()
     {
@@ -439,11 +444,11 @@ function cocher_eleves(eleve_liste)
     var tab_id = eleve_liste.split('_');
     for(i in tab_id)
     {
-      var id_debut = 'id_'+tab_id[i]+'_';
-      if($('input[id^='+id_debut+']').length)
+      var $id_debut = $('input[id^=id_'+tab_id[i]+'_]');
+      if($id_debut.length)
       {
-        $('input[id^='+id_debut+']').prop('checked',true);
-        $('input[id^='+id_debut+']').parent().parent().css("display","block");  // le regroupement
+        $id_debut.prop('checked',true);
+        $id_debut.parent().parent().css("display","block");  // le regroupement
       }
     }
   }
@@ -458,7 +463,7 @@ function cocher_eleves(eleve_liste)
 function cocher_matieres(matiere_liste)
 {
   // Décocher tout
-  $("#zone_matieres input[type=checkbox]").each
+  $('#zone_matieres').find('input[type=checkbox]').each
   (
     function()
     {
@@ -471,10 +476,10 @@ function cocher_matieres(matiere_liste)
     var tab_id = matiere_liste.split('_');
     for(i in tab_id)
     {
-      var id = 'm_'+tab_id[i];
-      if($('#'+id).length)
+      var $id_matiere = $('#m_'+tab_id[i]);
+      if($id_matiere.length)
       {
-        $('#'+id).prop('checked',true);
+        $id_matiere.prop('checked',true);
       }
     }
   }
@@ -489,7 +494,7 @@ function cocher_matieres(matiere_liste)
 function cocher_profs(prof_liste)
 {
   // Décocher tout
-  $("#zone_profs input[type=checkbox]").each
+  $('#zone_profs').find('input[type=checkbox]').each
   (
     function()
     {
@@ -505,10 +510,10 @@ function cocher_profs(prof_liste)
     var tab_id = prof_liste.split('_');
     for(i in tab_id)
     {
-      var id = 'p_'+tab_id[i];
-      if($('#'+id).length)
+      var $id_prof = $('#p_'+tab_id[i]);
+      if($id_prof.length)
       {
-        $('#'+id).prop('checked',true);
+        $id_prof.prop('checked',true);
       }
     }
   }
@@ -535,11 +540,11 @@ function selectionner_profs_option(prof_liste)
     {
       var val_option = tab_val[i].substring(0,1);
       var id_prof    = tab_val[i].substring(1);
-      var id_select  = 'p'+'_'+id_prof;
-      if($('#'+id_select).length)
+      var $id_select = $('#p_'+id_prof);
+      if($id_select.length)
       {
-        $('#'+id_select+' option[value='+val_option+']').prop('selected',true);
-        $('#'+id_select).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
+        $id_select.find('option[value='+val_option+']').prop('selected',true);
+        $id_select.next('span').removeAttr('class').addClass('select_img droit_'+val_option);
       }
     }
   }
@@ -1147,10 +1152,10 @@ $(document).ready
         'a',
         function()
         {
-          var obj_ul = $(this).next('ul');
-          if(typeof(obj_ul!=='undefined'))
+          var $ul = $(this).next('ul');
+          if(typeof($ul!=='undefined'))
           {
-            var montrer = (obj_ul.css('display')=='block') ? false : true ;
+            var montrer = ($ul.css('display')=='block') ? false : true ;
             var premier_menu = ($(this).hasClass('menu')) ? true : false ;
             if(premier_menu)
             {
@@ -1164,12 +1169,12 @@ $(document).ready
             }
             if(montrer)
             {
-              obj_ul.css('display','block');
+              $ul.css('display','block');
               $(this).parent('li').css('background','#AAF');
             }
             else
             {
-              obj_ul.css('display','none');
+              $ul.css('display','none');
             }
             if( premier_menu && !montrer )
             {
@@ -1210,9 +1215,9 @@ $(document).ready
     (
       function()
       {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').prop('checked',true);
-        obj_select_multiple.children('label').addClass('check');
+        var $select_multiple = $(this).parent().parent().children('span.select_multiple');
+        $select_multiple.find('input[type=checkbox]').prop('checked',true);
+        $select_multiple.children('label').addClass('check');
       }
     );
 
@@ -1220,9 +1225,9 @@ $(document).ready
     (
       function()
       {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').prop('checked',false);
-        obj_select_multiple.children('label').removeAttr('class');
+        var $select_multiple = $(this).parent().parent().children('span.select_multiple');
+        $select_multiple.find('input[type=checkbox]').prop('checked',false);
+        $select_multiple.children('label').removeAttr('class');
       }
     );
 
@@ -1230,8 +1235,8 @@ $(document).ready
     (
       function()
       {
-        var obj_select_multiple = $(this).parent().parent().children('span.select_multiple');
-        obj_select_multiple.find('input[type=checkbox]').each
+        var $select_multiple = $(this).parent().parent().children('span.select_multiple');
+        $select_multiple.find('input[type=checkbox]').each
         (
           function()
           {
@@ -1324,7 +1329,7 @@ $(document).ready
         var tab_id = $(this).attr('id').split('_');
         var id_debut = 'id_'+tab_id[1]+'_';
         var etat = ($(this).is(':checked')) ? true : false ;
-        $('#zone_eleve input[id^='+id_debut+']').prop('checked',etat);
+        $('#zone_eleve').find('input[id^='+id_debut+']').prop('checked',etat);
       }
     );
 
@@ -1416,6 +1421,7 @@ $(document).ready
       'q.date_calendrier',
       function(e)
       {
+        var $calque = $("#calque");
         // Récupérer les infos associées
         champ   = $(this).prev().attr('id');    // champ dans lequel retourner les valeurs
         date_fr = $(this).prev().val();
@@ -1434,9 +1440,9 @@ $(document).ready
         // Afficher le calque
         posX = e.pageX-5;
         posY = e.pageY-5;
-        $("#calque").css('left',posX + 'px');
-        $("#calque").css('top',posY + 'px');
-        $("#calque").html('<label id="ajax_alerte_calque" class="loader">En cours&hellip;</label>').show();
+        $calque.css('left',posX + 'px');
+        $calque.css('top',posY + 'px');
+        $calque.html('<label id="ajax_alerte_calque" class="loader">En cours&hellip;</label>').show();
         // Charger en Ajax le contenu du calque
         $.ajax
         (
@@ -1454,7 +1460,7 @@ $(document).ready
             {
               if(responseHTML.substring(0,4)=='<h5>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $('#calque').html(responseHTML);
+                $calque.html(responseHTML);
                 leave_erreur = false;
               }
               else
@@ -1594,7 +1600,6 @@ $(document).ready
               }
               else
               {
-
                 var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
                             + '<form action="#" method="post" id="form_demande_evaluation">'
                             + '<p class="b">'+item_nom+'</p>'
@@ -1656,7 +1661,6 @@ $(document).ready
                   }
                   $('#bouton_upload_demande_document').prop('disabled',false);
                 }
-
                 // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
                 var upload_demande_document = new AjaxUpload
                 ('#bouton_upload_demande_document',
@@ -1670,7 +1674,6 @@ $(document).ready
                     onComplete: retourner_demande_document
                   }
                 );
-
               }
               $('#form_demande_evaluation button').prop('disabled',false);
             }

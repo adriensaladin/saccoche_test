@@ -34,28 +34,32 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 
 // Nom du fichier à extraire si c'est un fichier zippé
 $alerte = '';
-if( ($import_origine=='sconet') && ($import_profil=='eleve') )
+$nom_fichier_extrait = '';
+if($import_origine=='sconet')
 {
-  $nom_fichier_extrait = 'ElevesSansAdresses.xml';
-  if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesAvecAdresses')) )
+  if($import_profil=='eleve')
   {
-    $nom_fichier_extrait = 'ElevesAvecAdresses.xml';
-    $alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">avec</span> adresses ! Vous pouvez toutefois poursuivre&hellip;</p>'.NL;
+    $nom_fichier_extrait = 'ElevesSansAdresses.xml';
+    if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesAvecAdresses')) )
+    {
+      $nom_fichier_extrait = 'ElevesAvecAdresses.xml';
+      $alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">avec</span> adresses ! Vous pouvez toutefois poursuivre&hellip;</p>'.NL;
+    }
   }
-}
-else if( ($import_origine=='sconet') && ($import_profil=='parent') )
-{
-  $nom_fichier_extrait = 'ResponsablesAvecAdresses.xml';
-  if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ElevesSansAdresses')) )
+  else if($import_profil=='parent')
   {
-    $nom_fichier_extrait = 'ResponsablesSansAdresses.xml';
-    $alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">sans</span> adresses ! Si vous poursuivez, sachez que les adresses ne seront pas trouvées&hellip;</p>'.NL;
+    $nom_fichier_extrait = 'ResponsablesAvecAdresses.xml';
+    if( (isset($_FILES['userfile']['name'])) && (strpos($_FILES['userfile']['name'],'ResponsablesSansAdresses')) )
+    {
+      $nom_fichier_extrait = 'ResponsablesSansAdresses.xml';
+      $alerte = '<p class="danger">Vous avez fourni le fichier <span class="u b">sans</span> adresses ! Si vous poursuivez, sachez que les adresses ne seront pas trouvées&hellip;</p>'.NL;
+    }
   }
-}
-else
-{
-  $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
-  $nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
+  else if($import_profil=='professeur')
+  {
+    $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
+    $nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
+  }
 }
 $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , $nom_fichier_extrait /*filename_in_zip*/ );
 if($result!==TRUE)

@@ -129,8 +129,8 @@ class HtmlArborescence
         }
         if($aff_input)
         {
-          $input_texte = '<input id="id_'.$item_id.'" name="f_items[]" type="checkbox" value="'.$item_id.'" /> ';
-          $label_texte_avant = '<label for="id_'.$item_id.'">';
+          $input_texte = '<input id="item_'.$item_id.'" name="f_items[]" type="checkbox" value="'.$item_id.'" /> ';
+          $label_texte_avant = '<label for="item_'.$item_id.'">';
           $label_texte_apres = '</label>';
         }
         $item_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;

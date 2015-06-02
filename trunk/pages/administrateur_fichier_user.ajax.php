@@ -38,6 +38,8 @@ $tab_action = array(
   'sconet_parents_oui'                => array('sconet'     ,'parent'    ),
   'base_eleves_eleves'                => array('base_eleves','eleve'     ),
   'base_eleves_parents'               => array('base_eleves','parent'    ),
+  'factos_eleves'                     => array('factos'     ,'eleve'     ),
+  'factos_parents'                    => array('factos'     ,'parent'    ),
   'tableur_professeurs_directeurs'    => array('tableur'    ,'professeur'),
   'tableur_eleves'                    => array('tableur'    ,'eleve'     ),
   'tableur_parents'                   => array('tableur'    ,'parent'    ),
@@ -46,8 +48,8 @@ $tab_action = array(
 $tab_step = array(
   10 => "Récupération du fichier (tous les cas)",
   20 => "Extraction des données (tous les cas)",
-  31 => "Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  32 => "Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  31 => "Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  32 => "Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
   41 => "Analyse des données des groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
   42 => "Traitement des actions à effectuer sur les groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
   51 => "Analyse des données des utilisateurs (tous les cas)",
@@ -55,10 +57,10 @@ $tab_step = array(
   53 => "Récupérer les identifiants des nouveaux utilisateurs (tous les cas)",
   61 => "Modification d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
   62 => "Traitement des ajouts d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  71 => "Adresses des parents (sconet_parents | base_eleves_parents | tableur_parents)",
-  72 => "Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base_eleves_parents | tableur_parents)",
-  81 => "Liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents)",
-  82 => "Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents)",
+  71 => "Adresses des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  72 => "Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  81 => "Liens de responsabilités des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  82 => "Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
   90 => "Nettoyage des fichiers temporaires (tous les cas)",
 );
 
@@ -126,6 +128,7 @@ function afficher_etapes($import_origine,$import_profil)
       break;
     case      'sconet+parent' :
     case 'base_eleves+parent' :
+    case      'factos+parent' :
     case     'tableur+parent' :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
       $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
@@ -135,6 +138,7 @@ function afficher_etapes($import_origine,$import_profil)
       $puces .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
       break;
     case  'base_eleves+eleve' :
+    case       'factos+eleve' :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
       $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
       $puces .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>'.NL;

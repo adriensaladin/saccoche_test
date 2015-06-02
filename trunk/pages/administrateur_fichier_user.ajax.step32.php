@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
@@ -120,7 +120,7 @@ if($mode=='complet')
   echo  '</tbody>'.NL;
   echo'</table>'.NL;
 }
-$STEP = ( ($import_origine=='base_eleves') && ($import_profil=='eleve') ) ? '5' : '4' ;
+$STEP = ( ( ($import_origine=='base_eleves') || ($import_origine=='factos') ) && ($import_profil=='eleve') ) ? '5' : '4' ;
 echo'<ul class="puce p"><li><a href="#step'.$STEP.'1" id="passer_etape_suivante">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

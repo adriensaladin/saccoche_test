@@ -151,12 +151,12 @@ Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
   <table id="table_saisir" class="vm_nug">
     <thead>
       <tr>
-        <th colspan="5">Note</th>
+        <th colspan="6">Note</th>
         <th>Item</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="6"></td></tr>
+      <tr><td class="nu" colspan="7"></td></tr>
     </tbody>
   </table>
   <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ); ?>

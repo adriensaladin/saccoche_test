@@ -478,46 +478,4 @@ if($version_base_structure_actuelle=='2015-05-12')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-05-19 => 2015-05-27
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-05-19')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-05-27';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // nouvelle table [sacoche_jointure_selection_item]
-    $reload_sacoche_jointure_selection_item = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_selection_item.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // remplissage de la table
-    $DB_SQL = 'SELECT selection_item_id , selection_item_liste ';
-    $DB_SQL.= 'FROM sacoche_selection_item ';
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-    if(!empty($DB_TAB))
-    {
-      $DB_SQL = 'INSERT INTO sacoche_jointure_selection_item(selection_item_id, item_id) VALUES(:selection_item_id,:item_id)';
-      $DB_VAR = array();
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $DB_VAR[':selection_item_id'] = $DB_ROW['selection_item_id'];
-        $tab_item = explode( ',' , substr($DB_ROW['selection_item_liste'],1,-1) );
-        foreach($tab_item as $item_id)
-        {
-          $DB_VAR[':item_id'] = $item_id;
-          DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-        }
-      }
-    }
-    // suppression du champ [selection_item_liste] de la table [sacoche_selection_item]
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_selection_item DROP selection_item_liste' );
-    // renommage de 2 niveaux
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom = "Première STD2A / STI2D / STL / ST2S / STMG"  WHERE niveau_id = 73 ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom = "Terminale STD2A / STI2D / STL / ST2S / STMG" WHERE niveau_id = 79 ' );
-  }
-}
-
 ?>

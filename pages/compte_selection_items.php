@@ -51,7 +51,7 @@ Layout::add( 'js_inline_before' , 'var tab_profs = new Array();' );
   </thead>
   <tbody>
     <?php
-    $DB_TAB = DB_STRUCTURE_SELECTION_ITEM::DB_lister($_SESSION['USER_ID']);
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_selection_items($_SESSION['USER_ID']);
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -96,9 +96,9 @@ Layout::add( 'js_inline_before' , 'var tab_profs = new Array();' );
           exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le regroupement n°'.$DB_ROW['selection_item_id'].' !');
         }
         // Liste des items
-        $items_liste  = $DB_ROW['item_listing'];
-        $items_nombre = ($DB_ROW['item_listing']) ? mb_substr_count($items_liste,'_')+1 : 0 ;
-        $items_texte  = ($items_nombre>1) ? $items_nombre.' items' : ( ($items_nombre) ? '1 item' : 'aucun' ) ;
+        $items_liste  = str_replace(',','_',mb_substr($DB_ROW['selection_item_liste'],1,-1));
+        $items_nombre = (mb_substr_count($DB_ROW['selection_item_liste'],',')-1);
+        $items_texte  = ($items_nombre>1) ? $items_nombre.' items' : '1 item' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['selection_item_id'].'">';
         echo  '<td>'.$DB_ROW['selection_item_nom'].'</td>';

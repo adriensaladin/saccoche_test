@@ -289,16 +289,13 @@ define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
 define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
 
 // Vers des fichiers.
-define('CHEMIN_FICHIER_CONFIG_INSTALL'       , CHEMIN_DOSSIER_CONFIG.'constantes.php');
-define('CHEMIN_FICHIER_DEBUG_CONFIG'         , CHEMIN_DOSSIER_TMP.'debug.txt');
-define('CHEMIN_FICHIER_CA_CERTS_FILE'        , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.'certificats'.DS.'certificats.txt');
-define('CHEMIN_FICHIER_WS_ARGOS'             , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
-define('CHEMIN_FICHIER_WS_ENTLIBRE_ESSONNE'  , CHEMIN_DOSSIER_WEBSERVICES.'EntLibre_RecupId_Essonne.php');
-define('CHEMIN_FICHIER_WS_ENTLIBRE_PICARDIE' , CHEMIN_DOSSIER_WEBSERVICES.'EntLibre_RecupId_PicardieLeo.php');
-define('CHEMIN_FICHIER_WS_ENTLIBRE_TEST'     , CHEMIN_DOSSIER_WEBSERVICES.'EntLibre_RecupId_ServeurTest.php');
-define('CHEMIN_FICHIER_WS_LACLASSE'          , CHEMIN_DOSSIER_WEBSERVICES.'Laclasse-recup_id_ent.php');
-define('CHEMIN_FICHIER_WS_LCS'               , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
-define('CHEMIN_FICHIER_WS_SESAMATH_ENT'      , CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_hebergements_conventions.php');
+define('CHEMIN_FICHIER_CONFIG_INSTALL' , CHEMIN_DOSSIER_CONFIG.'constantes.php');
+define('CHEMIN_FICHIER_DEBUG_CONFIG'   , CHEMIN_DOSSIER_TMP.'debug.txt');
+define('CHEMIN_FICHIER_CA_CERTS_FILE'  , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.'certificats'.DS.'certificats.txt');
+define('CHEMIN_FICHIER_WS_ARGOS'       , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
+define('CHEMIN_FICHIER_WS_LACLASSE'    , CHEMIN_DOSSIER_WEBSERVICES.'Laclasse-recup_id_ent.php');
+define('CHEMIN_FICHIER_WS_LCS'         , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
+define('CHEMIN_FICHIER_WS_SESAMATH_ENT', CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_hebergements_conventions.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -439,7 +436,6 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_NOTIFICATION'   => '_sql'.DS.'requetes_structure_notification.php' ,
     'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
-    'DB_STRUCTURE_SELECTION_ITEM' => '_sql'.DS.'requetes_structure_selection_item.php' ,
     'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
     'DB_STRUCTURE_SWITCH'         => '_sql'.DS.'requetes_structure_switch.php' ,
 
@@ -890,7 +886,7 @@ function exit_json( $statut , $value=NULL )
   // Mais c'est basé sur le Content-Length, donc s'il n'y en a pas, il gzip toujours.
   // Du coup, quand PHP renvoie du json, c'est mieux d'indiquer Content-Length.
   // Ça ne devrait pas changer grand chose, mais ça ne peut pas faire de mal.
-  header('Content-Type: application/json; charset='.CHARSET);
+  header('Content-Type: application/json');
   header('Content-Length: '.strlen($json_retour));
   exit($json_retour);
 }

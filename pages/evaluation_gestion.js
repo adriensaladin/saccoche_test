@@ -46,7 +46,6 @@ $(document).ready
     var nb_lignes_max = 20;
     var nb_caracteres_max = 999;
     var audio_duree_restante = 0;
-    var $table_saisir_voir = $('#table_saisir_voir');
 
     // tri du tableau (avec jquery.tablesorter.js).
     if(TYPE=='groupe')
@@ -385,8 +384,8 @@ $(document).ready
               $('#form_prechoix , #table_action').hide('fast');
               $('#titre_saisir_voir').html(groupe+' | '+date_fr+' | '+description);
               $('#ajax_msg_saisir_voir').removeAttr("class").html('&nbsp;');
-              $table_saisir_voir.html(responseHTML);
-              $table_saisir_voir.find('tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+              $('#table_saisir_voir').html(responseHTML);
+              $('#table_saisir_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
               if(mode=='saisir')
               {
                 $('#valider_saisir').show();
@@ -399,14 +398,14 @@ $(document).ready
               {
                 $('#valider_saisir').hide();
                 $('#para_report_note').hide();
-                $table_saisir_voir.find('tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
+                $('#table_saisir_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
               }
-              nb_colonnes = $table_saisir_voir.find('thead th').length;
-              nb_lignes   = $table_saisir_voir.find('tbody tr').length;
+              nb_colonnes = $('#table_saisir_voir thead th').length;
+              nb_lignes   = $('#table_saisir_voir tbody tr').length;
               $('#zone_saisir_voir').show();
               if(nb_lignes>nb_lignes_max)
               {
-                $table_saisir_voir.stickyTableHeaders();
+                $('#table_saisir_voir').thfloat( { onShow : function(table, block){ block.find('td').html(''); } } ); /* jQuery TH Float Plugin */
               }
               if(mode=='saisir')
               {
@@ -846,10 +845,10 @@ $(document).ready
     function fermer_zone_saisir_voir()
     {
       $('#titre_saisir_voir').html("");
-      $table_saisir_voir.html("<tbody><tr><td></td></tr></tbody>");
+      $('#table_saisir_voir').html("<tbody><tr><td></td></tr></tbody>");
       if(nb_lignes>nb_lignes_max)
       {
-        $table_saisir_voir.stickyTableHeaders('destroy');
+        $('#table_saisir_voir').thfloat('destroy'); /* jQuery TH Float Plugin */
       }
       if( (mode=='saisir') && isMobile )
       {
@@ -1013,7 +1012,7 @@ $(document).ready
 
     function colorer_cellules()
     {
-      $table_saisir_voir.find("tbody td input").each
+      $("#table_saisir_voir tbody td input").each
       (
         function ()
         {
@@ -1290,7 +1289,7 @@ $(document).ready
     // Choix du mode de pilotage pour la saisie des résultats
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       'input[name=mode_saisie]',
@@ -1321,7 +1320,7 @@ $(document).ready
     // Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       'input[name=arrow_continue]',
@@ -1336,14 +1335,14 @@ $(document).ready
     // Choix de rétrécir ou pas les colonnes sur #table_saisir_voir
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       '#check_largeur',
       function()
       {
         var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
-        $table_saisir_voir.find("thead tr th img").each
+        $("#table_saisir_voir thead tr th img").each
         (
           function ()
           {
@@ -1354,11 +1353,11 @@ $(document).ready
         );
         if(mode=='saisir')
         {
-          $table_saisir_voir.find('tbody').removeAttr("class").addClass(condense);
+          $('#table_saisir_voir tbody').removeAttr("class").addClass(condense);
         }
         if(mode=='voir')
         {
-          $table_saisir_voir.find("tbody tr td img").each
+          $("#table_saisir_voir tbody tr td img").each
           (
             function ()
             {
@@ -1375,7 +1374,7 @@ $(document).ready
     // Choix de rétrécir ou pas les lignes sur #table_saisir_voir
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       '#check_hauteur',
@@ -1383,13 +1382,13 @@ $(document).ready
       {
         if($(this).is(':checked'))
         {
-          $table_saisir_voir.find("tbody tr th div").css('display','none');         // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-          $table_saisir_voir.find("tbody tr th img").css('display','inline-block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th div").css('display','none');         // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th img").css('display','inline-block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
         }
         else
         {
-          $table_saisir_voir.find("tbody tr th img").css('display','none');  // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
-          $table_saisir_voir.find("tbody tr th div").css('display','block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th img").css('display','none');  // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+          $("#table_saisir_voir tbody tr th div").css('display','block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
         }
       }
     );
@@ -1443,7 +1442,7 @@ $(document).ready
       }
     );
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       'tbody td input',
@@ -1455,7 +1454,7 @@ $(document).ready
       }
     );
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'keydown',  // keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
       'tbody td input',
@@ -1517,7 +1516,7 @@ $(document).ready
         else if(endroit_report_note=='tableau')
         {
           // pour toutes les cases vides du tableau
-          $table_saisir_voir.find("tbody td input").each
+          $("#table_saisir_voir tbody td input").each
           (
             function()
             {
@@ -1532,7 +1531,7 @@ $(document).ready
         else if(endroit_report_note=='colonne')
         {
           // pour toutes les cases vides d'une colonne
-          $table_saisir_voir.find("tbody td input[id^=C"+colonne+"L]").each
+          $("#table_saisir_voir tbody td input[id^=C"+colonne+"L]").each
           (
             function()
             {
@@ -1548,7 +1547,7 @@ $(document).ready
         else if(endroit_report_note=='ligne')
         {
           // pour toutes les cases vides d'une ligne
-          $table_saisir_voir.find("tbody td input[id$=L"+ligne+"]").each
+          $("#table_saisir_voir tbody td input[id$=L"+ligne+"]").each
           (
             function()
             {
@@ -1618,7 +1617,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Remplacer la cellule par les images de choix
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'mouseover',
       'tbody td.td_clavier',
@@ -1648,7 +1647,7 @@ $(document).ready
     );
 
     // Revenir à la cellule initiale ; mouseout ne fonctionne pas à cause des éléments contenus dans le div ; mouseleave est mieux, mais pb qd même avec les select du calendrier
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'mouseleave',
       'tbody td',
@@ -1667,7 +1666,7 @@ $(document).ready
     );
 
     // Renvoyer l'information dans la ou les cellule(s)
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       'div.td_souris img',
@@ -1687,7 +1686,7 @@ $(document).ready
           if(endroit_report_note=='tableau')
           {
             // pour toutes les cases vides du tableau
-            $table_saisir_voir.find("tbody td input").each
+            $("#table_saisir_voir tbody td input").each
             (
               function()
               {
@@ -1702,7 +1701,7 @@ $(document).ready
           else if(endroit_report_note=='colonne')
           {
             // pour toutes les cases vides d'une colonne
-            $table_saisir_voir.find("tbody td input[id^=C"+colonne+"L]").each
+            $("#table_saisir_voir tbody td input[id^=C"+colonne+"L]").each
             (
               function()
               {
@@ -1717,7 +1716,7 @@ $(document).ready
           else if(endroit_report_note=='ligne')
           {
             // pour toutes les cases vides d'une ligne
-            $table_saisir_voir.find("tbody td input[id$=L"+ligne+"]").each
+            $("#table_saisir_voir tbody td input[id$=L"+ligne+"]").each
             (
               function()
               {
@@ -1823,7 +1822,7 @@ $(document).ready
           $('#ajax_msg_saisir_voir').removeAttr("class").addClass("loader").html("En cours&hellip;");
           // Grouper les saisies dans une variable unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
           var f_notes = new Array();
-          $table_saisir_voir.find("tbody input").each
+          $("#table_saisir_voir tbody input").each
           (
             function()
             {
@@ -2113,7 +2112,7 @@ $(document).ready
               var eleve_id = tab_valeur[0];
               var item_id  = tab_valeur[1];
               var score    = tab_valeur[2];
-              champ = $table_saisir_voir.find('input[name='+item_id+'x'+eleve_id+']');
+              champ = $('#table_saisir_voir input[name='+item_id+'x'+eleve_id+']');
               if(champ.length)
               {
                 nb_notes_reportees++;
@@ -2682,7 +2681,7 @@ $(document).ready
       }
     }
 
-    $table_saisir_voir.on
+    $('#table_saisir_voir').on
     (
       'click',
       'q',

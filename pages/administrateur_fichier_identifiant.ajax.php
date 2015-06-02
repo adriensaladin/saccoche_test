@@ -172,8 +172,7 @@ if($action=='user_export')
 {
   $separateur = ';';
   // Récupérer les données des utilisateurs
-  $tab_profils_types = array('eleve','parent','professeur','directeur','inspecteur');
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 1 /*only_actuels*/ , 'user_login,user_nom,user_prenom,user_profil_nom_court_singulier' /*liste_champs*/ , TRUE /*with_classe*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur','inspecteur') , 1 /*only_actuels*/ , 'user_login,user_nom,user_prenom,user_profil_nom_court_singulier' /*liste_champs*/ , TRUE /*with_classe*/ );
   // Générer le csv
   $fcontenu_csv = 'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL (INFO)'.$separateur.'CLASSE (INFO)'."\r\n\r\n";
   foreach($DB_TAB as $DB_ROW)
@@ -240,9 +239,8 @@ if($action=='import_loginmdp')
   $tab_users_base['prenom'] = array();
   $tab_users_base['info']   = array();
   $tab_parents = array();
-  $tab_profils_types = array('eleve','parent','professeur','directeur','inspecteur');
   $listing_champs = 'user_id, user_login, user_password, user_nom, user_prenom, user_profil_type, user_profil_nom_court_singulier';
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 2 /*actuels_et_anciens*/ , $listing_champs , TRUE /*with_classe*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur','inspecteur') , 2 /*actuels_et_anciens*/ , $listing_champs , TRUE /*with_classe*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];
@@ -768,8 +766,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
   }
   require(CHEMIN_FICHIER_WS_LCS); // Charge la fonction "recuperer_infos_user_LCS()"
   // On récupère le contenu de la base, on va passer les users en revue un par un
-  $tab_profils_types = array('eleve','parent','professeur','directeur','inspecteur');
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 1 /*only_actuels*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_id_ent,user_nom,user_prenom,user_profil_type,user_profil_nom_court_singulier' /*liste_champs*/ , TRUE /*with_classe*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur','inspecteur') , 1 /*only_actuels*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_id_ent,user_nom,user_prenom,user_profil_type,user_profil_nom_court_singulier' /*liste_champs*/ , TRUE /*with_classe*/ );
   // Pour chaque user de la base, rechercher son uid dans le LCS
   $lignes_ras     = '';
   $lignes_modif   = '';
@@ -860,10 +857,6 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
   {
     exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
   }
-  if(!in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('024','033','040','047','064') ))
-  {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements de l\'académie de Bordeaux (et votre numéro UAI n\'y correspond pas) !');
-  }
   if(!is_file(CHEMIN_FICHIER_WS_ARGOS))
   {
     exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'" n\'a pas été trouvé !');
@@ -873,69 +866,13 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
   // Appelle le serveur LDAP et retourne un tableau [ ['nom'][i] , ['prenom'][i] , ['id_ent'][i] ]
   $tab_users_ENT = recuperer_infos_LDAP($_SESSION['WEBMESTRE_UAI'],$qui);
   // On récupère le contenu de la base pour comparer
-  $profil_type = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
-  $with_classe = ($qui=='profs') ? FALSE : TRUE ;
-  $NEXT_RecupUsersBase_CompareUsersENT_PrintBilan = TRUE;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer l'identifiant ENT Libre des collèges de l'Essonne  (COPY_id_entlibre_essonne_TO_id_ent)
-// Récupérer l'identifiant ENT Libre LÉO des lycées de Picardie (COPY_id_entlibre_picardie_TO_id_ent)
-// Récupérer l'identifiant ENT Libre Plateforme de test         (COPY_id_entlibre_test_TO_id_ent)
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='COPY_id_entlibre_essonne_TO_id_ent') || ($action=='COPY_id_entlibre_picardie_TO_id_ent') || ($action=='COPY_id_entlibre_test_TO_id_ent') )
-{
-  // Vérif hébergement
-  if( IS_HEBERGEMENT_SESAMATH && ($action=='COPY_id_entlibre_essonne_TO_id_ent') )
-  {
-    exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
-  }
-  if( !IS_HEBERGEMENT_SESAMATH && ($action!='COPY_id_entlibre_essonne_TO_id_ent') )
-  {
-    exit('Erreur : cette fonctionnalité est sans objet sur un autre serveur que Sésamath !');
-  }
-  // Vérif UAI
-  if( ($action=='COPY_id_entlibre_essonne_TO_id_ent') && (substr($_SESSION['WEBMESTRE_UAI'],0,3)!='091') )
-  {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements du département de l\'Essonne (et votre numéro UAI n\'y correspond pas) !');
-  }
-  if( ($action=='COPY_id_entlibre_picardie_TO_id_ent') && !in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('002','060','080') ) )
-  {
-    exit('Erreur : cette fonctionnalité est réservée aux lycées de Picardie (et votre numéro UAI n\'y correspond pas) !');
-  }
-  // Vérif fichier
-  $tab_fichier_ws = array(
-    'COPY_id_entlibre_essonne_TO_id_ent'  => CHEMIN_FICHIER_WS_ENTLIBRE_ESSONNE ,
-    'COPY_id_entlibre_picardie_TO_id_ent' => CHEMIN_FICHIER_WS_ENTLIBRE_PICARDIE ,
-    'COPY_id_entlibre_test_TO_id_ent'     => CHEMIN_FICHIER_WS_ENTLIBRE_TEST ,
-  );
-  $CHEMIN_FICHIER_WS = $tab_fichier_ws[$action];
-  if(!is_file($CHEMIN_FICHIER_WS))
-  {
-    exit('Erreur : le fichier "'.FileSystem::fin_chemin($CHEMIN_FICHIER_WS).'" n\'a pas été trouvé !');
-  }
-  require($CHEMIN_FICHIER_WS); // Charge la fonction "EntLibre_RecupId()"
-  // Appelle le serveur et retourne un tableau [ ['nom'][i] , ['prenom'][i] , ['id_ent'][i] ]
-  $tab_users_ENT = EntLibre_RecupId($_SESSION['WEBMESTRE_UAI']);
-  // On récupère le contenu de la base pour comparer
-  $tab_profils_types = array('eleve','parent','professeur','directeur','inspecteur');
-  $with_classe = TRUE ;
-  $NEXT_RecupUsersBase_CompareUsersENT_PrintBilan = TRUE;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Suite des cas précédents
-// @use   $tab_users_ENT   +   $profil_type   +   $with_classe
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
-{
   $tab_users_base           = array();
   $tab_users_base['id_ent'] = array();
   $tab_users_base['nom']    = array();
   $tab_users_base['prenom'] = array();
   $tab_users_base['info']   = array();
+  $profil_type = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
+  $with_classe = ($qui=='profs') ? FALSE : TRUE ;
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_nom,user_prenom,user_profil_type,user_profil_nom_court_singulier' /*liste_champs*/ , $with_classe );
   foreach($DB_TAB as $DB_ROW)
   {
@@ -1034,10 +971,6 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   {
     exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
   }
-  if(substr($_SESSION['WEBMESTRE_UAI'],0,3)!='069')
-  {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements du département du Rhône (et votre numéro UAI n\'y correspond pas) !');
-  }
   if(!is_file(CHEMIN_FICHIER_WS_LACLASSE))
   {
     exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'" n\'a pas été trouvé !');
@@ -1055,8 +988,7 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   $tab_users_base['nom']       = array();
   $tab_users_base['prenom']    = array();
   $tab_users_base['id_sconet'] = array(); // Ne servira que pour les élèves
-  $tab_profils_types = array('eleve','parent','professeur','directeur','inspecteur');
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_sconet_id,user_nom,user_prenom,user_profil_sigle' /*liste_champs*/ , FALSE /*with_classe*/ );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur') , 1 /*only_actuels*/ , 'user_id,user_id_ent,user_sconet_id,user_nom,user_prenom,user_profil_sigle' /*liste_champs*/ , FALSE /*with_classe*/ );
   $tab_ordre = array( 'DIR'=>1, 'ENS'=>1, 'DOC'=>1, 'EDU'=>1, 'ELV'=>2, 'TUT'=>3, 'AVS'=>4, 'IEX'=>4, 'AED'=>4, 'SUR'=>4, 'ORI'=>4, 'MDS'=>4, 'ADF'=>4 );
   foreach($DB_TAB as $DB_ROW)
   {

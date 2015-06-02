@@ -1400,14 +1400,10 @@ public static function DB_OPT_classes_parent($parent_id)
  */
 public static function DB_OPT_selection_items($user_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  $DB_SQL = 'SELECT GROUP_CONCAT(item_id SEPARATOR "_") AS valeur, selection_item_nom AS texte ';
+  $DB_SQL = 'SELECT REPLACE(TRIM(BOTH "," FROM selection_item_liste),",","_") AS valeur, selection_item_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_selection_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_prof USING (selection_item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (selection_item_id) ';
   $DB_SQL.= 'WHERE ( sacoche_selection_item.proprio_id=:proprio_id OR sacoche_jointure_selection_prof.prof_id=:prof_id ) ';
-  $DB_SQL.= 'GROUP BY sacoche_selection_item.selection_item_id ';
   $DB_SQL.= 'ORDER BY selection_item_nom ASC';
   $DB_VAR = array(
     ':proprio_id' => $user_id,

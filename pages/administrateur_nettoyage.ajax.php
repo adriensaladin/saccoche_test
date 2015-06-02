@@ -111,12 +111,8 @@ if($action=='purger')
       SACocheLog::ajouter('Suppression d\'un utilisateur au compte désactivé depuis plus de 3 ans ('.$DB_ROW['user_profil_sigle'].' '.$DB_ROW['user_id'].').');
     }
   }
-  // Retirer, dans les liaisons entre comptes, ceux qui sont désactivés ou supprimés
+  // Retirer dans les liaisons entre comptes ceux qui sont désactivés ou supprimés
   DB_STRUCTURE_SWITCH::DB_supprimer_liaisons_obsoletes();
-  // Retirer, dans les sélections d'items, les items supprimés
-  DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_jointures_items_obsoletes();
-  // Retirer les sélections d'items sans item
-  DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_selections_items_obsoletes();
   // Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();

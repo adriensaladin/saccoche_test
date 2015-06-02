@@ -66,18 +66,16 @@ $nb_profs   = count($tab_profs);
 if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $selection_nom && $nb_items && $origine )
 {
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom ) )
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom( $selection_nom ) )
   {
     exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
   }
   // Insérer l'enregistrement ; y associe automatiquement le prof, en propriétaire de la sélection
-  $selection_id2 = DB_STRUCTURE_SELECTION_ITEM::DB_ajouter( $_SESSION['USER_ID'] , $selection_nom );
-  // Affecter tous les items choisis
-  $tab_retour = DB_STRUCTURE_SELECTION_ITEM::DB_modifier_liaison_item( $selection_id2 , $tab_items , 'creer' );
+  $selection_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items( $_SESSION['USER_ID'] , $selection_nom , $tab_items );
   if($nb_profs)
   {
     // Affecter tous les profs choisis
-    $tab_retour = DB_STRUCTURE_SELECTION_ITEM::DB_modifier_liaison_prof( $selection_id2 , $tab_profs , 'creer' );
+    $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_selection_items_prof( $selection_id2 , $tab_profs , 'creer' );
   }
   // Afficher le retour
   if($origine==$PAGE)
@@ -113,12 +111,12 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $select
 if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 {
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom , $selection_id ) )
+  if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom( $selection_nom , $selection_id ) )
   {
     exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
   }
   // Tester les droits
-  $proprio_id = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_id( $selection_id );
+  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_id( $selection_id );
   if($proprio_id==$_SESSION['USER_ID'])
   {
     $niveau_droit = 4; // propriétaire
@@ -141,7 +139,7 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
     {
       exit('Erreur : droit attribué sur la sélection n°'.$selection_id.' non trouvé !');
     }
-    $DB_ROW = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_identite( $selection_id );
+    $DB_ROW = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_identite( $selection_id );
     $proprietaire_genre  = $DB_ROW['user_genre'];
     $proprietaire_nom    = $DB_ROW['user_nom'];
     $proprietaire_prenom = $DB_ROW['user_prenom'];
@@ -152,21 +150,19 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
   }
   $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_SELECTION_ITEM::DB_modifier( $selection_id , $selection_nom , $tab_items );
-  // Mofifier les affectations des items choisis
-  $tab_retour = DB_STRUCTURE_SELECTION_ITEM::DB_modifier_liaison_item( $selection_id , $tab_items , 'substituer' );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items( $selection_id , $selection_nom , $tab_items );
   // sacoche_jointure_selection_prof ; à restreindre en cas de modification d'une sélection dont on n'est pas le propriétaire
   if($proprio_id==$_SESSION['USER_ID'])
   {
     if($nb_profs)
     {
       // Mofifier les affectations des profs choisis
-      $tab_retour = DB_STRUCTURE_SELECTION_ITEM::DB_modifier_liaison_prof( $selection_id , $tab_profs , 'substituer' );
+      $tab_retour = DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_selection_items_prof( $selection_id , $tab_profs , 'substituer' );
     }
     else
     {
       // Au cas où on aurait retiré les droits à tous
-      DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_liaison_prof( $selection_id );
+      DB_STRUCTURE_PROFESSEUR::DB_supprimer_liaison_selection_items_prof( $selection_id );
     }
   }
   // Afficher le retour
@@ -194,13 +190,13 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 if( ($action=='supprimer') && $selection_id )
 {
   // Vérification des droits
-  $proprio_id = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_id( $selection_id );
+  $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_selection_items_prorietaire_id( $selection_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
     exit('Erreur : vous n\'êtes pas propriétaire de la sélection n°'.$selection_id.' !');
   }
   // Effacer l'enregistrement
-  DB_STRUCTURE_SELECTION_ITEM::DB_supprimer( $selection_id );
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_selection_items( $selection_id );
   // Afficher le retour
   exit('<td>ok</td>');
 }

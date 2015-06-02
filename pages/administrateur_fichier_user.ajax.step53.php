@@ -53,6 +53,7 @@ switch($import_origine.'+'.$import_profil)
   case 'tableur+parent'     : $etape = 4; $STEP = 71; break;
   case 'base_eleves+parent' : $etape = 4; $STEP = 71; break;
   case 'base_eleves+eleve'  : $etape = 5; $STEP = 90; break;
+  case 'factos+eleve'       : $etape = 5; $STEP = 90; break;
 }
 echo'<ul class="puce p"><li><a href="#step'.$STEP.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 

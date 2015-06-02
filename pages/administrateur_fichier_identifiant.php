@@ -49,13 +49,27 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
     <label class="tab" for="f_choix_principal">Objectif :</label>
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>
-      <option value="new_loginmdp">Générer de nouveaux identifiants SACoche.</option>
-      <option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
-      <option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
-      <option value="import_id_argos">Récupérer les identifiants d'ARGOS.</option>
-      <option value="import_id_laclasse">Récupérer les identifiants de Laclasse.com.</option>
-      <option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants d'un ENT.</option>
-      <option value="import_id_gepi">Récupérer les identifiants de Gepi.</option>
+      <optgroup label="Identifiants pour une connexion à SACoche sans ENT">
+        <option value="new_loginmdp">Générer de nouveaux identifiants SACoche.</option>
+        <option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
+      </optgroup>
+      <?php /* Remarque : on ne restreint pas l'affichage ni ne désactive les options a priori, car l'on peut vouloir configurer la base utilisateurs avant de sélectionner la connexion sur l'ENT */ ?>
+      <optgroup label="Rapprochement automatisé des comptes avec un ENT">
+        <option value="import_id_lcs">Environnement LCS.</option>
+        <option value="import_id_argos">ENT ARGOS (académie de Bordeaux).</option>
+        <option disabled value="import_id_entlibre_essonne">ENT Libre des collèges de l'Essonne.</option>
+        <option disabled value="import_id_entlibre_picardie">ENT Libre LÉO des lycées de Picardie.</option>
+        <?php if( IS_HEBERGEMENT_SESAMATH && ($_SESSION['BASE']>=CONVENTION_ENT_ID_ETABL_MAXI) ): ?>
+          <option value="import_id_entlibre_test">ENT Libre Plateforme de test.</option>
+        <?php endif; ?>
+        <option disabled value="import_id_laclasse">ENT Laclasse.com (département du Rhône).</option>
+      </optgroup>
+      <optgroup label="Rapprochement des comptes avec un ENT en important un fichier">
+        <option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants d'un ENT.</option>
+      </optgroup>
+      <optgroup label="Rapprochement avec GEPI (hors ENT)">
+        <option value="import_id_gepi">Récupérer les identifiants de Gepi.</option>
+      </optgroup>
     </select><br />
   </fieldset>
 
@@ -102,7 +116,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
     }
     else if(!is_file(CHEMIN_FICHIER_WS_LCS))
     {
-      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'</b>&nbsp;&raquo; uniquement présent dans le paquet LCS-SACoche n\'a pas été détecté !</div>'.NL;
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'</b>&nbsp;&raquo; (uniquement présent dans le paquet LCS-SACoche) n\'a pas été détecté !</div>'.NL;
     }
     else
     {
@@ -119,15 +133,87 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
     {
       echo'<div class="danger">Cette fonctionnalité, réservée à l\'installation académique Argos, est sans objet sur le serveur Sésamath !</div>'.NL;
     }
+    else if(!in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('024','033','040','047','064') ))
+    {
+      echo'<div class="danger">Cette fonctionnalité est réservée aux établissements de l\'académie de Bordeaux (et votre numéro UAI n\'y correspond pas) !</div>'.NL;
+    }
     else if(!is_file(CHEMIN_FICHIER_WS_ARGOS))
     {
-      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'</b>&nbsp;&raquo; uniquement présent sur l\'installation académique Argos n\'a pas été détecté !</div>'.NL;
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'</b>&nbsp;&raquo; (uniquement présent sur l\'installation académique Argos) n\'a pas été détecté !</div>'.NL;
     }
     else
     {
       echo'<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les professeurs &amp; directeurs.<br />'.NL;
       echo'<button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les élèves.<br />'.NL;
       echo'<button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Argos</button> pour tous les responsables légaux.'.NL;
+    }
+    ?>
+  </fieldset>
+
+  <fieldset id="fieldset_import_id_entlibre_essonne" class="hide">
+    <hr />
+    <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__entlibre_essonne">DOC : Intégration de SACoche dans l'ENT Libre des collèges de l'Essonne</a></span></p>
+    <?php
+    if(IS_HEBERGEMENT_SESAMATH)
+    {
+      echo'<div class="danger">Cette fonctionnalité, réservée à l\'installation de l\'académie de Versailles, est sans objet sur le serveur Sésamath !</div>'.NL;
+    }
+    else if(substr($_SESSION['WEBMESTRE_UAI'],0,3)!='091')
+    {
+      echo'<div class="danger">Cette fonctionnalité est réservée aux établissements du département de l\'Essonne (et votre numéro UAI n\'y correspond pas) !</div>'.NL;
+    }
+    else if(!is_file(CHEMIN_FICHIER_WS_ENTLIBRE_ESSONNE))
+    {
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ENTLIBRE_ESSONNE).'</b>&nbsp;&raquo; (uniquement présent sur l\'installation de l\'académie de Versailles) n\'a pas été détecté !</div>'.NL;
+    }
+    else
+    {
+      echo'<button name="dupliquer" id="COPY_id_entlibre_essonne_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Libre des collèges de l\'Essonne</button> pour tous les utilisateurs.'.NL;
+    }
+    ?>
+  </fieldset>
+
+  <fieldset id="fieldset_import_id_entlibre_picardie" class="hide">
+    <hr />
+    <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__entlibre_picardie">DOC : Intégration de SACoche dans l'ENT Libre LÉO des lycées de Picardie</a></span></p>
+    <?php
+    if(!IS_HEBERGEMENT_SESAMATH)
+    {
+      echo'<div class="danger">Cette fonctionnalité, nécessitant un fichier d\'authentification, est sans objet sur un autre serveur que Sésamath (en l\'absence d\'hébergement par une collectivité) !</div>'.NL;
+    }
+    else if(!in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('002','060','080') ))
+    {
+      echo'<div class="danger">Cette fonctionnalité est réservée aux lycées de Picardie (et votre numéro UAI n\'y correspond pas) !</div>'.NL;
+    }
+    else if(!is_file(CHEMIN_FICHIER_WS_ENTLIBRE_PICARDIE))
+    {
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ENTLIBRE_PICARDIE).'</b>&nbsp;&raquo; (uniquement présent sur l\'installation de Sésamath) n\'a pas été détecté !</div>'.NL;
+    }
+    else
+    {
+      echo'<button name="dupliquer" id="COPY_id_entlibre_picardie_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Libre LÉO des lycées de Picardie</button> pour tous les utilisateurs.'.NL;
+    }
+    ?>
+  </fieldset>
+
+  <fieldset id="fieldset_import_id_entlibre_test" class="hide">
+    <hr />
+    <?php
+    if(!IS_HEBERGEMENT_SESAMATH)
+    {
+      echo'<div class="danger">Cette fonctionnalité, vérifiant l\'origine de l\'appel, est sans objet sur un autre serveur que Sésamath !</div>'.NL;
+    }
+    else if($_SESSION['BASE']<CONVENTION_ENT_ID_ETABL_MAXI)
+    {
+      echo'<div class="danger">Cette fonctionnalité est réservée aux établissements de test (et celui-ci a un identifiant qui n\'y correspond pas) !</div>'.NL;
+    }
+    else if(!is_file(CHEMIN_FICHIER_WS_ENTLIBRE_TEST))
+    {
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ENTLIBRE_TEST).'</b>&nbsp;&raquo; (uniquement présent sur l\'installation de Sésamath) n\'a pas été détecté !</div>'.NL;
+    }
+    else
+    {
+      echo'<button name="dupliquer" id="COPY_id_entlibre_test_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant ENT Libre de la structure 0805432C</button> pour tous les utilisateurs.'.NL;
     }
     ?>
   </fieldset>
@@ -140,9 +226,13 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
     {
       echo'<div class="danger">Cette fonctionnalité, réservée à l\'installation départementale Laclasse.com, est sans objet sur le serveur Sésamath !</div>'.NL;
     }
+    else if(substr($_SESSION['WEBMESTRE_UAI'],0,3)!='069')
+    {
+      echo'<div class="danger">Cette fonctionnalité est réservée aux établissements du département du Rhône (et votre numéro UAI n\'y correspond pas) !</div>'.NL;
+    }
     else if(!is_file(CHEMIN_FICHIER_WS_LACLASSE))
     {
-      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'</b>&nbsp;&raquo; uniquement présent sur l\'installation départementale Laclasse.com n\'a pas été détecté !</div>'.NL;
+      echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'</b>&nbsp;&raquo; (uniquement présent sur l\'installation départementale Laclasse.com) n\'a pas été détecté !</div>'.NL;
     }
     else
     {

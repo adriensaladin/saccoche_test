@@ -95,6 +95,21 @@ class cURL
   }
 
   /**
+   * Options cURL de configuration d'une identification HTTP à utiliser
+   *
+   * @param void
+   * @return void
+   */
+  private function setopt_auth()
+  {
+    if( defined('HTTP_AUTH_METHOD') && defined('HTTP_AUTH_PASS') )
+    {
+      curl_setopt($this->handle, CURLOPT_HTTPAUTH, HTTP_AUTH_METHOD); // La méthode d'identification HTTP à utiliser. Valeurs possibles : CURLAUTH_BASIC, CURLAUTH_DIGEST, CURLAUTH_GSSNEGOTIATE, CURLAUTH_NTLM, CURLAUTH_ANY et CURLAUTH_ANYSAFE.
+      curl_setopt($this->handle, CURLOPT_USERPWD , HTTP_AUTH_PASS );  // Un nom d'utilisateur et un mot de passe formatés sous la forme "[username]:[password]" à utiliser pour la connexion.
+    }
+  }
+
+  /**
    * Options cURL d'envoi de données en POST.
    * À appeler une fois l'URL bien définie ou après chaque redirection.
    *
@@ -233,6 +248,7 @@ class cURL
     $cURL->url = $cURL->setopt_redirection();
     $cURL->setopt_commun();
     $cURL->setopt_proxy();
+    $cURL->setopt_auth();
     $cURL->setopt_post();
     $requete_reponse = $cURL->exec();
     if($requete_reponse === FALSE)

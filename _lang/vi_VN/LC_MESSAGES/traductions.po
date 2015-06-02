@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2015-05-20 14:48+0100\n"
-"PO-Revision-Date: 2015-05-20 14:48+0100\n"
+"POT-Creation-Date: 2015-06-02 11:44+0100\n"
+"PO-Revision-Date: 2015-06-02 11:45+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: vi_VN\n"
@@ -185,7 +185,7 @@ msgstr "Địa chỉ thư điện tử (E-mail) và đăng ký đặt thông tin
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:66
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_switch.php:29
 msgid "Bascule entre comptes"
-msgstr ""
+msgstr "Chuyển đổi nhanh giữa các tài khoản với nhau"
 
 # Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:80

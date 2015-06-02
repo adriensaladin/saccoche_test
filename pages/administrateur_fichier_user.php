@@ -73,6 +73,10 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
         <option value="base_eleves_eleves">Importer les élèves (avec leurs affectations).</option>
         <option value="base_eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
+      <optgroup label="Fichier extrait de Factos (recommandé pour les établissements français à l'étranger)">
+        <option disabled value="factos_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option disabled value="factos_parents">Importer les parents (avec adresses et responsabilités).</option>
+      </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
         <option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
         <option value="tableur_eleves">Importer les élèves (avec leurs affectations).</option>
@@ -141,6 +145,22 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
     <ul class="puce">
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
       <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base_eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
+    </ul>
+  </fieldset>
+
+  <fieldset id="fieldset_factos_eleves" class="hide">
+    <hr />
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_factos">DOC : Import d'utilisateurs depuis Factos</a></span></li>
+      <li>Indiquer le fichier <em>nom-du-fichier.csv</em> : <button id="factos_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+    </ul>
+  </fieldset>
+
+  <fieldset id="fieldset_factos_parents" class="hide">
+    <hr />
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_factos">DOC : Import d'utilisateurs depuis Factos</a></span></li>
+      <li>Indiquer le fichier <em>nom-du-fichier.csv</em> : <button id="factos_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

@@ -43,7 +43,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr("class").html('&nbsp;');
         // Masquer tout
-        $('#span_mode , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
+        $('#span_mode , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
         if(f_action!='')
@@ -158,6 +158,32 @@ $(document).ready
         onComplete: retourner_fichier
       }
     );
+    var uploader_factos_eleves = new AjaxUpload
+    ('#factos_eleves',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_step':10,'f_action':'factos_eleves','f_mode':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier_tableur,
+        onComplete: retourner_fichier
+      }
+    );
+    var uploader_factos_parents = new AjaxUpload
+    ('#factos_parents',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_step':10,'f_action':'factos_parents','f_mode':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: "html",
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier_tableur,
+        onComplete: retourner_fichier
+      }
+    );
     var uploader_tableur_professeurs_directeurs = new AjaxUpload
     ('#tableur_professeurs_directeurs',
       {
@@ -207,6 +233,8 @@ $(document).ready
       uploader_sconet_professeurs_directeurs[ '_settings']['data']['f_mode'] = f_mode;
       uploader_base_eleves_eleves[            '_settings']['data']['f_mode'] = f_mode;
       uploader_base_eleves_parents[           '_settings']['data']['f_mode'] = f_mode;
+      uploader_factos_eleves[                 '_settings']['data']['f_mode'] = f_mode;
+      uploader_factos_parents[                '_settings']['data']['f_mode'] = f_mode;
       uploader_tableur_professeurs_directeurs['_settings']['data']['f_mode'] = f_mode;
       uploader_tableur_eleves[                '_settings']['data']['f_mode'] = f_mode;
       uploader_tableur_parents[               '_settings']['data']['f_mode'] = f_mode;

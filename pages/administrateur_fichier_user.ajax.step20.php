@@ -36,6 +36,7 @@ if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest))
 {
   exit('Erreur : le fichier récupéré et enregistré n\'a pas été retrouvé !');
 }
+
 // Pour récupérer les données des utilisateurs ; on prend comme indice $sconet_id ou $reference suivant le mode d'import
 /*
  * On utilise la forme moins commode   ['nom'][i]=... ['prenom'][i]=...
@@ -57,6 +58,7 @@ $tab_users_fichier['adresse']      = array(); // Avec id sconet_id // Adresse du
 $tab_users_fichier['enfant']       = array(); // Avec id sconet_id // Liste des élèves rattachés
 $tab_users_fichier['birth_date']   = array();
 $tab_users_fichier['courriel']     = array();
+
 // Pour récupérer les données des classes et des groupes
 $tab_classes_fichier['ref']    = array();
 $tab_classes_fichier['nom']    = array();
@@ -64,14 +66,18 @@ $tab_classes_fichier['niveau'] = array();
 $tab_groupes_fichier['ref']    = array();
 $tab_groupes_fichier['nom']    = array();
 $tab_groupes_fichier['niveau'] = array();
+
 // Pour retenir à part les dates de sortie Sconet des élèves
 $_SESSION['tmp']['date_sortie'] = array();
-// Procédures différentes suivant le mode d'import...
+
+// On passe aux différentes procédures selon le mode d'import...
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction sconet_professeurs_directeurs
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2a - Extraction sconet_professeurs_directeurs
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
@@ -313,11 +319,13 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
     }
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction sconet_eleves
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='sconet') && ($import_profil=='eleve') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2b - Extraction sconet_eleves
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
@@ -415,11 +423,13 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   // suppression du tableau temporaire
   unset($tab_users_fichier['niveau']);
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction sconet_parents
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='sconet') && ($import_profil=='parent') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2c - Extraction sconet_parents
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
@@ -442,7 +452,15 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
   {
     foreach ($xml->DONNEES->ADRESSES->ADRESSE as $adresse)
     {
-      $tab_adresses[Clean::entier($adresse->attributes()->ADRESSE_ID)] = array( Clean::adresse($adresse->LIGNE1_ADRESSE) , Clean::adresse($adresse->LIGNE2_ADRESSE) , Clean::adresse($adresse->LIGNE3_ADRESSE) , Clean::adresse($adresse->LIGNE4_ADRESSE) , Clean::entier($adresse->CODE_POSTAL) , Clean::commune($adresse->LIBELLE_POSTAL) , Clean::pays($adresse->LL_PAYS) );
+      $tab_adresses[Clean::entier($adresse->attributes()->ADRESSE_ID)] = array(
+        Clean::adresse($adresse->LIGNE1_ADRESSE) ,
+        Clean::adresse($adresse->LIGNE2_ADRESSE) ,
+        Clean::adresse($adresse->LIGNE3_ADRESSE) ,
+        Clean::adresse($adresse->LIGNE4_ADRESSE) ,
+        Clean::entier($adresse->CODE_POSTAL) ,
+        Clean::commune($adresse->LIBELLE_POSTAL) ,
+        Clean::pays($adresse->LL_PAYS) ,
+      );
     }
   }
   $nb_adresses = count($tab_adresses);
@@ -505,11 +523,13 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
     }
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction tableur_professeurs_directeurs
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2d - Extraction tableur_professeurs_directeurs
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -595,11 +615,13 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
     }
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction tableur_eleves
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2e - Extraction tableur_eleves
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -625,7 +647,16 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
     $tab_elements = array_slice($tab_elements,0,8);
     if(count($tab_elements)>=6)
     {
-      list($reference,$genre,$nom,$prenom,$birth_date,$courriel,$classe,$groupes) = $tab_elements + array_fill(0,8,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+      list(
+        $reference ,
+        $genre ,
+        $nom ,
+        $prenom ,
+        $birth_date ,
+        $courriel ,
+        $classe ,
+        $groupes
+      ) = $tab_elements + array_fill(0,8,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
       if( ($nom!='') && ($prenom!='') )
       {
         $tab_users_fichier['sconet_id'   ][] = 0;
@@ -673,11 +704,13 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
     }
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction tableur_parents
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='tableur') && ($import_profil=='parent') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2f - Extraction tableur_parents
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -714,7 +747,29 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
     $tab_elements = array_slice($tab_elements,0,21);
     if(count($tab_elements)>=13)
     {
-      list($reference,$genre,$nom,$prenom,$courriel,$adresse_ligne1,$adresse_ligne2,$adresse_ligne3,$adresse_ligne4,$codepostal,$commune,$pays,$enfant1,$enfant2,$enfant3,$enfant4,$enfant5,$enfant6,$enfant7,$enfant8,$enfant9) = $tab_elements + array_fill(0,21,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+      list(
+        $reference ,
+        $genre ,
+        $nom ,
+        $prenom ,
+        $courriel ,
+        $adresse_ligne1 ,
+        $adresse_ligne2 ,
+        $adresse_ligne3 ,
+        $adresse_ligne4 ,
+        $codepostal ,
+        $commune ,
+        $pays ,
+        $enfant1 ,
+        $enfant2 ,
+        $enfant3 ,
+        $enfant4 ,
+        $enfant5 ,
+        $enfant6 ,
+        $enfant7 ,
+        $enfant8 ,
+        $enfant9
+      ) = $tab_elements + array_fill(0,21,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
       if( ($nom!='') && ($prenom!='') && ($enfant1!='') )
       {
         // enfants
@@ -753,17 +808,26 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
   $nb_lien_responsabilite = array_sum($tab_responsabilites);
   $nb_adresses = count($tab_adresses_uniques);
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction base_eleves_eleves
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2g - Extraction base_eleves_eleves
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
-  $tab_numero_colonne = array('nom'=>-100,'prenom'=>-100,'birth_date'=>-100,'genre'=>-100,'niveau'=>-100,'classe'=>-100);
+  $tab_numero_colonne = array(
+    'nom'        => -100 ,
+    'prenom'     => -100 ,
+    'birth_date' => -100 ,
+    'genre'      => -100 ,
+    'niveau'     => -100 ,
+    'classe'     => -100 ,
+  );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
@@ -817,7 +881,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
     {
       $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
       $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
-      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;;
+      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
       $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? convert_date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
       $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
       $classe     = $tab_elements[$tab_numero_colonne['classe']];
@@ -853,17 +917,30 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
     }
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction base_eleves_parents
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
 {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Étape 2h - Extraction base_eleves_parents
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
-  $tab_numero_colonne = array('genre'=>-200,'nom'=>-200,'prenom'=>-200,'adresse'=>-200,'codepostal'=>-200,'commune'=>-200,'pays'=>-200,'courriel'=>-200,'enfant_nom'=>array(),'enfant_prenom'=>array());
+  $tab_numero_colonne = array(
+    'genre'         => -200 ,
+    'nom'           => -200 ,
+    'prenom'        => -200 ,
+    'adresse'       => -200 ,
+    'codepostal'    => -200 ,
+    'commune'       => -200 ,
+    'pays'          => -200 ,
+    'courriel'      => -200 ,
+    'enfant_nom'    => array() ,
+    'enfant_prenom' => array() ,
+  );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
@@ -909,7 +986,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
     $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
-      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;;
+      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
       $nom        = Clean::nom(       $tab_elements[$tab_numero_colonne['nom']       ]);
       $prenom     = Clean::prenom(    $tab_elements[$tab_numero_colonne['prenom']    ]);
       $courriel   = Clean::courriel(  $tab_elements[$tab_numero_colonne['courriel']  ]);
@@ -958,14 +1035,245 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
   $nb_lien_responsabilite = array_sum($tab_responsabilites);
   $nb_adresses = count($tab_adresses_uniques);
 }
-//
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction factos_eleves
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($import_origine=='factos') && ($import_profil=='eleve') )
+{
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Utiliser la 1e ligne pour repérer les colonnes intéressantes
+  $tab_numero_colonne = array(
+    'sconet_num' => -100 ,
+    'nom'        => -100 ,
+    'prenom'     => -100 ,
+    'genre'      => -100 ,
+    'birth_date' => -100 ,
+    'classe'     => -100 ,
+  );
+  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  $numero_max = 0;
+  foreach ($tab_elements as $numero=>$element)
+  {
+    switch($element)
+    {
+      case "Identifiant GEP"   : $tab_numero_colonne['sconet_num'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Nom de l'élève"    : $tab_numero_colonne['nom'   ]     = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Prénom élève"      : $tab_numero_colonne['prenom']     = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Sexe"              : $tab_numero_colonne['genre']      = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Date de naissance" : $tab_numero_colonne['birth_date'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Classe"            : $tab_numero_colonne['classe']     = $numero; $numero_max = max($numero_max,$numero); break;
+    }
+  }
+  if(array_sum($tab_numero_colonne)<0)
+  {
+    exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
+  }
+  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  //
+  // On passe les utilisateurs en revue : on mémorise leurs infos, les classes trouvées
+  // Attention : en l'absence de donnée, un champ peut contenir la valeur "Non saisi"
+  //
+  $tab_genre = array( ''=>'I' , 'Masculin'=>'M' , 'Féminin'=>'F' );
+  foreach ($tab_lignes as $ligne_contenu)
+  {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
+    if(count($tab_elements)>$numero_max)
+    {
+      $sconet_num = ($tab_elements[$tab_numero_colonne['sconet_num']]!="Non saisi") ? $tab_elements[$tab_numero_colonne['sconet_num']] : '' ;
+      $nom        = ($tab_elements[$tab_numero_colonne['nom'       ]]!="Non saisi") ? $tab_elements[$tab_numero_colonne['nom'       ]] : '' ;
+      $prenom     = ($tab_elements[$tab_numero_colonne['prenom'    ]]!="Non saisi") ? $tab_elements[$tab_numero_colonne['prenom'    ]] : '' ;
+      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
+      $birth_date = ($tab_elements[$tab_numero_colonne['birth_date']]!="Non saisi") ? $tab_elements[$tab_numero_colonne['birth_date']] : '' ;
+      $classe     = ($tab_elements[$tab_numero_colonne['classe'    ]]!="Non saisi") ? $tab_elements[$tab_numero_colonne['classe'    ]] : '' ;
+      if( ($nom!='') && ($prenom!='') && ($classe!='') )
+      {
+        $i_classe   = 'i'.Clean::login($classe); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+        $tab_users_fichier['sconet_id'   ][] = 0;
+        $tab_users_fichier['sconet_num'  ][] = Clean::entier($sconet_num);
+        $tab_users_fichier['reference'   ][] = '';
+        $tab_users_fichier['profil_sigle'][] = 'ELV' ;
+        $tab_users_fichier['genre'       ][] = $genre;
+        $tab_users_fichier['nom'         ][] = Clean::nom($nom);
+        $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
+        $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
+        $tab_users_fichier['courriel'    ][] = '';
+        $tab_users_fichier['classe'      ][] = $i_classe;
+        if( !isset($tab_classes_fichier['ref'][$i_classe]))
+        {
+          $tab_classes_fichier['ref'   ][$i_classe] = mb_substr(Clean::ref($classe),0,8);
+          $tab_classes_fichier['nom'   ][$i_classe] = mb_substr(Clean::texte($classe),0,20);
+          $tab_classes_fichier['niveau'][$i_classe] = '';
+        }
+      }
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction factos_parents
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($import_origine=='factos') && ($import_profil=='parent') )
+{
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Utiliser la 1e ligne pour repérer les colonnes intéressantes
+  $tab_numero_colonne = array(
+    'sconet_num_1'     => -200 ,
+    'sconet_num_2'     => -200 ,
+    'genre_1'          => -200 ,
+    'genre_2'          => -200 ,
+    'nom_1'            => -200 ,
+    'nom_2'            => -200 ,
+    'prenom_1'         => -200 ,
+    'prenom_2'         => -200 ,
+    'courriel_1'       => -200 ,
+    'courriel_2'       => -200 ,
+    'adresse_ligne1_1' => -200 ,
+    'adresse_ligne1_2' => -200 ,
+    'adresse_ligne2_1' => -200 ,
+    'adresse_ligne2_2' => -200 ,
+    'adresse_ligne3_1' => -200 ,
+    'adresse_ligne3_2' => -200 ,
+    'code_postal_1'    => -200 ,
+    'code_postal_2'    => -200 ,
+    'commune_1'        => -200 ,
+    'commune_2'        => -200 ,
+    'pays_1'           => -200 ,
+    'pays_2'           => -200 ,
+    'enfant_sconet'    => array() ,
+    'enfant_nom'       => array() ,
+    'enfant_prenom'    => array() ,
+  );
+  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  $numero_max = 0;
+  foreach ($tab_elements as $numero=>$element)
+  {
+    switch($element)
+    {
+      // parent 1
+      case "Identifiant GEP du responsable 1" : $tab_numero_colonne['sconet_num_1']     = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Civilité du responsable 1'        : $tab_numero_colonne['genre_1']          = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Nom du responsable 1'             : $tab_numero_colonne['nom_1']            = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Prénom du responsable 1'          : $tab_numero_colonne['prenom_1']         = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Email Resp1'                      : $tab_numero_colonne['courriel_1']       = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse1 du responsable 1'        : $tab_numero_colonne['adresse_ligne1_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse2 du responsable 1'        : $tab_numero_colonne['adresse_ligne2_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse3 du responsable 1'        : $tab_numero_colonne['adresse_ligne3_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Code postal du responsable 1'     : $tab_numero_colonne['code_postal_1']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Ville du responsable 1'           : $tab_numero_colonne['commune_1']        = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Pays du responsable 1'            : $tab_numero_colonne['pays_1']           = $numero; $numero_max = max($numero_max,$numero); break; // ?????
+      // parent 2
+      case "Identifiant GEP R2"               : $tab_numero_colonne['sconet_num_2']     = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Civilité du resp2'                : $tab_numero_colonne['genre_2']          = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Nom du responsable 2'             : $tab_numero_colonne['nom_2']            = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Prénom du Responsable 2'          : $tab_numero_colonne['prenom_2']         = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'EMail Resp2'                      : $tab_numero_colonne['courriel_2']       = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse1 Resp2'                   : $tab_numero_colonne['adresse_ligne1_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse2 Resp2'                   : $tab_numero_colonne['adresse_ligne2_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse3 Resp2'                   : $tab_numero_colonne['adresse_ligne3_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'CpVille Resp2'                    : $tab_numero_colonne['code_postal_2']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Ville Resp2'                      : $tab_numero_colonne['commune_2']        = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Pays Resp2'                       : $tab_numero_colonne['pays_2']           = $numero; $numero_max = max($numero_max,$numero); break;
+      // enfant
+      case "Identifiant GEP"                  : $tab_numero_colonne['enfant_sconet']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Nom de l'élève"                   : $tab_numero_colonne['enfant_nom'   ]    = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Prénom élève"                     : $tab_numero_colonne['enfant_prenom']    = $numero; $numero_max = max($numero_max,$numero); break;
+    }
+  }
+  unset($tab_lignes[0]); // Supprimer la 1e ligne
+
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+
+  // L'import ne contient aucun id parent ni enfant.
+  // On récupère la liste des noms prénoms des élèves actuels pour comparer au contenu du fichier.
+  $tab_eleves_actuels  = array();
+  $tab_responsabilites = array();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_eleves_actuels[$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
+    $tab_responsabilites[$DB_ROW['user_id']] = 0;
+  }
+  //
+  // On passe les utilisateurs en revue : on mémorise leurs infos, les adresses trouvées, les enfants trouvés
+  //
+  $tab_genre = array( ''=>'I' , 'M.'=>'M' , 'MME'=>'F' , 'Mlle'=>'F' );
+  $tab_adresses_uniques = array();
+  foreach ($tab_lignes as $ligne_contenu)
+  {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
+    if(count($tab_elements)>$numero_max)
+    {
+      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
+      $nom        = Clean::nom(       $tab_elements[$tab_numero_colonne['nom']       ]);
+      $prenom     = Clean::prenom(    $tab_elements[$tab_numero_colonne['prenom']    ]);
+      $courriel   = Clean::courriel(  $tab_elements[$tab_numero_colonne['courriel']  ]);
+      $adresse    = Clean::adresse(   $tab_elements[$tab_numero_colonne['adresse']   ]);
+      $codepostal = Clean::codepostal($tab_elements[$tab_numero_colonne['codepostal']]);
+      $commune    = Clean::commune(   $tab_elements[$tab_numero_colonne['commune']   ]);
+      $pays       = Clean::pays(      $tab_elements[$tab_numero_colonne['pays']      ]);
+      if( ($nom!='') && ($prenom!='') )
+      {
+        $tab_enfants = array();
+        for( $num_enfant=0 ; $num_enfant<$nb_enfants_maxi ; $num_enfant++ )
+        {
+          if ( !isset($tab_elements[$tab_numero_colonne['enfant_nom'][$num_enfant]]) || !isset($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]) )
+          {
+            break;
+          }
+          $enfant_nom    = Clean::nom(   $tab_elements[$tab_numero_colonne['enfant_nom'   ][$num_enfant]]);
+          $enfant_prenom = Clean::prenom($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]);
+          $enfant_id     = array_search( $enfant_nom.' '.$enfant_prenom , $tab_eleves_actuels );
+          if($enfant_id)
+          {
+            $tab_responsabilites[$enfant_id]++;
+            $tab_enfants[$enfant_id] = $tab_responsabilites[$enfant_id];
+          }
+        }
+        //
+        // Si pas d'enfant trouvé, on laisse tomber, comme pour Sconet.
+        //
+        if( count($tab_enfants) )
+        {
+          $tab_users_fichier['sconet_id'   ][] = 0;
+          $tab_users_fichier['sconet_num'  ][] = 0;
+          $tab_users_fichier['reference'   ][] = '';
+          $tab_users_fichier['profil_sigle'][] = 'TUT';
+          $tab_users_fichier['genre'       ][] = $genre;
+          $tab_users_fichier['nom'         ][] = $nom;
+          $tab_users_fichier['prenom'      ][] = $prenom;
+          $tab_users_fichier['courriel'    ][] = $courriel;
+          $tab_users_fichier['adresse'     ][] = array( $adresse , '' , '' , '' , $codepostal , $commune , $pays );
+          $tab_users_fichier['enfant'      ][] = $tab_enfants;
+          $tab_adresses_uniques[$adresse.'#'.$codepostal.'#'.$commune.'#'.$pays] = TRUE;
+        }
+      }
+    }
+  }
+  $nb_lien_responsabilite = array_sum($tab_responsabilites);
+  $nb_adresses = count($tab_adresses_uniques);
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fin des différents cas possibles
-//
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Tableaux pour les étapes 61/62/71/72
 $tab_i_classe_TO_id_base  = array();
 $tab_i_groupe_TO_id_base  = array();
 $tab_i_fichier_TO_id_base = array();
 $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+
 // On trie
 switch($import_origine.'+'.$import_profil)
 {
@@ -1045,6 +1353,12 @@ switch($import_origine.'+'.$import_profil)
     );
     break;
   case 'base_eleves+eleve' :
+    $test2 = array_multisort(
+      $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
+      $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
+      $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
+    );
+  case      'factos+eleve' :
     $test1 = array_multisort(
       $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
       $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
@@ -1056,11 +1370,6 @@ switch($import_origine.'+'.$import_profil)
       $tab_users_fichier['reference'],
       $tab_users_fichier['profil_sigle'],
       $tab_users_fichier['classe']
-    );
-    $test2 = array_multisort(
-      $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
-      $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
-      $tab_classes_fichier['nom']   , SORT_ASC,SORT_STRING
     );
     break;
   case      'sconet+parent' :
@@ -1080,17 +1389,20 @@ switch($import_origine.'+'.$import_profil)
     );
     break;
 }
+
 // Outil de résolution de bug ; le test1 provoque parfois l'erreur "Array sizes are inconsistent".
 // Edit au 11/05/2012 : a priori c'est corrigé, mais je laisse quand même le test au cas où, ça ne coûte rien...
 if(!$test1)
 {
   ajouter_log_PHP( 'Import fichier '.$import_origine.' '.$import_profil /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
 }
+
 // On enregistre
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'        ,serialize($tab_users_fichier));
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'      ,serialize($tab_classes_fichier));
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'      ,serialize($tab_groupes_fichier));
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+
 // On affiche le bilan des utilisateurs trouvés
 if(count($tab_users_fichier['profil_sigle']))
 {
@@ -1117,6 +1429,7 @@ else
 {
   exit('<p><label class="alerte">Aucun utilisateur trouvé !</label></p>');
 }
+
 // On affiche le bilan des classes trouvées
  if($import_profil!='parent')
 {
@@ -1131,8 +1444,9 @@ else
     echo'<p><label class="alerte">Aucune classe trouvée !</label></p>'.NL;
   }
 }
+
 // On affiche le bilan des groupes trouvés
-if( ($import_profil!='parent') && ($import_origine!='base_eleves') )
+if( ($import_profil!='parent') && ($import_origine!='base_eleves') && ($import_origine!='factos') )
 {
   $nombre = count($tab_groupes_fichier['ref']);
   if($nombre)
@@ -1145,6 +1459,7 @@ if( ($import_profil!='parent') && ($import_origine!='base_eleves') )
     echo'<p><label class="alerte">Aucun groupe trouvé !</label></p>'.NL;
   }
 }
+
 // On affiche le bilan des parents trouvés
 if($import_profil=='parent')
 {
@@ -1167,9 +1482,11 @@ if($import_profil=='parent')
     echo'<p><label class="alerte">Aucun lien de responsabilité trouvé !</label></p>'.NL;
   }
 }
+
 // Fin de l'extraction
 $STEP = ($import_profil=='parent') ? '5' : '3' ;
 echo'<ul class="puce p"><li><a href="#step'.$STEP.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+
 // Notifications (rendues visibles ultérieurement)
 $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' importe un fichier d\'utilisateurs type '.$import_origine.' / '.$import_profil.'.'."\r\n";
 DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );

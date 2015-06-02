@@ -85,14 +85,15 @@ public static function DB_supprimer_comptes_associes($user_switch_id)
 /**
  * supprimer_liaisons_obsoletes
  *
- * Est appelé lors de l'initialisation annuelle.
+ * Est appelé lors de l'initialisation annuelle ou sur demande "recherche et suppression de correspondances anormales".
  * Le nettoyage est aussi effectué de façon individuelle à chaque afffichage de la page "Bascule entre comptes" par DB_recuperer_et_verifier_listing_comptes_associes()
  *
  * @param void
- * @return void
+ * @return int
  */
 public static function DB_supprimer_liaisons_obsoletes()
 {
+  $nb_sortis = 0;
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // On récupère la liste des users concernés par une liaison
@@ -113,7 +114,8 @@ public static function DB_supprimer_liaisons_obsoletes()
       $tab_user_switch = explode( ',' , $user_liste_switch );
       $tab_user_actifs = explode( ',' , $user_liste_actifs );
       $tab_user_sortis = array_diff( $tab_user_switch , $tab_user_actifs );
-      if(count($tab_user_sortis))
+      $nb_sortis = count($tab_user_sortis);
+      if($nb_sortis)
       {
         // On retire ces users du champ [user_switch_liste] de [sacoche_user_switch]
         foreach($tab_user_sortis as $user_sorti)
@@ -129,6 +131,7 @@ public static function DB_supprimer_liaisons_obsoletes()
       }
     }
   }
+  return $nb_sortis;
 }
 
 /**

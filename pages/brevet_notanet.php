@@ -90,12 +90,12 @@ foreach($DB_TAB as $DB_ROW)
 {
   if($DB_ROW['saisie_note']!==NULL)
   {
-    $tab_user[$DB_ROW['eleve_classe_id']] .= '<label for="user_'.$DB_ROW['user_id'].'"><img src="./_img/brevet/serie_'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> <input type="checkbox" id="user_'.$DB_ROW['user_id'].'" name="f_eleve" value="'.$DB_ROW['user_id'].'" checked /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</label><br />';
+    $tab_user[$DB_ROW['eleve_classe_id']] .= '<label for="user_'.$DB_ROW['user_id'].'"><img src="./_img/brevet/'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> <input type="checkbox" id="user_'.$DB_ROW['user_id'].'" name="f_eleve" value="'.$DB_ROW['user_id'].'" checked /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</label><br />';
     $nb_eleves++;
   }
   else
   {
-    $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/brevet/serie_'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> <input type="checkbox" id="user_'.$DB_ROW['user_id'].'" name="f_eleve" value="'.$DB_ROW['user_id'].'" disabled /> <del>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</del><br />';
+    $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/brevet/'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> <input type="checkbox" id="user_'.$DB_ROW['user_id'].'" name="f_eleve" value="'.$DB_ROW['user_id'].'" disabled /> <del>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</del><br />';
   }
 }
 if(!$nb_eleves)

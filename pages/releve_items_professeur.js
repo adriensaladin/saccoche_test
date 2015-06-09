@@ -167,7 +167,7 @@ $(document).ready
 
     function afficher_prof_connecte()
     {
-      $('#f_prof').html('<option value="'+user_id+'">'+user_nom_prenom+'</option>');
+      $('#f_prof').html('<option value="'+user_id+'">'+user_texte+'</option>');
       $('#modifier_prof').removeAttr("class").addClass('form_ajouter');
       modifier_action = 'ajouter';
     }
@@ -285,7 +285,7 @@ $(document).ready
             // Rechercher automatiquement la meilleure période
             selectionner_periode_adaptee();
           }
-          // Afficher la zone de choix des périodes
+          // Afficher la zone de choix des périodes et des enseignants
           if(typeof(groupe_type)!='undefined')
           {
             $('#zone_periodes , #zone_profs').removeAttr("class");
@@ -298,7 +298,7 @@ $(document).ready
         // Rechercher automatiquement la liste des profs
         if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
         {
-          if(modifier_action=='retirer')
+          if( (user_profil!='professeur') || (modifier_action=='retirer') )
           {
             charger_profs_groupe();
           }
@@ -310,8 +310,11 @@ $(document).ready
       }
     );
 
+    // Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
+    selectionner_periode_adaptee();
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_eleve
+    // Charger le select f_eleve (pour le professeur et le directeur et les parents de plusieurs enfants)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function maj_eleve(groupe_id,groupe_type,eleves_ordre)
@@ -321,7 +324,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
-          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
+          data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple='+is_multiple+'&f_selection=1',
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -338,7 +341,7 @@ $(document).ready
             {
               $("#bloc_ordre").show();
             }
-            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if( ( is_multiple && (responseHTML.substring(0,6)=='<label') ) || ( !is_multiple && (responseHTML.substring(0,7)=='<option') ) ) // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
               $('#ajax_maj').removeAttr("class").html("&nbsp;");
               $('#f_eleve').html(responseHTML).parent().show();
@@ -501,7 +504,7 @@ $(document).ready
         // récupération d'éléments
         $('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
         $('#f_groupe_nom' ).val( $("#f_groupe  option:selected").text() );
-        $('#f_prof_nom'   ).val( $("#f_prof    option:selected").text() );
+        $('#f_prof_texte' ).val( $("#f_prof    option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;

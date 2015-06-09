@@ -520,4 +520,21 @@ if($version_base_structure_actuelle=='2015-05-19')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-05-27 => 2015-06-09
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-05-27')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-06-09';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // correction d'un identifiant d'un item du socle (erreur en place depuis des années et découverte seulement maintenant...)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree         SET entree_id = 2453  WHERE entree_id = 2451 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_entree SET entree_id = 2453  WHERE entree_id = 2451 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item     SET entree_id = 2453  WHERE entree_id = 2451 ' );
+  }
+}
+
 ?>

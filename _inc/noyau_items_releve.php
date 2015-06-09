@@ -68,7 +68,7 @@ if( ($make_html) || ($make_pdf) )
   $tab_titre = array(
     'matiere'      => 'd\'items - '.$matiere_nom ,
     'multimatiere' => 'd\'items pluridisciplinaire' ,
-    'professeur'   => 'd\'items restreint à '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']) ,
+    'professeur'   => 'd\'items restreint à '.$prof_texte ,
     'selection'    => 'd\'items sélectionnés' ,
   );
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;

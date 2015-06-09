@@ -29,20 +29,20 @@
  * Sous-tableau avec les différents formats de csv d'import
  */
 $tab_csv_format = array();
-$tab_csv_format['']                     = array( 'csv_infos'=>FALSE , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL ); // Pas d'import de fichier : présence d'un webservices
-$tab_csv_format['perso']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL ); // Y compris LCS
-$tab_csv_format['esup']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>2 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['scolastance']          = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>4 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['itop']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['itslearning']          = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['kosmos']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>5 , 'csv_prenom'=>4 , 'csv_id_ent'=>1 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['liberscol']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['logica']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>2    );
-$tab_csv_format['netocentre']           = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['pentila']              = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>5 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['sopra']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL ); // éventuellement 17 pour les élèves, mais pas pour les autres profils
-$tab_csv_format['toutatice']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>1 , 'csv_id_ent'=>2 , 'csv_id_sconet'=>NULL );
-$tab_csv_format['atos']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>4    );
+$tab_csv_format['']                     = array( 'csv_infos'=>FALSE , 'csv_entete'=>0 , 'csv_ordre'=>TRUE  , 'csv_nom'=>0     , 'csv_prenom'=>0        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>NULL ); // Pas d'import de fichier : présence d'un webservices
+$tab_csv_format['perso']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>1     , 'csv_prenom'=>2        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>NULL ); // Y compris LCS
+$tab_csv_format['esup']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>2 , 'csv_ordre'=>TRUE  , 'csv_nom'=>2     , 'csv_prenom'=>3        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['scolastance']          = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>2     , 'csv_prenom'=>3        , 'csv_id_ent'=>4                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['itop']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>1     , 'csv_prenom'=>2        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['itslearning']          = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>0     , 'csv_prenom'=>1        , 'csv_id_ent'=>2                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['kosmos']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>FALSE , 'csv_nom'=>'Nom' , 'csv_prenom'=>'Prénom' , 'csv_id_ent'=>'Identifiant ENT' , 'csv_id_sconet'=>NULL );
+$tab_csv_format['liberscol']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>0     , 'csv_prenom'=>1        , 'csv_id_ent'=>2                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['logica']               = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>3     , 'csv_prenom'=>4        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>2    );
+$tab_csv_format['netocentre']           = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>2     , 'csv_prenom'=>3        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['pentila']              = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>0     , 'csv_prenom'=>1        , 'csv_id_ent'=>5                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['sopra']                = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>3     , 'csv_prenom'=>4        , 'csv_id_ent'=>2                 , 'csv_id_sconet'=>NULL ); // éventuellement 17 pour les élèves, mais pas pour les autres profils
+$tab_csv_format['toutatice']            = array( 'csv_infos'=>TRUE  , 'csv_entete'=>0 , 'csv_ordre'=>TRUE  , 'csv_nom'=>0     , 'csv_prenom'=>1        , 'csv_id_ent'=>2                 , 'csv_id_sconet'=>NULL );
+$tab_csv_format['atos']                 = array( 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_ordre'=>TRUE  , 'csv_nom'=>2     , 'csv_prenom'=>3        , 'csv_id_ent'=>0                 , 'csv_id_sconet'=>4    );
 
 /**
  * Sous-tableau avec les différents paramétrages de serveurs CAS

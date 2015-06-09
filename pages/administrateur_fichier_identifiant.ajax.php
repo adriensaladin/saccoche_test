@@ -580,6 +580,33 @@ if($action=='import_ent')
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  // CSV avec ordre des champs variables : utiliser la 1ère ligne pour déterminer l'emplacement des données
+  if( $tab_infos_csv['csv_entete'] && !$tab_infos_csv['csv_ordre'] )
+  {
+    $tab_numero_colonne = array(
+      'csv_nom'    => -100 ,
+      'csv_prenom' => -100 ,
+      'csv_id_ent' => -100 ,
+    );
+    $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+    $numero_max = 0;
+    foreach ($tab_elements as $numero=>$element)
+    {
+      switch($element)
+      {
+        case $tab_infos_csv['csv_nom'   ] : $tab_numero_colonne['csv_nom'   ] = $numero; $numero_max = max($numero_max,$numero); break;
+        case $tab_infos_csv['csv_prenom'] : $tab_numero_colonne['csv_prenom'] = $numero; $numero_max = max($numero_max,$numero); break;
+        case $tab_infos_csv['csv_id_ent'] : $tab_numero_colonne['csv_id_ent'] = $numero; $numero_max = max($numero_max,$numero); break;
+      }
+    }
+    if(array_sum($tab_numero_colonne)<0)
+    {
+      exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
+    }
+    $tab_infos_csv['csv_nom'   ] = $tab_numero_colonne['csv_nom'   ];
+    $tab_infos_csv['csv_prenom'] = $tab_numero_colonne['csv_prenom'];
+    $tab_infos_csv['csv_id_ent'] = $tab_numero_colonne['csv_id_ent'];
+  }
   // Supprimer la ou les première(s) ligne(s) ou aucune
   $tab_lignes = array_slice( $tab_lignes , $tab_infos_csv['csv_entete'] );
   // Récupérer les données

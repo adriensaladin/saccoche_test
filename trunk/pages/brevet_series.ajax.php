@@ -83,7 +83,7 @@ foreach($DB_TAB as $DB_ROW)
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_brevet_serie,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/brevet/serie_'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/brevet/'.$DB_ROW['eleve_brevet_serie'].'.png" alt="" title="'.$tab_brevet_series[$DB_ROW['eleve_brevet_serie']].'" /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();

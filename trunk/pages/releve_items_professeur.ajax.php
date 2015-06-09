@@ -75,7 +75,7 @@ $pages_nb                 = (isset($_POST['f_pages_nb']))           ? Clean::tex
 $cases_nb                 = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])              : -1;
 $cases_largeur            = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg'])            : 0;
 $prof_id                  = (isset($_POST['f_prof']))               ? Clean::entier($_POST['f_prof'])                  : 0;
-$prof_nom                 = (isset($_POST['f_prof_nom']))           ? Clean::texte($_POST['f_prof_nom'])               : '';
+$prof_texte               = (isset($_POST['f_prof_texte']))         ? Clean::texte($_POST['f_prof_texte'])             : '';
 $eleves_ordre             = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 $highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
 
@@ -85,9 +85,7 @@ $tab_type  = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_PO
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
-// Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
-/*
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $releve_individuel_format = 'eleve';
@@ -102,7 +100,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
   $tab_eleve  = array($_SESSION['USER_ID']);
 }
-*/
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
@@ -170,17 +167,20 @@ else
     echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
     echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     echo'</ul>'.NL;
-    echo'<h2>Bulletin SACoche</h2>'.NL;
-    echo'<ul class="puce">'.NL;
-    echo $bulletin_form;
-    echo'</ul>'.NL;
-    echo $bulletin_alerte;
-    echo'<h2>Bulletin Gepi</h2>'.NL;
-    echo'<ul class="puce">'.NL;
-    echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-    echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-    echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-    echo'</ul>';
+    if($_SESSION['USER_PROFIL_TYPE']=='professeur')
+    {
+      echo'<h2>Bulletin SACoche</h2>'.NL;
+      echo'<ul class="puce">'.NL;
+      echo $bulletin_form;
+      echo'</ul>'.NL;
+      echo $bulletin_alerte;
+      echo'<h2>Bulletin Gepi</h2>'.NL;
+      echo'<ul class="puce">'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo'</ul>';
+    }
   }
 }
 

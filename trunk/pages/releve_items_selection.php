@@ -42,7 +42,7 @@ $check_pourcentage_acquis = (Form::$tab_choix['aff_pourcentage_acquis']) ? ' che
 $check_conversion_sur_20  = (Form::$tab_choix['conversion_sur_20'])      ? ' checked' : '' ;
 $check_with_coef          = (Form::$tab_choix['with_coef'])              ? ' checked' : '' ;
 $class_form_with_coef     = ($check_type_synthese || $check_type_bulletin || ($check_type_individuel && $check_moyenne_score) ) ? 'show' : 'hide' ;
-// Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
+// Ci-après sans objet car cette page n'est proposée qu'aux professeurs et directeurs.
 /*
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
@@ -140,8 +140,9 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
   <?php
-  // Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+  // Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur ou PP, sur tous les niveaux
+  $user_id = ( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && !DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'],0) ) ? $_SESSION['USER_ID'] : 0 ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   if(empty($DB_TAB))
   {
     echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;

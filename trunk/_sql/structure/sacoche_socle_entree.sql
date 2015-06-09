@@ -194,7 +194,7 @@ INSERT INTO sacoche_socle_entree VALUES
 ( 2441 , 34,  0, "Lire un document numérique."),
 ( 2442 , 34,  1, "Chercher des informations par voie électronique."),
 ( 2443 , 34,  2, "Découvrir les richesses et les limites des ressources de l’internet."),
-( 2451 , 35,  0, "Échanger avec les technologies de l’information et de la communication."),
+( 2453 , 35,  0, "Échanger avec les technologies de l’information et de la communication."),
 ( 2511 , 36,  0, "Identifier les périodes de l’histoire au programme."),
 ( 2512 , 36,  1, "Connaître et mémoriser les principaux repères chronologiques (évènements et personnages)."),
 ( 2513 , 36,  2, "Connaître les principaux caractères géographiques physiques et humains de la région où vit l’élève, de la France et de l’Union européenne, les repérer sur des cartes à différentes échelles."),

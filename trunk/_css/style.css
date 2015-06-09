@@ -643,6 +643,7 @@ th.tablesorter-header div {font-weight:bold} /* C'est le plugin tablesorter qui 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.affectation {font-size:85%;margin:1em}
+table.affectation td{vertical-align:top}
 table.affectation tfoot td {background:#DDF;color:#333}
 table.affectation span.proprio {color:#22B;font-weight:bold;}
 
@@ -802,6 +803,13 @@ table#statistiques td {text-align:center}
 
 table i {display:none}
 table.xdebug-error i {display:inline-block} /* pour éviter une répercussion sur les notifications d'erreurs de Xdebug */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Pour Notanet (calcul des notes)                                                                     */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.non span{margin-left:2px;padding:0 2px;background-color:#FBB}
+.oui span{margin-left:2px;padding:0 2px;background-color:#BEB}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Infobulles                                                                                          */

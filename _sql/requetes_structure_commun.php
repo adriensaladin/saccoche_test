@@ -1505,17 +1505,13 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
 /**
  * Retourner un tableau [valeur texte] des profs ayant évalué les élèves d'une classe ou d'un groupe
  *
- * On cherche les évals des profs sur les élèves du regroupement.
- * On récupère donc aussi les profs qui ne sont pas forcément rattachés au regroupement.
- * Ce qui est utile pour un élève d'une classe si un prof n'est rattaché qu'à un groupe, et inversement.
- *
  * @param string $groupe_type   valeur parmi 'classe' ou 'groupe'
  * @param int    $groupe_id     id de la classe ou du groupe
  * @return array
  */
 public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
 {
-  $DB_SQL = 'SELECT prof.user_id AS valeur, prof.user_genre AS prof_genre, prof.user_nom AS prof_nom, prof.user_prenom AS prof_prenom ';
+  $DB_SQL = 'SELECT prof.user_id AS valeur, CONCAT(prof.user_nom," ",prof.user_prenom) AS texte ';
   switch ($groupe_type)
   {
     case 'classe' :  // On veut tous les élèves d'une classe (on utilise "eleve_classe_id" de "sacoche_user")
@@ -1533,20 +1529,10 @@ public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
   $DB_SQL.= 'LEFT JOIN sacoche_saisie ON eleve.user_id=sacoche_saisie.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_devoir.proprio_id=prof.user_id ';
-  $DB_SQL.= $WHERE.'AND eleve.user_sortie_date>NOW() AND prof.user_id IS NOT NULL ';
+  $DB_SQL.= $WHERE.'AND prof.user_id IS NOT NULL ';
   $DB_SQL.= 'GROUP BY prof.user_id ';
-  $DB_SQL.= 'ORDER BY prof_nom ASC, prof_prenom ASC ';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $key => $DB_ROW)
-    {
-      $texte = afficher_identite_initiale( $DB_ROW['prof_nom'] , FALSE , $DB_ROW['prof_prenom'] , TRUE , $DB_ROW['prof_genre'] );
-      unset( $DB_TAB[$key]['prof_nom'], $DB_TAB[$key]['prof_prenom'], $DB_TAB[$key]['prof_genre'] );
-      $DB_TAB[$key]['texte'] = $texte;
-    }
-  }
-  return $DB_TAB;
+  $DB_SQL.= 'ORDER BY texte ASC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

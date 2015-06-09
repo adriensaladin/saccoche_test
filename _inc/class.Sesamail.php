@@ -675,9 +675,13 @@ class Sesamail
     {
       $get_connexion = ($_SESSION['CONNEXION_MODE']!='normal') ? 'sso='.$_SESSION['BASE'].'&' : 'base='.$_SESSION['BASE'].'&' ;
     }
-    else
+    else if($_SESSION['CONNEXION_MODE']!='normal')
     {
-      $get_connexion = ($_SESSION['CONNEXION_MODE']!='normal') ? 'sso&' : '' ;
+      $get_connexion = 'sso&' ;
+    }
+    else if($_SESSION['CONNEXION_MODE']!='normal')
+    {
+      $get_connexion = '' ;
     }
     // assemblage selon le mode de connexion
     if($_SESSION['CONNEXION_MODE']!='shibboleth')

@@ -194,45 +194,24 @@ public static function DB_lister_niveaux_famille($niveau_famille_id)
   // Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
   // Attention en cas de modification : ce tableau est dans 3 fichiers différents (dépôt SACoche x2 + dépôt portail x1).
   $tab_sql = array(
-      1 => '',
-      2 => '',
-      3 => '',
-     60 => 'OR niveau_id IN(1,2,3,201) ',
-    100 => 'OR niveau_id IN(3,4,10,202,203) ',
-    160 => 'OR niveau_id IN(16,202,203) ',
-    200 => 'OR niveau_id IN(20,204,205,206) ',
-    210 => 'OR niveau_id IN(20,204,205,206) ',
-    220 => 'OR niveau_id = 23 ',
-    240 => 'OR niveau_id = 24 ',
-    241 => 'OR niveau_id = 24 ',
-    242 => 'OR niveau_id = 24 ',
-    243 => 'OR niveau_id = 25 ',
-    247 => 'OR niveau_id = 26 ',
-    250 => 'OR niveau_id = 27 ',
-    251 => 'OR niveau_id = 27 ',
-    253 => '',
-    254 => 'OR niveau_id = 28 ',
-    271 => 'OR niveau_id = 29 ',
-    276 => 'OR niveau_id = 30 ',
-    290 => '',
-    301 => 'OR niveau_id = 31 ',
-    310 => 'OR niveau_id = 32 ',
-    311 => 'OR niveau_id = 32 ',
-    312 => 'OR niveau_id = 32 ',
-    313 => '',
-    315 => 'OR niveau_id = 33 ',
-    316 => 'OR niveau_id = 33 ',
-    350 => 'OR niveau_id = 35 ',
-    370 => 'OR niveau_id = 37 ',
-    371 => 'OR niveau_id = 37 ',
-    390 => '',
-    740 => '',
+    1 => '',
+    2 => 'OR niveau_id IN(5,1,2,201) ',
+    3 => 'OR niveau_id IN(3,202,203) ',
+    4 => 'OR niveau_id IN(6,202,203) ',
+    5 => 'OR niveau_id IN(4,204,205,206) ',
+    6 => 'OR niveau_id IN(4,204,205,206) ',
+    7 => 'OR niveau_id IN(4,204,205,206) ',
+    8 => 'OR niveau_id IN(4,204,205,206) ',
+    9 => '',
+   10 => '',
+   11 => 'OR niveau_id IN(4,204,205,206) ',
   );
   $DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom, niveau_actif ';
   $DB_SQL.= 'FROM sacoche_niveau ';
-  $DB_SQL.= ($niveau_famille_id==ID_FAMILLE_NIVEAU_USUEL) ? 'WHERE niveau_usuel=1 ' : 'WHERE niveau_famille_id='.$niveau_famille_id.' '.$tab_sql[$niveau_famille_id] ;
-  $DB_SQL.= 'ORDER BY niveau_ordre ASC, niveau_nom ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $DB_SQL.= 'WHERE niveau_famille_id=:niveau_famille_id '.$tab_sql[$niveau_famille_id];
+  $DB_SQL.= 'ORDER BY niveau_ordre ASC';
+  $DB_VAR = array(':niveau_famille_id'=>$niveau_famille_id);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -854,7 +833,7 @@ public static function compter_niveaux_etabl($with_specifiques)
   $DB_SQL.= 'FROM sacoche_niveau ';
   $DB_SQL.= ($with_specifiques) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
   $DB_SQL.= 'WHERE niveau_actif=1 ';
-  $DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=2 ';
+  $DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=1 ';
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -1113,7 +1092,7 @@ public static function DB_ajouter_niveau_specifique($niveau_ref,$niveau_nom)
   $DB_VAR = array(
     ':niveau_actif'      => 1,
     ':niveau_famille_id' => 0,
-    ':niveau_ordre'      => 999,
+    ':niveau_ordre'      => 255,
     ':niveau_ref'        => $niveau_ref,
     ':code_mef'          => "",
     ':niveau_nom'        => $niveau_nom,

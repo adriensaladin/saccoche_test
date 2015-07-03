@@ -60,32 +60,6 @@ $eleves_ordre    = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
-// En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
-if($_SESSION['USER_PROFIL_TYPE']=='eleve')
-{
-  // Pour un élève on surcharge avec les données de session
-  $groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
-  $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
-  $tab_eleve  = array($_SESSION['USER_ID']);
-}
-if($_SESSION['USER_PROFIL_TYPE']=='parent')
-{
-  // Pour un parent on vérifie que c'est bien un de ses enfants
-  $is_enfant_legitime = FALSE;
-  foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
-  {
-    if($DB_ROW['valeur']==$tab_eleve[0])
-    {
-      $is_enfant_legitime = TRUE;
-      break;
-    }
-  }
-  if(!$is_enfant_legitime)
-  {
-    exit('Enfant non rattaché à votre compte parent !');
-  }
-}
-
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )

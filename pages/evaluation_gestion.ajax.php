@@ -330,13 +330,6 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   {
     exit('Date fin auto-éval. avant date visible !');
   }
-  // Récupérer l'effectif de la classe ou du groupe
-  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
-  // Dans le cas d'une évaluation sur un regroupement, on vérifie qu'il n'est pas vide
-  if(!$effectif_eleve)
-  {
-    exit('Regroupement sans élève !');
-  }
   // Ordre des élèves
   if($groupe_type=='classe')
   {
@@ -409,6 +402,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     }
     unset($_SESSION['TMP']['req_user_item']);
   }
+  // Récupérer l'effectif de la classe ou du groupe
+  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Notifications (rendues visibles ultérieurement)
   if(!$mode_discret)
   {
@@ -508,13 +503,6 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   if( ($date_autoeval!='00/00/0000') && ($date_autoeval_mysql<$date_visible_mysql) )
   {
     exit('Date fin auto-éval. avant date visible !');
-  }
-  // Récupérer l'effectif de la classe ou du groupe
-  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
-  // Dans le cas d'une évaluation sur un regroupement, on vérifie qu'il n'est pas vide
-  if(!$effectif_eleve)
-  {
-    exit('Regroupement sans élève !');
   }
   // Tester les droits
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
@@ -622,6 +610,8 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id , $tab_items , 'substituer' );
   // Récupérer le nb de saisies déjà effectuées pour l'évaluation
   $nb_saisies_effectuees = DB_STRUCTURE_PROFESSEUR::DB_lister_nb_saisies_par_evaluation($devoir_id);
+  // Récupérer l'effectif de la classe ou du groupe
+  $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Notifications : il peut falloir adapter les dates de toutes celles qui sont dépendantes de la date de visibilité du devoir.
   $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
   DB_STRUCTURE_NOTIFICATION::DB_modifier_attente_date_devoir( $devoir_id , $notification_date );

@@ -123,7 +123,7 @@ if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'
     }
     $liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
   }
-  calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
+  calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné

@@ -733,8 +733,8 @@ msgstr "On ne s'était pas vu depuis trop longtemps : vous nous avez manqué !"
 # Conserver "%s".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:116
 #, php-format
-msgid "Encore là %s ? Vous avez raison, faîtes comme chez vous !"
-msgstr "Encore là %s ? Vous avez raison, faîtes comme chez vous !"
+msgid "Encore là %s ? Vous avez raison, faites comme chez vous !"
+msgstr "Encore là %s ? Vous avez raison, faites comme chez vous !"
 
 # Conserver "%s".
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:122

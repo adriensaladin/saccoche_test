@@ -245,40 +245,43 @@ public static function DB_recuperer_arborescence_bilan( $liste_eleve_id , $matie
  *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules
  * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
+ * @param bool   $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
+ * @param string $rubrique_type    "matiere" | "niveau"
  * @return array
  */
-public static function DB_recuperer_items_travailles( $liste_eleve_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin )
+public static function DB_recuperer_items_travailles( $liste_eleve_id , $liste_matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $rubrique_type )
 {
   $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
+  $where_socle      = ($only_socle)       ? 'AND entree_id !=0 '            : '' ;
   $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
   $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-  $DB_SQL = 'SELECT item_id , item_coef , matiere_id , matiere_nom , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
+  $DB_SQL = 'SELECT item_id , item_coef , '.$rubrique_type.'_id AS rubrique_id , '.$rubrique_type.'_nom AS rubrique_nom , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$where_matiere.$where_date_debut.$where_date_fin;
+  $DB_SQL.= 'LEFT JOIN sacoche_'.$rubrique_type.' USING ('.$rubrique_type.'_id) ';
+  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$where_matiere.$where_socle.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id ';
   $DB_VAR = array(
     ':date_debut' => $date_mysql_debut,
     ':date_fin'   => $date_mysql_fin,
   );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
-  // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_matiere
-  $tab_matiere = array();
+  // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_rubrique
+  $tab_rubrique = array();
   foreach($DB_TAB as $item_id => $tab)
   {
     foreach($tab as $key => $DB_ROW)
     {
-      $tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
-      unset($DB_TAB[$item_id][$key]['matiere_id']);
+      $tab_rubrique[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];
+      unset( $DB_TAB[$item_id][$key]['rubrique_id'] , $DB_TAB[$item_id][$key]['rubrique_nom'] );
     }
   }
-  return array($DB_TAB,$tab_matiere);
+  return array($DB_TAB,$tab_rubrique);
 }
 
 /**
@@ -483,7 +486,7 @@ public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_i
   $join_matiere   = ($matiere_id<=0) ? 'LEFT JOIN sacoche_matiere USING (matiere_id) ' : '' ;
   $order_matiere  = ($matiere_id<=0) ? 'matiere_ordre ASC, ' : '' ;
   $where_prof     = ($onlyprof) ? 'AND sacoche_saisie.prof_id=:prof_id ' : '' ;
-  $DB_SQL = 'SELECT eleve_id , '.$select_matiere.' , item_id , ';
+  $DB_SQL = 'SELECT eleve_id , '.$select_matiere.' , niveau_id , item_id , '; // niveau_id utilisé seulement par releve_bilan_chronologique.ajax.php dans un cas précis...
   $DB_SQL.= ($onlynote) ? 'saisie_note AS note ' : 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';

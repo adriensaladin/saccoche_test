@@ -83,7 +83,7 @@ $tab_type  = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_PO
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
-// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+// En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $releve_individuel_format = 'eleve';
@@ -91,12 +91,30 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
   $aff_pourcentage_acquis   = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $aff_pourcentage_acquis : 0 ;
   $conversion_sur_20        = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $conversion_sur_20      : 0 ;
   $tab_type                 = array('individuel');
-}
-if($_SESSION['USER_PROFIL_TYPE']=='eleve')
-{
-  $groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
-  $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
-  $tab_eleve  = array($_SESSION['USER_ID']);
+  // Pour un élève on surcharge avec les données de session
+  if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+  {
+    $groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
+    $groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
+    $tab_eleve  = array($_SESSION['USER_ID']);
+  }
+  // Pour un parent on vérifie que c'est bien un de ses enfants
+  if($_SESSION['USER_PROFIL_TYPE']=='parent')
+  {
+    $is_enfant_legitime = FALSE;
+    foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
+    {
+      if($DB_ROW['valeur']==$tab_eleve[0])
+      {
+        $is_enfant_legitime = TRUE;
+        break;
+      }
+    }
+    if(!$is_enfant_legitime)
+    {
+      exit('Enfant non rattaché à votre compte parent !');
+    }
+  }
 }
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;

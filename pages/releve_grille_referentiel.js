@@ -391,6 +391,11 @@ $(document).ready
                 modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
                 $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
                 $('#f_matiere').html(responseHTML);
+                var matiere_val = $("#f_matiere").val();
+                if(!matiere_val)
+                {
+                  $("#f_niveau").html('<option value="">&nbsp;</option>').hide();
+                }
               }
               $('button').prop('disabled',false);
             }

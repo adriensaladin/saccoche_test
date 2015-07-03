@@ -60,7 +60,7 @@ if( ($action=='recherche_matiere_famille') && $famille_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Afficher les matières partagées d'une recherche par mot clef
+// Afficher les matières partagées à partir d'une recherche par mot clef
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='recherche_matiere_motclef') && $motclef )
@@ -68,12 +68,20 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matiere_motclef($motclef);
   if(!empty($DB_TAB))
   {
+    // Le "score" retourné par MySQL via MATCH() AGAINST() ne reflète pas la pertinence d'une chaîne complète.
+    // Du coup on repasse derrière avec levenshtein() de PHP.
+    $motclef_longueur = mb_strlen($motclef);
+    $tab_li = array();
     foreach($DB_TAB as $DB_ROW)
     {
       $class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
       $title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-      echo'<li>['.round($DB_ROW['score']).'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+      $pourcent_commun = 100 * max( $motclef_longueur - levenshtein($motclef,$DB_ROW['matiere_nom']) , 0 ) / $motclef_longueur ; // max(*,0) car levenshtein() compte double les caractères accentués
+      $score_retenu = round( max( $DB_ROW['score'] , $pourcent_commun) );
+      $tab_li['<li>['.$score_retenu.'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>'] = $score_retenu ;
     }
+    arsort($tab_li);
+    echo implode('',array_keys($tab_li));
   }
   else
   {
@@ -113,7 +121,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 // Modifier une matière spécifique existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $ref && $nom )
+if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_MATIERE_PARTAGEE_MAX) )
 {
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref,$id) )

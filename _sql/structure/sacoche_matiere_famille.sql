@@ -57,6 +57,8 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 44, 3, "Publicité"),
 ( 45, 3, "Métiers des arts appliqués (suite)"),
 ( 46, 3, "Métiers d'art (suite)"),
+( 47, 2, "Activités non spécialisées (suite)"),
+( 48, 2, "Sciences (suite)"),
 ( 50, 3, "Langue technique"),
 ( 60, 3, "Activités hippiques"),
 ( 61, 3, "Commercialisation"),

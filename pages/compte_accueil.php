@@ -113,7 +113,7 @@ if(isset($_SESSION['DELAI_CONNEXION']))
 }
 elseif(isset($_SESSION['DEUXIEME_PASSAGE']))
 {
-  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Encore là %s ? Vous avez raison, faîtes comme chez vous !")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
+  $tab_accueil['user']['contenu'] .= '<p class="i"><TG> '.sprintf(html(Lang::_("Encore là %s ? Vous avez raison, faites comme chez vous !")),'<b>'.html($_SESSION['USER_PRENOM']).'</b>');
   unset($_SESSION['DEUXIEME_PASSAGE']);
   $_SESSION['PASSAGES_SUIVANTS'] = TRUE;
 }

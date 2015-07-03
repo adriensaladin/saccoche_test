@@ -202,8 +202,9 @@ class Form
       4 => 'Enseignements complémentaires',
     ),
     'familles_niveaux' => array(
-      1 => 'Niveaux classes',
+      1 => 'Niveaux usuels',
       2 => 'Niveaux particuliers',
+      3 => 'Niveaux classes',
     ),
     'profs_directeurs' => array(
       'directeur'  => 'Directeurs',
@@ -385,8 +386,8 @@ class Form
         $tab_choix_new = compact('eleves_ordre','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'bilan_chronologique' :
-        global $eleves_ordre,$indicateur,$conversion_sur_20,$retroactif,$only_socle;
-        $tab_choix_new = compact('eleves_ordre','indicateur','conversion_sur_20','retroactif','only_socle');
+        global $eleves_ordre,$mode_synthese,$fusion_niveaux,$indicateur,$conversion_sur_20,$retroactif,$only_socle;
+        $tab_choix_new = compact('eleves_ordre','mode_synthese','fusion_niveaux','indicateur','conversion_sur_20','retroactif','only_socle');
         break;
       case 'synthese_matiere' :
         global $eleves_ordre,$matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min;

@@ -81,7 +81,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 // Modifier un niveau spécifique existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $ref && $nom )
+if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) )
 {
   // Vérifier que la référence du niveau est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref,$id) )

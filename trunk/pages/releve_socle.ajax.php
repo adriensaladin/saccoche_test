@@ -54,17 +54,35 @@ $tab_pilier_id  = array_filter( Clean::map_entier($tab_pilier_id)  , 'positif' )
 $tab_eleve_id   = array_filter( Clean::map_entier($tab_eleve_id)   , 'positif' );
 $tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
 
-// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+// En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $aff_socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $aff_socle_PA : 0 ;
   $aff_socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $aff_socle_EV : 0 ;
   $only_presence = 0;
-}
-if($_SESSION['USER_PROFIL_TYPE']=='eleve')
-{
-  $groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
-  $tab_eleve_id = array($_SESSION['USER_ID']);
+  // Pour un élève on surcharge avec les données de session
+  if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+  {
+    $groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
+    $tab_eleve_id = array($_SESSION['USER_ID']);
+  }
+  // Pour un parent on vérifie que c'est bien un de ses enfants
+  if($_SESSION['USER_PROFIL_TYPE']=='parent')
+  {
+    $is_enfant_legitime = FALSE;
+    foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
+    {
+      if($DB_ROW['valeur']==$tab_eleve_id[0])
+      {
+        $is_enfant_legitime = TRUE;
+        break;
+      }
+    }
+    if(!$is_enfant_legitime)
+    {
+      exit('Enfant non rattaché à votre compte parent !');
+    }
+  }
 }
 
 if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )

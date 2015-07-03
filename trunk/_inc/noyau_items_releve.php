@@ -65,10 +65,11 @@ $tab_eval             = array();  // [eleve_id][matiere_id][item_id][devoir] OU 
 
 if( ($make_html) || ($make_pdf) )
 {
+  $professeur = empty($prof_texte) ? '' : $prof_texte ; // pour avoir une variable définie, seul [releve_items_professeur] utilisant ceci
   $tab_titre = array(
     'matiere'      => 'd\'items - '.$matiere_nom ,
     'multimatiere' => 'd\'items pluridisciplinaire' ,
-    'professeur'   => 'd\'items restreint à '.$prof_texte ,
+    'professeur'   => 'd\'items restreint à '.$professeur ,
     'selection'    => 'd\'items sélectionnés' ,
   );
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;

@@ -640,11 +640,12 @@ define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
 define('CONVENTION_ENT_ID_ETABL_MAXI'   ,100000); // Les établissements d'id >= sont des établissements de test.
 
 // Identifiants particuliers (à ne pas modifier)
-define('ID_DEMO'                   , 9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_MATIERE_PARTAGEE_MAX'   , 9999); // id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
-define('ID_NIVEAU_PARTAGE_MAX'     ,  215); // id maximal des niveaux partagés (les id des niveaux spécifiques sont supérieurs)
-define('ID_FAMILLE_MATIERE_USUELLE',   99);
-define('CODE_BREVET_EPREUVE_TOTAL' ,  255);
+define('ID_DEMO'                   ,   9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
+define('ID_MATIERE_PARTAGEE_MAX'   ,   9999); // id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
+define('ID_NIVEAU_PARTAGE_MAX'     , 999999); // id maximal des niveaux partagés (les id des niveaux spécifiques sont supérieurs)
+define('ID_FAMILLE_MATIERE_USUELLE',     99);
+define('ID_FAMILLE_NIVEAU_USUEL'   ,    999);
+define('CODE_BREVET_EPREUVE_TOTAL' ,    255);
 
 // cookies
 define('COOKIE_STRUCTURE' ,'SACoche-etablissement' ); // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
@@ -748,7 +749,7 @@ function getServerProtocole()
 }
 
 /**
- * getServerProtocole
+ * getServerPort
  *
  * @param string $host
  * @return string

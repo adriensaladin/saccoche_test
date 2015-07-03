@@ -23,7 +23,7 @@ ALTER TABLE sacoche_matiere DISABLE KEYS;
 
 INSERT INTO sacoche_matiere VALUES
 
--- Activités non spécialisées
+-- 100 Activités non spécialisées
 
 (   1, 0, 0, 100, 0, 255, "PBSCU", "Problèmes socioculturels"),
 (   2, 0, 0, 100, 0, 255, "CPORT", "Comportement"),
@@ -48,7 +48,7 @@ INSERT INTO sacoche_matiere VALUES
 (  21, 0, 0, 100, 0, 255, "I-RHU", "Initiation aux relations humaines"),
 (  22, 0, 0, 100, 0, 255, "MOADP", "Modules d'adaptation"),
 (  23, 0, 0, 100, 0, 255, "TPE"  , "Travaux personnels encadrés"),
-(  24, 0, 0, 100, 0, 255, "ACALI", "Accès en autonomie au labo.informatique"),
+(  24, 0, 0, 100, 0, 255, "ACALI", "Accès en autonomie au laboratoire informatique"),
 (  25, 0, 0, 100, 0, 255, "REHUM", "Relations humaines"),
 (  26, 0, 0, 100, 0, 255, "F-RHU", "Formation relations humaines"),
 (  27, 0, 0, 100, 0, 255, "EDGTM", "Education gestuelle Travaux manuels (ses)"),
@@ -89,7 +89,7 @@ INSERT INTO sacoche_matiere VALUES
 (  62, 0, 0, 100, 0, 255, "ACDEL", "Activités déléguées"),
 (  63, 0, 0, 100, 0, 255, "ATMET", "Ateliers métiers"),
 (  64, 0, 0, 100, 0, 255, "ATLIE", "Atelier(s)"),
-(  65, 0, 0, 100, 0, 255, "AALIC", "Acces auton. labo informatiq. & communication"),
+(  65, 0, 0, 100, 0, 255, "AALIC", "Accès autonomie laboratoire informatique & communication"),
 (  66, 0, 0, 100, 0, 255, "ACCPE", "Accompagnement personnalisé"),
 (  67, 0, 0, 100, 0, 255, "INVES", "Méthodologie d'investigation"),
 (  68, 0, 0, 100, 0, 255, "CGENX", "Culture générale et expression"),
@@ -125,7 +125,7 @@ INSERT INTO sacoche_matiere VALUES
 (  98, 0, 0, 100, 0, 255, "AEAID", "Acccompagn.éducatif - aide devoirs leçons"),
 (  99, 0, 0, 100, 0, 255, "ACNSD", "Activités non spécialisées diverses"),
 
--- Philosophie sciences humaines
+-- 1 Philosophie sciences humaines
 
 ( 101, 0, 0,   1, 0, 255, "CULSH", "Culture générale et sciences humaines"),
 ( 102, 0, 0,   1, 0, 255, "PHI-R", "Philosophie renforcée"),
@@ -146,9 +146,11 @@ INSERT INTO sacoche_matiere VALUES
 ( 118, 0, 0,   1, 0, 255, "C-COM", "Cultures de la communication"),
 ( 119, 0, 0,   1, 0, 255, "S-PSY", "Sensibilisation concepts psy etc"),
 ( 120, 0, 0,   1, 0, 255, "CPOLI", "Connaissance des politiques institutions"),
+( 121, 0, 0,   1, 0, 255, "SCHSD", "Sciences humaines, sociales et droit"),
+( 122, 0, 0,   1, 0, 255, "SHPAD", "Sciences humaines et philosophie générale de l'art et du design"),
 ( 199, 0, 0,   1, 0, 255, "PHI-H", "Philosophie sciences humaines divers"),
 
--- Lettres
+-- 2 Lettres
 
 ( 201, 0, 1,   2, 0, 255, "LATIN", "Latin"),
 ( 202, 0, 1,   2, 0, 255, "GREC" , "Grec ancien"),
@@ -186,7 +188,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 235, 0, 0,   2, 0, 255, "FHGEC", "Français - histoire-géo. - éduc. civique"),
 ( 299, 0, 0,   2, 0, 255, "LETDI", "Lettres divers"),
 
--- Langues vivantes
+-- 3 Langues vivantes
 
 ( 300, 0, 0,   3, 0, 255, "FLE"  , "Français langue étrangère"),
 ( 301, 0, 0,   3, 0, 255, "ALL"  , "Allemand"),
@@ -287,7 +289,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 398, 0, 0,   3, 0, 255, "RUS8" , "Littérature étrangère en russe"),
 ( 399, 0, 0,   3, 0, 255, "LANDI", "Langues divers"),
 
--- Histoire géographie
+-- 4 Histoire géographie
 
 ( 401, 0, 0,   4, 0, 255, "HIGHO", "Histoire et géographie hôtelière"),
 ( 402, 0, 0,   4, 0, 255, "I-MDC", "Initiation au monde contemporain"),
@@ -329,7 +331,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 438, 0, 1,   4, 0, 255, "EMC"  , "Enseignement moral et civique"),
 ( 499, 0, 0,   4, 0, 255, "HIGDV", "Histoire et géographie divers"),
 
--- Sciences économiques et sociales
+-- 5 Sciences économiques et sociales
 
 ( 501, 0, 0,   5, 0, 255, "TDECO", "Travaux dirigés d'économie"),
 ( 502, 0, 0,   5, 0, 255, "SECO" , "Sciences économiques"),
@@ -356,7 +358,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 523, 0, 0,   5, 0, 255, "ESHMC", "Économie, sociologie & histoire du monde contemporain"),
 ( 599, 0, 0,   5, 0, 255, "SECSD", "Sciences économiques et sociales divers"),
 
--- Sciences
+-- 6 Sciences
 
 ( 600, 0, 0,   6, 0, 255, "EIST" , "Enseignement intégré de science et technologie"), -- Utilisée mais pas dans la BCN...
 ( 601, 0, 0,   6, 0, 255, "PCAPP", "Physique et chimie appliquées"),
@@ -384,13 +386,13 @@ INSERT INTO sacoche_matiere VALUES
 ( 623, 0, 1,   6, 0, 255, "PH-CH", "Physique-chimie"),
 ( 624, 0, 0,   6, 0, 255, "SCPHY", "Sciences physiques"),
 ( 625, 0, 0,   6, 0, 255, "TPSPH", "TP de sciences physiques"),
-( 626, 0, 0,   6, 0, 255, "PH-LI", "Physique (labo industriel et recherche)"),
+( 626, 0, 0,   6, 0, 255, "PH-LI", "Physique (laboratoire industriel et recherche)"),
 ( 627, 0, 0,   6, 0, 255, "PH-IN", "Physique industrielle"),
 ( 628, 0, 0,   6, 0, 255, "SCPHA", "Sciences physiques appliquées"),
 ( 629, 0, 1,   6, 0, 255, "SVT"  , "Sciences de la vie et de la terre"),
 ( 630, 0, 0,   6, 0, 255, "PH-AO", "Physique appliquée optique"),
 ( 631, 0, 0,   6, 0, 255, "PH-EL", "Physique électricité"),
-( 632, 0, 0,   6, 0, 255, "CH-LI", "Chimie (labo industriel et recherche)"),
+( 632, 0, 0,   6, 0, 255, "CH-LI", "Chimie (laboratoire industriel et recherche)"),
 ( 633, 0, 0,   6, 0, 255, "CHIMI", "Chimie"),
 ( 634, 0, 0,   6, 0, 255, "SCTKN", "Sciences appliquées et technologies nouvelles"),
 ( 635, 0, 0,   6, 0, 255, "CH-CO", "Chimie générale et chimie organique"),
@@ -455,11 +457,11 @@ INSERT INTO sacoche_matiere VALUES
 ( 694, 0, 0,   6, 0, 255, "SPHCH", "Sciences physiques et chimiques"),
 ( 695, 0, 0,   6, 0, 255, "SPCAP", "Sciences physiques&chimiques appliquées"),
 ( 696, 0, 0,   6, 0, 255, "MP-SC", "Méthodes & pratiques scientifiques"),
-( 697, 0, 0,   6, 0, 255, "SCLAB", "Sciences physiques et chimiques en labo."),
+( 697, 0, 0,   6, 0, 255, "SCLAB", "Sciences physiques et chimiques en laboratoire"),
 ( 698, 0, 0,   6, 0, 255, "MATAP", "Mathématiques approfondies"),
 ( 699, 0, 0,   6, 0, 255, "SCDIV", "Sciences divers"),
 
--- Technologie
+-- 7 Technologie
 
 ( 701, 0, 0,   7, 0, 255, "TECTD", "Technologie et travaux dirigés"),
 ( 702, 0, 0,   7, 0, 255, "TECRE", "Technologie et réalisation"),
@@ -496,7 +498,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 733, 0, 0,   7, 0, 255, "TMMED", "Technologie multimédia"),
 ( 734, 0, 0,   7, 0, 255, "FUTIL", "Fonction utilisateur"),
 ( 735, 0, 0,   7, 0, 255, "CITEC", "Création & innovation technologiques"),
-( 736, 0, 0,   7, 0, 255, "INTEC", "Innovation technologique et eco-concept."),
+( 736, 0, 0,   7, 0, 255, "INTEC", "Innovation technologique et éco-conception"),
 ( 737, 0, 0,   7, 0, 255, "ETT"  , "Enseignements technologiques transversaux"),
 ( 738, 0, 0,   7, 0, 255, "STECH", "Sciences et technologie"),
 ( 739, 0, 0,   7, 0, 255, "TFABR", "Technologie de fabrication"),
@@ -505,7 +507,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 742, 0, 0,   7, 0, 255, "TTPRO", "Technologie & techniques professionnelles"),
 ( 799, 0, 0,   7, 0, 255, "TECDI", "Technologie divers"),
 
--- Éducation musicale
+-- 8 Éducation musicale
 
 ( 800, 0, 0,   8, 0, 255, "EMUGT", "Education musicale générale et technique"),
 ( 801, 0, 0,   8, 0, 255, "HIMCO", "Histoire musique - critique œuvres enregistrées"),
@@ -558,7 +560,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 849, 0, 0,   8, 0, 255, "A-SON", "Arts du son"),
 ( 899, 0, 0,   8, 0, 255, "EDMUD", "Education musicale divers"),
 
--- Arts plastiques
+-- 9 Arts plastiques
 
 ( 901, 0, 1,   9, 0, 255, "A-PLA", "Arts plastiques"),
 ( 902, 0, 0,   9, 0, 255, "APLA5", "Arts plastiques 5 heures"),
@@ -581,9 +583,10 @@ INSERT INTO sacoche_matiere VALUES
 ( 919, 0, 0,   9, 0, 255, "CTYPO", "Culture typographique"),
 ( 920, 0, 0,   9, 0, 255, "PPGRA", "Pratique plastique & graphique"),
 ( 921, 0, 0,   9, 0, 255, "DANAL", "Dessin analytique"),
+( 998, 0, 0,   9, 0, 255, "AEART", "Accompagnement éducatif - pratique art.culturel"),
 ( 999, 0, 0,   9, 0, 255, "A-PLD", "Arts plastiques divers"),
 
--- Éducation physique et sportive
+-- 10 Éducation physique et sportive
 
 (1001, 0, 1,  10, 0, 255, "EPS"  , "Education physique et sportive"),
 (1002, 0, 0,  10, 0, 255, "ACSPS", "Activités sportives spécialisées"),
@@ -662,7 +665,7 @@ INSERT INTO sacoche_matiere VALUES
 (1098, 0, 0,  10, 0, 255, "AESPO", "Accompagnemt éducatif - pratique sportive"),
 (1099, 0, 0,  10, 0, 255, "EPSDI", "EPS divers"),
 
--- Génie industriel du bois
+-- 11 Génie industriel du bois
 
 (1102, 0, 0,  11, 0, 255, "ATTSE", "Atelier techno spécialité ébénisterie"),
 (1103, 0, 0,  11, 0, 255, "HIAAS", "Histoire de l'art et analyse des styles"),
@@ -703,7 +706,7 @@ INSERT INTO sacoche_matiere VALUES
 (1139, 0, 0,  11, 0, 255, "ETPRP", "Étude et préparation de projet"),
 (1199, 0, 0,  11, 0, 255, "GNIBD", "Génie industriel du bois divers"),
 
--- Génie industriel textile et cuir
+-- 12 Génie industriel textile et cuir
 
 (1201, 0, 0,  12, 0, 255, "D-PRJ", "Dessin et projet"),
 (1202, 0, 0,  12, 0, 255, "TECAT", "Technologie application et travaux pratiques"),
@@ -741,7 +744,7 @@ INSERT INTO sacoche_matiere VALUES
 (1242, 0, 0,  12, 0, 255, "ATCGP", "Atelier-controles et gestion de product"),
 (1299, 0, 0,  12, 0, 255, "GNITD", "Génie industriel textile et cuir divers"),
 
--- Génie industriel verre céramique
+-- 13 Génie industriel verre céramique
 
 (1301, 0, 0,  13, 0, 255, "TPMIR", "Travaux pratiques miroiterie"),
 (1302, 0, 0,  13, 0, 255, "ATTP" , "Atelier TP (famille 13)"),
@@ -756,7 +759,7 @@ INSERT INTO sacoche_matiere VALUES
 (1311, 0, 0,  13, 0, 255, "PRMEC", "Production mécanique (optique)"),
 (1399, 0, 0,  13, 0, 255, "GNVCD", "Génie industriel verre et céramique div"),
 
--- Génie structures métalliques
+-- 14 Génie structures métalliques
 
 (1402, 0, 0,  14, 0, 255, "P-OFC", "Prep et organis fabrication et contrôle"),
 (1403, 0, 0,  14, 0, 255, "METAL", "Métallurgie"),
@@ -781,7 +784,7 @@ INSERT INTO sacoche_matiere VALUES
 (1422, 0, 0,  14, 0, 255, "EMOAF", "Et.&m.en œuvre alliag de fond.&mat.conx"),
 (1499, 0, 0,  14, 0, 255, "GNSMD", "Génie ind structures métal divers"),
 
--- Génie industriel plastiques composites
+-- 15 Génie industriel plastiques composites
 
 (1501, 0, 0,  15, 0, 255, "EVEXI", "Environnement externe et interne"),
 (1502, 0, 0,  15, 0, 255, "T-CO" , "Techniques connexes (stoc manu trans meca)"),
@@ -817,7 +820,7 @@ INSERT INTO sacoche_matiere VALUES
 (1532, 0, 0,  15, 0, 255, "MPOPC", "Mainten processus outillage (plastiques composites)"),
 (1599, 0, 0,  15, 0, 255, "GNIPD", "Génie indus plastiques divers"),
 
--- Génie chimique
+-- 16 Génie chimique
 
 (1601, 0, 0,  16, 0, 255, "TECGC", "Technologie et génie chimique"),
 (1602, 0, 0,  16, 0, 255, "CH-ME", "Chimie - métallurgie"),
@@ -828,7 +831,7 @@ INSERT INTO sacoche_matiere VALUES
 (1607, 0, 0,  16, 0, 255, "GENCH", "Génie chimique"),
 (1699, 0, 0,  16, 0, 255, "GNCHD", "Génie chimique divers"),
 
--- Génie civil
+-- 17 Génie civil
 
 (1701, 0, 0,  17, 0, 255, "D-GCV", "Dessin (génie civil)"),
 (1702, 0, 0,  17, 0, 255, "TOPOG", "Topographie"),
@@ -883,9 +886,10 @@ INSERT INTO sacoche_matiere VALUES
 (1751, 0, 0,  17, 0, 255, "PO-GC", "Projet d'ouvrage (génie civil)"),
 (1752, 0, 0,  17, 0, 255, "ARCHC", "Architecture et construction"),
 (1753, 0, 0,  17, 0, 255, "AHUDD", "Architecture, habitat & urbanisme, développement durable"),
+(1754, 0, 0,  17, 0, 255, "GENCI", "Génie civil"),
 (1799, 0, 0,  17, 0, 255, "GNCID", "Génie civil divers"),
 
--- Génie thermique
+-- 18 Génie thermique
 
 (1801, 0, 0,  18, 0, 255, "MOSYS", "Mise en œuvre des systèmes"),
 (1802, 0, 0,  18, 0, 255, "TMFAV", "Thermo meca fluide appliquée véhicule"),
@@ -903,10 +907,10 @@ INSERT INTO sacoche_matiere VALUES
 (1814, 0, 0,  18, 0, 255, "TMDTM", "Thermodynamique et thermique"),
 (1815, 0, 0,  18, 0, 255, "ENFLE", "Énergétique fluidique environnement"),
 (1816, 0, 0,  18, 0, 255, "RMOPT", "Réalisation mise en œuvre procédures (génie thermique)"),
-(1817, 0, 0,  18, 0, 255, "ENENV", "Energies et environnement"),
+(1817, 0, 0,  18, 0, 255, "ENENV", "Énergies et environnement"),
 (1899, 0, 0,  18, 0, 255, "GNTHD", "Génie thermique divers"),
 
--- Génie mécanique de la construction
+-- 19 Génie mécanique de la construction
 
 (1901, 0, 0,  19, 0, 255, "D-CAT", "Dessin de construction atelier"),
 (1902, 0, 0,  19, 0, 255, "PD-CT", "Productique construction"),
@@ -934,7 +938,7 @@ INSERT INTO sacoche_matiere VALUES
 (1925, 0, 0,  19, 0, 255, "PRPRO", "Préparation de production"),
 (1999, 0, 0,  19, 0, 255, "GNMCD", "Génie meca construction divers"),
 
--- Génie mécanique de la productique
+-- 20 Génie mécanique de la productique
 
 (2001, 0, 0,  20, 0, 255, "P-OMF", "Préparation-organisation : méthodes-fabrication-contrôle"),
 (2002, 0, 0,  20, 0, 255, "INSTR", "Instrumentation"),
@@ -1015,7 +1019,7 @@ INSERT INTO sacoche_matiere VALUES
 (2082, 0, 0,  20, 0, 255, "RPCAR", "Réalisation des produits carrossés"),
 (2099, 0, 0,  20, 0, 255, "GNMPD", "Génie mécanique productique divers"),
 
--- Génie mécanique de la maintenance
+-- 21 Génie mécanique de la maintenance
 
 (2101, 0, 0,  21, 0, 255, "TECCS", "Technologie cellules et systèmes"),
 (2102, 0, 0,  21, 0, 255, "MNMEC", "Maintenance mécanique"),
@@ -1053,7 +1057,7 @@ INSERT INTO sacoche_matiere VALUES
 (2134, 0, 0,  21, 0, 255, "TMCPR", "Technique de maintenance conduite prévention"),
 (2199, 0, 0,  21, 0, 255, "GNMMD", "Génie mécanique maintenance divers"),
 
--- Génie électrique électronique
+-- 22 Génie électrique électronique
 
 (2201, 0, 0,  22, 0, 255, "ELTRO", "Électronique"),
 (2202, 0, 0,  22, 0, 255, "ETHMA", "Étude théorique et schéma"),
@@ -1084,7 +1088,7 @@ INSERT INTO sacoche_matiere VALUES
 (2228, 0, 0,  22, 0, 255, "TIMAG", "Traitement de l'image"),
 (2299, 0, 0,  22, 0, 255, "CTAUD", "Construction et automatisme divers"),
 
--- Génie électrique électrotechnique
+-- 23 Génie électrique électrotechnique
 
 (2301, 0, 0,  23, 0, 255, "ELMEC", "Électricité et mécanique"),
 (2302, 0, 0,  23, 0, 255, "TPIEL", "TP initiation à l'électricité"),
@@ -1109,7 +1113,7 @@ INSERT INTO sacoche_matiere VALUES
 (2322, 0, 0,  23, 0, 255, "CSMEL", "Const.str.mat.appliq. électrotechnique"),
 (2399, 0, 0,  23, 0, 255, "GNEED", "Génie électrique électronique divers"),
 
--- Génie électrique informat.- télématique
+-- 24 Génie électrique informat.- télématique
 
 (2401, 0, 0,  24, 0, 255, "ARCSI", "Architecture des systèmes informatiques"),
 (2402, 0, 0,  24, 0, 255, "MT-IF", "Méthodes informatiques"),
@@ -1129,12 +1133,12 @@ INSERT INTO sacoche_matiere VALUES
 (2416, 0, 0,  24, 0, 255, "MANIN", "Mise à niveau en informatique"),
 (2417, 0, 0,  24, 0, 255, "ISYST", "Informatique système"),
 (2418, 0, 0,  24, 0, 255, "GESSI", "Gestion des systèmes d'information"),
-(2419, 0, 0,  24, 0, 255, "BIOIL", "Bio-informatique et informatique de labo"),
+(2419, 0, 0,  24, 0, 255, "BIOIL", "Bio-informatique et informatique de laboratoire"),
 (2420, 0, 0,  24, 0, 255, "SINUM", "Systèmes d'information et numérique"),
 (2421, 0, 0,  24, 0, 255, "INFRE", "Informatique et réseaux"),
 (2499, 0, 0,  24, 0, 255, "GNEID", "Génie électrique inform electro divers"),
 
--- Indust. graphiques (imprimerie - livre)
+-- 25 Indust. graphiques (imprimerie - livre)
 
 (2501, 0, 0,  25, 0, 255, "IMPRE", "Impression"),
 (2502, 0, 0,  25, 0, 255, "FINIT", "Finition"),
@@ -1156,7 +1160,7 @@ INSERT INTO sacoche_matiere VALUES
 (2518, 0, 0,  25, 0, 255, "LABEG", "Laboratoire expérimentations graphiques"),
 (2599, 0, 0,  25, 0, 255, "IGRAD", "Industrie graphiques divers"),
 
--- Conduite - navigation
+-- 26 Conduite - navigation
 
 (2601, 0, 0,  26, 0, 255, "EXPTR", "Exploitation des transports"),
 (2602, 0, 0,  26, 0, 255, "MMSOU", "Motorisation meca soudure"),
@@ -1170,7 +1174,7 @@ INSERT INTO sacoche_matiere VALUES
 (2610, 0, 0,  26, 0, 255, "SVOTL", "Suivi opérations transport logistique"),
 (2699, 0, 0,  26, 0, 255, "AUTAC", "Autres activités (conduite-navigation)dv"),
 
--- Métiers des arts appliqués
+-- 27 Métiers des arts appliqués
 
 (2701, 0, 0,  27, 0, 255, "ATTKA", "Atelier et technologie appliquée"),
 (2702, 0, 0,  27, 0, 255, "EDAAA", "Education artistique - arts appliqués - ana"),
@@ -1272,7 +1276,7 @@ INSERT INTO sacoche_matiere VALUES
 (2798, 0, 0,  27, 0, 255, "HASCT", "Histoire de l'art des sciences & techniques"),
 (2799, 0, 0,  27, 0, 255, "MARAD", "Métiers d'arts appliqués divers"),
 
--- Métiers d`art
+-- 28 Métiers d`art
 
 (2801, 0, 0,  28, 0, 255, "D-GEO", "Dessin géométrique"),
 (2802, 0, 0,  28, 0, 255, "D-ART", "Dessin d'arts"),
@@ -1373,13 +1377,13 @@ INSERT INTO sacoche_matiere VALUES
 (2898, 0, 0,  28, 0, 255, "ATEXA", "Atelier d'expression artistique"),
 (2899, 0, 0,  28, 0, 255, "MARDI", "Métiers d'art divers"),
 
--- Métiers de l`artisanat et spécifiques
+-- 29 Métiers de l`artisanat et spécifiques
 
 (2901, 0, 0,  29, 0, 255, "BIJOU", "Bijouterie"),
 (2902, 0, 0,  29, 0, 255, "CADTP", "Compo.art appli.dom.techniq.repres.projt"),
 (2999, 0, 0,  29, 0, 255, "ARDIV", "Artisanat divers"),
 
--- Biotechnologie génie biol.- biochimique
+-- 30 Biotechnologie génie biol.- biochimique
 
 (3001, 0, 0,  30, 0, 255, "TDBIO", "Travaux dirigés de biologie"),
 (3002, 0, 0,  30, 0, 255, "GEOLO", "Géologie"),
@@ -1476,7 +1480,7 @@ INSERT INTO sacoche_matiere VALUES
 (3093, 0, 0,  30, 0, 255, "BMEAP", "Biologie microbiologie & écologie appliquée"),
 (3099, 0, 0,  30, 0, 255, "BTGBD", "Biotechnologie génie bio divers"),
 
--- Biotechnologie santé environnement collectivités
+-- 31 Biotechnologie santé environnement collectivités
 
 (3101, 0, 0,  31, 0, 255, "ALIHU", "Alimentation humaine"),
 (3102, 0, 0,  31, 0, 255, "E-FS" , "Économie familiale et sociale"),
@@ -1514,7 +1518,7 @@ INSERT INTO sacoche_matiere VALUES
 (3134, 0, 0,  31, 0, 255, "INTSO", "Intervention sociale"),
 (3199, 0, 0,  31, 0, 255, "BTSAD", "Biotechnologie santé divers"),
 
--- Paramédical et médical
+-- 32 Paramédical et médical
 
 (3201, 0, 0,  32, 0, 255, "ANAOM", "Anatomie (ostéologie-myologie)"),
 (3202, 0, 0,  32, 0, 255, "FSPTM", "Physiopatho terminologie médicale"),
@@ -1539,6 +1543,7 @@ INSERT INTO sacoche_matiere VALUES
 (3221, 0, 0,  32, 0, 255, "ANAMP", "Anatomie - morphologie"),
 (3223, 0, 0,  32, 0, 255, "STBP" , "Sciences et techn biol et paramédicales"),
 (3224, 0, 0,  32, 0, 255, "IMNEP", "Im med medec nucl 4rad elec pathol pharm"),
+(3225, 0, 0,  32, 0, 255, "EMEDS", "Enseignement médical et scientifique"),
 (3226, 0, 0,  32, 0, 255, "C-MED", "Connaissances médicales"),
 (3227, 0, 0,  32, 0, 255, "TPPOD", "Travaux pratiques (podo-orthesiste)"),
 (3228, 0, 0,  32, 0, 255, "TPPRT", "Travaux pratiques (prothesiste.-orthesiste)"),
@@ -1565,7 +1570,7 @@ INSERT INTO sacoche_matiere VALUES
 (3249, 0, 0,  32, 0, 255, "INSPP", "Intégration savoirs & posture professionnelle"),
 (3299, 0, 0,  32, 0, 255, "PRMDI", "Paramédical divers"),
 
--- Soins personnels
+-- 33 Soins personnels
 
 (3301, 0, 0,  33, 0, 255, "ESTCP", "Esthétique - cosmétique - parfumerie"),
 (3302, 0, 0,  33, 0, 255, "ETCRT", "Étude de cas concrets"),
@@ -1586,7 +1591,7 @@ INSERT INTO sacoche_matiere VALUES
 (3317, 0, 0,  33, 0, 255, "COSAP", "Cosmétologie appliquée"),
 (3399, 0, 0,  33, 0, 255, "SPERD", "Soins personnels divers"),
 
--- Commerce
+-- 34 Commerce
 
 (3401, 0, 0,  34, 0, 255, "VADIS", "Vente à distance"),
 (3402, 0, 0,  34, 0, 255, "GDIST", "Grande distribution"),
@@ -1662,7 +1667,7 @@ INSERT INTO sacoche_matiere VALUES
 (3472, 0, 0,  34, 0, 255, "MERMA", "Mercatique (marketing)"),
 (3499, 0, 0,  34, 0, 255, "E-GSD", "Économie et gestion divers"),
 
--- Bureautique et secrétariat
+-- 35 Bureautique et secrétariat
 
 (3501, 0, 0,  35, 0, 255, "SDSCI", "Secrétariat et documentation scientifique"),
 (3502, 0, 0,  35, 0, 255, "CORES", "Correspondance"),
@@ -1692,7 +1697,7 @@ INSERT INTO sacoche_matiere VALUES
 (3526, 0, 0,  35, 0, 255, "RATTR", "Rattrapage (enseignement professionnel)"),
 (3599, 0, 0,  35, 0, 255, "BRTSD", "Bureautique et secrétariat divers"),
 
--- Droit et législation
+-- 36 Droit et législation
 
 (3601, 0, 0,  36, 0, 255, "ITDRE", "Introduction au droit de l'entreprise"),
 (3602, 0, 0,  36, 0, 255, "DR-VG", "Droit - vie et gestion des entreprises"),
@@ -1751,6 +1756,7 @@ INSERT INTO sacoche_matiere VALUES
 (3655, 0, 0,  36, 0, 255, "APA-N", "Activités prof. appliquées (notariat)"),
 (3656, 0, 0,  36, 0, 255, "OIRAE", "Organisat.indust.&règlement.aéronautique"),
 (3657, 0, 0,  36, 0, 255, "DGEMC", "Droit et grands enjeux du monde contemporain"),
+(3658, 0, 0,  36, 0, 255, "DRAPP", "Droit approfondi"),
 (3659, 0, 0,  36, 0, 255, "ENVEJ", "Environnement économique et juridique"),
 (3660, 0, 0,  36, 0, 255, "COJAT", "Cadre organisationnel juridique activité touristique"),
 (3661, 0, 0,  36, 0, 255, "DR-VD", "Droit et veille juridique"),
@@ -1762,7 +1768,7 @@ INSERT INTO sacoche_matiere VALUES
 (3667, 0, 0,  36, 0, 255, "ENVPR", "Environnement professionnel"),
 (3699, 0, 0,  36, 0, 255, "DR-LD", "Droit et législation divers"),
 
--- Informatique de gestion
+-- 37 Informatique de gestion
 
 (3701, 0, 0,  37, 0, 255, "MA-GI", "Maths appliquées - outils gestion - informatique"),
 (3702, 0, 0,  37, 0, 255, "APINF", "Applications informatiques"),
@@ -1802,7 +1808,7 @@ INSERT INTO sacoche_matiere VALUES
 (3736, 0, 0,  37, 0, 255, "PRPEN", "Projets personnalisés encadrés"),
 (3799, 0, 0,  37, 0, 255, "IFGSD", "Informatique de gestion divers"),
 
--- Économie
+-- 38 Économie
 
 (3801, 0, 0,  38, 0, 255, "E-TRU", "Économie de la construction"),
 (3802, 0, 0,  38, 0, 255, "DOMEC", "Domaine économique"),
@@ -1840,7 +1846,7 @@ INSERT INTO sacoche_matiere VALUES
 (3834, 0, 0,  38, 0, 255, "EC-DR", "Économie-droit"),
 (3899, 0, 0,  38, 0, 255, "E-ODI", "Économie divers"),
 
--- Comptabilité - finances
+-- 39 Comptabilité - finances
 
 (3901, 0, 0,  39, 0, 255, "G-FDT", "Gestion financière des travaux"),
 (3902, 0, 0,  39, 0, 255, "G-FIN", "Gestion financière"),
@@ -1880,7 +1886,7 @@ INSERT INTO sacoche_matiere VALUES
 (3936, 0, 0,  39, 0, 255, "AREID", "Accès ressources informatiques & documentaires"),
 (3999, 0, 0,  39, 0, 255, "CPT-F", "Comptabilité - finances divers"),
 
--- Hôtellerie - tourisme
+-- 40 Hôtellerie - tourisme
 
 (4001, 0, 0,  40, 0, 255, "GGTIC", "Geo gene - touris et itinéraires commerc"),
 (4002, 0, 0,  40, 0, 255, "CUISI", "Cuisine"),
@@ -1938,6 +1944,7 @@ INSERT INTO sacoche_matiere VALUES
 (4055, 0, 0,  40, 0, 255, "GTMED", "Gestion de projet touristique multimédia"),
 (4056, 0, 0,  40, 0, 255, "OTETA", "Organisation et technique des étages"),
 (4057, 0, 0,  40, 0, 255, "MERTC", "Mercatique et techniques de commercialisation"),
+(4058, 0, 0,  40, 0, 255, "SAAHE", "Sciences appliquées alimentation hygiène environnement"),
 (4059, 0, 0,  40, 0, 255, "TTERR", "Tourisme et territoire"),
 (4060, 0, 0,  40, 0, 255, "MCPT" , "Mercatique conception prestation touristique"),
 (4061, 0, 0,  40, 0, 255, "ECGEH", "Économie et gestion hôteliere"),
@@ -1946,9 +1953,10 @@ INSERT INTO sacoche_matiere VALUES
 (4064, 0, 0,  40, 0, 255, "SCTES", "Sciences et technologies des services"),
 (4065, 0, 0,  40, 0, 255, "STECU", "Sciences et technologies culinaires"),
 (4066, 0, 0,  40, 0, 255, "ESALE", "Enseignement scientifique alimentation-environnement"),
+(4067, 0, 0,  40, 0, 255, "MAEHR", "Management d'une entreprise d'hôtellerie-restauration"),
 (4099, 0, 0,  40, 0, 255, "HOTDI", "Hôtellerie tourisme divers"),
 
--- Communication
+-- 41 Communication
 
 (4101, 0, 0,  41, 0, 255, "T-INF", "Techniques d'information"),
 (4102, 0, 0,  41, 0, 255, "T-ANG", "Techniques d'animation de groupes"),
@@ -2018,7 +2026,7 @@ INSERT INTO sacoche_matiere VALUES
 (4166, 0, 0,  41, 0, 255, "RHCOM", "Ressources humaines et communication"),
 (4199, 0, 0,  41, 0, 255, "CMNDV", "Communication divers"),
 
--- Assurances
+-- 42 Assurances
 
 (4201, 0, 0,  42, 0, 255, "TXASS", "Travaux d'assurance"),
 (4202, 0, 0,  42, 0, 255, "BURAS", "Bureau d'assurance"),
@@ -2033,7 +2041,7 @@ INSERT INTO sacoche_matiere VALUES
 (4211, 0, 0,  42, 0, 255, "EJBCA", "Ens eco jur out bur tec comm comp adm"),
 (4299, 0, 0,  42, 0, 255, "ASSUD", "Assurances divers"),
 
--- Gestion des entreprises
+-- 43 Gestion des entreprises
 
 (4301, 0, 0,  43, 0, 255, "T-GES", "Techniques de gestion et informatique"),
 (4302, 0, 0,  43, 0, 255, "DECPV", "Découverte pratique vie orga entreprise"),
@@ -2095,16 +2103,17 @@ INSERT INTO sacoche_matiere VALUES
 (4358, 0, 0,  43, 0, 255, "ORMEO", "Organisation et mise en œuvre"),
 (4359, 0, 0,  43, 0, 255, "MASCG", "Management et sciences de gestion"),
 (4360, 0, 0,  43, 0, 255, "GESMG", "Gestion et management"),
+(4361, 0, 0,  43, 0, 255, "GEAPP", "Gestion approfondie"),
 (4399, 0, 0,  43, 0, 255, "G-DIV", "Gestion divers"),
 
--- Publicité
+-- 44 Publicité
 
 (4401, 0, 0,  44, 0, 255, "TXSAC", "Trav.prof.synth.et action.publici.appro."),
 (4402, 0, 0,  44, 0, 255, "ETCPU", "Études commerciales et études publicitaires"),
 (4403, 0, 0,  44, 0, 255, "SMCPU", "Stratégie et moyens de communication publicitaire"),
 (4499, 0, 0,  44, 0, 255, "PUBDI", "Publicité divers"),
 
--- Métiers des arts appliqués (suite)
+-- 45 Métiers des arts appliqués (suite)
 
 (4501, 0, 0,  45, 0, 255, "HUMOD", "Humanités modernes"),
 (4502, 0, 0,  45, 0, 255, "SMAJU", "Stratégie marketing juridique"),
@@ -2121,13 +2130,21 @@ INSERT INTO sacoche_matiere VALUES
 (4513, 0, 0,  45, 0, 255, "INEXP", "Investigation, exploitation, projection"),
 (4514, 0, 0,  45, 0, 255, "MEDIA", "Médiation"),
 
--- Métiers d`art (suite)
+-- 46 Métiers d`art (suite)
 
 (4601, 0, 0,  46, 0, 255, "CULTA", "Cultures artistiques"),
 (4602, 0, 0,  46, 0, 255, "TEMEO", "Technique et mise en œuvre"),
 (4603, 0, 0,  46, 0, 255, "CAUDA", "Culture audiovisuelle et artistique"),
 
--- Langue technique
+-- 47 Activités non spécialisées (suite)
+
+(4701, 0, 0,  47, 0, 255, "ACMET", "Accompagnement méthodologique"),
+
+-- 48 Sciences (suite)
+
+(4801, 0, 0,  48, 0, 255, "TSYOP", "Technologie des systèmes optiques"),
+
+-- 50 Langue technique
 
 (5001, 0, 0,  50, 0, 255, "AGINF", "Langue anglaise appliquée à l'informatique"),
 (5002, 0, 0,  50, 0, 255, "AGTEC", "Anglais technique"),
@@ -2143,118 +2160,124 @@ INSERT INTO sacoche_matiere VALUES
 (5098, 0, 0,  50, 0, 255, "AELVE", "Accompagn.éducatif - pratique orale lve"),
 (5099, 0, 0,  50, 0, 255, "LGDIV", "Langue technique diverse"),
 
--- Activités hippiques
+-- 60 Activités hippiques
 
-(6001, 0, 0,  60, 0, 255, "6001A", "Equitation"),
-(6002, 0, 0,  60, 0, 255, "6002A", "Hippologie-équitation"),
-(6003, 0, 0,  60, 0, 255, "6003A", "Maréchalerie"),
-(6004, 0, 0,  60, 0, 255, "6004A", "Zootechnie hippologie"),
+(6001, 0, 0,  60, 0, 255, "EQUIA", "Equitation"),
+(6002, 0, 0,  60, 0, 255, "HIEQA", "Hippologie-équitation"),
+(6003, 0, 0,  60, 0, 255, "MAREA", "Maréchalerie"),
+(6004, 0, 0,  60, 0, 255, "ZOOHA", "Zootechnie hippologie"),
 
--- Commercialisation
+-- 61 Commercialisation
 
-(6101, 0, 0,  61, 0, 255, "6101A", "Techniques commerciales"),
-(6102, 0, 0,  61, 0, 255, "6102A", "Techniques économiques"),
+(6101, 0, 0,  61, 0, 255, "TCMRA", "Techniques commerciales"),
+(6102, 0, 0,  61, 0, 255, "TECOA", "Techniques économiques"),
 
--- Élevage et soins aux animaux
+-- 62 Élevage et soins aux animaux
 
-(6201, 0, 0,  62, 0, 255, "6201A", "Techniques animalières"),
+(6201, 0, 0,  62, 0, 255, "TANIA", "Techniques animalières"),
 
--- Environnement - aménagement de l`espace
+-- 63 Environnement - aménagement de l`espace
 
-(6301, 0, 0,  63, 0, 255, "6301A", "Économie soc. familiale"),
-(6302, 0, 0,  63, 0, 255, "6302A", "Aménagement espaces naturels"),
-(6303, 0, 0,  63, 0, 255, "6303A", "Techniques forestières"),
-(6304, 0, 0,  63, 0, 255, "6304A", "Aménagement paysager"),
+(6301, 0, 0,  63, 0, 255, "ESF-A", "Économie sociale familiale"),
+(6302, 0, 0,  63, 0, 255, "AEN-A", "Aménagement espaces naturels"),
+(6303, 0, 0,  63, 0, 255, "TFORA", "Techniques forestières"),
+(6304, 0, 0,  63, 0, 255, "APAYA", "Aménagement paysager"),
 
--- Équipements pour l`agriculture
+-- 64 Équipements pour l`agriculture
 
-(6401, 0, 0,  64, 0, 255, "6401A", "Machinisme"),
-(6402, 0, 0,  64, 0, 255, "6402A", "Sc. et techno équipements"),
-(6403, 0, 0,  64, 0, 255, "6403A", "Agro-équipements"),
-(6404, 0, 0,  64, 0, 255, "6404A", "Equipements agroalimentaires"),
-(6405, 0, 0,  64, 0, 255, "6405A", "Equipements hydrauliques"),
+(6401, 0, 0,  64, 0, 255, "MACHA", "Machinisme"),
+(6402, 0, 0,  64, 0, 255, "STEQA", "Sciences et technologies des équipements"),
+(6403, 0, 0,  64, 0, 255, "AEQUA", "Agro-équipements"),
+(6404, 0, 0,  64, 0, 255, "EQAGA", "Equipements agroalimentaires"),
+(6405, 0, 0,  64, 0, 255, "EQHYA", "Equipements hydrauliques"),
+(6406, 0, 0,  64, 0, 255, "STAEQ", "Sciences et techniques des agroéquipements"),
 
--- Disciplines professionnelles de l`enseignement agricole
+-- 65 Disciplines professionnelles de l`enseignement agricole
 
 (6510, 0, 0,  65, 0, 255, "ETP-A", "Enseignement technologique et professionnel"),
 (6520, 0, 0,  65, 0, 255, "SCTCA", "Sciences et techniques"),
 (6530, 0, 0,  65, 0, 255, "PPROA", "Pratiques professionnelles"),
 (6540, 0, 0,  65, 0, 255, "PROPA", "Projet professionnel"),
-(6550, 0, 0,  65, 0, 255, "FRDOA", "Français Documentation"),
-(6551, 0, 0,  65, 0, 255, "6951A", "Français Philosophie"),
-(6552, 0, 0,  65, 0, 255, "MAINA", "Mathématiques Informatique"),
 
--- Production
+-- 66 Production
 
-(6601, 0, 0,  66, 0, 255, "6601A", "Agronomie"),
-(6602, 0, 0,  66, 0, 255, "6602A", "Sci. techn. aquacoles"),
-(6603, 0, 0,  66, 0, 255, "6603A", "Sci. techn. horticoles"),
-(6604, 0, 0,  66, 0, 255, "6604A", "Œnologie"),
-(6605, 0, 0,  66, 0, 255, "6605A", "Viticulture"),
-(6606, 0, 0,  66, 0, 255, "6606A", "Viticulture - Œnologie"),
-(6607, 0, 0,  66, 0, 255, "6607A", "Zootechnie"),
+(6601, 0, 0,  66, 0, 255, "AGROA", "Agronomie"),
+(6602, 0, 0,  66, 0, 255, "STAQA", "Sciences et techniques aquacoles"),
+(6603, 0, 0,  66, 0, 255, "STHOA", "Sciences et techniques horticoles"),
+(6604, 0, 0,  66, 0, 255, "OENOA", "Œnologie"),
+(6605, 0, 0,  66, 0, 255, "VITIA", "Viticulture"),
+(6606, 0, 0,  66, 0, 255, "VIOEA", "Viticulture - Œnologie"),
+(6607, 0, 0,  66, 0, 255, "ZOOTA", "Zootechnie"),
+(6608, 0, 0,  66, 0, 255, "TAQUA", "Technologie aquacole"),
 
--- Services
+-- 67 Services
 
--- Transformation
+-- 68 Transformation
 
-(6801, 0, 0,  68, 0, 255, "6801A", "Génie des procédés IAA"),
-(6802, 0, 0,  68, 0, 255, "6802A", "Génie alimentaire"),
-(6803, 0, 0,  68, 0, 255, "6803A", "Génie industriel"),
+(6801, 0, 0,  68, 0, 255, "GPIAA", "Génie des procédés IAA"),
+(6802, 0, 0,  68, 0, 255, "GALIM", "Génie alimentaire"),
+(6803, 0, 0,  68, 0, 255, "GINDA", "Génie industriel"),
 
--- Disciplines générales enseignement agricole
+-- 69 Disciplines générales enseignement agricole
 
-(6901, 0, 0,  69, 0, 255, "6901A", "Act. pluridisciplinaires"),
-(6902, 0, 0,  69, 0, 255, "6902A", "Aide indiv français"),
-(6903, 0, 0,  69, 0, 255, "6903A", "Aide indiv maths"),
-(6904, 0, 0,  69, 0, 255, "6904A", "Arts"),
-(6905, 0, 0,  69, 0, 255, "6905A", "Biochimie"),
-(6906, 0, 0,  69, 0, 255, "6906A", "Biochimie - microbiologie"),
-(6907, 0, 0,  69, 0, 255, "6907A", "Biologie"),
-(6908, 0, 0,  69, 0, 255, "6908A", "Biologie animale"),
-(6909, 0, 0,  69, 0, 255, "6909A", "Biologie végétale"),
-(6910, 0, 0,  69, 0, 255, "6910A", "Biologie - Ecologie"),
-(6911, 0, 0,  69, 0, 255, "6911A", "Chimie"),
-(6912, 0, 0,  69, 0, 255, "6912A", "Compta-bureau"),
-(6913, 0, 0,  69, 0, 255, "6913A", "Documentation"),
-(6914, 0, 0,  69, 0, 255, "6914A", "E.P.S."),
-(6915, 0, 0,  69, 0, 255, "6915A", "Ecologie"),
-(6916, 0, 0,  69, 0, 255, "6916A", "Économie d'entreprise"),
-(6917, 0, 0,  69, 0, 255, "6917A", "Économie - droit"),
-(6918, 0, 0,  69, 0, 255, "6918A", "Education civique - juridique - sociale"),
-(6919, 0, 0,  69, 0, 255, "6919A", "Education socioculturelle"),
-(6920, 0, 0,  69, 0, 255, "6920A", "Français"),
-(6921, 0, 0,  69, 0, 255, "6921A", "Géographie"),
-(6922, 0, 0,  69, 0, 255, "6922A", "Gestion"),
-(6923, 0, 0,  69, 0, 255, "6923A", "Grec"),
-(6924, 0, 0,  69, 0, 255, "6924A", "Heures de vie de classe"),
-(6925, 0, 0,  69, 0, 255, "6925A", "Histoire-Géo. - Education civique"),
-(6926, 0, 0,  69, 0, 255, "6926A", "Histoire-Géographie"),
-(6927, 0, 0,  69, 0, 255, "6927A", "Hygiène - Prévention - Secourisme"),
-(6928, 0, 0,  69, 0, 255, "6928A", "Informatique"),
-(6929, 0, 0,  69, 0, 255, "6929A", "Latin"),
-(6930, 0, 0,  69, 0, 255, "6930A", "Mathématiques"),
-(6931, 0, 0,  69, 0, 255, "6931A", "Mercatique"),
-(6932, 0, 0,  69, 0, 255, "6932A", "Microbiologie"),
-(6933, 0, 0,  69, 0, 255, "6933A", "Philosophie"),
-(6934, 0, 0,  69, 0, 255, "6934A", "Physique"),
-(6935, 0, 0,  69, 0, 255, "6935A", "Physique appliquée"),
-(6936, 0, 0,  69, 0, 255, "6936A", "Physique-Chimie"),
+(6901, 0, 0,  69, 0, 255, "APLUA", "Act. pluridisciplinaires"),
+(6902, 0, 0,  69, 0, 255, "AIF-A", "Aide indiv français"),
+(6903, 0, 0,  69, 0, 255, "AIM-A", "Aide indiv maths"),
+(6904, 0, 0,  69, 0, 255, "ARTSA", "Arts"),
+(6905, 0, 0,  69, 0, 255, "BCHIA", "Biochimie"),
+(6906, 0, 0,  69, 0, 255, "BCHMA", "Biochimie - microbiologie"),
+(6907, 0, 0,  69, 0, 255, "BIOLA", "Biologie"),
+(6908, 0, 0,  69, 0, 255, "BANIA", "Biologie animale"),
+(6909, 0, 0,  69, 0, 255, "BVEGA", "Biologie végétale"),
+(6910, 0, 0,  69, 0, 255, "BECOA", "Biologie - Ecologie"),
+(6911, 0, 0,  69, 0, 255, "CHIMA", "Chimie"),
+(6912, 0, 0,  69, 0, 255, "CPTBA", "Compta-bureau"),
+(6913, 0, 0,  69, 0, 255, "DOCUA", "Documentation"),
+(6914, 0, 0,  69, 0, 255, "EPS-A", "E.P.S."),
+(6915, 0, 0,  69, 0, 255, "ECOLA", "Ecologie"),
+(6916, 0, 0,  69, 0, 255, "EENTA", "Économie d'entreprise"),
+(6917, 0, 0,  69, 0, 255, "EDRTA", "Économie - droit"),
+(6918, 0, 0,  69, 0, 255, "ECJSA", "Education civique - juridique - sociale"),
+(6919, 0, 0,  69, 0, 255, "ESOCA", "Education socioculturelle"),
+(6920, 0, 0,  69, 0, 255, "FRANA", "Français"),
+(6921, 0, 0,  69, 0, 255, "GEO-A", "Géographie"),
+(6922, 0, 0,  69, 0, 255, "GESTA", "Gestion"),
+(6923, 0, 0,  69, 0, 255, "GRECA", "Grec"),
+(6924, 0, 0,  69, 0, 255, "HVC-A", "Heures de vie de classe"),
+(6925, 0, 0,  69, 0, 255, "HGECA", "Histoire-Géo. - Education civique"),
+(6926, 0, 0,  69, 0, 255, "HIGEA", "Histoire-Géographie"),
+(6927, 0, 0,  69, 0, 255, "HPS-A", "Hygiène - Prévention - Secourisme"),
+(6928, 0, 0,  69, 0, 255, "INFOA", "Informatique"),
+(6929, 0, 0,  69, 0, 255, "LATIA", "Latin"),
+(6930, 0, 0,  69, 0, 255, "MATHA", "Mathématiques"),
+(6931, 0, 0,  69, 0, 255, "MRCAA", "Mercatique"),
+(6932, 0, 0,  69, 0, 255, "MBIOA", "Microbiologie"),
+(6933, 0, 0,  69, 0, 255, "PHILA", "Philosophie"),
+(6934, 0, 0,  69, 0, 255, "PHYSA", "Physique"),
+(6935, 0, 0,  69, 0, 255, "P-APA", "Physique appliquée"),
+(6936, 0, 0,  69, 0, 255, "P-CHA", "Physique-Chimie"),
 (6937, 0, 0,  69, 0, 255, "6937A", "Pratiques prof."),
-(6938, 0, 0,  69, 0, 255, "6938A", "Pratiques soc. et cultur."),
-(6939, 0, 0,  69, 0, 255, "6939A", "Prévention santé environnement"),
-(6940, 0, 0,  69, 0, 255, "6940A", "Sci. éco- soc.- gestion"),
-(6941, 0, 0,  69, 0, 255, "6941A", "Sciences éco et sociales"),
-(6942, 0, 0,  69, 0, 255, "6942A", "Sciences éco. et humaines"),
-(6943, 0, 0,  69, 0, 255, "6943A", "Sciences économiques"),
-(6944, 0, 0,  69, 0, 255, "6944A", "Secrét. bureautique"),
-(6945, 0, 0,  69, 0, 255, "6945A", "Statistiques"),
-(6946, 0, 0,  69, 0, 255, "6946A", "Sciences de la vie et de la terre"),
-(6947, 0, 0,  69, 0, 255, "6947A", "Tech. de communication"),
-(6948, 0, 0,  69, 0, 255, "6948A", "Tech. de documentation"),
-(6949, 0, 0,  69, 0, 255, "6949A", "TIM"),
+(6938, 0, 0,  69, 0, 255, "PSC-A", "Pratiques soc. et cultur."),
+(6939, 0, 0,  69, 0, 255, "PSE-A", "Prévention santé environnement"),
+(6940, 0, 0,  69, 0, 255, "SESGA", "Sci. éco- soc.- gestion"),
+(6941, 0, 0,  69, 0, 255, "SES-A", "Sciences éco et sociales"),
+(6942, 0, 0,  69, 0, 255, "SEH-A", "Sciences éco. et humaines"),
+(6943, 0, 0,  69, 0, 255, "SECOA", "Sciences économiques"),
+(6944, 0, 0,  69, 0, 255, "SBURA", "Secrét. bureautique"),
+(6945, 0, 0,  69, 0, 255, "STATA", "Statistiques"),
+(6946, 0, 0,  69, 0, 255, "SVT-A", "Sciences de la vie et de la terre"),
+(6947, 0, 0,  69, 0, 255, "TCMUA", "Tech. de communication"),
+(6948, 0, 0,  69, 0, 255, "TDOCA", "Tech. de documentation"),
+(6949, 0, 0,  69, 0, 255, "TIM-A", "TIM"),
+(6950, 0, 0,  69, 0, 255, "FRDOA", "Français Documentation"),
+(6951, 0, 0,  69, 0, 255, "FRPHA", "Français Philosophie"),
+(6952, 0, 0,  69, 0, 255, "MAINA", "Mathématiques Informatique"),
+(6991, 0, 0,  69, 0, 255, "ANG-A", "Anglais"),
+(6992, 0, 0,  69, 0, 255, "ALL-A", "Allemand"),
+(6993, 0, 0,  69, 0, 255, "ITA-A", "Italien"),
+(6994, 0, 0,  69, 0, 255, "ESP-A", "Espagnol"),
 
--- Enseignement religieux
+-- 90 Enseignement religieux
 
 (9010, 0, 0,  90, 0, 255, "CATHO", "Enseignement religieux catholique"),
 (9020, 0, 0,  90, 0, 255, "ISRLT", "Enseignement religieux israélite"),
@@ -2263,7 +2286,7 @@ INSERT INTO sacoche_matiere VALUES
 (9032, 0, 0,  90, 0, 255, "CALVN", "Enseignement religieux calviniste"),
 (9099, 0, 0,  90, 0, 255, "RLGDI", "Enseignement religieux divers"),
 
--- Langues vivantes régionales ou spécifiques
+-- 93 Langues vivantes régionales ou spécifiques
 
 (9307, 0, 0,  93, 0, 255, "GRE", "Grec moderne"),
 (9308, 0, 0,  93, 0, 255, "HEB", "Hébreu"),
@@ -2323,7 +2346,7 @@ INSERT INTO sacoche_matiere VALUES
 (9372, 0, 0,  93, 0, 255, "LMD", "Mélanésien paici"),
 (9373, 0, 0,  93, 0, 255, "CRE", "Créole"),
 
--- Spécialités de baccalauréat professionnel (http://eduscol.education.fr/cid47640/le-baccalaureat-professionnel.html#lien2)
+-- 97 Spécialités de baccalauréat professionnel (http://eduscol.education.fr/cid47640/le-baccalaureat-professionnel.html#lien2)
 
 (9701, 0, 0,  97, 0, 255, "BPASS", "Accompagnement soins et services à la personne"),
 (9702, 0, 0,  97, 0, 255, "BPARC", "Accueil - relation clients et usagers"),
@@ -2414,7 +2437,7 @@ INSERT INTO sacoche_matiere VALUES
 (9787, 0, 0,  97, 0, 255, "BPTP" , "Travaux publics"),
 (9788, 0, 0,  97, 0, 255, "BPV"  , "Vente (prospection-négociation-suivi de clientèle)"),
 
--- Champs professionnels en SEGPA (http://www.education.gouv.fr/cid24467/mene0900316c.html)
+-- 98 Champs professionnels en SEGPA (http://www.education.gouv.fr/cid24467/mene0900316c.html)
 
 (9801, 0, 0,  98, 0, 255, "CPHAB", "Habitat"),
 (9802, 0, 0,  98, 0, 255, "CPHAS", "Hygiène - Alimentation - Services"),
@@ -2422,22 +2445,27 @@ INSERT INTO sacoche_matiere VALUES
 (9804, 0, 0,  98, 0, 255, "CPVDM", "Vente - Distribution - Magasinage"),
 (9805, 0, 0,  98, 0, 255, "CPPI" , "Production industrielle"),
 
--- Matières principales
+-- 99 Matières principales
 
-(9901, 0, 1,  99, 0, 255, "P1"   , "1 Maîtrise de la langue française"),
-(9902, 0, 1,  99, 0, 255, "P2"   , "2 Pratique d'une langue vivante étrangère"),
-(9903, 0, 1,  99, 0, 255, "P3A"  , "3 Principaux éléments de mathématiques"),
-(9904, 0, 1,  99, 0, 255, "P3B"  , "3 Culture scientifique et technologique"),
-(9905, 0, 1,  99, 0, 255, "P4"   , "4 Maîtrise des TICE"),
-(9906, 0, 1,  99, 0, 255, "P5"   , "5 Culture humaniste"),
-(9907, 0, 1,  99, 0, 255, "P6"   , "6 Compétences sociales et civiques"),
-(9908, 0, 1,  99, 0, 255, "P7"   , "7 Autonomie et initiative"),
+(9901, 0, 1,  99, 0, 255, "P1"   , "P1 Maîtrise de la langue française"),
+(9902, 0, 1,  99, 0, 255, "P2"   , "P2 Pratique d'une langue vivante étrangère"),
+(9903, 0, 1,  99, 0, 255, "P3A"  , "P3 Principaux éléments de mathématiques"),
+(9904, 0, 1,  99, 0, 255, "P3B"  , "P3 Culture scientifique et technologique"),
+(9905, 0, 1,  99, 0, 255, "P4"   , "P4 Maîtrise des TICE"),
+(9906, 0, 1,  99, 0, 255, "P5"   , "P5 Culture humaniste"),
+(9907, 0, 1,  99, 0, 255, "P6"   , "P6 Compétences sociales et civiques"),
+(9908, 0, 1,  99, 0, 255, "P7"   , "P7 Autonomie et initiative"),
 (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours"),
 (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1"),
 (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2"),
 (9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route"),
 (9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1"),
 (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2"),
+(9931, 0, 1,  99, 0, 255, "D1"   , "D1 Les langages pour penser et communiquer"),
+(9932, 0, 1,  99, 0, 255, "D2"   , "D2 Les méthodes et outils pour apprendre"),
+(9933, 0, 1,  99, 0, 255, "D3"   , "D3 La formation de la personne et du citoyen"),
+(9934, 0, 1,  99, 0, 255, "D4"   , "D4 Les systèmes naturels et les systèmes techniques"),
+(9935, 0, 1,  99, 0, 255, "D5"   , "D5 Les représentations du monde et l'activité humaine"),
 (9991, 0, 1,  99, 0, 255, "DOC"  , "Documentation"),
 (9992, 0, 1,  99, 0, 255, "INFO" , "Informatique"),
 (9999, 0, 1,  99, 0, 255, "TRANS", "Transversal");

@@ -36,9 +36,9 @@ $multiple = (empty($_POST['f_multiple'])) ? FALSE                              :
 
 // Autres valeurs à récupérer.
 
-$select_nom   = ($multiple) ? 'f_matiere' : FALSE ;
-$option_first = ($multiple) ? FALSE       : ''    ;
-$selection    = ($multiple) ? TRUE        : $matiere ;
+$select_nom   = ($multiple) ? 'f_matieres' : FALSE ;
+$option_first = ($multiple) ? FALSE        : ''    ;
+$selection    = ($multiple) ? TRUE         : $matiere ;
 
 $tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
 

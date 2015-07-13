@@ -348,7 +348,7 @@ public static function DB_lister_niveaux_etablissement($with_particuliers)
   $DB_SQL.= 'FROM sacoche_niveau ';
   $DB_SQL.= ($with_particuliers) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
   $DB_SQL.= 'WHERE niveau_actif=1 ';
-  $DB_SQL.= ($with_particuliers) ? '' : 'AND niveau_famille_categorie=2 ';
+  $DB_SQL.= ($with_particuliers) ? '' : 'AND niveau_famille_categorie=3 ';
   $DB_SQL.= 'ORDER BY niveau_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }

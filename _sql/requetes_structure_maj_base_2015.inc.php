@@ -833,7 +833,7 @@ if($version_base_structure_actuelle=='2015-06-09')
       $DB_COL_actifs = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL);
       $DB_SQL = 'SELECT niveau_id , niveau_ref , niveau_nom FROM sacoche_niveau WHERE niveau_id > '.$niveau_partage_max_avant;
       $DB_TAB_persos = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL);
-      // nouvelle table des niveaux (passage de 106 à 2035 niveaux !)
+      // nouvelle table des niveaux (passage de 106 à 2027 niveaux !)
       $reload_sacoche_niveau = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).

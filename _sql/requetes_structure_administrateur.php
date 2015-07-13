@@ -854,7 +854,7 @@ public static function compter_niveaux_etabl($with_specifiques)
   $DB_SQL.= 'FROM sacoche_niveau ';
   $DB_SQL.= ($with_specifiques) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
   $DB_SQL.= 'WHERE niveau_actif=1 ';
-  $DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=3 ';
+  $DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=2 ';
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

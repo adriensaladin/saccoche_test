@@ -28,10 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Autres cas
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+$objet             = (isset($_POST['f_objet']))             ? Clean::texte($_POST['f_objet'])                  : '';
+$matiere_id        = (isset($_POST['f_matiere']))           ? Clean::entier($_POST['f_matiere'])               : 0;
+$matiere_nom       = (isset($_POST['f_matiere_nom']))       ? Clean::texte($_POST['f_matiere_nom'])            : '';
+$mode_synthese     = (isset($_POST['f_mode_synthese']))     ? Clean::texte($_POST['f_mode_synthese'])          : '';
+$fusion_niveaux    = (isset($_POST['f_fusion_niveaux']))    ? 1                                                : 0;
 $indicateur        = (isset($_POST['f_indicateur']))        ? Clean::texte($_POST['f_indicateur'])             : '';
 $conversion_sur_20 = (isset($_POST['f_conversion_sur_20'])) ? 1                                                : 0;
 $with_coef         = 1; // Il n'y a que des courbes par matière et pas de courbe commune : on prend en compte les coefficients pour chaque courbe matière.
@@ -46,30 +47,75 @@ $only_socle        = (isset($_POST['f_restriction']))       ? 1                 
 $eleves_ordre      = (isset($_POST['f_eleves_ordre']))      ? Clean::texte($_POST['f_eleves_ordre'])           : ''; // En vérité, ne sert pas ici.
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
+$tab_matiere = (isset($_POST['f_matieres']))     ? ( (is_array($_POST['f_matieres']))     ? $_POST['f_matieres']     : explode(',',$_POST['f_matieres'])     ) : array() ;
+$tab_items   = (isset($_POST['f_compet_liste'])) ? ( (is_array($_POST['f_compet_liste'])) ? $_POST['f_compet_liste'] : explode('_',$_POST['f_compet_liste']) ) : array() ;
 $tab_matiere = array_filter( Clean::map_entier($tab_matiere) , 'positif' );
+$tab_items   = array_filter( Clean::map_entier($tab_items)   , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere);
+$liste_item_id    = implode(',',$tab_items);
 
-// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+// En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']))      { $indicateur = 'pourcentage_acquis'; }
   if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'])) { $indicateur = 'moyenne_scores'; }
   if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']))   { $indicateur = ''; }
   $conversion_sur_20 = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20']) ? $conversion_sur_20 : 0 ;
-}
-if($_SESSION['USER_PROFIL_TYPE']=='eleve')
-{
-  $groupe_id = $_SESSION['ELEVE_CLASSE_ID'];
-  $eleve_id  = $_SESSION['USER_ID'];
+  // Pour un élève on surcharge avec les données de session
+  if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+  {
+    $groupe_id = $_SESSION['ELEVE_CLASSE_ID'];
+    $eleve_id  = $_SESSION['USER_ID'];
+  }
+  // Pour un parent on vérifie que c'est bien un de ses enfants
+  if($_SESSION['USER_PROFIL_TYPE']=='parent')
+  {
+    $is_enfant_legitime = FALSE;
+    foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
+    {
+      if($DB_ROW['valeur']==$eleve_id)
+      {
+        $is_enfant_legitime = TRUE;
+        break;
+      }
+    }
+    if(!$is_enfant_legitime)
+    {
+      exit('Enfant non rattaché à votre compte parent !');
+    }
+  }
 }
 
-if( !in_array($indicateur,array('moyenne_scores','pourcentage_acquis')) || !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !count($tab_matiere) || !$eleves_ordre )
+$tab_objet = array(
+  'matieres'         => "Matières",
+  'matiere_niveau'   => "Niveaux d'une matière",
+  'matiere_synthese' => "Synthèses d'une matière",
+  'selection'        => "Items sélectionnés",
+);
+$tab_indicateur = array(
+  'moyenne_scores'     => "Moyenne des scores",
+  'pourcentage_acquis' => "Pourcentage d'items acquis",
+);
+
+if(
+    !isset($tab_objet[$objet]) || !isset($tab_indicateur[$indicateur]) ||
+    ( ($objet=='matieres') && !$liste_matiere_id ) ||
+    ( ($objet=='matiere_niveau') && ( !$matiere_id || !$matiere_nom ) ) ||
+    ( ($objet=='matiere_synthese') && ( !$matiere_id || !$matiere_nom || !$mode_synthese ) ) ||
+    ( ($objet=='selection') && !$liste_item_id ) ||
+    !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$eleves_ordre
+  )
 {
   exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('bilan_chronologique');
+
+if($objet=='selection')
+{
+  $indicateur = 'moyenne_scores';
+  $conversion_sur_20 = 0;
+}
 
 Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
 
@@ -77,10 +123,11 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 $tab_item       = array();  // [item_id] => array(item_coef,calcul_methode,calcul_limite,calcul_retroactif);
 $tab_liste_item = array();  // [i] => item_id
-$tab_matiere    = array();  // [matiere_id] => matiere_nom
+$tab_rubrique   = array();  // [rubrique_id] => rubrique_nom
 $tab_eval       = array();  // [eleve_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
-$tab_date       = array();  // [eleve_id][date][item_id] => nb_evals
-$tab_matiere_for_item = array();  // [item_id] => matiere_id
+$tab_date       = array();  // [eleve_id][date_js][item_id] => nb_evals
+$tab_info       = array();  // [eleve_id][rubrique_id][date_js][info] => info
+$tab_rubrique_for_item = array();  // [item_id] => rubrique_id
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Période concernée
@@ -109,11 +156,26 @@ if($date_mysql_debut>$date_mysql_fin)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération de la liste des items travaillés durant la période choisie, pour l'élève selectionné, pour la ou les matières indiquées
-// Récupération de la liste des matières travaillées (affinée suivant les items trouvés)
+// Récupération de la liste des items travaillés durant la période choisie, pour l'élève selectionné, pour la ou les matières indiquées, ou les items indiqués
+// Récupération de la liste des rubriques (matières, synthèses par thèmes / domaines, niveaux) travaillées (affinée suivant les items trouvés)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_items_travailles($eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin);
+if( ($objet=='matieres') || ($objet=='matiere_niveau') )
+{
+  $rubrique_type    =($objet=='matieres') ? 'matiere'         : 'niveau'    ;
+  $liste_matiere_id =($objet=='matieres') ? $liste_matiere_id : $matiere_id ;
+  list( $tab_item , $tab_rubrique ) = DB_STRUCTURE_BILAN::DB_recuperer_items_travailles( $eleve_id , $liste_matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $rubrique_type );
+}
+
+if($objet=='matiere_synthese')
+{
+  list( $tab_item , $tab_rubrique ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $eleve_id , $matiere_id , $only_socle , 0 /*only_niveau*/ , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
+}
+
+if($objet=='selection')
+{
+  list( $tab_item, /*tab_matiere*/ ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , 0 /*aff_domaine*/ , 0 /*aff_theme*/ );
+}
 
 $item_nb = count($tab_item);
 if( !$item_nb && (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ) // Dans le cas d'un professeur / directeur, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
@@ -124,10 +186,16 @@ $tab_liste_item = array_keys($tab_item);
 $liste_item_id  = implode(',',$tab_liste_item);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-// Comme un seul élève est concerné à chaque appel, il n'y a pas le problème de certains items à  éliminer car pouvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
+// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matières, pour les élèves selectionnés, sur la période sélectionnée
+// Comme un seul élève est concerné à chaque appel, il n'y a pas le problème de certains items à éliminer car pouvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
 // Il faut aussi retenir, à une date donnée, combien d'évaluations sont concernées.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function date_mysql_to_date_js($date_mysql)
+{
+  list($annee,$mois,$jour) = explode('-',$date_mysql);
+  return 'Date.UTC('.$annee.','.((int)$mois-1).','.(int)$jour.')';
+}
 
 $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
     if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
@@ -140,9 +208,25 @@ foreach($DB_TAB as $DB_ROW)
   if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
   {
     $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
-    $tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];
-    $date = ($DB_ROW['date']>=$date_mysql_debut) ? $DB_ROW['date'] : $date_mysql_debut ;
-    $tab_date[$DB_ROW['eleve_id']][$date][$DB_ROW['item_id']] = count($tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']]);
+    if($objet=='matiere_synthese')
+    {
+      $rubrique_ref = $tab_item[$DB_ROW['item_id']][0]['synthese_ref'];
+    }
+    elseif($objet=='selection')
+    {
+      $rubrique_ref = $tab_item[$DB_ROW['item_id']][0]['item_ref'];
+      $tab_rubrique[ $tab_item[$DB_ROW['item_id']][0]['item_ref'] ] = $tab_item[$DB_ROW['item_id']][0]['item_nom'];
+    }
+    else
+    {
+      $rubrique_ref = $DB_ROW[$rubrique_type.'_id'];
+    }
+    $tab_rubrique_for_item[$DB_ROW['item_id']] = $rubrique_ref;
+    $date_mysql = ($DB_ROW['date']>=$date_mysql_debut) ? $DB_ROW['date'] : $date_mysql_debut ;
+    $date_js = date_mysql_to_date_js($date_mysql);
+    $tab_date[$DB_ROW['eleve_id']][$date_js][$DB_ROW['item_id']] = count($tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']]);
+    $tab_info[$DB_ROW['eleve_id']][$rubrique_ref][$date_js][$DB_ROW['info']] = $DB_ROW['info'];
+
   }
 }
 
@@ -161,16 +245,10 @@ unset($DB_TAB);
 // Tableaux et variables pour mémoriser les infos ; dans cette partie on fait les calculs et on remplit le tableau js pour l'affichage au fur et à mesure
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_score_eleve_item      = array();  // [eleve_id][matiere_id][item_id] => score
-$tab_moyenne_eleve_matiere = array();  // [eleve_id][matiere_id] => moyenne : Retenir la moyenne des scores d'acquisitions ou le pourcentage d'items acquis / élève / matière (sert pour ajouter une dernière valeur)
+$tab_score_eleve_item      = array();  // [eleve_id][rubrique_id][item_id] => score
+$tab_moyenne_eleve_rubrique = array();  // [eleve_id][rubrique_id] => moyenne : Retenir la moyenne des scores d'acquisitions ou le pourcentage d'items acquis / élève / matière (sert pour ajouter une dernière valeur)
 
 $tab_graph_data = array();
-
-function date_mysql_to_date_js($date_mysql)
-{
-  list($annee,$mois,$jour) = explode('-',$date_mysql);
-  return 'Date.UTC('.$annee.','.((int)$mois-1).','.(int)$jour.')';
-}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // C'est parti !!!
@@ -179,23 +257,22 @@ function date_mysql_to_date_js($date_mysql)
 if(count($tab_date))
 {
   // Pour chaque évaluation...
-  foreach($tab_date[$eleve_id] as $date_mysql => $tab_items)
+  foreach($tab_date[$eleve_id] as $date_js => $tab_items)
   {
-    $date_js = date_mysql_to_date_js($date_mysql);
-    $tab_matiere_todo_moyenne = array();
+    $tab_rubrique_todo_moyenne = array();
     // On (re)-calcule les scores des items concernés
     foreach($tab_items as $item_id => $nb_evals)
     {
       extract($tab_item[$item_id][0]);  // $item_coef $calcul_methode $calcul_limite $calcul_retroactif
-      $matiere_id = $tab_matiere_for_item[$item_id];
-      $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = calculer_score(array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals),$calcul_methode,$calcul_limite);
-      $tab_matiere_todo_moyenne[] = $matiere_id;
+      $rubrique_id = $tab_rubrique_for_item[$item_id];
+      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = calculer_score(array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals),$calcul_methode,$calcul_limite);
+      $tab_rubrique_todo_moyenne[] = $rubrique_id;
     }
     // On (re)-calcule les moyennes des matières concernées
-    foreach($tab_matiere_todo_moyenne as $matiere_id)
+    foreach($tab_rubrique_todo_moyenne as $rubrique_id)
     {
       // calcul des bilans des scores
-      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_vide');
+      $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$rubrique_id],'non_vide');
       $nb_scores = count( $tableau_score_filtre );
       // la moyenne peut être pondérée par des coefficients
       $somme_scores_ponderes = 0;
@@ -212,8 +289,8 @@ if(count($tab_date))
       // Soit la moyenne des pourcentages d'acquisition
       if($indicateur=='moyenne_scores')
       {
-        if($with_coef) { $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
-        else           { $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
+        if($with_coef) { $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
+        else           { $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
       }
       // Soit le nombre d'items considérés acquis ou pas
       elseif($indicateur=='pourcentage_acquis')
@@ -223,26 +300,28 @@ if(count($tab_date))
           $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
           $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
           $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-          $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
         }
         else
         {
-          $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id] = FALSE;
+          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = FALSE;
         }
       }
-      if($tab_moyenne_eleve_matiere[$eleve_id][$matiere_id]!==FALSE)
+      if($tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id]!==FALSE)
       {
-        $valeur = ($conversion_sur_20) ? $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id]/5 : $tab_moyenne_eleve_matiere[$eleve_id][$matiere_id] ;
-        $tab_graph_data[$matiere_id][$date_js] = $valeur;
+        $valeur = ($conversion_sur_20) ? $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id]/5 : $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] ;
+        $tab_graph_data[$rubrique_id][$date_js] = $valeur;
       }
     }
   }
-  // Ajouter un point en fin de période pour chaque matière
-  foreach($tab_graph_data as $matiere_id => $tab_data)
+  // Ajouter un point en fin de période pour chaque rubrique
+  /*
+  foreach($tab_graph_data as $rubrique_id => $tab_data)
   {
     $last_valeur = end($tab_data);
-    $tab_graph_data[$matiere_id][$date_js] = $last_valeur;
+    $tab_graph_data[$rubrique_id][$date_js] = $last_valeur;
   }
+  */
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,9 +330,22 @@ if(count($tab_date))
 
 // $tab_graph_series n'est pas rangé avec des matières classées comme paramétré par l'admin car on avait besoin de récupérer les scores dans l'ordre chnonologique
 // Pas grave puisqu'il vaut mieux de toutes façons présenter par ordre alphabétique des matières.
-asort($tab_matiere);
+asort($tab_rubrique);
 
-$js_graph = '<SCRIPT>';
+if($objet=='matieres')
+{
+  $titre = $tab_objet[$objet].' - '.$tab_indicateur[$indicateur];
+}
+elseif($objet=='selection')
+{
+  $titre = $tab_objet[$objet].' - '.'Scores calculés';
+}
+else
+{
+  $titre = $tab_objet[$objet].' - '.$matiere_nom.' - '.$tab_indicateur[$indicateur] ;
+}
+
+$js_graph = '<H3>'.$titre.'<SCRIPT>';
 // Échelle sur l'axe des ordonées
 $ymax = ($conversion_sur_20) ? 20 : 100 ;
 $js_graph .= 'ChartOptions.yAxis = [ { min: 0, max: '.$ymax.', title: null } , { min: 0, max: '.$ymax.', title: null, opposite: true } ];';
@@ -261,16 +353,18 @@ $js_graph .= 'ChartOptions.yAxis = [ { min: 0, max: '.$ymax.', title: null } , {
 $tab_graph_series = array();
 if(count($tab_graph_data))
 {
-  foreach($tab_matiere as $matiere_id => $matiere_nom)
+  foreach($tab_rubrique as $rubrique_id => $rubrique_nom)
   {
-    if(isset($tab_graph_data[$matiere_id]))
+    if(isset($tab_graph_data[$rubrique_id]))
     {
       $tab_serie = array();
-      foreach($tab_graph_data[$matiere_id] as $date_js => $valeur)
+      foreach($tab_graph_data[$rubrique_id] as $date_js => $valeur)
       {
-        $tab_serie[] = '['.$date_js.','.$valeur.']';
+        $name = addcslashes(implode('<br />',$tab_info[$eleve_id][$rubrique_id][$date_js]),'"');
+        // $tab_serie[] = '['.$date_js.','.$valeur.']';
+        $tab_serie[] = '{x:'.$date_js.',y:'.$valeur.',name:"'.$name.'"}';
       }
-      $tab_graph_series[] = '{name:"'.$matiere_nom.'",data:['.implode(',',$tab_serie).']}';
+      $tab_graph_series[] = '{name:"'.addcslashes($rubrique_nom,'"').'",data:['.implode(',',$tab_serie).']}';
     }
   }
 }

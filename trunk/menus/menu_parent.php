@@ -67,15 +67,11 @@ $tab_sous_menu = array
   ),
   'releve' => array
   (
-    'releve_grille_referentiel'    => array( 'texte' => Lang::_("Grille d'items d'un référentiel")   , 'class' => 'releve_grille'   , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
-    'releve_items_matiere'         => array( 'texte' => Lang::_("Relevé d'items d'une matière")      , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items_matiere'         ),
-    'releve_items_multimatiere'    => array( 'texte' => Lang::_("Relevé d'items pluridisciplinaire") , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items_multimatiere'    ),
-    'releve_items_professeur'      => array( 'texte' => Lang::_("Relevé d'items d'un enseignant")    , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items_professeur'      ),
- // 'releve_bilan_chronologique'   => array( 'texte' => Lang::_("Bilan chronologique")               , 'class' => 'releve_chrono'   , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
- // Penser aussi aux restrictions d'accès
-    'releve_synthese_matiere'      => array( 'texte' => Lang::_("Synthèse d'une matière")            , 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese_matiere'      ),
-    'releve_synthese_multimatiere' => array( 'texte' => Lang::_("Synthèse pluridisciplinaire")       , 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese_multimatiere' ),
-    'releve_socle'                 => array( 'texte' => Lang::_("Relevé de maîtrise du socle")       , 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'                 ),
+    'releve_grille_referentiel'    => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'   , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
+    'releve_items'                 => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items'                 ),
+    'releve_synthese'              => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese'              ),
+    'releve_chronologique'         => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'   , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
+    'releve_socle'                 => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'                 ),
   ),
   'officiel' => array
   (

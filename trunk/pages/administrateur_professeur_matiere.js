@@ -155,8 +155,8 @@ $(document).ready
         {
           var prof_nom    = $('#f_prof_'+prof_id      ).parent().text();
           var matiere_nom = $('#f_matiere_'+matiere_id).parent().text();
-          $('#mpb_'+matiere_id).append('<div id="mp_'+matiere_id+'_'+prof_id+'" class="off"><input type="checkbox" id="'+matiere_id+'cp'+prof_id+'" value="" /> <label for="'+matiere_id+'cp'+prof_id+'">'+prof_nom+'</label></div>');
-          $('#pmb_'+prof_id   ).append('<div id="pm_'+prof_id+'_'+matiere_id+'" class="off"><input type="checkbox" id="'+prof_id+'pc'+matiere_id+'" value="" /> <label for="'+prof_id+'pc'+matiere_id+'">'+matiere_nom+'</label></div>');
+          $('#mpb_'+matiere_id).append('<div id="mp_'+matiere_id+'_'+prof_id+'" class="off"><input type="checkbox" id="'+matiere_id+'mp'+prof_id+'" value="" /> <label for="'+matiere_id+'mp'+prof_id+'">'+prof_nom+'</label></div>');
+          $('#pmb_'+prof_id   ).append('<div id="pm_'+prof_id+'_'+matiere_id+'" class="off"><input type="checkbox" id="'+prof_id+'pm'+matiere_id+'" value="" /> <label for="'+prof_id+'pm'+matiere_id+'">'+matiere_nom+'</label></div>');
           tab_join[matiere_id][prof_id] = 1;
         }
         else if(action=='retirer')

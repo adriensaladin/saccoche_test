@@ -204,7 +204,7 @@ public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($elev
 }
 
 /**
- * Lister les évaluations concernant un élève donné comportant uen auto-évaluation en cours
+ * Lister les évaluations concernant un élève donné comportant une auto-évaluation en cours
  *
  * @param int    $eleve_id
  * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
@@ -227,7 +227,32 @@ public static function DB_lister_devoirs_eleve_avec_autoevaluation_en_cours($ele
 }
 
 /**
- * Lister les évaluations concernant un élève sur les derniers jours
+ * Lister les évaluations à venir concernant un élève donné
+ *
+ * @param int    $eleve_id
+ * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
+ * @return array
+ */
+public static function DB_lister_prochains_devoirs_eleve($eleve_id,$classe_id)
+{
+  $sql_view = 'AND devoir_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
+  $where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
+  $DB_SQL = 'SELECT devoir_id , devoir_date , devoir_info , sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
+  $DB_SQL.= 'FROM  sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
+  $DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
+  $DB_SQL.= 'AND devoir_date>NOW() '.$sql_view ;
+  $DB_SQL.= 'GROUP BY devoir_id ';
+  $DB_SQL.= 'ORDER BY devoir_date ASC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
+  $DB_VAR = array(
+    ':eleve_id' => $eleve_id,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Lister les résultats concernant un élève sur les derniers jours
  *
  * @param int    $eleve_id
  * @param int    $nb_jours

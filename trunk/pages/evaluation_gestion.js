@@ -3046,7 +3046,7 @@ $(document).ready
     // Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Afficher masquer des options de la grille (uniquement pour un groupe)
+    // Afficher / masquer des options de la grille (uniquement pour un groupe)
 
     var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
 

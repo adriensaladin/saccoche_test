@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Synthèse d'une matière"));
+$TITRE = html(Lang::_("Synthèse d'items"));
 ?>
 
 <?php
@@ -50,7 +50,7 @@ $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-  $tab_matieres = 'Choisir d\'abord un groupe ci-dessus...'; // maj en ajax suivant le choix du groupe
+  $tab_matieres = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
@@ -76,7 +76,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
-  $of_g = FALSE; $sel_g = TRUE; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'hide';
+  $of_g = FALSE; $sel_g = TRUE; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $is_select_multiple = 0;
 }
@@ -88,8 +88,15 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $is_select_multiple = 0;
 }
+
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
+$tab_select_objet_releve = array(
+    array('valeur' => 'matiere'      , 'texte' => Lang::_("Synthèse d'une matière")) ,
+    array('valeur' => 'multimatiere' , 'texte' => Lang::_("Synthèse pluridisciplinaire")) ,
+);
+
+$select_objet_releve = HtmlForm::afficher_select($tab_select_objet_releve       , 'f_objet'        /*select_nom*/ ,                      '' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
 $select_groupe       = HtmlForm::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/);
 $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
 $select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']   /*selection*/ ,              '' /*optgroup*/);
@@ -108,8 +115,8 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
 HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , TRUE /*tab_groupe_niveau*/ );
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_matiere">DOC : Synthèse d'une matière.</a></span></div>
-<div class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_items">DOC : Synthèse d'items.</a></span></div>
+<div class="astuce">Un administrateur ou un directeur doit préalablement choisir l'ordre d'affichage des matières (<span class="manuel"><a href="index.php?page=documentation__support_administrateur__gestion_releves_bilans#toggle_ordre_matieres">DOC</a></span>) et le type de synthèse adapté à chaque référentiel (<span class="manuel"><a href="index.php?page=documentation__support_administrateur__gestion_releves_bilans#toggle_type_synthese">DOC</a></span>).</div>
 <?php
 $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 $s = ($nb_inconnu>1) ? 's' : '' ;
@@ -119,6 +126,15 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
+
+  <div>
+    <label class="tab" for="f_objet">Objet :</label><?php echo $select_objet_releve ?>
+  </div>
+
+  <div id="choix_matiere" class="hide">
+    <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
+  </div>
+
   <p class="<?php echo $class_form_eleve ?>">
     <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /> <span id="bloc_ordre" class="hide"><?php echo $select_eleves_ordre ?></span><label id="ajax_maj">&nbsp;</label><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
@@ -135,17 +151,16 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
       <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_retroactif_annuel"><input type="radio" id="f_retroactif_annuel" name="f_retroactif" value="annuel"<?php echo $check_retroactif_annuel ?> /> de l'année scolaire
   </p>
-  <p>
-    <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
-  </p>
   <div id="zone_options" class="<?php echo $class_form_option ?>">
     <div class="toggle">
       <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
     </div>
     <div class="toggle hide">
       <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-      <label class="tab">Mode de synthèse :</label><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
-      <span class="tab"></span><label for="f_fusion_niveaux"><input type="checkbox" id="f_fusion_niveaux" name="f_fusion_niveaux" value="1"<?php echo $check_fusion_niveaux ?> /> Ne pas indiquer le niveau et fusionner les synthèses de même intitulé</label><br />
+      <label class="tab">Mode de synthèse :</label><label for="f_fusion_niveaux"><input type="checkbox" id="f_fusion_niveaux" name="f_fusion_niveaux" value="1"<?php echo $check_fusion_niveaux ?> /> Ne pas indiquer le niveau et fusionner les synthèses de même intitulé</label><br />
+      <span id="span_not_multimatiere">
+        <span class="tab"></span><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
+      </span>
       <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format HTML, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label><br />
       <label class="tab">Restrictions :</label><label for="f_restriction_socle"><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
       <span class="tab"></span><label for="f_restriction_niveau"><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
@@ -158,4 +173,3 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 </fieldset></form>
 
 <div id="bilan"></div>
-

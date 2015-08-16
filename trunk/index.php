@@ -263,7 +263,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
   echo  '<div id="top_info">'.NL;
   echo    $_SESSION['MENU'];
   echo    '<div>'.NL;
-  echo      '<span class="top home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span><br />'.NL;
+  echo      '<span class="top home"><a href="./index.php?page=compte_accueil">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</a></span><br />'.NL;
   echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$lien_page_switch.')'.$lien_page_langue.'</span>'.NL;
   echo    '</div>'.NL;
   echo    '<div>'.NL;

@@ -34,6 +34,8 @@ $(document).ready
     // Initialisation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    var objet        = $('#f_objet option:selected').val();
+    var prof_id      = 0;
     var matiere_id   = 0;
     var groupe_id    = 0;
     var groupe_type  = $("#f_groupe option:selected").parent().attr('label'); // Il faut indiquer une valeur initiale au moins pour le profil élève
@@ -55,14 +57,54 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Afficher masquer des éléments du formulaire
+    // Afficher / masquer des éléments du formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $("#f_objet").change
+    (
+      function()
+      {
+        // on masque
+        $('#choix_matiere , #choix_multimatiere , #choix_selection ,#choix_professeur').hide();
+        // on affiche
+        objet = $('#f_objet option:selected').val();
+        if(objet)
+        {
+          $('#choix_'+objet).show();
+        }
+        if(objet=='multimatiere')
+        {
+          $('#div_not_multimatiere_1 , #div_not_multimatiere_2').hide();
+          if(!$('#f_type_individuel').is(':checked'))
+          {
+            $('#f_type_individuel').click();
+          }
+        }
+        else
+        {
+          $('#div_not_multimatiere_1 , #div_not_multimatiere_2').show();
+        }
+      }
+    );
+
+    function visibility_option_with_coef()
+    {
+      if( ($('#f_type_synthese').is(':checked')) || ($('#f_type_bulletin').is(':checked')) || ( ($('#f_type_individuel').is(':checked')) && ($('#f_moyenne_scores').is(':checked')) ) )
+      {
+        $("#option_with_coef").attr("class","show");
+      }
+      else
+      {
+        $("#option_with_coef").attr("class","hide");
+      }
+    }
 
     $('#f_type_individuel').click
     (
       function()
       {
         $("#options_individuel").toggle();
+        visibility_option_with_coef();
       }
     );
 
@@ -71,6 +113,7 @@ $(document).ready
       function()
       {
         $("#options_synthese").toggle();
+        visibility_option_with_coef();
       }
     );
 
@@ -78,6 +121,7 @@ $(document).ready
     (
       function()
       {
+        visibility_option_with_coef();
         if($(this).is(':checked'))
         {
           $("#f_individuel_format option[value=eleve]").prop('selected',true);
@@ -116,6 +160,7 @@ $(document).ready
         {
           $('label[for=f_conversion_sur_20]').hide();
         }
+        visibility_option_with_coef();
       }
     );
 
@@ -143,12 +188,72 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement de groupe
-// -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
-// -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
-// -> afficher le formulaire de périodes s'il est masqué
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger tous les profs d'une classe (approximativement) ou n'affiche que le prof connecté
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var action_prof = 'ajouter';
+
+    function afficher_prof_connecte()
+    {
+      $('#f_prof').html('<option value="'+user_id+'">'+user_texte+'</option>');
+      $('#modifier_prof').removeAttr("class").addClass('form_ajouter');
+      action_prof = 'ajouter';
+    }
+
+    function charger_profs_groupe()
+    {
+      $('button').prop('disabled',true);
+      prof_id     = $("#f_prof   option:selected").val();
+      groupe_id   = $("#f_groupe option:selected").val();
+      groupe_type = $("#f_groupe option:selected").parent().attr('label');
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_profs_groupe',
+          data : 'f_prof='+prof_id+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('button').prop('disabled',false);
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#f_prof').html(responseHTML);
+              $('#modifier_prof').removeAttr("class").addClass('form_retirer');
+              action_prof = 'retirer';
+            }
+            $('button').prop('disabled',false);
+          }
+        }
+      );
+    }
+
+    $("#modifier_prof").click
+    (
+      function()
+      {
+        if(action_prof=='retirer')
+        {
+          afficher_prof_connecte();
+        }
+        else if(action_prof=='ajouter')
+        {
+          charger_profs_groupe();
+        }
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Changement de groupe
+    // -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
+    // -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
+    // -> afficher le formulaire de périodes s'il est masqué
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function selectionner_periode_adaptee()
     {
@@ -208,15 +313,27 @@ $(document).ready
             // Rechercher automatiquement la meilleure période
             selectionner_periode_adaptee();
           }
-          // Afficher la zone de choix des périodes
+          // Afficher la zone de choix des périodes et des enseignants
           if(typeof(groupe_type)!='undefined')
           {
-            $('#zone_periodes').removeAttr("class");
+            $('#zone_periodes , #zone_profs').removeAttr("class");
           }
           else
           {
-            $('#zone_periodes').addClass("hide");
+            $('#zone_periodes , #zone_profs').addClass("hide");
           }
+        }
+        // Rechercher automatiquement la liste des profs
+        if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
+        {
+          if( (user_profil!='professeur') || (action_prof=='retirer') )
+          {
+            charger_profs_groupe();
+          }
+        }
+        else
+        {
+          afficher_prof_connecte();
         }
       }
     );
@@ -356,7 +473,7 @@ $(document).ready
     // Charger toutes les matières ou seulement les matières affectées (pour un prof)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var modifier_action = 'ajouter';
+    var action_matiere = 'ajouter';
     $("#modifier_matiere").click
     (
       function()
@@ -368,7 +485,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_matieres_prof',
-            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action+'&f_multiple=0',
+            data : 'f_matiere='+matiere_id+'&f_action='+action_matiere+'&f_multiple=0',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -379,14 +496,96 @@ $(document).ready
               initialiser_compteur();
               if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
+                action_matiere = (action_matiere=='ajouter') ? 'retirer' : 'ajouter' ;
+                $('#modifier_matiere').removeAttr("class").addClass("form_"+action_matiere);
                 $('#f_matiere').html(responseHTML);
               }
               $('button').prop('disabled',false);
             }
           }
         );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Choisir les items : mise en place du formulaire
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var choisir_compet = function()
+    {
+      $('#f_selection_items option:first').prop('selected',true);
+      cocher_matieres_items( $('#f_compet_liste').val() );
+      $.fancybox( {
+        'href'           : '#zone_matieres_items' ,
+        onStart          : function(){$('#zone_matieres_items').css("display","block");} ,
+        onClosed         : function(){$('#zone_matieres_items').css("display","none");} ,
+        'modal'          : true ,
+        'centerOnScroll' : true
+      } );
+    };
+
+    $('q.choisir_compet').click( choisir_compet );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour fermer le cadre des items choisis (annuler / retour)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#annuler_compet').click
+    (
+      function()
+      {
+        $.fancybox.close();
+        return false;
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour valider le choix des items
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#valider_compet').click
+    (
+      function()
+      {
+        var liste = '';
+        var nombre = 0;
+        $("#zone_matieres_items input[type=checkbox]:checked").each
+        (
+          function()
+          {
+            liste += $(this).val()+'_';
+            nombre++;
+          }
+        );
+        var compet_liste  = liste.substring(0,liste.length-1);
+        var compet_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' items' : nombre+' item' ) ;
+        $('#f_compet_liste').val(compet_liste);
+        $('#f_compet_nombre').val(compet_nombre);
+        $('#annuler_compet').click();
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Demande pour sélectionner d'une liste d'items mémorisés
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#f_selection_items').change
+    (
+      function()
+      {
+        cocher_matieres_items( $("#f_selection_items").val() );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour mémoriser un choix d'items
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#f_enregistrer_items').click
+    (
+      function()
+      {
+        memoriser_selection_matieres_items( $("#f_liste_items_nom").val() );
       }
     );
 
@@ -403,7 +602,11 @@ $(document).ready
       {
         rules :
         {
-          'f_type[]'           : { required:true },
+          f_objet              : { required:true },
+          f_matiere            : { required:function(){return objet=='matiere';} },
+          f_compet_liste       : { required:function(){return objet=='selection';} },
+          f_prof               : { required:function(){return objet=='professeur';} },
+          'f_type[]'           : { required:function(){return objet!='multimatiere';} },
           f_individuel_format  : { required:true },
           f_etat_acquisition   : { required:false },
           f_moyenne_scores     : { required:false },
@@ -419,7 +622,6 @@ $(document).ready
           f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_retroactif         : { required:true },
-          f_matiere            : { required:true },
           f_restriction        : { required:false },
           f_coef               : { required:false },
           f_socle              : { required:false },
@@ -438,6 +640,10 @@ $(document).ready
         },
         messages :
         {
+          f_objet              : { required:"objet manquant" },
+          f_matiere            : { required:"matière manquante" },
+          f_compet_liste       : { required:"item(s) manquant(s)" },
+          f_prof               : { required:"enseignant manquant" },
           'f_type[]'           : { required:"type(s) manquant(s)" },
           f_individuel_format  : { required:"choix manquant" },
           f_etat_acquisition   : { },
@@ -454,7 +660,6 @@ $(document).ready
           f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_retroactif         : { required:"choix manquant" },
-          f_matiere            : { required:"matière manquante" },
           f_restriction        : { },
           f_coef               : { },
           f_socle              : { },
@@ -509,7 +714,8 @@ $(document).ready
       {
         // récupération d'éléments
         $('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
-        $('#f_groupe_nom' ).val( $("#f_groupe option:selected").text() );
+        $('#f_groupe_nom' ).val( $("#f_groupe  option:selected").text() );
+        $('#f_prof_texte' ).val( $("#f_prof    option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;

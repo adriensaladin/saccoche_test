@@ -23,7 +23,7 @@ CREATE TABLE sacoche_user (
   eleve_brevet_serie  VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet.",
   user_id_ent         VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
   user_id_gepi        VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
-  user_param_accueil  VARCHAR(93)             COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,messages,resultats,faiblesses,reussites,demandes,saisies,officiel,socle,help,ecolo",
+  user_param_accueil  VARCHAR(127)            COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,messages,previsions,resultats,faiblesses,reussites,demandes,saisies,officiel,socle,help,ecolo",
   user_pass_key       CHAR(32)                COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (user_id),
   UNIQUE KEY user_login (user_login),

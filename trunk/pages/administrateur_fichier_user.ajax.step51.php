@@ -199,6 +199,10 @@ foreach($tab_indices_fichier as $i_fichier)
       {
         $td_modif .= ' || '.$champ_aff.' : '.aff_champ($import_profil,$champ_ref,$tab_users_base[$champ_ref][$id_base]);
         $tab_users_modifier[$id_base][$champ_ref] = FALSE;
+        if($champ_ref=='courriel')
+        {
+          $tab_users_modifier[$id_base]['email_origine'] = FALSE;
+        }
       }
     }
     if($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL)

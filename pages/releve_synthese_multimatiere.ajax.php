@@ -29,12 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Générer une synthèse d'items
+// Générer une synthèse multi-matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$synthese_modele = (isset($_POST['f_objet']))              ? Clean::texte($_POST['f_objet'])                  : '';
-$matiere_id      = (isset($_POST['f_matiere']))            ? Clean::entier($_POST['f_matiere'])               : 0;
-$matiere_nom     = (isset($_POST['f_matiere_nom']))        ? Clean::texte($_POST['f_matiere_nom'])            : '';
+$synthese_modele = 'multimatiere' ;
 $groupe_id       = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom      = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
 $groupe_type     = (isset($_POST['f_groupe_type']))        ? Clean::texte($_POST['f_groupe_type'])            : '';
@@ -50,7 +48,6 @@ $aff_lien        = (isset($_POST['f_lien']))               ? 1                  
 $aff_start       = (isset($_POST['f_start']))              ? 1                                                : 0;
 $only_socle      = (isset($_POST['f_restriction_socle']))  ? 1                                                : 0;
 $only_niveau     = (isset($_POST['f_restriction_niveau'])) ? $niveau_id                                       : 0;
-$mode_synthese   = (isset($_POST['f_mode_synthese']))      ? Clean::texte($_POST['f_mode_synthese'])          : '';
 $couleur         = (isset($_POST['f_couleur']))            ? Clean::texte($_POST['f_couleur'])                : '';
 $fond            = (isset($_POST['f_fond']))               ? Clean::texte($_POST['f_fond'])                   : '';
 $legende         = (isset($_POST['f_legende']))            ? Clean::texte($_POST['f_legende'])                : '';
@@ -86,19 +83,14 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
   }
 }
 
-$liste_eleve   = implode(',',$tab_eleve);
+$liste_eleve = implode(',',$tab_eleve);
 
-$tab_modele = array(
-  'matiere'      => TRUE,
-  'multimatiere' => TRUE,
-);
-
-if( !isset($tab_modele[$synthese_modele]) || ( ($synthese_modele=='matiere') && ( !$matiere_id || !$matiere_nom || !$mode_synthese ) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
+if( !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('releve_synthese');
+Form::save_choix('synthese_multimatiere');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 

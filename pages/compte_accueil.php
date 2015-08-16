@@ -43,7 +43,6 @@ $tab_accueil = array(
  'alert'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'notifications' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'messages'      => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
- 'previsions'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Évaluations prévues")) ) ,
  'resultats'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Résultats récents")) ) ,
  'faiblesses'    => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>$masque_faiblesses ) ,
  'reussites'     => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Items récents les mieux réussis")) ) ,
@@ -134,7 +133,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
     {
       $tab_nom_enfants[] =html($DB_ROW['texte']);
     }
-    $tab_accueil['user']['contenu'] .= '<p>'.html(Lang::_("Élève(s) associé(s) à votre compte :")).' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b>.</p>';
+    $tab_accueil['user']['contenu'] .= '<p>'.html(Lang::_("Élève(s) associé(s) à votre compte :")).' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b></p>';
   }
   else
   {
@@ -263,39 +262,6 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// [previsions] - Évaluations prévues (élèves & parents)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
-{
-  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'],'classe_id'=>$_SESSION['ELEVE_CLASSE_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
-  $nb_eleves = count($tab_eleves);
-  foreach($tab_eleves as $tab_eleve_info)
-  {
-    $eleve_id  = $tab_eleve_info['valeur'];
-    $classe_id = $tab_eleve_info['classe_id'];
-    $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_prochains_devoirs_eleve( $eleve_id , $classe_id );
-    if(!empty($DB_TAB))
-    {
-      if(!$tab_accueil['previsions']['nombre'])
-      {
-        $tab_accueil['previsions']['contenu'] = '<div class="b"><TG> '.$tab_accueil['previsions']['masque'].'</div>';
-      }
-      $tab_accueil['previsions']['nombre'] += count($DB_TAB);
-      $tab_accueil['previsions']['contenu'].= '<ul class="puce p">';
-      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id : '' ;
-      $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['previsions']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
-      }
-      $tab_accueil['previsions']['contenu'].= '</ul>';
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // [resultats] - Résultats récents (élèves & parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -384,7 +350,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
           foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
           {
             $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
-            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
+            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items_matiere&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
           }
           $tab_accueil[$critere]['contenu'].= '</ul>';
         }

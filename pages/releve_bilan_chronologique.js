@@ -38,39 +38,12 @@ $(document).ready
     // Initialisation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var objet        = $('#f_objet option:selected').val();
     var matiere_id   = 0;
     var groupe_id    = 0;
     var groupe_type  = $("#f_groupe option:selected").parent().attr('label'); // Il faut indiquer une valeur initiale au moins pour le profil élève
     var eleves_ordre = '';
 
     $("#f_eleve").hide();
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Afficher / masquer des éléments du formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $("#f_objet").change
-    (
-      function()
-      {
-        // on masque
-        $('#zone_matieres , #zone_matiere ,#zone_synthese , #zone_selection').hide();
-        // on récupère les infos
-        objet = $('#f_objet option:selected').val();
-        var tab_infos = objet.split('_');
-        var zone_principale = tab_infos[0];
-        var zone_secondaire = tab_infos[1];
-        if(zone_principale)
-        {
-          $('#zone_'+zone_principale).show();
-        }
-        if(zone_secondaire=='synthese')
-        {
-          $('#zone_'+zone_secondaire).show();
-        }
-      }
-    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Thème personnalisé pour le graphique : sont complétées ensuite avec les données personnalisées
@@ -154,8 +127,9 @@ $(document).ready
 
     ChartOptions = {
       chart: {
-        renderTo: 'div_graphique_chronologique',
-        type: 'spline'
+        renderTo: 'div_graphique',
+        type: 'spline',
+        height:450
        },
       title: {
         style: { color: '#333' } ,
@@ -165,15 +139,11 @@ $(document).ready
         layout: 'horizontal',
         align: 'center',
         verticalAlign: 'bottom',
-        x: 0
+        x: 15
       },
       xAxis: {
         type: 'datetime',
-        labels: {
-          formatter: function() {
-            return Highcharts.dateFormat('%m/%Y', this.value);
-          }
-        }
+        labels: { enabled: false }
       },
       yAxis: {
         labels: { enabled: false },
@@ -183,14 +153,7 @@ $(document).ready
       },
       tooltip: {
         formatter: function() {
-          return this.series.name + '<br/>' + '<b>' + (this.y) + '</b>' + '<br/>' + Highcharts.dateFormat('%d/%m/%Y', this.x) + '<br/>' + this.key; // this.key récupère la valeur "name"...
-        }
-      },
-      plotOptions: {
-        series: {
-          marker: {
-            enabled: true
-          }
+          return this.series.name + '<br/>' + Highcharts.dateFormat('%d/%m/%Y', this.x) + '<br/><b>' + (this.y) + '</b>';
         }
       },
       series: [] // MAJ ensuite
@@ -299,8 +262,38 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger les selects f_eleve (pour le professeur et le directeur et les parents de plusieurs enfants)
+    // Charger les selects f_eleve (pour le professeur et le directeur et les parents de plusieurs enfants) et f_matiere (pour le directeur) en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function maj_matiere(groupe_id,matiere_id,eleves_ordre) // Uniquement pour un directeur
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_matieres',
+          data : 'f_groupe='+groupe_id+'&f_matiere='+matiere_id+'&f_multiple=1',
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_maj').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#f_matiere').html(responseHTML);
+              maj_eleve(groupe_id,groupe_type,eleves_ordre);
+            }
+          else
+            {
+              $('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+          }
+        }
+      );
+    }
 
     function maj_eleve(groupe_id,groupe_type,eleves_ordre)
     {
@@ -344,8 +337,14 @@ $(document).ready
     (
       function()
       {
-        // Pour un directeur, un professeur ou un parent de plusieurs enfants, on met à jour f_eleve
+        // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
+        // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
         // Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
+        if(PROFIL_TYPE=='directeur')
+        {
+          matiere_id = $("#f_matiere").val();
+          $("#f_matiere").html('');
+        }
         $("#f_eleve").html('<option value="">&nbsp;</option>').hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
@@ -355,7 +354,7 @@ $(document).ready
           $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
           if(PROFIL_TYPE=='directeur')
           {
-            maj_eleve(groupe_id,groupe_type,eleves_ordre);
+            maj_matiere(groupe_id,matiere_id,eleves_ordre);
           }
           else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
           {
@@ -365,6 +364,41 @@ $(document).ready
         else
         {
           $("#bloc_ordre").hide();
+          $('#ajax_maj').removeAttr("class").html("&nbsp;");
+        }
+      }
+    );
+
+    $("#f_groupe").change
+    (
+      function()
+      {
+        // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
+        // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
+        // Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
+        if(PROFIL_TYPE=='directeur')
+        {
+          matiere_id = $("#f_matiere").val();
+          $("#f_matiere").html('');
+        }
+        $("#f_eleve").html('<option value="">&nbsp;</option>').hide();
+        groupe_id = $("#f_groupe option:selected").val();
+        if(groupe_id)
+        {
+          groupe_type  = $("#f_groupe option:selected").parent().attr('label');
+          eleves_ordre = $("#f_eleves_ordre option:selected").val();
+          $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          if(PROFIL_TYPE=='directeur')
+          {
+            maj_matiere(groupe_id,matiere_id,eleves_ordre);
+          }
+          else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
+          {
+            maj_eleve(groupe_id,groupe_type,eleves_ordre);
+          }
+        }
+        else
+        {
           $('#ajax_maj').removeAttr("class").html("&nbsp;");
         }
       }
@@ -387,53 +421,19 @@ $(document).ready
     // Charger toutes les matières ou seulement les matières affectées (pour un prof)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var modifier_action_matiere = 'ajouter';
+    var modifier_action = 'ajouter';
     $("#modifier_matiere").click
     (
       function()
       {
         $('button').prop('disabled',true);
-        matiere_id = $("#f_matiere option:selected").val();
+        matiere_id = $("#f_matiere input:checked").val();
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_matieres_prof',
-            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action_matiere+'&f_multiple=0',
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button').prop('disabled',false);
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-              {
-                modifier_action_matiere = (modifier_action_matiere=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action_matiere);
-                $('#f_matiere').html(responseHTML);
-              }
-              $('button').prop('disabled',false);
-            }
-          }
-        );
-      }
-    );
-
-    var modifier_action_matieres = 'ajouter';
-    $("#modifier_matieres").click
-    (
-      function()
-      {
-        $('button').prop('disabled',true);
-        matiere_id = $("#f_matieres input:checked").val();
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page=_maj_select_matieres_prof',
-            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action_matieres+'&f_multiple=1',
+            data : 'f_matiere='+matiere_id+'&f_action='+modifier_action+'&f_multiple=1',
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -444,96 +444,14 @@ $(document).ready
               initialiser_compteur();
               if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                modifier_action_matieres = (modifier_action_matieres=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matieres').removeAttr("class").addClass("form_"+modifier_action_matieres);
-                $('#f_matieres').html(responseHTML);
+                modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
+                $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
+                $('#f_matiere').html(responseHTML);
               }
               $('button').prop('disabled',false);
             }
           }
         );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Choisir les items : mise en place du formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var choisir_compet = function()
-    {
-      $('#f_selection_items option:first').prop('selected',true);
-      cocher_matieres_items( $('#f_compet_liste').val() );
-      $.fancybox( {
-        'href'           : '#zone_matieres_items' ,
-        onStart          : function(){$('#zone_matieres_items').css("display","block");} ,
-        onClosed         : function(){$('#zone_matieres_items').css("display","none");} ,
-        'modal'          : true ,
-        'centerOnScroll' : true
-      } );
-    };
-
-    $('q.choisir_compet').click( choisir_compet );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le cadre des items choisis (annuler / retour)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#annuler_compet').click
-    (
-      function()
-      {
-        $.fancybox.close();
-        return false;
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour valider le choix des items
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#valider_compet').click
-    (
-      function()
-      {
-        var liste = '';
-        var nombre = 0;
-        $("#zone_matieres_items input[type=checkbox]:checked").each
-        (
-          function()
-          {
-            liste += $(this).val()+'_';
-            nombre++;
-          }
-        );
-        var compet_liste  = liste.substring(0,liste.length-1);
-        var compet_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' items' : nombre+' item' ) ;
-        $('#f_compet_liste').val(compet_liste);
-        $('#f_compet_nombre').val(compet_nombre);
-        $('#annuler_compet').click();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Demande pour sélectionner d'une liste d'items mémorisés
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#f_selection_items').change
-    (
-      function()
-      {
-        cocher_matieres_items( $("#f_selection_items").val() );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour mémoriser un choix d'items
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#f_enregistrer_items').click
-    (
-      function()
-      {
-        memoriser_selection_matieres_items( $("#f_liste_items_nom").val() );
       }
     );
 
@@ -550,12 +468,6 @@ $(document).ready
       {
         rules :
         {
-          f_objet              : { required:true },
-          'f_matieres[]'       : { required:function(){return objet=='matieres';} },
-          f_matiere            : { required:function(){return objet.substring(0,8)=='matiere_';} },
-          f_mode_synthese      : { required:function(){return objet=='matiere_synthese';} },
-          f_fusion_niveaux     : { required:false },
-          f_compet_liste       : { required:function(){return objet=='selection';} },
           f_indicateur         : { required:true },
           f_conversion_sur_20  : { required:false },
           f_groupe             : { required:true },
@@ -566,16 +478,11 @@ $(document).ready
           f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_retroactif         : { required:true },
+          'f_matiere[]'        : { required:true },
           f_restriction        : { required:false }
         },
         messages :
         {
-          f_objet              : { required:"objet manquant" },
-          'f_matieres[]'       : { required:"matière(s) manquante(s)" },
-          f_matiere            : { required:"matière manquante" },
-          f_mode_synthese      : { required:"choix manquant" },
-          f_fusion_niveaux     : { },
-          f_compet_liste       : { required:"item(s) manquant(s)" },
           f_indicateur         : { required:"choix manquant" },
           f_conversion_sur_20  : { },
           f_tri_mode           : { required:"choix manquant" },
@@ -587,16 +494,14 @@ $(document).ready
           f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_retroactif         : { required:"choix manquant" },
+          'f_matiere[]'        : { required:"matière(s) manquante(s)" },
           f_restriction        : { }
         },
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.is("select")) {
-            if(element.attr("id")=="f_matiere") {element.next().after(error);}
-            else {element.after(error);}
-          }
+          if(element.is("select")) {element.after(error);}
           else if(element.attr("type")=="text") {element.next().after(error);}
           else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
           else if(element.attr("type")=="checkbox") {
@@ -628,7 +533,6 @@ $(document).ready
       function()
       {
         // récupération d'éléments
-        $('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
         return false;
@@ -662,7 +566,7 @@ $(document).ready
       if(bilan_affiche)
       {
         $('#bilan button , #bilan select').prop('disabled',false);
-        $('#div_graphique_chronologique').html('<label class="alerte">'+message+'</label>');
+        $('#div_graphique').html('<label class="alerte">'+message+'</label>');
       }
       else
       {
@@ -683,14 +587,13 @@ $(document).ready
       {
         $('#form_select button').prop('disabled',false);
       }
-      var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-      if( (responseHTML.substring(0,4)=='<H3>') && (position_script!=-1) )
+      if(responseHTML.substring(0,8)=='<SCRIPT>')
       {
         if(bilan_affiche)
         {
           $('#go_selection_eleve option[value='+memo_eleve+']').prop('selected',true);
           masquer_element_navigation_choix_eleve();
-          eval( responseHTML.substring(position_script+8) );
+          eval( responseHTML.substring(8) );
         }
         else
         {
@@ -703,11 +606,12 @@ $(document).ready
             memo_eleve_last  = $('#go_selection_eleve option:last').val();
             masquer_element_navigation_choix_eleve();
           }
+          eval( responseHTML.substring(8) );
           $('#ajax_msg').removeAttr("class").html('');
-          $('#form_select , #zone_preliminaire').hide();
-          $('#report_titre').html( responseHTML.substring(4,position_script) );
-          $('#bilan , #div_graphique_chronologique').show();
-          eval( responseHTML.substring(position_script+8) );
+          var titre = ($('#f_indicateur_MS').is(':checked')) ? "Moyenne des scores :" : "Pourcentage d'items acquis :" ;
+          $('#report_titre').html(titre);
+          $('#form_select').hide();
+          $('#bilan').show();
           bilan_affiche = true;
         }
       }
@@ -715,7 +619,7 @@ $(document).ready
       {
         if(bilan_affiche)
         {
-          $('#div_graphique_chronologique').html('<label class="alerte">'+responseHTML+'</label>');
+          $('#div_graphique').html('<label class="alerte">'+responseHTML+'</label>');
         }
         else
         {
@@ -738,7 +642,7 @@ $(document).ready
       $("#f_eleve option[value="+eleve_id+"]").prop('selected',true);
       memo_eleve = eleve_id;
       $('#bilan button , #bilan select').prop('disabled',true);
-      $('#div_graphique_chronologique').html('<label class="loader">En cours&hellip;</label>');
+      $('#div_graphique').html('<label class="loader">En cours&hellip;</label>');
       formulaire.submit();
     }
 
@@ -814,8 +718,8 @@ $(document).ready
     (
       function()
       {
-        $('#bilan , #div_graphique_chronologique').hide();
-        $('#form_select , #zone_preliminaire').show();
+        $('#bilan').hide();
+        $('#form_select').show();
         bilan_affiche = false;
         return false;
       }

@@ -47,7 +47,6 @@ $tab_types = array(
  'user'       => 'modifiable' ,
  'alert'      => 'imposé' ,
  'messages'   => 'modifiable' ,
- 'previsions' => 'modifiable' ,
  'resultats'  => 'modifiable' ,
  'faiblesses' => 'modifiable' ,
  'reussites'  => 'modifiable' ,

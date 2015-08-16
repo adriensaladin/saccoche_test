@@ -41,7 +41,7 @@ if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes') )
 // Autres cas
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$releve_modele            = (isset($_POST['f_objet']))              ? Clean::texte($_POST['f_objet'])                  : '';
+$releve_modele            = 'professeur';
 $releve_individuel_format = (isset($_POST['f_individuel_format']))  ? Clean::texte($_POST['f_individuel_format'])      : '';
 $aff_etat_acquisition     = (isset($_POST['f_etat_acquisition']))   ? 1                                                : 0;
 $aff_moyenne_scores       = (isset($_POST['f_moyenne_scores']))     ? 1                                                : 0;
@@ -54,8 +54,8 @@ $with_coef                = (isset($_POST['f_with_coef']))          ? 1         
 $groupe_id                = (isset($_POST['f_groupe']))             ? Clean::entier($_POST['f_groupe'])                : 0;
 $groupe_nom               = (isset($_POST['f_groupe_nom']))         ? Clean::texte($_POST['f_groupe_nom'])             : '';
 $groupe_type              = (isset($_POST['f_groupe_type']))        ? Clean::texte($_POST['f_groupe_type'])            : '';
-$matiere_id               = (isset($_POST['f_matiere']))            ? Clean::entier($_POST['f_matiere'])               : 0;
-$matiere_nom              = (isset($_POST['f_matiere_nom']))        ? Clean::texte($_POST['f_matiere_nom'])            : '';
+$matiere_id               = TRUE;
+$matiere_nom              = '';
 $periode_id               = (isset($_POST['f_periode']))            ? Clean::entier($_POST['f_periode'])               : 0;
 $date_debut               = (isset($_POST['f_date_debut']))         ? Clean::date_fr($_POST['f_date_debut'])           : '';
 $date_fin                 = (isset($_POST['f_date_fin']))           ? Clean::date_fr($_POST['f_date_fin'])             : '';
@@ -74,24 +74,18 @@ $marge_min                = (isset($_POST['f_marge_min']))          ? Clean::ent
 $pages_nb                 = (isset($_POST['f_pages_nb']))           ? Clean::texte($_POST['f_pages_nb'])               : '';
 $cases_nb                 = (isset($_POST['f_cases_nb']))           ? Clean::entier($_POST['f_cases_nb'])              : -1;
 $cases_largeur            = (isset($_POST['f_cases_larg']))         ? Clean::entier($_POST['f_cases_larg'])            : 0;
-$eleves_ordre             = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 $prof_id                  = (isset($_POST['f_prof']))               ? Clean::entier($_POST['f_prof'])                  : 0;
 $prof_texte               = (isset($_POST['f_prof_texte']))         ? Clean::texte($_POST['f_prof_texte'])             : '';
-$highlight_id             = (isset($_POST['f_highlight_id']))       ? Clean::entier($_POST['f_highlight_id'])          : 0;
+$eleves_ordre             = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
+$highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_eleve = (isset($_POST['f_eleve']))        ? ( (is_array($_POST['f_eleve']))        ? $_POST['f_eleve']        : explode(',',$_POST['f_eleve'])        ) : array() ;
-$tab_type  = (isset($_POST['f_type']))         ? ( (is_array($_POST['f_type']))         ? $_POST['f_type']         : explode(',',$_POST['f_type'])         ) : array() ;
-$tab_items = (isset($_POST['f_compet_liste'])) ? ( (is_array($_POST['f_compet_liste'])) ? $_POST['f_compet_liste'] : explode('_',$_POST['f_compet_liste']) ) : array() ;
+$tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_type  = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_POST['f_type']  : explode(',',$_POST['f_type'])  ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
-$tab_items = array_filter( Clean::map_entier($tab_items) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
-if($releve_modele=='multimatiere')
-{
-  $tab_type = array('individuel');
-}
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $releve_individuel_format = 'eleve';
@@ -131,19 +125,12 @@ $type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve = implode(',',$tab_eleve);
 
-$tab_modele = array(
-  'matiere'      => TRUE,
-  'multimatiere' => TRUE,
-  'selection'    => TRUE,
-  'professeur'   => TRUE,
-);
-
-if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
+if( !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$prof_id || !$eleves_ordre )
 {
   exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('releve_items');
+Form::save_choix('items_professeur');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 
@@ -156,7 +143,7 @@ $make_brevet   = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
-$make_csv      = ( ($releve_modele=='multimatiere') && ($releve_individuel_format == 'eleve') ) ? TRUE : FALSE ;
+$make_csv      = FALSE;
 $make_graph    = FALSE;
 
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
@@ -181,10 +168,6 @@ else
     echo'<ul class="puce">'.NL;
     echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
     echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
-    if($make_csv)
-    {
-      echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
-    }
     echo'</ul>'.NL;
   }
   if($type_synthese)
@@ -211,11 +194,10 @@ else
       echo $bulletin_alerte;
       echo'<h2>Bulletin Gepi</h2>'.NL;
       echo'<ul class="puce">'.NL;
-      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note'             ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      echo'</ul>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo'</ul>';
     }
   }
 }

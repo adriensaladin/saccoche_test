@@ -284,7 +284,7 @@ if($besoin_notes)
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // forcément 'oui' puisque le cas 'auto' a déjà été écarté (possible car un unique référentiel est considéré ici)
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ ) ;
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ ) ;
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)

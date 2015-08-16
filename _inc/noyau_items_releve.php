@@ -125,7 +125,7 @@ $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroact
 
 if($releve_modele=='matiere')
 {
-  $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme ) ;
+  $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan($liste_eleve,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme) ;
     $tab_matiere[$matiere_id] = array(
       'matiere_nom'         => $matiere_nom,
       'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
@@ -134,12 +134,14 @@ if($releve_modele=='matiere')
 elseif($releve_modele=='multimatiere')
 {
   $matiere_id = -1;
-  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme );
+  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan($liste_eleve,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
 }
 elseif($releve_modele=='selection')
 {
-  $liste_items = implode(',',$tab_items);
-  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme );
+  $tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
+  $tab_compet_liste = Clean::map_entier($tab_compet_liste);
+  $liste_compet = implode(',',$tab_compet_liste);
+  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
   // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
   if(count($tab_matiere)>1)
   {
@@ -164,7 +166,7 @@ elseif($releve_modele=='selection')
 }
 elseif($releve_modele=='professeur')
 {
-  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme );
+  list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur($liste_eleve,$prof_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
   // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
   if(count($tab_matiere)>1)
   {
@@ -240,7 +242,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
   $onlyprof = ($releve_modele=='professeur') ? $prof_id : FALSE ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof , FALSE /*onlynote*/ );
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof );
   foreach($DB_TAB as $DB_ROW)
   {
     if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])

@@ -1109,73 +1109,85 @@ $(document).ready
     );
 
     /**
-     * MENU - Déploiement au clic (pas au survol car les "tunnels forcés invisibles" sont pénibles (http://www.pompage.net/traduction/menu-survol-et-utilisateurs).
+     * MENU - Rendre transparente la page au survol.
+     *
+     * Difficultés pour utiliser fadeTo('slow',0.05) et fadeTo('normal',1) car une durée d'animation provoque des boucles
+     * Difficultés pour utiliser aussi css('opacity',0.05) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
+     * Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
      */
-
-    var is_menu_ouvert = false;
-
-    $('#menu').on
-    (
-      'click',
-      'a',
-      function()
-      {
-        var $ul = $(this).next('ul');
-        if(typeof($ul!=='undefined'))
+    var test_over_avant = false;
+    var test_over_apres = false;
+    $('#menu').mouseenter( function(){test_over_apres = true; });
+    $('#menu').mouseleave( function(){test_over_apres = false;});
+    function page_transparente()
+    {
+      $("body").everyTime
+      ('5ds', function()
         {
-          var is_sous_niveau_ouvert = ($ul.css('display')=='block') ? true : false ;
-          var is_premier_niveau = ($(this).hasClass('boussole')) ? true : false ;
-          if(is_premier_niveau)
+          if( test_over_avant != test_over_apres )
           {
-            $(this).next('ul').css('display','none').find('ul').css('display','none');
-            $(this).parent('li').css('background','#66F').find('li').css('background','#66F');
-          }
-          else
-          {
-            $(this).parent().parent().find('ul').css('display','none');
-            $(this).parent().parent().find('li').css('background','#66F');
-          }
-          if(is_sous_niveau_ouvert)
-          {
-            $ul.css('display','none');
-          }
-          else
-          {
-            $ul.css('display','block');
-            $(this).parent('li').css('background','#AAF');
-          }
-          if( is_premier_niveau && is_menu_ouvert )
-          {
-            is_menu_ouvert = false;
-            $('#cadre_bas').css('opacity',1);
-          }
-          else
-          {
-            is_menu_ouvert = true;
-            $('#cadre_bas').css('opacity',0.05);
+            test_over_avant = test_over_apres ;
+            if(test_over_apres)
+            {
+              $('#cadre_bas').fadeTo('normal',0.05);
+            }
+            else
+            {
+              $('#cadre_bas').fadeTo('fast',1);
+            }
           }
         }
-      }
-    );
+      );
+    }
+    page_transparente();
 
     /**
-     * MENU - Le masquer si on clique ailleurs.
-     * @see http://www.codesynthesis.co.uk/code-snippets/use-jquery-to-hide-a-div-when-the-user-clicks-outside-of-it
-     * @see http://stackoverflow.com/questions/1403615/use-jquery-to-hide-a-div-when-the-user-clicks-outside-of-it
-     * @see http://stackoverflow.com/questions/152975/how-to-detect-a-click-outside-an-element
-     * @see https://css-tricks.com/dangers-stopping-event-propagation/
+     * MENU - Déploiement au clic et plus seulement au survol pour les dispositifs tactiles.
      */
-    $(document).on
-    (
-      'click',
-      function(event)
-      {
-        if ( is_menu_ouvert && !$(event.target).closest('#menu').length )
+    if(isMobile)
+    {
+      $('#menu').on
+      (
+        'click',
+        'a',
+        function()
         {
-          $('a.boussole').click();
+          var $ul = $(this).next('ul');
+          if(typeof($ul!=='undefined'))
+          {
+            var montrer = ($ul.css('display')=='block') ? false : true ;
+            var premier_menu = ($(this).hasClass('menu')) ? true : false ;
+            if(premier_menu)
+            {
+              $(this).next('ul').css('display','none').find('ul').css('display','none');
+              $(this).parent('li').css('background','#66F').find('li').css('background','#66F');
+            }
+            else
+            {
+              $(this).parent().parent().find('ul').css('display','none');
+              $(this).parent().parent().find('li').css('background','#66F');
+            }
+            if(montrer)
+            {
+              $ul.css('display','block');
+              $(this).parent('li').css('background','#AAF');
+            }
+            else
+            {
+              $ul.css('display','none');
+            }
+            if( premier_menu && !montrer )
+            {
+              $('#cadre_bas').css('opacity',1);
+            }
+            else
+            {
+              $('#cadre_bas').css('opacity',0.05);
+            }
+          }
         }
-      }
-    );
+      );
+    }
 
     /**
      * Select multiples remplacés par une liste de checkbox (code plus lourd, mais résultat plus maniable pour l'utilisateur)

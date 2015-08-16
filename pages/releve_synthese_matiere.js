@@ -35,9 +35,13 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var matiere_id   = 0;
-    var groupe_id    = 0;
+    var groupe_id    = $('#f_groupe option:selected').val();
     var groupe_type  = $("#f_groupe option:selected").parent().attr('label'); // Il faut indiquer une valeur initiale au moins pour le profil élève
     var eleves_ordre = '';
+
+    // Rechercher automatiquement la meilleure période et le niveau du groupe au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
+    selectionner_periode_adaptee();
+    reporter_niveau_groupe();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Enlever le message ajax et le résultat précédent au changement d'un élément de formulaire
@@ -57,83 +61,6 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Afficher masquer des éléments du formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function view_periode()
-    {
-      // On détermine
-      groupe_type = $("#f_groupe option:selected").parent().attr('label');
-      if(typeof(groupe_type)=='undefined')
-      {
-        periode_requise = false;
-      }
-      else if($('#f_type_generique').is(':checked'))
-      {
-        periode_requise = false;
-      }
-      else if($('#f_type_synthese').is(':checked'))
-      {
-        periode_requise = true;
-      }
-      else if($('#f_type_individuel').is(':checked'))
-      {
-        if( ($('#f_remplissage option:selected').val()=='plein') || ($('#f_colonne_bilan option:selected').val()=='oui') )
-        {
-          periode_requise = true;
-        }
-        else
-        {
-          periode_requise = false;
-        }
-      }
-      else
-      {
-        periode_requise = false;
-      }
-      // On affiche / masque
-      if(periode_requise)
-      {
-        $('#zone_periodes').show();
-      }
-      else
-      {
-        $('#zone_periodes').hide();
-      }
-    }
-
-    $('#f_type_generique').click
-    (
-      function()
-      {
-        $('#generique_non_1 , #generique_non_2 , #generique_non_3').toggle();
-        view_periode();
-      }
-    );
-
-    $('#f_type_individuel').click
-    (
-      function()
-      {
-        $('#options_individuel').toggle();
-        view_periode();
-      }
-    );
-
-    $('#f_type_synthese').click
-    (
-      function()
-      {
-        $('#options_synthese').toggle();
-        view_periode();
-      }
-    );
-
-    $('#f_remplissage , #f_colonne_bilan').change
-    (
-      function()
-      {
-        view_periode();
-      }
-    );
 
     var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
 
@@ -160,73 +87,23 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_niveau en ajax (au changement de f_matiere et au départ)
+    // Changement de groupe
+    // -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
+    // -> afficher le formulaire de périodes s'il est masqué
+    // -> choisir automatiquement le niveau du groupe associé
+    // -> afficher le formulaire des options s'il est masqué
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function maj_niveau()
-    {
-      $("#f_niveau").html('<option value="">&nbsp;</option>').hide();
-      var matiere_val = $("#f_matiere").val();
-      if(!matiere_val)
-      {
-        $('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
-        return false;
-      }
-      $('#ajax_maj_matiere').removeAttr("class").addClass("loader").html("En cours&hellip;");
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page=_maj_select_niveaux',
-          data : 'f_matiere='+matiere_val,
-          dataType : "html",
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-          },
-          success : function(responseHTML)
-          {
-            initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-            {
-              $('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
-              $('#f_niveau').html(responseHTML).show();
-            }
-          else
-            {
-              $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html(responseHTML);
-            }
-          }
-        }
-      );
-    }
-    $("#f_matiere").change
-    (
-      function()
-      {
-        maj_niveau();
-      }
-    );
-    maj_niveau();
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement de groupe
-// -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
-// -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
-// -> afficher ou non le formulaire de périodes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function selectionner_periode_adaptee()
     {
-      var id_groupe = $('#f_groupe option:selected').val();
-      if(typeof(tab_groupe_periode[id_groupe])!='undefined')
+      if(typeof(tab_groupe_periode[groupe_id])!='undefined')
       {
-        for(var id_periode in tab_groupe_periode[id_groupe]) // Parcourir un tableau associatif...
+        for(var periode_id in tab_groupe_periode[groupe_id]) // Parcourir un tableau associatif...
         {
-          var tab_split = tab_groupe_periode[id_groupe][id_periode].split('_');
+          var tab_split = tab_groupe_periode[groupe_id][periode_id].split('_');
           if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
           {
-            $("#f_periode option[value="+id_periode+"]").prop('selected',true);
+            $("#f_periode option[value="+periode_id+"]").prop('selected',true);
             view_dates_perso();
             break;
           }
@@ -234,10 +111,21 @@ $(document).ready
       }
     }
 
+    function reporter_niveau_groupe()
+    {
+      if(typeof(tab_groupe_niveau[groupe_id])!='undefined')
+      {
+        $('#f_niveau').val(tab_groupe_niveau[groupe_id][0]);
+        $('#niveau_nom').html(tab_groupe_niveau[groupe_id][1]);
+      }
+    }
+
     $('#f_groupe').change
     (
       function()
       {
+        // remettre à jour ces deux valeurs
+        groupe_id   = $('#f_groupe option:selected').val();
         groupe_type = $("#f_groupe option:selected").parent().attr('label');
         $("#f_periode option").each
         (
@@ -274,21 +162,74 @@ $(document).ready
             // Rechercher automatiquement la meilleure période
             selectionner_periode_adaptee();
           }
-          // Afficher / masquer la zone de choix des périodes
-          view_periode();
+          // Afficher la zone de choix des périodes
+          if(typeof(groupe_type)!='undefined')
+          {
+            $('#zone_periodes').removeAttr("class");
+          }
+          else
+          {
+            $('#zone_periodes').addClass("hide");
+          }
+        }
+        // Modification automatique du formulaire : niveau du groupe
+        if(groupe_type=='Besoins')
+        {
+          $('#f_restriction_niveau').prop('disabled',true);
+        }
+        else
+        {
+          $('#f_restriction_niveau').prop('disabled',false);
+        }
+        if(groupe_id)
+        {
+          reporter_niveau_groupe();
+          // Afficher la zone des options
+          if($('#zone_options').hasClass("hide"))
+          {
+            $('#zone_options').removeAttr("class");
+          }
+        }
+        else
+        {
+          $('#zone_options').addClass("hide");
         }
       }
     );
 
-    // Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-    if( $('#form_select').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
-    {
-      selectionner_periode_adaptee();
-    }
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger les selects f_eleve (pour le professeur et le directeur) et f_matiere (pour le directeur) en ajax
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_eleve en ajax (au changement de f_groupe)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    function maj_matiere(groupe_id,matiere_id) // Uniquement pour un directeur
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_matieres',
+          data : 'f_groupe='+groupe_id+'&f_matiere='+matiere_id+'&f_multiple=0',
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_maj').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            {
+              $('#f_matiere').html(responseHTML).show();
+              maj_eleve(groupe_id,groupe_type,eleves_ordre);
+            }
+          else
+            {
+              $('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+            }
+          }
+        }
+      );
+    }
 
     function maj_eleve(groupe_id,groupe_type,eleves_ordre)
     {
@@ -301,7 +242,7 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_maj').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
           success : function(responseHTML)
           {
@@ -316,34 +257,50 @@ $(document).ready
             }
             if( ( is_multiple && (responseHTML.substring(0,6)=='<label') ) || ( !is_multiple && (responseHTML.substring(0,7)=='<option') ) ) // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
+              $('#ajax_maj').removeAttr("class").html("&nbsp;");
               $('#f_eleve').html(responseHTML).parent().show();
             }
-          else
+            else
             {
-              $('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
       );
     }
+
     $("#f_groupe").change
     (
       function()
       {
+        // Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
+        // Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
+        // Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
+        if(PROFIL_TYPE=='directeur')
+        {
+          matiere_id = $("#f_matiere").val();
+          $("#f_matiere").html('<option value="">&nbsp;</option>').hide();
+        }
         $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
           groupe_type  = $("#f_groupe option:selected").parent().attr('label');
           eleves_ordre = $("#f_eleves_ordre option:selected").val();
-          $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
-          maj_eleve(groupe_id,groupe_type,eleves_ordre);
+          $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          if(PROFIL_TYPE=='directeur')
+          {
+            maj_matiere(groupe_id,matiere_id);
+          }
+          else if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='parent') )
+          {
+            maj_eleve(groupe_id,groupe_type,eleves_ordre);
+          }
         }
         else
         {
           $("#bloc_ordre").hide();
-          $('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
+          $('#ajax_maj').removeAttr("class").html("&nbsp;");
         }
       }
     );
@@ -356,7 +313,7 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
-        $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_maj').removeAttr("class").addClass("loader").html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
@@ -371,7 +328,7 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        matiere_id = $("#f_matiere option:selected").val();
+        var matiere_id = $("#f_matiere option:selected").val();
         $.ajax
         (
           {
@@ -391,11 +348,6 @@ $(document).ready
                 modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
                 $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
                 $('#f_matiere').html(responseHTML);
-                var matiere_val = $("#f_matiere").val();
-                if(!matiere_val)
-                {
-                  $("#f_niveau").html('<option value="">&nbsp;</option>').hide();
-                }
               }
               $('button').prop('disabled',false);
             }
@@ -417,77 +369,61 @@ $(document).ready
       {
         rules :
         {
-          'f_type[]'       : { required:true },
-          f_remplissage    : { required:true },
-          f_colonne_bilan  : { required:true },
-          f_colonne_vide   : { required:true },
-          f_tri_objet      : { required:true },
-          f_tri_mode       : { required:true },
-          f_repeter_entete : { required:false },
-          f_retroactif     : { required:true },
-          f_matiere        : { required:true },
-          f_niveau         : { required:true },
-          f_groupe         : { required:function(){return !$('#f_type_generique').is(':checked');} },
-          'f_eleve[]'      : { required:function(){return $("#f_groupe").val()!=0;} },
-          f_eleves_ordre   : { required:function(){return $("#f_groupe").val()!=0;} },
-          f_periode        : { required:function(){return periode_requise;} },
-          f_date_debut     : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
-          f_date_fin       : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
-          f_restriction    : { required:false },
-          f_coef           : { required:false },
-          f_socle          : { required:false },
-          f_lien           : { required:false },
-          f_orientation    : { required:true },
-          f_couleur        : { required:true },
-          f_fond           : { required:true },
-          f_legende        : { required:true },
-          f_marge_min      : { required:true },
-          f_pages_nb       : { required:true },
-          f_cases_nb       : { required:true },
-          f_cases_larg     : { required:true }
+          f_matiere            : { required:true },
+          f_groupe             : { required:true },
+          'f_eleve[]'          : { required:true },
+          f_eleves_ordre       : { required:true },
+          f_periode            : { required:true },
+          f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
+          f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
+          f_retroactif         : { required:true },
+          f_mode_synthese      : { required:true },
+          f_fusion_niveaux     : { required:false },
+          f_coef               : { required:false },
+          f_socle              : { required:false },
+          f_lien               : { required:false },
+          f_start              : { required:false },
+          f_restriction_socle  : { required:false },
+          f_restriction_niveau : { required:false },
+          f_couleur            : { required:true },
+          f_fond               : { required:true },
+          f_legende            : { required:true },
+          f_marge_min          : { required:true }
         },
         messages :
         {
-          'f_type[]'       : { required:"type(s) manquant(s)" },
-          f_remplissage    : { required:"contenu manquant" },
-          f_colonne_bilan  : { required:"contenu manquant" },
-          f_colonne_vide   : { required:"contenu manquant" },
-          f_tri_objet      : { required:"choix manquant" },
-          f_tri_mode       : { required:"choix manquant" },
-          f_repeter_entete : { },
-          f_retroactif     : { required:"choix manquant" },
-          f_matiere        : { required:"matière manquante" },
-          f_niveau         : { required:"niveau manquant" },
-          f_groupe         : { required:"classe/groupe manquant" },
-          'f_eleve[]'      : { required:"élève(s) manquant(s)" },
-          f_eleves_ordre   : { required:"ordre manquant" },
-          f_periode        : { required:"période manquante" },
-          f_date_debut     : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_date_fin       : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_restriction    : { },
-          f_coef           : { },
-          f_socle          : { },
-          f_lien           : { },
-          f_orientation    : { required:"orientation manquante" },
-          f_couleur        : { required:"couleur manquante" },
-          f_fond           : { required:"fond manquant" },
-          f_legende        : { required:"légende manquante" },
-          f_marge_min      : { required:"marge mini manquante" },
-          f_pages_nb       : { required:"choix manquant" },
-          f_cases_nb       : { required:"nombre manquant" },
-          f_cases_larg     : { required:"largeur manquante" }
+          f_matiere            : { required:"matière manquante" },
+          f_groupe             : { required:"groupe manquant" },
+          'f_eleve[]'          : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre       : { required:"ordre manquant" },
+          f_periode            : { required:"période manquante" },
+          f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+          f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+          f_retroactif         : { required:"choix manquant" },
+          f_mode_synthese      : { required:"choix manquant" },
+          f_fusion_niveaux     : { },
+          f_coef               : { },
+          f_socle              : { },
+          f_lien               : { },
+          f_start              : { },
+          f_restriction_socle  : { },
+          f_restriction_niveau : { },
+          f_couleur            : { required:"couleur manquante" },
+          f_fond               : { required:"fond manquant" },
+          f_legende            : { required:"légende manquante" },
+          f_marge_min          : { required:"marge mini manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if(element.attr("id")=='f_matiere') { element.next().after(error); }
+          if(element.is("select")) {element.after(error);}
+          else if(element.attr("type")=="text") {element.next().after(error);}
           else if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
           else if(element.attr("type")=="checkbox") {
             if(element.parent().parent().hasClass('select_multiple')) {element.parent().parent().next().after(error);}
             else {element.parent().next().after(error);}
           }
-          else {element.after(error);}
         }
         // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
@@ -514,7 +450,6 @@ $(document).ready
       {
         // récupération d'éléments
         $('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
-        $('#f_niveau_nom' ).val( $("#f_niveau option:selected").text() );
         $('#f_groupe_nom' ).val( $("#f_groupe option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);
@@ -530,8 +465,8 @@ $(document).ready
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#bilan').html("&nbsp;");
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bilan').html('');
       }
       return readytogo;
     }
@@ -554,13 +489,13 @@ $(document).ready
         $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
         $('#bilan').html(responseHTML);
       }
-      else if(responseHTML.substring(0,4)=='<h2>')
+      else if(responseHTML.substring(0,17)=='<ul class="puce">')
       {
         $('#ajax_msg').removeAttr("class").html('');
         // Mis dans le div bilan et pas balancé directement dans le fancybox sinon la mise en forme des liens nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
         // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
         $('#bilan').html('<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+responseHTML);
-        $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
+        $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':450 } );
       }
       else
       {

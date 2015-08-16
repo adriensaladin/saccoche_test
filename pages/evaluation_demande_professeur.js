@@ -129,7 +129,7 @@ $(document).ready
 // Traitement du premier formulaire pour afficher le tableau avec la liste des demandes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Afficher masquer des options du formulaire
+    // Afficher / masquer des options du formulaire
 
     $('#f_periode').change
     (

@@ -82,7 +82,7 @@ class SessionUser
   }
 
   /**
-   * Tester si les données transmises permettent d'authentifier un utilisateur (sauf webmestre).
+   * Tester si les données transmises permettent d'authentifier un utilisateur (sauf webmestre & développeur).
    * 
    * En cas de connexion avec les identifiants SACoche, la reconnaissance s'effectue sur le couple login/password.
    * En cas de connexion depuis un service SSO extérieur type CAS, la reconnaissance s'effectue en comparant l'identifiant transmis (via $login) avec l'id ENT de jointure connu de SACoche.
@@ -521,7 +521,7 @@ class SessionUser
    */
   public static function memoriser_menu()
   {
-    $line_height = 37+1; // @see ./_css/style.css --> #menu li li a {line-height:30px}
+    $line_height = 43+1; // @see ./_css/style.css --> #menu li li a {line-height:43px}
     $numero_menu = 0;
     require(CHEMIN_DOSSIER_MENUS.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu & $tab_sous_menu
     $_SESSION['MENU'] = '<ul id="menu"><li><a class="boussole" href="#">'.html(Lang::_("MENU")).'</a><ul>'.NL;

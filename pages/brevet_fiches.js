@@ -38,7 +38,7 @@ $(document).ready
 
     ChartOptions = {
       chart: {
-        renderTo: 'div_graphique',
+        renderTo: 'div_graphique_brevet',
         type: 'line'
        },
       title: {

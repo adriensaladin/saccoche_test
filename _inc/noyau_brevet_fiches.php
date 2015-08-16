@@ -151,7 +151,7 @@ if( ($make_html) || ($make_graph) )
 {
   $bouton_print_appr = (!$make_graph)                       ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
   $bouton_print_test = (!empty($is_bouton_test_impression)) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $fiche_brevet_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '<div id="div_graphique"></div>'.NL ;
+  $fiche_brevet_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.'</div>'.NL : '<div id="div_graphique_brevet"></div>'.NL ;
   $width_col1 = 100 ;
   $width_col2 = 900 - $width_col1;
 }

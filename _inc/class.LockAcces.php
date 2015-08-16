@@ -107,16 +107,16 @@ class LockAcces
    * Si tel est le cas, alors exit().
    * 
    * Nécessite que la session soit ouverte.
-   * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre)
+   * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre & développeur)
    * 
    * En cas de blocage demandé par le webmestre, on ne laisse l'accès que :
-   * - pour le webmestre déjà identifié
-   * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre
+   * - pour le webmestre | développeur déjà identifié
+   * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre | développeur
    * 
    * En cas de blocage demandé par un administrateur ou par l'automate (sauvegarde/restauration) pour un établissement donné, on ne laisse l'accès que :
-   * - pour le webmestre déjà identifié
+   * - pour le webmestre | développeur déjà identifié
    * - pour un administrateur déjà identifié
-   * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre ou administrateur
+   * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre | développeur | administrateur
    * 
    * @param string $BASE                             car $_SESSION['BASE'] non encore renseigné si demande d'identification
    * @param string $demande_connexion_profil_sigle   FALSE si appel depuis index.php ou ajax.php, le sigle du profil si demande d'identification
@@ -124,27 +124,30 @@ class LockAcces
    */
   public static function stopper_si_blocage($BASE,$demande_connexion_profil_sigle)
   {
+    $is_session_webm_devel       = in_array($_SESSION['USER_PROFIL_SIGLE'],array('WBM','DVL'));
+    $is_session_webm_devel_admin = in_array($_SESSION['USER_PROFIL_SIGLE'],array('WBM','DVL','ADM'));
+    $is_demande_webm_devel_admin = in_array($demande_connexion_profil_sigle,array(FALSE,'WBM','DVL','ADM'));
     // Blocage demandé par le webmestre pour tous les établissements (multi-structures) ou pour l'établissement (mono-structure).
     $blocage_msg = LockAcces::tester_blocage('webmestre',0);
-    if( ($blocage_msg!==NULL) && ($_SESSION['USER_PROFIL_SIGLE']!='WBM') && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||($demande_connexion_profil_sigle!=FALSE)) )
+    if( ($blocage_msg!==NULL) && (!$is_session_webm_devel) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||($demande_connexion_profil_sigle!=FALSE)) )
     {
       exit_error( 'Blocage par le webmestre' /*titre*/ , html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par le webmestre pour un établissement donné (multi-structures).
     $blocage_msg = LockAcces::tester_blocage('webmestre',$BASE);
-    if( ($blocage_msg!==NULL) && ($_SESSION['USER_PROFIL_SIGLE']!='WBM') && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||($demande_connexion_profil_sigle!=FALSE)) )
+    if( ($blocage_msg!==NULL) && (!$is_session_webm_devel) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||($demande_connexion_profil_sigle!=FALSE)) )
     {
       exit_error('Blocage par le webmestre' /*titre*/ , html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par un administrateur pour son établissement.
     $blocage_msg = LockAcces::tester_blocage('administrateur',$BASE);
-    if( ($blocage_msg!==NULL) && (!in_array($_SESSION['USER_PROFIL_SIGLE'],array('WBM','ADM'))) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||(!in_array($demande_connexion_profil_sigle,array(FALSE,'WBM','ADM')))) )
+    if( ($blocage_msg!==NULL) && (!$is_session_webm_devel_admin) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||(!$is_demande_webm_devel_admin)) )
     {
       exit_error( 'Blocage par un administrateur' /*titre*/ , html('Blocage par un administrateur - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par l'automate pour un établissement donné.
     $blocage_msg = LockAcces::tester_blocage('automate',$BASE);
-    if( ($blocage_msg!==NULL) && (!in_array($_SESSION['USER_PROFIL_SIGLE'],array('WBM','ADM'))) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||(!in_array($demande_connexion_profil_sigle,array(FALSE,'WBM','ADM')))) )
+    if( ($blocage_msg!==NULL) && (!$is_session_webm_devel_admin) && (($_SESSION['USER_PROFIL_SIGLE']!='OUT')||(!$is_demande_webm_devel_admin)) )
     {
       // Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.
       // Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).

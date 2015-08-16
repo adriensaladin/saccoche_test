@@ -42,7 +42,7 @@ $(document).ready
 
     ChartOptions = {
       chart: {
-        renderTo: 'div_graphique',
+        renderTo: 'div_graphique_synthese',
         type: 'column'
        },
       colors: [

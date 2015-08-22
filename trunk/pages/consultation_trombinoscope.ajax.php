@@ -43,7 +43,7 @@ if( (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) )
   exit('Erreur avec les données transmises !');
 }
 // On récupère les élèves
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ ) ;
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ ) ;
 if(empty($DB_TAB))
 {
   exit('Aucun élève trouvé dans ce regroupement.');

@@ -29,8 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Messages d'accueil"));
 
 // Fabrication des éléments select du formulaire
+
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 $select_groupe = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+
 $select_profil = '<option value="">&nbsp;</option>';
 $select_profil.= ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<option value="administrateur">Administrateurs</option>' : '' ;
 $select_profil.= (in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','directeur'))) ? '<option value="directeur">Directeurs</option>' : '' ;
@@ -64,18 +66,15 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
   <tbody>
     <?php
     // Lister les messages dont le user est l'auteur
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_auteur($_SESSION['USER_ID']);
+    $DB_TAB = DB_STRUCTURE_MESSAGE::DB_lister_messages_for_user_auteur($_SESSION['USER_ID']);
     if(!empty($DB_TAB))
     {
       Layout::add( 'js_inline_before' , '// <![CDATA[' );
       foreach($DB_TAB as $DB_ROW)
       {
-        $date_debut_affich    = convert_date_mysql_to_french($DB_ROW['message_debut_date']);
-        $date_fin_affich      = convert_date_mysql_to_french($DB_ROW['message_fin_date']);
-        $destinataires_liste  = str_replace(',','_',mb_substr($DB_ROW['message_destinataires'],1,-1));
-        $destinataires_nombre = (mb_substr_count($DB_ROW['message_destinataires'],',')-1);
-        $destinataires_nombre = ($destinataires_nombre>1) ? $destinataires_nombre.' destinataires' : $destinataires_nombre.' destinataire' ;
-        // Afficher une ligne du tableau
+        $date_debut_affich = convert_date_mysql_to_french($DB_ROW['message_debut_date']);
+        $date_fin_affich   = convert_date_mysql_to_french($DB_ROW['message_fin_date']);
+        $destinataires_nombre = ($DB_ROW['destinataires_nombre']>1) ? $DB_ROW['destinataires_nombre'].' sélections' : $DB_ROW['destinataires_nombre'].' sélection' ;
         echo'<tr id="id_'.$DB_ROW['message_id'].'">';
         echo  '<td>'.$date_debut_affich.'</td>';
         echo  '<td>'.$date_fin_affich.'</td>';
@@ -87,7 +86,7 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
         echo  '</td>';
         echo'</tr>'.NL;
         // Javascript
-        Layout::add( 'js_inline_before' , 'tab_destinataires['.$DB_ROW['message_id'].']="'.$destinataires_liste.'";' );
+        Layout::add( 'js_inline_before' , 'tab_destinataires['.$DB_ROW['message_id'].']="'.$DB_ROW['message_destinataires'].'";' );
         Layout::add( 'js_inline_before' , 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";' );
       }
       Layout::add( 'js_inline_before' , '// ]]>' );
@@ -128,14 +127,19 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
 <form action="#" method="post" id="form_destinataires" class="hide">
   <table><tr>
     <td class="nu" style="width:30em">
-      <b>Profil :</b><br />
-      <select id="f_profil" name="f_profil"><?php echo $select_profil ?></select><br />
-      <b>Regroupement :</b><br />
-      <?php echo $select_groupe ?><br />
-      <div id="div_users" class="hide">
-        <b>Utilisateur(s) :</b><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span><br />
-        <span id="f_user" class="select_multiple"></span>
-      </div>
+      <p>
+        <b>Profil :</b><br />
+        <select id="f_profil" name="f_profil"><?php echo $select_profil ?></select>
+      </p>
+      <p id="div_groupe" class="hide">
+        <b>Regroupement :</b><br />
+        <?php echo $select_groupe ?>
+      </p>
+      <p id="div_users" class="hide">
+        <b>Utilisateur(s) :</b><br />
+        <label for="f_all"><input type="radio" id="f_all" name="f_detail" value="all" /> Tous (automatique)</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_indiv"><input type="radio" id="f_indiv" name="f_detail" value="indiv" /> Sélection individuelle</label><br />
+        <span id="f_user" class="select_multiple"></span> <span id="span_check" class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></span>
+      </p>
       <button id="ajouter_destinataires" type="button" class="groupe_ajouter" disabled>Ajouter.</button><br />
       <label id="ajax_msg_destinataires">&nbsp;</label>
     </td>

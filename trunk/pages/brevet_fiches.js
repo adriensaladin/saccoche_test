@@ -32,8 +32,7 @@ $(document).ready
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-    // @see   http://docs.highcharts.com/
-    // @see   http://www.highcharts.com/ref
+    // @see   http://www.highcharts.com/ --> http://api.highcharts.com/highcharts
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChartOptions = {

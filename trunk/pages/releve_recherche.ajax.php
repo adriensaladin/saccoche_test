@@ -93,7 +93,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $champs = 'user_id, user_nom, user_prenom, eleve_langue';
-$tab_eleve = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
+$tab_eleve = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
 $eleve_nb = count($tab_eleve);
 if(!$eleve_nb)
 {

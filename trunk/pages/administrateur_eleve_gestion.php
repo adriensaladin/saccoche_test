@@ -99,7 +99,7 @@ if(empty($_POST['f_afficher']))
       $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
     }
     $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, user_email, user_sortie_date' ;
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
@@ -122,7 +122,7 @@ if(empty($_POST['f_afficher']))
         echo  '<td class="label">'.$date_naissance.'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
-        echo  '<td>'.html($DB_ROW['user_email']).'</td>';
+        echo  '<td class="label">'.html($DB_ROW['user_email']).'</td>';
         echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cet élève."></q>';

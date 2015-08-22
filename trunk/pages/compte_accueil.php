@@ -243,7 +243,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
 
 if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
 {
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_destinataire($_SESSION['USER_ID']);
+  $DB_TAB = DB_STRUCTURE_MESSAGE::DB_lister_messages_for_user_destinataire( $_SESSION['USER_ID'] , $_SESSION['USER_PROFIL_TYPE'] );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $key => $DB_ROW)

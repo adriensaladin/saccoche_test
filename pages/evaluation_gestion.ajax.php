@@ -778,7 +778,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , $with_lien , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // liste des commentaires audio ou texte
   $DB_TAB_MSG = DB_STRUCTURE_COMMENTAIRE::DB_lister_devoir_commentaires($devoir_id);
   // Let's go
@@ -1106,7 +1106,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
@@ -1248,7 +1248,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   // liste des items
   $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
   // Let's go
   $item_nb = count($DB_TAB_ITEM);
   if(!$item_nb)
@@ -1513,7 +1513,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // liste des items
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
+  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
   if(empty($DB_TAB_COMP))
   {

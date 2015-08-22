@@ -885,4 +885,73 @@ if($version_base_structure_actuelle=='2015-07-03')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-08-16 => 2015-08-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-08-16')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-08-22';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Substitution du champ [message_destinataires] de la table [sacoche_message] par une table de jointure [sacoche_jointure_message_destinataire]
+    # On charge la nouvelle table
+    $reload_sacoche_jointure_message_destinataire = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_message_destinataire.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    # On en profite pour supprimer les notifications périmées qui passaient par [sacoche_message] jusqu'en mars 2015.
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Fiches brevet - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Relevé d\'évaluations - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Bulletin scolaire - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 1 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 2 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 3 - %"' );
+    // D'autres entrées trouvées, probable reliquat d'un bug...
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "ches brevet - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "levé d\'évaluations - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "lletin scolaire - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 1 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 2 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 3 - %"' );
+    # On récupère les destinataires des messages en cours, ainsi que leur profil, afin de les y transposer
+    $DB_SQL = 'SELECT message_id, message_destinataires FROM sacoche_message ';
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    if(!empty($DB_TAB))
+    {
+      $tab_user_all = array();
+      $tab_user_message = array();
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_user_message[$DB_ROW['message_id']] = explode(',',mb_substr($DB_ROW['message_destinataires'],1,-1));
+        $tab_user_all = array_merge($tab_user_all, $tab_user_message[$DB_ROW['message_id']]);
+      }
+      $tab_user_all = array_unique($tab_user_all);
+      $listing_user_id = implode(',',$tab_user_all);
+      $DB_SQL = 'SELECT user_id, user_profil_type FROM sacoche_user LEFT JOIN sacoche_user_profil USING (user_profil_sigle) WHERE user_id IN('.$listing_user_id.') ';
+      $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE, TRUE);
+      $DB_SQL = 'INSERT INTO sacoche_jointure_message_destinataire( message_id, user_profil_type, destinataire_type, destinataire_id) ';
+      $DB_SQL.= 'VALUES(                                           :message_id,:user_profil_type,:destinataire_type,:destinataire_id)';
+      foreach($tab_user_message as $message_id => $tab_user)
+      {
+        foreach($tab_user as $user_id)
+        {
+          if(isset($DB_TAB[$user_id]))
+          {
+            $DB_VAR = array(
+              ':message_id'        => $message_id,
+              ':user_profil_type'  => $DB_TAB[$user_id]['user_profil_type'],
+              ':destinataire_type' => 'user',
+              ':destinataire_id'   => $user_id,
+            );
+            DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+          }
+        }
+      }
+    }
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message DROP message_destinataires ' );
+  }
+}
+
 ?>

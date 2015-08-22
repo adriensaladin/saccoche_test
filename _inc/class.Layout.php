@@ -67,6 +67,7 @@ class Layout
   private static $is_favicon           = NULL;    // insertion (ou pas) des favicon
   private static $is_rss               = NULL;    // insertion (ou pas) du flux RSS
   private static $is_add_noscript      = NULL;    // pour ajouter une balise <noscript> au début du <body>
+  private static $is_server_xss_head   = NULL;    // pour indiquer si le serveur est déjà configuré pour envoyer un header "X-XSS-Protection"
   private static $body_class           = NULL;    // classe (facultative) de l'élément <body>
 
   /**
@@ -83,23 +84,25 @@ class Layout
   {
     if($config=='light')
     {
-      Layout::$is_meta_charset = FALSE;
-      Layout::$is_meta_robots  = FALSE;
-      Layout::$is_opengraph    = FALSE;
-      Layout::$is_favicon      = TRUE;
-      Layout::$is_rss          = FALSE;
-      Layout::$is_add_noscript = TRUE;
-      Layout::$body_class      = '';
+      Layout::$is_meta_charset    = FALSE;
+      Layout::$is_meta_robots     = FALSE;
+      Layout::$is_opengraph       = FALSE;
+      Layout::$is_favicon         = TRUE;
+      Layout::$is_rss             = FALSE;
+      Layout::$is_add_noscript    = TRUE;
+      Layout::$is_server_xss_head = TRUE;
+      Layout::$body_class         = '';
     }
     else
     {
-      Layout::$is_meta_charset = FALSE;
-      Layout::$is_meta_robots  = TRUE;
-      Layout::$is_opengraph    = TRUE;
-      Layout::$is_favicon      = TRUE;
-      Layout::$is_rss          = TRUE;
-      Layout::$is_add_noscript = ($config=='portail') ? TRUE : FALSE ; // Pour l'appli la ligne est déjà incluse à un endroit plus approprié
-      Layout::$body_class      = ($config=='portail') ? '' : ' class="'.substr($config,5).'"' ;
+      Layout::$is_meta_charset    = FALSE;
+      Layout::$is_meta_robots     = TRUE;
+      Layout::$is_opengraph       = TRUE;
+      Layout::$is_favicon         = TRUE;
+      Layout::$is_rss             = TRUE;
+      Layout::$is_server_xss_head = (IS_HEBERGEMENT_SESAMATH) ? TRUE : FALSE ;;
+      Layout::$is_add_noscript    = ($config=='portail') ? TRUE : FALSE ; // Pour l'appli la ligne est déjà incluse à un endroit plus approprié
+      Layout::$body_class         = ($config=='portail') ? '' : ' class="'.substr($config,5).'"' ;
     }
   }
 
@@ -587,7 +590,10 @@ class Layout
     header('X-Content-Type-Options: nosniff');
     // S'assurer que le navigateur du client fasse son maximum pour prévenir d'une attaque de type XSS
     // @see https://www.owasp.org/index.php/List_of_useful_HTTP_headers
-    header('X-XSS-Protection: 1; mode=block');
+    if(!Layout::$is_server_xss_head)
+    {
+      header('X-XSS-Protection: 1; mode=block');
+    }
     // on passe au contenu
     $retour = '';
     $retour.= '<!DOCTYPE html>'.NL;

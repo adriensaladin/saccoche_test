@@ -33,7 +33,7 @@ if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $action          = (isset($_POST['f_action']))          ? Clean::texte($_POST['f_action'])          : '';
-$profil          = (isset($_POST['f_profil']))          ? Clean::texte($_POST['f_profil'])          : ''; // administrateur professeur personnel directeur eleve parent
+$profil_type     = (isset($_POST['f_profil_type']))     ? Clean::texte($_POST['f_profil_type'])     : '';
 $groupe_type     = (isset($_POST['f_groupe_type']))     ? Clean::texte($_POST['f_groupe_type'])     : ''; // d n c g b
 $groupe_id       = (isset($_POST['f_groupe_id']))       ? Clean::entier($_POST['f_groupe_id'])      : 0;
 $message_id      = (isset($_POST['f_id']))              ? Clean::entier($_POST['f_id'])             : 0;
@@ -42,45 +42,116 @@ $date_fin_fr     = (isset($_POST['f_fin_date']))        ? Clean::date_fr($_POST[
 $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu']) : '' ;
 $mode_discret    = (isset($_POST['f_mode_discret']))    ? TRUE                                      : FALSE ;
 
-// Contrôler la liste des destinataires transmis
-$tab_destinataires = (isset($_POST['f_destinataires_liste'])) ? explode('_',$_POST['f_destinataires_liste']) : array() ;
-$tab_destinataires = Clean::map_entier($tab_destinataires);
-$tab_destinataires = array_filter($tab_destinataires,'positif');
-$nb_destinataires  = count($tab_destinataires);
-
-// Contrôler la liste des destinataires à récupérer
-$tab_ids  = (isset($_POST['f_ids'])) ? explode('_',$_POST['f_ids']) : array() ;
-$tab_ids  = Clean::map_entier($tab_ids);
-$tab_ids  = array_filter($tab_ids,'positif');
-$nb_ids   = count($tab_ids);
-
 $abonnement_ref = 'message_accueil';
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Afficher une liste d'utilisateurs ou de destinataires
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+$tab_destinataires_transmis = (isset($_POST['f_destinataires_liste'])) ? explode(',',$_POST['f_destinataires_liste']) : array() ;
+$tab_destinataires_valides  = array() ;
 
-$tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
+// Profils
+$tab_profils = array(
+  'administrateur' => 'Administrateurs',
+  'directeur'      => 'Directeurs',
+  'professeur'     => 'Professeurs',
+  'personnel'      => 'Personnels autres',
+  'eleve'          => 'Élèves',
+  'parent'         => 'Responsables légaux',
+);
 
-if( ($action=='afficher_users') && $profil && $groupe_id && isset($tab_types[$groupe_type]) )
+// Types de regroupements et choix affectés
+$tab_types = array(
+  'all'    =>array() ,
+  'niveau' =>array() ,
+  'classe' =>array() ,
+  'groupe' =>array() ,
+  'besoin' =>array() ,
+  'user'   =>array() ,
+);
+
+$tab_types_abreges = array(
+  'd'=>'all'    ,
+  'n'=>'niveau' ,
+  'c'=>'classe' ,
+  'g'=>'groupe' ,
+  'b'=>'besoin' ,
+);
+
+// Contrôler la liste des destinataires transmis
+if(!empty($tab_destinataires_transmis))
 {
-  $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
-  exit( HtmlForm::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , TRUE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
+  foreach($tab_destinataires_transmis as $destinataire_infos)
+  {
+    list( $user_profil_type , $destinataire_type , $destinataire_id ) = explode('_',$destinataire_infos) + array_fill(0,3,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+    if( isset($tab_profils[$user_profil_type]) && isset($tab_types[$destinataire_type]) && $destinataire_id )
+    {
+      $tab_types[$destinataire_type][$destinataire_id] = $destinataire_id;
+      $tab_destinataires_valides[] = $user_profil_type.'_'.$destinataire_type.'_'.$destinataire_id;
+    }
+  }
+}
+$nb_destinataires_valides  = count($tab_destinataires_valides);
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Afficher une liste de destinataires
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='afficher_destinataires') && $nb_destinataires_valides )
+{
+  // Récupérer les noms des niveaux / classes / groupes nécessaires
+  foreach($tab_types as $destinataire_type => $tab_ids)
+  {
+    if(!empty($tab_ids))
+    {
+      if($destinataire_type=='all')
+      {
+        $tab_types[$destinataire_type][2] = '  Tous'; // double espace devant le mot pour le tri ultérieur des lignes
+      }
+      else
+      {
+        $listing_id = implode(',',$tab_types[$destinataire_type]);
+        $DB_TAB = DB_STRUCTURE_MESSAGE::DB_recuperer_destinataires_texte($destinataire_type,$listing_id);
+        foreach($DB_TAB as $DB_ROW)
+        {
+          $tab_types[$destinataire_type][$DB_ROW['id']] = $DB_ROW['texte'];
+        }
+      }
+    }
+  }
+  // Le tableau avec les options du formulaire SELECT
+  $tab_select_destinataires = array( 'valeur'=>array() , 'texte'=>array() );
+  foreach($tab_destinataires_valides as $destinataire_infos)
+  {
+    list( $user_profil_type , $destinataire_type , $destinataire_id ) = explode('_',$destinataire_infos);
+    $tab_select_destinataires['valeur'][] = $user_profil_type.'_'.$destinataire_type.'_'.$destinataire_id;
+    $tab_select_destinataires['texte' ][] = $tab_profils[$user_profil_type].' | '.$tab_types[$destinataire_type][$destinataire_id];
+  }
+  array_multisort(
+    $tab_select_destinataires['texte' ], SORT_ASC,SORT_STRING,
+    $tab_select_destinataires['valeur']
+  );
+  foreach($tab_select_destinataires['valeur'] as $key => $truc)
+  {
+    $tab_select_destinataires[$key] = array( 'valeur' => $tab_select_destinataires['valeur'][$key] , 'texte' => $tab_select_destinataires['texte'][$key] );
+  }
+  unset( $tab_select_destinataires['valeur'] , $tab_select_destinataires['texte'] );
+  exit( HtmlForm::afficher_select( $tab_select_destinataires , 'f_destinataires' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
-if( ($action=='afficher_destinataires') && $nb_ids )
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Afficher une liste d'utilisateurs
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='afficher_users') && isset($tab_profils[$profil_type]) && $groupe_id && isset($tab_types_abreges[$groupe_type]) )
 {
-  $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_ids) , 'user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte' , '' /*avec_info*/ );
-  exit( HtmlForm::afficher_select( $DB_TAB , 'f_destinataires' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
+  $champs = ($profil_type!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , CONCAT(user_profil_type,"_user_",user_id) AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , CONCAT("parent_user_",parent.user_id) AS valeur' ;
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil_type /*profil_type*/ , 1 /*statut*/ , $tab_types_abreges[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
+  exit( HtmlForm::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouveau message
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires )
+if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires_valides )
 {
   $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
   $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
@@ -88,11 +159,17 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   {
     exit('Date de fin antérieure à la date de début !');
   }
-  $message_id = DB_STRUCTURE_COMMUN::DB_ajouter_message($_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  if($nb_destinataires_valides>100)
+  {
+    exit('Trop de sélections : choisir "Tous (automatique)" sur des regroupements !');
+  }
+  $message_id = DB_STRUCTURE_MESSAGE::DB_ajouter_message( $_SESSION['USER_ID'] , $date_debut_mysql , $date_fin_mysql , $message_contenu );
+  DB_STRUCTURE_MESSAGE::DB_modifier_message_destinataires( $message_id , $tab_destinataires_valides , 'creer' );
   // Notifications (rendues visibles ultérieurement)
   if(!$mode_discret)
   {
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_destinataires) );
+    $tab_user_id = DB_STRUCTURE_MESSAGE::DB_recuperer_user_id_from_destinataires( $tab_destinataires_valides );
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
     if($listing_abonnes)
     {
       $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
@@ -105,7 +182,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
     }
   }
   // Afficher le retour
-  $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
+  $destinataires_nombre = ($nb_destinataires_valides>1) ? $nb_destinataires_valides.' sélections' : $nb_destinataires_valides.' sélection' ;
   echo'<tr id="id_'.$message_id.'" class="new">';
   echo  '<td>'.$date_debut_fr.'</td>';
   echo  '<td>'.$date_fin_fr.'</td>';
@@ -117,7 +194,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   echo  '</td>';
   echo'</tr>';
   echo'<SCRIPT>';
-  echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
+  echo'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";';
   echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
   exit();
 }
@@ -126,7 +203,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
 // Modifier un message existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires )
+if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires_valides )
 {
   $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
   $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
@@ -134,12 +211,18 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   {
     exit('Date de fin antérieure à la date de début !');
   }
-  DB_STRUCTURE_COMMUN::DB_modifier_message($message_id,$_SESSION['USER_ID'],$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires);
+  if($nb_destinataires_valides>100)
+  {
+    exit('Trop de sélections : choisir "Tous (automatique)" sur des regroupements !');
+  }
+  DB_STRUCTURE_MESSAGE::DB_modifier_message( $message_id , $_SESSION['USER_ID'] , $date_debut_mysql , $date_fin_mysql , $message_contenu );
+  DB_STRUCTURE_MESSAGE::DB_modifier_message_destinataires( $message_id , $tab_destinataires_valides , 'substituer' );
   // Notifications (rendues visibles ultérieurement)
   if(!$mode_discret)
   {
+    $tab_user_id = DB_STRUCTURE_MESSAGE::DB_recuperer_user_id_from_destinataires( $tab_destinataires_valides );
     DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref , $message_id );
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_destinataires) );
+    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
     if($listing_abonnes)
     {
       $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
@@ -152,7 +235,7 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
     }
   }
   // Afficher le retour
-  $destinataires_nombre = ($nb_destinataires>1) ? $nb_destinataires.' destinataires' : $nb_destinataires.' destinataire' ;
+  $destinataires_nombre = ($nb_destinataires_valides>1) ? $nb_destinataires_valides.' sélections' : $nb_destinataires_valides.' sélection' ;
   echo'<td>'.$date_debut_fr.'</td>';
   echo'<td>'.$date_fin_fr.'</td>';
   echo'<td>'.$destinataires_nombre.'</td>';
@@ -162,7 +245,7 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   echo  '<q class="supprimer" title="Supprimer ce message."></q>';
   echo'</td>';
   echo'<SCRIPT>';
-  echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
+  echo'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";';
   echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
   exit();
 }
@@ -173,7 +256,12 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
 
 if( ($action=='supprimer') && $message_id )
 {
-  DB_STRUCTURE_COMMUN::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
+  $nb_suppression = DB_STRUCTURE_MESSAGE::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
+  if(!$nb_suppression)
+  {
+    exit('Message introuvable ou dont vous n\'êtes pas l\'auteur !');
+  }
+  DB_STRUCTURE_MESSAGE::DB_supprimer_message_destinataires($message_id);
   // Notifications (rendues visibles ultérieurement)
   DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref , $message_id );
   // Afficher le retour

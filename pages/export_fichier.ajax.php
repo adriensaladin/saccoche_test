@@ -52,7 +52,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
   // Récupérer les élèves de la classe ou du groupe
   $champs = 'user_id, user_login, user_genre, user_nom, user_prenom';
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -593,7 +593,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   }
   // Récupérer les données des élèves
   $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, eleve_classe_id';
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -699,7 +699,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
              parent.user_sconet_id AS parent_sconet_id, parent.user_sconet_elenoet AS parent_sconet_elenoet, parent.user_reference AS parent_reference,
              parent.user_genre AS parent_genre, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_login AS parent_login,
              enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -793,7 +793,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_login, user_profil_sigle' ;
   foreach($tab_profil as $profil)
   {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil  , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

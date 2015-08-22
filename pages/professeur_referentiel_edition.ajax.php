@@ -341,9 +341,9 @@ if($action=='action_complementaire')
   $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
   $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                       : '';
   $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                         : '';
-  list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array(0,0,0,0);
-  list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array(0,0,0,0);
-  list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array(0,0,0,0);
+  list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
+  list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
+  list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   // Vérification des données
   $tab_action_groupe   = array('modifier_coefficient','modifier_panier','deplacer_domaine','deplacer_theme');
   $test1 = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;

@@ -110,7 +110,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo  '<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
-        echo  '<td>'.html($DB_ROW['user_email']).'</td>';
+        echo  '<td class="label">'.html($DB_ROW['user_email']).'</td>';
         echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce personnel."></q>';

@@ -86,7 +86,7 @@ if($f_type!='messages')
 
 if(!empty($message_id))
 {
-  DB_STRUCTURE_MESSAGE::DB_modifier_message_dests_cache( $message_id , $_SESSION['USER_ID'] , (bool)$f_etat );
+  DB_STRUCTURE_COMMUN::DB_modifier_message_dests_cache( $message_id , $_SESSION['USER_ID'] , (bool)$f_etat );
   exit('ok');
 }
 

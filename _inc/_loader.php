@@ -74,86 +74,53 @@ if(!function_exists('array_fill_keys'))
 
 /*
  * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- * @see http://www.php.net/json_encode
+ * @see http://fr.php.net/manual/fr/function.json-encode.php
  * @see http://json.org/json-fr.html
- * Rmq : Un souci a été rencontré sur un serveur FreeBSD : fonction json_encode() indéfinie alors qu'un phpinfo() du PHP 5.6.11 indiquait json chargé !
- * Il a fallu explicitement installer le paquet "php56-json" existant dans les dépôts de FreeBSD...
- * @see http://php.net/manual/fr/json.installation.php
  */
 if (!function_exists('json_encode'))
 {
-  function json_encode( $data )
+  function json_encode($data)
   {
+    $search  = array(  '\\',   '"',   '/',   '\b',   '\f',   '\n',  '\r',  '\t' );
+    $replace = array('\\\\', '\\"', '\\/',  '\\b',  '\\f',  '\\n', '\\r', '\\t' );
     switch ($type = gettype($data))
     {
-      case 'object':
-      case 'array':
-        $islist = is_array($data) && ( empty($data) || array_keys($data) === range(0,count($data)-1) );
-        if( $islist )
-        {
-          return '[' . implode(',', array_map('json_encode', $data) ) . ']';
-        }
-        else
-        {
-          $items = Array();
-          foreach( $data as $key => $value )
-          {
-            $items[] = json_encode('"'.$key.'"') . ':' . json_encode($value);
-          }
-          return '{' . implode(',', $items) . '}';
-        }
-      case 'string':
-        # Escape non-printable or Non-ASCII characters.
-        # I also put the \\ character first, as suggested in comments on the 'addclashes' page.
-        $string = '"' . addcslashes($data, "\\\"\n\r\t/" . chr(8) . chr(12)) . '"';
-        $json   = '';
-        $len    = strlen($string);
-        # Convert UTF-8 to Hexadecimal Codepoints.
-        for( $i = 0; $i < $len; $i++ )
-        {
-          $char = $string[$i];
-          # Single byte
-          $c1 = ord($char);
-          if( $c1 <128 )
-          {
-            $json .= ($c1 > 31) ? $char : sprintf("\\u%04x", $c1);
-            continue;
-          }
-          # Double byte
-          $c2 = ord($string[++$i]);
-          if ( ($c1 & 32) === 0 )
-          {
-            $json .= sprintf("\\u%04x", ($c1 - 192) * 64 + $c2 - 128);
-            continue;
-          }
-          # Triple byte
-          $c3 = ord($string[++$i]);
-          if( ($c1 & 16) === 0 )
-          {
-            $json .= sprintf("\\u%04x", (($c1 - 224) <<12) + (($c2 - 128) << 6) + ($c3 - 128));
-            continue;
-          }
-          # Quadruple byte
-          $c4 = ord($string[++$i]);
-          if( ($c1 & 8 ) === 0 )
-          {
-            $u = (($c1 & 15) << 2) + (($c2>>4) & 3) - 1;
-            $w1 = (54<<10) + ($u<<6) + (($c2 & 15) << 2) + (($c3>>4) & 3);
-            $w2 = (55<<10) + (($c3 & 15)<<6) + ($c4-128);
-            $json .= sprintf("\\u%04x\\u%04x", $w1, $w2);
-          }
-        }
-        return $json;
+      case 'NULL':
+        return 'null';
       case 'boolean':
+        return $data ? 'true' : 'false' ;
       case 'integer':
       case 'double':
       case 'float':
-      case 'NULL':
-        // Remarque : avec le type float il semble y avoir le même problème qu'avec serialize() : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
-        return strtolower(var_export( $data, TRUE ));
+        return $data;
+      case 'string':
+        // Modification suggérée par Christophe MASSON <masson@kyxar.fr> en remplacement du addslashes() qui ne convenait pas vraiment.
+        return '"' . str_replace($search,$replace,$data) . '"';
+      case 'object':
+        $data = get_object_vars($data);
+      case 'array':
+        $output_index_count = 0;
+        $output_indexed = array();
+        $output_associative = array();
+        foreach ($data as $key => $value)
+        {
+          $output_indexed[] = json_encode($value);
+          $output_associative[] = json_encode($key) . ':' . json_encode($value);
+          if ($output_index_count !== NULL && $output_index_count++ !== $key)
+          {
+            $output_index_count = NULL;
+          }
+        }
+        if ($output_index_count !== NULL)
+        {
+          return '[' . implode(',', $output_indexed) . ']';
+        }
+        else
+        {
+          return '{' . implode(',', $output_associative) . '}';
+        }
       default:
-        // Not supported
-        return '';
+        return ''; // Not supported
     }
   }
 }
@@ -469,7 +436,6 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_DEMANDE'        => '_sql'.DS.'requetes_structure_demande.php' ,
     'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
     'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
-    'DB_STRUCTURE_MESSAGE'        => '_sql'.DS.'requetes_structure_message.php' ,
     'DB_STRUCTURE_NOTIFICATION'   => '_sql'.DS.'requetes_structure_notification.php' ,
     'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,

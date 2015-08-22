@@ -50,7 +50,8 @@ if($langue)
   // On modifie aussi la session
   $_SESSION['USER_LANGUE'] = $langue ;
   // sans oublier le menu
-  Lang::setlocale( LC_MESSAGES, Lang::get_locale_used() );
+  $locale = (!empty($_SESSION['USER_LANGUE'])) ? $_SESSION['USER_LANGUE'] : $_SESSION['ETABLISSEMENT']['LANGUE'] ;
+  Lang::setlocale( LC_MESSAGES, $locale );
   SessionUser::memoriser_menu();
   // Retour
   exit('ok');

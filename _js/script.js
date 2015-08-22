@@ -159,7 +159,7 @@ function afficher_json_message_erreur(jqXHR, textStatus)
   {
     var pos_debut_json = jqXHR['responseText'].indexOf('{"');
     var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
-    return 'Anomalie rencontrée ! ' + escapeHtml(chaine_anormale);
+    return 'Anomalie rencontrée ! ' + chaine_anormale;
   }
   // Rien de retourné : probablement un souci de connexion au serveur
   else if( (textStatus=='error') && (typeof(jqXHR['responseText'])=='undefined') )
@@ -169,7 +169,7 @@ function afficher_json_message_erreur(jqXHR, textStatus)
   // 404 ou autre...
   else
   {
-    return 'Erreur inattendue ! ' + escapeHtml(jqXHR['responseText']);
+    return 'Erreur inattendue ! ' + jqXHR['responseText'];
   }
 }
 

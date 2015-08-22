@@ -339,8 +339,7 @@ class SessionUser
     SessionUser::adapter_daltonisme() ;
     // Enregistrer en session le CSS personnalisé
     SessionUser::actualiser_style();
-    // Enregistrer en session le menu personnalisé ; détection de la langue remis ici pour le cas de bascule entre comptes.
-    Lang::setlocale( LC_MESSAGES, Lang::get_locale_used() );
+    // Enregistrer en session le menu personnalisé
     SessionUser::memoriser_menu();
     // Juste pour davantage de lisibilité si besoin de debug...
     ksort($_SESSION);

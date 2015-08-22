@@ -32,26 +32,6 @@ $(document).ready
 
     var mode = false;
 
-    var prefixe_type =
-    {
-      'nom' :
-      {
-        'd' : 'Tous',
-        'n' : 'Niveau ',
-        'c' : 'Classe ',
-        'g' : 'Groupe ',
-        'b' : 'Besoin '
-      },
-      'code' :
-      {
-        'd' : 'all',
-        'n' : 'niveau',
-        'c' : 'classe',
-        'g' : 'groupe',
-        'b' : 'besoin'
-      }
-    };
-
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},1:{sorter:'date_fr'},2:{sorter:false},3:{sorter:false},4:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[1,1],[0,0]] ] ); };
@@ -88,7 +68,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':750 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
     }
 
     /**
@@ -160,7 +140,7 @@ $(document).ready
       var destinataires_liste = $("#f_destinataires_liste").val();
       if(destinataires_liste=='')
       {
-        $('#f_destinataires').html('');
+        $('#f_destinataires').html();
         $('#retirer_destinataires').prop('disabled',true);
         $('#valider_destinataires').prop('disabled',true);
       }
@@ -172,7 +152,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=afficher_destinataires'+'&f_destinataires_liste='+destinataires_liste,
+            data : 'csrf='+CSRF+'&f_action=afficher_destinataires'+'&f_ids='+destinataires_liste,
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -250,8 +230,8 @@ $(document).ready
     function maj_affichage()
     {
       // On récupère le profil
-      var profil_type = $("#f_profil option:selected").val();
-      if(profil_type=='')
+      var profil = $("#f_profil option:selected").val();
+      if(profil=='')
       {
         $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
         $('#div_users').hide();
@@ -259,16 +239,7 @@ $(document).ready
         return false
       }
       // On récupère le regroupement
-      if( (profil_type=='professeur') || (profil_type=='eleve') || (profil_type=='parent') )
-      {
-        $('#div_groupe').show();
-        var groupe_val = $("#f_groupe option:selected").val();
-      }
-      else
-      {
-        $('#div_groupe').hide();
-        var groupe_val = 'd2';
-      }
+      var groupe_val = $("#f_groupe option:selected").val();
       if(!groupe_val)
       {
         $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
@@ -288,56 +259,41 @@ $(document).ready
         groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
         groupe_id   = groupe_val;
       }
-      if($('#f_indiv').is(':checked'))
-      {
-        $('#ajax_msg_destinataires').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('#bilan tbody').html('');
-        $.ajax
-        (
+      $('#ajax_msg_destinataires').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#bilan tbody').html('');
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=afficher_users'+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
           {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=afficher_users'+'&f_profil_type='+profil_type+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-            dataType : "html",
-            error : function(jqXHR, textStatus, errorThrown)
+            $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-            },
-            success : function(responseHTML)
+              $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
+              $('#f_user').html(responseHTML);
+              $('#div_users').show();
+              $('#ajouter_destinataires').prop('disabled',false);
+            }
+            else
             {
-              initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-              {
-                $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
-                $('#f_user').html(responseHTML).show();
-                $('#span_check').show();
-                $('#div_users').show();
-                $('#ajouter_destinataires').prop('disabled',false);
-              }
-              else
-              {
-                $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html(responseHTML);
-                $('#div_users').hide();
-                $('#ajouter_destinataires').prop('disabled',true);
-              }
+              $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#div_users').hide();
+              $('#ajouter_destinataires').prop('disabled',true);
             }
           }
-        );
-      }
-      else
-      {
-        $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
-        $('#f_user').hide();
-        $('#span_check').hide();
-        $('#div_users').show();
-        if($('#f_all').is(':checked'))
-        {
-          $('#ajouter_destinataires').prop('disabled',false);
         }
-      }
+      );
     }
 
-    $("#f_profil , #f_groupe , #f_all , #f_indiv").change
+    $("#f_profil , #f_groupe").change
     (
       function()
       {
@@ -353,53 +309,18 @@ $(document).ready
     (
       function()
       {
-        var prefixe_profil = $("#f_profil option:selected").text()+' | ';
-        if($('#f_all').is(':checked'))
-        {
-          var profil_type = $("#f_profil option:selected").val();
-          if( (profil_type=='professeur') || (profil_type=='eleve') || (profil_type=='parent') )
+        $('#f_user input:checked').each
+        (
+          function()
           {
-            var groupe_val = $("#f_groupe option:selected").val();
-            // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
-            if(isNaN(parseInt(groupe_val,10)))
+            var destinataire_id = $(this).val();
+            var destinataire_nom = $(this).parent().text();
+            if( ! $('#f_destinataires_'+destinataire_id).length )
             {
-              groupe_type = groupe_val.substring(0,1);
-              groupe_id   = groupe_val.substring(1);
+              $('#f_destinataires').append('<label for="f_destinataires_'+destinataire_id+'"><input type="checkbox" value="'+destinataire_id+'" id="f_destinataires_'+destinataire_id+'" name="f_destinataires[]">'+destinataire_nom+'</label>');
             }
-            // Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
-            else
-            {
-              groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
-              groupe_id   = groupe_val;
-            }
-            var destinataire_id = profil_type + '_' + prefixe_type.code[groupe_type] + '_' + groupe_id ;
-            var destinataire_nom = (groupe_type=='d') ? prefixe_type.nom[groupe_type] : prefixe_type.nom[groupe_type] + $("#f_groupe option:selected").text() ;
           }
-          else
-          {
-            var destinataire_id = profil_type + '_all_2';
-            var destinataire_nom = ' Tous';
-          }
-          if( ! $('#f_destinataires_'+destinataire_id).length )
-          {
-            $('#f_destinataires').prepend('<label for="f_destinataires_'+destinataire_id+'"><input type="checkbox" value="'+destinataire_id+'" id="f_destinataires_'+destinataire_id+'" name="f_destinataires[]">'+prefixe_profil+destinataire_nom+'</label>');
-          }
-        }
-        else
-        {
-          $('#f_user input:checked').each
-          (
-            function()
-            {
-              var destinataire_id = $(this).val();
-              var destinataire_nom = $(this).parent().text();
-              if( ! $('#f_destinataires_'+destinataire_id).length )
-              {
-                $('#f_destinataires').prepend('<label for="f_destinataires_'+destinataire_id+'"><input type="checkbox" value="'+destinataire_id+'" id="f_destinataires_'+destinataire_id+'" name="f_destinataires[]">'+prefixe_profil+destinataire_nom+'</label>');
-              }
-            }
-          );
-        }
+        );
         var etat_disabled = ($('#f_destinataires').children().length) ? false : true ;
         $('#retirer_destinataires').prop('disabled',etat_disabled);
         $('#valider_destinataires').prop('disabled',etat_disabled);
@@ -444,13 +365,13 @@ $(document).ready
             var id = $(this).val();
             if(id)
             {
-              liste += $(this).val()+',';
+              liste += $(this).val()+'_';
               nombre++;
             }
           }
         );
         var destinataires_liste  = liste.substring(0,liste.length-1);
-        var destinataires_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' sélections' : nombre+' sélection' ) ;
+        var destinataires_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' destinataires' : nombre+' destinataire' ) ;
         $('#f_destinataires_liste').val(destinataires_liste);
         $('#f_destinataires_nombre').val(destinataires_nombre);
         $('#annuler_destinataires').click();
@@ -482,7 +403,7 @@ $(document).ready
     (
       function()
       {
-        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':750 , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
         return false;
       }
     );
@@ -502,7 +423,7 @@ $(document).ready
         {
           f_debut_date          : { required:true , dateITA:true },
           f_fin_date            : { required:true , dateITA:true },
-          f_destinataires_liste : { required:true , maxlength:3000 }, // 100 (nombre) x 30 (longueur max estimée par destinataire)
+          f_destinataires_liste : { required:true },
           f_message_longueur    : { min:1 , range: [15, 1000] },
           f_mode_discret        : { required:false }
         },
@@ -510,7 +431,7 @@ $(document).ready
         {
           f_debut_date          : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
           f_fin_date            : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
-          f_destinataires_liste : { required:"destinataire(s) manquant(s)" , maxlength:"trop de sélections : choisir \"Tous (automatique)\" sur des regroupements" },
+          f_destinataires_liste : { required:"destinataire(s) manquant(s)" },
           f_message_longueur    : { min:"contenu manquant" , range:"contenu insuffisant" },
           f_mode_discret        : { }
         },

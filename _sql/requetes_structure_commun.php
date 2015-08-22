@@ -376,7 +376,7 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
 /**
  * lister_users_regroupement
  *
- * @param string $profil_type   eleve | parent | professeur | personnel | directeur | administrateur
+ * @param string $profil        eleve | parent | professeur | personnel | directeur | administrateur
  * @param int    $statut        1 pour actuel, 0 pour ancien
  * @param string $groupe_type   all | sdf | niveau | classe | groupe | besoin
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
@@ -384,17 +384,17 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
  * @param string $champs        par défaut user_id,user_nom,user_prenom
  * @return array
  */
-public static function DB_lister_users_regroupement($profil_type,$statut,$groupe_type,$groupe_id,$eleves_ordre,$champs='user_id,user_nom,user_prenom')
+public static function DB_lister_users_regroupement($profil,$statut,$groupe_type,$groupe_id,$eleves_ordre,$champs='user_id,user_nom,user_prenom')
 {
-  $as      = ($profil_type!='parent') ? '' : ' AS enfant' ;
-  $prefixe = ($profil_type!='parent') ? 'sacoche_user.' : 'enfant.' ;
+  $as      = ($profil!='parent') ? '' : ' AS enfant' ;
+  $prefixe = ($profil!='parent') ? 'sacoche_user.' : 'enfant.' ;
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   $from  = 'FROM sacoche_user'.$as.' ' ; // Peut être modifié ensuite (requête optimisée si on commence par une autre table)
   $ljoin = '';
   $where = 'WHERE sacoche_user_profil.user_profil_type=:profil_type AND '.$prefixe.$test_date_sortie.' ';
-  $group = ($profil_type!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id ' ;
+  $group = ($profil!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id ' ;
   $order = 'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC'; // Peut être modifié ensuite (si besoin de tri des élèves par classe d'origine)
-  if(in_array($profil_type,array('directeur','administrateur')))
+  if(in_array($profil,array('directeur','administrateur')))
   {
     $ljoin .= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   }
@@ -404,7 +404,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
     {
       case 'all' :  // On veut tous les users de l'établissement
         $ljoin .= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-        switch ($profil_type)
+        switch ($profil)
         {
           case 'professeur' :
             $where .= 'AND sacoche_user_profil.user_profil_join_groupes=:join_groupes ';
@@ -419,7 +419,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
         $where .= 'AND '.$prefixe.'eleve_classe_id=:classe ';
         break;
       case 'niveau' :  // On veut tous les users d'un niveau
-        switch ($profil_type)
+        switch ($profil)
         {
           case 'eleve' :
           case 'parent' :
@@ -443,7 +443,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
         }
         break;
       case 'classe' :  // On veut tous les users d'une classe
-        switch ($profil_type)
+        switch ($profil)
         {
           case 'eleve' :
           case 'parent' :
@@ -466,7 +466,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
       case 'groupe' :  // On veut tous les users d'un groupe
       case 'besoin' :  // On veut tous les users d'un groupe de besoin (élèves | parents seulements)
       case 'eval'   :  // On veut tous les users d'un groupe utilisé pour une évaluation (élèves seulements)
-        switch ($profil_type)
+        switch ($profil)
         {
           case 'eleve' :
           case 'parent' :
@@ -476,7 +476,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
             $ljoin .= 'LEFT JOIN sacoche_user_profil ON '.$prefixe.'user_profil_sigle=sacoche_user_profil.user_profil_sigle ';
             $where .= 'AND sacoche_jointure_user_groupe.groupe_id=:groupe ';
             $where .= 'AND sacoche_user_profil.user_profil_join_groupes=:join_groupes ';
-            if( ($profil_type=='eleve') && ($eleves_ordre=='classe') )
+            if( ($profil=='eleve') && ($eleves_ordre=='classe') )
             {
               $ljoin .= 'LEFT JOIN sacoche_groupe AS classe_origine ON sacoche_user.eleve_classe_id=classe_origine.groupe_id ';
               $ljoin .= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -491,7 +491,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
         break;
     }
   }
-  if($profil_type=='parent')
+  if($profil=='parent')
   {
     // INNER JOIN pour obliger une jointure avec un parent
     $ljoin .= 'INNER JOIN sacoche_jointure_parent_eleve ON enfant.user_id=sacoche_jointure_parent_eleve.eleve_id ';
@@ -501,7 +501,7 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
   // On peut maintenant assembler les morceaux de la requête !
   $DB_SQL = 'SELECT '.$champs.' '.$from.$ljoin.$where.$group.$order;
   $DB_VAR = array(
-    ':profil_type'  => str_replace( array('parent','personnel') , array('eleve','professeur') , $profil_type ),
+    ':profil_type'  => str_replace( array('parent','personnel') , array('eleve','professeur') , $profil ),
     ':join_groupes' => 'config',
     ':groupe'       => $groupe_id,
     ':niveau'       => $groupe_id,
@@ -551,6 +551,39 @@ public static function DB_lister_referentiels_infos_details_matieres_niveaux( $m
   $DB_SQL.= ($niveau_id)  ? 'AND niveau_id='.$niveau_id.' '     : 'AND niveau_actif=1 ' ;
   $DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * lister_messages_user_auteur
+ *
+ * @param int    $user_id
+ * @return array
+ */
+public static function DB_lister_messages_user_auteur($user_id)
+{
+  $DB_SQL = 'SELECT message_id, message_debut_date, message_fin_date, message_destinataires, message_contenu ';
+  $DB_SQL.= 'FROM sacoche_message ';
+  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_SQL.= 'ORDER BY message_fin_date DESC, message_debut_date DESC';
+  $DB_VAR = array(':user_id'=>$user_id);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_messages_user_destinataire
+ *
+ * @param int    $user_id
+ * @return array
+ */
+public static function DB_lister_messages_user_destinataire($user_id)
+{
+  $DB_SQL = 'SELECT message_id, user_genre, user_nom, user_prenom, message_contenu, message_dests_cache ';
+  $DB_SQL.= 'FROM sacoche_message ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  $DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
+  $DB_SQL.= 'ORDER BY message_debut_date DESC, message_fin_date ASC';
+  $DB_VAR = array( ':user_id_like' => '%,'.$user_id.',%' );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -626,6 +659,33 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
     ':eleve_classe_id'     => $eleve_classe_id,
     ':user_id_ent'         => $user_id_ent,
     ':user_id_gepi'        => $user_id_gepi,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * ajouter_message
+ *
+ * @param int    $user_id
+ * @param string $date_debut_mysql
+ * @param string $date_fin_mysql
+ * @param string $message_contenu
+ * @param string $tab_destinataires
+ * @return int
+ */
+public static function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+{
+  $listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
+  $DB_SQL = 'INSERT INTO sacoche_message( user_id, message_debut_date, message_fin_date, message_destinataires, message_contenu, message_dests_cache) ';
+  $DB_SQL.= 'VALUES                     (:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu,:message_dests_cache)';
+  $DB_VAR = array(
+    ':user_id'               => $user_id,
+    ':message_debut_date'    => $date_debut_mysql,
+    ':message_fin_date'      => $date_fin_mysql,
+    ':message_destinataires' => $listing_destinataires,
+    ':message_contenu'       => $message_contenu,
+    ':message_dests_cache'   => ',',
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -717,6 +777,75 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return 'ok';
+}
+
+/**
+ * modifier_DB_modifier_message
+ * Rmq : à chaque modification de message, le champ "message_dests_cache" est réinitialisé ; ce n'est pas une limitation mais bien un comportement souhaité (c'est potentiellement un message différent, donc on le rend visible).
+ *
+ * @param int    $message_id
+ * @param int    $user_id
+ * @param string $date_debut_mysql
+ * @param string $date_fin_mysql
+ * @param string $message_contenu
+ * @param string $tab_destinataires
+ * @return void
+ */
+public static function DB_modifier_message($message_id,$user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+  {
+  $listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
+  $DB_SQL = 'UPDATE sacoche_message ';
+  $DB_SQL.= 'SET message_debut_date=:message_debut_date, message_fin_date=:message_fin_date, message_destinataires=:message_destinataires, message_contenu=:message_contenu, message_dests_cache=:message_dests_cache ';
+  $DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
+  $DB_VAR = array(
+    ':message_debut_date'    => $date_debut_mysql,
+    ':message_fin_date'      => $date_fin_mysql,
+    ':message_destinataires' => $listing_destinataires,
+    ':message_contenu'       => $message_contenu,
+    ':message_dests_cache'   => ',',
+    ':message_id'            => $message_id,
+    ':user_id'               => $user_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_message_dests_cache
+ *
+ * @param int    $message_id
+ * @param int    $user_id
+ * @param bool   $etat   FALSE pour masquer | TRUE ou voir
+ * @return void
+ */
+public static function DB_modifier_message_dests_cache($message_id,$user_id,$etat)
+{
+  $commande = ($etat) ? 'REPLACE(message_dests_cache,CONCAT(",",:user_id,","),",")' : 'CONCAT(message_dests_cache,:user_id,",")' ; // Attention : ne pas mettre d'espaces !
+  $DB_SQL = 'UPDATE sacoche_message ';
+  $DB_SQL.= 'SET message_dests_cache = '.$commande.' ';
+  $DB_SQL.= 'WHERE message_id=:message_id ';
+  $DB_VAR = array(
+    ':message_id' => $message_id,
+    ':user_id'    => $user_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * supprimer_message
+ *
+ * @param int   $message_id
+ * @param int   $user_id
+ * @return void
+ */
+public static function DB_supprimer_message($message_id,$user_id)
+{
+  $DB_SQL = 'DELETE FROM sacoche_message ';
+  $DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
+  $DB_VAR = array(
+    ':message_id' => $message_id,
+    ':user_id'    => $user_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1323,32 +1452,6 @@ public static function DB_OPT_periodes_etabl($alerte=FALSE)
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   return !empty($DB_TAB) ? $DB_TAB : ( ($alerte) ? 'Aucune période n\'est enregistrée.' : array() ) ;
-}
-
-/**
- * Retourner un tableau [valeur texte] des profils activés et accessibles à un utilisateur (admin, directeur, prof, personnel... mais pas élève / parent)
- *
- * @param string $user_profil_type
- * @return array|string
- */
-public static function DB_OPT_profils_types($user_profil_type)
-{
-  $DB_SQL = 'SELECT CONCAT(user_profil_sigle,"_",user_profil_join_groupes) AS valeur, user_profil_nom_court_singulier AS texte ';
-  $DB_SQL.= 'FROM sacoche_user_profil ';
-  $DB_SQL.= 'WHERE user_profil_structure=:user_profil_structure AND user_profil_actif=:user_profil_actif ';
-  if($user_profil_type!='administrateur')
-  {
-    $DB_SQL.= 'AND user_profil_type!="administrateur" ';
-    if($user_profil_type!='directeur')
-    {
-      $DB_SQL.= 'AND user_profil_type!="directeur" ';
-    }
-  }
-  $DB_VAR = array(
-    ':user_profil_structure' => 1,
-    ':user_profil_actif'     => 1,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

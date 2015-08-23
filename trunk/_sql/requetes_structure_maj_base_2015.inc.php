@@ -889,7 +889,7 @@ if($version_base_structure_actuelle=='2015-07-03')
 // MAJ 2015-08-16 => 2015-08-22
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($version_base_structure_actuelle=='2015-08-16')
+if( ($version_base_structure_actuelle=='2015-08-16') || ($version_base_structure_actuelle=='2015-08-17') ) // Le numéro dans le fichier VERSION_BASE_STRUCTURE ne correspondait pas à la valeur de ce fichier.
 {
   if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
   {

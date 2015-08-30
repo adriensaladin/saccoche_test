@@ -35,6 +35,11 @@ class Form
   // Tableaux prédéfinis
   // //////////////////////////////////////////////////
 
+  public static $tab_echelle = array(
+    array('valeur' => 'fixe' , 'texte' => 'gradué de 0 à 20 (ou 100%)') ,
+    array('valeur' => 'auto' , 'texte' => 'recentré en fonction des valeurs') ,
+  );
+
   public static $tab_select_eleves_ordre = array(
     array('valeur' => 'alpha'  , 'texte' => 'ordonnés alphabétiquement') ,
     array('valeur' => 'classe' , 'texte' => 'ordonnés par classe d\'origine') ,
@@ -326,6 +331,7 @@ class Form
       'aff_socle_EV'             => 1 ,
       'type'                     => '' ,
       'mode'                     => 'auto' ,
+      'echelle'                  => 'fixe' ,
     );
   }
 
@@ -374,8 +380,8 @@ class Form
         $tab_choix_new = compact('eleves_ordre','matiere_id','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','repeter_entete','with_coef','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'bilan_chronologique' :
-        global $eleves_ordre,$mode_synthese,$fusion_niveaux,$indicateur,$conversion_sur_20,$retroactif,$only_socle;
-        $tab_choix_new = compact('eleves_ordre','mode_synthese','fusion_niveaux','indicateur','conversion_sur_20','retroactif','only_socle');
+        global $eleves_ordre,$mode_synthese,$fusion_niveaux,$indicateur,$conversion_sur_20,$retroactif,$only_socle,$echelle;
+        $tab_choix_new = compact('eleves_ordre','mode_synthese','fusion_niveaux','indicateur','conversion_sur_20','retroactif','only_socle','echelle');
         break;
       case 'releve_synthese' :
         global $eleves_ordre,$matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min;

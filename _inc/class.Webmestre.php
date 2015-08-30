@@ -173,7 +173,7 @@ class Webmestre
     $texte.= 'Pour modifier les coordonnées de la personne référente, rendez-vous dans votre espace d\'administration.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU AGPL3.'."\r\n";
-    $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
+    $texte.= 'Les différents personnels utilisateurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n";
     $texte.= SERVEUR_PROJET."\r\n";
@@ -214,7 +214,8 @@ class Webmestre
     $texte.= "\r\n";
     $texte.= 'Pour se connecter avec ce compte administrateur, utiliser le lien'."\r\n";
     $texte.= $url_dir_sacoche.'?id='.$base_id."\r\n";
-    $texte.= 'et entrer les identifiants'."\r\n";
+    $texte.= 'cocher [formulaire SACoche] si besoin'."\r\n";
+    $texte.= 'puis entrer les identifiants'."\r\n";
     $texte.= 'nom d\'utilisateur :   '.$admin_login."\r\n";
     $texte.= 'mot de passe :   '.$admin_password."\r\n";
     $texte.= "\r\n";
@@ -223,7 +224,7 @@ class Webmestre
     $texte.= 'Si ce compte correspond à un administrateur qui n\'est plus présent dans votre établissement, vous pouvez modifier ses coordonnées depuis l\'espace d\'administration.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU AGPL3.'."\r\n";
-    $texte.= 'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
+    $texte.= 'Les différents personnels utilisateurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n";
     $texte.= "\r\n";
     $texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n";
     $texte.= SERVEUR_PROJET."\r\n";

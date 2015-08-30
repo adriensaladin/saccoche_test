@@ -240,7 +240,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
     }
     // Récupérer le référentiel
     $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id );
-    if(mb_substr($arbreXML,0,6)=='Erreur')
+    if(substr($arbreXML,0,6)=='Erreur')
     {
       exit($arbreXML);
     }

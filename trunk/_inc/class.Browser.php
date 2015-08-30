@@ -39,42 +39,17 @@ define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQ
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
 define(   'OPERA_VERSION_LAST'           ,30  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
 
+define(    'EDGE_VERSION_MINI_REQUISE'   ,12  ); define(    'EDGE_TEXTE_MINI_REQUIS'      , 'Version 12 minimum (sortie en 2015).');
+define(    'EDGE_VERSION_MINI_CONSEILLEE',12  );
+define(    'EDGE_VERSION_LAST'           ,12  ); define(    'EDGE_URL_DOWNLOAD'           , 'https://www.microsoft.com/fr-fr/windows/microsoft-edge');
+
 define(  'SAFARI_VERSION_MINI_REQUISE'   , 4  ); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 4 minimum (sortie en 2009).');
 define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5  );
-define(  'SAFARI_VERSION_LAST'           , 7  ); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ? Pour Windows, devel stoppé version 5.1.7.
+define(  'SAFARI_VERSION_LAST'           , 8  ); define(  'SAFARI_URL_DOWNLOAD'          , 'http://www.apple.com/fr/safari/'); // plus téléchargeable ? Pour Windows, devel stoppé version 5.1.7.
 
 define('EXPLORER_VERSION_MINI_REQUISE'   , 8  ); define('EXPLORER_TEXTE_MINI_REQUIS'     , 'Version 8 minimum (sortie en 2009) <span class="danger">mais usage déconseillé</span> (surtout avant la version 9).');
 define('EXPLORER_VERSION_MINI_CONSEILLEE', 9  );
 define('EXPLORER_VERSION_LAST'           ,11  ); define('EXPLORER_URL_DOWNLOAD'          , 'http://windows.microsoft.com/fr-fr/internet-explorer/download-ie');
-
-//
-// Chrome
-//
-// $version_page = cURL::get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
-// $nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
-// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 6 ;
-//
-// Firefox
-//
-// $version_page = cURL::get_contents('http://www.mozilla-europe.org/fr/');
-// $nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
-// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 4 ;
-//
-// Opéra
-//
-// $version_page = cURL::get_contents('http://www.opera-fr.com/telechargements/');
-// $nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
-// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 10 ;
-//
-// Safari
-//
-// $version_page = cURL::get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
-// $nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
-//
-// $version_page = cURL::get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
-// $nb_match = preg_match( '#'.'<td>'.'(.*?)'.' \(derni&egrave;re version\)</td>'.'#' , $version_page , $tab_matches );
-// $version_numero = ($nb_match) ? (float)$tab_matches[1] : 5 ;
-//
 
 class Browser
 {
@@ -82,6 +57,7 @@ class Browser
   public static $tab_navigo = array(
     'chrome'   => 'Chrome' ,
     'firefox'  => 'Firefox' ,
+    'edge'     => 'Edge' ,
     'opera'    => 'Opéra' ,
     'safari'   => 'Safari' ,
     'explorer' => 'Internet Explorer'
@@ -111,7 +87,12 @@ class Browser
     // Variable à analyser
     $UserAgent = ($UserAgent) ? strtolower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
     // Détection du navigateur et si possible de sa version
-    if( (!preg_match('#opera|webtv#', $UserAgent)) && (strstr($UserAgent,'msie')) )
+    if(strstr($UserAgent,'Edge'))
+    {
+      $tab_retour['modele']  = 'edge';
+      $tab_retour['version'] = (preg_match('#Edge/([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;
+    }
+    elseif( (!preg_match('#opera|webtv#', $UserAgent)) && (strstr($UserAgent,'msie')) )
     {
       $tab_retour['modele']  = 'explorer';
       $tab_retour['version'] = (preg_match('#msie\s([0-9]+\.?[0-9]*)#',$UserAgent,$array)) ? (int)$array[1] : 0 ;

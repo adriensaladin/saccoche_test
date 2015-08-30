@@ -256,13 +256,12 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* Icones des navigateurs                                                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.navigo {background:transparent url(../_img/sprite_navigateur_2.png) 0 20px no-repeat;padding-left:20px;padding-top:2px;padding-bottom:2px}
-.navigo_chrome   {background-position: 0   -1px}
-.navigo_edge     {background-position: 0  -21px}
-.navigo_explorer {background-position: 0  -41px}
-.navigo_firefox  {background-position: 0  -61px}
-.navigo_opera    {background-position: 0  -81px}
-.navigo_safari   {background-position: 0 -101px}
+.navigo {background:transparent url(../_img/sprite_navigateur_1.png) 0 20px no-repeat;padding-left:20px;padding-top:1px;padding-bottom:1px}
+.navigo_chrome   {background-position: 0    0px}
+.navigo_explorer {background-position: 0  -20px}
+.navigo_firefox  {background-position: 0  -40px}
+.navigo_opera    {background-position: 0  -60px}
+.navigo_safari   {background-position: 0  -80px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des résultats d'une évaluation                                                    */

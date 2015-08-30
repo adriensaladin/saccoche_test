@@ -45,7 +45,6 @@ $date_fin          = (isset($_POST['f_date_fin']))          ? Clean::date_fr($_P
 $retroactif        = (isset($_POST['f_retroactif']))        ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
 $only_socle        = (isset($_POST['f_restriction']))       ? 1                                                : 0;
 $eleves_ordre      = (isset($_POST['f_eleves_ordre']))      ? Clean::texte($_POST['f_eleves_ordre'])           : ''; // En vérité, ne sert pas ici.
-$echelle           = (isset($_POST['f_echelle']))           ? Clean::texte($_POST['f_echelle'])                : '';
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_matiere = (isset($_POST['f_matieres']))     ? ( (is_array($_POST['f_matieres']))     ? $_POST['f_matieres']     : explode(',',$_POST['f_matieres'])     ) : array() ;
@@ -104,7 +103,7 @@ if(
     ( ($objet=='matiere_niveau') && ( !$matiere_id || !$matiere_nom ) ) ||
     ( ($objet=='matiere_synthese') && ( !$matiere_id || !$matiere_nom || !$mode_synthese ) ) ||
     ( ($objet=='selection') && !$liste_item_id ) ||
-    !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$eleves_ordre || !$echelle
+    !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$eleves_ordre
   )
 {
   exit('Erreur avec les données transmises !');
@@ -255,7 +254,6 @@ $tab_graph_data = array();
 // C'est parti !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$max_value = ($conversion_sur_20) ? 20 : 100 ;
 if(count($tab_date))
 {
   // Pour chaque évaluation...
@@ -291,8 +289,6 @@ if(count($tab_date))
       // Soit la moyenne des pourcentages d'acquisition
       if($indicateur=='moyenne_scores')
       {
-
-
         if($with_coef) { $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
         else           { $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
       }
@@ -315,7 +311,6 @@ if(count($tab_date))
       {
         $valeur = ($conversion_sur_20) ? $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id]/5 : $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] ;
         $tab_graph_data[$rubrique_id][$date_js] = $valeur;
-        $max_value = max( $max_value , $valeur);
       }
     }
   }
@@ -334,7 +329,7 @@ if(count($tab_date))
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // $tab_graph_series n'est pas rangé avec des matières classées comme paramétré par l'admin car on avait besoin de récupérer les scores dans l'ordre chnonologique
-// Pas grave puisqu'il vaut mieux au contraire avoir la légende par ordre alphabétique des rubriques.
+// Pas grave puisqu'il vaut mieux de toutes façons présenter par ordre alphabétique des matières.
 asort($tab_rubrique);
 
 if($objet=='matieres')
@@ -351,11 +346,9 @@ else
 }
 
 $js_graph = '<H3>'.$titre.'<SCRIPT>';
-
-// Échelle sur l'axe des ordonnées
-$min_max = ($echelle=='fixe') ? 'min: 0, max: '.$max_value : 'minPadding: 0, maxPadding: 0' ;
-$js_graph .= 'ChartOptions.yAxis = [ { '.$min_max.', title: null } , { '.$min_max.', title: null, opposite: true } ];';
-
+// Échelle sur l'axe des ordonées
+$ymax = ($conversion_sur_20) ? 20 : 100 ;
+$js_graph .= 'ChartOptions.yAxis = [ { min: 0, max: '.$ymax.', title: null } , { min: 0, max: '.$ymax.', title: null, opposite: true } ];';
 // Séries de valeurs
 $tab_graph_series = array();
 if(count($tab_graph_data))

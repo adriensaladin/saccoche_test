@@ -2185,7 +2185,7 @@ INSERT INTO sacoche_niveau VALUES
 ( 753001, 0, 0, 740, 753,    "APF", "7534100111.", "Accompagnement parcours de formation MLDS"),
 
 -- Niveau vierge permettant de s'assurer que les niveaux spécifiques créés auront un id supérieur
--- ALTER TABLE sacoche_niveau auto_increment = 1000000 poserait pb en cas de restauration de base ou de niveaux spécifiques déjà existants
+-- ALTER TABLE sacoche_niveau auto_increment = 1000000 poserait pb en cas de restauration de base ou de niveaux spéciqiques déjà existants
 
 ( 999999, 0, 0,   0,   0,       "",            "", "");
 

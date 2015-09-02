@@ -17,5 +17,7 @@ CREATE TABLE sacoche_demande (
   PRIMARY KEY (demande_id),
   UNIQUE KEY demande_key (eleve_id,matiere_id,item_id),
   KEY matiere_id (matiere_id),
-  KEY item_id (item_id)
+  KEY item_id (item_id),
+  KEY prof_id (prof_id),
+  KEY demande_statut (demande_statut)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

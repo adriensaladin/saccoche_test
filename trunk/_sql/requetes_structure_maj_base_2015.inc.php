@@ -954,4 +954,48 @@ if( ($version_base_structure_actuelle=='2015-08-16') || ($version_base_structure
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-08-22 => 2015-09-02
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-08-22')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-09-02';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Champ supprimé lors de la mise à jour précédente mais qui était encore dans le fichier sql de création de la table
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_message LIKE "message_destinataires" ');
+    if(!empty($DB_TAB))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message DROP message_destinataires ' );
+    }
+    // Ajout d'index
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD INDEX devoir_date (devoir_date)' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD INDEX devoir_visible_date (devoir_visible_date)' );
+    if(empty($reload_sacoche_demande))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD INDEX prof_id (prof_id)' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD INDEX demande_statut (demande_statut)' );
+    }
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message ADD INDEX message_debut_date (message_debut_date)' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message ADD INDEX message_fin_date (message_fin_date)' );
+    if(empty($reload_sacoche_notification))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_notification ADD INDEX notification_date (notification_date)' );
+    }
+    if(empty($reload_sacoche_jointure_message_destinataire))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_message_destinataire ADD INDEX user_profil_type (user_profil_type)' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_message_destinataire ADD INDEX destinataire ( destinataire_type , destinataire_id )' );
+    }
+    // Pour la table sacoche_saisie, s'il y a beaucoup de lignes, cela peut être long... et DISABLE KEYS / ENABLE KEYS n'améliore pas grand chose...
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie DISABLE KEYS' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ADD INDEX saisie_date (saisie_date)' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ADD INDEX saisie_visible_date (saisie_visible_date)' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ENABLE KEYS' );
+  }
+}
+
+
 ?>

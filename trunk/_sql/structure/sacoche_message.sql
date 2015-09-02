@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS sacoche_message (
   user_id               MEDIUMINT(8) UNSIGNED            NOT NULL DEFAULT 0,
   message_debut_date    DATE                             NOT NULL DEFAULT "0000-00-00",
   message_fin_date      DATE                             NOT NULL DEFAULT "0000-00-00",
-  message_destinataires TEXT COLLATE utf8_unicode_ci     NOT NULL,
   message_contenu       TEXT COLLATE utf8_unicode_ci     NOT NULL,
   message_dests_cache   TEXT COLLATE utf8_unicode_ci     NOT NULL, 
   PRIMARY KEY (message_id),
-  KEY user_id (user_id)
+  KEY user_id (user_id),
+  KEY message_debut_date (message_debut_date),
+  KEY message_fin_date (message_fin_date)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

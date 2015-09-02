@@ -589,9 +589,20 @@ if($action=='import_ent')
       'csv_id_ent' => -100 ,
     );
     $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+    if( (substr($_SESSION['CONNEXION_NOM'],0,12)=='itslearning_') && count($tab_elements)>25 )
+    {
+      // Pour ItsLearning le fichier des parents est... présenté par élève, avec un ou plusieurs parents par ligne, et qui reviennent sur plusieurs lignes...
+      // C'est impensable en l'état de se plier à de telles contraintes, on laisse tomber les parents...
+      exit('Erreur : le fichier des parents ne sera exploité par SACoche quand il sera homogène avec les autres, et non présenté par élève avec de multiples spécificités.');
+    }
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
     {
+      if(substr($_SESSION['CONNEXION_NOM'],0,12)=='itslearning_')
+      {
+        // Pour ItsLearning l'intitulé des entêtes est complété par le profil correspondant au fichier exporté.
+        $element = str_replace( array(' eleve',' enseignant',' parent','  personnel Educatif',' personnel Educatif') , '' , $element);
+      }
       switch($element)
       {
         case $tab_infos_csv['csv_nom'   ] : $tab_numero_colonne['csv_nom'   ] = $numero; $numero_max = max($numero_max,$numero); break;

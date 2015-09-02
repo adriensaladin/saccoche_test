@@ -12,5 +12,7 @@ CREATE TABLE sacoche_saisie (
   PRIMARY KEY ( devoir_id , eleve_id , item_id ),
   KEY prof_id (prof_id),
   KEY eleve_id (eleve_id),
-  KEY item_id (item_id)
+  KEY item_id (item_id),
+  KEY saisie_date (saisie_date),
+  KEY saisie_visible_date (saisie_visible_date)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

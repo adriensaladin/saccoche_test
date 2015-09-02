@@ -14,7 +14,5 @@ CREATE TABLE sacoche_devoir (
   devoir_eleves_ordre  ENUM("alpha","classe") COLLATE utf8_unicode_ci NOT NULL DEFAULT "alpha",
   PRIMARY KEY (devoir_id),
   KEY proprio_id (proprio_id),
-  KEY groupe_id (groupe_id),
-  KEY devoir_date (devoir_date),
-  KEY devoir_visible_date (devoir_visible_date)
+  KEY groupe_id (groupe_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

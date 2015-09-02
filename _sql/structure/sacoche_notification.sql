@@ -14,5 +14,6 @@ CREATE TABLE sacoche_notification (
   KEY user_id (user_id),
   KEY abonnement_ref (abonnement_ref),
   KEY notification_attente_id (notification_attente_id),
-  KEY notification_statut (notification_statut)
+  KEY notification_statut (notification_statut),
+  KEY notification_date (notification_date)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="En lien avec les tables sacoche_abonnement et sacoche_jointure_user_abonnement.";

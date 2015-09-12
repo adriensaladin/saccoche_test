@@ -149,84 +149,87 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
       }
     }
   }
-  // Il peut aussi falloir supprimer des moyennes calculées ou imposées précédemment mais qui n'ont plus lieu d'être car les notes ont été supprimées, ou les items déplacés, ou le référentiel supprimé depuis...
-  $tab_matiere_id = ($liste_matiere_id) ? explode(',',$liste_matiere_id) : array_keys($tab_moyennes_enregistrees['eleve']);
-  foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
+  if(!empty($tab_moyennes_enregistrees['eleve']))
   {
-    if( $matiere_id && in_array($matiere_id,$tab_matiere_id) ) // Parce que dans le cas d'un prof effectuant une saisie, toutes les matières ne sont pas récupérées : il ne faut pas supprimer les notes des autres matières (ni la moyenne générale, donc quand l'id matière est à 0).
-    {
-      foreach($tab as $eleve_id => $note)
-      {
-        if(!isset($tab_moyennes_calculees[$matiere_id][$eleve_id]))
-        {
-          DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , 'eleve' );
-          unset($tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id]);
-        }
-      }
-    }
-  }
-  // Calculer les moyennes de classe, et mettre à jour les moyennes qui le nécessitent
-  if($memo_moyennes_classe)
-  {
+    // Il peut aussi falloir supprimer des moyennes calculées ou imposées précédemment mais qui n'ont plus lieu d'être car les notes ont été supprimées, ou les items déplacés, ou le référentiel supprimé depuis...
+    $tab_matiere_id = ($liste_matiere_id) ? explode(',',$liste_matiere_id) : array_keys($tab_moyennes_enregistrees['eleve']);
     foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
     {
-      if($matiere_id!=0)
-      {
-        if(count($tab_moyennes_enregistrees['eleve'][$matiere_id]))
-        {
-          $somme   = array_sum($tab_moyennes_enregistrees['eleve'][$matiere_id]);
-          $nombre  = count( array_filter($tab_moyennes_enregistrees['eleve'][$matiere_id],'non_vide') );
-          $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
-          if( (!isset($tab_moyennes_enregistrees['groupe'][$matiere_id])) || ( ($tab_moyennes_enregistrees['groupe'][$matiere_id]!=$moyenne) ) )
-          {
-            DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
-          }
-        }
-        else
-        {
-          // Possible si toutes les notes viennent d'être supprimées car n'ayant plus lieu d'être (voir qq lignes plus haut)
-          DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' );
-          unset($tab_moyennes_enregistrees['eleve'][$matiere_id]);
-        }
-      }
-    }
-  }
-  // Calculer les moyennes générales des élèves, et mettre à jour les moyennes qui le nécessitent
-  if($memo_moyennes_generale)
-  {
-    $tab_moyenne_eleve_generale = array();
-    $tab_moyennes_enregistrees_par_eleve = array();
-    // inverser les clefs du tableau pour pouvoir effectuer les totaux par élève
-    foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
-    {
-      if($matiere_id!=0)
+      if( $matiere_id && in_array($matiere_id,$tab_matiere_id) ) // Parce que dans le cas d'un prof effectuant une saisie, toutes les matières ne sont pas récupérées : il ne faut pas supprimer les notes des autres matières (ni la moyenne générale, donc quand l'id matière est à 0).
       {
         foreach($tab as $eleve_id => $note)
         {
-          $tab_moyennes_enregistrees_par_eleve[$eleve_id][$matiere_id] = $note;
+          if(!isset($tab_moyennes_calculees[$matiere_id][$eleve_id]))
+          {
+            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , 'eleve' );
+            unset($tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id]);
+          }
         }
       }
     }
-    foreach($tab_moyennes_enregistrees_par_eleve as $eleve_id => $tab)
-    {
-      $somme  = array_sum($tab_moyennes_enregistrees_par_eleve[$eleve_id]);
-      $nombre = count( array_filter($tab_moyennes_enregistrees_par_eleve[$eleve_id],'non_vide') );
-      $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
-      if( (!isset($tab_moyennes_enregistrees['eleve'][0][$eleve_id])) || ( ($tab_moyennes_enregistrees['eleve'][0][$eleve_id]!=$note) ) )
-      {
-        DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'eleve' , $moyenne , '' /*appreciation*/ );
-      }
-      $tab_moyenne_eleve_generale[$eleve_id] = $moyenne;
-    }
-    // Enfin, moyenne de classe des moyennes générales...
+    // Calculer les moyennes de classe, et mettre à jour les moyennes qui le nécessitent
     if($memo_moyennes_classe)
     {
-      $somme   = array_sum($tab_moyenne_eleve_generale);
-      $nombre  = count( array_filter($tab_moyenne_eleve_generale,'non_vide') );
-      $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
-      if( (!isset($tab_moyennes_enregistrees['groupe'][0])) || ( ($tab_moyennes_enregistrees['groupe'][0]!=$moyenne) ) )
+      foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
       {
-        DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
+        if($matiere_id!=0)
+        {
+          if(count($tab_moyennes_enregistrees['eleve'][$matiere_id]))
+          {
+            $somme   = array_sum($tab_moyennes_enregistrees['eleve'][$matiere_id]);
+            $nombre  = count( array_filter($tab_moyennes_enregistrees['eleve'][$matiere_id],'non_vide') );
+            $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
+            if( (!isset($tab_moyennes_enregistrees['groupe'][$matiere_id])) || ( ($tab_moyennes_enregistrees['groupe'][$matiere_id]!=$moyenne) ) )
+            {
+              DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
+            }
+          }
+          else
+          {
+            // Possible si toutes les notes viennent d'être supprimées car n'ayant plus lieu d'être (voir qq lignes plus haut)
+            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' );
+            unset($tab_moyennes_enregistrees['eleve'][$matiere_id]);
+          }
+        }
+      }
+    }
+    // Calculer les moyennes générales des élèves, et mettre à jour les moyennes qui le nécessitent
+    if($memo_moyennes_generale)
+    {
+      $tab_moyenne_eleve_generale = array();
+      $tab_moyennes_enregistrees_par_eleve = array();
+      // inverser les clefs du tableau pour pouvoir effectuer les totaux par élève
+      foreach($tab_moyennes_enregistrees['eleve'] as $matiere_id => $tab)
+      {
+        if($matiere_id!=0)
+        {
+          foreach($tab as $eleve_id => $note)
+          {
+            $tab_moyennes_enregistrees_par_eleve[$eleve_id][$matiere_id] = $note;
+          }
+        }
+      }
+      foreach($tab_moyennes_enregistrees_par_eleve as $eleve_id => $tab)
+      {
+        $somme  = array_sum($tab_moyennes_enregistrees_par_eleve[$eleve_id]);
+        $nombre = count( array_filter($tab_moyennes_enregistrees_par_eleve[$eleve_id],'non_vide') );
+        $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
+        if( (!isset($tab_moyennes_enregistrees['eleve'][0][$eleve_id])) || ( ($tab_moyennes_enregistrees['eleve'][0][$eleve_id]!=$note) ) )
+        {
+          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'eleve' , $moyenne , '' /*appreciation*/ );
+        }
+        $tab_moyenne_eleve_generale[$eleve_id] = $moyenne;
+      }
+      // Enfin, moyenne de classe des moyennes générales...
+      if($memo_moyennes_classe)
+      {
+        $somme   = array_sum($tab_moyenne_eleve_generale);
+        $nombre  = count( array_filter($tab_moyenne_eleve_generale,'non_vide') );
+        $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
+        if( (!isset($tab_moyennes_enregistrees['groupe'][0])) || ( ($tab_moyennes_enregistrees['groupe'][0]!=$moyenne) ) )
+        {
+          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
+        }
       }
     }
   }

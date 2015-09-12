@@ -28,6 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Gérer ses groupes de besoin"));
 
+$niveau_ordre_longueur = 6;
+$niveau_ordre_format   = '%0'.$niveau_ordre_longueur.'u';
+
 $tab_groupe_proprio = array();
 $tab_groupe_associe = array();
 $tab_niveau_groupe  = array();
@@ -36,6 +39,7 @@ $tab_niveau_groupe  = array();
 Layout::add( 'js_inline_before' , 'var tab_eleves       = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_profs        = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );
+Layout::add( 'js_inline_before' , 'var niveau_ordre_longueur = '.$niveau_ordre_longueur.';' );
 
 // Lister les groupes de besoin auxquels le prof est rattaché, propriétaire ou pas.
 
@@ -46,7 +50,7 @@ foreach($DB_TAB as $DB_ROW)
   {
     $tab_groupe_proprio[$DB_ROW['groupe_id']] = array
     (
-      'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
+      'niveau'     => '<i>'.sprintf($niveau_ordre_format,$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
       'nom'        => html($DB_ROW['groupe_nom']) ,
       'eleve'      => array() ,
       'professeur' => array() ,
@@ -92,7 +96,7 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";' );
+    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf($niveau_ordre_format,$DB_ROW['niveau_ordre']).'";' );
   }
 }
 else

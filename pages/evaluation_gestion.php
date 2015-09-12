@@ -93,7 +93,6 @@ Layout::add( 'js_inline_before' , 'var tab_profs      = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_eleves     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_sujets     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_corriges   = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_niveau     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_groupe     = new Array();' );
 Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );
@@ -112,14 +111,13 @@ $select_periode = '';
 if($TYPE=='groupe')
 {
   // Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
-  // Fabrication de tableaux javascript "tab_niveau" et "tab_groupe" indiquant le niveau et le nom d'un groupe
+  // Fabrication du tableau javascript "tab_groupe" indiquant le nom d'un groupe
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
   $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
   foreach($DB_TAB as $DB_ROW)
   {
     $groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
     $tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
-    Layout::add( 'js_inline_before' , 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";' );
     Layout::add( 'js_inline_before' , 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";' );
   }
   foreach($tab_options as $type => $contenu)

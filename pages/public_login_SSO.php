@@ -328,25 +328,19 @@ if($connexion_mode=='cas')
     // Pour mettre fin au ob_start() ; cas 2/2 où il y a eu une erreur.
     $contenu_erreur_phpcas = ob_get_clean();
     // @author Daniel Caillibaud <daniel.caillibaud@sesamath.net>
-    $msg_log = 'phpCAS::forceAuthentication() sur '.$cas_serveur_host.' pour l\'établissement n°'.$BASE.' qui utilise l\'ENT '.$connexion_nom.' a planté ';
-    $msg_log .= $e->getMessage();
-    // on ajoute les traces dans le log
-    $puces_traces = get_string_traces($e);
-    if ($puces_traces != '')
-    {
-      $msg_log .= ' avec la trace :'."\n".$puces_traces;
-    }
-    trigger_error($msg_log);
-    $msg_supplementaire = '<p>Cette erreur probablement due à des données invalides renvoyées par le serveur CAS.</p>'.$puces_traces;
+    // on ajoute les traces
+    $msg_supplementaire = '<p>Cette erreur peut être due à un certificat expiré ou des données invalides renvoyées par le serveur CAS.</p>'.get_string_traces($e);
     if (is_a($e, 'CAS_AuthenticationException'))
     {
+      // $e->getMessage() ne contient rien...
+      error_log('SACoche - Erreur phpCAS sur l\'ENT "'.$connexion_nom.'" (serveur '.$cas_serveur_host.') pour l\'établissement n°'.$BASE.'.');
       exit_CAS_Exception( $contenu_erreur_phpcas , $msg_supplementaire );
     }
     else
     {
-      // peut-on passer là ?
-      trigger_error('phpCAS::forceAuthentication() sur '.$cas_serveur_host.' a planté mais ce n\'est pas une CAS_AuthenticationException');
-      exit_error( 'Problème authentification CAS' /*titre*/ , '<p>L\'authentification CAS sur '.$cas_serveur_host.' a échouée.<br />'.$e->getMessage().'</p>'.$msg_supplementaire /*contenu*/ );
+      // On passe ici visiblement en cas de simple redirection si l'utilisateur n'est pas déjà connecté ; dans ce cas on a :
+      // $e->getMessage() = "Terminate Gracefully"
+      // get_parent_class($e) = "RuntimeException"
     }
   }
   // Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.

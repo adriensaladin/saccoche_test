@@ -391,7 +391,6 @@ if($BILAN_TYPE=='releve')
 elseif($BILAN_TYPE=='bulletin')
 {
   $synthese_modele = 'multimatiere' ;
-  $matiere_nom     = '';
   $groupe_id       = $groupe_id;  // Le groupe = la classe (par défaut) ou le groupe transmis
   $groupe_nom      = $groupe_nom; // Déjà défini avant car on en avait besoin
   $groupe_type     = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;

@@ -184,7 +184,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   {
     $s = ($DB_ROW['popularite']>1) ? 's' : '' ;
     $tab_bad[] = '$'.$DB_ROW['item_id'].'$';
-    $tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
+    $tab_bon[] = '<i>'.sprintf("%03u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
   }
   // Enregistrer le csv des commentaires
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.csv' , To::csv($fichier_csv) );

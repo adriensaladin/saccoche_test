@@ -136,7 +136,7 @@ $(document).ready
       var date_fr          = objet_tds.eq(6).html();
       // retirer le champ caché pour le tri, séparer zone géographique et localisation
       var reg = new RegExp('<br ?/?>',"g");  // Le navigateur semble transformer <br /> en <br> ...
-      var tab_infos        = lieu.substring(13).split(reg);
+      var tab_infos        = lieu.substring(geo_ordre_longueur+7).split(reg); // <i>...</i>
       var geo              = tab_infos[0];
       var localisation     = tab_infos[1];
       // séparer denomination et UAI

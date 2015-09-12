@@ -1531,7 +1531,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // enregistrer noms prénoms des élèves
   foreach($DB_TAB_USER as $DB_ROW)
   {
-    $tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
+    $tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' ('.$groupe_nom.')') : '' ;
     $tab_user_nb_req[$DB_ROW['user_id']] = 0 ;
   }
   // enregistrer refs noms items
@@ -1628,7 +1628,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $colonnes_nb = $tab_user_nb_req[$user_id];
         $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
         $lignes_nb   = 1 + 2 + $cart_cases_nb + $lignes_comm; // marge incluse
-        $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
+        $texte_entete = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
         $case_vide    = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
         $cartouche_HTM .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
         $cartouche_CSV .= $texte_entete."\r\n";
@@ -1659,7 +1659,6 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
-            $cols_nb++;
             $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
             $rows_htm['item'] .= '<td class="hc">'.html($tab_val_comp[0]).'</td>';
@@ -1725,7 +1724,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
         $colonnes_nb = ($cart_cases_nb==1) ? 3 : 2 ;
         $lignes_nb   = 1 + 1 + $tab_user_nb_req[$user_id] + $lignes_comm ; // marge incluse
-        $texte_entete = $date_fr.' - '.$description.' - '.$val_user;
+        $texte_entete = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
         if($cart_cases_nb==1)
         {
           // ... avec une case à remplir

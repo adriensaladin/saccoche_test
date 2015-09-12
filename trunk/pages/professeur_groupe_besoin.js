@@ -112,7 +112,7 @@ $(document).ready
       var eleve_nombre = objet_tds.eq(2).html();
       var prof_nombre  = objet_tds.eq(3).html();
       // enlever l'ordre du niveau caché
-      niveau_nom = niveau_nom.substring(9,niveau_nom.length);
+      niveau_nom = niveau_nom.substring(niveau_ordre_longueur+7,niveau_nom.length); // <i>...</i>
       // liste des élèves et des profs
       var eleve_liste   = tab_eleves[id];
       var prof_liste    = tab_profs[id];

@@ -28,8 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Gérer les groupes"));
 
+$niveau_ordre_longueur = 6;
+$niveau_ordre_format   = '%0'.$niveau_ordre_longueur.'u';
+
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_niveau_ordre = new Array();' );
+Layout::add( 'js_inline_before' , 'var niveau_ordre_longueur = '.$niveau_ordre_longueur.';' );
 
 $select_niveau = '<option value="">&nbsp;</option>';
 
@@ -39,7 +43,7 @@ if(!empty($DB_TAB))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";' );
+    Layout::add( 'js_inline_before' , 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf($niveau_ordre_format,$DB_ROW['niveau_ordre']).'";' );
   }
 }
 else
@@ -76,7 +80,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
       {
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['groupe_id'].'">';
-        echo  '<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
+        echo  '<td><i>'.sprintf($niveau_ordre_format,$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
         echo  '<td>'.html($DB_ROW['groupe_ref']).'</td>';
         echo  '<td>'.html($DB_ROW['groupe_nom']).'</td>';
         echo  '<td class="nu">';

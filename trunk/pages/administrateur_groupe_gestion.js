@@ -98,7 +98,7 @@ $(document).ready
       var ref        = objet_tds.eq(1).html();
       var nom        = objet_tds.eq(2).html();
       // Enlever l'ordre du niveau caché
-      niveau_nom = niveau_nom.substring(9,niveau_nom.length);
+      niveau_nom = niveau_nom.substring(niveau_ordre_longueur+7,niveau_nom.length); // <i>...</i>
       // Afficher le formulaire
       afficher_form_gestion( mode , id , niveau_nom /* volontairement sans unescapeHtml() */ , unescapeHtml(ref) , unescapeHtml(nom) );
     };

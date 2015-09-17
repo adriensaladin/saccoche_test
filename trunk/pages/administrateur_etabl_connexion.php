@@ -112,6 +112,18 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
   $select_connexions .= '</optgroup>';
 }
 
+// Formulaire SELECT pour la vérification du certificat SSL
+$tab_cas_verif = array(
+  1 => 'Oui = Sécurité optimale (le certificat SSL du serveur d\'authentification est valide)',
+  0 => 'Non = Sécurité diminuée (la connexion n\'est plus sécurisée et peut être interceptée)',
+);
+$options_cas_verif = '';
+foreach($tab_cas_verif as $option_value => $option_texte)
+{
+  $selected = ($option_value==$_SESSION['CAS_SERVEUR']['VERIF_CERTIF_SSL']) ? ' selected' : '' ;
+  $options_cas_verif .= '<option value="'.$option_value.'"'.$selected.'>'.$option_texte.'</option>';
+}
+
 // Modèle d'url SSO
 $get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
 $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
@@ -142,6 +154,9 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   <div id="cas_port" class="hide">
     <label class="tab" for="serveur_port">Port <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le port,<br />en général 8443 (pour i-Cart!),<br />mais déjà vu à 4443 dans un cas particulier." /> :</label><input id="serveur_port" name="serveur_port" size="5" type="text" value="" />
   </div>
+  <div id="cas_verif" class="hide">
+    <label class="tab" for="cas_serveur_verif_certif_ssl">Vérif. Certificat SSL :</label><select id="cas_serveur_verif_certif_ssl" name="cas_serveur_verif_certif_ssl"><?php echo $options_cas_verif; ?></select>
+  </div>
   <p><span class="tab"></span><button id="bouton_valider_mode" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg_mode">&nbsp;</label></p>
 </fieldset></form>
 
@@ -161,6 +176,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 </div>
 
 <hr />
+
 <h2>Convention d'accès au service</h2>
 
 <div id="info_hors_sesamath" class="hide">

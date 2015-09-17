@@ -93,7 +93,23 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_structure_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_departement","connexion_mode","connexion_nom","cas_serveur_host","cas_serveur_port","cas_serveur_root","cas_serveur_url_login","cas_serveur_url_logout","cas_serveur_url_validate","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
+// Récupérer les infos utiles de l'établissement pour la connexion 
+$tab_parametres = array(
+  '"connexion_departement"',
+  '"connexion_mode"',
+  '"connexion_nom"',
+  '"cas_serveur_host"',
+  '"cas_serveur_port"',
+  '"cas_serveur_root"',
+  '"cas_serveur_url_login"',
+  '"cas_serveur_url_logout"',
+  '"cas_serveur_url_validate"',
+  '"cas_serveur_verif_certif_ssl"',
+  '"gepi_url"',
+  '"gepi_rne"',
+  '"gepi_certificat_empreinte"',
+);
+$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres( implode(',',$tab_parametres) );
 foreach($DB_TAB as $DB_ROW)
 {
   ${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -272,11 +288,11 @@ if($connexion_mode=='cas')
     // Si besoin, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
     if(DEBUG_PHPCAS)
     {
-      if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_ETABL_ID_LISTING || (strpos(PHPCAS_ETABL_ID_LISTING,','.$BASE.',')!==FALSE) )
+      if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_LOGS_ETABL_LISTING || (strpos(PHPCAS_LOGS_ETABL_LISTING,','.$BASE.',')!==FALSE) )
       {
         $fichier_nom_debut = 'debugcas_'.$BASE;
         $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
-        phpCAS::setDebug(PHPCAS_CHEMIN_LOGS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
+        phpCAS::setDebug(PHPCAS_LOGS_CHEMIN.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
       }
     }
     // Initialiser la connexion avec CAS ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
@@ -303,7 +319,7 @@ if($connexion_mode=='cas')
       }
     }
     // On indique qu'il faut vérifier la validité du certificat SSL, sauf exception paramétrée, mais alors dans ce cas ça ne sert à rien d'utiliser une connexion sécurisée.
-    if(strpos(PHPCAS_NO_CERTIF_LISTING,','.$connexion_nom.',')===FALSE)
+    if($cas_serveur_verif_certif_ssl)
     {
       phpCAS::setCasServerCACert(CHEMIN_FICHIER_CA_CERTS_FILE);
     }

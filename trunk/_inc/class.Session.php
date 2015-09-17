@@ -237,11 +237,14 @@ class Session
       return array( 'session différente' , $ID_old , $ID_new );
     }
     // Test sur l'IP
-    $IP_old = $_SESSION['SESSION_IP'];
-    $IP_new = Session::get_IP();
-    if($IP_old != $IP_new)
+    if(empty($_SESSION['ETABLISSEMENT']['IP_VARIABLE']))
     {
-      return array( 'adresse IP différente' , $IP_old , $IP_new );
+      $IP_old = $_SESSION['SESSION_IP'];
+      $IP_new = Session::get_IP();
+      if($IP_old != $IP_new)
+      {
+        return array( 'adresse IP différente' , $IP_old , $IP_new );
+      }
     }
     // Test sur le navigateur (une mise à jour du navigateur en cours de navigation peut déclencher ceci)
     $UA_old = $_SESSION['SESSION_UA'];
@@ -378,10 +381,24 @@ class Session
           Session::close__open_new__init( TRUE /*memo_GET*/ );
         }
       }
-      // Test sur SESSION_KEY transitoire, pour éviter une deconnexion suite à une mise à jour ; à retirer dans quelques mois...
-      elseif( empty($_SESSION['SESSION_KEY']) && ($tab_info_pb = Session::TestAnomalieSession()) )
+      elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
       {
-        // 2.2. Session retrouvée, mais pb détecté (IP changée, navigateur différent)
+        // 2.2. Session retrouvée, utilisateur non identifié
+        if(!Session::$tab_droits_page['public'])
+        {
+          // 2.2.1. Espace non identifié => Espace identifié : redirection pour identification
+          $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
+          Session::exit_sauf_SSO('Authentification manquante ou perdue (onglets incompatibles ouverts ?).');
+        }
+        else
+        {
+          // 2.2.2. Espace non identifié => Espace non identifié : RAS
+        }
+      }
+      // On ne teste un vol de session que pour les utilisateurs identifiés car un établissement peut paramétrer d'éviter cette vérification
+      elseif( $tab_info_pb = Session::TestAnomalieSession() )
+      {
+        // 2.3. Session retrouvée, mais pb détecté (IP changée, navigateur différent)
         list( $msg_pb , $avant , $apres ) = $tab_info_pb;
         // Enregistrement du détail
         $fichier_nom = 'session_anomalie_'.$_SESSION['BASE'].'_'.$_SESSION['SESSION_ID'].'.txt';
@@ -390,20 +407,6 @@ class Session
         // Game over
         Session::close__open_new__init( TRUE /*memo_GET*/ );
         Session::exit_sauf_SSO('Appel anormal : '.$msg_pb.' (<a href="'.URL_DIR_EXPORT.$fichier_nom.'" target="_blank">détail</a>).');
-      }
-      elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
-      {
-        // 2.3. Session retrouvée, utilisateur non identifié
-        if(!Session::$tab_droits_page['public'])
-        {
-          // 2.3.1. Espace non identifié => Espace identifié : redirection pour identification
-          $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
-          Session::exit_sauf_SSO('Authentification manquante ou perdue (onglets incompatibles ouverts ?).');
-        }
-        else
-        {
-          // 2.3.2. Espace non identifié => Espace non identifié : RAS
-        }
       }
       else
       {

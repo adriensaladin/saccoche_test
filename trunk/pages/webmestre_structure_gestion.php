@@ -46,6 +46,7 @@ $selected = ($geo_id===0) ? ' selected' : '' ;
 $select_f_geo_id = str_replace( '<option value="">&nbsp;</option>' , '<option value="">&nbsp;</option><option value="0"'.$selected.'>Toutes les zones</option>' , $select_f_geo_id );
 
 $geo_ordre_longueur = 6;
+$geo_ordre_format   = '%0'.$geo_ordre_longueur.'u';
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );
@@ -100,7 +101,7 @@ if(empty($_POST['f_afficher']))
       echo  '<td class="nu"><a href="#id_0">'.$img.'</a></td>';
       echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
       echo  '<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
-      echo  '<td class="label"><i>'.sprintf($geo_ordre_longueur,$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
+      echo  '<td class="label"><i>'.sprintf($geo_ordre_format,$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
       echo  '<td class="label">'.html($DB_ROW['structure_denomination']).'<br />'.html($DB_ROW['structure_uai']).'</td>';
       echo  '<td class="label"><span>'.html($DB_ROW['structure_contact_nom']).'</span> <span>'.html($DB_ROW['structure_contact_prenom']).'</span><div>'.html($DB_ROW['structure_contact_courriel']).'</div></td>';
       echo  '<td class="label">'.$date_affich.'</td>';

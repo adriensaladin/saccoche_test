@@ -59,7 +59,6 @@ $tab_sous_menu = array
     'webmestre_database_test'            => array( 'texte' => "Test des droits MySQL"            , 'class' => 'serveur_database'     , 'href' => 'page=webmestre_database_test'            ), // multi-structures uniquement
     'webmestre_configuration_filesystem' => array( 'texte' => "Droits du système de fichiers"    , 'class' => 'serveur_erreur'       , 'href' => 'page=webmestre_configuration_filesystem' ),
     'webmestre_structure_bdd_repair'     => array( 'texte' => "Analyser / Réparer les bases"     , 'class' => 'structure_bdd_repair' , 'href' => 'page=webmestre_structure_bdd_repair'     ),
-    'webmestre_certificats_ssl'          => array( 'texte' => "Vérification des certificats SSL" , 'class' => 'serveur_security'     , 'href' => 'page=webmestre_certificats_ssl'          ),
     'webmestre_debug'                    => array( 'texte' => "Débogueur"                        , 'class' => 'serveur_debug'        , 'href' => 'page=webmestre_debug'                    ),
   ),
   'param_installation' => array

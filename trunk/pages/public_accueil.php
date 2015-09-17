@@ -83,6 +83,10 @@ else
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
 }
 
+// Javascript
+Layout::add( 'js_inline_before' , 'var    LOGIN_LONGUEUR_MAX = '.   LOGIN_LONGUEUR_MAX.';' );
+Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUEUR_MAX.';' );
+
 // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
 $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'TIME'  => $_SERVER['REQUEST_TIME'] ,

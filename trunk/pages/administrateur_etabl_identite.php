@@ -95,11 +95,23 @@ else
   $contact_nom = $contact_prenom = $contact_courriel = $user_title = $mail_title = $user_readonly = $mail_readonly = '';
 }
 
+// Formulaire SELECT pour la vérification de l'adresse IP
+$tab_ip_variable = array(
+  0 => 'Oui = Sécurité optimale (réseau d\'établissement normalement configuré)',
+  1 => 'Non = Sécurité diminuée (réseau d\'établissement derrière un routeur mal configuré)',
+);
+$options_ip_variable = '';
+foreach($tab_ip_variable as $option_value => $option_texte)
+{
+  $selected = ($option_value==$_SESSION['ETABLISSEMENT']['IP_VARIABLE']) ? ' selected' : '' ;
+  $options_ip_variable .= '<option value="'.$option_value.'"'.$selected.'>'.$option_texte.'</option>';
+}
+
 ?>
 
 <div id="div_instance">
 
-  <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
+  <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Identité de l'établissement</a></span></div>
 
   <form action="#" method="post" id="form_webmestre">
     <hr />
@@ -182,6 +194,15 @@ else
     <p>
       <label class="tab" for="f_etablissement_langue">Langue :</label><select id="f_etablissement_langue" name="f_etablissement_langue"><?php echo $options_langue; ?></select><br />
       <span class="tab"></span><button id="bouton_valider_langue" type="button" class="parametre">Valider.</button><label id="ajax_msg_langue">&nbsp;</label>
+    </p>
+  </form>
+
+  <form action="#" method="post" id="form_ip_variable">
+    <hr />
+    <h2>Vérification de l'adresse IP</h2>
+    <p>
+      <label class="tab" for="f_ip_variable">Vérification IP :</label><select id="f_ip_variable" name="f_ip_variable"><?php echo $options_ip_variable; ?></select><br />
+      <span class="tab"></span><button id="bouton_valider_ip_variable" type="button" class="parametre">Valider.</button><label id="ajax_msg_ip_variable">&nbsp;</label>
     </p>
   </form>
 

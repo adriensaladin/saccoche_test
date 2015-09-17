@@ -33,6 +33,10 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'TIME'  => $_SERVER['REQUEST_TIME'] ,
   'DELAI' => 3, // en secondes, est ensuite incrémenté en cas d'erreur
 );
+
+// Javascript
+Layout::add( 'js_inline_before' , 'var    LOGIN_LONGUEUR_MAX = '.   LOGIN_LONGUEUR_MAX.';' );
+Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUEUR_MAX.';' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__comptes_multiples">DOC : Bascule entre comptes</a></span></p>
@@ -87,8 +91,8 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
   <div id="gestion_ajouter">
     <p span class="astuce">Saisir les identifiants <em>SACoche</em> du compte concerné.</p>
     <p>
-      <label class="tab" for="f_login">Nom d'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />
-      <label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" />
+      <label class="tab" for="f_login">Nom d'utilisateur :</label><input id="f_login" name="f_login" size="<?php echo (LOGIN_LONGUEUR_MAX-5) ?>" maxlength="<?php echo LOGIN_LONGUEUR_MAX ?>" type="text" value="" tabindex="2" autocomplete="off" /><br />
+      <label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="<?php echo (PASSWORD_LONGUEUR_MAX-5) ?>" maxlength="<?php echo PASSWORD_LONGUEUR_MAX ?>" type="password" value="" tabindex="3" autocomplete="off" />
     </p>
   </div>
   <div id="gestion_supprimer">

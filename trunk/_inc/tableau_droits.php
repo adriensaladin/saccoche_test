@@ -139,7 +139,6 @@ $tab_droits_par_page = array
   'administrateur_resilier'                 => $tab_droits_profil_administrateur,
   'administrateur_user_recherche'           => $tab_droits_profil_administrateur,
   // Profil webmestre | développeur
-  'webmestre_certificats_ssl'               => $tab_droits_profil_webmestre_developpeur,
   'webmestre_configuration_filesystem'      => $tab_droits_profil_webmestre_developpeur,
   'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre_developpeur,
   'webmestre_database_test'                 => $tab_droits_profil_webmestre_developpeur,

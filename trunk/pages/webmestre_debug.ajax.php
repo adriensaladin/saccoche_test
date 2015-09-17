@@ -94,8 +94,8 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
   }
   // ok
   FileSystem::fabriquer_fichier_hebergeur_info( array(
-    'PHPCAS_CHEMIN_LOGS'      => $chemin_logs,
-    'PHPCAS_ETABL_ID_LISTING' => $etabl_id_listing,
+    'PHPCAS_LOGS_CHEMIN'        => $chemin_logs,
+    'PHPCAS_LOGS_ETABL_LISTING' => $etabl_id_listing,
   ) );
   exit('ok');
 }
@@ -106,7 +106,7 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
 
 if( ($action=='supprimer') && $fichier_logs )
 {
-  FileSystem::supprimer_fichier( PHPCAS_CHEMIN_LOGS.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
+  FileSystem::supprimer_fichier( PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
   exit('ok');
 }
 
@@ -116,7 +116,7 @@ if( ($action=='supprimer') && $fichier_logs )
 
 if( ($action=='voir') && $fichier_logs )
 {
-  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_CHEMIN_LOGS.$fichier_logs.'.txt') );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt') );
   exit('<ul class="puce"><li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 

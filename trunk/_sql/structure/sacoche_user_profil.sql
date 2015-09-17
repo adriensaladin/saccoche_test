@@ -13,7 +13,7 @@ CREATE TABLE sacoche_user_profil (
   user_profil_nom_court_pluriel   VARCHAR(15) COLLATE utf8_unicode_ci     NOT NULL DEFAULT "",
   user_profil_nom_long_singulier  VARCHAR(40) COLLATE utf8_unicode_ci     NOT NULL DEFAULT "",
   user_profil_nom_long_pluriel    VARCHAR(40) COLLATE utf8_unicode_ci     NOT NULL DEFAULT "",
-  user_profil_login_modele        VARCHAR(20) COLLATE utf8_unicode_ci     NOT NULL DEFAULT "ppp.nnnnnnnn",
+  user_profil_login_modele        VARCHAR(30) COLLATE utf8_unicode_ci     NOT NULL DEFAULT "ppp.nnnnnnnn",
   user_profil_mdp_longueur_mini   TINYINT(3)  UNSIGNED                    NOT NULL DEFAULT 6,
   user_profil_mdp_date_naissance  TINYINT(1)  UNSIGNED                    NOT NULL DEFAULT 0,
   user_profil_duree_inactivite    TINYINT(3)  UNSIGNED                    NOT NULL DEFAULT 30,

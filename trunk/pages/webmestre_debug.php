@@ -51,10 +51,10 @@ foreach($tab_debug as $debug_mode => $debug_texte)
 }
 // Fichiers de logs phpCAS
 $tab_fichiers = array();
-$alerte_dossier_invalide = is_dir(PHPCAS_CHEMIN_LOGS) ? '' : '<p class="danger">Le dossier renseigné n\'existe plus ; veuillez le modifier !</p>' ;
+$alerte_dossier_invalide = is_dir(PHPCAS_LOGS_CHEMIN) ? '' : '<p class="danger">Le dossier renseigné n\'existe plus ; veuillez le modifier !</p>' ;
 if(!$alerte_dossier_invalide)
 {
-  $tab_files = FileSystem::lister_contenu_dossier(PHPCAS_CHEMIN_LOGS);
+  $tab_files = FileSystem::lister_contenu_dossier(PHPCAS_LOGS_CHEMIN);
   foreach($tab_files as $file)
   {
     if(substr($file,0,9)=='debugcas_')
@@ -70,7 +70,7 @@ if(!$alerte_dossier_invalide)
         $id_etabl = $tab[1];
         $etabl = 'pour la base n°'.$id_etabl;
       }
-      $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(PHPCAS_CHEMIN_LOGS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>'.NL;
+      $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(PHPCAS_LOGS_CHEMIN.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>'.NL;
     }
     ksort($tab_fichiers);
   }
@@ -93,8 +93,8 @@ $listing_fichiers = count($tab_fichiers) ? implode('',$tab_fichiers) : '<li>Pas 
 <form action="#" method="post" id="form_phpCAS"><fieldset>
   <p class="astuce">Si des fichiers de logs phpCAS existent déjà, ils ne seront pas déplacés : penser à les supprimer avant.</p>
   <?php echo $alerte_dossier_invalide ?>
-  <label class="tab" for="f_chemin_logs">Chemin</label><input type="text" size="100" id="f_chemin_logs" name="f_chemin_logs" value="<?php echo PHPCAS_CHEMIN_LOGS ?>" /><br />
-  <label class="tab" for="f_etabl_id_listing">Établissements <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Si installation de type mono-structure, alors champ sans objet.<br />Sinon, identifiants à prendre dans la page de gestion des établissements (1e colonne).<br />Valeurs à séparer, faire précéder et terminer par des virgules.<br />Laisser le champ vide active les logs pour tous les établissements (déconseillé)." /></label><input type="text" size="100" id="f_etabl_id_listing" name="f_etabl_id_listing" value="<?php echo PHPCAS_ETABL_ID_LISTING ?>" /><br />
+  <label class="tab" for="f_chemin_logs">Chemin</label><input type="text" size="100" id="f_chemin_logs" name="f_chemin_logs" value="<?php echo PHPCAS_LOGS_CHEMIN ?>" /><br />
+  <label class="tab" for="f_etabl_id_listing">Établissements <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Si installation de type mono-structure, alors champ sans objet.<br />Sinon, identifiants à prendre dans la page de gestion des établissements (1e colonne).<br />Valeurs à séparer, faire précéder et terminer par des virgules.<br />Laisser le champ vide active les logs pour tous les établissements (déconseillé)." /></label><input type="text" size="100" id="f_etabl_id_listing" name="f_etabl_id_listing" value="<?php echo PHPCAS_LOGS_ETABL_LISTING ?>" /><br />
   <span class="tab"></span><button id="bouton_phpCAS" type="button" class="parametre">Enregistrer.</button><label id="ajax_phpCAS">&nbsp;</label>
 </fieldset></form>
 

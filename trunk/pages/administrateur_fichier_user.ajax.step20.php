@@ -1154,6 +1154,10 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
+  // 1) Les noms des champs manquent d'homogénéité ("Code postal du responsable 1" vs "CpVille Resp2" etc) ; cela fait très amateur...
+  // 2) Pour le responsable 1 le champ "Ville du responsable 1" ne contient que la ville comme attendu (par exemple "LONDON"),
+  //     mais pour le responsable 2 le champ "Ville Resp2" contient code postal + ville (par exemple "W7 1JQ LONDON").
+  //     Pour avoir la ville du resp 2 il faut donc faire "la différence" entre le champ "Ville Resp2" avec "CpVille Resp2"...
   foreach ($tab_elements as $numero=>$element)
   {
     switch($element)

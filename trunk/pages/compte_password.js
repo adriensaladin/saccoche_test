@@ -61,15 +61,15 @@ $(document).ready
       {
         rules :
         {
-          f_password0 : { required:true , maxlength:20 },
-          f_password1 : { required:true , minlength:MDP_LONGUEUR_MINI , maxlength:20 },
-          f_password2 : { required:true , minlength:MDP_LONGUEUR_MINI , maxlength:20 , equalTo: "#f_password1" }
+          f_password0 : { required:true , maxlength:PASSWORD_LONGUEUR_MAX },
+          f_password1 : { required:true , minlength:PASSWORD_LONGUEUR_MIN , maxlength:PASSWORD_LONGUEUR_MAX },
+          f_password2 : { required:true , minlength:PASSWORD_LONGUEUR_MIN , maxlength:PASSWORD_LONGUEUR_MAX , equalTo: "#f_password1" }
         },
         messages :
         {
-          f_password0 : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" },
-          f_password1 : { required:"mot de passe manquant" , minlength:MDP_LONGUEUR_MINI+" caractères minimum" , maxlength:"20 caractères maximum" },
-          f_password2 : { required:"mot de passe à saisir une 2e fois" , minlength:MDP_LONGUEUR_MINI+" caractères minimum" , maxlength:"20 caractères maximum" , equalTo:"mots de passe différents" }
+          f_password0 : { required:"mot de passe manquant" , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" },
+          f_password1 : { required:"mot de passe manquant" , minlength:PASSWORD_LONGUEUR_MIN+" caractères minimum" , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" },
+          f_password2 : { required:"mot de passe à saisir une 2e fois" , minlength:PASSWORD_LONGUEUR_MIN+" caractères minimum" , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" , equalTo:"mots de passe différents" }
         },
         errorElement : "label",
         errorClass : "erreur",

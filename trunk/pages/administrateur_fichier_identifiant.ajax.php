@@ -218,8 +218,8 @@ if($action=='import_loginmdp')
       list($login,$mdp,$nom,$prenom) = $tab_elements;
       if( ($nom!='') && ($prenom!='') )
       {
-        $tab_users_fichier['login'][]  = mb_substr(Clean::login($login),0,20);
-        $tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(Clean::password($mdp),0,20) : '';
+        $tab_users_fichier['login'][]  = mb_substr(Clean::login($login),0,LOGIN_LONGUEUR_MAX);
+        $tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(Clean::password($mdp),0,PASSWORD_LONGUEUR_MAX) : '';
         $tab_users_fichier['nom'][]    = Clean::nom($nom);
         $tab_users_fichier['prenom'][] = Clean::prenom($prenom);
       }

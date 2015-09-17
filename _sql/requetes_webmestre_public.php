@@ -129,7 +129,7 @@ public static function DB_recuperer_id_partenaire_for_connecteur($connecteur)
  */
 public static function DB_recuperer_donnees_partenaire($partenaire_id)
 {
-  $DB_SQL = 'SELECT sacoche_partenaire.*, ';
+  $DB_SQL = 'SELECT sacoche_partenaire.* ';
   $DB_SQL.= 'FROM sacoche_partenaire ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
   $DB_VAR = array(':partenaire_id'=>$partenaire_id);

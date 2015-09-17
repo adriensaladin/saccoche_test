@@ -265,9 +265,9 @@ $(document).ready
           f_genre       : { required:false },
           f_nom         : { required:true , maxlength:25 },
           f_prenom      : { required:true , maxlength:25 },
-          f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
+          f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:LOGIN_LONGUEUR_MAX },
           f_birth_date  : { required:function(){return !$('#box_birth_date').is(':checked');} , dateITA:true },
-          f_password    : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:20 },
+          f_password    : { required:function(){return !$('#box_password').is(':checked');} , minlength:function(){return tab_mdp_longueur_mini[profil];} , maxlength:PASSWORD_LONGUEUR_MAX },
           f_courriel    : { required:false , email:true , maxlength:63 },
           f_sortie_date : { required:function(){return !$('#box_sortie_date').is(':checked');} , dateITA:true }
         },
@@ -281,9 +281,9 @@ $(document).ready
           f_genre       : { },
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-          f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+          f_login       : { required:"login manquant"  , maxlength:LOGIN_LONGUEUR_MAX+" caractères maximum" },
           f_birth_date  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_password    : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum pour ce profil";} , maxlength:"20 caractères maximum" },
+          f_password    : { required:"mot de passe manquant" , minlength:function(){return tab_mdp_longueur_mini[profil]+" caractères minimum";} , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" },
           f_courriel    : { email:"adresse invalide", maxlength:"63 caractères maximum" },
           f_sortie_date : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
         },

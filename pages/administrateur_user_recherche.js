@@ -279,7 +279,7 @@ $(document).ready
           f_genre       : { required:false },
           f_nom         : { required:true , maxlength:25 },
           f_prenom      : { required:true , maxlength:25 },
-          f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:20 },
+          f_login       : { required:function(){return !$('#box_login').is(':checked');} , maxlength:LOGIN_LONGUEUR_MAX },
           f_courriel    : { required:false , email:true , maxlength:63 },
           f_sortie_date : { required:function(){return !$('#box_sortie_date').is(':checked');} , dateITA:true }
         },
@@ -293,7 +293,7 @@ $(document).ready
           f_genre       : { },
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
           f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-          f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+          f_login       : { required:"login manquant"  , maxlength:LOGIN_LONGUEUR_MAX+" caractères maximum" },
           f_courriel    : { email:"adresse invalide", maxlength:"63 caractères maximum" },
           f_sortie_date : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
         },

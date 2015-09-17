@@ -184,13 +184,13 @@ $(document).ready
       {
         rules :
         {
-          f_login    : { required:function(){return mode=='ajouter';} , maxlength:20 },
-          f_password : { required:function(){return mode=='ajouter';} , maxlength:20 }
+          f_login    : { required:function(){return mode=='ajouter';} , maxlength:LOGIN_LONGUEUR_MAX },
+          f_password : { required:function(){return mode=='ajouter';} , maxlength:PASSWORD_LONGUEUR_MAX }
         },
         messages :
         {
-          f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
-          f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
+          f_login    : { required:"nom d'utilisateur manquant" , maxlength:LOGIN_LONGUEUR_MAX+" caractères maximum" },
+          f_password : { required:"mot de passe manquant"      , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

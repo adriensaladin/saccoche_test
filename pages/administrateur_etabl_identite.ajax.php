@@ -55,6 +55,8 @@ $etablissement_langue        = (isset($_POST['f_etablissement_langue']))        
 
 $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? Clean::entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
 
+$ip_variable                 = (isset($_POST['f_ip_variable']))                 ? Clean::entier($_POST['f_ip_variable'])                 : NULL;
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mettre à jour le formulaire f_geo1 et le renvoyer en HTML
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,6 +275,20 @@ if( $etablissement_langue )
   Lang::setlocale( LC_MESSAGES, Lang::get_locale_used() );
   SessionUser::memoriser_menu();
   // Retour
+  exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mettre à jour la vérification de l'IP
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( !is_null($ip_variable) )
+{
+  $tab_parametres = array();
+  $tab_parametres['etablissement_ip_variable'] = $ip_variable;
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['ETABLISSEMENT']['IP_VARIABLE'] = $ip_variable;
   exit('ok');
 }
 

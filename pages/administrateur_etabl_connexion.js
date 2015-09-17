@@ -68,7 +68,7 @@ $(document).ready
     function actualiser_formulaire()
     {
       // on masque
-      $('#cas_options , #gepi_options ,#cas_domaine ,#cas_port , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
+      $('#cas_options , #gepi_options ,#cas_domaine ,#cas_port , #cas_verif , #lien_direct , #lien_gepi , #info_inacheve , #info_hors_sesamath , #info_hors_actualite , #info_hors_ent , #info_heberg_acad , #info_conv_acad , #info_conv_etabl').hide();
       if(!IS_HEBERGEMENT_SESAMATH)
       {
         $('#info_hors_sesamath').show();
@@ -118,6 +118,10 @@ $(document).ready
         if(is_port_edit=='oui')
         {
           $('#cas_port').show();
+        }
+        if(connexion_mode=='cas')
+        {
+          $('#cas_verif').show();
         }
         if(is_operationnel=='1')
         {

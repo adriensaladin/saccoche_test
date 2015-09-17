@@ -255,15 +255,15 @@ $(document).ready
         {
           f_base       : { required:true },
           f_partenaire : { required:true },
-          f_login      : { required:true , maxlength:20 },
-          f_password   : { required:true , maxlength:20 }
+          f_login      : { required:true , maxlength:LOGIN_LONGUEUR_MAX },
+          f_password   : { required:true , maxlength:PASSWORD_LONGUEUR_MAX }
         },
         messages :
         {
           f_base       : { required:"établissement manquant" },
           f_partenaire : { required:"partenariat manquant" },
-          f_login      : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
-          f_password   : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
+          f_login      : { required:"nom d'utilisateur manquant" , maxlength:LOGIN_LONGUEUR_MAX+" caractères maximum" },
+          f_password   : { required:"mot de passe manquant" , maxlength:PASSWORD_LONGUEUR_MAX+" caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

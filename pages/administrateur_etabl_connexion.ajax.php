@@ -28,24 +28,25 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$f_action                 = (isset($_POST['f_action']))                 ? Clean::texte($_POST['f_action'])                 : '';
-$f_annee                  = (isset($_POST['f_annee']))                  ? Clean::entier($_POST['f_annee'])                 : -1;
-$f_convention_id          = (isset($_POST['f_convention_id']))          ? Clean::entier($_POST['f_convention_id'])         : 0 ;
-$f_connexion_mode         = (isset($_POST['f_connexion_mode']))         ? Clean::texte($_POST['f_connexion_mode'])         : '';
-$f_connexion_ref          = (isset($_POST['f_connexion_ref']))          ? Clean::texte($_POST['f_connexion_ref'])          : '';
-$cas_serveur_host         = (isset($_POST['cas_serveur_host']))         ? Clean::texte($_POST['cas_serveur_host'])         : '';
-$cas_serveur_port         = (isset($_POST['cas_serveur_port']))         ? Clean::entier($_POST['cas_serveur_port'])        : 0 ;
-$cas_serveur_root         = (isset($_POST['cas_serveur_root']))         ? Clean::texte($_POST['cas_serveur_root'])         : '';
-$cas_serveur_url_login    = (isset($_POST['cas_serveur_url_login']))    ? Clean::texte($_POST['cas_serveur_url_login'])    : '';
-$cas_serveur_url_logout   = (isset($_POST['cas_serveur_url_logout']))   ? Clean::texte($_POST['cas_serveur_url_logout'])   : '';
-$cas_serveur_url_validate = (isset($_POST['cas_serveur_url_validate'])) ? Clean::texte($_POST['cas_serveur_url_validate']) : '';
-$serveur_host_subdomain   = (isset($_POST['serveur_host_subdomain']))   ? Clean::texte($_POST['serveur_host_subdomain'])   : '';
-$serveur_host_domain      = (isset($_POST['serveur_host_domain']))      ? Clean::texte($_POST['serveur_host_domain'])      : '';
-$serveur_port             = (isset($_POST['serveur_port']))             ? Clean::entier($_POST['serveur_port'])            : 0 ;
-$gepi_saml_url            = (isset($_POST['gepi_saml_url']))            ? Clean::texte($_POST['gepi_saml_url'])            : '';
-$gepi_saml_rne            = (isset($_POST['gepi_saml_rne']))            ? Clean::uai($_POST['gepi_saml_rne'])              : '';
-$gepi_saml_certif         = (isset($_POST['gepi_saml_certif']))         ? Clean::texte($_POST['gepi_saml_certif'])         : '';
-$f_first_time             = (isset($_POST['f_first_time']))             ? Clean::texte($_POST['f_first_time'])             : '';
+$f_action                     = (isset($_POST['f_action']))                     ? Clean::texte($_POST['f_action'])                      : '';
+$f_annee                      = (isset($_POST['f_annee']))                      ? Clean::entier($_POST['f_annee'])                      : -1;
+$f_convention_id              = (isset($_POST['f_convention_id']))              ? Clean::entier($_POST['f_convention_id'])              : 0 ;
+$f_connexion_mode             = (isset($_POST['f_connexion_mode']))             ? Clean::texte($_POST['f_connexion_mode'])              : '';
+$f_connexion_ref              = (isset($_POST['f_connexion_ref']))              ? Clean::texte($_POST['f_connexion_ref'])               : '';
+$cas_serveur_host             = (isset($_POST['cas_serveur_host']))             ? Clean::texte($_POST['cas_serveur_host'])              : '';
+$cas_serveur_port             = (isset($_POST['cas_serveur_port']))             ? Clean::entier($_POST['cas_serveur_port'])             : 0 ;
+$cas_serveur_root             = (isset($_POST['cas_serveur_root']))             ? Clean::texte($_POST['cas_serveur_root'])              : '';
+$cas_serveur_url_login        = (isset($_POST['cas_serveur_url_login']))        ? Clean::texte($_POST['cas_serveur_url_login'])         : '';
+$cas_serveur_url_logout       = (isset($_POST['cas_serveur_url_logout']))       ? Clean::texte($_POST['cas_serveur_url_logout'])        : '';
+$cas_serveur_url_validate     = (isset($_POST['cas_serveur_url_validate']))     ? Clean::texte($_POST['cas_serveur_url_validate'])      : '';
+$cas_serveur_verif_certif_ssl = (isset($_POST['cas_serveur_verif_certif_ssl'])) ? Clean::entier($_POST['cas_serveur_verif_certif_ssl']) : NULL;
+$serveur_host_subdomain       = (isset($_POST['serveur_host_subdomain']))       ? Clean::texte($_POST['serveur_host_subdomain'])        : '';
+$serveur_host_domain          = (isset($_POST['serveur_host_domain']))          ? Clean::texte($_POST['serveur_host_domain'])           : '';
+$serveur_port                 = (isset($_POST['serveur_port']))                 ? Clean::entier($_POST['serveur_port'])                 : 0 ;
+$gepi_saml_url                = (isset($_POST['gepi_saml_url']))                ? Clean::texte($_POST['gepi_saml_url'])                 : '';
+$gepi_saml_rne                = (isset($_POST['gepi_saml_rne']))                ? Clean::uai($_POST['gepi_saml_rne'])                   : '';
+$gepi_saml_certif             = (isset($_POST['gepi_saml_certif']))             ? Clean::texte($_POST['gepi_saml_certif'])              : '';
+$f_first_time                 = (isset($_POST['f_first_time']))                 ? Clean::texte($_POST['f_first_time'])                  : '';
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
@@ -116,6 +117,10 @@ if($f_action=='enregistrer_mode_identification')
     {
       exit_json( FALSE , 'Syntaxe URL validate incorrecte !' );
     }
+    if( is_null($cas_serveur_verif_certif_ssl) )
+    {
+      exit_json( FALSE , 'Paramètre vérif. certificat SSL manquant !' );
+    }
     // Deux tests sauf pour les établissements destinés à tester les connecteurs ENT
     if( !IS_HEBERGEMENT_SESAMATH || ($_SESSION['BASE']<CONVENTION_ENT_ID_ETABL_MAXI) )
     {
@@ -150,17 +155,30 @@ if($f_action=='enregistrer_mode_identification')
       }
     }
     // C'est ok
-    DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root,'cas_serveur_url_login'=>$cas_serveur_url_login,'cas_serveur_url_logout'=>$cas_serveur_url_logout,'cas_serveur_url_validate'=>$cas_serveur_url_validate) );
+    $tab_parametres = array(
+      'connexion_mode'               => $f_connexion_mode,
+      'connexion_nom'                => $f_connexion_nom,
+      'connexion_departement'        => $f_connexion_departement,
+      'cas_serveur_host'             => $cas_serveur_host,
+      'cas_serveur_port'             => $cas_serveur_port,
+      'cas_serveur_root'             => $cas_serveur_root,
+      'cas_serveur_url_login'        => $cas_serveur_url_login,
+      'cas_serveur_url_logout'       => $cas_serveur_url_logout,
+      'cas_serveur_url_validate'     => $cas_serveur_url_validate,
+      'cas_serveur_verif_certif_ssl' => $cas_serveur_verif_certif_ssl,
+    );
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
     // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
-    $_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
-    $_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
-    $_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
-    $_SESSION['CAS_SERVEUR']['HOST'] = $cas_serveur_host;
-    $_SESSION['CAS_SERVEUR']['PORT'] = $cas_serveur_port;
-    $_SESSION['CAS_SERVEUR']['ROOT'] = $cas_serveur_root;
-    $_SESSION['CAS_SERVEUR']['URL_LOGIN']    = $cas_serveur_url_login;
-    $_SESSION['CAS_SERVEUR']['URL_LOGOUT']   = $cas_serveur_url_logout;
-    $_SESSION['CAS_SERVEUR']['URL_VALIDATE'] = $cas_serveur_url_validate;
+    $_SESSION['CONNEXION_MODE']                  = $f_connexion_mode;
+    $_SESSION['CONNEXION_NOM']                   = $f_connexion_nom;
+    $_SESSION['CONNEXION_DEPARTEMENT']           = $f_connexion_departement;
+    $_SESSION['CAS_SERVEUR']['HOST']             = $cas_serveur_host;
+    $_SESSION['CAS_SERVEUR']['PORT']             = $cas_serveur_port;
+    $_SESSION['CAS_SERVEUR']['ROOT']             = $cas_serveur_root;
+    $_SESSION['CAS_SERVEUR']['URL_LOGIN']        = $cas_serveur_url_login;
+    $_SESSION['CAS_SERVEUR']['URL_LOGOUT']       = $cas_serveur_url_logout;
+    $_SESSION['CAS_SERVEUR']['URL_VALIDATE']     = $cas_serveur_url_validate;
+    $_SESSION['CAS_SERVEUR']['VERIF_CERTIF_SSL'] = $cas_serveur_verif_certif_ssl;
     exit_json( TRUE );
   }
 

@@ -8,7 +8,7 @@ $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['ABSTRACTION']    = 'PDO';
 $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['TYPE']           = 'mysql';
 $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['FORCE_ENCODING'] = 'utf8';
 $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['CRITICAL']       = TRUE;
-$_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['ERROR']          = 'warning'; // exception | silent | warning | NULL
+$_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['ERROR']          = (SERVEUR_TYPE=='PROD') ? 'silent' : 'warning'; // exception | silent | warning | NULL ; 'silent' => logs PHP ; 'warning' => à l'écran
 $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['DEBUG']          = DEBUG_SQL ? 'firebug' : '' ;  // screen | firebug | empty
 
 $_CONST['POOL'][SACOCHE_STRUCTURE_BD_NAME]['HOST'] = SACOCHE_STRUCTURE_BD_HOST;

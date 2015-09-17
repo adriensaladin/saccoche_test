@@ -70,7 +70,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
   $affichage = '';
   if($profil=='webmestre')
   {
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a id="lien_lost" href="#webmestre">[ Identifiants perdus ]</a>'.NL;
   }
@@ -80,19 +80,19 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $selection = (isset($_COOKIE[COOKIE_PARTENAIRE])) ? Clean::entier($_COOKIE[COOKIE_PARTENAIRE]) : FALSE ;
     $options_partenaires = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_partenaires_conventionnes() , FALSE /*select_nom*/ , '' /*option_first*/ , $selection , '' /*optgroup*/ );
     $affichage .= '<label class="tab" for="f_partenaire">Partenariat :</label><select id="f_partenaire" name="f_partenaire" tabindex="1" class="t9">'.$options_partenaires.'</select><br />'.NL;
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="3" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a id="lien_lost" href="#partenaire">[ Identifiants perdus ]</a>'.NL;
   }
   elseif($profil=='developpeur')
   {
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="1" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="'.$profil.'" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="2" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
   }
   elseif($mode=='normal')
   {
-    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a id="lien_lost" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
   }
@@ -102,8 +102,8 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
     $affichage .=   '<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
     $affichage .=   '<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'.NL;
     $affichage .= '<fieldset id="fieldset_normal" class="hide">'.NL;
-    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
-    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '</fieldset>'.NL;
     $affichage .= '<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a id="lien_lost" class="hide" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;

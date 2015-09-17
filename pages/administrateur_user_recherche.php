@@ -31,7 +31,6 @@ $TITRE = html(Lang::_("Rechercher un utilisateur"));
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
-Layout::add( 'js_inline_before' , 'var LOGIN_LONGUEUR_MAX = '.LOGIN_LONGUEUR_MAX.';' );
 ?>
 
 <ul class="puce">
@@ -105,7 +104,7 @@ Layout::add( 'js_inline_before' , 'var LOGIN_LONGUEUR_MAX = '.LOGIN_LONGUEUR_MAX
     <label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" type="text" value="" size="30" maxlength="25" />
   </p>
   <p>
-    <label class="tab" for="f_login">Login :</label><input id="f_login" name="f_login" type="text" value="" size="<?php echo (LOGIN_LONGUEUR_MAX-5) ?>" maxlength="<?php echo LOGIN_LONGUEUR_MAX ?>" /><br />
+    <label class="tab" for="f_login">Login :</label><input id="f_login" name="f_login" type="text" value="" size="15" maxlength="20" /><br />
     <label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" type="text" value="" size="30" maxlength="63" />
   </p>
   <p>

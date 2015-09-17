@@ -1052,10 +1052,10 @@ public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeu
  */
 public static function DB_rechercher_login_disponible($login_pris)
 {
-  $nb_chiffres = max(1 , LOGIN_LONGUEUR_MAX-mb_strlen($login_pris) );
+  $nb_chiffres = max(1 , 20-mb_strlen($login_pris) );
   do
   {
-    $login_tronque = mb_substr($login_pris,0,LOGIN_LONGUEUR_MAX-$nb_chiffres);
+    $login_tronque = mb_substr($login_pris,0,20-$nb_chiffres);
     $DB_SQL = 'SELECT user_login ';
     $DB_SQL.= 'FROM sacoche_user ';
     $DB_SQL.= 'WHERE user_login LIKE :user_login';

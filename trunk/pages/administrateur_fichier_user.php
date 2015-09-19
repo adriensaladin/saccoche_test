@@ -74,8 +74,8 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
         <option value="base_eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichier extrait de Factos (recommandé pour les établissements français à l'étranger)">
-        <option disabled value="factos_eleves">Importer les élèves (avec leurs affectations).</option>
-        <option disabled value="factos_parents">Importer les parents (avec adresses et responsabilités).</option>
+        <option value="factos_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option value="factos_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
         <option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (avec leurs affectations).</option>

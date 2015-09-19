@@ -70,14 +70,6 @@ $tab_groupes_fichier['niveau'] = array();
 // Pour retenir à part les dates de sortie Sconet des élèves
 $_SESSION['tmp']['date_sortie'] = array();
 
-$init_negatif = -1000;
-
-function filter_init_negatif($var)
-{
-  global $init_negatif;
-  return($var==$init_negatif);
-}
-
 // On passe aux différentes procédures selon le mode d'import...
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -829,12 +821,12 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
-    'nom'        => $init_negatif ,
-    'prenom'     => $init_negatif ,
-    'birth_date' => $init_negatif ,
-    'genre'      => $init_negatif ,
-    'niveau'     => $init_negatif ,
-    'classe'     => $init_negatif ,
+    'nom'        => -100 ,
+    'prenom'     => -100 ,
+    'birth_date' => -100 ,
+    'genre'      => -100 ,
+    'niveau'     => -100 ,
+    'classe'     => -100 ,
   );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
@@ -852,7 +844,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   /*
@@ -938,14 +930,14 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
-    'genre'         => $init_negatif ,
-    'nom'           => $init_negatif ,
-    'prenom'        => $init_negatif ,
-    'adresse'       => $init_negatif ,
-    'codepostal'    => $init_negatif ,
-    'commune'       => $init_negatif ,
-    'pays'          => $init_negatif ,
-    'courriel'      => $init_negatif ,
+    'genre'         => -200 ,
+    'nom'           => -200 ,
+    'prenom'        => -200 ,
+    'adresse'       => -200 ,
+    'codepostal'    => -200 ,
+    'commune'       => -200 ,
+    'pays'          => -200 ,
+    'courriel'      => -200 ,
     'enfant_nom'    => array() ,
     'enfant_prenom' => array() ,
   );
@@ -970,7 +962,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
   $nb_enfants_maxi = min( count($tab_numero_colonne['enfant_nom']) , count($tab_numero_colonne['enfant_prenom']) );
   if( (array_sum($tab_numero_colonne)<0) || ($nb_enfants_maxi==0) )
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
   }
   $numero_max = max( $numero_max , $tab_numero_colonne['enfant_nom'][0] , $tab_numero_colonne['enfant_prenom'][0] );
   unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -1056,12 +1048,12 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
-    'sconet_num' => $init_negatif ,
-    'nom'        => $init_negatif ,
-    'prenom'     => $init_negatif ,
-    'genre'      => $init_negatif ,
-    'birth_date' => $init_negatif ,
-    'classe'     => $init_negatif ,
+    'sconet_num' => -100 ,
+    'nom'        => -100 ,
+    'prenom'     => -100 ,
+    'genre'      => -100 ,
+    'birth_date' => -100 ,
+    'classe'     => -100 ,
   );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
@@ -1079,14 +1071,14 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos, les classes trouvées
   // Attention : en l'absence de donnée, un champ peut contenir la valeur "Non saisi"
   //
-  $tab_genre = array( ''=>'I' , 'Non saisi'=>'I' , 'Masculin'=>'M' , 'Féminin'=>'F' );
+  $tab_genre = array( ''=>'I' , 'Masculin'=>'M' , 'Féminin'=>'F' );
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = str_getcsv($ligne_contenu,$separateur);
@@ -1134,31 +1126,31 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
-    'sconet_num_1'     => $init_negatif ,
-    'sconet_num_2'     => $init_negatif ,
-    'genre_1'          => $init_negatif ,
-    'genre_2'          => $init_negatif ,
-    'nom_1'            => $init_negatif ,
-    'nom_2'            => $init_negatif ,
-    'prenom_1'         => $init_negatif ,
-    'prenom_2'         => $init_negatif ,
-    'courriel_1'       => $init_negatif ,
-    'courriel_2'       => $init_negatif ,
-    'adresse_ligne1_1' => $init_negatif ,
-    'adresse_ligne1_2' => $init_negatif ,
-    'adresse_ligne2_1' => $init_negatif ,
-    'adresse_ligne2_2' => $init_negatif ,
-    'adresse_ligne3_1' => $init_negatif ,
-    'adresse_ligne3_2' => $init_negatif ,
-    'code_postal_1'    => $init_negatif ,
-    'code_postal_2'    => $init_negatif ,
-    'commune_1'        => $init_negatif ,
-    'commune_2'        => $init_negatif ,
-    'pays_1'           => $init_negatif ,
-    'pays_2'           => $init_negatif ,
-    'enfant_sconet'    => $init_negatif ,
-    'enfant_nom'       => $init_negatif ,
-    'enfant_prenom'    => $init_negatif ,
+    'sconet_num_1'     => -200 ,
+    'sconet_num_2'     => -200 ,
+    'genre_1'          => -200 ,
+    'genre_2'          => -200 ,
+    'nom_1'            => -200 ,
+    'nom_2'            => -200 ,
+    'prenom_1'         => -200 ,
+    'prenom_2'         => -200 ,
+    'courriel_1'       => -200 ,
+    'courriel_2'       => -200 ,
+    'adresse_ligne1_1' => -200 ,
+    'adresse_ligne1_2' => -200 ,
+    'adresse_ligne2_1' => -200 ,
+    'adresse_ligne2_2' => -200 ,
+    'adresse_ligne3_1' => -200 ,
+    'adresse_ligne3_2' => -200 ,
+    'code_postal_1'    => -200 ,
+    'code_postal_2'    => -200 ,
+    'commune_1'        => -200 ,
+    'commune_2'        => -200 ,
+    'pays_1'           => -200 ,
+    'pays_2'           => -200 ,
+    'enfant_sconet'    => array() ,
+    'enfant_nom'       => array() ,
+    'enfant_prenom'    => array() ,
   );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
@@ -1171,114 +1163,108 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
     switch($element)
     {
       // parent 1
-      case "Identifiant GEP du responsable 1"       : $tab_numero_colonne['sconet_num_1']     = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Civilité du responsable 1"              : $tab_numero_colonne['genre_1']          = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Nom du responsable 1"                   : $tab_numero_colonne['nom_1']            = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Prénom du responsable 1"                : $tab_numero_colonne['prenom_1']         = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Email Resp1"                            : $tab_numero_colonne['courriel_1']       = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse1 du responsable 1"              : $tab_numero_colonne['adresse_ligne1_1'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse2 du responsable 1"              : $tab_numero_colonne['adresse_ligne2_1'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse3 du responsable 1"              : $tab_numero_colonne['adresse_ligne3_1'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Code postal du responsable 1"           : $tab_numero_colonne['code_postal_1']    = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Ville du responsable 1"                 : $tab_numero_colonne['commune_1']        = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Pays de domiciliation du responsable 1" : $tab_numero_colonne['pays_1']           = $numero; $numero_max = max($numero_max,$numero); break; // ?????
+      case "Identifiant GEP du responsable 1" : $tab_numero_colonne['sconet_num_1']     = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Civilité du responsable 1'        : $tab_numero_colonne['genre_1']          = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Nom du responsable 1'             : $tab_numero_colonne['nom_1']            = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Prénom du responsable 1'          : $tab_numero_colonne['prenom_1']         = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Email Resp1'                      : $tab_numero_colonne['courriel_1']       = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse1 du responsable 1'        : $tab_numero_colonne['adresse_ligne1_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse2 du responsable 1'        : $tab_numero_colonne['adresse_ligne2_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse3 du responsable 1'        : $tab_numero_colonne['adresse_ligne3_1'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Code postal du responsable 1'     : $tab_numero_colonne['code_postal_1']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Ville du responsable 1'           : $tab_numero_colonne['commune_1']        = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Pays du responsable 1'            : $tab_numero_colonne['pays_1']           = $numero; $numero_max = max($numero_max,$numero); break; // ?????
       // parent 2
-      case "Identifiant GEP R2"                     : $tab_numero_colonne['sconet_num_2']     = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Civilité du resp2"                      : $tab_numero_colonne['genre_2']          = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Nom du responsable 2"                   : $tab_numero_colonne['nom_2']            = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Prénom du Responsable 2"                : $tab_numero_colonne['prenom_2']         = $numero; $numero_max = max($numero_max,$numero); break;
-      case "EMail Resp2"                            : $tab_numero_colonne['courriel_2']       = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse1 Resp2"                         : $tab_numero_colonne['adresse_ligne1_2'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse2 Resp2"                         : $tab_numero_colonne['adresse_ligne2_2'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Adresse3 Resp2"                         : $tab_numero_colonne['adresse_ligne3_2'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "CpVille Resp2"                          : $tab_numero_colonne['code_postal_2']    = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Ville Resp2"                            : $tab_numero_colonne['commune_2']        = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Pays Resp2"                             : $tab_numero_colonne['pays_2']           = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Identifiant GEP R2"               : $tab_numero_colonne['sconet_num_2']     = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Civilité du resp2'                : $tab_numero_colonne['genre_2']          = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Nom du responsable 2'             : $tab_numero_colonne['nom_2']            = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Prénom du Responsable 2'          : $tab_numero_colonne['prenom_2']         = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'EMail Resp2'                      : $tab_numero_colonne['courriel_2']       = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse1 Resp2'                   : $tab_numero_colonne['adresse_ligne1_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse2 Resp2'                   : $tab_numero_colonne['adresse_ligne2_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Adresse3 Resp2'                   : $tab_numero_colonne['adresse_ligne3_2'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'CpVille Resp2'                    : $tab_numero_colonne['code_postal_2']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Ville Resp2'                      : $tab_numero_colonne['commune_2']        = $numero; $numero_max = max($numero_max,$numero); break;
+      case 'Pays Resp2'                       : $tab_numero_colonne['pays_2']           = $numero; $numero_max = max($numero_max,$numero); break;
       // enfant
-      case "Identifiant GEP"                        : $tab_numero_colonne['enfant_sconet']    = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Nom de l'élève"                         : $tab_numero_colonne['enfant_nom'   ]    = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Prénom élève"                           : $tab_numero_colonne['enfant_prenom']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Identifiant GEP"                  : $tab_numero_colonne['enfant_sconet']    = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Nom de l'élève"                   : $tab_numero_colonne['enfant_nom'   ]    = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Prénom élève"                     : $tab_numero_colonne['enfant_prenom']    = $numero; $numero_max = max($numero_max,$numero); break;
     }
   }
-  if(array_sum($tab_numero_colonne)<0)
-  {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
-  }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
-  // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dasn la base.
+
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+  // //////////////////////////////////////////////////////////////////////////////// DÉVELOPPEMENT STOPPÉ ICI //////////////////////////////////////////////////////////////////////////////// //
+
+  // L'import ne contient aucun id parent ni enfant.
+  // On récupère la liste des noms prénoms des élèves actuels pour comparer au contenu du fichier.
   $tab_eleves_actuels  = array();
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_sconet_elenoet' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
+  $tab_responsabilites = array();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_eleves_actuels[ $DB_ROW['user_sconet_elenoet']] = $DB_ROW['user_id'];
+    $tab_eleves_actuels[$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
+    $tab_responsabilites[$DB_ROW['user_id']] = 0;
   }
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos, les adresses trouvées, les enfants trouvés
   //
-  $tab_genre = array( ''=>'I' , 'Non saisi'=>'I' , 'M.'=>'M' , 'M'=>'M' , 'MME'=>'F' , 'Mme'=>'F' , 'MLLE'=>'F' , 'Mlle'=>'F' );
+  $tab_genre = array( ''=>'I' , 'M.'=>'M' , 'MME'=>'F' , 'Mlle'=>'F' );
   $tab_adresses_uniques = array();
-  $nb_lien_responsabilite = 0;
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
-      $sconet_num_eleve = ( $tab_elements[$tab_numero_colonne['enfant_sconet']] && ($tab_elements[$tab_numero_colonne['enfant_sconet']]!='Non saisi') ) ? Clean::entier($tab_elements[$tab_numero_colonne['enfant_sconet']]) : NULL ;
-      if( $sconet_num_eleve && isset($tab_eleves_actuels[$sconet_num_eleve]) )
+      $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
+      $nom        = Clean::nom(       $tab_elements[$tab_numero_colonne['nom']       ]);
+      $prenom     = Clean::prenom(    $tab_elements[$tab_numero_colonne['prenom']    ]);
+      $courriel   = Clean::courriel(  $tab_elements[$tab_numero_colonne['courriel']  ]);
+      $adresse    = Clean::adresse(   $tab_elements[$tab_numero_colonne['adresse']   ]);
+      $codepostal = Clean::codepostal($tab_elements[$tab_numero_colonne['codepostal']]);
+      $commune    = Clean::commune(   $tab_elements[$tab_numero_colonne['commune']   ]);
+      $pays       = Clean::pays(      $tab_elements[$tab_numero_colonne['pays']      ]);
+      if( ($nom!='') && ($prenom!='') )
       {
-        $sconet_num_resp1 = ( $tab_elements[$tab_numero_colonne['sconet_num_1']] && ($tab_elements[$tab_numero_colonne['sconet_num_1']]!='Non saisi') ) ? Clean::entier($tab_elements[$tab_numero_colonne['sconet_num_1']]) : NULL ;
-        if($sconet_num_resp1)
+        $tab_enfants = array();
+        for( $num_enfant=0 ; $num_enfant<$nb_enfants_maxi ; $num_enfant++ )
         {
-          $tab_users_fichier['sconet_id'   ][$sconet_num_resp1] = 0;
-          $tab_users_fichier['sconet_num'  ][$sconet_num_resp1] = $sconet_num_resp1;
-          $tab_users_fichier['reference'   ][$sconet_num_resp1] = '';
-          $tab_users_fichier['profil_sigle'][$sconet_num_resp1] = 'TUT' ;
-          $tab_users_fichier['genre'       ][$sconet_num_resp1] = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre_1']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre_1']]] : 'I' ;
-          $tab_users_fichier['nom'         ][$sconet_num_resp1] = Clean::nom($tab_elements[$tab_numero_colonne['nom_1']]);
-          $tab_users_fichier['prenom'      ][$sconet_num_resp1] = Clean::prenom($tab_elements[$tab_numero_colonne['prenom_1']]);
-          $tab_users_fichier['courriel'    ][$sconet_num_resp1] = Clean::courriel($tab_elements[$tab_numero_colonne['courriel_1']]);
-          $tab_users_fichier['enfant'      ][$sconet_num_resp1][$tab_eleves_actuels[$sconet_num_eleve]] = 1;
-          $tab_users_fichier['adresse'     ][$sconet_num_resp1] = array(
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne1_1']]) ,
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne2_1']]) ,
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne3_1']]) ,
-            '' ,
-            Clean::commune($tab_elements[$tab_numero_colonne['code_postal_1']]) , // pas un nombre entier à l'étranger
-            Clean::commune($tab_elements[$tab_numero_colonne['commune_1']]) ,
-            Clean::pays($tab_elements[$tab_numero_colonne['pays_1']]) ,
-          );
-          $nb_lien_responsabilite++;
-          $tab_adresses_uniques[ implode('#',$tab_users_fichier['adresse'][$sconet_num_resp1]) ] = TRUE;
+          if ( !isset($tab_elements[$tab_numero_colonne['enfant_nom'][$num_enfant]]) || !isset($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]) )
+          {
+            break;
+          }
+          $enfant_nom    = Clean::nom(   $tab_elements[$tab_numero_colonne['enfant_nom'   ][$num_enfant]]);
+          $enfant_prenom = Clean::prenom($tab_elements[$tab_numero_colonne['enfant_prenom'][$num_enfant]]);
+          $enfant_id     = array_search( $enfant_nom.' '.$enfant_prenom , $tab_eleves_actuels );
+          if($enfant_id)
+          {
+            $tab_responsabilites[$enfant_id]++;
+            $tab_enfants[$enfant_id] = $tab_responsabilites[$enfant_id];
+          }
         }
-        $sconet_num_resp2 = ( $tab_elements[$tab_numero_colonne['sconet_num_2']] && ($tab_elements[$tab_numero_colonne['sconet_num_2']]!='Non saisi') ) ? Clean::entier($tab_elements[$tab_numero_colonne['sconet_num_2']]) : NULL ;
-        if($sconet_num_resp2)
+        //
+        // Si pas d'enfant trouvé, on laisse tomber, comme pour Sconet.
+        //
+        if( count($tab_enfants) )
         {
-          $tab_users_fichier['sconet_id'   ][$sconet_num_resp2] = 0;
-          $tab_users_fichier['sconet_num'  ][$sconet_num_resp2] = $sconet_num_resp2;
-          $tab_users_fichier['reference'   ][$sconet_num_resp2] = '';
-          $tab_users_fichier['profil_sigle'][$sconet_num_resp2] = 'TUT' ;
-          $tab_users_fichier['genre'       ][$sconet_num_resp2] = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre_2']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre_2']]] : 'I' ;
-          $tab_users_fichier['nom'         ][$sconet_num_resp2] = Clean::nom($tab_elements[$tab_numero_colonne['nom_2']]);
-          $tab_users_fichier['prenom'      ][$sconet_num_resp2] = Clean::prenom($tab_elements[$tab_numero_colonne['prenom_2']]);
-          $tab_users_fichier['courriel'    ][$sconet_num_resp2] = Clean::courriel($tab_elements[$tab_numero_colonne['courriel_2']]);
-          $tab_users_fichier['enfant'      ][$sconet_num_resp2][$tab_eleves_actuels[$sconet_num_eleve]] = 2;
-          $tab_users_fichier['adresse'     ][$sconet_num_resp2] = array(
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne1_2']]) ,
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne2_2']]) ,
-            Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne3_2']]) ,
-            '' ,
-            Clean::commune($tab_elements[$tab_numero_colonne['code_postal_2']]) , // pas un nombre entier à  l'étranger
-            Clean::commune($tab_elements[$tab_numero_colonne['commune_2']]) ,
-            Clean::pays($tab_elements[$tab_numero_colonne['pays_2']]) ,
-          );
-          $nb_lien_responsabilite++;
-          $tab_adresses_uniques[ implode('#',$tab_users_fichier['adresse'][$sconet_num_resp2]) ] = TRUE;
-          // Correctif pour obtenir la vraie valeur de "commune_2"
-          $tab_users_fichier['adresse'][$sconet_num_resp2][5] = mb_substr( $tab_users_fichier['adresse'][$sconet_num_resp2][5] , mb_strlen($tab_users_fichier['adresse'][$sconet_num_resp2][4])+1 );
+          $tab_users_fichier['sconet_id'   ][] = 0;
+          $tab_users_fichier['sconet_num'  ][] = 0;
+          $tab_users_fichier['reference'   ][] = '';
+          $tab_users_fichier['profil_sigle'][] = 'TUT';
+          $tab_users_fichier['genre'       ][] = $genre;
+          $tab_users_fichier['nom'         ][] = $nom;
+          $tab_users_fichier['prenom'      ][] = $prenom;
+          $tab_users_fichier['courriel'    ][] = $courriel;
+          $tab_users_fichier['adresse'     ][] = array( $adresse , '' , '' , '' , $codepostal , $commune , $pays );
+          $tab_users_fichier['enfant'      ][] = $tab_enfants;
+          $tab_adresses_uniques[$adresse.'#'.$codepostal.'#'.$commune.'#'.$pays] = TRUE;
         }
       }
     }
   }
+  $nb_lien_responsabilite = array_sum($tab_responsabilites);
   $nb_adresses = count($tab_adresses_uniques);
 }
 
@@ -1393,7 +1379,6 @@ switch($import_origine.'+'.$import_profil)
   case      'sconet+parent' :
   case 'base_eleves+parent' :
   case     'tableur+parent' :
-  case      'factos+parent' :
     $test1 = array_multisort(
       $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
       $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,

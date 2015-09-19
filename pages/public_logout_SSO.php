@@ -65,17 +65,17 @@ maj_base_structure_si_besoin($BASE);
 
 // Récupérer les infos utiles de l'établissement pour la déconnexion 
 $tab_parametres = array(
-  '"connexion_mode"',
-  '"cas_serveur_host"',
-  '"cas_serveur_port"',
-  '"cas_serveur_root"',
-  '"cas_serveur_url_login"',
-  '"cas_serveur_url_logout"',
-  '"cas_serveur_url_validate"',
-  '"cas_serveur_verif_certif_ssl"',
-  '"gepi_url"',
-  '"gepi_rne"',
-  '"gepi_certificat_empreinte"',
+  "connexion_mode",
+  "cas_serveur_host",
+  "cas_serveur_port",
+  "cas_serveur_root",
+  "cas_serveur_url_login",
+  "cas_serveur_url_logout",
+  "cas_serveur_url_validate",
+  "cas_serveur_verif_certif_ssl",
+  "gepi_url",
+  "gepi_rne",
+  "gepi_certificat_empreinte",
 );
 $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres( implode(',',$tab_parametres) );
 foreach($DB_TAB as $DB_ROW)

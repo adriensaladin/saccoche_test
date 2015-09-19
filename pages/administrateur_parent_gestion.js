@@ -41,8 +41,8 @@ $(document).ready
     var f_action   = '';
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:false},12:{sorter:false},14:{sorter:'date_fr'},15:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[7,0],[9,0],[10,0]] ] ); };
+    $('#table_action').tablesorter({ headers:{0:{sorter:false},11:{sorter:false},13:{sorter:'date_fr'},14:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[6,0],[8,0],[9,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
 
@@ -113,7 +113,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , sconet_num , reference , profil , genre , nom , prenom , login , courriel , date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , reference , profil , genre , nom , prenom , login , courriel , date_fr , check )
     {
       var tab_genre = { '' : 'I' , 'M.' : 'M' , 'Mme' : 'F' };
       var opt_genre = ( typeof(tab_genre[genre]) !== 'undefined' ) ? tab_genre[genre] : 'I' ;
@@ -123,7 +123,6 @@ $(document).ready
       $('#f_id_ent').val(id_ent);
       $('#f_id_gepi').val(id_gepi);
       $('#f_sconet_id').val(sconet_id);
-      $('#f_sconet_num').val(sconet_num);
       $('#f_reference').val(reference);
       $('#f_profil option[value='+profil+']').prop('selected',true);
       $('#f_genre option[value='+opt_genre+']').prop('selected',true);
@@ -165,7 +164,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*sconet_num*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*date_fr*/ , '' /*check*/ );
     };
 
     /**
@@ -184,15 +183,14 @@ $(document).ready
       var id_ent     = objet_tds.eq( 2).html();
       var id_gepi    = objet_tds.eq( 3).html();
       var sconet_id  = objet_tds.eq( 4).html();
-      var sconet_num = objet_tds.eq( 5).html();
-      var reference  = objet_tds.eq( 6).html();
-      var profil     = objet_tds.eq( 7).html();
-      var genre      = objet_tds.eq( 8).html();
-      var nom        = objet_tds.eq( 9).html();
-      var prenom     = objet_tds.eq(10).html();
-      var login      = objet_tds.eq(11).html();
-      var courriel   = objet_tds.eq(13).html();
-      var date_fr    = objet_tds.eq(14).html();
+      var reference  = objet_tds.eq( 5).html();
+      var profil     = objet_tds.eq( 6).html();
+      var genre      = objet_tds.eq( 7).html();
+      var nom        = objet_tds.eq( 8).html();
+      var prenom     = objet_tds.eq( 9).html();
+      var login      = objet_tds.eq(10).html();
+      var courriel   = objet_tds.eq(12).html();
+      var date_fr    = objet_tds.eq(13).html();
       // Retirer une éventuelle balise image présente dans profil
       position_image = profil.indexOf('<');
       if (position_image!=-1)
@@ -206,7 +204,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , sconet_num , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , date_fr , check );
     };
 
     /**
@@ -265,7 +263,6 @@ $(document).ready
           f_id_ent      : { required:false , maxlength:63 },
           f_id_gepi     : { required:false , maxlength:63 },
           f_sconet_id   : { required:false , digits:true , max:16777215 },
-          f_sconet_num  : { required:false , digits:true , max:65535 },
           f_reference   : { required:false , maxlength:11 },
           f_profil      : { required:true },
           f_genre       : { required:false },
@@ -281,7 +278,6 @@ $(document).ready
           f_id_ent      : { maxlength:"identifiant ENT de 63 caractères maximum" },
           f_id_gepi     : { maxlength:"identifiant Gepi de 63 caractères maximum" },
           f_sconet_id   : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
-          f_sconet_num  : { digits:"N° Sconet : nombre entier inférieur à 2^16" },
           f_reference   : { maxlength:"référence de 11 caractères maximum" },
           f_genre       : { },
           f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },

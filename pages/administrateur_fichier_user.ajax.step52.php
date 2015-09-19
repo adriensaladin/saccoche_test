@@ -260,6 +260,7 @@ else
     case 'sconet+parent'      : $etape = 4; $STEP = 71; break;
     case 'tableur+parent'     : $etape = 4; $STEP = 71; break;
     case 'base_eleves+parent' : $etape = 4; $STEP = 71; break;
+    case 'factos+parent'      : $etape = 4; $STEP = 71; break;
     case 'base_eleves+eleve'  : $etape = 5; $STEP = 90; break;
   }
   echo'<ul class="puce p"><li><a href="#step'.$STEP.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;

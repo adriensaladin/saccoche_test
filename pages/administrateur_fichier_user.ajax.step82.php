@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents)
+// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents | factos_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les utilisateurs : $tab_memo_analyse[$eleve_id][$parent_id] = $resp_legal_num;

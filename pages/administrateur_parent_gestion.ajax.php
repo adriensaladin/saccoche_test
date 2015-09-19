@@ -34,6 +34,7 @@ $id           = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])
 $id_ent       = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])        : '';
 $id_gepi      = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])       : '';
 $sconet_id    = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])    : 0;
+$sconet_num   = (isset($_POST['f_sconet_num']))  ? Clean::entier($_POST['f_sconet_num'])   : 0;
 $reference    = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])       : '';
 $profil       = (isset($_POST['f_profil']))      ? Clean::texte($_POST['f_profil'])        : '';
 $genre        = (isset($_POST['f_genre']))       ? Clean::texte($_POST['f_genre'])         : '';
@@ -80,6 +81,14 @@ if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre])
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_id',$sconet_id,NULL,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
     {
       exit('Erreur : n° sconet déjà utilisé !');
+    }
+  }
+  // Vérifier que le n° sconet est disponible (parmi les utilisateurs de même type de profil)
+  if($sconet_num)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_elenoet',$sconet_num,NULL,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
+    {
+      exit('Erreur : numéro Sconet déjà utilisé !');
     }
   }
   // Vérifier que la référence est disponible (parmi les utilisateurs de même type de profil)
@@ -135,7 +144,7 @@ if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre])
   }
   $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , 0 /*sconet_num*/ , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_date)
   {
@@ -154,6 +163,7 @@ if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre])
   echo  '<td class="label">'.html($id_ent).'</td>';
   echo  '<td class="label">'.html($id_gepi).'</td>';
   echo  '<td class="label">'.html($sconet_id).'</td>';
+  echo  '<td class="label">'.html($sconet_num).'</td>';
   echo  '<td class="label">'.html($reference).'</td>';
   echo  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
   echo  '<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>';
@@ -204,6 +214,14 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_id',$sconet_id,$id,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
     {
       exit('Erreur : identifiant Sconet déjà utilisé !');
+    }
+  }
+  // Vérifier que le n° sconet est disponible (parmi les utilisateurs de même type de profil)
+  if($sconet_num)
+  {
+    if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_elenoet',$sconet_num,$id,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
+    {
+      exit('Erreur : numéro Sconet déjà utilisé !');
     }
   }
   // Vérifier que la référence est disponible (parmi les utilisateurs de même type de profil)
@@ -258,6 +276,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   // Mettre à jour l'enregistrement
   $tab_donnees += array(
     ':sconet_id'    => $sconet_id,
+    ':sconet_num'   => $sconet_num,
     ':reference'    => $reference,
     ':profil_sigle' => $profil,
     ':genre'        => $genre,
@@ -276,6 +295,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   echo'<td class="label">'.html($id_ent).'</td>';
   echo'<td class="label">'.html($id_gepi).'</td>';
   echo'<td class="label">'.html($sconet_id).'</td>';
+  echo'<td class="label">'.html($sconet_num).'</td>';
   echo'<td class="label">'.html($reference).'</td>';
   echo'<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil].'" /></td>';
   echo'<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>';

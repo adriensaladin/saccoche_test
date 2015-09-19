@@ -52,6 +52,7 @@ switch($import_origine.'+'.$import_profil)
   case 'sconet+parent'      : $etape = 4; $STEP = 71; break;
   case 'tableur+parent'     : $etape = 4; $STEP = 71; break;
   case 'base_eleves+parent' : $etape = 4; $STEP = 71; break;
+  case 'factos+parent'      : $etape = 4; $STEP = 71; break;
   case 'base_eleves+eleve'  : $etape = 5; $STEP = 90; break;
   case 'factos+eleve'       : $etape = 5; $STEP = 90; break;
 }

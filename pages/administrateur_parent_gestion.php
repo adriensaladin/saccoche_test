@@ -116,6 +116,7 @@ elseif($find_doublon) // (forcément)
       <th>Id. ENT</th>
       <th>Id. GEPI</th>
       <th>Id Sconet</th>
+      <th>N° Sconet</th>
       <th>Référence</th>
       <th>Profil</th>
       <th>Civ.</th>
@@ -144,6 +145,7 @@ elseif($find_doublon) // (forcément)
         echo  '<td class="label">'.html($DB_ROW['user_id_ent']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_id_gepi']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
+        echo  '<td class="label">'.html($DB_ROW['user_sconet_elenoet']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_reference']).'</td>';
         echo  '<td class="label">'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$DB_ROW['user_profil_sigle']].'" /></td>';
         echo  '<td class="label">'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>';
@@ -166,7 +168,7 @@ elseif($find_doublon) // (forcément)
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="14"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="15"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -195,6 +197,7 @@ if( $find_doublon && !empty($DB_TAB) )
     <label class="tab" for="f_id_ent">Id. ENT <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'identification via un ENT." /> :</label><input id="f_id_ent" name="f_id_ent" type="text" value="" size="30" maxlength="63" /><br />
     <label class="tab" for="f_id_gepi">Id. GEPI <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement en cas d'utilisation du logiciel GEPI." /> :</label><input id="f_id_gepi" name="f_id_gepi" type="text" value="" size="30" maxlength="63" /><br />
     <label class="tab" for="f_sconet_id">Id Sconet <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Champ de Sconet PERSONNE.PERSONNE_ID (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_id" name="f_sconet_id" type="text" value="" size="15" maxlength="8" /><br />
+    <label class="tab" for="f_sconet_num">N° Sconet <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Champ de Factos IDENTIFIANT GEP (laisser vide ou à 0 si inconnu)." /> :</label><input id="f_sconet_num" name="f_sconet_num" type="text" value="" size="15" maxlength="5" /><br />
     <label class="tab" for="f_reference">Référence <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sconet : champ inutilisé (laisser vide).<br />Tableur : référence dans l'établissement." /> :</label><input id="f_reference" name="f_reference" type="text" value="" size="15" maxlength="11" />
   </p>
   <p>

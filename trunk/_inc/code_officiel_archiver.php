@@ -68,10 +68,12 @@ if(empty($DB_TAB))
 {
   exit('Aucun élève trouvé dans ce regroupement !');
 }
-$tab_eleve_id = array( 0 => array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' ) );
+$tab_eleve_id    = array( 0 => array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' ) );
+$tab_saisie_init = array( 0 => array( 'note'=>NULL , 'appreciation'=>'' ) );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_eleve_id[$DB_ROW['user_id']] = array( 'eleve_nom' => $DB_ROW['user_nom'] ,  'eleve_prenom' => $DB_ROW['user_prenom'] );
+  $tab_saisie_init[$DB_ROW['user_id']] = array( 'note'=>NULL , 'appreciation'=>'' );
 }
 $liste_eleve_id = implode(',',array_keys($tab_eleve_id));
 
@@ -108,18 +110,11 @@ $tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFF
 if($action=='imprimer_donnees_eleves_prof')
 {
   // Récupérer les saisies enregistrées pour le bilan officiel concerné, pour le prof concerné
-  if($BILAN_TYPE=='bulletin')
-  {
-    $DB_TAB = array_merge
-    (
-      DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , $_SESSION['USER_ID'] , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ ),
-      DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , $_SESSION['USER_ID'] , TRUE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ )
-    );
-  }
-  else
-  {
-    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , $_SESSION['USER_ID'] , TRUE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
-  }
+  $DB_TAB = array_merge
+  (
+    DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id      , $_SESSION['USER_ID'] , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ ),
+    DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , $_SESSION['USER_ID'] , TRUE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ )
+  );
   // Répertorier les saisies dans le tableau $tab_saisie : c'est groupé par rubrique car on imprimera une page par rubrique avec tous les élèves de la classe
   $tab_saisie = array();  // [rubrique_id][eleve_id] => array(note,appreciation);
   $nb_lignes_supplémentaires = array(); // On compte 2 lignes par rubrique par élève, il peut falloir plus si l'appréciation est longue
@@ -129,24 +124,18 @@ if($action=='imprimer_donnees_eleves_prof')
   $tab_rubriques = array();
   foreach($DB_TAB as $key => $DB_ROW)
   {
+    if(!isset($tab_rubriques[$DB_ROW['rubrique_id']]))
+    {
+      $tab_rubriques[$DB_ROW['rubrique_id']] = ($DB_ROW['rubrique_id']) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
+      $nb_lignes_supplémentaires[$DB_ROW['rubrique_id']] = 0;
+      // Prévoir une ligne pour la classe et une autre par élève même si rien n'est saisi.
+      $tab_saisie[$DB_ROW['rubrique_id']] = $tab_saisie_init;
+    }
     if($DB_ROW['prof_id'])
     {
-      if(!isset($tab_rubriques[$DB_ROW['rubrique_id']]))
-      {
-        $tab_rubriques[$DB_ROW['rubrique_id']] = ($DB_ROW['rubrique_id']) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
-        $nb_lignes_supplémentaires[$DB_ROW['rubrique_id']] = 0;
-      }
-      $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']] = array( 'note'=>NULL , 'appreciation'=>suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']) );
+      $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation'] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
       $nb_lignes_supplémentaires[$DB_ROW['rubrique_id']] += nombre_de_ligne_supplémentaires($DB_ROW['saisie_appreciation']);
       unset($DB_TAB[$key]);
-    }
-  }
-  // ( prévoir l'appréciation sur la classe même si elle n'est pas saisie )
-  foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
-  {
-    if(!isset($tab_saisie[$rubrique_id][0]))
-    {
-      $tab_saisie[$rubrique_id][0] = array( 'note'=>NULL , 'appreciation'=>'' );
     }
   }
   // ... puis dans une seconde on ajoute les seules notes à garder.
@@ -157,14 +146,7 @@ if($action=='imprimer_donnees_eleves_prof')
       if(isset($tab_rubriques[$DB_ROW['rubrique_id']]))
       {
         $note = ( ( !$DB_ROW['rubrique_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] ) || ( !$DB_ROW['eleve_id'] && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] ) || (in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres)) ) ? NULL : $DB_ROW['saisie_note'] ;
-        if(isset($tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]))
-        {
-          $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['note'] = $note;
-        }
-        else
-        {
-          $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']] = array( 'note'=>$note , 'appreciation'=>'' );
-        }
+        $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['note'] = $note;
       }
     }
   }
@@ -251,7 +233,7 @@ if($action=='imprimer_donnees_eleves_collegues')
 if($action=='imprimer_donnees_classe_collegues')
 {
   // Récupérer les saisies enregistrées pour le bilan officiel concerné, pour tous les collègues
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
   // Répertorier les saisies dans le tableau $tab_saisie : c'est groupé par rubrique
   $tab_saisie = array();  // [rubrique_id] => array(rubrique_nom,note,tab_appreciation);
   $nb_lignes_supplémentaires = 0; // On compte 2 lignes par élève par rubrique, il peut falloir plus si l'appréciation est longue
@@ -296,18 +278,11 @@ if($action=='imprimer_donnees_classe_collegues')
 if($action=='imprimer_donnees_eleves_syntheses')
 {
   // Récupérer les saisies enregistrées pour le bilan officiel concerné, pour tous les collègues
-  if($BILAN_TYPE=='bulletin')
-  {
-    $DB_TAB = array_merge
-    (
-      DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , TRUE /*only_synthese_generale*/ ),
-      DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , TRUE /*only_synthese_generale*/ )
-    );
-  }
-  else
-  {
-    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , TRUE /*only_synthese_generale*/ );
-  }
+  $DB_TAB = array_merge
+  (
+    DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id      , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , TRUE /*only_synthese_generale*/ ),
+    DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , TRUE /*only_synthese_generale*/ )
+  );
   // Répertorier les saisies dans le tableau $tab_saisie : c'est groupé par élève
   $tab_saisie = array();  // [eleve_id] => array(note,appreciation);
   $nb_lignes_supplémentaires = 0; // On compte 2 lignes par élève par rubrique, il peut falloir plus si l'appréciation est longue

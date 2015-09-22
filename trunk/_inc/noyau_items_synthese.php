@@ -140,6 +140,7 @@ else
     );
   }
 }
+
 $item_nb = count($tab_item);
 if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
@@ -152,7 +153,17 @@ $liste_item = implode(',',$tab_liste_item);
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(empty($is_appreciation_groupe))
+if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+{
+  $tab_eleve_infos[$_SESSION['USER_ID']] = array(
+    'eleve_nom'      => $_SESSION['USER_NOM'],
+    'eleve_prenom'   => $_SESSION['USER_PRENOM'],
+    'eleve_genre'    => $_SESSION['USER_GENRE'],
+    'date_naissance' => $_SESSION['USER_NAISSANCE_DATE'],
+    'eleve_INE'      => NULL,
+  );
+}
+elseif(empty($is_appreciation_groupe))
 {
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
@@ -397,8 +408,8 @@ $tab_graph_data = array();
 // Préparatifs
 if( ($make_html) || ($make_graph) )
 {
+  $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
   $bouton_print_appr = ((!$make_graph)&&($make_officiel))                   ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
-  $bouton_print_test = (!empty($is_bouton_test_impression))                 ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
   $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
   $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$synthese_modele].'</h1>'.NL;
@@ -583,7 +594,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             // Bulletin - Appréciations intermédiaires (HTML)
             if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) )
             {
-              // $tab_saisie[$eleve_id][$matiere_id] n'est pas défini si bulletin dans note et pas d'appréciation encore saisie
+              // $tab_saisie[$eleve_id][$matiere_id] n'est pas défini si bulletin sans note et pas d'appréciation encore saisie
               if(isset($tab_saisie[$eleve_id][$matiere_id]))
               {
                 foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
@@ -609,7 +620,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               {
                 if(!isset($tab_saisie[$eleve_id][$matiere_id][$_SESSION['USER_ID']]))
                 {
-                  $releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'.NL;
+                  $texte_classe = empty($is_appreciation_groupe) ? '' : ' sur la classe' ;
+                  $releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation'.$texte_classe.'.</button></div></td></tr>'.NL;
                 }
               }
             }
@@ -698,7 +710,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           }
           elseif($make_action=='tamponner')
           {
-            $releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td></tr>'.NL;
+            $texte_classe = empty($is_appreciation_groupe) ? '' : ' sur la classe' ;
+            $releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale'.$texte_classe.'.</button></div></td></tr>'.NL;
           }
           $releve_HTML .= '</tbody></table>'.NL;
         }
@@ -779,7 +792,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
       }
       // Bulletin - Légende
-      if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+      if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )
       {
         if($make_pdf)  { $releve_PDF->legende(); }
         if($make_html) { $releve_HTML .= $legende_html; }
@@ -834,7 +847,7 @@ if( $make_graph && (count($tab_graph_data)) )
   }
   // Séries de valeurs
   $tab_graph_series = array();
-  $tab_graph_series['A']  = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['A'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_A']).'] }';
+  $tab_graph_series['A']  = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['A' ],'"').'", data: ['.implode(',',$tab_graph_data['series_data_A' ]).'] }';
   $tab_graph_series['VA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['VA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_VA']).'] }';
   $tab_graph_series['NA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['NA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_NA']).'] }';
   if(isset($tab_graph_data['series_data_MoyClasse']))

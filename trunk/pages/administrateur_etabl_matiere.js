@@ -420,6 +420,7 @@ $(document).ready
               {
                 $('#f_matiere_avant option[value='+matiere_id_avant+']').remove();
                 $('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
+                $('#f_matiere_apres option[value=0]').prop('selected',true);
                 $('#id_'+matiere_id_avant).remove();
                 $('#ajax_msg_move').removeAttr("class").addClass("valide").html("Transfert effectué.");
               }

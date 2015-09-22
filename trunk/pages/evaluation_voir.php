@@ -28,6 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Liste des évaluations"));
 
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
+{
+  echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 // Réception d'id transmis via un lien en page d'accueil.
 $auto_voir_devoir_id  = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
 $auto_select_eleve_id = isset($_GET['eleve_id'])  ? Clean::entier($_GET['eleve_id'])  : FALSE ;
@@ -47,7 +53,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
   $tab_groupes  = array();
   $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';

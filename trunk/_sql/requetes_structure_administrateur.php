@@ -2172,7 +2172,7 @@ public static function DB_optimiser_tables_structure()
  */
 public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matiere_id_apres)
 {
-  // Vérification que c'est possible (matière de destination vierge de données
+  // Vérification que c'est possible (matière de destination vierge de données)
   $nb_pbs = 0;
   $tab_tables = array(
     'sacoche_referentiel'=>'matiere_id',
@@ -2188,16 +2188,22 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
   }
   // Déplacer les référentiels d'une matière vers une autre
   $tab_tables = array(
-    'sacoche_jointure_user_matiere' => 'matiere_id',
-    'sacoche_demande'               => 'matiere_id',
     'sacoche_referentiel'           => 'matiere_id',
     'sacoche_referentiel_domaine'   => 'matiere_id',
+    'sacoche_demande'               => 'matiere_id',
     'sacoche_officiel_saisie'       => 'rubrique_id',
   );
   foreach($tab_tables as $table_nom => $table_champ)
   {
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'='.$matiere_id_apres.' WHERE '.$table_champ.'='.$matiere_id_avant );
   }
+  // Pour "sacoche_jointure_user_matiere" c'est un peu particulier : il ne faut pas déclencher d'erreur si le user est déjà rattaché à la nouvelle matière.
+  // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...
+  $table_nom   = 'sacoche_jointure_user_matiere';
+  $table_champ = 'matiere_id';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$table_champ.'='.$matiere_id_apres.' WHERE '.$table_champ.'='.$matiere_id_avant );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE '.$table_champ.'='.$matiere_id_avant );
+  // On termine avec l'état de partage
   if( ($matiere_id_avant>ID_MATIERE_PARTAGEE_MAX) && ($matiere_id_apres<=ID_MATIERE_PARTAGEE_MAX) )
   {
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel SET referentiel_partage_etat="non" WHERE matiere_id='.$matiere_id_apres.' AND referentiel_partage_etat="hs"' );

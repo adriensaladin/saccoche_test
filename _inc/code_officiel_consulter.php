@@ -59,13 +59,12 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser')&&($BILAN_TYPE!='bulletin') ) )
 {
   exit('Erreur avec les données transmises !');
 }
 
-// Avant ce n'était que pour les bulletins, maintenant c'est pour tous les bilans officiels
-if(!$eleve_id)
+if( (!$eleve_id) && ($BILAN_TYPE=='bulletin') )
 {
   $is_appreciation_groupe = TRUE;
 }
@@ -91,13 +90,13 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='5compl
   exit('Bilan interdit d\'accès pour cette action !');
 }
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+if( ( ($eleve_id) || ($tab_types[$BILAN_TYPE]['droit']!='BULLETIN') ) && ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) ) )
 {
-  $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
+  $is_bouton_test_impression = TRUE;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage des données d'un élève indiqué (si initialisation, alors le groupe classe)
+// Affichage des données d'un élève (si initialisation, le groupe classe si bulletin ou le premier si relevé ou socle ; l'élève indiqué sinon)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Si besoin, fabriquer le formulaire avec la liste des élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -112,7 +111,7 @@ if($ACTION=='initialiser')
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
-  $form_choix_eleve.= '<option value="0">'.html($groupe_nom).'</option>';
+  $form_choix_eleve.= ($BILAN_TYPE=='bulletin') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
   foreach($DB_TAB as $DB_ROW)
   {
     $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
@@ -121,7 +120,7 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ($BILAN_TYPE=='bulletin') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = 0;
+  $eleve_id = ($BILAN_TYPE=='bulletin') ? 0 : $tab_eleve_id[0];
   // (re)calculer les moyennes des élèves (matières et générales), ainsi que les moyennes de classe (matières et générales).
   if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
   {
@@ -155,7 +154,7 @@ foreach($DB_TAB as $DB_ROW)
   $note = !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? $DB_ROW['saisie_note'] : NULL ;
   $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
 }
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;

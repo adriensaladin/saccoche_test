@@ -70,15 +70,14 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($BILAN_TYPE!='bulletin')&&($ACTION!='initialiser') ) )
 {
   exit('Erreur avec les données transmises !');
 }
 
-// Avant ce n'était que pour les bulletins, maintenant c'est pour tous les bilans officiels
-if(!$eleve_id)
+if( (!$eleve_id) && ($BILAN_TYPE=='bulletin') )
 {
-  $is_appreciation_groupe = TRUE;
+ $is_appreciation_groupe = TRUE;
 }
 
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
@@ -157,9 +156,8 @@ if($ACTION=='supprimer_appr')
   // élève ou classe
   $saisie_type        = ($eleve_id) ? 'eleve' : 'classe' ;
   $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
-  $texte_classe       = empty($is_appreciation_groupe) ? '' : ' sur la classe' ;
   DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type );
-  $ACTION = ($rubrique_id!=0) ? '<button type="button" class="ajouter">Ajouter une appréciation'.$texte_classe.'.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale'.$texte_classe.'.</button>' ;
+  $ACTION = ($rubrique_id!=0) ? '<button type="button" class="ajouter">Ajouter une appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale.</button>' ;
   exit('<div class="hc">'.$ACTION.'</div>');
 }
 
@@ -197,7 +195,7 @@ if($ACTION=='recalculer_note')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 4 & 5 : affichage des données d'un élève indiqué (si initialisation, alors le groupe classe)
+// Cas 4 & 5 : affichage des données d'un élève (si initialisation, le groupe classe si bulletin ou le premier si relevé ou socle ; l'élève indiqué sinon)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Si besoin, fabriquer le formulaire avec la liste des élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -213,7 +211,7 @@ if($ACTION=='initialiser')
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
-  $form_choix_eleve.= '<option value="0">'.html($groupe_nom).'</option>';
+  $form_choix_eleve.= ($BILAN_TYPE=='bulletin') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
   foreach($DB_TAB as $DB_ROW)
   {
     $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
@@ -222,7 +220,7 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = 0;
+  $eleve_id = ($BILAN_TYPE=='bulletin') ? 0 : $tab_eleve_id[0];
   // sous-titre
   if($ACTION=='tamponner')
   {
@@ -278,7 +276,7 @@ foreach($DB_TAB as $DB_ROW)
     $tab_saisie_avant[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['periode_ordre']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
   }
 }
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $periode_id , $classe_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;

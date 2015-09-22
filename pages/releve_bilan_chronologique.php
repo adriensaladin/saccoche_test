@@ -28,6 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Bilan chronologique"));
 
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
+{
+  echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']) )
@@ -100,7 +106,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $separateur_check_matieres = '';
 
 }
-if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
   $objet_selection = ' disabled';
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];

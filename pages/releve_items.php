@@ -27,9 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Relevé d'items"));
-?>
 
-<?php
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
+{
+  echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 // L'élève ne choisit évidemment pas sa classe ni son nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
 // Les options du relevé de l'élève sont aussi prédéfinies.
 Form::load_choix_memo();
@@ -112,7 +116,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $bouton_modifier_matieres = '<button id="modifier_matiere" type="button" class="form_ajouter">&plusmn;</button>';
   $bouton_modifier_profs = '<button id="modifier_prof" type="button" class="form_ajouter">&plusmn;</button>';
 }
-if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
   $objet_selection = ' disabled';
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];

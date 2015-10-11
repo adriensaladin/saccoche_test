@@ -196,7 +196,7 @@ class ServeurCommunautaire
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières ou référentiels modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -218,7 +218,7 @@ class ServeurCommunautaire
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -258,7 +258,7 @@ class ServeurCommunautaire
     $tab_post['sesamath_key']   = $sesamath_key;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -273,7 +273,7 @@ class ServeurCommunautaire
     $tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
     $tab_post['etape']        = 1;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -289,7 +289,7 @@ class ServeurCommunautaire
     $tab_post['etape']        = 2;
     $tab_post['geo1']         = $geo1;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -307,7 +307,7 @@ class ServeurCommunautaire
     $tab_post['geo1']         = $geo1;
     $tab_post['geo2']         = $geo2;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -323,7 +323,7 @@ class ServeurCommunautaire
     $tab_post['methode']      = 'commune';
     $tab_post['geo3']         = $geo3;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -339,7 +339,7 @@ class ServeurCommunautaire
     $tab_post['methode']      = 'UAI';
     $tab_post['uai']          = $uai;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -380,7 +380,7 @@ class ServeurCommunautaire
     $tab_post['structure_id'] = $structure_id;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
     $tab_post['version_base'] = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -399,7 +399,7 @@ class ServeurCommunautaire
     $tab_post['sesamath_key']   = $sesamath_key;
     $tab_post['referentiel_id'] = $referentiel_id;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -446,7 +446,7 @@ class ServeurCommunautaire
     $tab_post['item_lien']      = $item_lien;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -473,7 +473,7 @@ class ServeurCommunautaire
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -494,7 +494,7 @@ class ServeurCommunautaire
     $tab_post['item_id']        = $item_id;
     $tab_post['findme']         = $findme;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -511,7 +511,7 @@ class ServeurCommunautaire
     $tab_post['sesamath_id']    = $sesamath_id;
     $tab_post['sesamath_key']   = $sesamath_key;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
   /**
@@ -551,7 +551,7 @@ class ServeurCommunautaire
     $tab_post['fichier']         = 'auth_devel_test';
     $tab_post['password_crypte'] = $password_crypte;
     $tab_post['version_prog']    = VERSION_PROG; // Le service web doit être compatible
-    return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
+    return cURL::get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
   }
 
 }

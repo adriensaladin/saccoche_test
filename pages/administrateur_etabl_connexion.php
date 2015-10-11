@@ -149,7 +149,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     <label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="" /><br />
   </div>
   <div id="cas_domaine" class="hide">
-    <label class="tab" for="serveur_host_subdomain">Domaine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le sous-domaine, par exemple<br />clg-truc (pour CEL ou ENOE)<br />icart.clg16-truc (pour i-Cart!)" /> :</label><input id="serveur_host_subdomain" name="serveur_host_subdomain" size="30" type="text" value="" /> . <input id="serveur_host_domain" name="serveur_host_domain" size="20" type="text" value="" readonly />
+    <label class="tab" for="serveur_host_subdomain">Domaine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le sous-domaine, par exemple<br />clg-truc (pour CEL ou ENOE)<br />icart.clg16-truc (pour i-Cart!)<br />ent.clg-truc (pour Ard'ENT)" /> :</label><input id="serveur_host_subdomain" name="serveur_host_subdomain" size="30" type="text" value="" /> . <input id="serveur_host_domain" name="serveur_host_domain" size="20" type="text" value="" readonly />
   </div>
   <div id="cas_port" class="hide">
     <label class="tab" for="serveur_port">Port <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer le port,<br />en général 8443 (pour i-Cart!),<br />mais déjà vu à 4443 dans un cas particulier." /> :</label><input id="serveur_port" name="serveur_port" size="5" type="text" value="" />

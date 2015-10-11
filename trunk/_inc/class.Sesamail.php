@@ -719,7 +719,7 @@ class Sesamail
     if(in_array( 'info_connexion' , $tab_elements ))
     {
       $AdresseIP = Session::get_IP();
-      $HostName  = gethostbyaddr($AdresseIP);
+      $HostName  = gethostbyaddr($AdresseIP); // Quand gethostbyaddr() n'arrive pas à déterminer le nom d'hôte (pas de Reverse DNS enregistré), il renvoie l'adresse IP au bout de 15 secondes ! Cela pose problème si le timeout de PHP ou d'un appel cURL est inférieur...
       $UserAgent = Session::get_UserAgent();
       $texte .= "\r\n";
       $texte .= 'Voici, pour information, les informations relatives à la connexion internet utilisée :'."\r\n";

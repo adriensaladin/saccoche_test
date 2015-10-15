@@ -128,9 +128,7 @@ class PDF_item_tableau extends PDF
     }
     else
     {
-          if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
-      elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
-      else                                                     {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
+      $this->choisir_couleur_fond('A'.determiner_etat_acquisition($moyenne_pourcent).$this->couleur);
       $score_affiche = test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']) ? $moyenne_pourcent.'%' : '' ;
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
@@ -148,9 +146,7 @@ class PDF_item_tableau extends PDF
     }
     else
     {
-          if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
-      elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
-      else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
+      $this->choisir_couleur_fond('A'.determiner_etat_acquisition($moyenne_nombre).$this->couleur);
       $score_affiche = test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']) ? $moyenne_nombre.'%' : '' ;
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case2 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }

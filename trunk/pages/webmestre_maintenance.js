@@ -136,7 +136,7 @@ $(document).ready
       var readytogo = validation.form();
       if(readytogo)
       {
-        $("#bouton_valider").prop('disabled',true);
+        $("#bouton_verrouillage").prop('disabled',true);
         $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
@@ -145,7 +145,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $("#bouton_valider").prop('disabled',false);
+      $("#bouton_verrouillage").prop('disabled',false);
       $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
@@ -153,7 +153,7 @@ $(document).ready
     function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
-      $("#bouton_valider").prop('disabled',false);
+      $("#bouton_verrouillage").prop('disabled',false);
       if(responseHTML.substring(0,13)=='<label class=')
       {
         
@@ -181,7 +181,7 @@ $(document).ready
         $('#ajax_maj').removeAttr("class").addClass("valide").html('Mise à jour terminée !');
         $('#ajax_version_installee').html(tab_infos[0]);
         maj_label_versions();
-        $('button').prop('disabled',false);
+        $('#bouton_maj').prop('disabled',false);
         $.fancybox( { 'href':tab_infos[1] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         initialiser_compteur();
         return false;
@@ -196,7 +196,7 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('button').prop('disabled',false);
+            $('#bouton_maj').prop('disabled',false);
             $('#ajax_maj').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
             return false;
           },
@@ -205,13 +205,13 @@ $(document).ready
             var tab_infos = responseHTML.split(']¤[');
             if( (tab_infos.length!=3) || (tab_infos[0]!='') )
             {
-              $('button').prop('disabled',false);
+              $('#bouton_maj').prop('disabled',false);
               $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
               return false;
             }
             if(tab_infos[1]!='ok')
             {
-              $('button').prop('disabled',false);
+              $('#bouton_maj').prop('disabled',false);
               $('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[2]);
               return false;
             }
@@ -231,7 +231,7 @@ $(document).ready
           $('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
           return false;
         }
-        $('button').prop('disabled',true);
+        $('#bouton_maj').prop('disabled',true);
         maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
       }
     );
@@ -246,7 +246,7 @@ $(document).ready
       if(etape_numero==6)
       {
         $('#ajax_verif_file_appli').removeAttr("class").addClass("valide").html('Vérification terminée !');
-        $('button').prop('disabled',false);
+        $('#bouton_verif_file_appli').prop('disabled',false);
         $.fancybox( { 'href':etape_info , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         initialiser_compteur();
         return false;
@@ -261,7 +261,7 @@ $(document).ready
           dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('button').prop('disabled',false);
+            $('#bouton_verif_file_appli').prop('disabled',false);
             $('#ajax_verif_file_appli').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
             return false;
           },
@@ -270,13 +270,13 @@ $(document).ready
             var tab_infos = responseHTML.split(']¤[');
             if( (tab_infos.length!=3) || (tab_infos[0]!='') )
             {
-              $('button').prop('disabled',false);
+              $('#bouton_verif_file_appli').prop('disabled',false);
               $('#ajax_verif_file_appli').removeAttr("class").addClass("alerte").html(tab_infos[0]);
               return false;
             }
             if(tab_infos[1]!='ok')
             {
-              $('button').prop('disabled',false);
+              $('#bouton_verif_file_appli').prop('disabled',false);
               $('#ajax_verif_file_appli').removeAttr("class").addClass("alerte").html(tab_infos[2]);
               return false;
             }
@@ -291,7 +291,7 @@ $(document).ready
       function()
       {
         etape_numero = 0 ;
-        $('button').prop('disabled',true);
+        $('#bouton_verif_file_appli').prop('disabled',true);
         verif_file_appli_etape("Récupération de l'archive <em>zip</em>&hellip;");
       }
     );
@@ -304,7 +304,7 @@ $(document).ready
     (
       function()
       {
-        $('button').prop('disabled',true);
+        $('#bouton_verif_dir_etabl').prop('disabled',true);
         $('#ajax_verif_dir_etabl').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
@@ -315,13 +315,13 @@ $(document).ready
             dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('button').prop('disabled',false);
+              $('#bouton_verif_dir_etabl').prop('disabled',false);
               $('#ajax_verif_dir_etabl').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
             success : function(responseHTML)
             {
-              $('button').prop('disabled',false);
+              $('#bouton_verif_dir_etabl').prop('disabled',false);
               var tab_infos = responseHTML.split(']¤[');
               if( (tab_infos.length!=2) || (tab_infos[0]!='') )
               {
@@ -337,6 +337,72 @@ $(document).ready
             }
           }
         );
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Etapes de maj des bases des établissements
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var step = 1;
+
+    function maj_bases_etape(step)
+    {
+      // Appel en ajax
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=maj_bases_etabl'+'&step='+step,
+          dataType : "html",
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#ajax_maj_bases_etabl').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !'+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
+          },
+          success : function(responseHTML)
+          {
+            initialiser_compteur();
+            if(responseHTML=='continuer')
+            {
+              step++;
+              $('#ajax_maj_bases_etabl').removeAttr("class").addClass("loader").html('Mise à jour en cours : étape ' + step + '...');
+              maj_bases_etape(step);
+            }
+            else if(responseHTML.substring(0,3)=='ok_')
+            {
+              var adresse_rapport = responseHTML.substring(3);
+              $.fancybox( { 'href':adresse_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+              $('#ajax_maj_bases_etabl').removeAttr("class").addClass("valide").html('Mise à jour des bases terminée.');
+              $('#bouton_maj_bases_etabl').prop('disabled',false);
+            }
+            else
+            {
+              $('#ajax_maj_bases_etabl').removeAttr("class").addClass("alerte").html(responseHTML+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
+            }
+          }
+        }
+      );
+    }
+
+    $('#bouton_maj_bases_etabl').click
+    (
+      function()
+      {
+        $('#bouton_maj_bases_etabl').prop('disabled',true);
+        step = 1;
+        $('#ajax_maj_bases_etabl').removeAttr("class").addClass("loader").html('Mise à jour en cours : initialisation...');
+        maj_bases_etape(step);
+      }
+    );
+
+    $('#ajax_maj_bases_etabl').on
+    (
+      'click',
+      '#a_reprise',
+      function()
+      {
+        maj_bases_etape(step);
       }
     );
 

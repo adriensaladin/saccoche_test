@@ -38,7 +38,7 @@ fieldset,img,hr {border:0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 html,body{height:100%;width:100%;background:#FFF;font:13px "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
-table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
+table,select,textarea,input,button,div,kbd{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
 #aide_en_ligne img , .legende img {vertical-align:bottom;padding:1px 3px;border:1px solid #66F;margin-left:2em;margin-right:3px}
@@ -52,8 +52,7 @@ hr {display:block;height:1px;margin:1ex 0;border-top:1px dotted #66F;}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#999}
-kbd{display:inline-block;width:20px;text-align:center;vertical-align:top;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
-kbd:hover{background-color:#CCC;border-color:#AAA}
+kbd{display:inline-block;font-size:90%;font-weight:bold;line-height:1.4;margin:1px;padding:1px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
 audio.prof{vertical-align:middle;width:300px;}
 audio.eleve{vertical-align:middle;width:600px;}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}
@@ -251,6 +250,17 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.structure_transfert   {background-position: 6px -3267px}
 #menu a.trombinoscope         {background-position: 6px -3307px}
 #menu a.user_recherche        {background-position: 6px -3347px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Sous-menus (rappel en haut de page)                                                                 */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+div.sousmenu{margin:0.5ex auto 0 2em}
+div.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0 0.5ex;background:#66F;color:#FFF}
+div.sousmenu a.actif{background:#99F}
+div.sousmenu a:hover {color:#FFF}
+div.sousmenu a.disabled {color:#99F;cursor:default;font-style:italic}
+div.sousmenu a.disabled:hover {text-decoration:none;background-color:#66F;color:#99F;cursor:default}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */
@@ -528,7 +538,8 @@ label.astuce {color:#139;background-image:url("data:image/png;base64,iVBORw0KGgo
 form label.tab {line-height:1.6em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
 form span.radio{line-height:1.6em;display:inline-block;text-align:right;width:25em;margin-right:  1em;font-weight:bold}
 form span.tab{line-height:2em;margin-left:11.5em}
-form label.mini{width:8em;}
+form label.mini{width:6em;}
+form span.mini{line-height:2em;margin-left:6.5em}
 #zone_ressources label.tab{width:6em}
 #zone_ressources span.tab{margin-left:6.5em}
 
@@ -675,23 +686,23 @@ table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;mar
 table.scor_eval tbody td input:focus {border:2px solid #00F}
 table.scor_eval tbody.h td input {width:22px;height:16px}
 table.scor_eval tbody.v td input {width:12px;height:22px}
-/* Pour les codes de notation (VV V R RR), défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
-table.scor_eval tbody.h td input.ABS  {background:#FFF url(../_img/note/commun/h/ABS.gif)  no-repeat center center;}
-table.scor_eval tbody.v td input.ABS  {background:#FFF url(../_img/note/commun/v/ABS.gif)  no-repeat center center;}
-table.scor_eval tbody.h td input.DISP {background:#FFF url(../_img/note/commun/h/DISP.gif) no-repeat center center;}
-table.scor_eval tbody.v td input.DISP {background:#FFF url(../_img/note/commun/v/DISP.gif) no-repeat center center;}
-table.scor_eval tbody.h td input.NE   {background:#FFF url(../_img/note/commun/h/NE.gif)   no-repeat center center;}
-table.scor_eval tbody.v td input.NE   {background:#FFF url(../_img/note/commun/v/NE.gif)   no-repeat center center;}
-table.scor_eval tbody.h td input.NF   {background:#FFF url(../_img/note/commun/h/NF.gif)   no-repeat center center;}
-table.scor_eval tbody.v td input.NF   {background:#FFF url(../_img/note/commun/v/NF.gif)   no-repeat center center;}
-table.scor_eval tbody.h td input.NN   {background:#FFF url(../_img/note/commun/h/NN.gif)   no-repeat center center;}
-table.scor_eval tbody.v td input.NN   {background:#FFF url(../_img/note/commun/v/NN.gif)   no-repeat center center;}
-table.scor_eval tbody.h td input.NR   {background:#FFF url(../_img/note/commun/h/NR.gif)   no-repeat center center;}
-table.scor_eval tbody.v td input.NR   {background:#FFF url(../_img/note/commun/v/NR.gif)   no-repeat center center;}
-table.scor_eval tbody.h td input.X    {background:#FFF url(../_img/note/commun/h/X.gif)    no-repeat center center;}
-table.scor_eval tbody.v td input.X    {background:#FFF url(../_img/note/commun/v/X.gif)    no-repeat center center;}
-table.scor_eval tbody.h td input.REQ  {background:#FFF url(../_img/note/commun/h/REQ.gif)  no-repeat center center;}
-table.scor_eval tbody.v td input.REQ  {background:#FFF url(../_img/note/commun/v/REQ.gif)  no-repeat center center;}
+/* Pour les codes de notation, défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
+table.scor_eval tbody.h td input.AB {background:#FFF url(../_img/note/commun/h/AB.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.AB {background:#FFF url(../_img/note/commun/v/AB.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.DI {background:#FFF url(../_img/note/commun/h/DI.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.DI {background:#FFF url(../_img/note/commun/v/DI.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NE {background:#FFF url(../_img/note/commun/h/NE.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.NE {background:#FFF url(../_img/note/commun/v/NE.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NF {background:#FFF url(../_img/note/commun/h/NF.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.NF {background:#FFF url(../_img/note/commun/v/NF.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NN {background:#FFF url(../_img/note/commun/h/NN.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.NN {background:#FFF url(../_img/note/commun/v/NN.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.NR {background:#FFF url(../_img/note/commun/h/NR.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.NR {background:#FFF url(../_img/note/commun/v/NR.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.PA {background:#FFF url(../_img/note/commun/h/PA.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.PA {background:#FFF url(../_img/note/commun/v/PA.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.X  {background:#FFF url(../_img/note/commun/h/X.gif)  no-repeat center center;}
+table.scor_eval tbody.v td input.X  {background:#FFF url(../_img/note/commun/v/X.gif)  no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau d'exploitation des résultats d'une évaluation                                               */
@@ -702,12 +713,12 @@ table.eval_exploitation tbody th {white-space:normal;font-weight:normal;text-ali
 table.eval_exploitation tbody td {vertical-align:middle;background:#EEF;font-size:90%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Couleur de fond pour indiquer A / VA / NA                                                           */
+/* Couleur de fond pour indiquer les états d'acquisition                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
 /*
-table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
+table th.A- , table td.A- , div.A- , span.A- , label.A- {background-color:#---}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -742,8 +753,8 @@ table.bilan_synthese tr.vide td{font-size:0;height:6px}
 #tableau_validation tbody th.nu:hover {cursor:default}
 #tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:1%;padding:0;line-height:1em;} /* Pour indiquer les scores calculés ; 0% pour font-size pose problème au navigateur Safari. */
 #tableau_validation tbody td:hover {cursor:pointer}
-#tableau_validation tbody td.v3 {background:#FFF;}
-#tableau_validation tbody td.v3:hover {cursor:default}
+#tableau_validation tbody td.V3 {background:#FFF;}
+#tableau_validation tbody td.V3:hover {cursor:default}
 #tableau_validation tfoot td{border:0}
 #tableau_validation tfoot td.L100{background:#FFF url(../_img/drapeau/100.gif) no-repeat center center;}
 #tableau_validation tfoot td.L101{background:#FFF url(../_img/drapeau/101.gif) no-repeat center center;}
@@ -774,8 +785,8 @@ td.load , div.load {background:#FFF no-repeat center center url("data:image/gif;
 /* Défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
 /*
 #tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}
-th.v- , td.v- , span.v- {background:#---}
-#zone_information .v- {background:#---;padding:0 1em;margin-right:1ex}
+th.V- , td.V- , span.V- {background:#---}
+#zone_information .V- {background:#---;padding:0 1em;margin-right:1ex}
 #tableau_validation tbody td[data-etat=lock] {background:#BBF url(./_img/socle/lock.gif) no-repeat center center;}
 #tableau_validation tbody td[data-etat=done] {background-image:url(./_img/socle/done.gif) no-repeat center center;}
 */
@@ -787,7 +798,7 @@ th.v- , td.v- , span.v- {background:#---}
 table.vm_nug td {vertical-align:middle}
 table.vm_nug td.nu {text-align:left}
 table.notanet td {height:30px}
-/* Pour rester indépendant des préférences établissements pour les background NA / VA A */
+/* Pour rester indépendant des préférences établissements pour les états d'acquisition */
 td.br{background-color:#F99}
 td.bj{background-color:#FD3}
 td.bv{background-color:#9F9}
@@ -897,8 +908,11 @@ ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAAN
 /* Liste ordonnable par drag & drop                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#sortable , #sortable_oui , #sortable_non {padding:6px;min-height:30px;background:#EEF}
-#sortable li , #sortable_oui li , #sortable_non li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF}
+#sortable_v , #sortable_v_oui , #sortable_v_non {padding:6px;min-height:30px;background:#EEF}
+#sortable_v li , #sortable_v_oui li , #sortable_v_non li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer_v.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF}
+#sortable_h_note , #sortable_h_acquis {padding:6px;background:#EEF}
+#sortable_h_note li , #sortable_h_acquis li {list-style-type:none;display:inline-block;vertical-align:top;margin:0.5ex;background:#DDF url(../_img/action_deplacer_h.png) no-repeat top;padding:16px 2px 0 2px;border:1px solid #BBF}
+#sortable_h_acquis li.colorpicker {background:#FFF;padding:0}
 .sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -912,6 +926,18 @@ a.puce_moins {font-weight:normal;padding-left:12px;background:transparent no-rep
 .toggle_plus  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACMFSOmTbt/w6cTkIApn1Yh9lBmxNG34ClajZY69qMTVmdHGuCeK17FCX7tQyK4kFQAAA7");} /* toggle_maxi_plus */
 .toggle_moins {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACJlSOmTbt/w6cTtJpbwwa5j5YwEiWjVimJweurft+nazRV2Ao+iEUADs=");} /* toggle_maxi_moins */
 .toggle_none  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAMIFALW10cTC6Nzc7tzc/t3d/////////////ywAAAAAEAAQAAADNSix3K0kyjkXvdJSAK6enBdcIfVJZTUSXOt2hPa+0Rml2QrCKsnnkQEKJqzpMD2kSeFoLgQJADs=");} /* toggle_maxi_none */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Touche du cadre pour une saisie sur appareils tactiles                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#cadre_tactile span{display:inline-block;width:20px;text-align:center;vertical-align:middle;margin:2px;padding:7px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
+#cadre_tactile span:hover{background-color:#CCC;border-color:#AAA}
+#cadre_tactile span.img{background:#EEE url(../_img/sprite_bouton_9.png) 0 20px no-repeat;height:15px}
+#cadre_tactile span.img:hover{background-color:#CCC}
+#cadre_tactile span.annuler   {background-position: 7px  -34px}
+#cadre_tactile span.retourner {background-position: 7px -674px}
+#cadre_tactile span.valider   {background-position: 7px -814px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone affichée pour le choix d'une note à la souris                                                  */
@@ -959,16 +985,6 @@ div.td_souris img.on {background-color:#FF0}
 .photo {float:left;padding:3px;margin:6px;border:1px dashed #77F;text-align:center;min-height:180px} /* 144+36 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Certaines touches KBD                                                                               */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-kbd.img{background:#EEE url(../_img/sprite_bouton_9.png) 0 20px no-repeat;height:15px}
-kbd.img:hover{background-color:#CCC}
-kbd.annuler   {background-position: 7px  -34px}
-kbd.retourner {background-position: 7px -674px}
-kbd.valider   {background-position: 7px -814px}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Message d'un partenaire conventionné ENT                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -988,9 +1004,7 @@ form.encadre fieldset.new{background:#CFC}
 /* Colorpicker                                                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#colorpicker    {height:195px;width:225px;float:left;margin-left:1em}
-div.colorpicker {height:195px;width:225px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
-div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
+input.stretch {text-align:center;letter-spacing:2px}
 
 /**
  * Farbtastic Color Picker 1.2

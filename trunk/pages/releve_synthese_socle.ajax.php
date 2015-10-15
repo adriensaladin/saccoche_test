@@ -203,8 +203,7 @@ unset($DB_TAB);
 if($type=='pourcentage')
 {
   // Tableaux et variables pour mémoriser les infos
-  $tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
-  $tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0); // et ensuite '%'=>
+  $tab_init_compet = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array('nb'=>0); // et ensuite '%'=>
   $tab_score_socle_eleve = array();
   // Pour chaque élève...
   foreach($tab_eleve_id as $eleve_id)
@@ -223,16 +222,16 @@ if($type=='pourcentage')
           $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           if($score!==FALSE)
           {
-            // on détermine si elle est acquise ou pas
-            $indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+            // on détermine si il est acquis ou pas
+            $indice = determiner_etat_acquisition( $score );
             // on enregistre les infos
             $tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
             $tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
           }
         }
       }
-      // On calcule les états d'acquisition à partir des A / VA / NA
-      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_score_socle_eleve[$socle_id][$eleve_id]['nb']) ? round( 50 * ( ($tab_score_socle_eleve[$socle_id][$eleve_id]['A']*2 + $tab_score_socle_eleve[$socle_id][$eleve_id]['VA']) / $tab_score_socle_eleve[$socle_id][$eleve_id]['nb'] ) ,0) : FALSE ;
+      // On calcule le pourcentage d'acquisition des items
+      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_score_socle_eleve[$socle_id][$eleve_id]['nb']) ? calculer_pourcentage_acquisition_items( $tab_score_socle_eleve[$socle_id][$eleve_id] , $tab_score_socle_eleve[$socle_id][$eleve_id]['nb'] ) : FALSE ;
     }
   }
 }

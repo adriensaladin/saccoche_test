@@ -375,10 +375,8 @@ if(count($tab_eval))
       // ... un pour le nombre d\'items considérés acquis ou pas
       if($nb_scores)
       {
-        $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
-        $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
-        $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-        $tab_pourcentage_acquis_eleve[$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+        $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+        $tab_pourcentage_acquis_eleve[$eleve_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
       }
       else
       {
@@ -404,11 +402,9 @@ if($type_synthese)
     if($nb_scores)
     {
       $somme_scores = array_sum($tableau_score_filtre);
-      $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
-      $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
-      $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
+      $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
       $tab_moyenne_scores_item[$item_id]     = round($somme_scores/$nb_scores,0);
-      $tab_pourcentage_acquis_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+      $tab_pourcentage_acquis_item[$item_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
     }
     else
     {

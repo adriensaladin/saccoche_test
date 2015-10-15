@@ -301,10 +301,9 @@ if(count($tab_date))
       {
         if($nb_scores)
         {
-          $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
-          $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
-          $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+
+          $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
         }
         else
         {

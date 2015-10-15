@@ -318,6 +318,7 @@ define('CHEMIN_DOSSIER_LOGO'          , CHEMIN_DOSSIER_TMP.'logo'.DS);
 define('CHEMIN_DOSSIER_OFFICIEL'      , CHEMIN_DOSSIER_TMP.'officiel'.DS);
 define('CHEMIN_DOSSIER_PARTENARIAT'   , CHEMIN_DOSSIER_TMP.'partenariat'.DS);
 define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
+define('CHEMIN_DOSSIER_SYMBOLE'       , CHEMIN_DOSSIER_TMP.'symbole'.DS);
 //      CHEMIN_FICHIER_CONFIG_MYSQL     est défini dans index.php ou ajax.php, en fonction du type d'installation et d'utilisateur connecté
 define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
 
@@ -413,7 +414,6 @@ function SACoche_autoload($class_name)
     'Lang'                        => '_lib'.DS.'gettext'.DS.'Lang.class.php' ,
     'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
     // Pour SimpleSAMLphp c'est plus compliqué, on fait un include directement dans les 2 fichiers concernés...
-
     'Browser'                     => '_inc'.DS.'class.Browser.php' ,
     'Clean'                       => '_inc'.DS.'class.Clean.php' ,
     'Cookie'                      => '_inc'.DS.'class.Cookie.php' ,
@@ -426,6 +426,7 @@ function SACoche_autoload($class_name)
     'HtmlArborescence'            => '_inc'.DS.'class.HtmlArborescence.php' ,
     'HtmlForm'                    => '_inc'.DS.'class.HtmlForm.php' ,
     'HtmlMail'                    => '_inc'.DS.'class.HtmlMail.php' ,
+    'Image'                       => '_inc'.DS.'class.Image.php' ,
     'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
     'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
     'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
@@ -778,7 +779,7 @@ function getServerProtocole()
   {
     return 'https://';
   }
-  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_headers)
+  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_fields)
   if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO']=='https') )
   {
     return 'https://';

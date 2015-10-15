@@ -53,6 +53,11 @@ if( ($action=='basculer') && $user_id )
   }
   // C'est ok
   $auth_DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur( 'switch'  ,$user_id );
+  // Mémoriser la date de la (dernière) connexion.
+  if( ($auth_DB_ROW['user_connexion_date']!==NULL) || in_array($auth_DB_ROW['user_profil_type'],array('webmestre','administrateur')) )
+  {
+    DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion($auth_DB_ROW['user_id']);
+  }
   $BASE = $_SESSION['BASE'];
   Session::close__open_new__init( FALSE /*memo_GET*/ );
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);

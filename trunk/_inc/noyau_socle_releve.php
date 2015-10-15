@@ -241,11 +241,10 @@ unset($DB_TAB);
 // Elaboration du bilan relatif au socle, en HTML et PDF => Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
-$tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0);
-// $tab_score_pilier_eleve  = array();  // [pilier_id][eleve_id] => array(A,VA,NA,nb,%)  // Retenir le nb d'items acquis ou pas / pilier / élève
-// $tab_score_section_eleve = array();  // [section_id][eleve_id] => array(A,VA,NA,nb,%) // Retenir le nb d'items acquis ou pas / section / élève
-$tab_score_socle_eleve   = array();  // [socle_id][eleve_id] => array(A,VA,NA,nb,%)   // Retenir le nb d'items acquis ou pas / item / élève
+$tab_init_compet = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array('nb'=>0);
+// $tab_score_pilier_eleve  = array();  // [pilier_id][eleve_id] => array([etats],nb,%)  // Retenir le nb d'items acquis ou pas / pilier / élève
+// $tab_score_section_eleve = array();  // [section_id][eleve_id] => array([etats],nb,%) // Retenir le nb d'items acquis ou pas / section / élève
+$tab_score_socle_eleve   = array();  // [socle_id][eleve_id] => array([etats],nb,%)   // Retenir le nb d'items acquis ou pas / item / élève
 $tab_infos_socle_eleve   = array();  // [socle_id][eleve_id] => array()               // Retenir les infos sur les items travaillés et leurs scores / item du socle / élève
 
 // Pour chaque élève...
@@ -280,8 +279,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
                   if($score!==FALSE)
                   {
-                    // on détermine si elle est acquise ou pas
-                    $indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+                    // on détermine si il est acquis ou pas
+                    $indice = determiner_etat_acquisition( $score );
                     // le détail HTML
                     if($make_html)
                     {
@@ -302,7 +301,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                       elseif(!$matiere_nb_demandes)              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
                       elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                       else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
-                      $tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="pourcentage '.$tab_etat[$indice].'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
+                      $tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="pourcentage A'.$indice.'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
                     }
                     // on enregistre les infos
                     $tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
@@ -322,7 +321,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   }
 }
 
-// On calcule les états d'acquisition à partir des A / VA / NA
+// On calcule les pourcentages d'acquisition à partir du nombre d'items de chaque état
 
 if($test_affichage_Pourcentage)
 {
@@ -331,7 +330,7 @@ if($test_affichage_Pourcentage)
   // {
   //   foreach($tab_pilier_eleve as $eleve_id=>$tab_scores)
   //   {
-  //     $tab_score_pilier_eleve[$pilier_id][$eleve_id]['%'] = ($tab_scores['nb']) ? round( 50 * ( ($tab_scores['A']*2 + $tab_scores['VA']) / $tab_scores['nb'] ) ,0) : FALSE ;
+  //     $tab_score_pilier_eleve[$pilier_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
   //   }
   // }
   // Pour les sections
@@ -339,7 +338,7 @@ if($test_affichage_Pourcentage)
   // {
   //   foreach($tab_section_eleve as $eleve_id=>$tab_scores)
   //   {
-  //     $tab_score_section_eleve[$section_id][$eleve_id]['%'] = ($tab_scores['nb']) ? round( 50 * ( ($tab_scores['A']*2 + $tab_scores['VA']) / $tab_scores['nb'] ) ,0) : FALSE ;
+  //     $tab_score_section_eleve[$section_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
   //   }
   // }
   // Pour les items du socle
@@ -347,7 +346,7 @@ if($test_affichage_Pourcentage)
   {
     foreach($tab_socle_eleve as $eleve_id=>$tab_scores)
     {
-      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_scores['nb']) ? round( 50 * ( ($tab_scores['A']*2 + $tab_scores['VA']) / $tab_scores['nb'] ) ,0) : FALSE ;
+      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
     }
   }
 }

@@ -63,7 +63,7 @@ function positif($n)
   return $n>0 ;
 }
 /**
- * Fonctions utilisées avec array_filter() ; teste si différent "X" (pas "REQ" car désormais cela peut être saisi).
+ * Fonctions utilisées avec array_filter() ; teste si différent "X" (pas "PA" car désormais cela peut être saisi).
  * @return bool
  */
 function sans_rien($note)
@@ -80,33 +80,85 @@ function is_renseigne($etat)
 }
 
 /**
- * Tester un item est considéré comme acquis au vu du score transmis.
+ * Déterminer l'état d'acquisition d'un item au vu du score transmis.
  * 
- * Le seuil peut être celui défini globalement (par défaut si rien de transmis) ou un seuil testé ; peut être appelé avec array_filter().
- * 
- * @param int $score
- * @param int $seuil (facultatif)
- * @return bool
+ * @param int   $score
+ * @param array $tab_acquis_seuil   facultatif (par défaut les valeurs en session, sauf pour une simulation)
+ * @return int
  */
-function test_A($score,$seuil=NULL)
+function determiner_etat_acquisition( $score , $tab_acquis_seuil=NULL )
 {
-  $seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
-  return $score>$seuil ;
+  if(is_null($tab_acquis_seuil))
+  {
+    $tab_acquis_seuil = $_SESSION['ACQUIS'];
+  }
+  $score = min($score,100);
+  foreach( $tab_acquis_seuil as $acquis_id => $tab_acquis_info )
+  {
+    if( ($score<=$tab_acquis_info['SEUIL_MAX']) && ($score>=$tab_acquis_info['SEUIL_MIN']) )
+    {
+      return $acquis_id;
+    }
+  }
 }
 
 /**
- * test_NA
- * Tester un item est considéré comme non acquis au vu du score transmis.
- * Le seuil peut être celui défini globalement (par défaut si rien de transmis) ou un seuil testé ; peut être appelé avec array_filter().
+ * Compter le nb d'états d'acquisition de chaque catégorie à partir d'un tableau de scores transmis.
  * 
- * @param int $score
- * @param int $seuil
- * @return bool
+ * @param array $tab_score
+ * @return array
  */
-function test_NA($score,$seuil=NULL)
+function compter_nombre_acquisitions_par_etat( $tab_score )
 {
-  $seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
-  return $score<$seuil ;
+  $tab_result = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 );
+  foreach( $tab_score as $score )
+  {
+    $score = min($score,100);
+    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    {
+      if( ($score<=$tab_acquis_info['SEUIL_MAX']) && ($score>=$tab_acquis_info['SEUIL_MIN']) )
+      {
+        $tab_result[$acquis_id]++;
+        break;
+      }
+    }
+  }
+  return $tab_result;
+}
+
+/**
+ * Calculer le pourcentage d'acquisition des items à partir de l'état d'acquisition de chacun d'eux 
+ * 
+ * @param array $tab_acquis
+ * @param int   $nb_items
+ * @return int
+ */
+function calculer_pourcentage_acquisition_items( $tab_acquis , $nb_items )
+{
+  $total = 0;
+  foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+  {
+    $acquis_nb = $tab_acquis[$acquis_id];
+    $total += $acquis_nb * $tab_acquis_info['VALEUR'] ;
+  }
+  return round( $total / $nb_items ,0);
+}
+
+/**
+ * Afficher le nb d'états d'acquisition de chaque catégorie à partir du nombre d'items acquis de chaque catégorie.
+ * 
+ * @param array $tab_acquis
+ * @return string
+ */
+function afficher_nombre_acquisitions_par_etat( $tab_acquis )
+{
+  $tab_texte = array();
+  foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+  {
+    $tab_texte[] = $tab_acquis[$acquis_id].$tab_acquis_info['SIGLE'];
+  }
+  krsort($tab_texte); // On commence par les acquis
+  return implode(' ',$tab_texte);
 }
 
 /**
@@ -157,14 +209,13 @@ function floorTo($nombre,$precision)
 function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
 {
   // on passe en revue les évaluations disponibles, et on retient les notes exploitables
-  $tab_modele_bon = array('RR','R','V','VV');  // les notes prises en compte dans le calcul du score
   $tab_note = array(); // pour retenir les notes en question
   $nb_devoir = count($tab_devoirs);
   for($i=0;$i<$nb_devoir;$i++)
   {
-    if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
+    if(isset($_SESSION['NOTE'][$tab_devoirs[$i]['note']])) // Note {1;...;6} prise en compte dans le calcul du score
     {
-      $tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
+      $tab_note[] = $_SESSION['NOTE'][$tab_devoirs[$i]['note']]['VALEUR'];
     }
   }
   // si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
@@ -515,29 +566,6 @@ function tester_date($date)
 }
 
 /**
- * Renvoyer les dimensions d'une image à mettre dans les attributs HTML si on veut limiter son affichage à une largeur / hauteur données.
- * 
- * @param int   $largeur_reelle
- * @param int   $hauteur_reelle
- * @param int   $largeur_maxi
- * @param int   $hauteur_maxi
- * @return array   [$largeur_imposee,$hauteur_imposee]
- */
-function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_maxi,$hauteur_maxi)
-{
-  if( ($largeur_reelle>$largeur_maxi) || ($hauteur_reelle>$hauteur_maxi) )
-  {
-    $coef_reduction_largeur = $largeur_maxi/$largeur_reelle;
-    $coef_reduction_hauteur = $hauteur_maxi/$hauteur_reelle;
-    $coef_reduction = min($coef_reduction_largeur,$coef_reduction_hauteur);
-    $largeur_imposee = round($largeur_reelle*$coef_reduction);
-    $hauteur_imposee = round($hauteur_reelle*$coef_reduction);
-    return array($largeur_imposee,$hauteur_imposee);
-  }
-  return array($largeur_reelle,$hauteur_reelle);
-}
-
-/**
  * Renvoyer les balises images à afficher et la chaine solution à mettre en session.
  * 
  * @return array   [$html_imgs,$captcha_soluce]
@@ -754,21 +782,6 @@ function test_periode_sortie()
 }
 
 /**
- * Renvoyer une taille de fichier lisible pour un humain :)
- * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
- *
- * @param int $bytes
- * @param int $decimals (facultatif)
- * @return string
- */
-function afficher_fichier_taille($bytes, $decimals = 1)
-{
-  $size_unit = ' KMGTP';
-  $factor = floor((strlen($bytes) - 1) / 3);
-  return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
-}
-
-/**
  * Tester si un droit d'accès spécifique comporte une restriction aux PP ou aux coordonnateurs
  *
  * @param string $listing_droits_sigles
@@ -902,5 +915,4 @@ function make_lien($texte,$contexte)
   $masque_remplacement = ($contexte=='html') ? '<a href="$2" target="$3">$1</a>' : '$1 [$2]' ;
   return str_replace( 'target=""' , '' , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
 }
-
 ?>

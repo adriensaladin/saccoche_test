@@ -67,7 +67,7 @@ if(!empty($DB_ROW))
   $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
   // Générer la balise html pour afficher l'image
-  list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+  list($width,$height) = Image::dimensions_affichage( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   $li_logo = '<li><img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
 

@@ -34,35 +34,34 @@ $checked_dalton = $_SESSION['USER_DALTONISME'] ? ' checked' : '' ;
 // codes de notation
 $td_normal = '<td class="nu">&nbsp;</td>';
 $td_dalton = '<td class="nu">&nbsp;</td>';
-$tab_note = array('RR','R','V','VV');
-foreach($tab_note as $note)
+$numero = 0;
+foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
 {
-  $td_normal .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="'.$note.'" src="./_img/note/choix/h/'.$_SESSION['NOTE_IMAGE'][$note].'.gif" /></td>';
-  $td_dalton .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="'.$note.'" src="./_img/note/daltonisme/h/'.$note.'.gif" /></td>';
+  $numero++;
+  $td_normal .= '<td>note '.html($_SESSION['NOTE'][$note_id]['SIGLE']).'<br /><img alt="'.html($_SESSION['NOTE'][$note_id]['SIGLE']).'" src="'.Html::note_src_couleur($_SESSION['NOTE'][$note_id]['IMAGE']).'" /></td>';
+  $td_dalton .= '<td>note '.html($_SESSION['NOTE'][$note_id]['SIGLE']).'<br /><img alt="'.html($_SESSION['NOTE'][$note_id]['SIGLE']).'" src="'.Html::note_src_daltonisme($numero).'" /></td>';
 }
 
 // couleurs des états d'acquisition
 $td_normal .= '<td class="nu">&nbsp;</td>';
 $td_dalton .= '<td class="nu">&nbsp;</td>';
-$tab_acquis = array('NA'=>'#909090','VA'=>'#BEBEBE','A'=>'#EAEAEA');
-foreach($tab_acquis as $acquis => $style)
+foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 {
-  $td_normal .= '<td style="background-color:'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'">acquisition<br />'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
-  $td_dalton .= '<td style="background-color:'.$style.'">acquisition<br />'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
+  $td_normal .= '<td style="background-color:'.$tab_acquis_info['COULEUR'].'">acquisition<br />'.html($tab_acquis_info['SIGLE']).'</td>';
+  $td_dalton .= '<td style="background-color:'.$tab_acquis_info['GRIS'   ].'">acquisition<br />'.html($tab_acquis_info['SIGLE']).'</td>';
 }
 
 // couleurs des états de validation
 $td_normal .= '<td class="nu">&nbsp;</td>';
 $td_dalton .= '<td class="nu">&nbsp;</td>';
-$tab_valid = array( 'en attente'=>array('normal'=>'#BBBBFF','dalton'=>'#BEBEBE') , 'négative'=>array('normal'=>'#FF9999','dalton'=>'#909090') , 'positive'=>array('normal'=>'#99FF99','dalton'=>'#EAEAEA') );
-foreach($tab_valid as $etat => $tab_style)
+foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
 {
-  $td_normal .= '<td style="background-color:'.$tab_style['normal'].'">validation<br />'.$etat.'</td>';
-  $td_dalton .= '<td style="background-color:'.$tab_style['dalton'].'">validation<br />'.$etat.'</td>';
+  $td_normal .= '<td style="background-color:'.$tab_valid_info['COULEUR'].'">validation<br />'.$tab_valid_info['TEXTE'].'</td>';
+  $td_dalton .= '<td style="background-color:'.$tab_valid_info['GRIS'   ].'">validation<br />'.$tab_valid_info['TEXTE'].'</td>';
 }
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__daltonisme">DOC : Daltonisme</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=notes_acquis__daltonisme">DOC : Daltonisme</a></span></div>
 
 <hr />
 
@@ -72,23 +71,23 @@ foreach($tab_valid as $etat => $tab_style)
       <tr>
         <th class="nu"></th>
         <th class="nu"></th>
-        <th colspan="4">Notes aux évaluations</th>
+        <th colspan="<?php echo $_SESSION['NOMBRE_CODES_NOTATION'] ?>">Notes aux évaluations</th>
         <th class="nu"></th>
-        <th colspan="3">Degrés d'acquisitions</th>
+        <th colspan="<?php echo $_SESSION['NOMBRE_ETATS_ACQUISITION'] ?>">Degrés d'acquisitions</th>
         <th class="nu"></th>
         <th colspan="3">États de validations</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td colspan="14" class="nu" style="font-size:50%"></td>
+        <td colspan="<?php echo (7+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
       </tr>
       <tr>
         <th><label for="note_normal">Conventions dans l'établissement</label><br /><input type="radio" id="note_normal" name="daltonisme" value="0"<?php echo $checked_normal ?> /></th>
         <?php echo $td_normal ?>
       </tr>
       <tr>
-        <td colspan="14" class="nu" style="font-size:50%"></td>
+        <td colspan="<?php echo (7+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
       </tr>
       <tr>
         <th><label for="note_dalton">Conventions en remplacement</label><br /><input type="radio" id="note_dalton" name="daltonisme" value="1"<?php echo $checked_dalton ?> /></th>

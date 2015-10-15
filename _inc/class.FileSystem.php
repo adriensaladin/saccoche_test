@@ -59,7 +59,6 @@ class FileSystem
     '__tmp/officiel/'    => CHEMIN_DOSSIER_OFFICIEL,
     '__tmp/partenariat/' => CHEMIN_DOSSIER_PARTENARIAT,
     '__tmp/rss/'         => CHEMIN_DOSSIER_RSS,
-    '__tmp/symbole/'     => CHEMIN_DOSSIER_SYMBOLE,
   );
 
   // Tableau avec les dossiers devant contenir un sous-répertoire par structure
@@ -69,7 +68,6 @@ class FileSystem
     '__tmp/devoir/'      => CHEMIN_DOSSIER_DEVOIR,   // sujets et corrigés de devoirs
     '__tmp/officiel/'    => CHEMIN_DOSSIER_OFFICIEL, // archives des bilans officiels
     '__tmp/rss/'         => CHEMIN_DOSSIER_RSS,      // flux RSS des demandes
-    '__tmp/symbole/'     => CHEMIN_DOSSIER_SYMBOLE,  // codes de couleur perso uploadés
   );
 
   // //////////////////////////////////////////////////
@@ -177,32 +175,6 @@ class FileSystem
   {
     $longueur = defined('APPEL_SITE_PROJET') ? LONGUEUR_CHEMIN_PROJET : LONGUEUR_CHEMIN_SACOCHE ;
     return substr($chemin,$longueur);
-  }
-
-/**
- * Chemin dans le système de fichiers vers un symbole de notation
- *
- * @param string $symbole_nom
- * @param string $symbole_orientation   h | v
- * @param string $symbole_type          sacoche | perso
- * @return string
- */
-  public static function chemin_fichier_symbole( $symbole_nom , $symbole_orientation='h' , $symbole_type='' )
-  {
-    if(!$symbole_type)
-    {
-      $symbole_type = (substr($symbole_nom,0,6)=='upload') ? 'perso' : 'sacoche' ;
-    }
-    if($symbole_type=='sacoche')
-    {
-      return CHEMIN_DOSSIER_IMG.'note'.DS.'choix'.DS.$symbole_orientation.DS.$symbole_nom.'.gif';
-    }
-    if($symbole_type=='perso')
-    {
-      return CHEMIN_DOSSIER_SYMBOLE.$_SESSION['BASE'].DS.$symbole_orientation.'_'.$symbole_nom.'.gif';
-    }
-    // On ne devrait pas arriver ici
-    return'';
   }
 
   /**
@@ -654,13 +626,11 @@ class FileSystem
   {
     // On verifie que certains sous-dossiers existent :
     $tab_sous_dossier = array(
-      CHEMIN_DOSSIER_DEVOIR ,      // n'a été ajouté qu'en mars 2012,
+      CHEMIN_DOSSIER_DEVOIR ,       // n'a été ajouté qu'en mars 2012,
       CHEMIN_DOSSIER_DEVOIR.$BASE.DS ,
-      CHEMIN_DOSSIER_OFFICIEL ,    // n'a été ajouté qu'en mai 2012,
+      CHEMIN_DOSSIER_OFFICIEL ,     // n'a été ajouté qu'en mai 2012,
       CHEMIN_DOSSIER_OFFICIEL.$BASE.DS ,
-      CHEMIN_DOSSIER_PARTENARIAT , // n'a été ajouté qu'en juin 2013,
-      CHEMIN_DOSSIER_SYMBOLE ,     // n'a été ajouté qu'en octobre 2015,
-      CHEMIN_DOSSIER_SYMBOLE.$BASE.DS ,
+      CHEMIN_DOSSIER_PARTENARIAT ,  // n'a été ajouté qu'en juin 2013,
     );
     foreach($tab_sous_dossier as $sous_dossier)
     {
@@ -679,7 +649,6 @@ class FileSystem
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_SYMBOLE.$BASE  , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
   }
@@ -892,22 +861,6 @@ class FileSystem
     FileSystem::$file_upload_name = $fichier_tmp_nom;
     FileSystem::$file_saved_name  = $fichier_final_nom;
     return TRUE;
-  }
-
-  /**
-   * Renvoyer une taille de fichier lisible pour un humain :)
-   * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
-   *
-   * @param string $fichier_chemin
-   * @param int    $decimals (facultatif)
-   * @return string
-   */
-  public static function afficher_fichier_taille($fichier_chemin, $decimals = 1)
-  {
-    $bytes = filesize($fichier_chemin);
-    $size_unit = ' KMGTP';
-    $factor = floor((strlen($bytes) - 1) / 3);
-    return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
   }
 
 }

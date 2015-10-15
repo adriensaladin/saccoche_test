@@ -111,7 +111,7 @@ else
   <form action="#" method="post" id="zone_ressources_form">
     <h2>Liens (ressources pour travailler)</h2>
     <p><label class="tab">Item :</label><span class="f_nom i"></span><input type="hidden" id="page_mode" value="" /></p>
-    <ul id="sortable_v">
+    <ul id="sortable">
       <li></li>
     </ul>
     <div><span class="tab"></span><button class="annuler" type="button" id="choisir_ressources_annuler">Annuler / Retour.</button> <button class="valider" type="button" id="choisir_ressources_valider">Valider et enregistrer ces liens.</button> <label id="ajax_ressources_msg">&nbsp;</label></div>

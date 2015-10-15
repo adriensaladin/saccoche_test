@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent que les tables "sacoche_image" et "sacoche_image_note".
+// Ces méthodes ne concernent que la table "sacoche_image".
 
 class DB_STRUCTURE_IMAGE extends DB
 {
@@ -53,7 +53,7 @@ public static function DB_recuperer_image($user_id,$image_objet)
 }
 
 /**
- * lister_images
+ * lister_photos
  *
  * @param string   $listing_user_id
  * @param string   $image_objet   "photo" | "signature" | "logo"
@@ -96,8 +96,8 @@ public static function DB_lister_signatures_avec_identite()
  */
 public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$image_format,$image_largeur,$image_hauteur)
 {
-  $DB_SQL = 'REPLACE INTO sacoche_image( user_id,  image_objet,  image_contenu,  image_format,  image_largeur,  image_hauteur) ';
-  $DB_SQL.= 'VALUES                    (:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+  $DB_SQL = 'REPLACE INTO sacoche_image ( user_id,  image_objet,  image_contenu,  image_format,  image_largeur,  image_hauteur) ';
+  $DB_SQL.= 'VALUES                     (:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
   $DB_VAR = array(
     ':user_id'       => $user_id,
     ':image_objet'   => $image_objet,
@@ -123,55 +123,6 @@ public static function DB_supprimer_image($user_id,$image_objet)
   $DB_VAR = array(
     ':user_id'     => $user_id,
     ':image_objet' => $image_objet,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_images_notes
- *
- * @param void
- * @return array
- */
-public static function DB_lister_images_notes()
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_image_note ';
-  $DB_SQL.= 'ORDER BY image_note_id ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * ajouter_image_note
- *
- * @param string $image_contenu_h
- * @param string $image_contenu_v
- * @return int
- */
-public static function DB_ajouter_image_note($image_contenu_h,$image_contenu_v)
-{
-  $DB_SQL = 'INSERT INTO sacoche_image_note( image_contenu_h, image_contenu_v) ';
-  $DB_SQL.= 'VALUES                        (:image_contenu_h,:image_contenu_v) ';
-  $DB_VAR = array(
-    ':image_contenu_h' => $image_contenu_h,
-    ':image_contenu_v' => $image_contenu_v,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-}
-
-/**
- * supprimer_image_note
- *
- * @param int    $image_note_id
- * @return void
- */
-public static function DB_supprimer_image_note($image_note_id)
-{
-  $DB_SQL = 'DELETE FROM sacoche_image_note ';
-  $DB_SQL.= 'WHERE image_note_id=:image_note_id ';
-  $DB_VAR = array(
-    ':image_note_id' => $image_note_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

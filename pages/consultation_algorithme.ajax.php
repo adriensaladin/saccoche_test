@@ -29,47 +29,23 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='calculer')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_POST['action'])) ? $_POST['action'] : '';
-
 // Valeur d'un code (sur 100)
-$pb_note = FALSE;
-$note_valeur = array();
-foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-{
-  if(isset($_POST['N'.$note_id]))
-  {
-    $note_valeur[$note_id] = Clean::entier($_POST['N'.$note_id]);
-  }
-  else
-  {
-    $pb_note = TRUE;
-  }
-}
-
-// Seuils d'acquisition (de 0 à 100)
-$pb_acquis = FALSE;
-$acquis_seuil = array();
-foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-{
-  if( isset($_POST['A'.$acquis_id.'min']) && isset($_POST['A'.$acquis_id.'max']) )
-  {
-    $acquis_seuil[$acquis_id] = array(
-      'SEUIL_MIN' => Clean::entier($_POST['A'.$acquis_id.'min']),
-      'SEUIL_MAX' => Clean::entier($_POST['A'.$acquis_id.'max']),
-    );
-  }
-  else
-  {
-    $pb_acquis = TRUE;
-  }
-}
-
+$valeur = array();
+$valeur['RR'] = (isset($_POST['valeurRR'])) ? Clean::entier($_POST['valeurRR']) :   0 ;
+$valeur['R']  = (isset($_POST['valeurR']))  ? Clean::entier($_POST['valeurR'])  :  33 ;
+$valeur['V']  = (isset($_POST['valeurV']))  ? Clean::entier($_POST['valeurV'])  :  67 ;
+$valeur['VV'] = (isset($_POST['valeurVV'])) ? Clean::entier($_POST['valeurVV']) : 100 ;
+// Seuil d'acquisition (sur 100) 
+$seuil = array();
+$seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
+$seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
 $methode    = (isset($_POST['f_methode']))    ? Clean::calcul_methode($_POST['f_methode'])        : NULL ;
 $limite     = (isset($_POST['f_limite']))     ? Clean::calcul_limite($_POST['f_limite'],$methode) : NULL ;
 $retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL ;
 
 // Vérification des données transmises
-if( $pb_note || $pb_acquis || is_null($methode) || is_null($limite) || is_null($retroactif) )
+if( is_null($methode) || is_null($limite) || is_null($retroactif) )
 {
   exit('Erreur avec les données transmises !');
 }
@@ -81,14 +57,14 @@ if( $pb_note || $pb_acquis || is_null($methode) || is_null($limite) || is_null($
 if($action=='calculer')
 {
   $type_calcul = (in_array($methode,array('geometrique','arithmetique','classique'))) ? 'moyenne' : 'bestof' ;
-  $nb_devoirs_total = 4;
-  $nb_lignes_total = pow($_SESSION['NOMBRE_CODES_NOTATION'],$nb_devoirs_total);
+  $tab_bad = array('0','1','2','3');
+  $tab_bon = array(' RR',' R',' V',' VV');
   $tab_lignes = array();
   $tab_lignes[1] = '';
-  $tab_lignes = array_pad($tab_lignes,$nb_lignes_total,'');
-  for($nb_devoirs=1;$nb_devoirs<=$nb_devoirs_total;$nb_devoirs++)
+  $tab_lignes = array_pad($tab_lignes,256,'');
+  for($nb_devoirs=1;$nb_devoirs<=4;$nb_devoirs++)
   {
-    $nb_cas = pow($_SESSION['NOMBRE_CODES_NOTATION'],$nb_devoirs);
+    $nb_cas = pow(4,$nb_devoirs);
     for($cas=0;$cas<$nb_cas;$cas++)
     {
       // Initialisation
@@ -103,25 +79,27 @@ if($action=='calculer')
         $tab_notes = array();
         $nb_best = (int)substr($methode,-1);
       }
-      $masque = sprintf('%0'.$nb_devoirs.'u',base_convert($cas,10,$_SESSION['NOMBRE_CODES_NOTATION']));
+      $masque = sprintf('%0'.$nb_devoirs.'u',base_convert($cas,10,4));
+      $codes = str_replace($tab_bad,$tab_bon,$masque);
+      $tab_codes = explode(' ',$codes);
       // Pour chaque devoir (note)...
       for($num_devoir=1;$num_devoir<=$nb_devoirs;$num_devoir++)
       {
-        $code = $_SESSION['NOTE_ACTIF'][$masque{$num_devoir-1}];
-        $tab_lignes[$cas] .= '<td><img alt="" src="'.$_SESSION['NOTE'][$code]['FICHIER'].'" /></td>';
+        $code = $tab_codes[$num_devoir];
+        $tab_lignes[$cas] .= '<td><img alt="" src="'.$_SESSION['IMG_'.$code].'" /></td>';
         // Si on prend ce devoir en compte
         if( ($limite==0) || ($nb_devoirs-$num_devoir<$limite) )
         {
           if($type_calcul=='moyenne')
           {
-            $somme_point += $note_valeur[$code]*$coef;
+            $somme_point += $valeur[$code]*$coef;
             $somme_coef += $coef;
             // Calcul du coef de l'éventuel devoir suivant
             $coef = ($methode=='geometrique') ? $coef*2 : ( ($methode=='arithmetique') ? $coef+1 : 1 ) ;
           }
           elseif($type_calcul=='bestof')
           {
-            $tab_notes[] = $note_valeur[$code];
+            $tab_notes[] = $valeur[$code];
           }
         }
       }
@@ -137,26 +115,23 @@ if($action=='calculer')
         $score = round( array_sum($tab_notes)/count($tab_notes) , 0 );
       }
       // Ligne retournée
-      $bg = 'A'.determiner_etat_acquisition( $score , $acquis_seuil );
+      $bg = test_A($score,$seuil['V']) ? 'v' : ( test_NA($score,$seuil['R']) ? 'r' : 'o' ) ;
       $tab_lignes[$cas] .= '<td class="'.$bg.'">'.$score.'</td>';
-      if( ($cas==0) && ($nb_devoirs!=$nb_devoirs_total) )
+      if( ($cas==0) && ($nb_devoirs!=4) )
       {
-        $tab_lignes[$cas] .= '<td rowspan="'.$nb_lignes_total.'"></td>';
+        $tab_lignes[$cas] .= '<td rowspan="256"></td>';
       }
     }
   }
 
-  // Cette fin serait à adapter en cas de modification de $nb_devoirs_total...
-  $nb_lignes_3_devoirs = pow($_SESSION['NOMBRE_CODES_NOTATION'],3);
-  $nb_lignes_2_devoirs = pow($_SESSION['NOMBRE_CODES_NOTATION'],2);
   foreach($tab_lignes as $cas => $ligne)
   {
     $nb_td_manquant = 14 - substr_count($ligne,'<td');
     echo'<tr>';
     if($nb_td_manquant>0)
     {
-          if($cas>=$nb_lignes_3_devoirs) {$nb_td_manquant+=2;}
-      elseif($cas>=$nb_lignes_2_devoirs) {$nb_td_manquant+=1;}
+      if($cas>63)     {$nb_td_manquant+=2;}
+      elseif($cas>15) {$nb_td_manquant+=1;}
       echo'<td colspan="'.$nb_td_manquant.'"></td>';
     }
     echo $ligne;

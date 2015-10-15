@@ -178,7 +178,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   // stocker l'image dans la base
   DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'signature' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
   // Générer la balise html et afficher le retour
-  list($width,$height) = Image::dimensions_affichage( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+  list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   $user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
   exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }

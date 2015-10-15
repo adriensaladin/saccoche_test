@@ -39,7 +39,7 @@ $note_val  = (isset($_POST['f_note']))   ? Clean::texte($_POST['f_note'])    : N
 $devoir_id = (isset($_POST['f_devoir'])) ? Clean::entier($_POST['f_devoir']) : NULL;
 $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : NULL;
 
-$tab_notes = array_merge( $_SESSION['NOTE_ACTIF'] , array( 'NN' , 'NE' , 'NF' , 'NR' , 'AB' , 'DI' , 'PA' , 'X' ) );
+$tab_notes = array( 'RR' , 'R' , 'V' , 'VV' , 'NN' , 'NE' , 'NF' , 'NR' , 'ABS' , 'DISP' , 'REQ' , 'X' );
 
 if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val,$tab_notes) && ($devoir_id!==NULL) && ($groupe_id!==NULL) )
 {
@@ -97,7 +97,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
   $presence_item   = FALSE;
   $presence_eleve  = FALSE;
   $presence_saisie = FALSE;
-  $DB_TAB = ($presence_devoir) ? DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_marqueurs*/ ) : array() ;
+  $DB_TAB = ($presence_devoir) ? DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ ) : array() ;
   foreach($DB_TAB as $DB_ROW)
   {
     if($DB_ROW['item_id']==$item_id)

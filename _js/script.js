@@ -786,36 +786,6 @@ function fermer_session_en_ajax(motif)
 }
 
 /**
- * Fonction pour lancer une mise à jour complémentaire de la base par morceaux
- *
- * @param void
- * @return void
- */
-function maj_base_complementaire()
-{
-  $.ajax
-  (
-    {
-      type : 'GET',
-      url : 'ajax.php?page=maj_base_complementaire',
-      data : '',
-      dataType : "html",
-      error : function(jqXHR, textStatus, errorThrown)
-      {
-        // Pas de traitement particulier prévu...
-      },
-      success : function(responseHTML)
-      {
-        if(responseHTML == 'encore')
-        {
-          maj_base_complementaire();
-        }
-      }
-    }
-  );
-}
-
-/**
  * Fonction pour tester une URL : extrait du plugin jQuery Validation
  *
  * @param string
@@ -928,6 +898,16 @@ jQuery.validator.addMethod
   }, 
   "date JJ/MM/AAAA incorrecte"
 );
+
+// Ajout d'une méthode pour vérifier le format hexadécimal
+jQuery.validator.addMethod
+(
+  "hexa_format", function(value, element)
+  {
+    return this.optional(element) || ( (/^\#[0-9a-f]{3,6}$/i.test(value)) && (value.length!=5) && (value.length!=6) ) ;
+  }
+  , "format incorrect"
+); 
 
 /**
  * Ajout d'une méthode pour tester la présence d'un mot
@@ -1413,16 +1393,6 @@ $(document).ready
         tester_compteur();
       }
     );
-
-    /**
-     * Lancer une mise à jour complémentaire de la base par morceaux
-     *
-     * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
-     */
-    if(BASE_MAJ_DECALEE)
-    {
-      maj_base_complementaire();
-    }
 
     /**
      * Ajoute au document un calque qui est utilisé pour afficher un calendrier

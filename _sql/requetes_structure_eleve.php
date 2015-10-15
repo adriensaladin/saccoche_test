@@ -131,7 +131,7 @@ public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id,$us
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
   $DB_SQL = 'SELECT item_id, saisie_note AS note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="PA" '.$sql_view;
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_view;
   $DB_SQL.= 'ORDER BY saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   $DB_VAR = array(':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -192,7 +192,7 @@ public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($elev
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note!="PA" ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note!="REQ" ';
   $DB_SQL.= 'AND DATE_ADD(devoir_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
@@ -313,14 +313,14 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
  * @param int   $devoir_id
  * @param int   $eleve_id
  * @param string $user_profil_type
- * @param bool  $with_marqueurs   // Avec ou sans les marqueurs de demandes d'évaluations
+ * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$user_profil_type,$with_marqueurs)
+public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$user_profil_type,$with_REQ)
 {
   // Cette fonction peut être appelée avec un autre profil.
   $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND saisie_visible_date<=NOW() ' : '' ;
-  $req_view = ($with_marqueurs) ? '' : 'AND saisie_note!="PA" ' ;
+  $req_view = ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
   $DB_SQL = 'SELECT item_id, saisie_note ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id '.$sql_view.$req_view;

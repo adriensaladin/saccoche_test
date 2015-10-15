@@ -116,9 +116,6 @@ public static function DB_recuperer_statistiques($info_user_nb,$info_user_use,$i
     $DB_SQL.= 'FROM sacoche_parametre ';
     $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';
     $tab_retour[]= DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    $DB_SQL = 'SELECT DATE( MAX(user_connexion_date) ) ';
-    $DB_SQL.= 'FROM sacoche_user ';
-    $tab_retour[]= DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   }
   // Retour
   return $tab_retour;

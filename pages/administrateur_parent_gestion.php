@@ -91,7 +91,7 @@ if(!$find_doublon)
 }
 elseif($find_doublon) // (forcément)
 {
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_homonymes();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::lister_parents_homonymes();
   if(!empty($DB_TAB))
   {
     $tab_parents_id = array();

@@ -44,9 +44,11 @@ $(document).ready
         renderTo: 'div_graphique_synthese',
         type: 'column'
        },
-      colors: 
-        BACKGROUND_COLORS
-      ,
+      colors: [
+        BACKGROUND_A,
+        BACKGROUND_VA,
+        BACKGROUND_NA
+      ],
       title: {
         style: { color: '#333' } ,
         text: null // Pourrait être MAJ ensuite
@@ -948,7 +950,7 @@ $(document).ready
             $('#f_moyenne').focus();
             return false;
           }
-          if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le code VV pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
           {
             $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Valeur incorrecte !");
             $('#f_moyenne').focus();

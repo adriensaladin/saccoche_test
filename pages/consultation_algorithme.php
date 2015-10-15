@@ -28,18 +28,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Algorithme de calcul"));
 
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME']))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
-// Javascript
-Layout::add( 'js_inline_before' , 'var tab_select = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_valeur = new Array();' );
-Layout::add( 'js_inline_before' , 'var tab_seuil = new Array();' );
 
 // Option select : méthode de calcul
 $tab_options = array();
@@ -55,7 +50,6 @@ foreach($tab_options as $value => $texte)
   $selected = ($value==$_SESSION['CALCUL_METHODE']) ? ' selected' : '' ;
   $options_methode .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
-Layout::add( 'js_inline_before' , 'tab_select["f_methode"] = "'.$_SESSION['CALCUL_METHODE'].'";' );
 
 // Option select : nb de saisies
 $tab_options = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
@@ -73,7 +67,6 @@ foreach($tab_options as $value)
   $selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected' : '' ;
   $options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
-Layout::add( 'js_inline_before' , 'tab_select["f_limite"] = "'.$_SESSION['CALCUL_LIMITE'].'";' );
 
 // Option select : éval antérieures
 $tab_options = array();
@@ -86,31 +79,11 @@ foreach($tab_options as $value => $texte)
   $selected = ($value==$_SESSION['CALCUL_RETROACTIF']) ? ' selected' : '' ;
   $options_retroactif .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
-Layout::add( 'js_inline_before' , 'tab_select["f_retroactif"] = "'.$_SESSION['CALCUL_RETROACTIF'].'";' );
-
-// codes de notation
-$tab_notes = array();
-foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-{
-  $tab_notes[] = '<label class="tab mini" for="N'.$note_id.'">saisie <img alt="" src="'.$_SESSION['NOTE'][$note_id]['FICHIER'].'" /> :</label><input type="text" class="hc" size="3" maxlength="3" id="N'.$note_id.'" name="N'.$note_id.'" value="'.$_SESSION['NOTE'][$note_id]['VALEUR'].'" />';
-  Layout::add( 'js_inline_before' , 'tab_valeur["N'.$note_id.'"] = '.$_SESSION['NOTE'][$note_id]['VALEUR'].';' );
-}
-
-// états d'acquisition
-$tab_acquis = array();
-foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-{
-  $tab_acquis[] = '<label class="tab mini" for="vide">état <span class="A'.$acquis_id.'">&nbsp;'.$tab_acquis_info['SIGLE'].'&nbsp;</span> :</label><input type="text" class="hc" size="3" maxlength="3" id="A'.$acquis_id.'min" name="A'.$acquis_id.'min" value="'.$tab_acquis_info['SEUIL_MIN'].'" /> ~ <input type="text" class="hc" size="3" maxlength="3" id="A'.$acquis_id.'max" name="A'.$acquis_id.'max" value="'.$tab_acquis_info['SEUIL_MAX'].'" />';
-  Layout::add( 'js_inline_before' , 'tab_seuil["A'.$acquis_id.'min"] = '.$tab_acquis_info['SEUIL_MIN'].';' );
-  Layout::add( 'js_inline_before' , 'tab_seuil["A'.$acquis_id.'max"] = '.$tab_acquis_info['SEUIL_MAX'].';' );
-}
-
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=notes_acquis__algorithme_calcul_score">DOC : Algorithme de calcul des scores.</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
 </ul>
-
 <hr />
 
 <form action="#" method="post" id="form_input">
@@ -121,24 +94,30 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
     </th><th>
       Méthode de calcul par défaut (modifiable pour chaque référentiel)
     </th><th>
-      Seuils d'acquisition (de 0 à 100)
+      Seuil d'acquisition (sur 100)
     </th></tr>
   </thead>
   <tbody>
     <tr><td>
-      <?php echo implode('<br />',$tab_notes); ?>
+      <label class="tab mini" for="valeurRR">saisie <img alt="" src="<?php echo $_SESSION['IMG_RR'] ?>" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
+      <label class="tab mini" for="valeurR" >saisie <img alt="" src="<?php echo $_SESSION['IMG_R' ] ?>" /> :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R' ] ?>" /><br />
+      <label class="tab mini" for="valeurV" >saisie <img alt="" src="<?php echo $_SESSION['IMG_V' ] ?>" /> :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V' ] ?>" /><br />
+      <label class="tab mini" for="valeurVV">saisie <img alt="" src="<?php echo $_SESSION['IMG_VV'] ?>" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
     </td><td>
       <select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
       <select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />
       <select id="f_retroactif" name="f_retroactif"><?php echo $options_retroactif ?></select>
     </td><td>
-      <?php echo implode('<br />',$tab_acquis); ?>
+      &nbsp;<br />
+      <label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>" /><br />
+      <label class="tab mini" for="seuilV">acquis :</label>&gt; <input type="text" size="3" id="seuilV" name="seuilV" value="<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>" /><br />
     </td></tr>
   </tbody>
   </table>
   <p>
     <input type="hidden" id="action" name="action" value="calculer" />
-    <button id="initialiser_etablissement" type="button" class="retourner">Remettre les valeurs de l'établissement.</button>
+    <button id="initialiser_defaut" type="button" class="retourner">Mettre les valeurs par défaut.</button>
+    <button id="initialiser_etablissement" type="button" class="retourner">Mettre les valeurs de l'établissement.</button>
     <button id="calculer" type="button" class="actualiser">Simuler avec ces valeurs.</button>
     <label id="ajax_msg">&nbsp;</label>
   </p>

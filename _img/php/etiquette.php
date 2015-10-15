@@ -50,7 +50,6 @@ header("Content-type: image/png");
 require('../../_inc/_loader.php');
 // Non chargé par le loader dont on ne prend que le début
 require(CHEMIN_DOSSIER_INCLUDE.'class.Clean.php');
-require(CHEMIN_DOSSIER_INCLUDE.'class.Image.php');
 
 $dossier   = isset($_GET['dossier']) ? Clean::entier($_GET['dossier']) : 'x' ;
 $nom       = isset($_GET['nom'])     ? Clean::nom($_GET['nom'])        : ' ' ;
@@ -136,8 +135,25 @@ if(!file_exists($fichier))
   imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
   imagedestroy($image_tmp);
   // Tourner l'image de 90°
-  $image_finale = Image::imagerotateEmulation($image_finale);
-  // L'enregistrer comme fichier
+  // Attention : la fonction imagerotate() n'est disponible que si PHP est compilé avec la version embarquée de la bibliothèque GD. 
+  function imagerotateEmulation($image_depart)
+  {
+    $largeur = imagesx($image_depart);
+    $hauteur = imagesy($image_depart);
+    $image_tournee = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($hauteur,$largeur) : imagecreate($hauteur,$largeur) ;
+    if($image_tournee)
+    {
+      for( $i=0 ; $i<$largeur ; $i++)
+      {
+        for( $j=0 ; $j<$hauteur ; $j++)
+        {
+          imagecopy($image_tournee , $image_depart , $j , $largeur-1-$i , $i , $j , 1 , 1);
+        }
+      }
+    }
+    return $image_tournee;
+  }
+  $image_finale = (function_exists("imagerotate")) ? imagerotate($image_finale,90,0) : imagerotateEmulation($image_finale) ;
   imagepng($image_finale,$fichier);
 }
 

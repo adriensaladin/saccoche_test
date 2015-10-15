@@ -27,24 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Classes"));
+?>
 
-// Par défaut, faire arriver sur la page de gestion des classes
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Classes (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe_groupe">Périodes &amp; classes / groupes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Élèves &amp; classes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=professeur">Professeurs &amp; classes.</a>
+</div>
 
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  array( 'section'=>'gestion'       , 'txt'=>Lang::_("Classes (gestion)")            ),
-  array( 'section'=>'classe_groupe' , 'txt'=>Lang::_("Périodes & classes / groupes") ),
-  array( 'section'=>'eleve'         , 'txt'=>Lang::_("Élèves & classes")             ),
-  array( 'section'=>'professeur'    , 'txt'=>Lang::_("Professeurs & classes")        ),
-);
-foreach($tab_sous_menu as $tab_infos)
-{
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-}
+<hr />
 
+<?php
 if(($SECTION=='eleve')||($SECTION=='professeur'))
 {
   // échanger $PAGE et $SECTION pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu

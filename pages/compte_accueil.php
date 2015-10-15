@@ -63,17 +63,17 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $alerte_novice = FALSE ;
   $info_rentree  = FALSE ;
-  if(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_matieres_etabl())
+  if(!DB_STRUCTURE_ADMINISTRATEUR::compter_matieres_etabl())
   {
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
     $alerte_novice = TRUE ;
   }
-  if(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( TRUE /*with_specifiques*/ ))
+  if(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( TRUE /*with_specifiques*/ ))
   {
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
   }
-  elseif(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( FALSE /*with_specifiques*/ ))
+  elseif(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( FALSE /*with_specifiques*/ ))
   {
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
@@ -341,21 +341,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   $nb_eleves = count($tab_eleves);
   $nb_jours_consideres = 14;
   $nb_resultats_maximum = max( 4 , 10-2*$nb_eleves );
-  $tab_notes_observees = array();
-  $numero = 0;
-  $nombre_median = floor( $_SESSION['NOMBRE_CODES_NOTATION'] / 2 ) + 0.5; // par exemple 3 donne 1,5 (1+0,5) et 4 donne 2,5 (2+0,5)
-  foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-  {
-    $numero++;
-    if($numero<$nombre_median)
-    {
-      $tab_notes_observees[$note_id] = 'faiblesses';
-    }
-    else if($numero>$nombre_median)
-    {
-      $tab_notes_observees[$note_id] = 'reussites';
-    }
-  }
+  $tab_notes_observees = array(
+    'RR' => 'faiblesses' ,
+    'R'  => 'faiblesses' ,
+    'V'  => 'reussites'  ,
+    'VV' => 'reussites'  ,
+  );
   $longueur_intitule_item_maxi = ($nb_eleves==1) ? 100 : 75 ;
   foreach($tab_eleves as $eleve_num => $tab_eleve_info)
   {

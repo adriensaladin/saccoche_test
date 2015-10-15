@@ -87,8 +87,7 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
         <th>Id</th>
         <th>structure</th>
         <th>contact</th>
-        <th>ancienneté<br />inscription</th>
-        <th>dernière<br />connexion</th>
+        <th>ancienneté</th>
         <th>personnels<br />enregistrés</th>
         <th>personnels<br />connectés</th>
         <th>élèves<br />enregistrés</th>
@@ -97,17 +96,17 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
         <th>evaluations<br />récentes</th>
         <th>validations<br />enregistrées</th>
         <th>validations<br />récentes</th>
-        <th>mode de<br />connexion</th>
+        <th>connexion</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="15"></td>
+        <td class="nu" colspan="14"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="15"></td>
+        <td class="nu" colspan="14"></td>
       </tr>
     </tbody>
   </table>

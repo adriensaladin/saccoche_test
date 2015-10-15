@@ -67,8 +67,14 @@ class PDF_evaluation_cartouche extends PDF
     }
     else
     {
-      // Avec $_SESSION['NOMBRE_CODES_NOTATION'] + 1 cases dont une à cocher
-      $tab_codes = array_fill_keys($_SESSION['NOTE_ACTIF'],TRUE) + array('X'=>FALSE);
+      // Avec 5 cases dont une à cocher...
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
       if($detail=='minimal')
       {
         // ... dans le cas d'un cartouche minimal
@@ -137,8 +143,14 @@ class PDF_evaluation_cartouche extends PDF
     }
     else
     {
-      // Avec $_SESSION['NOMBRE_CODES_NOTATION'] + 1 cases dont une à cocher
-      $tab_codes = array_fill_keys($_SESSION['NOTE_ACTIF'],TRUE) + array('X'=>FALSE);
+      // Avec 5 cases dont une à cocher
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
       foreach($tab_codes as $note_code => $is_note )
       {
         if($is_note)
@@ -176,8 +188,14 @@ class PDF_evaluation_cartouche extends PDF
     }
     else
     {
-      // Avec $_SESSION['NOMBRE_CODES_NOTATION'] + 1 cases dont une à cocher
-      $tab_codes = array_fill_keys($_SESSION['NOTE_ACTIF'],TRUE) + array('X'=>FALSE);
+      // Avec 5 cases dont une à cocher
+      $tab_codes = array(
+        'RR' => TRUE ,
+        'R'  => TRUE ,
+        'V'  => TRUE ,
+        'VV' => TRUE ,
+        'X'  => FALSE ,
+      );
       foreach($tab_codes as $note_code => $is_note )
       {
         if($is_note)

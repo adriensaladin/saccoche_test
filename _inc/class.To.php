@@ -99,9 +99,9 @@ class To
    * @param string $note
    * @return string
    */
-  public static function note_sigle($note)
+  public static function note_texte($note)
   {
-    return isset($_SESSION['NOTE'][$note]) ? $_SESSION['NOTE'][$note]['SIGLE'] : $note ;
+    return (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_TEXTE'][$note] : $note ;
   }
 
 }

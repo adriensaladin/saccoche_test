@@ -504,7 +504,7 @@ $(document).ready
             else
             {
               modification = false;
-              $('#sortable_v').html(responseHTML).sortable( { cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
+              $('#sortable').html(responseHTML).sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
               // Afficher la zone
               $.fancybox( { 'href':'#zone_ordonner' , onStart:function(){$('#zone_ordonner').css("display","block");} , onClosed:function(){$('#zone_ordonner').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
             }
@@ -1017,7 +1017,7 @@ $(document).ready
       (
         function ()
         {
-          if( ($(this).val()!='X') && ($(this).val()!='PA') )
+          if( ($(this).val()!='X') && ($(this).val()!='REQ') )
           {
             $(this).parent().css("background-color","#AAF");
           }
@@ -1363,7 +1363,7 @@ $(document).ready
             function ()
             {
               img_src_old = $(this).attr('src');
-              img_src_new = (condense=='v') ? img_src_old.replace('/h/','/v/').replace('/h_','/v_') : img_src_old.replace('/v/','/h/').replace('/v_','/h_') ;
+              img_src_new = (condense=='v') ? img_src_old.replace('/h/','/v/') : img_src_old.replace('/v/','/h/') ;
               $(this).attr('src',img_src_new);
             }
           );
@@ -1435,7 +1435,7 @@ $(document).ready
     $('#cadre_tactile').on
     (
       'click',
-      'span',
+      'kbd',
       function()
       {
         var code = parseInt( $(this).attr('id').substring(4) , 10 ); // "kbd_" + ref
@@ -1475,28 +1475,35 @@ $(document).ready
     {
       var findme = '.'+touche_code+'.';
       var endroit_report_note = 'cellule';
-      if(keycode_search.indexOf(findme)!=-1)
+      if('.8.46.49.50.51.52.65.68.69.70.78.80.82.97.98.99.100.'.indexOf(findme)!=-1)
       {
         // Une touche d'item a été pressée
         switch (touche_code)
         {
-          case   8: var note = 'X' ; var style = note; break; // backspace
-          case  46: var note = 'X' ; var style = note; break; // suppr
-          case  65: var note = 'AB'; var style = note; break; // A
-          case  68: var note = 'DI'; var style = note; break; // D
-          case  78: var note = 'NN'; var style = note; break; // N
-          case  69: var note = 'NE'; var style = note; break; // E
-          case  70: var note = 'NF'; var style = note; break; // F
-          case  82: var note = 'NR'; var style = note; break; // R
-          case  80: var note = 'PA'; var style = note; break; // P
-          default : var note = tab_keycode_note[touche_code]; var style = 'N'+note; break
+          case   8: var note = 'X';    break; // backspace
+          case  46: var note = 'X';    break; // suppr
+          case  97: var note = 'RR';   break; // 1
+          case  49: var note = 'RR';   break; // 1 (&)
+          case  98: var note = 'R';    break; // 2
+          case  50: var note = 'R';    break; // 2 (é)
+          case  99: var note = 'V';    break; // 3
+          case  51: var note = 'V';    break; // 3 (")
+          case 100: var note = 'VV';   break; // 4
+          case  52: var note = 'VV';   break; // 4 (')
+          case  65: var note = 'ABS';  break; // A
+          case  68: var note = 'DISP'; break; // D
+          case  78: var note = 'NN';   break; // N
+          case  69: var note = 'NE';   break; // E
+          case  70: var note = 'NF';   break; // F
+          case  82: var note = 'NR';   break; // R
+          case  80: var note = 'REQ';  break; // P
         }
         endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
         {
           // pour une seule case
           var cellule_obj = $('#C'+colonne+'L'+ligne);
-          cellule_obj.val(note).removeAttr("class").addClass(style);
+          cellule_obj.val(note).removeAttr("class").addClass(note);
           cellule_obj.parent().css("background-color","#F6D");
           if(memo_direction=='down')
           {
@@ -1516,7 +1523,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr("class").addClass(note);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1531,7 +1538,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr("class").addClass(note);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1547,7 +1554,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr("class").addClass(note);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1667,12 +1674,11 @@ $(document).ready
       function()
       {
         var note = $(this).attr("alt");
-        var style = isNaN(note) ? note : 'N'+note ;
         endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
         {
           // pour une seule case
-          $("input#"+memo_input_id).val(note).removeAttr("class").addClass(style);
+          $("input#"+memo_input_id).val(note).removeAttr("class").addClass(note);
           $(this).parent().children("img").removeAttr("class");
           $(this).addClass("on").parent().parent().css("background-color","#F6D");
         }
@@ -1687,7 +1693,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr("class").addClass(note);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1702,7 +1708,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr("class").addClass(note);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1717,7 +1723,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr("class").addClass(note);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1750,7 +1756,7 @@ $(document).ready
         {
           // On récupère la liste des items dans l'ordre de la page
           var tab_id = new Array();
-          $('#sortable_v').children('li').each
+          $('#sortable').children('li').each
           (
             function()
             {
@@ -2110,23 +2116,22 @@ $(document).ready
               champ = $table_saisir_voir.find('input[name='+item_id+'x'+eleve_id+']');
               if(champ.length)
               {
-                var findme = '.'+score+'.';
-                if(keycode_search.indexOf(findme)!=-1)
+                nb_notes_reportees++;
+                switch (score)
                 {
-                  nb_notes_reportees++;
-                  switch (score)
-                  {
-                    case 'A': champ.val('AB').removeAttr("class").addClass('AB'); break;
-                    case 'D': champ.val('DI').removeAttr("class").addClass('DI'); break;
-                    case 'N': champ.val('NN').removeAttr("class").addClass('NN'); break;
-                    case 'E': champ.val('NE').removeAttr("class").addClass('NE'); break;
-                    case 'F': champ.val('NF').removeAttr("class").addClass('NF'); break;
-                    case 'R': champ.val('NR').removeAttr("class").addClass('NR'); break;
-                    case 'P': champ.val('PA').removeAttr("class").addClass('PA'); break;
-                    default : champ.val(score).removeAttr("class").addClass('N'+score); break;
-                  }
-                  champ.parent().css("background-color","#F6D");
+                  case '1': champ.val('RR'  ).removeAttr("class").addClass('RR'  ); break;
+                  case '2': champ.val('R'   ).removeAttr("class").addClass('R'   ); break;
+                  case '3': champ.val('V'   ).removeAttr("class").addClass('V'   ); break;
+                  case '4': champ.val('VV'  ).removeAttr("class").addClass('VV'  ); break;
+                  case 'A': champ.val('ABS' ).removeAttr("class").addClass('ABS' ); break;
+                  case 'D': champ.val('DISP').removeAttr("class").addClass('DISP'); break;
+                  case 'N': champ.val('NN'  ).removeAttr("class").addClass('NN'  ); break;
+                  case 'E': champ.val('NE'  ).removeAttr("class").addClass('NE'  ); break;
+                  case 'F': champ.val('NF'  ).removeAttr("class").addClass('NF'  ); break;
+                  case 'R': champ.val('NR'  ).removeAttr("class").addClass('NR'  ); break;
+                  case 'P': champ.val('REQ' ).removeAttr("class").addClass('REQ' ); break;
                 }
+                champ.parent().css("background-color","#F6D");
               }
               modification = true;
             }

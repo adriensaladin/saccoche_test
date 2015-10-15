@@ -75,13 +75,13 @@ $(document).ready
             li_non += '<li id="m_'+matiere_id+'">'+tab_matiere[matiere_id]+'</li>';
           }
         }
-        $('#sortable_v_oui').html(li_oui);
-        $('#sortable_v_non').html(li_non);
+        $('#sortable_oui').html(li_oui);
+        $('#sortable_non').html(li_non);
         // Afficher la zone associée après avoir chargé son contenu
         $('#titre_ordonner').html( $('#h2_'+serie_ref).html() + ' | ' + $('#h3_'+serie_ref+'_'+epreuve_code).html() );
         $('#fermer_zone_ordonner').removeAttr("class").addClass("retourner").html('Retour');
         modification = false;
-        $('#sortable_v_oui , #sortable_v_non').sortable( { connectWith:'.connectedSortable' , cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
+        $('#sortable_oui , #sortable_non').sortable( { connectWith:'.connectedSortable' , cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
         // Afficher la zone
         $.fancybox( { 'href':'#zone_ordonner' , onStart:function(){$('#zone_ordonner').css("display","block");} , onClosed:function(){$('#zone_ordonner').css("display","none");} , 'modal':true , 'minWidth':500 , 'centerOnScroll':true } );
       }
@@ -123,7 +123,7 @@ $(document).ready
         // On récupère la liste des matières choisies
         var tab_matieres_id   = new Array();
         var tab_matieres_text = new Array();
-        $('#sortable_v_oui').children('li').each
+        $('#sortable_oui').children('li').each
         (
           function()
           {

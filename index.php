@@ -248,7 +248,6 @@ Layout::add( 'js_inline_before' , 'var CONNEXION_USED    = "'.((isset($_COOKIE[C
 Layout::add( 'js_inline_before' , 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUREE_INACTIVITE'].';' );
 Layout::add( 'js_inline_before' , 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';' );
 Layout::add( 'js_inline_before' , 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";' );
-Layout::add( 'js_inline_before' , 'var BASE_MAJ_DECALEE  = '.((empty($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])) ? 'false' : 'true').';' );
 Layout::add( 'js_inline_before' , 'var isMobile          = '.(int)$_SESSION['BROWSER']['mobile'].';' );
 
 // Affichage
@@ -264,8 +263,8 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
   echo  '<div id="top_info">'.NL;
   echo    $_SESSION['MENU'];
   echo    '<div>'.NL;
-  echo      '<span class="top home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).' <a href="./index.php?page=compte_accueil">[accueil]</a></span><br />'.NL;
-  echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ['.$lien_page_switch.']'.$lien_page_langue.'</span>'.NL;
+  echo      '<span class="top home"><a href="./index.php?page=compte_accueil">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</a></span><br />'.NL;
+  echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$lien_page_switch.')'.$lien_page_langue.'</span>'.NL;
   echo    '</div>'.NL;
   echo    '<div>'.NL;
   echo      '<span class="top clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span><br />'.NL;
@@ -286,10 +285,6 @@ if($_SESSION['USER_PROFIL_TYPE']!='public')
   echo'</div>'.NL;
   echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'.NL;
   echo'<div id="cadre_bas">'.NL;
-  if(!empty($SOUS_MENU))
-  {
-    echo'<div class="sousmenu">'.$SOUS_MENU.'</div>';
-  }
   echo  '<h1>'.$TITRE.'</h1>'.NL;
 }
 else

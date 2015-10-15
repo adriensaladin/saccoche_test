@@ -601,7 +601,7 @@ if($action=='import_ent')
       if(substr($_SESSION['CONNEXION_NOM'],0,12)=='itslearning_')
       {
         // Pour ItsLearning l'intitulé des entêtes est complété par le profil correspondant au fichier exporté.
-        $element = trim(str_replace( array(' eleve',' enseignant',' parent',' personnel Educatif') , '' , $element));
+        $element = str_replace( array(' eleve',' enseignant',' parent','  personnel Educatif',' personnel Educatif') , '' , $element);
       }
       switch($element)
       {

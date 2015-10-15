@@ -140,7 +140,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   }
   // récupérer les saisies et les ajouter
   $tab_notes = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_notes[$DB_ROW['item_id']] = $DB_ROW['saisie_note'];
@@ -158,7 +158,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     }
   }
   $affichage = '<tr>'.implode('</tr><tr>',$tab_affich).'</tr>';
-  // la légende, qui peut être personnalisée (codes AB, NN, etc.)
+  // la légende, qui peut être personnalisée (codes ABS, NN, etc.)
   $score_legende  = (test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
   $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ );
   // Les commentaires texte ou audio
@@ -217,7 +217,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   $liste_item_id = implode(',',$tab_liste_item);
   // boutons radio
   $tab_radio_boutons = array();
-  $tab_notes = array_merge( $_SESSION['NOTE_ACTIF'] , array( 'X' , 'AB' ) ); // , 'NN' , 'NE' , 'NF' , 'NR' , 'DI' , 'PA'
+  $tab_notes = array( 'X' , 'ABS' , 'RR' , 'R' , 'V' , 'VV' ); // , 'NN' , 'NE' , 'NF' , 'NR' , 'DISP' , 'REQ'
   foreach($tab_notes as $note)
   {
     $tab_radio_boutons[] = '<label for="item_X_'.$note.'"><input type="radio" id="item_X_'.$note.'" name="item_X" value="'.$note.'"><br /><img alt="'.$note.'" src="'.Html::note_src($note).'" /></label>';
@@ -225,7 +225,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   $radio_boutons = '<td class="hc">'.implode('</td><td class="hc">',$tab_radio_boutons).'</td>';
   // récupérer les saisies
   $tab_radio = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_radio[$DB_ROW['item_id']] = str_replace( 'value="'.$DB_ROW['saisie_note'].'"' , 'value="'.$DB_ROW['saisie_note'].'" checked' , $radio_boutons );
@@ -317,7 +317,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   $tab_nouveau_modifier  = array();
   $tab_nouveau_supprimer = array();
   $tab_demande_supprimer = array();
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $_SESSION['USER_ID'] , $_SESSION['USER_PROFIL_TYPE'] , TRUE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $_SESSION['USER_ID'] , $_SESSION['USER_PROFIL_TYPE'] , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $item_id = (int)$DB_ROW['item_id'];
@@ -334,7 +334,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
         {
           // valeur de la base à modifier
           $tab_nouveau_modifier[$item_id] = $tab_post[$item_id];
-          if($DB_ROW['saisie_note']=='PA')
+          if($DB_ROW['saisie_note']=='REQ')
           {
             // demande d'évaluation à supprimer
             $tab_demande_supprimer[$item_id] = $item_id;

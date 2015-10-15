@@ -307,8 +307,8 @@ $tab_moyenne_scores_eleve     = array();  // Retenir la moyenne des scores d'acq
 $tab_moyenne_scores_item      = array();  // Retenir la moyenne des scores d'acquisitions / item
 $tab_pourcentage_acquis_eleve = array();  // Retenir le pourcentage d'items acquis / matière / élève
 $tab_pourcentage_acquis_item  = array();  // Retenir le pourcentage d'items acquis / item
-$tab_infos_acquis_eleve       = array();  // Retenir les infos (nb acquis) à l'origine du tableau $tab_pourcentage_acquis_eleve / matière / élève
-$tab_infos_acquis_item        = array();  // Retenir les infos (nb acquis) à l'origine du tableau $tab_pourcentage_acquis_item / item
+$tab_infos_acquis_eleve       = array();  // Retenir les infos (nb A - VA - NA) à l'origine du tableau $tab_pourcentage_acquis_eleve / matière / élève
+$tab_infos_acquis_item        = array();  // Retenir les infos (nb A - VA - NA) à l'origine du tableau $tab_pourcentage_acquis_item / item
 $moyenne_moyenne_scores       = 0;  // moyenne des moyennes des scores d'acquisitions
 $moyenne_pourcentage_acquis   = 0;  // moyenne des moyennes des pourcentages d'items acquis
 
@@ -339,7 +339,10 @@ if(empty($is_appreciation_groupe))
           'somme_scores_simples' => 0 ,
           'nb_coefs'             => 0 ,
           'nb_scores'            => 0 ,
-        ) + array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 );
+          'nb_acquis'            => 0 ,
+          'nb_non_acquis'        => 0 ,
+          'nb_voie_acquis'       => 0 ,
+        );
       }
       // Si cet élève a été évalué...
       if(isset($tab_eval[$eleve_id]))
@@ -387,16 +390,17 @@ if(empty($is_appreciation_groupe))
             // ... un pour le nombre d'items considérés acquis ou pas
             if($nb_scores)
             {
-              $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
-              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
-              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
+              $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
+              $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
+              $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
+              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = $nb_acquis.$_SESSION['ACQUIS_TEXTE']['A'].' '. $nb_voie_acquis.$_SESSION['ACQUIS_TEXTE']['VA'].' '. $nb_non_acquis.$_SESSION['ACQUIS_TEXTE']['NA'];
               if( ($matiere_nb>1) && $type_synthese )
               {
                 // Total multimatières
-                foreach( $tab_acquisitions as $acquis_id => $acquis_nb )
-                {
-                  $tab_total[$eleve_id][$acquis_id] += $acquis_nb;
-                }
+                $tab_total[$eleve_id]['nb_acquis']      += $nb_acquis;
+                $tab_total[$eleve_id]['nb_non_acquis']  += $nb_non_acquis;
+                $tab_total[$eleve_id]['nb_voie_acquis'] += $nb_voie_acquis;
               }
             }
             else
@@ -411,7 +415,7 @@ if(empty($is_appreciation_groupe))
           // On prend la matière 0 pour mettre les résultats toutes matières confondues
           if($with_coef) { $tab_moyenne_scores_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_coefs'])  ? round($tab_total[$eleve_id]['somme_scores_coefs']  /$tab_total[$eleve_id]['nb_coefs'] ,0) : FALSE ; }
           else           { $tab_moyenne_scores_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? round($tab_total[$eleve_id]['somme_scores_simples']/$tab_total[$eleve_id]['nb_scores'],0) : FALSE ; }
-          $tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? calculer_pourcentage_acquisition_items( $tab_total[$eleve_id] , $tab_total[$eleve_id]['nb_scores'] ) : FALSE ;
+          $tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? round( 50 * ( ($tab_total[$eleve_id]['nb_acquis']*2 + $tab_total[$eleve_id]['nb_voie_acquis']) / $tab_total[$eleve_id]['nb_scores'] ) ,0) : FALSE ;
         }
       }
     }
@@ -444,10 +448,12 @@ if( $type_synthese || ($releve_individuel_format=='item') )
       if($nb_scores)
       {
         $somme_scores = array_sum($tableau_score_filtre);
-        $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+        $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
+        $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
+        $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
         $tab_moyenne_scores_item[$item_id]     = round($somme_scores/$nb_scores,0);
-        $tab_pourcentage_acquis_item[$item_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
-        $tab_infos_acquis_item[$item_id]       = afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
+        $tab_pourcentage_acquis_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+        $tab_infos_acquis_item[$item_id]       =  $nb_acquis.$_SESSION['ACQUIS_TEXTE']['A'].' '. $nb_voie_acquis.$_SESSION['ACQUIS_TEXTE']['VA'].' '. $nb_non_acquis.$_SESSION['ACQUIS_TEXTE']['NA'];
       }
       else
       {

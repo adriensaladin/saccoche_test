@@ -27,32 +27,28 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Élèves"));
+?>
 
-// Par défaut, faire arriver sur la page de gestion des élèves
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=parent">Élèves &amp; parents.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=photo">Élèves &amp; photos.</a>
+</div>
 
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  array( 'section'=>'gestion' , 'txt'=>Lang::_("Élèves (gestion)") ),
-  array( 'section'=>'classe'  , 'txt'=>Lang::_("Élèves & classes") ),
-  array( 'section'=>'groupe'  , 'txt'=>Lang::_("Élèves & groupes") ),
-  array( 'section'=>'langue'  , 'txt'=>Lang::_("Élèves & langues") ),
-  array( 'section'=>'parent'  , 'txt'=>Lang::_("Élèves & parents") ),
-  array( 'section'=>'photo'   , 'txt'=>Lang::_("Élèves & photos")  ),
-);
-foreach($tab_sous_menu as $tab_infos)
-{
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-}
+<hr />
 
+<?php
 if($SECTION=='parent')
 {
   // échanger $PAGE et $SECTION pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu
   $PAGE    = 'administrateur_'.$SECTION;
   $SECTION = 'eleve';
 }
+// Par défaut, faire arriver sur la page de gestion des élèves
+$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

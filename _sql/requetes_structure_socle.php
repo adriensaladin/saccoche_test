@@ -129,7 +129,7 @@ public static function DB_lister_result_eleve_item( $eleve_id , $entree_id )
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="PA" ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   $DB_VAR = array(
     ':eleve_id'  => $eleve_id,

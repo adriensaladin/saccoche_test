@@ -398,14 +398,14 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item( $devoir_id2 , $tab_items , 'dupliquer' , $devoir_id );
-  // Insérer les marqueurs d'évaluation 'PA' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
+  // Insérer les scores 'REQ' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
   if(!empty($_SESSION['TMP']['req_user_item']))
   {
     $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
     foreach($_SESSION['TMP']['req_user_item'] as $req)
     {
       list($eleve_id,$item_id) = explode('x',$req);
-      DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id2 , $item_id , $date_mysql , 'PA' , $info , $date_visible_mysql );
+      DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $_SESSION['USER_ID'] , $eleve_id , $devoir_id2 , $item_id , $date_mysql , 'REQ' , $info , $date_visible_mysql );
     }
     unset($_SESSION['TMP']['req_user_item']);
   }
@@ -799,15 +799,9 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   $tab_affich['head'][0] = '<td>';
   if($action=='saisir')
   {
-    $tab_touches = array();
-    foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-    {
-      $tab_touches[$note_id] = $_SESSION['NOTE'][$note_id]['CLAVIER'];
-    }
-    $tab_touches += array( 7 => 'A' , 'D' , 'E' , 'F' , 'N' , 'R' , 'P' , 'suppr' );
     $tab_affich['head'][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
     $tab_affich['head'][0].= '<p>';
-    $tab_affich['head'][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="eval pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;'.implode(' ; ',$tab_touches).'.<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+    $tab_affich['head'][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <span class="eval pilot_keyboard">Piloter au clavier</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; D ; E ; F ; N ; P ; R ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
     $tab_affich['head'][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <span class="eval arrow_continue_down">par élève</span></label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <span class="eval arrow_continue_rigth">par item</span></label></span><br />';
     $tab_affich['head'][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <span class="eval pilot_mouse">Piloter à la souris</span></label> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
     $tab_affich['head'][0].= '</p>';
@@ -887,7 +881,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
     }
   }
   // ajouter le contenu
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
   $bad = 'class="X" value="X"';
   foreach($DB_TAB as $DB_ROW)
   {
@@ -896,8 +890,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
     {
       if($action=='saisir')
       {
-        $class = (int)$DB_ROW['saisie_note'] ? 'N'.$DB_ROW['saisie_note'] : $DB_ROW['saisie_note'] ;
-        $bon = 'class="'.$class.'" value="'.$DB_ROW['saisie_note'].'"';
+        $bon = 'class="'.$DB_ROW['saisie_note'].'" value="'.$DB_ROW['saisie_note'].'"';
         $tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace($bad,$bon,$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
       }
       elseif($action=='voir')
@@ -991,7 +984,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
     {
       $tab_post[$item_id.'x'.$eleve_id] = $note;
       $nb_saisies_possibles++;
-      $nb_saisies_effectuees += ( ($note!='X') && ($note!='PA') ) ? 1 : 0 ;
+      $nb_saisies_effectuees += ( ($note!='X') && ($note!='REQ') ) ? 1 : 0 ;
     }
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
@@ -999,7 +992,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   $tab_nouveau_modifier = array();
   $tab_nouveau_supprimer = array();
   $tab_demande_supprimer = array();
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
@@ -1024,7 +1017,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
         {
           // valeur de la base à modifier
           $tab_nouveau_modifier[$key] = $tab_post[$key];
-          if($DB_ROW['saisie_note']=='PA')
+          if($DB_ROW['saisie_note']=='REQ')
           {
             // demande d'évaluation à supprimer
             $tab_demande_supprimer[$key] = $key;
@@ -1146,7 +1139,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   }
   if($remplissage=='rempli')
   {
-    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_marqueurs*/ );
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_REQ*/ );
     foreach($DB_TAB as $DB_ROW)
     {
       // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -1181,20 +1174,19 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   //
   if($format=='csv')
   {
-    $tab_conversion = array();
-    foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-    {
-      $tab_conversion[$note_id] = $_SESSION['NOTE'][$note_id]['CLAVIER'];
-    }
-    $tab_conversion += array(
-      'AB' => 'A' ,
-      'DI' => 'D' ,
-      'NE' => 'E' ,
-      'NF' => 'F' ,
-      'NN' => 'N' ,
-      'NR' => 'R' ,
-      'PA' => 'P' ,
-      ''   => ' ' ,
+    $tab_conversion = array(
+      ''     => ' ' ,
+      'RR'   => '1' ,
+      'R'    => '2' ,
+      'V'    => '3' ,
+      'VV'   => '4' ,
+      'ABS'  => 'A' ,
+      'DISP' => 'D' ,
+      'NE'   => 'E' ,
+      'NF'   => 'F' ,
+      'NN'   => 'N' ,
+      'NR'   => 'R' ,
+      'REQ'  => 'P' ,
     );
     $csv_colonne_texte = array();
     // première colonne (références items) pour le CSV + dernière colonne (noms items) pour le CSV
@@ -1236,10 +1228,9 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
       $export_csv .= $csv_colonne_texte[$comp_id]."\r\n";
     }
     // Fin du csv
-    array_pop($tab_conversion);
     $export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
     $export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
-    $export_csv .= 'CODAGES AUTORISÉS : '.implode(',',$tab_conversion)."\r\n";
+    $export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A D E F N P R'."\r\n";
     // On enregistre le CSV
     $fichier_nom = 'saisie_deportee_'.$remplissage.'_'.$fnom_export.'.csv';
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , To::csv($export_csv) );
@@ -1286,15 +1277,20 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
-  $tab_init_nominatif = array();
-  $tab_init_quantitatif = array();
-  foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-  {
-    $tab_init_nominatif[  $note_id] = array();
-    $tab_init_quantitatif[$note_id] = 0;
-  }
-  $tab_init_nominatif[  'X'] = array();
-  $tab_init_quantitatif['X'] = 0;
+  $tab_init_nominatif = array(
+    'RR' => array() ,
+    'R'  => array() ,
+    'V'  => array() ,
+    'VV' => array() ,
+    'X'  => array() ,
+  );
+  $tab_init_quantitatif = array(
+    'RR' => 0 ,
+    'R'  => 0 ,
+    'V'  => 0 ,
+    'VV' => 0 ,
+    'X'  => 0 ,
+  );
   $tab_repartition_nominatif   = array();
   $tab_repartition_quantitatif = array();
   $tab_selection_nominatif     = array();
@@ -1306,14 +1302,14 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $tab_selection_nominatif[$item_id]     = $tab_init_nominatif;
   }
   // remplissage
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_marqueurs*/ );
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_REQ*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
     if( isset($tab_user_id[$DB_ROW['eleve_id']]) && isset($tab_item_id[$DB_ROW['item_id']]) )
     {
-      $note  = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $DB_ROW['saisie_note'] : 'X' ; // Regrouper ce qui est hors des codes couleurs usuels
-      $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors des codes couleurs usuels
+      $note  = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $DB_ROW['saisie_note'] : 'X' ; // Regrouper ce qui n'est pas RR R V VV
+      $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors RR R V VV
       $checkbox_user = '<input type="checkbox" name="id_user[]" value="'.$DB_ROW['eleve_id'].'" />';
       $checkbox_req  = '<input type="checkbox" name="id_req[]" value="'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" />';
       $tab_repartition_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $eleve;
@@ -1512,7 +1508,6 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $description && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur && $fond && in_array($eleves_ordre,array('alpha','classe')) )
 {
   Form::save_choix('evaluation_cartouche');
-  $cart_cases_nb = ($cart_cases_nb==1) ? $cart_cases_nb : $_SESSION['NOMBRE_CODES_NOTATION']+1 ; // 1 ou 5 dans le formulaire initial, mais à adapter en fonction du nombre de codes utilisés
   $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
   $with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE : FALSE ;
   // liste des items
@@ -1565,7 +1560,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
       // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
       if(isset($tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
       {
-        $valeur = ($with_result) ? $DB_ROW['saisie_note'] : ( ($DB_ROW['saisie_note']) ? 'PA' : '' ) ;
+        $valeur = ($with_result) ? $DB_ROW['saisie_note'] : ( ($DB_ROW['saisie_note']) ? 'REQ' : '' ) ;
         if($valeur)
         {
           $tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $valeur ;
@@ -1608,7 +1603,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $cartouche_CSV = '';
   $cartouche_TEX = '';
   $separateur  = ';';
-  $tab_codes = array_fill_keys($_SESSION['NOTE_ACTIF'],TRUE) + array('X'=>FALSE);
+  $tab_codes = array(
+    'RR' => TRUE ,
+    'R'  => TRUE ,
+    'V'  => TRUE ,
+    'VV' => TRUE ,
+    'X'  => FALSE ,
+  );
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $item_nb = count($tab_comp_id);
   if(!$only_req)
@@ -1642,7 +1643,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         }
         else
         {
-          // ... avec $cart_cases_nb dont une à cocher
+          // ... avec 5 cases dont une à cocher
           $rows_htm = array( 'item' => '<td class="nu"></td>' );
           $rows_csv = array( 'item' => $separateur );
           $rows_tex = array( 'item' => ' & ' );
@@ -1650,15 +1651,15 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           foreach($tab_codes as $note_code => $is_note )
           {
             $rows_htm[$note_code] = ($is_note) ? '<td class="hc">'.Html::note_image($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
-            $rows_csv[$note_code] = ($is_note) ? '"'.To::note_sigle($note_code).'"'.$separateur                               : '"autre"'.$separateur;
-            $rows_tex[$note_code] = ($is_note) ? '\begin{tabular}{c}'.To::note_sigle($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+            $rows_csv[$note_code] = ($is_note) ? '"'.To::note_texte($note_code).'"'.$separateur                               : '"autre"'.$separateur;
+            $rows_tex[$note_code] = ($is_note) ? '\begin{tabular}{c}'.To::note_texte($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
         }
         foreach($tab_comp_id as $comp_id => $tab_val_comp)
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
-            $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
+            $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
             $rows_htm['item'] .= '<td class="hc">'.html($tab_val_comp[0]).'</td>';
             $rows_csv['item'] .= '"'.$tab_val_comp[0].'"'.$separateur;
@@ -1667,12 +1668,12 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             {
               // ... avec une case à remplir
               $rows_htm['note'] .= '<td class="hc">'.Html::note_image($note,$date_fr,$description,FALSE).'</td>';
-              $rows_csv['note'] .= '"'.To::note_sigle($note).'"'.$separateur;
-              $rows_tex['note'] .= '\begin{tabular}{c}'.To::note_sigle($note).'\end{tabular} & ';
+              $rows_csv['note'] .= '"'.To::note_texte($note).'"'.$separateur;
+              $rows_tex['note'] .= '\begin{tabular}{c}'.To::note_texte($note).'\end{tabular} & ';
             }
             else
             {
-              // ... avec $cart_cases_nb dont une à cocher
+              // ... avec 5 cases dont une à cocher
               foreach($tab_codes as $note_code => $is_note )
               {
                 if($is_note)
@@ -1733,19 +1734,19 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         }
         else
         {
-          // ... avec $cart_cases_nb dont une à cocher
+          // ... avec 5 cases dont une à cocher
           $cols_htm = '';
           $cols_csv = '';
           $cols_tex = '';
           foreach($tab_codes as $note_code => $is_note )
           {
             $cols_htm .= ($is_note) ? '<td class="hc">'.Html::note_image($note_code,'','',FALSE).'</td>' : '<td class="hc">autre</td>';
-            $cols_csv .= ($is_note) ? '"'.To::note_sigle($note_code).'"'.$separateur                               : '"autre"'.$separateur;
-            $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.To::note_sigle($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
+            $cols_csv .= ($is_note) ? '"'.To::note_texte($note_code).'"'.$separateur                               : '"autre"'.$separateur;
+            $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.To::note_texte($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
           $cartouche_HTM .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
           $cartouche_CSV .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
-          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',$cart_cases_nb).'}'."\r\n".'\hline'."\r\n";
+          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',5).'}'."\r\n".'\hline'."\r\n";
           $cartouche_TEX .= ' & & '.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_PDF->entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
@@ -1753,17 +1754,17 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
-            $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
+            $note = ($tab_result[$comp_id][$user_id]!='REQ') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             if($cart_cases_nb==1)
             {
               // ... avec une case à remplir
               $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note_image($note,$date_fr,$description,FALSE).'</td></tr>';
-              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.To::note_sigle($note).'"'."\r\n";
-              $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.To::note_sigle($note).' \\\\'."\r\n".'\hline'."\r\n";
+              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.To::note_texte($note).'"'."\r\n";
+              $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.To::note_texte($note).' \\\\'."\r\n".'\hline'."\r\n";
             }
             else
             {
-              // ... avec $cart_cases_nb dont une à cocher
+              // ... avec 5 cases dont une à cocher
               $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td>';
               $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur;
               $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]);
@@ -1845,7 +1846,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   // Parcourir les lignes suivantes et mémoriser les scores
   $retour = '|';
   unset($tab_lignes[0]);
-  $scores_autorises = '123456789AaDdNnEeFfRrPp';
+  $scores_autorises = '1234AaDdNnEeFfRrPp';
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = str_getcsv($ligne_contenu,$separateur);

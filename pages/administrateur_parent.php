@@ -27,23 +27,19 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Responsables légaux"));
+?>
 
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Parents (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=adresse">Parents &amp; adresses.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Parents &amp; élèves.</a>
+</div>
+
+<hr />
+
+<?php
 // Par défaut, faire arriver sur la page de gestion des parents
 $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
-
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  array( 'section'=>'gestion' , 'txt'=>Lang::_("Parents (gestion)")  ),
-  array( 'section'=>'adresse' , 'txt'=>Lang::_("Parents & adresses") ),
-  array( 'section'=>'eleve'   , 'txt'=>Lang::_("Parents & élèves")   ),
-);
-foreach($tab_sous_menu as $tab_infos)
-{
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-}
-
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

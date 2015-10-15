@@ -642,17 +642,17 @@ public static function DB_lister_devoir_items($devoir_id,$with_lien,$with_coef)
  * lister_devoir_saisies
  *
  * @param int   $devoir_id
- * @param bool  $with_marqueurs   // Avec ou sans les marqueurs de demandes d'évaluations
+ * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public static function DB_lister_devoir_saisies($devoir_id,$with_marqueurs)
+public static function DB_lister_devoir_saisies($devoir_id,$with_REQ)
 {
   // On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
   $DB_SQL = 'SELECT eleve_id, item_id, saisie_note, prof_id ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_sortie_date>NOW() ';
-  $DB_SQL.= ($with_marqueurs) ? '' : 'AND saisie_note!="PA" ' ;
+  $DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -704,7 +704,7 @@ public static function DB_lister_nb_saisies_par_evaluation($listing_devoir_id)
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id IN('.$listing_devoir_id.') ' ;
-  $DB_SQL.= 'AND saisie_note!="PA" AND user_sortie_date>NOW() ' ;
+  $DB_SQL.= 'AND saisie_note!="REQ" AND user_sortie_date>NOW() ' ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_VAR = array(':devoir_id'=>$listing_devoir_id);
   return ($is_devoir_unique) ? (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) : DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) ;
@@ -884,7 +884,7 @@ public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$
 
 /**
  * ajouter_saisie
- * Si la note est un marqueur d'évaluation ("PA"), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
+ * Si la note est "REQ" (pour marquer une demande d'évaluation), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
  *
  * @param int    $prof_id
  * @param int    $eleve_id
@@ -898,7 +898,7 @@ public static function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$
  */
 public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$item_date_mysql,$item_note,$item_info,$item_date_visible_mysql)
 {
-  $commande = ($item_note!='PA') ? 'INSERT' : 'REPLACE' ;
+  $commande = ($item_note!='REQ') ? 'INSERT' : 'REPLACE' ;
   $DB_SQL = $commande.' INTO sacoche_saisie ';
   $DB_SQL.= 'VALUES(:prof_id,:eleve_id,:devoir_id,:item_id,:item_date,:item_note,:item_info,:item_date_visible)';
   $DB_VAR = array(

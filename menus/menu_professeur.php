@@ -48,17 +48,16 @@ $tab_sous_menu = array
 (
   'information' => array
   (
-    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                                  , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
-    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")                     , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
-    'consultation_codes_couleurs'      => array( 'texte' => Lang::_("Codes de notation / États d'acquisition") , 'class' => 'etabl_couleurs'   , 'href' => 'page=consultation_codes_couleurs'      ),
-    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                     , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
-    'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion")               , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
-    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                       , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")                        , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
-    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                     , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
-    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                    , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
-    'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")                    , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
-    'consultation_trombinoscope'       => array( 'texte' => Lang::_("Trombinoscope")                            , 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
+    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                    , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
+    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")       , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
+    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")       , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
+    'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion") , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
+    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")         , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
+    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")          , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
+    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")       , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
+    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")      , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
+    'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")      , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
+    'consultation_trombinoscope'       => array( 'texte' => Lang::_("Trombinoscope")              , 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
   ),
   'parametrage' => array
   (
@@ -118,14 +117,8 @@ $tab_sous_menu = array
 // Adaptations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Voir le paramètrage des codes et des états d'acquisition.
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
-{
-  $tab_sous_menu['information']['consultation_codes_couleurs']['class'] .= ' disabled';
-}
-
 // Voir et simuler l'algorithme de calcul.
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_ALGORITHME']))
 {
   $tab_sous_menu['information']['consultation_algorithme']['class'] .= ' disabled';
 }

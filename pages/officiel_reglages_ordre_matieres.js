@@ -46,7 +46,7 @@ $(document).ready
       }
     }
 
-    $('#sortable_v').sortable( { cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
+    $('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le lien pour mettre à jour l'ordre des matières
@@ -64,7 +64,7 @@ $(document).ready
         {
           // On récupère la liste des matières dans l'ordre de la page
           var tab_id = new Array();
-          $('#sortable_v').children('li').each
+          $('#sortable').children('li').each
           (
             function()
             {

@@ -162,7 +162,7 @@ else
 ?>
 </form>
 
-<form action="#" method="post" id="zone_elaboration_referentiel" onsubmit="return false;" class="arbre_dynamique p">
+<form action="#" method="post" id="zone_elaboration_referentiel" onsubmit="return false;" class="arbre_dynamique">
 </form>
 
 <div id="zone_socle_item" class="arbre_dynamique hide">

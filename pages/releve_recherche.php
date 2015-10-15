@@ -31,11 +31,12 @@ $TITRE = html(Lang::_("Recherche ciblée"));
 // Fabrication des éléments select du formulaire
 
 $select_critere_seuil_acquis = '';
-foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+$tab_options = array( 'NA'=>$_SESSION['ACQUIS_LEGENDE']['NA'] , 'VA'=>$_SESSION['ACQUIS_LEGENDE']['VA'] , 'A'=>$_SESSION['ACQUIS_LEGENDE']['A'] , 'X'=>'Indéterminé' );
+foreach($tab_options as $val => $txt)
 {
-  $class   = ($tab_acquis_info['SEUIL_MIN']==0) ? ' class="check"' : '' ;
-  $checked = ($tab_acquis_info['SEUIL_MIN']==0) ? ' checked'       : '' ;
-  $select_critere_seuil_acquis .= '<label for="f_critere_seuil_acquis_'.$acquis_id.'"'.$class.'><input type="checkbox" name="f_critere_seuil_acquis[]" id="f_critere_seuil_acquis_'.$acquis_id.'" value="'.$acquis_id.'"'.$checked.' /> '.html($tab_acquis_info['LEGENDE']).'</label>';
+  $class   = ($val=='NA') ? ' class="check"' : '' ;
+  $checked = ($val=='NA') ? ' checked'       : '' ;
+  $select_critere_seuil_acquis .= '<label for="f_critere_seuil_acquis_'.$val.'"'.$class.'><input type="checkbox" name="f_critere_seuil_acquis[]" id="f_critere_seuil_acquis_'.$val.'" value="'.$val.'"'.$checked.' /> '.html($txt).'</label>';
 }
 
 $select_critere_seuil_valide = '';
@@ -54,9 +55,6 @@ $select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_
 $select_matiere         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'         /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
 $select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/);
 $select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/);
-
-// Javascript
-Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_ETATS_ACQUISITION']-1).';' );
 
 ?>
 

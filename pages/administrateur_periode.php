@@ -27,22 +27,16 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Périodes"));
+?>
 
-// Par défaut, faire arriver sur la page de gestion des périodes
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Périodes (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe_groupe">Périodes &amp; classes / groupes.</a>
+</div>
 
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  array( 'section'=>'gestion'       , 'txt'=>Lang::_("Périodes (gestion)")            ),
-  array( 'section'=>'classe_groupe' , 'txt'=>Lang::_("Périodes & classes / groupes") ),
-);
-foreach($tab_sous_menu as $tab_infos)
-{
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-}
+<hr />
 
+<?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

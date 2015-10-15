@@ -55,7 +55,7 @@ class PDF_evaluation_tableau extends PDF
   {
     $reference_largeur_minimum = 50;
     $cases_hauteur_maximum     = 25;
-    $this->cases_largeur     = 10; // valeur par défaut ; diminuée si pas assez de place pour la référence de l'item
+    $this->cases_largeur     = 10; // valeur par défaut ; diminué si pas assez de place pour la référence de l'item
     $this->etiquette_hauteur = 40; // valeur fixe
     $this->reference_largeur = $this->page_largeur_moins_marges - ($eleve_nb * $this->cases_largeur);
     if($this->reference_largeur < $reference_largeur_minimum)
@@ -123,9 +123,8 @@ class PDF_evaluation_tableau extends PDF
   public function repartition_quantitative_initialiser($item_nb)
   {
     $cases_hauteur_maximum   = 20;
-    $cases_nombre = ($_SESSION['NOMBRE_CODES_NOTATION']+1);
-    $this->cases_largeur     = 30 - ($cases_nombre * 2.5) ;
-    $this->reference_largeur = $this->page_largeur_moins_marges - ( $cases_nombre * $this->cases_largeur);
+    $this->cases_largeur     = 20; // valeur fixe
+    $this->reference_largeur = $this->page_largeur_moins_marges - (5 * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe
     $this->cases_hauteur     = ($this->page_hauteur_moins_marges - $this->etiquette_hauteur) / $item_nb;
     $this->cases_hauteur     = min( $this->cases_hauteur , $cases_hauteur_maximum );
@@ -179,9 +178,8 @@ class PDF_evaluation_tableau extends PDF
 
   public function repartition_nominative_initialiser($lignes_nb)
   {
-    $cases_nombre = ($_SESSION['NOMBRE_CODES_NOTATION']+1);
-    $this->cases_largeur     = 60 - ($cases_nombre * 5) ;
-    $this->reference_largeur = $this->page_largeur_moins_marges - ( $cases_nombre * $this->cases_largeur);
+    $this->cases_largeur     = 40; // valeur fixe
+    $this->reference_largeur = $this->page_largeur_moins_marges - (5 * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe
     $lignes_hauteur_maximum  = 5;
     $this->lignes_hauteur    = ($this->page_hauteur_moins_marges - $this->etiquette_hauteur) / $lignes_nb;

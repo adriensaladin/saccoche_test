@@ -224,7 +224,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 {
   $tab_eleve_moy_scores  = array();
   $tab_eleve_pourcentage = array();
-  $tab_init = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array( 'nb'=>0 , '%'=>FALSE );
+  $tab_init = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0,'%'=>FALSE);
   // Pour chaque élève...
   foreach($tab_eleve_id as $eleve_id)
   {
@@ -262,9 +262,11 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       // ... un pour le nombre d\'items considérés acquis ou pas
       if($nb_scores)
       {
-        $tab_eleve_pourcentage[$eleve_id]       = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
         $tab_eleve_pourcentage[$eleve_id]['nb'] = $nb_scores;
-        $tab_eleve_pourcentage[$eleve_id]['%']  = calculer_pourcentage_acquisition_items( $tab_eleve_pourcentage[$eleve_id] , $nb_scores );
+        $tab_eleve_pourcentage[$eleve_id]['A']  = count( array_filter($tableau_score_filtre,'test_A') );
+        $tab_eleve_pourcentage[$eleve_id]['NA'] = count( array_filter($tableau_score_filtre,'test_NA') );
+        $tab_eleve_pourcentage[$eleve_id]['VA'] = $nb_scores - $tab_eleve_pourcentage[$eleve_id]['A'] - $tab_eleve_pourcentage[$eleve_id]['NA'];
+        $tab_eleve_pourcentage[$eleve_id]['%']  = round( 50 * ( ($tab_eleve_pourcentage[$eleve_id]['A']*2 + $tab_eleve_pourcentage[$eleve_id]['VA']) / $nb_scores ) ,0);
       }
     }
   }
@@ -275,7 +277,10 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     extract($tab);  // $user_id $user_nom $user_prenom $eleve_langue
     if($is_matiere_items_bilanMS)
     {
-      $user_acquisition_etat = ($tab_eleve_moy_scores[$user_id]===FALSE) ? 0 : determiner_etat_acquisition($tab_eleve_moy_scores[$user_id]) ;
+          if ($tab_eleve_moy_scores[$user_id]===FALSE)                        {$user_acquisition_etat = 'X';}
+      elseif ($tab_eleve_moy_scores[$user_id]<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
+      elseif ($tab_eleve_moy_scores[$user_id]>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
+      else                                                                    {$user_acquisition_etat = 'VA';}
       if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
       {
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
@@ -284,7 +289,10 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     }
     elseif($is_matiere_items_bilanPA)
     {
-      $user_acquisition_etat = ($tab_eleve_pourcentage[$user_id]===FALSE) ? 0 : determiner_etat_acquisition($tab_eleve_pourcentage[$user_id]['%']) ;
+          if ($tab_eleve_pourcentage[$user_id]['%']===FALSE)                        {$user_acquisition_etat = 'X';}
+      elseif ($tab_eleve_pourcentage[$user_id]['%']<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
+      elseif ($tab_eleve_pourcentage[$user_id]['%']>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
+      else                                                                          {$user_acquisition_etat = 'VA';}
       if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
       {
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
@@ -299,7 +307,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 if( $is_socle_item_pourcentage )
 {
   // Tableaux et variables pour mémoriser les infos
-  $tab_init_compet = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array('nb'=>0); // et ensuite '%'=>
+  $tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0); // et ensuite '%'=>
   $tab_score_socle_eleve = array();
   // Pour chaque élève...
   foreach($tab_eleve_id as $eleve_id)
@@ -315,21 +323,26 @@ if( $is_socle_item_pourcentage )
         $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
         if($score!==FALSE)
         {
-          // on détermine l'état d'acquisition et on enregistre les infos
-          $tab_score_socle_eleve[$eleve_id][determiner_etat_acquisition($score)]++;
+          // on détermine si elle est acquise ou pas
+          $indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+          // on enregistre les infos
+          $tab_score_socle_eleve[$eleve_id][$indice]++;
           $tab_score_socle_eleve[$eleve_id]['nb']++;
         }
       }
     }
-    // On calcule le pourcentage d'acquisition des items
-    $tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? calculer_pourcentage_acquisition_items( $tab_score_socle_eleve[$eleve_id] , $tab_score_socle_eleve[$eleve_id]['nb'] ) : FALSE ;
+    // On calcule les états d'acquisition à partir des A / VA / NA
+    $tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? round( 50 * ( ($tab_score_socle_eleve[$eleve_id]['A']*2 + $tab_score_socle_eleve[$eleve_id]['VA']) / $tab_score_socle_eleve[$eleve_id]['nb'] ) ,0) : FALSE ;
   }
   // On ne garde que les lignes qui satisfont au critère demandé
   $tab_tr = array();
   foreach($tab_eleve as $tab)
   {
     extract($tab);  // $user_id $user_nom $user_prenom $eleve_langue
-    $user_acquisition_etat = ($tab_score_socle_eleve[$user_id]['%']===FALSE) ? 0 : determiner_etat_acquisition($tab_score_socle_eleve[$user_id]['%']) ;
+        if ($tab_score_socle_eleve[$user_id]['%']===FALSE)                        {$user_acquisition_etat = 'X';}
+    elseif ($tab_score_socle_eleve[$user_id]['%']<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
+    elseif ($tab_score_socle_eleve[$user_id]['%']>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
+    else                                                                          {$user_acquisition_etat = 'VA';}
     if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
     {
       $drapeau_langue = $is_langue ? $eleve_langue : 0 ;

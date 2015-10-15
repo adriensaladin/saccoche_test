@@ -27,24 +27,20 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Professeurs / Personnels"));
+?>
 
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Professeurs / Personnels (gestion).</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Professeurs &amp; groupes.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Professeurs &amp; classes / Professeurs principaux.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Personnels &amp; matières / Personnels coordonnateurs.</a>
+</div>
+
+<hr />
+
+<?php
 // Par défaut, faire arriver sur la page de gestion des profs
 $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
-
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  array( 'section'=>'gestion' , 'txt'=>Lang::_("Professeurs / Personnels (gestion)")                 ),
-  array( 'section'=>'groupe'  , 'txt'=>Lang::_("Professeurs & groupes")                              ),
-  array( 'section'=>'classe'  , 'txt'=>Lang::_("Professeurs & classes / Professeurs principaux")     ),
-  array( 'section'=>'matiere' , 'txt'=>Lang::_("Professeurs & matières / Personnels coordonnateurs") ),
-);
-foreach($tab_sous_menu as $tab_infos)
-{
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-}
-
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

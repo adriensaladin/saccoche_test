@@ -27,52 +27,34 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Synthèses / Bilans"));
+?>
 
-// Sous-Menu d'en-tête
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFIL_TYPE']=='directeur')&&(substr($SECTION,0,8)=='reglages')) )
-{
-  $SOUS_MENU = '';
-  $tab_sous_menu = array(
-    array( 'section'=>'reglages_ordre_matieres'  , 'txt'=>Lang::_("Ordre d'affichage des matières")     ),
-    array( 'section'=>'reglages_format_synthese' , 'txt'=>Lang::_("Format de synthèse par référentiel") ),
-    array( 'section'=>'reglages_configuration'   , 'txt'=>Lang::_("Configuration des bilans officiels") ),
-    array( 'section'=>'reglages_mise_en_page'    , 'txt'=>Lang::_("Mise en page des bilans officiels")  ),
-  );
-  foreach($tab_sous_menu as $tab_infos)
+<?php if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFIL_TYPE']=='directeur')&&(substr($SECTION,0,8)=='reglages')) ): ?>
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_ordre_matieres">Ordre d'affichage des matières.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_format_synthese">Format de synthèse par référentiel.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_configuration">Configuration des bilans officiels.</a>  ||
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=reglages_mise_en_page">Mise en page des bilans officiels.</a>  <br />
+  <?php if($_SESSION['USER_PROFIL_TYPE']=='administrateur'): ?>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=assiduite">Absences / Retards.</a>  <br />
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_releve">[ Relevé d'évaluations ]</a>
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=accueil_bulletin">[ Bulletin scolaire ]</a>
+  <?php
+  $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+  for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
   {
-    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-  }
-  if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
-  {
-    $SOUS_MENU .= '<br />'.NL;
-    $tab_sous_menu = array(
-      array( 'section'=>'assiduite'        , 'txt'=>Lang::_("Absences / Retards")   ),
-      array( 'section'=>'accueil_releve'   , 'txt'=>Lang::_("Relevé d'évaluations") ),
-      array( 'section'=>'accueil_bulletin' , 'txt'=>Lang::_("Bulletin scolaire")    ),
-    );
-    foreach($tab_sous_menu as $tab_infos)
+    if(in_array($palier_id,$tab_paliers_actifs))
     {
-      $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-      $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-    }
-    $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-    $tab_sous_menu = array( 1 =>
-      array( 'section'=>'accueil_palier1' , 'txt'=>Lang::_("Maîtrise du palier 1") ),
-      array( 'section'=>'accueil_palier2' , 'txt'=>Lang::_("Maîtrise du palier 2") ),
-      array( 'section'=>'accueil_palier3' , 'txt'=>Lang::_("Maîtrise du palier 3") ),
-    );
-    foreach($tab_sous_menu as $palier_id => $tab_infos)
-    {
-      if(in_array($palier_id,$tab_paliers_actifs))
-      {
-        $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-        $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-      }
+      echo'<a href="./index.php?page='.$PAGE.'&amp;section=accueil_palier'.$palier_id.'">[ Maîtrise du palier '.$palier_id.' ]</a>'.NL;
     }
   }
-}
+  ?>
+  <?php endif; ?>
+</div>
+<hr />
+<?php endif; ?>
 
+<?php
 if($SECTION=='reglages')
 {
   echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;

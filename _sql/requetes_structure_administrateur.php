@@ -706,7 +706,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
  *
  * @return array
  */
-public static function DB_lister_parents_adresses_par_enfant()
+public static function lister_parents_adresses_par_enfant()
 {
   $DB_SQL = 'SELECT eleve_id, parent_id, sacoche_parent_adresse.* ';
   $DB_SQL.= 'FROM sacoche_user AS enfant ';
@@ -724,7 +724,7 @@ public static function DB_lister_parents_adresses_par_enfant()
  *
  * @return array
  */
-public static function DB_lister_parents_homonymes()
+public static function lister_parents_homonymes()
 {
   $DB_SQL = 'SELECT user_nom, user_prenom, CONVERT( GROUP_CONCAT(user_id SEPARATOR ",") , CHAR) AS identifiants , COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user ';
@@ -834,7 +834,7 @@ public static function DB_lister_profils_parametres($listing_champs,$only_actif,
  * @param void
  * @return int
  */
-public static function DB_compter_matieres_etabl()
+public static function compter_matieres_etabl()
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_matiere ';
@@ -848,7 +848,7 @@ public static function DB_compter_matieres_etabl()
  * @param bool $with_specifiques
  * @return int
  */
-public static function DB_compter_niveaux_etabl($with_specifiques)
+public static function compter_niveaux_etabl($with_specifiques)
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_niveau ';
@@ -1746,127 +1746,6 @@ public static function DB_modifier_profil_parametre($profil_sigle,$champ,$valeur
 }
 
 /**
- * modifier_parametre_note
- *
- * @param int    $note_id
- * @param int    $note_actif
- * @param int    $note_ordre
- * @param int    $note_valeur
- * @param string $note_image
- * @param string $note_sigle
- * @param string $note_legende
- * @param int    $note_clavier
- * @return void
- */
-public static function DB_modifier_parametre_note( $note_id , $note_actif , $note_ordre , $note_valeur , $note_image , $note_sigle , $note_legende , $note_clavier )
-{
-  $DB_SQL = 'UPDATE sacoche_parametre_note ';
-  $DB_SQL.= 'SET note_actif=:note_actif, note_ordre=:note_ordre, note_valeur=:note_valeur, note_image=:note_image, note_sigle=:note_sigle, note_legende=:note_legende, note_clavier=:note_clavier ';
-  $DB_SQL.= 'WHERE note_id=:note_id ';
-  $DB_VAR = array(
-    ':note_id'      => $note_id,
-    ':note_actif'   => $note_actif,
-    ':note_ordre'   => $note_ordre,
-    ':note_valeur'  => $note_valeur,
-    ':note_image'   => $note_image,
-    ':note_sigle'   => $note_sigle,
-    ':note_legende' => $note_legende,
-    ':note_clavier' => $note_clavier,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * remplacer_parametre_note_image
- *
- * @param string $note_image
- * @return void
- */
-public static function DB_remplacer_parametre_note_image( $note_image )
-{
-  $DB_SQL = 'UPDATE sacoche_parametre_note ';
-  $DB_SQL.= 'SET note_image="X" ';
-  $DB_SQL.= 'WHERE note_image=:note_image ';
-  $DB_VAR = array(
-    ':note_image' => $note_image,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_parametre_acquis
- *
- * @param int    $acquis_id
- * @param int    $acquis_actif
- * @param int    $acquis_ordre
- * @param int    $acquis_seuil_min
- * @param int    $acquis_seuil_max
- * @param int    $acquis_valeur
- * @param string $acquis_couleur
- * @param string $acquis_sigle
- * @param string $acquis_legende
- * @return void
- */
-public static function DB_modifier_parametre_acquis( $acquis_id , $acquis_actif , $acquis_ordre , $acquis_seuil_min , $acquis_seuil_max , $acquis_valeur , $acquis_couleur , $acquis_sigle , $acquis_legende )
-{
-  $DB_SQL = 'UPDATE sacoche_parametre_acquis ';
-  $DB_SQL.= 'SET acquis_actif=:acquis_actif, acquis_ordre=:acquis_ordre, acquis_seuil_min=:acquis_seuil_min, acquis_seuil_max=:acquis_seuil_max, acquis_valeur=:acquis_valeur, acquis_couleur=:acquis_couleur, acquis_sigle=:acquis_sigle, acquis_legende=:acquis_legende ';
-  $DB_SQL.= 'WHERE acquis_id=:acquis_id ';
-  $DB_VAR = array(
-    ':acquis_id'        => $acquis_id,
-    ':acquis_actif'     => $acquis_actif,
-    ':acquis_ordre'     => $acquis_ordre,
-    ':acquis_seuil_min' => $acquis_seuil_min,
-    ':acquis_seuil_max' => $acquis_seuil_max,
-    ':acquis_valeur'    => $acquis_valeur,
-    ':acquis_couleur'   => $acquis_couleur,
-    ':acquis_sigle'     => $acquis_sigle,
-    ':acquis_legende'   => $acquis_legende,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_parametre_note_valeur
- *
- * @param int $note_id
- * @param int $note_valeur
- * @return void
- */
-public static function DB_modifier_parametre_note_valeur( $note_id , $note_valeur )
-{
-  $DB_SQL = 'UPDATE sacoche_parametre_note ';
-  $DB_SQL.= 'SET note_valeur=:note_valeur ';
-  $DB_SQL.= 'WHERE note_id=:note_id ';
-  $DB_VAR = array(
-    ':note_id'     => $note_id,
-    ':note_valeur' => $note_valeur,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_parametre_acquis_seuils
- *
- * @param int $acquis_id
- * @param int $acquis_seuil_min
- * @param int $acquis_seuil_max
- * @return void
- */
-public static function DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis_seuil_min , $acquis_seuil_max )
-{
-  $DB_SQL = 'UPDATE sacoche_parametre_acquis ';
-  $DB_SQL.= 'SET acquis_seuil_min=:acquis_seuil_min , acquis_seuil_max=:acquis_seuil_max ';
-  $DB_SQL.= 'WHERE acquis_id=:acquis_id ';
-  $DB_VAR = array(
-    ':acquis_id'     => $acquis_id,
-    ':acquis_seuil_min' => $acquis_seuil_min,
-    ':acquis_seuil_max' => $acquis_seuil_max,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Supprimer une matière spécifique
  *
  * @param int $matiere_id
@@ -2007,14 +1886,14 @@ public static function DB_supprimer_devoirs_sans_saisies()
 }
 
 /**
- * Supprimer les reliquats de marqueurs d'évaluations dans les devoirs (utilisé uniquement dans le cadre d'un nettoyage annuel)
+ * Supprimer les reliquats de requêtes d'évaluations dans les devoirs (utilisé uniquement dans le cadre d'un nettoyage annuel)
  *
  * @return void
  */
-public static function DB_supprimer_saisies_marqueurs()
+public static function DB_supprimer_saisies_REQ()
 {
   $DB_SQL = 'DELETE FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE saisie_note="PA" ';
+  $DB_SQL.= 'WHERE saisie_note="REQ" ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

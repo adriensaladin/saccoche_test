@@ -291,12 +291,12 @@ $(document).ready
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
                 responseHTML = responseHTML.replace(reg,'</a>'+images[2]);
                 // montrer le cadre
-                $('#sortable_v').html(responseHTML);
+                $('#sortable').html(responseHTML);
                 $('#zone_resultat_recherche_liens').html('');
                 $('#zone_ressources q').show();
                 $('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
                 $.fancybox( { 'href':'#zone_ressources' , onStart:function(){$('#zone_ressources').css("display","block");} , onClosed:function(){$('#zone_ressources').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-                $('#sortable_v').sortable( { cursor:'ns-resize' } );
+                $('#sortable').sortable( { cursor:'n-resize' } );
               }
             }
           }
@@ -323,7 +323,7 @@ $(document).ready
 // Clic sur le bouton pour supprimer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable_v').on
+    $('#sortable').on
     (
       'click',
       'q.supprimer',
@@ -333,7 +333,7 @@ $(document).ready
         $(this).parent().remove();
         if(nb_li==1)
         {
-          $('#sortable_v').append('<li class="i">Encore aucun élément actuellement ! Utilisez les outils ci-dessous pour en ajouter&hellip;</li>');
+          $('#sortable').append('<li class="i">Encore aucun élément actuellement ! Utilisez les outils ci-dessous pour en ajouter&hellip;</li>');
         }
         initialiser_compteur();
         return false;
@@ -344,7 +344,7 @@ $(document).ready
 // Clic sur un bouton pour modifier un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable_v').on
+    $('#sortable').on
     (
       'click',
       'q.modifier',
@@ -372,7 +372,7 @@ $(document).ready
 // Clic sur un bouton pour dupliquer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable_v').on
+    $('#sortable').on
     (
       'click',
       'q.dupliquer',
@@ -401,7 +401,7 @@ $(document).ready
 // Clic sur un bouton pour annuler la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable_v').on
+    $('#sortable').on
     (
       'click',
       'q.annuler',
@@ -429,7 +429,7 @@ $(document).ready
 // Clic sur un bouton pour valider la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#sortable_v').on
+    $('#sortable').on
     (
       'click',
       'q.valider',
@@ -504,8 +504,8 @@ $(document).ready
         {
           initialiser_compteur();
           $('label[for=paragraphe_nom]').removeAttr("class").html('');
-          $('#sortable_v').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[1]+'</li>');
-          $('#sortable_v li.i').remove();
+          $('#sortable').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[1]+'</li>');
+          $('#sortable li.i').remove();
           $('#paragraphe_nom').val('');
         }
       }
@@ -545,8 +545,8 @@ $(document).ready
         $('label[for=lien_nom]').removeAttr("class").html('');
         // ok
         initialiser_compteur();
-        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
-        $('#sortable_v li.i').remove();
+        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable li.i').remove();
         $('#lien_url').val('');
         $('#lien_nom').val('');
       }
@@ -560,7 +560,7 @@ $(document).ready
     (
       function()
       {
-        if($('#sortable_v li.i').length)
+        if($('#sortable li.i').length)
         {
           $('#ajax_ressources_msg').removeAttr("class").addClass("erreur").html("La liste de ressources est vide !");
           return false;
@@ -569,7 +569,7 @@ $(document).ready
         var tab_ressources = new Array();
         var modif_en_cours = false;
         var nb_ressources = 0;
-        $('#sortable_v li').each
+        $('#sortable li').each
         (
           function()
           {
@@ -708,8 +708,8 @@ $(document).ready
         var lien_nom = $(this).prev().html();
         $(this).parent().remove();
         initialiser_compteur();
-        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
-        $('#sortable_v li.i').remove();
+        $('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable li.i').remove();
       }
     );
 

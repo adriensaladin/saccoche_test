@@ -27,25 +27,20 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Fiches brevet")) : html(Lang::_("Notanet & Fiches brevet")) ;
+?>
 
-// Sous-Menu d'en-tête
-if($_SESSION['USER_PROFIL_TYPE']!='professeur')
-{
-  $SOUS_MENU = '';
-  $tab_sous_menu = array(
-    array( 'section'=>'series'   , 'txt'=>Lang::_("Étape n°1 : Séries")         ),
-    array( 'section'=>'epreuves' , 'txt'=>Lang::_("Étape n°2 : Épreuves")       ),
-    array( 'section'=>'moyennes' , 'txt'=>Lang::_("Étape n°3 : Notes")          ),
-    array( 'section'=>'notanet'  , 'txt'=>Lang::_("Étape n°4 : Export Notanet") ),
-    array( 'section'=>'fiches'   , 'txt'=>Lang::_("Étape n°5 : Fiches brevet")  ),
-  );
-  foreach($tab_sous_menu as $tab_infos)
-  {
-    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
-  }
-}
+<?php if($_SESSION['USER_PROFIL_TYPE']!='professeur'): ?>
+<div class="hc">
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=series">[ Étape n°1 : Séries ]</a>&nbsp;&nbsp;&nbsp;
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=epreuves">[ Étape n°2 : Épreuves ]</a>&nbsp;&nbsp;&nbsp;
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=moyennes">[ Étape n°3 : Notes ]</a>&nbsp;&nbsp;&nbsp;
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=notanet">[ Étape n°4 : Export Notanet ]</a>&nbsp;&nbsp;&nbsp;
+  <a href="./index.php?page=<?php echo $PAGE ?>&amp;section=fiches">[ Étape n°5 : Fiches brevet ]</a>
+</div>
+<hr />
+<?php endif; ?>
 
+<?php
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $SECTION = 'fiches';

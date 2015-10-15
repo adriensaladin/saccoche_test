@@ -147,35 +147,6 @@ public static function DB_lister_parametres($listing_param='')
 }
 
 /**
- * Lister des paramètres d'une structure liés aux codes de notation (contenu de la table 'sacoche_parametre_note')
- *
- * @param bool   $priority_actifs   prioritairement ceux actifs
- * @return array
- */
-public static function DB_lister_parametres_note($priority_actifs)
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_parametre_note ';
-  $DB_SQL.= ($priority_actifs) ? 'ORDER BY note_actif DESC, note_ordre ASC ' : 'ORDER BY note_ordre ASC ' ;
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Lister des paramètres d'une structure liés aux états d'acquisition (contenu de la table 'sacoche_parametre_acquis')
- *
- * @param bool   $only_actifs   seuls ceux actifs
- * @return array
- */
-public static function DB_lister_parametres_acquis($only_actifs)
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_parametre_acquis ';
-  $DB_SQL.= ($only_actifs) ? 'WHERE acquis_actif=1 ' : '' ;
-  $DB_SQL.= 'ORDER BY acquis_ordre ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * Modifier la date de connexion
  *
  * @param int     $user_id

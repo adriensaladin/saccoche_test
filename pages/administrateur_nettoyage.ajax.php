@@ -117,9 +117,9 @@ if($action=='purger')
   DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_jointures_items_obsoletes();
   // Retirer les sélections d'items sans item
   DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_selections_items_obsoletes();
-  // Supprimer les demandes d'évaluations, ainsi que les reliquats de marqueurs de notes
+  // Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_marqueurs();
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
   // En profiter pour optimiser les tables (une fois par an, ça ne peut pas faire de mal)
   DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
   // Débloquer l'application

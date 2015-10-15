@@ -183,20 +183,14 @@ if($BILAN_TYPE=='bulletin')
   $li .= ($nb_inconnu) ? '<li><label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label></li>'.NL : '<li><label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label></li>'.NL ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
 }
 
-// Pour variable js BACKGROUND_COLORS
-$tab_css_couleurs = array();
-$key_couleur = $_SESSION['USER_DALTONISME'] ? 'GRIS' : 'COULEUR' ;
-foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-{
-  $tab_css_couleurs[$acquis_id] = '"'.$tab_acquis_info[$key_couleur].'"';
-}
-
 // Javascript
 Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var BILAN_TYPE            = "'.$BILAN_TYPE.'";' );
 Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20     = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' );
-Layout::add( 'js_inline_before' , 'var BACKGROUND_COLORS     = ['.implode(',',$tab_css_couleurs).'];' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_NA         = "'.$_SESSION['BACKGROUND_NA'].'";' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_VA         = "'.$_SESSION['BACKGROUND_VA'].'";' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_A          = "'.$_SESSION['BACKGROUND_A'].'";' );
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR'].';' );
 Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR'].';' );

@@ -70,7 +70,7 @@ if(!$alerte_dossier_invalide)
         $id_etabl = $tab[1];
         $etabl = 'pour la base n°'.$id_etabl;
       }
-      $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.FileSystem::afficher_fichier_taille(PHPCAS_LOGS_CHEMIN.$file).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>'.NL;
+      $tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(PHPCAS_LOGS_CHEMIN.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>'.NL;
     }
     ksort($tab_fichiers);
   }

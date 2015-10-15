@@ -1,0 +1,125 @@
+<?php
+/**
+ * @version $Id$
+ * @author Thomas Crespin <thomas.crespin@sesamath.net>
+ * @copyright Thomas Crespin 2009-2015
+ * 
+ * ****************************************************************************************************
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+ * Logiciel placé sous la licence libre Affero GPL 3 <https://www.gnu.org/licenses/agpl-3.0.html>.
+ * ****************************************************************************************************
+ * 
+ * Ce fichier est une partie de SACoche.
+ * 
+ * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+ * de la “GNU Affero General Public License” telle que publiée par la Free Software Foundation :
+ * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+ * 
+ * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+ * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+ * Consultez la Licence Publique Générale GNU Affero pour plus de détails.
+ * 
+ * Vous devriez avoir reçu une copie de la Licence Publique Générale GNU Affero avec SACoche ;
+ * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = html(Lang::_("Synthèses / Bilans"));
+
+// Sous-Menu d'en-tête
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFIL_TYPE']=='directeur')&&(substr($SECTION,0,8)=='reglages')) )
+{
+  $SOUS_MENU = '';
+  $tab_sous_menu = array(
+    array( 'section'=>'reglages_ordre_matieres'  , 'txt'=>Lang::_("Ordre d'affichage des matières")     ),
+    array( 'section'=>'reglages_format_synthese' , 'txt'=>Lang::_("Format de synthèse par référentiel") ),
+    array( 'section'=>'reglages_configuration'   , 'txt'=>Lang::_("Configuration des bilans officiels") ),
+    array( 'section'=>'reglages_mise_en_page'    , 'txt'=>Lang::_("Mise en page des bilans officiels")  ),
+  );
+  foreach($tab_sous_menu as $tab_infos)
+  {
+    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+  }
+  if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
+  {
+    $SOUS_MENU .= '<br />'.NL;
+    $tab_sous_menu = array(
+      array( 'section'=>'assiduite'        , 'txt'=>Lang::_("Absences / Retards")   ),
+      array( 'section'=>'accueil_releve'   , 'txt'=>Lang::_("Relevé d'évaluations") ),
+      array( 'section'=>'accueil_bulletin' , 'txt'=>Lang::_("Bulletin scolaire")    ),
+    );
+    foreach($tab_sous_menu as $tab_infos)
+    {
+      $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+      $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+    }
+    $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+    $tab_sous_menu = array( 1 =>
+      array( 'section'=>'accueil_palier1' , 'txt'=>Lang::_("Maîtrise du palier 1") ),
+      array( 'section'=>'accueil_palier2' , 'txt'=>Lang::_("Maîtrise du palier 2") ),
+      array( 'section'=>'accueil_palier3' , 'txt'=>Lang::_("Maîtrise du palier 3") ),
+    );
+    foreach($tab_sous_menu as $palier_id => $tab_infos)
+    {
+      if(in_array($palier_id,$tab_paliers_actifs))
+      {
+        $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+        $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+      }
+    }
+  }
+}
+
+if($SECTION=='reglages')
+{
+  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
+  $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
+  $s = ($nb_inconnu>1) ? 's' : '' ;
+  echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label> <a href="./index.php?page='.$PAGE.'&amp;section=reglages_format_synthese">&rarr; Configurer les formats de synthèse.</a>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
+}
+elseif($SECTION=='assiduite')
+{
+  $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+  $PAGE = $PAGE.'_'.$SECTION ;
+  require($fichier_section);
+}
+else
+{
+  if(substr($SECTION,0,8)=='accueil_')
+  {
+    $BILAN_TYPE = substr($SECTION,8);
+    $SECTION = 'accueil';
+  }
+  // Afficher la bonne page et appeler le bon js / ajax par la suite
+  $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+  if(!is_file($fichier_section))
+  {
+    echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
+    return; // Ne pas exécuter la suite de ce fichier inclus.
+  }
+  if( isset($BILAN_TYPE) && in_array($BILAN_TYPE,array('palier1','palier2','palier3')) )
+  {
+    $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+    $palier = mb_substr($BILAN_TYPE,-1);
+    if(!in_array($palier,$tab_paliers_actifs))
+    {
+      $liste_paliers_actifs = ($_SESSION['LISTE_PALIERS_ACTIFS']) ? ( (count($tab_paliers_actifs)==1) ? 'palier '.$_SESSION['LISTE_PALIERS_ACTIFS'].' activé' : 'paliers '.str_replace(',',' et ',$_SESSION['LISTE_PALIERS_ACTIFS']).' activés' ) : 'aucun' ;
+      echo'<p class="danger">Le palier '.$palier.' n\'a pas été activé par les administrateurs ('.$liste_paliers_actifs.').</p>'.NL;
+      return; // Ne pas exécuter la suite de ce fichier inclus.
+    }
+  }
+  if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin','palier1','palier2','palier3')) )
+  {
+    $PAGE = $PAGE.'_'.$SECTION ;
+    require($fichier_section);
+  }
+  else
+  {
+    echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
+    return; // Ne pas exécuter la suite de ce fichier inclus.
+  }
+}
+?>

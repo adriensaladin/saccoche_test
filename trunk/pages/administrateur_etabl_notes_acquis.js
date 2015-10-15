@@ -172,7 +172,7 @@ $(document).ready
               nb_actifs = tab_actif.push(note_id);
               // Valeur
               var saisie = $('#note_valeur_'+note_id).val();
-              var valeur = parseInt(saisie,10)
+              var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
                 $('#ajax_msg_notes').removeAttr("class").addClass("erreur").html("Valeur #"+note_id+" : nombre entier requis.").show();
@@ -270,7 +270,7 @@ $(document).ready
               tab_legende[legende_upper] = note_id;
               // Touche
               var saisie = $('#note_clavier_'+note_id).val();
-              var clavier = parseInt(saisie,10)
+              var clavier = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != clavier ) )
               {
                 $('#ajax_msg_notes').removeAttr("class").addClass("erreur").html("Touche #"+note_id+" : nombre entier requis.").show();
@@ -376,7 +376,7 @@ $(document).ready
               nb_actifs = tab_actif.push(acquis_id);
               // Seuil minimum
               var saisie = $('#acquis_seuil_'+acquis_id+'_min').val();
-              var valeur = parseInt(saisie,10)
+              var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
                 $('#ajax_msg_acquis').removeAttr("class").addClass("erreur").html("Seuil min #"+acquis_id+" : nombre entier requis.").show();
@@ -410,7 +410,7 @@ $(document).ready
               seuil_min = valeur;
               // Seuil maximum
               var saisie = $('#acquis_seuil_'+acquis_id+'_max').val();
-              var valeur = parseInt(saisie,10)
+              var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
                 $('#ajax_msg_acquis').removeAttr("class").addClass("erreur").html("Seuil max #"+acquis_id+" : nombre entier requis.").show();
@@ -497,7 +497,7 @@ $(document).ready
               tab_legende[legende_upper] = acquis_id;
               // État
               var saisie = $('#acquis_valeur_'+acquis_id).val();
-              var valeur = parseInt(saisie,10)
+              var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
                 $('#ajax_msg_acquis').removeAttr("class").addClass("erreur").html("État #"+acquis_id+" : nombre entier requis.").show();

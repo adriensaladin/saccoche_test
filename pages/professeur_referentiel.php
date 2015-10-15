@@ -26,6 +26,31 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = html(Lang::_("Référentiels (gestion)"));
+
+// Par défaut, faire arriver sur la page de gestion des référentiels
+$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+
+// Sous-Menu d'en-tête, selon les droits
+$SOUS_MENU = '';
+$tab_sous_menu = array(
+  array( 'section'=>'gestion'    , 'txt'=>Lang::_("Créer / paramétrer les référentiels")  ),
+  array( 'section'=>'edition'    , 'txt'=>Lang::_("Modifier le contenu des référentiels") ),
+  array( 'section'=>'ressources' , 'txt'=>Lang::_("Associer des ressources aux items")    ),
+);
+foreach($tab_sous_menu as $tab_infos)
+{
+  // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
+  if( strpos( $_SESSION['MENU'] , 'class="referentiel_'.$tab_infos['section'].'"' ) )
+  {
+    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+  }
+  else
+  {
+    $class = ' class="disabled"';
+  }
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+}
 
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
@@ -36,6 +61,6 @@ if(is_file($fichier_section))
 }
 else
 {
-  echo'<p><span class="astuce">Choisir une rubrique dans le menu déroulant&hellip;</span></p>'.NL;
+  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
 }
 ?>

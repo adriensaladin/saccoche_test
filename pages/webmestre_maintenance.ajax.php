@@ -397,6 +397,99 @@ if($action=='verif_file_appli_etape5')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape de mise à jour forcée des bases des établissements
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$step = (isset($_POST['step'])) ? Clean::entier($_POST['step']) : 0 ;  // Numéro de l'étape
+
+if( ($action=='maj_bases_etabl') && $step )
+{
+  // 1. Liste des bases
+  if($step==1)
+  {
+    // Récupérer les ids des structures
+    $_SESSION['tmp'] = array(
+      'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
+      'rapport' => array(),
+    );
+    exit('continuer');
+  }
+  // n. Étape suivante
+  elseif(!empty($_SESSION['tmp']['base_id']))
+  {
+    $base_id = current($_SESSION['tmp']['base_id']);
+    charger_parametres_mysql_supplementaires($base_id);
+    $version_base = DB_STRUCTURE_MAJ_BASE::DB_version_base();
+    if(empty($_SESSION['tmp']['rapport'][$base_id]))
+    {
+      $_SESSION['tmp']['rapport'][$base_id] = $version_base;
+    }
+    // base déjà à jour
+    if($_SESSION['tmp']['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
+    {
+      array_shift($_SESSION['tmp']['base_id']);
+      exit('continuer');
+    }
+    // on lance la maj "classique"
+    if($version_base != VERSION_BASE_STRUCTURE)
+    {
+      $maj_classique = TRUE;
+      // Bloquer l'application
+      LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id,'Mise à jour de la base en cours.');
+      // Lancer une mise à jour de la base
+      DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
+    }
+    else
+    {
+      $maj_classique = FALSE;
+    }
+    // test si cela nécessite une mise à jour complémentaire
+    $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire();
+    if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
+    {
+      // Débloquer l'application
+      LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id);
+      array_shift($_SESSION['tmp']['base_id']);
+      exit('continuer');
+    }
+    elseif($maj_classique)
+    {
+      // on fera la maj complémentaire au prochain coup
+      exit('continuer');
+    }
+    else
+    {
+      // on lance une étape de la maj complémentaire
+      DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
+      if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
+      {
+        LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id);
+        array_shift($_SESSION['tmp']['base_id']);
+      }
+      exit('continuer');
+    }
+  }
+  // n. Dernière étape
+  else
+  {
+    // Rapport
+    $thead = '<tr><td>Mise à jour forcée des bases - '.date('d/m/Y H:i:s').'</td></tr>';
+    $tbody = '';
+    foreach($_SESSION['tmp']['rapport'] as $base_id => $version_base)
+    {
+      $tbody .= ($version_base==VERSION_BASE_STRUCTURE) ? '<tr><td class="b">Base n°'.$base_id.' déjà à jour.</td></tr>' : '<tr><td class="v">Base n°'.$base_id.' mise à jour depuis la version '.$version_base.'.</td></tr>' ;
+    }
+    // Enregistrement du rapport
+    $fichier_rapport = 'rapport_maj_bases_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
+    FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody );
+    $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
+    // retour
+    unset($_SESSION['tmp']);
+    exit('ok_'.$fichier_chemin);
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

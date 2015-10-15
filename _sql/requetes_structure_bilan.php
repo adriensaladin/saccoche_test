@@ -457,7 +457,7 @@ public static function DB_lister_date_last_eleves_items( $liste_eleve_id , $list
 {
   $DB_SQL = 'SELECT eleve_id , item_id , MAX(saisie_date) AS date_last ';
   $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" ';
+  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="PA" ';
   $DB_SQL.= 'GROUP BY eleve_id, item_id ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -495,7 +495,7 @@ public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_i
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= $join_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$where_prof.'AND niveau_actif=1 AND saisie_note!="REQ" '.$sql_debut.$sql_fin.$sql_view;
+  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$where_prof.'AND niveau_actif=1 AND saisie_note!="PA" '.$sql_debut.$sql_fin.$sql_view;
   $DB_SQL.= (!$first_order_by_date)
             ? 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '
             : 'ORDER BY saisie_date ASC, devoir_id ASC,'.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
@@ -528,7 +528,7 @@ public static function DB_lister_result_eleves_palier_sans_infos_items( $liste_e
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_entree_id.') AND niveau_actif=1 AND saisie_note!="REQ" '.$sql_view;
+  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_entree_id.') AND niveau_actif=1 AND saisie_note!="PA" '.$sql_view;
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -574,7 +574,8 @@ public static function DB_compter_modes_synthese_inconnu()
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 AND niveau_actif=1 ';
   $DB_VAR = array(':mode_inconnu'=>'inconnu');
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

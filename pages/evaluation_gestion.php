@@ -83,30 +83,145 @@ $TITRE = ($TYPE=='groupe') ? html(Lang::_("Évaluer une classe ou un groupe")) :
 // Dates par défaut
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
+// Images pour une saisie à la souris : 8 codes + 2~6 notes.
+/*
+nn ab n1 n5
+ne di n2 n6
+nf re n3
+nr xx n4
+*/
+$tab_complement = (count($_SESSION['NOTE_ACTIF'])!=4) ? array_fill( 0 , ( 8 - count($_SESSION['NOTE_ACTIF']) ) % 4 , '' ) : array() ; // Test inutile à compter de PHP 5.6.0 (mais avant le paramètre du nombre d'éléments ne pouvait valoir 0.
+$tab_notes = array_merge( array( 'NN' , 'NE' , 'NF' , 'NR' , 'AB' , 'DI' , 'PA' , 'X' ) , $_SESSION['NOTE_ACTIF'] , $tab_complement );
+$tab_souris_ligne = array_fill( 0 , 4 , '' );
+foreach($tab_notes as $key => $note)
+{
+  $ligne = $key % 4;
+  $tab_souris_ligne[$ligne] .= ($note) ? '<img alt="'.$note.'" src="'.Html::note_src($note).'" />' : '<img alt="" src="'.Html::note_src('X').'" style="visibility:hidden" />' ;
+}
+$souris_ligne = implode('<br />',$tab_souris_ligne);
+
+// Images pour une saisie tactile : 4 flèches + 8 codes + 2~6 notes + ok / del
+/*
+f1 f2 f3 f4
+nn ne nf nr
+ab di re xx
+  puis
+n1 n2 del ok
+  ou
+n1 n2 n3 del
+         ok
+  ou
+n1 n2 n3 n4
+  del ok
+  ou
+n1 n2 n3 n4
+n5 del ok
+  ou
+n1 n2 n3 n4
+n5 n6 del ok
+*/
+$tab_ascii = array(
+  'fleche' => array(
+    'g' => array(  37 , 'Gauche' ),
+    'd' => array(  39 , 'Droite' ),
+    'h' => array(  38 , 'Haut' ),
+    'b' => array(  40 , 'Bas' ),
+  ),
+  'note_speciale' => array(
+    'NN' => array( 78 ), // N
+    'NE' => array( 69 ), // E
+    'NF' => array( 70 ), // F
+    'NR' => array( 82 ), // R
+    'AB' => array( 65 ), // A
+    'DI' => array( 68 ), // D
+    'PA' => array( 80 ), // P
+    'X'  => array( 46 , 8 ), // suppr backspace
+  ),
+  'note_usuelle' => array(
+    0 => array(  96 , 48 ), // 0 à
+    1 => array(  97 , 49 ), // 1 &
+    2 => array(  98 , 50 ), // 2 é
+    3 => array(  99 , 51 ), // 3 "
+    4 => array( 100 , 52 ), // 4 '
+    5 => array( 101 , 53 ), // 5 (
+    6 => array( 102 , 54 ), // 6 -
+    7 => array( 103 , 55 ), // 7 è
+    8 => array( 104 , 56 ), // 8 _
+    9 => array( 105 , 57 ), // 9 ç
+  ),
+  'action' => array(
+    'valider'   => 13,
+    'retourner' => 27,
+  ),
+);
+$nb_lignes = ($_SESSION['NOMBRE_CODES_NOTATION']>2) ? 5 : 4 ;
+$tab_tactile_ligne = array_fill( 0 , $nb_lignes , '' );
+foreach($tab_ascii['fleche'] as $key => $tab_infos)
+{
+  list( $keycode , $alt ) = $tab_infos;
+  $tab_tactile_ligne[0] .= '<span id="kbd_'.$keycode.'"><img alt="'.$alt.'" src="./_img/fleche/fleche_'.$key.'1.gif" /></span>';
+}
+$nombre = 0;
+foreach($tab_ascii['note_speciale'] as $alt => $tab_infos)
+{
+  $ligne = 1 + floor($nombre / 4);
+  $keycode = $tab_infos[0];
+  $tab_tactile_ligne[$ligne] .= '<span id="kbd_'.$keycode.'"><img alt="'.$alt.'" src="'.Html::note_src($alt).'" /></span>';
+  $nombre++;
+}
+foreach( $_SESSION['NOTE_ACTIF'] as $key => $note_id )
+{
+  $ligne = 3 + floor($key / 4);
+  $keycode = $tab_ascii['note_usuelle'][$_SESSION['NOTE'][$note_id]['CLAVIER']][0];
+  $alt     = $_SESSION['NOTE'][$note_id]['SIGLE'];
+  $tab_tactile_ligne[$ligne] .= '<span id="kbd_'.$keycode.'"><img alt="'.$alt.'" src="'.Html::note_src($note_id).'" /></span>';
+}
+$bloc_invisible = '<span style="visibility:hidden"></span>';
+$bloc_retourner = '<span id="kbd_27" class="img retourner"></span>';
+$bloc_valider   = '<span id="kbd_13" class="img valider"></span>';
+switch($_SESSION['NOMBRE_CODES_NOTATION'])
+{
+  case 2:
+    $tab_tactile_ligne[3] .= $bloc_retourner.$bloc_valider;
+    break;
+  case 3:
+    $tab_tactile_ligne[3] .= $bloc_retourner;
+    $tab_tactile_ligne[4] .= $bloc_invisible.$bloc_invisible.$bloc_invisible.$bloc_valider;
+    break;
+  case 4:
+    $tab_tactile_ligne[4] .= $bloc_invisible.$bloc_retourner.$bloc_valider.$bloc_invisible;
+    break;
+  case 5:
+    $tab_tactile_ligne[4] .= $bloc_retourner.$bloc_valider.$bloc_invisible;
+    break;
+  case 5:
+    $tab_tactile_ligne[4] .= $bloc_retourner.$bloc_valider;
+    break;
+}
+$tactile_ligne = '<div>'.implode('<div>'."\r\n".'</div>',$tab_tactile_ligne).'</div>';
+
+// Tableau js des liens keycode => note_id
+// Chaîne js récapitulative des keycode à surveiller
+$tab_keycode = array();
+foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
+{
+  foreach( $tab_ascii['note_usuelle'][$_SESSION['NOTE'][$note_id]['CLAVIER']] as $keycode )
+  {
+    $tab_keycode[$keycode] = 'tab_keycode_note['.$keycode.']="'.$note_id.'";';
+  }
+}
+
+// Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
+$select_eleve   = '';
+$select_periode = '';
+
 // Javascript
-Layout::add( 'js_inline_before' , 'var TYPE           = "'.$TYPE.'";' );
-Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
-Layout::add( 'js_inline_before' , 'var date_mysql     = "'.TODAY_MYSQL.'";' );
-Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
 Layout::add( 'js_inline_before' , 'var tab_items      = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_profs      = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_eleves     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_sujets     = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_corriges   = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_groupe     = new Array();' );
-Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
-Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );
-Layout::add( 'js_inline_before' , 'var reception_items_texte = "'.$txt_items.'";' );
-Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
-Layout::add( 'js_inline_before' , 'var reception_items_liste = "'.implode('_',$tab_items).'";' );
-Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
-Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id   = '.$auto_voir_devoir_id.';' );
-Layout::add( 'js_inline_before' , 'var auto_voir_groupe_type = "'.$auto_voir_groupe_type.'";' );
-Layout::add( 'js_inline_before' , 'var auto_voir_groupe_id   = '.$auto_voir_groupe_id.';' );
-
-// Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
-$select_eleve   = '';
-$select_periode = '';
 
 if($TYPE=='groupe')
 {
@@ -139,18 +254,35 @@ $select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
 
+Form::load_choix_memo();
+
+// Élément de formulaire "f_eleves_ordre"
+$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
+
 // Longueur max pour un enregistrement audio (de toutes façons limitée techniquement à 120s).
 // Selon les tests effectués la taille du MP3 enregistrée est de 3,9 Ko/s.
 $AUDIO_DUREE_MAX = min( 120 , FICHIER_TAILLE_MAX/4 );
 
 // Javascript
+Layout::add( 'js_inline_before' , 'var TYPE           = "'.$TYPE.'";' );
+Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var date_mysql     = "'.TODAY_MYSQL.'";' );
+Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
+Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
+Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );
+Layout::add( 'js_inline_before' , 'var reception_items_texte = "'.$txt_items.'";' );
+Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
+Layout::add( 'js_inline_before' , 'var reception_items_liste = "'.implode('_',$tab_items).'";' );
+Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
+Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id   = '.$auto_voir_devoir_id.';' );
+Layout::add( 'js_inline_before' , 'var auto_voir_groupe_type = "'.$auto_voir_groupe_type.'";' );
+Layout::add( 'js_inline_before' , 'var auto_voir_groupe_id   = '.$auto_voir_groupe_id.';' );
+Layout::add( 'js_inline_before' , 'var tab_keycode_note = new Array();'.implode('',$tab_keycode) );
+Layout::add( 'js_inline_before' , 'var keycode_search = ".'.implode('.',array_keys($tab_keycode)).'.8.46.65.68.69.70.78.80.82.";' );
 Layout::add( 'js_inline_before' , 'var AUDIO_DUREE_MAX = '.$AUDIO_DUREE_MAX.';' );
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value="">&nbsp;</option>'.$select_eleve).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
-
-Form::load_choix_memo();
-$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
 ?>
 
 <ul class="puce">
@@ -306,7 +438,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
 <form action="#" method="post" id="zone_ordonner" class="hide">
   <h2>Réordonner les items d'une évaluation</h2>
   <p class="b" id="titre_ordonner"></p>
-  <ul id="sortable">
+  <ul id="sortable_v">
     <li></li>
   </ul>
   <p>
@@ -510,17 +642,10 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
 
 <?php /*  Pour la saisie des notes à la souris */ ?>
 <div id="td_souris_container"><div class="td_souris">
-  <img alt="NN" src="<?php echo Html::note_src('NN') ?>" /><img alt="RR" src="<?php echo Html::note_src('RR') ?>" /><img alt="ABS"  src="<?php echo Html::note_src('ABS' ) ?>" /><br />
-  <img alt="NE" src="<?php echo Html::note_src('NE') ?>" /><img alt="R"  src="<?php echo Html::note_src('R' ) ?>" /><img alt="DISP" src="<?php echo Html::note_src('DISP') ?>" /><br />
-  <img alt="NF" src="<?php echo Html::note_src('NF') ?>" /><img alt="V"  src="<?php echo Html::note_src('V' ) ?>" /><img alt="REQ"  src="<?php echo Html::note_src('REQ' ) ?>" /><br />
-  <img alt="NR" src="<?php echo Html::note_src('NR') ?>" /><img alt="VV" src="<?php echo Html::note_src('VV') ?>" /><img alt="X"    src="<?php echo Html::note_src('X'   ) ?>" /><br />
+<?php echo $souris_ligne ?>
 </div></div>
 
 <?php /*  Clavier virtuel pour les dispositifs tactiles */ ?>
 <div id="cadre_tactile">
-  <div><kbd id="kbd_37"><img alt="Gauche" src="./_img/fleche/fleche_g1.gif" /></kbd><kbd id="kbd_39"><img alt="Droite" src="./_img/fleche/fleche_d1.gif" /></kbd><kbd id="kbd_38"><img alt="Haut" src="./_img/fleche/fleche_h1.gif" /></kbd><kbd id="kbd_40"><img alt="Bas" src="./_img/fleche/fleche_b1.gif" /></kbd></div>
-  <div><kbd id="kbd_97"><img alt="RR"  src="<?php echo Html::note_src('RR' ) ?>" /></kbd><kbd id="kbd_98"><img alt="R"    src="<?php echo Html::note_src('R'   ) ?>" /></kbd><kbd id="kbd_99"><img alt="V"   src="<?php echo Html::note_src('V'  ) ?>" /></kbd><kbd id="kbd_100"><img alt="VV" src="<?php echo Html::note_src('VV') ?>" /></kbd></div>
-  <div><kbd id="kbd_78"><img alt="NN"  src="<?php echo Html::note_src('NN' ) ?>" /></kbd><kbd id="kbd_69"><img alt="NE"   src="<?php echo Html::note_src('NE'  ) ?>" /></kbd><kbd id="kbd_70"><img alt="NF"  src="<?php echo Html::note_src('NF' ) ?>" /></kbd><kbd id="kbd_82" ><img alt="NR" src="<?php echo Html::note_src('NR') ?>" /></kbd></div>
-  <div><kbd id="kbd_65"><img alt="ABS" src="<?php echo Html::note_src('ABS') ?>" /></kbd><kbd id="kbd_68"><img alt="DISP" src="<?php echo Html::note_src('DISP') ?>" /></kbd><kbd id="kbd_80"><img alt="REQ" src="<?php echo Html::note_src('REQ') ?>" /></kbd><kbd id="kbd_46" ><img alt="X"  src="<?php echo Html::note_src('X' ) ?>" /></kbd></div>
-  <div><kbd style="visibility:hidden"></kbd><kbd id="kbd_13" class="img valider"></kbd><kbd id="kbd_27" class="img retourner"></kbd><kbd style="visibility:hidden"></kbd></div>
+<?php echo $tactile_ligne ?>
 </div>

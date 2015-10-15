@@ -108,7 +108,32 @@ else
   <label class="tab">État actuel :</label><span id="ajax_acces_actuel"><?php echo $label_acces ?></span><br />
   <label class="tab">Action :</label><label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label>&nbsp;&nbsp;&nbsp;<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><br />
   <div id="span_motif" class="hide"><label class="tab" for="f_motif">Motif :</label><select id="f_proposition" name="f_proposition"><option value="rien">autre motif</option><option value="mise-a-jour" selected>mise à jour</option><option value="maintenance">maintenance</option><option value="demenagement">déménagement</option></select> <input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="Mise à jour des fichiers en cours." /></div>
-  <span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_verrouillage" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
+
+<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
+
+<hr />
+
+<h2>Forcer la mise à jour des bases des établissements</h2>
+
+<form action="#" method="post" id="form_maj_bases_etabl"><fieldset>
+  <p class="astuce">
+    Les bases de chaque établissement sont mises à jour automatiquement à la connexion du premier utilisateur suivant une mise à jour logicielle.
+  </p>
+  <p class="danger">
+    Il est donc inutile de lancer cette procédure, relativement lourde, à chaque mise à jour logicielle !
+  </p>
+  Forcer la mise à jour de toutes les bases peut être utile dans les cas suivants :
+  <ul class="puce">
+    <li>mettre à jour des bases d'établissements inutilisées, afin d'éviter un saut de version ultérieur trop important (potentiellement risqué)</li>
+    <li>faire passer une mise à jour majeure à un moment ou quasiment personne n'est connecté</li>
+  </ul>
+  <p>
+    <span class="tab"></span><button id="bouton_maj_bases_etabl" type="button" class="parametre">Forcer la maj des bases établissements.</button><label id="ajax_maj_bases_etabl">&nbsp;</label>
+  </p>
+</fieldset></form>
+
+<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>
 
 <hr />

@@ -39,6 +39,7 @@ if( in_array($daltonisme,array(0,1)) )
   $_SESSION['USER_DALTONISME'] = $daltonisme;
   DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_daltonisme' , $daltonisme );
   // Enregistrer en session le CSS personnalisé
+  SessionUser::memoriser_couleurs();
   SessionUser::adapter_daltonisme();
   SessionUser::actualiser_style();
   exit('ok');

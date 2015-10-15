@@ -84,7 +84,7 @@ class PDF_socle_synthese extends PDF
       extract($tab);  // $pilier_ref $pilier_nom $pilier_nb_entrees
       $texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==2) ) ? '-' : '' ;
       $this->SetX( $this->GetX()+1 );
-      $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']]);
+      $this->choisir_couleur_fond('V'.$tab_user_pilier[$eleve_id][$pilier_id]['etat'].$this->couleur);
       $this->Cell($pilier_nb_entrees*$this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     // positionnement pour la suite
@@ -99,7 +99,7 @@ class PDF_socle_synthese extends PDF
       foreach($tab as $socle_id => $socle_nom)
       {
         $texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) ) ? '-' : '' ;
-        $couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : $this->tab_choix_couleur[$this->couleur]['v'.$tab_user_entree[$eleve_id][$socle_id]['etat']] ;
+        $couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : 'V'.$tab_user_entree[$eleve_id][$socle_id]['etat'].$this->couleur ;
         $this->choisir_couleur_fond($couleur);
         $this->Cell( $this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       }

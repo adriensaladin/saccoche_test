@@ -231,7 +231,7 @@ $(document).ready
           f_select_pilier            : { required:function(){return socle_pilier_requis;} },
           f_mode                     : { required:function(){return mode_requis;} },
           'f_matiere[]'              : { required:function(){return mode_manuel;} },
-          'f_critere_seuil_acquis[]' : { required:function(){return acquisition_requis;} , maxlength:3 },
+          'f_critere_seuil_acquis[]' : { required:function(){return acquisition_requis;} , maxlength:max_etats_acquis },
           'f_critere_seuil_valide[]' : { required:function(){return validation_requis;} , maxlength:2 }
         },
         messages :

@@ -1020,8 +1020,226 @@ if($version_base_structure_actuelle=='2015-09-02')
     $cas_serveur_verif_certif_ssl = ($connexion_nom!='perso') ? 1 : 0 ;
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_ip_variable"    , "0" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "cas_serveur_verif_certif_ssl" , "'.$cas_serveur_verif_certif_ssl.'" )' );
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2015-09-13 => 2015-10-16
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2015-09-13')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2015-10-16';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table [sacoche_parametre_acquis]
+    $reload_sacoche_parametre_acquis = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_parametre_acquis.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_parametre_note]
+    $reload_sacoche_parametre_note = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_parametre_note.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_image_note]
+    $reload_sacoche_image_note = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_image_note.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // transfert de paramètres vers ces nouvelles tables
+    $tab_parametres = array(
+      'acquis_legende_A',
+      'acquis_legende_NA',
+      'acquis_legende_VA',
+      'acquis_texte_A',
+      'acquis_texte_NA',
+      'acquis_texte_VA',
+      'calcul_seuil_R',
+      'calcul_seuil_V',
+      'calcul_valeur_R',
+      'calcul_valeur_RR',
+      'calcul_valeur_V',
+      'calcul_valeur_VV',
+      'css_background-color_A',
+      'css_background-color_NA',
+      'css_background-color_VA',
+      'note_image_RR',
+      'note_image_R',
+      'note_image_V',
+      'note_image_VV',
+      'note_legende_RR',
+      'note_legende_R',
+      'note_legende_V',
+      'note_legende_VV',
+      'note_texte_RR',
+      'note_texte_R',
+      'note_texte_V',
+      'note_texte_VV',
+    );
+    $listing_parametres = '"'.implode('","',$tab_parametres).'"';
+    $DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre WHERE parametre_nom IN('.$listing_parametres.') ';
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE);
+    $tab_notes_perso = array (
+      'rectangle-texte_bleu_MT' => 
+      array (
+        'h' => 'R0lGODlhFAAKAKECAAAAAEpP/////////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAABQACgAAAiRUjqloB/qAnC9JdPFyNWS3eWJkhSSpbaeYLmvHumBMB00YCgUAOw==',
+        'v' => 'R0lGODlhCgAUAKECAAAAAEpP/////////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAAAoAFAAAAh9UjmfJAY0edNOBi6WEu/XqZVj0MRn4nSQnXuC7NEIBADs=',
+      ),
+      'rectangle-texte_jaune-AR' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMCAP//AP/aAAAAADgkANr/AHUUAFClALZlAP///wxlALb/AJHaAP+2ANqRAAA4AAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAgALAAAAAAUAAoAAARCEIFJq6WyHkPDEGByTUFSKORATMUybg0HeCuwjSc9q6xrxZObBySQWQpEgYOga10YIkpL50FVThWozracZEZgACICADs=',
+        'v' => 'R0lGODlhCgAUALMCAP//AP/aAAAAADgkANr/AHUUAFClALZlAP///wxlALb/AJHaAP+2ANqRAAA4AAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAgALAAAAAAKABQAAARNEIFJp6w4T0KXWZPiTElxFN9wTAIlFIErVwJh1/Y07Pw+BcAgUENYJDAEg6PAoCgMqhbFUGjEpJNDwqAAYH8nw7fSKCS6GkZBU7lkEBEAOw==',
+      ),
+      'rectangle-texte_jaune-PA' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMGAP//AP/aANr/AAAAADg4AFClAH0gAP+2ABBlAAA4ALb/AJHaALZlANqRADgAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAA8ALAAAAAAUAAoAAARA8IFJq6VyBjf6qkxxaYQAHIkJBIihjEG5ykDYiFdsoqqr5xzP5DYJ5WgUQ6eTsvwoB0TF8Kk8J65KdJIZeQGPCAA7',
+        'v' => 'R0lGODlhCgAUALMGAP//AP/aANr/AAAAADg4AFClAH0gAP+2ABBlAAA4ALb/AJHaALZlANqRADgAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAA8ALAAAAAAKABQAAARK8IFJp6w4i4WwKIlxUEpBMENVGE0ApBSDFMqLBYxRwFljILUM4GCgCI6ZRYKQWGAGh8CBN+FRX0fBIDtxEL7e7yRALpOF6MxFHQEAOw==',
+      ),
+      'rectangle-texte_orange-ECA' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMNAPqROAAAAPplFLqFNHkQBPqRLAA4KDhMLL5ABGVlOP////p9IDggIAAgIAAADAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAoALAAAAAAUAAoAAARJUIFJq6VKhO0SIJtHIQclGBVRFoS4HMQwndTCyMCAIwk/b4EGzcIa2GRDQHJUAviSxwoLGBwsVQDW4ZrQAD2gQClWOUku6IoiAgA7',
+        'v' => 'R0lGODlhCgAUALMNAPqROAAAAPplFLqFNHkQBPqRLAA4KDhMLL5ABGVlOP////p9IDggIAAgIAAADAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAoALAAAAAAKABQAAARXUIE5RzKS2kaETgwSUMBBIAswUsiRDCoJLAhxrHJRG7AMFAIC5UU5DAk9gG0SKJAKKxxlZesNTBQCw2BgCCeJmUCQCgMck8aUyW5H1ypugGsYKcZ4vCICADs=',
+      ),
+      'rectangle-texte_orange_AR' => 
+      array (
+        'h' => 'R0lGODlhFAAKAKECAAAAAPqQOv///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAABQACgAAAiNUjqloCgniW+jNcO+ytdN8gJ80kVTolaeGtejmuG/QnKdQAAA7',
+        'v' => 'R0lGODlhCgAUAKECAAAAAPqQOv///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAAAoAFAAAAiFUjmfJ7QwQmCdWaa+WPM3/PWJAeSVGQp2ZOqF4js/SCAUAOw==',
+      ),
+      'rectangle-texte_orange_PR' => 
+      array (
+        'h' => 'R0lGODlhFAAKAJEAAAAAAPqQOv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAUAAoAAAIgVI6paAgPHFyuhnjw0pjTa3kUxE2fFn6gIm6uFTQqJRQAOw==',
+        'v' => 'R0lGODlhCgAUAJEAAAAAAPqQOv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAKABQAAAIgVI5nye0MEJgnVmmvljzN/z1iE0LdmW1pAILjOy6NUAAAOw==',
+      ),
+      'rectangle-texte_rouge-NA' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMHAP8kAJEgAP8gAJEIANogALYUADgIAAAAAGUQADgQAP///wAMADgAAP8cAJEQAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAoALAAAAAAUAAoAAARHUIFJq6VyChbm6FORXBqzeKCQDAUpGE73hQiBuAYxzgBSvIQLsBCY6WjCnGqGODgPi2AFCCgcAo0ThUehbootSnaSIZkBiggAOw==',
+        'v' => 'R0lGODlhCgAUALMHAP8kAJEgAP8gAJEIANogALYUADgIAAAAAGUQADgQAP///wAMADgAAP8cAJEQAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAoALAAAAAAKABQAAARIUIFJp6w4k7AwQcvQUAViFEeVDIQApGSCFC8mlAmsgXQGNINJYEgcTgbI5IGRCSQKLooTWuE4CFjshMEweL8TgXgs9pkzF3QEADs=',
+      ),
+      'rectangle-texte_rouge-NR' => 
+      array (
+        'h' => 'R0lGODlhFAAKAKECAAAAAP8nAP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAABQACgAAAiRUjqloB/kCmHFNFGuF0vmvPJlDLZ/obWF6mh0JquC7VY3rCgUAOw==',
+        'v' => 'R0lGODlhCgAUAKECAAAAAP8nAP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAAAoAFAAAAiFUjmfJ7QwQiIcGGu2tevs0heFDQuLodFwzpc+JluTSCAUAOw==',
+      ),
+      'rectangle-texte_vert-A' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMBAAC6VQAAAP///wCJVQAoKAC6QABIAABpEAChMABpSABIPACFIAAAIAAoEABIMAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAUAAoAAAQuUIBJq6XyTpO0n4hDfJ4xHANpFQyAjCp1dIAZA0Wg67C6KJRCI6XqTX6XzA0TAQA7',
+        'v' => 'R0lGODlhCgAUALMBAAC6VQAAAP///wCJVQAoKAC6QABIAABpEAChMABpSABIPACFIAAAIAAoEABIMAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAKABQAAAQwUIBJp6w46827Hko2EM1SjUZQUAlxIEBQGc4wyRViMAmOFYdASFNYEDzIpBJwyQgiADs=',
+      ),
+      'rectangle-texte_vert_MP' => 
+      array (
+        'h' => 'R0lGODlhFAAKAKECAAAAAAC7VP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAABQACgAAAiRUjqloB/oCmBHW6VDVN971hJJDLaPomdo5tirabmAWm42qCgUAOw==',
+        'v' => 'R0lGODlhCgAUAKECAAAAAAC7VP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAAAoAFAAAAiBUjmfJ3QBcDDPNiu6DHLovdVyGbR5YdlZ5iCMIB0sjFAA7',
+      ),
+      'rectangle-texte_vert_R' => 
+      array (
+        'h' => 'R0lGODlhFAAKAKECAAAAAAC7VP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAABQACgAAAh1UjqloCw+WRPHUqe7FFHIXbJ9FjtRphol4NGlbAAA7',
+        'v' => 'R0lGODlhCgAUAKECAAAAAAC7VP///////yH+H1LpYWxpc+kgYXZlYyBHSUYgTW92aWUgR2VhciAzLjAAIfkEAQoAAgAsAAAAAAoAFAAAAhxUjmfJ7Q+jdACBenDAVe/sfWJyleWEpqqzNEIBADs=',
+      ),
+      'rectangle-texte_violet-M' => 
+      array (
+        'h' => 'R0lGODlhFAAKAJEAAAAAANIj6v///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAUAAoAAAIgVI6paAq+InhnxmUrvej5sHHg+IkVOZpoaVJu1KiJUAAAOw==',
+        'v' => 'R0lGODlhCgAUAJEAAAAAANIj6v///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAIALAAAAAAKABQAAAIZVI5nye0PowS0UnShjYBt3DXWJ5WmuTRCAQA7',
+      ),
+      'texte-couleur_bleu-EX' => 
+      array (
+        'h' => 'R0lGODlhFAAKAMQAAD9IzD9I1T9I3T9q5mRIzGRqzD+K7mSp7mSp94VIzKZqzIXH/6bj/8SKzOGp1cT////H3eH/7uH////j5v//7v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABUALAAAAAAUAAoAAAVJYCWOZGlOBKCqS+WwFaQiIrrCVQMMUQIYI1urZFMJHsHUKsAYvXA1pYo50s1IQpMsUABQozcAjeIzkHcS8O1QUXibtkHaRDeFAAA7',
+        'v' => 'R0lGODlhCgAUAMQAAD9IzD9I1T9I3T9q5mRIzGRqzD+K7mSp7mSp94VIzKZqzIXH/6bj/8SKzOGp1cT////H3eH/7uH////j5v//7v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABUALAAAAAAKABQAAAVaYCWOoiQiZCUNImA8IjMALSAsSAAQIpQAQEBiMooEC5TRYgYMGBg1gqPRbDWIFR+t4khRFKlwZbGoMKCIQ60SCFSAazj8TZNvgQv8PMjfEv6AfyIThIWEYiQhADs=',
+      ),
+      'texte-couleur_noir-X' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMFAP///wAAAHl1VUwICP+6bQAAWW2+/ziR2pE4AP//2v//tgA4kbb//9rGidr//wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAUAAoAAAQ2EEhJwnIgoWKm/0jQVcdnSsqwaNd5VoPonpo1n01cMLenFblFb0IChDq91A6g5N1CJUog6okAADs=',
+        'v' => 'R0lGODlhCgAUALMFAP///wAAAHl1VUwICP+6bQAAWW2+/ziR2pE4AP//2v//tgA4kbb//9rGidr//wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAKABQAAAQ6EMhJq70462ouO8XhUEYRIMHSMUswEAmBLsWAKFMyBEEzOYYWYhBiAFqvRAMVOuEksR3hokBsrthsBAA7',
+      ),
+      'texte-couleur_noir-XX' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMBAP///wAAAHl1VUwICP+6bQAAWW2+/ziR2pE4AP//2v//tgA4kbb//9rGidr//wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAUAAoAAARMkITlQELFAEkt1gASaNIBnCIZmKcyLFfXvnF1bsEw3qekg7fLhHcSLoiAhq7AICoDTN6loDwGMVVeKbTrrbggV1TcJAPMIhbOlL5tIwA7',
+        'v' => 'R0lGODlhCgAUALMBAP///wAAAHl1VUwICP+6bQAAWW2+/ziR2pE4AP//2v//tgA4kbb//9rGidr//wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAKABQAAARREMhJDZ3slONqCUiwWMwSDERChEsxIMqUDEHQTI5hIsPGACZUohHagGISFY1wkSgQzUo0s+lMDB8WKZhaiVwwGc2G04F6hx93WDwcZYRl9BkBADs=',
+      ),
+      'texte-couleur_orange-MI' => 
+      array (
+        'h' => 'R0lGODlhFAAKALPMAP9/J/9/Uv9/eP+VJ/+rJ/+VeP/BUv/WeP+VnP+rvv/rnP//vv/B3//W///r/////yH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAA8ALAAAAAAUAAoAAARL8MlJqz0AiLcyaI+SBYAzYUDgiBnIkqaEAswRDJ8kqhRWDAmCgJALpWIyAIJwCxZ3yAcGYcgwiCAj76RkNbDGVImL6GzAr7FlzY4AADs=',
+        'v' => 'R0lGODlhCgAUALMAAP9/J/9/Uv9/eP+VJ/+rJ/+VeP/BUv/WeP+VnP+rvv/rnP//vv/B3//W///r/////yH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAA8ALAAAAAAKABQAAARI8MlJq3WOYgkAxp0UjOTIdWj4dEqrqC0VW1Vj3/aZqt1A/L9TQJBgNCYLxYEw6AgmDkYigJIIqD6DYqErIL4I3U5yKJvLNEoEADs=',
+      ),
+      'texte-couleur_rouge-NM' => 
+      array (
+        'h' => 'R0lGODlhFAAKAMQAAO0cJPEcJO0cUO0cdvFKJPNyJPdyJPlyJO1Kdu1Km+1yvfmYUPeYdv+7dvO7vfGY3vO7//7dm/7/vffd//n//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABQALAAAAAAUAAoAAAVRICWOZGlGAQBRUgo1ADCwqUqhMq3CgDDhNqCitYsBHg0BIVgDOFwwBEFxGBSYAoaxmDAoqdjJwfgCJBaxx3iF8hG5OMj6FvBReOVEazY3+U0hADs=',
+        'v' => 'R0lGODlhCgAUAMQAAO0cJPEcJO0cUO0cdvFKJPNyJPdyJPlyJO1Kdu1Km+1yvfmYUPeYdv+7dvO7vfGY3vO7//7dm/7/vffd//n//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABQALAAAAAAKABQAAAVdIAWN5EhRQKqmZ0oUR3ycQSAMygOdlBQ1B0JqwJs8FAJA7TRIEgyLiKSVQiSuCeqKRWl4v95TqaTd0mqB1UnCdqQCDR5FkTpMxYMUY8IvC/4CZ2hoJxGGh4ZyiichADs=',
+      ),
+      'texte-couleur_vert-MS' => 
+      array (
+        'h' => 'R0lGODlhFAAKAMQAACKxTCKxbk6xTE6/THWxTHW/THXMTCKxjSK/jSK/qyLMyE7Z43Xm/5q/TJrMTL3MTL3Zbt7Zbpry/73//97yq//mjf/yq97/yP//yP//4////wAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABoALAAAAAAUAAoAAAVSoCaOZGlWAHBMGJEyGpoCyygHkiW8+gzgIhmtEhgAGKjVCYAoKB4Hw1HTmAGDgISj+JyKHjNYLAtJLcDiUVWBTVB2DHTE92pfCCu0Bhw2+f8aIQA7',
+        'v' => 'R0lGODlhCgAUAMQAACKxTCKxbk6xTE6/THWxTHW/THXMTCKxjSK/jSK/qyLMyE7Z43Xm/5q/TJrMTL3MTL3Zbt7Zbpry/73//97yq//mjf/yq97/yP//yP//4////wAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKABoALAAAAAAKABQAAAVfoCaOpCiJjMKMS6BJQLxqsRYATU0De79PgIcvduD5KgKcKDiyVEaREWNKnS5jWF1sYHh4hRqCIHBQLBgTEcb5GBBFE8lCcRMQRIdbwQGhXK4ACAmDCYBZRhWJiokljSEAOw==',
+      ),
+      'texte-couleur_vert-V' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMPAP///6Xy8jCRNP/ijTCdlV3K5tLCSDCRWX2RNOL/9v//ylmRNJ2lNH26fTC6wgAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAUAAoAAAQ2EEjJTphjkTT7NEKBhV6ZOZ9VegpDXAqyrR4oZiLdDaSh6pPYxsUBpgKInFHCa/yWgJjgRYsAADs=',
+        'v' => 'R0lGODlhCgAUALMPAP///6Xy8jCRNP/ijTCdlV3K5tLCSDCRWX2RNOL/9v//ylmRNJ2lNH26fTC6wgAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAKABQAAAQ4EMhJq70415RJCVy1CIcHTsNgIEv5BZOiMkhpJUEjTEFREAcBoucgCISGgSK4YCQVE6dSQ61aNREAOw==',
+      ),
+      'texte-couleur_vert-VV' => 
+      array (
+        'h' => 'R0lGODlhFAAKALMCAP///6Xy8jCRNP/ijTCdlV3K5tLCSDCRWX2RNOL/9v//ylmRNJ2lNH26fTC6wgAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAUAAoAAARMkJ0A6lgkSWpxMkJRAUMIgKJlXs5oTOTSVi+lMISNZMCd97sEbbVInYjGkqg2Up5gFUUQJ4xOea4JwkjTckmCBrQZHlsFvxEQzQFEAAA7',
+        'v' => 'R0lGODlhCgAUALMCAP///6Xy8jCRNP/ijTCdlV3K5tLCSDCRWX2RNOL/9v//ylmRNJ2lNH26fTC6wgAAACH/C05FVFNDQVBFMi4wAwEAAAAh/h9S6WFsaXPpIGF2ZWMgR0lGIE1vdmllIEdlYXIgMy4wACH5BAEKAAAALAAAAAAKABQAAARRMIFJKSlBVrDEuRk1DAayfFhAKSSDfBuQBI1ABUVBHAKCOwRBzzBQ8BYMooKSLMY0MQAISumgQpNR6QRSTVgGF2wzq91yu94vOCwem8sJPBYBADs=',
+      ),
+    );
+    function conversion_images($image_nom)
+    {
+      global $tab_notes_perso;
+      $tab_image_bad = array( 'texte_chiffre-' , 'texte_lettre-' , 'texte_niveau-' );
+      $tab_image_bon = array( 'texte-chiffre_' , 'texte-lettre_' , 'texte-niveau_' );
+      // Cas d'une image qui est supprimée des sources
+      if(isset($tab_notes_perso[$image_nom]))
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_image_note(image_contenu_h,image_contenu_v) VALUES ( "'.$tab_notes_perso[$image_nom]['h'].'" , "'.$tab_notes_perso[$image_nom]['v'].'" )' );
+        $image_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+        $image_nom = 'upload_'.$image_id;
+      }
+      // Cas d'une image qui change de nom
+      else
+      {
+        $image_nom = str_replace($tab_image_bad,$tab_image_bon,$image_nom);
+      }
+      return $image_nom;
+    }
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_acquis SET acquis_seuil_min=0                                                       , acquis_seuil_max='.($DB_TAB['calcul_seuil_R'][0]['parametre_valeur']-1).', acquis_couleur="'.$DB_TAB['css_background-color_NA'][0]['parametre_valeur'].'", acquis_sigle="'.$DB_TAB['acquis_texte_NA'][0]['parametre_valeur'].'", acquis_legende="'.$DB_TAB['acquis_legende_NA'][0]['parametre_valeur'].'" WHERE acquis_id=1 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_acquis SET acquis_seuil_min='.$DB_TAB['calcul_seuil_R'][0]['parametre_valeur'].'    , acquis_seuil_max='.$DB_TAB['calcul_seuil_V'][0]['parametre_valeur'].'    , acquis_couleur="'.$DB_TAB['css_background-color_VA'][0]['parametre_valeur'].'", acquis_sigle="'.$DB_TAB['acquis_texte_VA'][0]['parametre_valeur'].'", acquis_legende="'.$DB_TAB['acquis_legende_VA'][0]['parametre_valeur'].'" WHERE acquis_id=2 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_acquis SET acquis_seuil_min='.($DB_TAB['calcul_seuil_V'][0]['parametre_valeur']+1).', acquis_seuil_max=100                                                     , acquis_couleur="'.$DB_TAB['css_background-color_A' ][0]['parametre_valeur'].'", acquis_sigle="'.$DB_TAB['acquis_texte_A' ][0]['parametre_valeur'].'", acquis_legende="'.$DB_TAB['acquis_legende_A' ][0]['parametre_valeur'].'" WHERE acquis_id=3 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_note SET note_valeur='.$DB_TAB['calcul_valeur_RR'][0]['parametre_valeur'].', note_image="'.conversion_images($DB_TAB['note_image_RR'][0]['parametre_valeur']).'", note_sigle="'.$DB_TAB['note_texte_RR'][0]['parametre_valeur'].'", note_legende="'.$DB_TAB['note_legende_RR'][0]['parametre_valeur'].'" WHERE note_id=1 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_note SET note_valeur='.$DB_TAB['calcul_valeur_R' ][0]['parametre_valeur'].', note_image="'.conversion_images($DB_TAB['note_image_R' ][0]['parametre_valeur']).'", note_sigle="'.$DB_TAB['note_texte_R' ][0]['parametre_valeur'].'", note_legende="'.$DB_TAB['note_legende_R' ][0]['parametre_valeur'].'" WHERE note_id=2 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_note SET note_valeur='.$DB_TAB['calcul_valeur_V' ][0]['parametre_valeur'].', note_image="'.conversion_images($DB_TAB['note_image_V' ][0]['parametre_valeur']).'", note_sigle="'.$DB_TAB['note_texte_V' ][0]['parametre_valeur'].'", note_legende="'.$DB_TAB['note_legende_V' ][0]['parametre_valeur'].'" WHERE note_id=3 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre_note SET note_valeur='.$DB_TAB['calcul_valeur_VV'][0]['parametre_valeur'].', note_image="'.conversion_images($DB_TAB['note_image_VV'][0]['parametre_valeur']).'", note_sigle="'.$DB_TAB['note_texte_VV'][0]['parametre_valeur'].'", note_legende="'.$DB_TAB['note_legende_VV'][0]['parametre_valeur'].'" WHERE note_id=4 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN ('.$listing_parametres.') ' );
+    // ajout de deux paramètres en échange
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "nombre_codes_notation"    , "4" )' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "nombre_etats_acquisition" , "3" )' );
+    // et d'un autre à cause du problème ci-dessous
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "version_base_maj_complementaire" , "" )' );
+    // enfin ajout d'un paramètre et renommage d'un autre
+    $droit_voir_algorithme = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_voir_algorithme" ');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_param_algorithme"   , "'.$droit_voir_algorithme.'" )' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_param_notes_acquis" , "'.$droit_voir_algorithme.'" )' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_voir_algorithme" ' );
     // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
+    // Adaptation de la table sacoche_saisie pour le passage de 4 à 6 codes de notation possibles
+    // On change le type ENUM par un CHAR(2) car utiliser des entiers dans un ENUM est déconseillé.
+    // Problème : un UPDATE quand il y a plus d'un million de lignes dépasse très largement le max_execution_time de PHP
+    // Solution : on reporte via plusieurs appels ajax qui seront appelés depuis la page d'accueil du compte
+    $nb_notes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT COUNT(*) FROM sacoche_saisie ' );
+    if($nb_notes<100000)
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note CHAR(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="1"  WHERE saisie_note="RR" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="2"  WHERE saisie_note="R" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="3"  WHERE saisie_note="V" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="4"  WHERE saisie_note="VV" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="PA" WHERE saisie_note="RE" ' );
+    }
+    else
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'a" WHERE parametre_nom="version_base_maj_complementaire"' );
+    }
   }
 }
 

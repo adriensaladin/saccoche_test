@@ -151,6 +151,14 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
   }
 }
 
+// Lancer une mise à jour complémentaire de la base par morceaux
+if($PAGE=='maj_base_complementaire')
+{
+  DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
+  $retour = ($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']) ? 'encore' : 'terminé' ;
+  exit($retour);
+}
+
 // Chargement de la page concernée
 $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.ajax.php';
 if(is_file($filename_php))

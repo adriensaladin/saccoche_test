@@ -234,10 +234,8 @@ unset($DB_TAB);
 // Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
-
 $tab_score_eleve_item      = array();  // Retenir les scores / élève / matière / synthese / item
-$tab_infos_acquis_eleve    = array();  // Retenir les infos (nb A - VA - NA) / élève / matière / synthèse + total
+$tab_infos_acquis_eleve    = array();  // Retenir les infos (nb acquis) / élève / matière / synthèse + total
 $tab_infos_detail_synthese = array();  // Retenir le détail du contenu d'une synthèse / élève / synthèse
 
 $nb_syntheses_total = 0 ;
@@ -271,7 +269,7 @@ if(empty($is_appreciation_groupe))
         {
           if($score!==FALSE)
           {
-            $indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+            $indice = determiner_etat_acquisition( $score );
             if($aff_coef)
             {
               $texte_coef = '['.$item_coef.'] ';
@@ -290,7 +288,7 @@ if(empty($is_appreciation_groupe))
             elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
             else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
             $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
-            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<div><span class="pourcentage '.$tab_etat[$indice].'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval.'</div>';
+            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<div><span class="pourcentage A'.$indice.'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval.'</div>';
           }
         }
       }
@@ -303,19 +301,16 @@ if(empty($is_appreciation_groupe))
           $nb_scores = count( $tableau_score_filtre );
           if(!isset($tab_infos_acquis_eleve[$eleve_id][$matiere_id]))
           {
-            // Le mettre avant le test sur $nb_scores permet d'avoir au moins le titre des matières où il y a des saisies mais seulement ABS NN etc. (et donc d'avoir la rubrique sur le bulletin).
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'] = array('NA'=>0 , 'VA'=>0 , 'A'=>0);
+            // Le mettre avant le test sur $nb_scores permet d'avoir au moins le titre des matières où il y a des saisies mais seulement AB NN etc. (et donc d'avoir la rubrique sur le bulletin).
+            $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'] = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 );
           }
           if($nb_scores)
           {
-            $nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
-            $nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
-            $nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-            // $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = (!$make_officiel) ? array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis ) : array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis, 'nb'=>$nb_scores , '%'=>round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0) ) ;
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis );
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['NA'] += $nb_non_acquis;
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['VA'] += $nb_voie_acquis;
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['A']  += $nb_acquis;
+            $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+            foreach( $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] as $acquis_id => $acquis_nb )
+            {
+              $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'][$acquis_id] += $acquis_nb;
+            }
           }
         }
       }
@@ -327,7 +322,7 @@ else
   // Pour pouvoir passer dans la boucle en cas d'appréciation sur le groupe
   foreach($tab_matiere as $matiere_id => $tab)
   {
-    $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'] = array('NA'=>0 , 'VA'=>0 , 'A'=>0);
+    $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'] = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 );
   }
 }
 
@@ -469,9 +464,10 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           if($make_graph)
           {
             $tab_graph_data['categories'][$matiere_id] = '"'.addcslashes($matiere_nom,'"').'"';
-            $tab_graph_data['series_data_NA'][$matiere_id] = $tab_infos_matiere['total']['NA'];
-            $tab_graph_data['series_data_VA'][$matiere_id] = $tab_infos_matiere['total']['VA'];
-            $tab_graph_data['series_data_A'][$matiere_id]  = $tab_infos_matiere['total']['A'];
+            foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+            {
+              $tab_graph_data['series_data_'.$acquis_id][$matiere_id] = $tab_infos_matiere['total'][$acquis_id];
+            }
             if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
             {
               if($eleve_id) // Si appréciation sur le groupe alors pas de courbe élève
@@ -847,9 +843,10 @@ if( $make_graph && (count($tab_graph_data)) )
   }
   // Séries de valeurs
   $tab_graph_series = array();
-  $tab_graph_series['A']  = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['A' ],'"').'", data: ['.implode(',',$tab_graph_data['series_data_A' ]).'] }';
-  $tab_graph_series['VA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['VA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_VA']).'] }';
-  $tab_graph_series['NA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['NA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_NA']).'] }';
+  foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+  {
+    $tab_graph_series['A'.$acquis_id]  = '{ name: "'.addcslashes($tab_acquis_info['LEGENDE'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_'.$acquis_id]).'] }';
+  }
   if(isset($tab_graph_data['series_data_MoyClasse']))
   {
     $tab_graph_series['MoyClasse'] = '{ type: "line", name: "Moyenne classe", data: ['.implode(',',$tab_graph_data['series_data_MoyClasse']).'], marker: {symbol: "circle"}, color: "#999", yAxis: 1 }';

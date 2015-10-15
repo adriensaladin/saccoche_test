@@ -473,6 +473,7 @@ class Session
     'conserver_session_active',
     'evaluation_demande_eleve_ajout',
     'fermer_session',
+    'maj_base_complementaire',
     // sans objet (sans besoin d'identification)
     // + si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
     // + par ailleurs ces pages testent $_SESSION['FORCEBRUTE'][$PAGE] et affichent un message approprié en cas de manque

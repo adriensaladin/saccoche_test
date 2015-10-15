@@ -634,16 +634,7 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
 /**
  * modifier_parametres
  *
- *      modifier_matieres_partagees
- * On ne défait pas pour autant les liaisons avec les enseignants... simplement elles n'apparaitront plus dans les formulaires.
- * Idem pour les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
- *     modifier_niveaux
- * On ne défait pas pour autant les liaisons avec les groupes... simplement ils n'apparaitront plus dans les formulaires.
- * Idem pour les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
- *     modifier_paliers
- * On ne défait pas pour autant les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
- *
- * @param array tableau $parametre_nom => $parametre_valeur des paramètres à modfifier
+ * @param array $tab_parametres   tableau parametre_nom => parametre_valeur
  * @return void
  */
 public static function DB_modifier_parametres($tab_parametres)

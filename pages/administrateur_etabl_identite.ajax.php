@@ -226,7 +226,7 @@ if($action=='upload_logo')
   // stocker l'image dans la base
   DB_STRUCTURE_IMAGE::DB_modifier_image( 0 /*user_id*/ , 'logo' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
   // Générer la balise html et afficher le retour
-  list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+  list($width,$height) = Image::dimensions_affichage( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   exit('<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 

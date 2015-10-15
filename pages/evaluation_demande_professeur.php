@@ -45,7 +45,7 @@ else
 
 // boutons radio
 $tab_radio_boutons = array();
-$tab_notes = array( 'RR' , 'R' , 'V' , 'VV' , 'NN' , 'NE' , 'NF' , 'NR' , 'ABS' , 'DISP' ); // , 'REQ' , 'X'
+$tab_notes = array_merge( $_SESSION['NOTE_ACTIF'] , array( 'NN' , 'NE' , 'NF' , 'NR' , 'AB' , 'DI' ) ); // , 'PA' , 'X'
 foreach($tab_notes as $note)
 {
   $tab_radio_boutons[] = '<label for="note_'.$note.'"><span class="td"><input type="radio" id="note_'.$note.'" name="f_note" value="'.$note.'"> <img alt="'.$note.'" src="'.Html::note_src($note).'" /></span></label>';

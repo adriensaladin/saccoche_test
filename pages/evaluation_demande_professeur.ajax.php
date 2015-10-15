@@ -224,13 +224,13 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   }
   // Insérer les enregistrements des items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
-  // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
+  // Insérer les marqueurs d'évaluation (paniers) pour indiquer au prof les demandes dans le tableau de saisie
   $tab_item_for_user = array();
   $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'PA',$info,$date_visible_mysql);
     $tab_item_for_user[$eleve_id][] = $item_id;
   }
   // Pour terminer, on change le statut des demandes ou on les supprime
@@ -289,13 +289,13 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   }
   // Maintenant on peut modifier les items de l'évaluation
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
-  // Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
+  // Insérer les marqueurs d'évaluation (paniers) pour indiquer au prof les demandes dans le tableau de saisie
   $tab_item_for_user = array();
   $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
-    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info,$date_visible_mysql);
+    DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'PA',$info,$date_visible_mysql);
     $tab_item_for_user[$eleve_id][] = $item_id;
   }
   // Pour terminer, on change le statut des demandes ou on les supprime

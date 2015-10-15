@@ -56,19 +56,19 @@ $tab_sous_menu = array
   ),
   'param_etablissement' => array
   (
-    'administrateur_etabl_identite'     => array( 'texte' => Lang::_("Identité de l'établissement")            , 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
-    'administrateur_etabl_connexion'    => array( 'texte' => Lang::_("Mode d'identification / Connecteur ENT") , 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
-    'administrateur_etabl_deconnexion'  => array( 'texte' => Lang::_("Redirection après déconnexion")          , 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
-    'administrateur_etabl_niveau'       => array( 'texte' => Lang::_("Niveaux")                                , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
-    'administrateur_etabl_matiere'      => array( 'texte' => Lang::_("Matières")                               , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
-    'administrateur_etabl_palier'       => array( 'texte' => Lang::_("Paliers du socle")                       , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
-    'administrateur_codes_couleurs'     => array( 'texte' => Lang::_("Notation : codes, couleurs, légendes")   , 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_codes_couleurs'     ),
-    'administrateur_algorithme_gestion' => array( 'texte' => Lang::_("Algorithme de calcul")                   , 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_algorithme_gestion' ),
+    'administrateur_etabl_identite'     => array( 'texte' => Lang::_("Identité de l'établissement")              , 'class' => 'etabl_identite'     , 'href' => 'page=administrateur_etabl_identite'     ),
+    'administrateur_etabl_connexion'    => array( 'texte' => Lang::_("Mode d'identification / Connecteur ENT")   , 'class' => 'etabl_connexion'    , 'href' => 'page=administrateur_etabl_connexion'    ),
+    'administrateur_etabl_deconnexion'  => array( 'texte' => Lang::_("Redirection après déconnexion")            , 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
+    'administrateur_etabl_niveau'       => array( 'texte' => Lang::_("Niveaux")                                  , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
+    'administrateur_etabl_matiere'      => array( 'texte' => Lang::_("Matières")                                 , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
+    'administrateur_etabl_palier'       => array( 'texte' => Lang::_("Paliers du socle")                         , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
+    'administrateur_etabl_notes_acquis' => array( 'texte' => Lang::_("Codes de notation / États d'acquisition")  , 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_etabl_notes_acquis' ),
+    'administrateur_etabl_algorithme'   => array( 'texte' => Lang::_("Algorithme de calcul")                     , 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_etabl_algorithme'   ),
   ),
   'param_utilisateurs' => array
   (
     'administrateur_etabl_profils'          => array( 'texte' => Lang::_("Choix des profils utilisateurs")       , 'class' => 'directeur'           , 'href' => 'page=administrateur_etabl_profils'          ),
-    'administrateur_autorisations'          => array( 'texte' => Lang::_("Réglage des autorisations")            , 'class' => 'etabl_autorisations' , 'href' => 'page=administrateur_autorisations'          ),
+    'administrateur_etabl_autorisations'    => array( 'texte' => Lang::_("Réglage des autorisations")            , 'class' => 'etabl_autorisations' , 'href' => 'page=administrateur_etabl_autorisations'    ),
     'administrateur_etabl_login'            => array( 'texte' => Lang::_("Format des identifiants de connexion") , 'class' => 'etabl_login'         , 'href' => 'page=administrateur_etabl_login'            ),
     'administrateur_etabl_duree_inactivite' => array( 'texte' => Lang::_("Délai avant déconnexion")              , 'class' => 'etabl_duree'         , 'href' => 'page=administrateur_etabl_duree_inactivite' ),
   ),

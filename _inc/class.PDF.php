@@ -480,8 +480,8 @@ class PDF extends FPDF
   private $page_numero_first      = 1;
   private $page_nombre_alignement = '';
   // idem
-  private $tab_legende_notes_speciales_texte  = array('ABS'=>'Absent','DISP'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
-  private $tab_legende_notes_speciales_nombre = array('ABS'=>0       ,'DISP'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
+  private $tab_legende_notes_speciales_texte  = array('AB'=>'Absent','DI'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
+  private $tab_legende_notes_speciales_nombre = array('AB'=>0       ,'DI'=>0         ,'NE'=>0           ,'NF'=>0         ,'NN'=>0         ,'NR'=>0          );
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode Magique - Constructeur
@@ -532,8 +532,6 @@ class PDF extends FPDF
     $this->page_largeur_moins_marges = $this->page_largeur - $this->marge_gauche - $this->marge_droite ;
     $this->page_hauteur_moins_marges = $this->page_hauteur - $this->marge_haut   - $this->marge_bas ;
     // Couleurs prédéfinies
-    $this->tab_choix_couleur['oui']  = array( 'NA'=>'rouge'      , 'VA'=>'jaune'      , 'A'=>'vert'        , 'v0'=>'invalidé'   , 'v1'=>'validé'     , 'v2'=>'non renseigné' );
-    $this->tab_choix_couleur['non']  = array( 'NA'=>'gris_fonce' , 'VA'=>'gris_moyen' , 'A'=>'gris_clair'  , 'v0'=>'gris_fonce' , 'v1'=>'gris_clair' , 'v2'=>'blanc'         );
     $this->tab_couleur['blanc']      = array('r'=>255,'v'=>255,'b'=>255);
     $this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
     $this->tab_couleur['gris_moyen'] = array('r'=>190,'v'=>190,'b'=>190);
@@ -541,37 +539,35 @@ class PDF extends FPDF
     $this->tab_couleur['noir']       = array('r'=>  0,'v'=>  0,'b'=>  0);
     $this->tab_couleur['rougevif']   = array('r'=>255,'v'=>  0,'b'=>  0);
     // Couleurs des états d'acquisition ; il faut convertir l'hexadécimal en RVB décimal
-    $rr = hexdec(substr($_SESSION['BACKGROUND_NA'],1,2));
-    $rv = hexdec(substr($_SESSION['BACKGROUND_NA'],3,2));
-    $rb = hexdec(substr($_SESSION['BACKGROUND_NA'],5,2));
-    $jr = hexdec(substr($_SESSION['BACKGROUND_VA'],1,2));
-    $jv = hexdec(substr($_SESSION['BACKGROUND_VA'],3,2));
-    $jb = hexdec(substr($_SESSION['BACKGROUND_VA'],5,2));
-    $vr = hexdec(substr($_SESSION['BACKGROUND_A'] ,1,2));
-    $vv = hexdec(substr($_SESSION['BACKGROUND_A'] ,3,2));
-    $vb = hexdec(substr($_SESSION['BACKGROUND_A'] ,5,2));
-    $this->tab_couleur['rouge'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
-    $this->tab_couleur['jaune'] = array('r'=>$jr,'v'=>$jv,'b'=>$jb);
-    $this->tab_couleur['vert']  = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
+    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    {
+      $r = hexdec(substr($tab_acquis_info['COULEUR'],1,2));
+      $v = hexdec(substr($tab_acquis_info['COULEUR'],3,2));
+      $b = hexdec(substr($tab_acquis_info['COULEUR'],5,2));
+      $this->tab_couleur['A'.$acquis_id.'oui'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+      $r = hexdec(substr($tab_acquis_info['GRIS'],1,2));
+      $v = hexdec(substr($tab_acquis_info['GRIS'],3,2));
+      $b = hexdec(substr($tab_acquis_info['GRIS'],5,2));
+      $this->tab_couleur['A'.$acquis_id.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+    }
     // Couleurs des états de validation ; il faut convertir l'hexadécimal en RVB décimal
-    $rr = hexdec(substr($_SESSION['BACKGROUND_V0'],1,2));
-    $rv = hexdec(substr($_SESSION['BACKGROUND_V0'],3,2));
-    $rb = hexdec(substr($_SESSION['BACKGROUND_V0'],5,2));
-    $vr = hexdec(substr($_SESSION['BACKGROUND_V1'],1,2));
-    $vv = hexdec(substr($_SESSION['BACKGROUND_V1'],3,2));
-    $vb = hexdec(substr($_SESSION['BACKGROUND_V1'],5,2));
-    $br = hexdec(substr($_SESSION['BACKGROUND_V2'],1,2));
-    $bv = hexdec(substr($_SESSION['BACKGROUND_V2'],3,2));
-    $bb = hexdec(substr($_SESSION['BACKGROUND_V2'],5,2));
-    $this->tab_couleur['invalidé']      = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
-    $this->tab_couleur['validé']        = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
-    $this->tab_couleur['non renseigné'] = array('r'=>$br,'v'=>$bv,'b'=>$bb);
+    foreach( $_SESSION['VALID'] as $valid_etat => $tab_valid_info )
+    {
+      $r = hexdec(substr($tab_valid_info['COULEUR'],1,2));
+      $v = hexdec(substr($tab_valid_info['COULEUR'],3,2));
+      $b = hexdec(substr($tab_valid_info['COULEUR'],5,2));
+      $this->tab_couleur['V'.$valid_etat.'oui'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+      $r = hexdec(substr($tab_valid_info['GRIS'],1,2));
+      $v = hexdec(substr($tab_valid_info['GRIS'],3,2));
+      $b = hexdec(substr($tab_valid_info['GRIS'],5,2));
+      $this->tab_couleur['V'.$valid_etat.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+    }
     // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
-    $this->tab_lettre['RR']  = $_SESSION['NOTE_TEXTE']['RR'];
-    $this->tab_lettre['R']   = $_SESSION['NOTE_TEXTE']['R'];
-    $this->tab_lettre['V']   = $_SESSION['NOTE_TEXTE']['V'];
-    $this->tab_lettre['VV']  = $_SESSION['NOTE_TEXTE']['VV'];
-    $this->tab_lettre['REQ'] = '.....';
+    foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
+    {
+      $this->tab_lettre[$note_id] = $_SESSION['NOTE'][$note_id]['SIGLE'];
+    }
+    $this->tab_lettre['PA'] = '.....';
     // Les dimensions d'une image (photo, signature) sont données en pixels, et il faut les convertir en mm.
     // Problème : dpi inconnue ! On prend 96 par défaut... mais ça peut être 72 ou 300 ou ... ça dépend de chaque image...
     // mm = (pixels * 25.4) / dpi
@@ -621,16 +617,25 @@ class PDF extends FPDF
   // Méthodes pour choisir une couleur de fond ou une couleur de tracé ou une couleur de texte
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * @param string $couleur   gris_fonce | gris_moyen | gris_clair | blanc | V{x}oui | V{x}non | A{x}oui | A{x}non
+   */
   public function choisir_couleur_fond($couleur)
   {
     $this->SetFillColor($this->tab_couleur[$couleur]['r'] , $this->tab_couleur[$couleur]['v'] , $this->tab_couleur[$couleur]['b']);
   }
 
+  /**
+   * @param string $couleur   noir | gris_moyen | gris_clair
+   */
   public function choisir_couleur_trait($couleur)
   {
     $this->SetDrawColor($this->tab_couleur[$couleur]['r'] , $this->tab_couleur[$couleur]['v'] , $this->tab_couleur[$couleur]['b']);
   }
 
+  /**
+   * @param string $couleur   noir | gris_fonce | rougevif
+   */
   public function choisir_couleur_texte($couleur)
   {
     $this->SetTextColor($this->tab_couleur[$couleur]['r'] , $this->tab_couleur[$couleur]['v'] , $this->tab_couleur[$couleur]['b']);
@@ -646,11 +651,13 @@ class PDF extends FPDF
     $this->choisir_couleur_fond($tab_fill[$fill]);
     switch ($note)
     {
-      case 'RR' :
-      case 'R' :
-      case 'V' :
-      case 'VV' :
-      case 'REQ' :
+      case '1' :
+      case '2' :
+      case '3' :
+      case '4' :
+      case '5' :
+      case '6' :
+      case 'PA':
         if($this->couleur != 'non')
         {
           $memo_x = $this->GetX();
@@ -668,14 +675,14 @@ class PDF extends FPDF
           $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $txt , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
         }
         break;
-      case 'ABS' :
-      case 'DISP' :
+      case 'AB' :
+      case 'DI' :
       case 'NE' :
       case 'NF' :
       case 'NN' :
       case 'NR' :
         $this->tab_legende_notes_speciales_nombre[$note]++;
-        $tab_texte = array('ABS'=>'Abs.','DISP'=>'Disp.','NE'=>'N.E.','NF'=>'N.F.','NN'=>'N.N.','NR'=>'N.R.');
+        $tab_texte = array('AB'=>'Abs.','DI'=>'Disp.','NE'=>'N.E.','NF'=>'N.F.','NN'=>'N.N.','NR'=>'N.R.');
         $this->cMargin /= 2;
         $this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
         $this->cMargin *= 2;
@@ -694,17 +701,17 @@ class PDF extends FPDF
   // $tab_infos contient 'etat' / 'date' / 'info'
   $this->SetFont('Arial' , $gras , $this->taille_police);
   $texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
-  $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['v'.$tab_infos['etat']]);
+  $this->choisir_couleur_fond('V'.$tab_infos['etat'].$this->couleur);
   $this->Cell( $this->validation_largeur , $this->cases_hauteur , To::pdf($texte) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
 }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher un pourcentage d'items acquis (texte A VA NA et couleur de fond suivant le seuil)
+  // Méthode pour afficher un pourcentage d'items acquis (texte par état d'acquisition et couleur de fond suivant le seuil)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public function afficher_pourcentage_acquis( $gras , $tab_infos , $affich )
 {
-  // $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
+  // $tab_infos contient {acquis} / 'nb' / '%'
   if($tab_infos['%']===FALSE)
   {
     $this->choisir_couleur_fond('blanc');
@@ -712,13 +719,11 @@ class PDF extends FPDF
   }
   else
   {
-        if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
-    elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
-    else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
+    $this->choisir_couleur_fond('A'.determiner_etat_acquisition($tab_infos['%']).$this->couleur);
     if($affich=='detail')
     {
       $this->SetFont('Arial' , $gras , $this->taille_police);
-      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_infos).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     elseif($affich=='pourcentage')
     {
@@ -748,9 +753,7 @@ class PDF extends FPDF
     }
     else
     {
-          if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['NA']);}
-      elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['A']);}
-      else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur]['VA']);}
+      $this->choisir_couleur_fond('A'.determiner_etat_acquisition($score).$this->couleur);
       $affichage = ($afficher_score) ? $score : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
@@ -759,21 +762,21 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher une barre avec les états des items acquis (rectangles A VA NA et couleur de fond suivant le seuil)
+  // Méthode pour afficher une barre avec les états des items acquis (rectangles par état d'acquisition et couleur de fond suivant le seuil)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public function afficher_proportion_acquis( $largeur , $hauteur , $tab_infos , $total , $avec_texte_nombre , $avec_texte_code )
   {
-    // $tab_infos contient 'A' / 'VA' / 'NA'
+    // $tab_infos contient les états d'acquisition
     $abscisse = $this->GetX();
     $ordonnee = $this->GetY();
     // Couleurs de fond + textes
-    foreach($tab_infos as $etat => $nb)
+    foreach($tab_infos as $acquis_id => $nb)
     {
-      $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
+      $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
       $largeur_case = $largeur*$nb/$total ;
-          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat]; }
-      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS_TEXTE'][$etat]; }
+          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
+      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
       elseif( !$avec_texte_nombre && !$avec_texte_code ) { $texte_complet = ''; }
       elseif(  $avec_texte_nombre && !$avec_texte_code ) { $texte_complet = $nb; }
       $texte = ( (strlen($texte_complet)<$largeur_case) || !$avec_texte_nombre || !$avec_texte_code ) ? $texte_complet : $nb ;
@@ -899,8 +902,12 @@ class PDF extends FPDF
     if($type_legende=='codes_notation')
     {
       // Le texte des codes de notation étant personnalisable, il peut falloir condenser en largeur...
-      $texte = 'Codes d\'évaluation :'.$espace.$_SESSION['NOTE_LEGENDE']['RR'].$espace.$_SESSION['NOTE_LEGENDE']['R'].$espace.$_SESSION['NOTE_LEGENDE']['V'].$espace.$_SESSION['NOTE_LEGENDE']['VV'];
-      $boites_nb = 4;
+      $texte = 'Codes d\'évaluation :';
+      foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
+      {
+        $texte .= $espace.$_SESSION['NOTE'][$note_id]['LEGENDE'];
+      }
+      $boites_nb = $_SESSION['NOMBRE_CODES_NOTATION'];
       foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
       {
         if($nombre)
@@ -923,15 +930,14 @@ class PDF extends FPDF
       $memo_taille_police = $this->taille_police;
       $this->taille_police = $size; // On est obligé de le changer provisoirement car, si impression N&B, afficher_note_lomer() l'utilise
       $this->calculer_dimensions_images($case_largeur,$case_hauteur);
-      $tab_codes_normaux = array(0=>'RR','R','V','VV');
-      foreach($tab_codes_normaux as $code)
+      foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
       {
-        $texte = $_SESSION['NOTE_LEGENDE'][$code];
+        $texte = $_SESSION['NOTE'][$note_id]['LEGENDE'];
         $largeur = $this->GetStringWidth($texte)*$ratio*1.1;
         $this->Write($hauteur , $espace_mini , '');
-        $this->afficher_note_lomer($code, 1 /*border*/ , 0 /*br*/ );
+        $this->afficher_note_lomer($note_id, 1 /*border*/ , 0 /*br*/ );
         $this->CellFit( $largeur , $hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-        // $this->Write($hauteur , To::pdf($_SESSION['NOTE_LEGENDE'][$code]) , '');
+        $texte .= $espace.$_SESSION['NOTE'][$note_id]['LEGENDE'];
       }
       foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
       {
@@ -955,7 +961,11 @@ class PDF extends FPDF
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('Ancienneté :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $tab_etats = array('blanc'=>'Sur la période.','gris_moyen'=>'Début d\'année scolaire.','gris_fonce'=>'Année scolaire précédente.');
+      $tab_etats = array(
+        'blanc'      => "Sur la période.",
+        'gris_moyen' => "Début d'année scolaire.",
+        'gris_fonce' => "Année scolaire précédente.",
+      );
       foreach($tab_etats as $couleur => $texte)
       {
         $this->Write($hauteur , $espace , '');
@@ -972,16 +982,13 @@ class PDF extends FPDF
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $seuil_NA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']>0)   ) ? '0 à '.($_SESSION['CALCUL_SEUIL']['R']-1)   : '' ;
-      $seuil_A  = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['V']<100) ) ? ($_SESSION['CALCUL_SEUIL']['V']+1).' à 100' : '' ;
-      $seuil_VA = ( $afficher_score && ($_SESSION['CALCUL_SEUIL']['R']!=$_SESSION['CALCUL_SEUIL']['V']) ) ? $_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'] : '' ;
-      $tab_seuils = array( 'NA'=>$seuil_NA, 'VA'=>$seuil_VA, 'A'=>$seuil_A );
-      foreach($tab_seuils as $etat => $texte)
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
+        $texte_seuil = ($afficher_score) ? $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'] : '' ;
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
-        $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-        $this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
+        $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
+        $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+        $this->Write($hauteur , To::pdf($tab_acquis_info['LEGENDE']) , '');
       }
     }
     // Afficher la légende des états d'acquisition
@@ -990,14 +997,13 @@ class PDF extends FPDF
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $tab_etats = array('NA','VA','A');
-      foreach($tab_etats as $etat)
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
         $this->Write($hauteur , $espace , '');
-        $couleur_fond = (!$force_nb) ? $this->tab_choix_couleur[$this->couleur][$etat] : 'blanc' ;
+        $couleur_fond = (!$force_nb) ? 'A'.$acquis_id.$this->couleur : 'blanc' ;
         $this->choisir_couleur_fond($couleur_fond);
-        $this->Cell($case_largeur , $case_hauteur , To::pdf($_SESSION['ACQUIS_TEXTE'][$etat]) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-        $this->Write($hauteur , To::pdf($_SESSION['ACQUIS_LEGENDE'][$etat]) , '');
+        $this->Cell($case_largeur , $case_hauteur , To::pdf($tab_acquis_info['SIGLE']) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+        $this->Write($hauteur , To::pdf($tab_acquis_info['LEGENDE']) , '');
       }
     }
     // Afficher la légende des pourcentages d'items acquis
@@ -1007,11 +1013,11 @@ class PDF extends FPDF
       $indication_position = ($this->orientation=='portrait') ? ' (à gauche)' : '' ;
       $this->Write($hauteur , To::pdf('Pourcentages d\'items acquis'.$indication_position.' :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $tab_seuils = array('NA'=>'0 à '.$_SESSION['CALCUL_SEUIL']['R'],'VA'=>$_SESSION['CALCUL_SEUIL']['R'].' à '.$_SESSION['CALCUL_SEUIL']['V'],'A'=>$_SESSION['CALCUL_SEUIL']['V'].' à 100');
-      foreach($tab_seuils as $etat => $texte)
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
+        $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
+        $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
         $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       }
     }
@@ -1022,12 +1028,11 @@ class PDF extends FPDF
       $indication_position = ($this->orientation=='portrait') ? ' (à droite)' : '' ;
       $this->Write($hauteur , To::pdf('États de validation'.$indication_position.' :') , '');
       $this->SetFont('Arial' , '' , $size);
-      $tab_etats = array('v1'=>'Validé','v0'=>'Invalidé','v2'=>'Non renseigné');
-      foreach($tab_etats as $etat => $texte)
+      foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
       {
         $this->Write($hauteur , $espace , '');
-        $this->choisir_couleur_fond($this->tab_choix_couleur[$this->couleur][$etat]);
-        $this->Cell(3.5*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+        $this->choisir_couleur_fond('V'.$valid_etat.$this->couleur);
+        $this->Cell(3.5*$case_largeur , $case_hauteur , To::pdf($tab_valid_info['LEGENDE']) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       }
     }
     $this->SetXY($this->marge_gauche , $ordonnee+$hauteur);

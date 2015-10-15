@@ -35,16 +35,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specif
   echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-?>
 
-<ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
-</ul>
-
-<hr />
-
-<?php
 // Séparé en plusieurs requêtes sinon on ne s'en sort pas (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();

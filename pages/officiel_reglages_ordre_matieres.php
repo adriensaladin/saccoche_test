@@ -43,7 +43,7 @@ $TITRE = html(Lang::_("Ordre d'affichage des matières"));
   }
   else
   {
-    echo'<ul id="sortable">'.NL;
+    echo'<ul id="sortable_v">'.NL;
     foreach($DB_TAB as $DB_ROW)
     {
       echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</li>'.NL;

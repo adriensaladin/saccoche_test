@@ -67,7 +67,7 @@ if($nom_prenom)
 }
 elseif($levenshtein) // (forcément)
 {
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::lister_parents_adresses_par_enfant();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_adresses_par_enfant();
   if(!empty($DB_TAB))
   {
     $tab_parents_id = array();

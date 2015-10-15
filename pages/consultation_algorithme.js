@@ -83,7 +83,6 @@ $(document).ready
     }
     $('#f_methode').change( actualiser_select_limite );
 
-
     // Demande de soumission du formulaire
     $('#calculer').click
     (
@@ -94,65 +93,24 @@ $(document).ready
       }
     );
 
-    // Variables globales
-    var memo_valeurRR   = 0;
-    var memo_valeurR    = 0;
-    var memo_valeurV    = 0;
-    var memo_valeurVV   = 0;
-    var memo_methode    = '';
-    var memo_limite     = 0;
-    var memo_retroactif = '';
-    var memo_seuilR     = 0;
-    var memo_seuilV     = 0;
-
     // Demande d'initialisation du formulaire avec les valeurs de l'établissement
     // Un simple boutton de type "reset" ne peut être utilisé en cas d'enregistrement en cours de procédure
     $('#initialiser_etablissement').click
     (
       function()
       {
-        $('#valeurRR').val(memo_valeurRR);
-        $('#valeurR').val(memo_valeurR);
-        $('#valeurV').val(memo_valeurV);
-        $('#valeurVV').val(memo_valeurVV);
-        $('#f_methode option[value='+memo_methode+']').prop('selected',true);
-        $('#f_limite option[value='+memo_limite+']').prop('selected',true);
-        $('#f_retroactif option[value='+memo_retroactif+']').prop('selected',true);
-        $('#seuilR').val(memo_seuilR);
-        $('#seuilV').val(memo_seuilV);
-        actualiser_select_limite();
-      }
-    );
-
-    // Donc il faut retenir les valeurs initiales et les replacer
-    function memoriser_valeurs()
-    {
-      memo_valeurRR   = $('#valeurRR').val();
-      memo_valeurR    = $('#valeurR').val();
-      memo_valeurV    = $('#valeurV').val();
-      memo_valeurVV   = $('#valeurVV').val();
-      memo_methode    = $('#f_methode option:selected').val();
-      memo_limite     = $('#f_limite option:selected').val();
-      memo_retroactif = $('#f_retroactif option:selected').val();
-      memo_seuilR     = $('#seuilR').val();
-      memo_seuilV     = $('#seuilV').val();
-    }
-    memoriser_valeurs();
-
-    // Demande d'initialisation du formulaire avec les valeurs par défaut
-    $('#initialiser_defaut').click
-    (
-      function()
-      {
-        $('#valeurRR').val(0);
-        $('#valeurR').val(33);
-        $('#valeurV').val(67);
-        $('#valeurVV').val(100);
-        $('#f_methode option[value=geometrique]').prop('selected',true);
-        $('#f_limite option[value=5]').prop('selected',true);
-        $('#f_retroactif option[value=non]').prop('selected',true);
-        $('#seuilR').val(40);
-        $('#seuilV').val(60);
+        for ( var key in tab_select )
+        {
+          $('#'+key+' option[value='+tab_select[key]+']').prop('selected',true);
+        }
+        for ( var key in tab_valeur )
+        {
+          $('#'+key).val(tab_valeur[key]);
+        }
+        for ( var key in tab_seuil )
+        {
+          $('#'+key).val(tab_seuil[key]);
+        }
         actualiser_select_limite();
       }
     );
@@ -166,27 +124,15 @@ $(document).ready
       {
         rules :
         {
-          valeurRR     : { required:true, digits:true },
-          valeurR      : { required:true, digits:true },
-          valeurV      : { required:true, digits:true },
-          valeurVV     : { required:true, digits:true },
           f_methode    : { required:true },
           f_limite     : { required:true },
-          f_retroactif : { required:true },
-          seuilR       : { required:true, digits:true },
-          seuilV       : { required:true, digits:true }
+          f_retroactif : { required:true }
         },
         messages :
         {
-          valeurRR     : { required:"valeur requise", digits:"nombre entier requis" },
-          valeurR      : { required:"valeur requise", digits:"nombre entier requis" },
-          valeurV      : { required:"valeur requise", digits:"nombre entier requis" },
-          valeurVV     : { required:"valeur requise", digits:"nombre entier requis" },
           f_methode    : { required:"méthode requise" },
           f_limite     : { required:"méthode requise" },
-          f_retroactif : { required:"méthode requise" },
-          seuilR       : { required:"valeur requise", digits:"nombre entier requis" },
-          seuilV       : { required:"valeur requise", digits:"nombre entier requis" }
+          f_retroactif : { required:"méthode requise" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -226,41 +172,94 @@ $(document).ready
       var readytogo = validation.form();
       if(readytogo)
       {
-        readytogo = false;
-        if( (Math.min($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())<0) || (Math.max($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val())>100) )
+        // Vérification valeurs des codes
+        var val_min = -1 ;
+        var nb_sup_100 = 0 ;
+        for ( var key in tab_valeur )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs entre 0 et 100 requises.").show();
+          var saisie = $('#'+key).val();
+          var valeur = parseInt(saisie,10)
+          if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs entières requises.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( valeur < 0 )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeur positives requises.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( valeur <= val_min )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs croissantes requises.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( valeur > 100 )
+          {
+            nb_sup_100++;
+          }
+          val_min = valeur;
         }
-        else if( parseInt($('#valeurVV').val(),10)>200 )
+        if( nb_sup_100 >= 2 )
+        {
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : un seule valeur dépassant 100 permise.").show();
+          $('#'+key).focus();
+          return false;
+        }
+        else if( val_min > 200 )
         {
           $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 200 maximum pour le meilleur code.").show();
+          $('#'+key).focus();
+          return false;
         }
-        else if( (parseInt($('#valeurRR').val(),10)>parseInt($('#valeurR').val(),10)) || (parseInt($('#valeurR').val(),10)>parseInt($('#valeurV').val(),10)) || (parseInt($('#valeurV').val(),10)>parseInt($('#valeurVV').val(),10)) )
+        // Vérification valeurs seuils
+        var val_min = -1 ;
+        for ( var key in tab_seuil )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs croissantes requises.").show();
+          var saisie = $('#'+key).val();
+          var valeur = parseInt(saisie,10)
+          if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs entières requises.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( ( val_min==-1 ) && ( valeur != 0 ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeur minimale requise à 0.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( valeur <= val_min )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs croissantes requises.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          else if( ( key.substring(2)=='min' ) && ( valeur != val_min+1 ) )
+          {
+            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : intervalles consécutifs requis.").show();
+            $('#'+key).focus();
+            return false;
+          }
+          val_min = valeur;
         }
-        else if( (Math.min($('#seuilR').val(),$('#seuilV').val())<0) || (Math.max($('#seuilR').val(),$('#seuilV').val())>100) )
+        if( val_min != 100 )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs entre 0 et 100 requises.").show();
-        }
-        else if( parseInt($('#seuilR').val(),10) > parseInt($('#seuilV').val(),10) )
-        {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs croissantes requises.").show();
-        }
-        else
-        {
-          readytogo = true;
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeur maximale requise à 100.").show();
+          $('#'+key).focus();
+          return false;
         }
       }
-      if(readytogo)
+      if( $('#action').val()=='calculer' )
       {
-        if( $('#action').val()=='calculer' )
-        {
-          $('#bilan table tbody').hide();
-        }
-        $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;").show();
+        $('#bilan table tbody').hide();
       }
+      $('button').prop('disabled',true);
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;").show();
       return readytogo;
     }
 

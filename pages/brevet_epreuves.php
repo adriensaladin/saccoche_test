@@ -129,11 +129,11 @@ foreach($DB_TAB_series as $DB_ROW)
     <button id="valider_ordre" type="button" class="valider">Valider ce choix ordonné</button> <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>
   </p>
   <h3>Matière(s) à considérer</h3>
-  <ul id="sortable_oui" class="connectedSortable">
+  <ul id="sortable_v_oui" class="connectedSortable">
     <li></li>
   </ul>
   <h3>Matière(s) à ne pas considérer</h3>
-  <ul id="sortable_non" class="connectedSortable">
+  <ul id="sortable_v_non" class="connectedSortable">
     <li></li>
   </ul>
 </form>

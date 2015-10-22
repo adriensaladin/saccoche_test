@@ -35,12 +35,6 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var nb_caracteres_max = 2000;
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
     // @see   http://www.highcharts.com/ --> http://api.highcharts.com/highcharts
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1458,7 +1452,7 @@ $(document).ready
         // Afficher la zone
         $.fancybox( { 'href':'#zone_signaler_corriger' , onStart:function(){$('#zone_signaler_corriger').css("display","block");} , onClosed:function(){$('#zone_signaler_corriger').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
         $('#f_message_contenu').focus().val(unescapeHtml(message_contenu));
-        afficher_textarea_reste( $('#f_message_contenu') , nb_caracteres_max );
+        afficher_textarea_reste( $('#f_message_contenu') , 999 );
       }
     );
 
@@ -1470,7 +1464,7 @@ $(document).ready
     (
       function()
       {
-        afficher_textarea_reste( $(this) , nb_caracteres_max );
+        afficher_textarea_reste( $(this) , 999 );
       }
     );
 

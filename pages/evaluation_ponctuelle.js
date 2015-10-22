@@ -212,25 +212,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#box_autodescription').click
-    (
-      function()
-      {
-        if($(this).is(':checked'))
-        {
-          $(this).next().show(0).next().hide(0);
-        }
-        else
-        {
-          $(this).next().hide(0).next().show(0);
-        }
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Afficher la dernière partie du formulaire (au changement de f_item ou f_eleve)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -263,12 +244,6 @@ $(document).ready
         if(typeof(valeur)=='undefined')	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
           $('#ajax_msg_enregistrement').removeAttr("class").addClass("erreur").html("Choisir une note !");
-          return false;
-        }
-        if( !$('#box_autodescription').is(':checked') && !$('#f_description').val() )
-        {
-          $('#ajax_msg_enregistrement').removeAttr("class").addClass("erreur").html("Choisir un intitulé ou cocher la case !");
-          $('#f_description').focus();
           return false;
         }
         $('#form_select button').prop('disabled',true);

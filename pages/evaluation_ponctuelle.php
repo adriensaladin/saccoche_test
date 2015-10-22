@@ -62,9 +62,6 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
     <input id="f_devoir" name="f_devoir" type="hidden" value="0" />
     <input id="f_groupe" name="f_groupe" type="hidden" value="0" />
     <p>
-      <label class="tab" for="f_classe">Intitulé :</label><input id="box_autodescription" name="box_autodescription" type="checkbox" checked /> <label for="box_autodescription">automatique</label><span class="hide"><input id="f_description" name="f_description" type="text" value="" size="50" maxlength="60" /></span>
-    </p>
-    <p>
       <span class="tab"></span><button id="bouton_valider" type="button" class="valider">Enregistrer.</button><label id="ajax_msg_enregistrement">&nbsp;</label>
     </p>
   </div>
@@ -72,6 +69,6 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
 <hr />
 <div id="bilan" class="hide">
   <ul class="puce">
-    <li>Une fois toutes vos notes saisies, vous pouvez <a id="bilan_lien" href="./index.php?page=evaluation&amp;section=gestion_selection&amp;devoir_id=0&amp;groupe_type=E&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
+    <li>Une fois toutes vos notes saisies, vous pouvez <a id="bilan_lien" href="./index.php?page=evaluation_gestion&amp;section=selection&amp;devoir_id=0&amp;groupe_type=E&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
   </ul>
 </div>

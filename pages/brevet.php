@@ -33,16 +33,16 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur')
 {
   $SOUS_MENU = '';
   $tab_sous_menu = array(
-    'series'   => Lang::_("Étape n°1 : Séries"),
-    'epreuves' => Lang::_("Étape n°2 : Épreuves"),
-    'moyennes' => Lang::_("Étape n°3 : Notes"),
-    'notanet'  => Lang::_("Étape n°4 : Export Notanet"),
-    'fiches'   => Lang::_("Étape n°5 : Fiches brevet"),
+    array( 'section'=>'series'   , 'txt'=>Lang::_("Étape n°1 : Séries")         ),
+    array( 'section'=>'epreuves' , 'txt'=>Lang::_("Étape n°2 : Épreuves")       ),
+    array( 'section'=>'moyennes' , 'txt'=>Lang::_("Étape n°3 : Notes")          ),
+    array( 'section'=>'notanet'  , 'txt'=>Lang::_("Étape n°4 : Export Notanet") ),
+    array( 'section'=>'fiches'   , 'txt'=>Lang::_("Étape n°5 : Fiches brevet")  ),
   );
-  foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+  foreach($tab_sous_menu as $tab_infos)
   {
-    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
-    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
   }
 }
 

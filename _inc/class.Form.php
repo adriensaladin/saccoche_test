@@ -167,11 +167,6 @@ class Form
     array('valeur' => 'AVEC_nom_AVEC_result' , 'texte' => 'AVEC les noms d\'élèves et AVEC les résultats (si saisis)') ,
   );
 
-  public static $tab_select_cart_hauteur = array(
-    array('valeur' => 'variable' , 'texte' => 'adaptée au contenu pour chaque élève (optimisation du papier)') ,
-    array('valeur' => 'fixe'     , 'texte' => 'fixe quel que soit le contenu (massicotage de l\'ensemble)') ,
-  );
-
   public static $tab_select_recherche_objet = array(
     array('valeur' => 'matiere_items_bilanMS'   , 'optgroup'=>1 , 'texte' => 'moyenne des scores d\'acquisition') ,
     array('valeur' => 'matiere_items_bilanPA'   , 'optgroup'=>1 , 'texte' => 'pourcentage d\'items acquis') ,
@@ -190,13 +185,11 @@ class Form
     array('valeur' => 100 , 'texte' => 'Oui → 100 caractères maximum (super court)') ,
     array('valeur' => 200 , 'texte' => 'Oui → 200 caractères maximum (très court)') ,
     array('valeur' => 300 , 'texte' => 'Oui → 300 caractères maximum (court)') ,
-    array('valeur' => 400 , 'texte' => 'Oui → 400 caractères maximum (assez court)') ,
-    array('valeur' => 500 , 'texte' => 'Oui → 500 caractères maximum (moyen)') ,
-    array('valeur' => 600 , 'texte' => 'Oui → 600 caractères maximum (long)') ,
-    array('valeur' => 700 , 'texte' => 'Oui → 700 caractères maximum (assez long)') ,
-    array('valeur' => 800 , 'texte' => 'Oui → 800 caractères maximum (très long)') ,
-    array('valeur' => 900 , 'texte' => 'Oui → 900 caractères maximum (super long)') ,
-    array('valeur' => 999 , 'texte' => 'Oui → 999 caractères maximum (trop long…)') ,
+    array('valeur' => 400 , 'texte' => 'Oui → 400 caractères maximum (moyen)') ,
+    array('valeur' => 500 , 'texte' => 'Oui → 500 caractères maximum (long)') ,
+    array('valeur' => 600 , 'texte' => 'Oui → 600 caractères maximum (très long)') ,
+    array('valeur' => 700 , 'texte' => 'Oui → 700 caractères maximum (super long)') ,
+    array('valeur' => 800 , 'texte' => 'Oui → 800 caractères maximum (trop long…)') ,
   );
 
   public static $tab_select_optgroup = array(
@@ -303,8 +296,6 @@ class Form
       'cart_detail'              => 'complet' ,
       'cart_cases_nb'            => 1 ,
       'cart_contenu'             => 'AVEC_nom_SANS_result' ,
-      'cart_hauteur'             => 'variable' ,
-      'cart_restriction'         => 0 ,
       'only_niveau'              => 0 ,
       'only_presence'            => 0 ,
       'only_socle'               => 0 ,
@@ -420,8 +411,8 @@ class Form
         $tab_choix_new = compact('palier_id');
         break;
       case 'evaluation_cartouche' :
-        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu,$cart_restriction,$cart_hauteur;
-        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu','cart_restriction','cart_hauteur');
+        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu;
+        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu');
         break;
       case 'evaluation_statistiques' :
       case 'evaluation_archivage' :

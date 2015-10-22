@@ -34,15 +34,15 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Sous-Menu d'en-tête
 $SOUS_MENU = '';
 $tab_sous_menu = array(
-  'gestion'       => Lang::_("Classes (gestion)"),
-  'classe_groupe' => Lang::_("Périodes & classes / groupes"),
-  'eleve'         => Lang::_("Élèves & classes"),
-  'professeur'    => Lang::_("Professeurs & classes"),
+  array( 'section'=>'gestion'       , 'txt'=>Lang::_("Classes (gestion)")            ),
+  array( 'section'=>'classe_groupe' , 'txt'=>Lang::_("Périodes & classes / groupes") ),
+  array( 'section'=>'eleve'         , 'txt'=>Lang::_("Élèves & classes")             ),
+  array( 'section'=>'professeur'    , 'txt'=>Lang::_("Professeurs & classes")        ),
 );
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+foreach($tab_sous_menu as $tab_infos)
 {
-  $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
 }
 
 if(($SECTION=='eleve')||($SECTION=='professeur'))

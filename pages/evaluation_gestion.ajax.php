@@ -60,8 +60,7 @@ $orientation      = (isset($_POST['f_orientation']))      ? Clean::texte($_POST[
 $marge_min        = (isset($_POST['f_marge_min']))        ? Clean::texte($_POST['f_marge_min'])             : '';
 $couleur          = (isset($_POST['f_couleur']))          ? Clean::texte($_POST['f_couleur'])               : '';
 $fond             = (isset($_POST['f_fond']))             ? Clean::texte($_POST['f_fond'])                  : '';
-$cart_restriction = (isset($_POST['f_restriction_req']))  ? TRUE                                            : FALSE;
-$cart_hauteur     = (isset($_POST['f_hauteur']))          ? Clean::texte($_POST['f_hauteur'])               : '';
+$only_req         = (isset($_POST['f_restriction_req']))  ? TRUE                                            : FALSE;
 $doc_objet        = (isset($_POST['f_doc_objet']))        ? Clean::texte($_POST['f_doc_objet'])             : '';
 $doc_url          = (isset($_POST['f_doc_url']))          ? Clean::texte($_POST['f_doc_url'])               : '';
 $fini             = (isset($_POST['f_fini']))             ? Clean::texte($_POST['f_fini'])                  : '';
@@ -389,7 +388,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     {
       $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
       $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
-      $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=gestion_'.$type);
+      $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_gestion&section='.$type);
       $tab_abonnes = explode(',',$listing_abonnes);
       foreach($tab_abonnes as $abonne_id)
       {
@@ -419,7 +418,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
     if($listing_abonnes)
     {
-      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id2.'&eleve_id=');
+      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id2.'&eleve_id=');
       $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
       $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
@@ -593,7 +592,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
         {
           $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
           $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
-          $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=gestion_'.$type);
+          $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_gestion&section='.$type);
           $tab_abonnes = explode(',',$listing_abonnes);
           foreach($tab_abonnes as $abonne_id)
           {
@@ -636,7 +635,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
     if($listing_abonnes)
     {
-      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
+      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id=');
       $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)
@@ -822,26 +821,22 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   $tab_affich['foot_audio'][0] = '<th>Commentaire audio</th>';
   // première ligne (noms prénoms des élèves)
   $br = ($_SESSION['BROWSER']['mobile']) ? '' : '&amp;br' ;
-  $q_texte = ($action=='saisir') ? '<q id="texteCiL" class="texte_enregistrer" title="Saisir un commentaire écrit."></q>'      : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
-  $q_audio = ($action=='saisir') ? '<q id="audioCiL" class="audio_enregistrer" title="Enregistrer un commentaire audio."></q>' : '<q class="audio_ecouter_non" title="Pas de commentaire audio."></q>' ;
-  $num_colonne = 0;
-  $tab_colonne_for_user = array();
+  $q_texte = ($action=='saisir') ? '<q class="texte_enregistrer" title="Saisir un commentaire écrit."></q>'      : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
+  $q_audio = ($action=='saisir') ? '<q class="audio_enregistrer" title="Enregistrer un commentaire audio."></q>' : '<q class="audio_ecouter_non" title="Pas de commentaire audio."></q>' ;
   foreach($DB_TAB_USER as $DB_ROW)
   {
-    $num_colonne++;
     $tab_affich['head'][$DB_ROW['user_id']] = '<th><img id="image_'.$DB_ROW['user_id'].'" alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).$br.'" /></th>';
     $tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
     // On initialise ces cellules, qui seront remplacées si besoin par une autre valeur dans la boucle suivante
-    $tab_affich['foot_texte'][$DB_ROW['user_id']] = '<td id="texte_'.$DB_ROW['user_id'].'">'.str_replace('CiL','C'.$num_colonne.'L',$q_texte).'</td>';
-    $tab_affich['foot_audio'][$DB_ROW['user_id']] = '<td id="audio_'.$DB_ROW['user_id'].'">'.str_replace('CiL','C'.$num_colonne.'L',$q_audio).'</td>';
-    $tab_colonne_for_user[$DB_ROW['user_id']] = $num_colonne;
+    $tab_affich['foot_texte'][$DB_ROW['user_id']] = '<td id="texte_'.$DB_ROW['user_id'].'">'.$q_texte.'</td>';
+    $tab_affich['foot_audio'][$DB_ROW['user_id']] = '<td id="audio_'.$DB_ROW['user_id'].'">'.$q_audio.'</td>';
   }
   if(!empty($DB_TAB_MSG))
   {
     $tab_balise = array(
       'saisir' => array(
-        'texte' => '<q id="texteCiL" class="texte_enregistrer" title="Modifier le commentaire écrit."></q>',
-        'audio' => '<q id="audioCiL" class="audio_enregistrer" title="Modifier le commentaire audio."></q>',
+        'texte' => '<q class="texte_enregistrer" title="Modifier le commentaire écrit."></q>',
+        'audio' => '<q class="audio_enregistrer" title="Modifier le commentaire audio."></q>',
       ),
       'voir' => array(
         'texte' => '<q class="texte_consulter" title="Commentaire écrit disponible."></q>',
@@ -850,12 +845,11 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
     );
     foreach($DB_TAB_MSG as $DB_ROW)
     {
-      $num_colonne = $tab_colonne_for_user[$DB_ROW['eleve_id']];
       foreach($tab_balise[$action] as $msg_objet => $balise_html)
       {
         if($DB_ROW['jointure_'.$msg_objet])
         {
-          $tab_affich['foot_'.$msg_objet][$DB_ROW['eleve_id']] = '<td id="'.$msg_objet.'_'.$DB_ROW['eleve_id'].'" class="off">'.str_replace('CiL','C'.$num_colonne.'L',$balise_html).'</td>';
+          $tab_affich['foot_'.$msg_objet][$DB_ROW['eleve_id']] = '<td id="'.$msg_objet.'_'.$DB_ROW['eleve_id'].'" class="off">'.$balise_html.'</td>';
         }
       }
     }
@@ -1082,7 +1076,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_saisie , $listing_users );
   if($listing_abonnes)
   {
-    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
+    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id=');
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
@@ -1515,7 +1509,7 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
 // Imprimer un cartouche d'une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $description && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $cart_hauteur && $orientation && $marge_min && $couleur && $fond && in_array($eleves_ordre,array('alpha','classe')) )
+if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $description && $cart_detail && in_array($cart_cases_nb,array(1,5)) && $cart_contenu && $orientation && $marge_min && $couleur && $fond && in_array($eleves_ordre,array('alpha','classe')) )
 {
   Form::save_choix('evaluation_cartouche');
   $cart_cases_nb = ($cart_cases_nb==1) ? $cart_cases_nb : $_SESSION['NOMBRE_CODES_NOTATION']+1 ; // 1 ou 5 dans le formulaire initial, mais à adapter en fonction du nombre de codes utilisés
@@ -1537,16 +1531,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
-  $tab_user_nb_items      = array(); // pour retenir le nb d'items par utilisateur : utile si cartouche avec les seuls résultats ou demandes d'évaluations
-  $tab_user_nb_ligne_comm = array(); // pour retenir le nb de lignes de commentaires par utilisateur
-  $tab_user_commentaire   = array(); // pour retenir les commentaires écrits pour par élève
+  $tab_user_nb_req = array(); // pour retenir le nb d'items par utilisateur : variable et utile uniquement si cartouche avec les demandes d'évaluations 
+  $tab_user_comm   = array(); // pour retenir les commentaires écrits pour par élève
   // enregistrer noms prénoms des élèves
   foreach($DB_TAB_USER as $DB_ROW)
   {
     $tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' ('.$groupe_nom.')') : '' ;
-    $tab_user_nb_items[$DB_ROW['user_id']] = 0 ;
-    $tab_user_nb_ligne_comm[$DB_ROW['user_id']] = 0 ;
-    $tab_user_commentaire[$DB_ROW['user_id']] = NULL;
+    $tab_user_nb_req[$DB_ROW['user_id']] = 0 ;
   }
   // enregistrer refs noms items
   foreach($DB_TAB_COMP as $DB_ROW)
@@ -1559,15 +1550,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // résultats vierges
   foreach($tab_user_id as $user_id=>$val_user)
   {
+    $tab_user_comm[$user_id] = NULL;
     foreach($tab_comp_id as $comp_id=>$val_comp)
     {
       $tab_result[$comp_id][$user_id] = '';
     }
   }
   // compléter si demandé avec les résultats et/ou les demandes d'évaluations
-  if($with_result || $cart_restriction)
+  if($with_result || $only_req)
   {
-    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , $cart_restriction );
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , $only_req );
     foreach($DB_TAB as $DB_ROW)
     {
       // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -1577,7 +1569,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         if($valeur)
         {
           $tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $valeur ;
-          $tab_user_nb_items[$DB_ROW['eleve_id']]++;
+          $tab_user_nb_req[$DB_ROW['eleve_id']]++;
         }
       }
     }
@@ -1603,8 +1595,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           {
             $msg_data = cURL::get_contents($msg_url);
           }
-          $tab_user_commentaire[$DB_ROW['eleve_id']] = $msg_data;
-          $tab_user_nb_ligne_comm[$DB_ROW['eleve_id']] = max( 2 , ceil(mb_strlen($msg_data)/125) );
+          $tab_user_comm[$DB_ROW['eleve_id']] = $msg_data;
         }
       }
     }
@@ -1619,11 +1610,10 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $separateur  = ';';
   $tab_codes = array_fill_keys($_SESSION['NOTE_ACTIF'],TRUE) + array('X'=>FALSE);
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-  $lignes_comm_max = max($tab_user_nb_ligne_comm);
   $item_nb = count($tab_comp_id);
-  if(!$cart_restriction)
+  if(!$only_req)
   {
-    $tab_user_nb_items = array_fill_keys( array_keys($tab_user_nb_items) , $item_nb );
+    $tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
   }
   $cartouche_PDF = new PDF_evaluation_cartouche( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , 'oui' /*legende*/ );
   $cartouche_PDF->initialiser($cart_detail,$item_nb,$cart_cases_nb);
@@ -1632,13 +1622,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     // dans le cas d'un cartouche minimal...
     foreach($tab_user_id as $user_id=>$val_user)
     {
-      if($tab_user_nb_items[$user_id])
+      if($tab_user_nb_req[$user_id])
       {
-        $colonnes_nb    = $tab_user_nb_items[$user_id];
-        $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
-        $lignes_nb      = 1 + 2 + $cart_cases_nb + $lignes_comm_nb; // marge incluse
-        $texte_entete   = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
-        $case_vide      = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
+        $colonnes_nb = $tab_user_nb_req[$user_id];
+        $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
+        $lignes_nb   = 1 + 2 + $cart_cases_nb + $lignes_comm; // marge incluse
+        $texte_entete = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
+        $case_vide    = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
         $cartouche_HTM .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
         $cartouche_CSV .= $texte_entete."\r\n";
         $cartouche_TEX .= To::latex($texte_entete)."\r\n";
@@ -1666,7 +1656,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         }
         foreach($tab_comp_id as $comp_id => $tab_val_comp)
         {
-          if( ($cart_restriction==FALSE) || ($tab_result[$comp_id][$user_id]) )
+          if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
@@ -1710,17 +1700,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $row_htm_comm = '';
         $row_csv_comm = '';
         $row_tex_comm = '';
-        if($tab_user_nb_ligne_comm[$user_id])
+        if($lignes_comm)
         {
-          $row_htm_comm = '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_commentaire[$user_id]).'</div></td></tr>';
-          $row_csv_comm = $tab_user_commentaire[$user_id]."\r\n";
-          $row_tex_comm = '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_commentaire[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
+          $row_htm_comm = '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
+          $row_csv_comm = $tab_user_comm[$user_id]."\r\n";
+          $row_tex_comm = '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_HTM .= '<tr>'.implode('</tr><tr>',$rows_htm).'</tr>'.$row_htm_comm.'</tbody></table>';
         $cartouche_CSV .= implode("\r\n",$rows_csv)."\r\n".$row_csv_comm."\r\n";
         $cartouche_TEX .= '\begin{center}'."\r\n".'\begin{tabular}{|'.str_repeat('c|',$colonnes_nb).'}'."\r\n".'\hline'."\r\n".implode(' \\\\'."\r\n".'\hline'."\r\n",$rows_tex).' \\\\'."\r\n".'\hline'.$row_tex_comm."\r\n".'\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
-        $lignes_vide_nb = ($cart_hauteur=='variable') ? 0 : $lignes_comm_max - $tab_user_nb_ligne_comm[$user_id] ;
-        $cartouche_PDF->commentaire_interligne( $cart_cases_nb+1 /*decalage_nb_lignes*/ , $tab_user_commentaire[$user_id] /*commentaire éventuel*/ , $tab_user_nb_ligne_comm[$user_id] , $lignes_vide_nb );
+        $cartouche_PDF->commentaire_interligne( $cart_cases_nb+1 /*decalage_nb_lignes*/ , $tab_user_comm[$user_id] /*commentaire éventuel*/ , $lignes_comm );
       }
     }
   }
@@ -1729,13 +1718,12 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     // dans le cas d'un cartouche complet...
     foreach($tab_user_id as $user_id=>$val_user)
     {
-      if($tab_user_nb_items[$user_id])
+      if($tab_user_nb_req[$user_id])
       {
-        $colonnes_nb    = ($cart_cases_nb==1) ? 3 : 2 ;
-        $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
-        $lignes_item_nb = ($cart_hauteur=='variable') ? $tab_user_nb_items[$user_id]      : $item_nb ;
-        $lignes_nb      = 1 + 1 + $lignes_item_nb + $lignes_comm_nb ; // marge incluse
-        $texte_entete   = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
+        $lignes_comm = ($tab_user_comm[$user_id]) ? max( 2 , ceil(mb_strlen($tab_user_comm[$user_id])/125) ) : 0 ;
+        $colonnes_nb = ($cart_cases_nb==1) ? 3 : 2 ;
+        $lignes_nb   = 1 + 1 + $tab_user_nb_req[$user_id] + $lignes_comm ; // marge incluse
+        $texte_entete = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
         if($cart_cases_nb==1)
         {
           // ... avec une case à remplir
@@ -1763,7 +1751,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $cartouche_PDF->entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
-          if( ($cart_restriction==FALSE) || ($tab_result[$comp_id][$user_id]) )
+          if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             if($cart_cases_nb==1)
@@ -1802,17 +1790,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
           }
         }
         // Commentaire écrit
-        if($tab_user_nb_ligne_comm[$user_id])
+        if($lignes_comm)
         {
-          $cartouche_HTM .= '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_commentaire[$user_id]).'</div></td></tr>';
-          $cartouche_CSV .= $tab_user_commentaire[$user_id]."\r\n";
-          $cartouche_TEX .= '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_commentaire[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
+          $cartouche_HTM .= '<tr><td colspan="'.$colonnes_nb.'"><div class="appreciation">'.html($tab_user_comm[$user_id]).'</div></td></tr>';
+          $cartouche_CSV .= $tab_user_comm[$user_id]."\r\n";
+          $cartouche_TEX .= '\multicolumn{'.$colonnes_nb.'}{|l|}{'.To::latex($tab_user_comm[$user_id]).'} \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_HTM .= '</tbody></table>';
         $cartouche_CSV .= "\r\n";
         $cartouche_TEX .= '\end{tabular}'."\r\n".'\end{center}'."\r\n\r\n";
-        $lignes_vide_nb = ($cart_hauteur=='variable') ? 0 : ( $lignes_comm_max - $tab_user_nb_ligne_comm[$user_id]) + ( $item_nb - $tab_user_nb_items[$user_id]) ;
-        $cartouche_PDF->commentaire_interligne( 0 /*decalage_nb_lignes*/ , $tab_user_commentaire[$user_id] /*commentaire éventuel*/ , $tab_user_nb_ligne_comm[$user_id] , $lignes_vide_nb );
+        $cartouche_PDF->commentaire_interligne( 0 /*decalage_nb_lignes*/ , $tab_user_comm[$user_id] /*commentaire éventuel*/ , $lignes_comm );
       }
     }
   }
@@ -1858,22 +1845,6 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
   // Parcourir les lignes suivantes et mémoriser les scores
   $retour = '|';
   unset($tab_lignes[0]);
-
-  $tab_codes = array();
-  foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
-  {
-    $tab_codes[$_SESSION['NOTE'][$note_id]['CLAVIER']] = $note_id;
-  }
-  $tab_codes += array(
-    'A' => 'A' , 'a' => 'A' ,
-    'D' => 'D' , 'd' => 'D' ,
-    'E' => 'E' , 'e' => 'E' ,
-    'F' => 'F' , 'f' => 'F' ,
-    'N' => 'N' , 'n' => 'N' ,
-    'R' => 'R' , 'r' => 'R' ,
-    'P' => 'P' , 'p' => 'P' ,
-  );
-
   $scores_autorises = '123456789AaDdNnEeFfRrPp';
   foreach ($tab_lignes as $ligne_contenu)
   {
@@ -1886,9 +1857,9 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
         if( (isset($tab_elements[$num_colonne])) && ($tab_elements[$num_colonne]!='') )
         {
           $score = $tab_elements[$num_colonne];
-          if(isset($tab_codes[$score]))
+          if(strpos($scores_autorises,$score)!==FALSE)
           {
-            $retour .= $eleve_id.'.'.$item_id.'.'.$tab_codes[$score].'|';
+            $retour .= $eleve_id.'.'.$item_id.'.'.strtoupper($score).'|';
           }
         }
       }
@@ -2110,7 +2081,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
   {
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-    $notification_lien = 'Voir le détail :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id);
+    $notification_lien = 'Voir le détail :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id);
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
     foreach($tab_abonnes as $abonne_id => $tab_abonne)
     {

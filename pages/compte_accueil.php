@@ -288,7 +288,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       foreach($DB_TAB as $DB_ROW)
       {
         $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['previsions']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $tab_accueil['previsions']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['previsions']['contenu'].= '</ul>';
     }
@@ -321,7 +321,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       foreach($DB_TAB as $DB_ROW)
       {
         $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['resultats']['contenu'].= '</ul>';
     }
@@ -454,7 +454,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
     foreach($DB_TAB as $DB_ROW)
     {
       $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation_voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
     }
     $tab_accueil['saisies']['contenu'].= '</ul>';
   }

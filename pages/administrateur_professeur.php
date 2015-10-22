@@ -34,15 +34,15 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Sous-Menu d'en-tête
 $SOUS_MENU = '';
 $tab_sous_menu = array(
-  'gestion' => Lang::_("Professeurs / Personnels (gestion)"),
-  'groupe'  => Lang::_("Professeurs & groupes"),
-  'classe'  => Lang::_("Professeurs & classes / Professeurs principaux"),
-  'matiere' => Lang::_("Professeurs & matières / Personnels coordonnateurs"),
+  array( 'section'=>'gestion' , 'txt'=>Lang::_("Professeurs / Personnels (gestion)")                 ),
+  array( 'section'=>'groupe'  , 'txt'=>Lang::_("Professeurs & groupes")                              ),
+  array( 'section'=>'classe'  , 'txt'=>Lang::_("Professeurs & classes / Professeurs principaux")     ),
+  array( 'section'=>'matiere' , 'txt'=>Lang::_("Professeurs & matières / Personnels coordonnateurs") ),
 );
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+foreach($tab_sous_menu as $tab_infos)
 {
-  $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
 }
 
 // Afficher la bonne page et appeler le bon js / ajax par la suite

@@ -32,18 +32,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action         = (isset($_POST['f_action']))            ? Clean::texte($_POST['f_action'])      : NULL;
-$item_id        = (isset($_POST['f_item']))              ? Clean::entier($_POST['f_item'])       : NULL;
-$eleve_id       = (isset($_POST['f_eleve']))             ? Clean::entier($_POST['f_eleve'])      : NULL;
-$note_val       = (isset($_POST['f_note']))              ? Clean::texte($_POST['f_note'])        : NULL;
-$devoir_id      = (isset($_POST['f_devoir']))            ? Clean::entier($_POST['f_devoir'])     : NULL;
-$groupe_id      = (isset($_POST['f_groupe']))            ? Clean::entier($_POST['f_groupe'])     : NULL;
-$box_auto_descr = (isset($_POST['box_autodescription'])) ? 1                                     : 0;
-$description    = (isset($_POST['f_description']))       ? Clean::texte($_POST['f_description']) : '';
+$action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : NULL;
+$item_id   = (isset($_POST['f_item']))   ? Clean::entier($_POST['f_item'])   : NULL;
+$eleve_id  = (isset($_POST['f_eleve']))  ? Clean::entier($_POST['f_eleve'])  : NULL;
+$note_val  = (isset($_POST['f_note']))   ? Clean::texte($_POST['f_note'])    : NULL;
+$devoir_id = (isset($_POST['f_devoir'])) ? Clean::entier($_POST['f_devoir']) : NULL;
+$groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : NULL;
 
 $tab_notes = array_merge( $_SESSION['NOTE_ACTIF'] , array( 'NN' , 'NE' , 'NF' , 'NR' , 'AB' , 'DI' , 'PA' , 'X' ) );
 
-if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val,$tab_notes) && ($devoir_id!==NULL) && ($groupe_id!==NULL) && ( $box_auto_descr || $description ) )
+if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val,$tab_notes) && ($devoir_id!==NULL) && ($groupe_id!==NULL) )
 {
   // Nom du devoir
   $tab_jour = array(
@@ -69,10 +67,10 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     11 => 'novembre',
     12 => 'décembre',
   );
-  $description = ($box_auto_descr) ? 'Évaluation ponctuelle du '.$tab_jour[date("w")].' '.date("j").' '.$tab_mois[date("n")].' '.date("Y").'.' : $description ;
+  $description = 'Évaluation ponctuelle du '.$tab_jour[date("w")].' '.date("j").' '.$tab_mois[date("n")].' '.date("Y").'.';
   // On cherche le devoir correspondant.
   $presence_devoir = FALSE;
-  if( ($devoir_id) && ($groupe_id) && DB_STRUCTURE_PROFESSEUR::DB_tester_devoir_ponctuel_prof_by_ids( $devoir_id , $_SESSION['USER_ID'] , $groupe_id , $description ) )
+  if( ($devoir_id) && ($groupe_id) && DB_STRUCTURE_PROFESSEUR::DB_tester_devoir_ponctuel_prof_by_ids( $devoir_id , $_SESSION['USER_ID'] ,  $groupe_id ) )
   {
     $presence_devoir = TRUE;
   }
@@ -160,7 +158,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , $listing_users );
     if($listing_abonnes)
     {
-      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
+      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id.'&eleve_id=');
       $notification_contenu = 'Saisie "à la volée" enregistrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)

@@ -31,15 +31,10 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    // initialisation
     var ajax_id = '#ajax_msg_envoyer';
-    var nb_caracteres_max = 2000;
-
     $('#f_nom').focus();
-    afficher_textarea_reste( $('#f_message') , nb_caracteres_max );
+    afficher_textarea_reste( $('#f_message') , 2000 );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Indiquer le nombre de caractères restant autorisés dans le textarea
@@ -49,7 +44,7 @@ $(document).ready
     (
       function()
       {
-        afficher_textarea_reste( $(this) , nb_caracteres_max );
+        afficher_textarea_reste( $(this) , 2000 );
       }
     );
 

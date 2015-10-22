@@ -44,7 +44,7 @@ $(document).ready
     var nb_colonnes = 1;
     var nb_lignes   = 1;
     var nb_lignes_max = 20;
-    var nb_caracteres_max = 2000;
+    var nb_caracteres_max = 999;
     var audio_duree_restante = 0;
     var $table_saisir_voir = $('#table_saisir_voir');
 
@@ -355,7 +355,7 @@ $(document).ready
       $('#saisir_voir_description' ).val(unescapeHtml(description));
       $('#saisir_voir_fini'        ).val(fini);
       // pour finir
-      $('#zone_saisir_voir h2').html(mode[0].toUpperCase() + mode.substring(1) + " les résultats d'une évaluation");
+      $('#zone_saisir_voir h2').html(mode[0].toUpperCase() + mode.substring(1) + " les acquisitions à une évaluation");
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -707,7 +707,7 @@ $(document).ready
             var id_debut = 'id_'+tab_id[i]+'_';
             if($('input[id^='+id_debut+']').length)
             {
-              tab_texte[i] = $('input[id^='+id_debut+']').first().next().text();
+              tab_texte[i] = $('input[id^='+id_debut+']').next().text();
             }
             else
             {
@@ -840,7 +840,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le formulaire servant à saisir ou voir les résultats des élèves à une évaluation
+    // Clic sur le bouton pour fermer le formulaire servant à saisir ou voir les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function fermer_zone_saisir_voir()
@@ -1395,7 +1395,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Gérer la saisie des résultats au clavier ou avec un dispositif tactile
+    // Gérer la saisie des acquisitions au clavier ou avec un dispositif tactile
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function focus_cellule_suivante_en_evitant_sortie_tableau()
@@ -1607,7 +1607,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Gérer la saisie des résultats à la souris
+    // Gérer la saisie des acquisitions à la souris
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Remplacer la cellule par les images de choix
@@ -1800,7 +1800,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le lien pour mettre à jour les résultats des élèves à une évaluation
+    // Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#valider_saisir').click
@@ -2110,19 +2110,23 @@ $(document).ready
               champ = $table_saisir_voir.find('input[name='+item_id+'x'+eleve_id+']');
               if(champ.length)
               {
-                nb_notes_reportees++;
-                switch (score)
+                var findme = '.'+score+'.';
+                if(keycode_search.indexOf(findme)!=-1)
                 {
-                  case 'A': champ.val('AB').removeAttr("class").addClass('AB'); break;
-                  case 'D': champ.val('DI').removeAttr("class").addClass('DI'); break;
-                  case 'N': champ.val('NN').removeAttr("class").addClass('NN'); break;
-                  case 'E': champ.val('NE').removeAttr("class").addClass('NE'); break;
-                  case 'F': champ.val('NF').removeAttr("class").addClass('NF'); break;
-                  case 'R': champ.val('NR').removeAttr("class").addClass('NR'); break;
-                  case 'P': champ.val('PA').removeAttr("class").addClass('PA'); break;
-                  default : champ.val(score).removeAttr("class").addClass('N'+score); break;
+                  nb_notes_reportees++;
+                  switch (score)
+                  {
+                    case 'A': champ.val('AB').removeAttr("class").addClass('AB'); break;
+                    case 'D': champ.val('DI').removeAttr("class").addClass('DI'); break;
+                    case 'N': champ.val('NN').removeAttr("class").addClass('NN'); break;
+                    case 'E': champ.val('NE').removeAttr("class").addClass('NE'); break;
+                    case 'F': champ.val('NF').removeAttr("class").addClass('NF'); break;
+                    case 'R': champ.val('NR').removeAttr("class").addClass('NR'); break;
+                    case 'P': champ.val('PA').removeAttr("class").addClass('PA'); break;
+                    default : champ.val(score).removeAttr("class").addClass('N'+score); break;
+                  }
+                  champ.parent().css("background-color","#F6D");
                 }
-                champ.parent().css("background-color","#F6D");
               }
               modification = true;
             }
@@ -2130,7 +2134,7 @@ $(document).ready
         }
         var s_remontees = (nb_notes_remontees>1) ? 's' : '' ;
         var s_reportees = (nb_notes_remontees>1) ? 's' : '' ;
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" reportée"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
+        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" saisie"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
       }
     }
 
@@ -2697,43 +2701,6 @@ $(document).ready
         $('#enregistrer_'+msg_objet+'_ref').val( $('#saisir_voir_ref').val() );
         $('#enregistrer_'+msg_objet+'_eleve_id').val( user_id );
         $('#enregistrer_'+msg_objet+'_msg_autre').val( msg_autre );
-        // Récupérer les items et les notes pour les avoir sous les yeux
-        if(mode=='saisir')
-        {
-          var tab_report = new Array();
-          // Récupérer les données des items
-          tab_report['item'] = new Array();
-          $table_saisir_voir.find("tbody th").each
-          (
-            function()
-            {
-              tab_report['item'].push( $(this).children('b').text()+' '+$(this).children('div').text() );
-            }
-          );
-          // Récupérer les saisies de l'élève
-          tab_report['eleve'] = new Array();
-          var id_colonne = $(this).attr('id').substring(5); // texteCiL | audioCiL
-          $table_saisir_voir.find("tbody td input[id^="+id_colonne+"]").each
-          (
-            function()
-            {
-              tab_report['eleve'].push( $(this).attr('class') );
-            }
-          );
-          // On concatène tout ça
-          var table_report = '<table class="scor_eval"><tbody class="h">';
-          var i;
-          for( i=0 ; i<tab_report['eleve'].length ; i+=1 )
-          {
-            table_report += '<tr><td><input type="text" class="'+tab_report['eleve'][i]+'" readonly /></td><th>'+tab_report['item'][i]+'</th></tr>';
-          }
-          table_report += '</tbody></table>';
-          $('#report_tableau_'+msg_objet).html(table_report);
-        }
-        else
-        {
-          $('#report_tableau_'+msg_objet).html('');
-        }
         // Récupérer (si besoin) le texte ou l'audio actuellement enregistré
         if(mode=='saisir')
         {

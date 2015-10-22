@@ -683,6 +683,7 @@ table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#DDF
 table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
 table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
+table.scor_eval tbody td input:focus {border:2px solid #00F}
 table.scor_eval tbody.h td input {width:22px;height:16px}
 table.scor_eval tbody.v td input {width:12px;height:22px}
 /* Pour les codes de notation, défini suivant les préférences de l'établissement : cf actualiser_style() dans class.SessionUser.php */
@@ -702,7 +703,6 @@ table.scor_eval tbody.h td input.PA {background:#FFF url(../_img/note/commun/h/P
 table.scor_eval tbody.v td input.PA {background:#FFF url(../_img/note/commun/v/PA.gif) no-repeat center center;}
 table.scor_eval tbody.h td input.X  {background:#FFF url(../_img/note/commun/h/X.gif)  no-repeat center center;}
 table.scor_eval tbody.v td input.X  {background:#FFF url(../_img/note/commun/v/X.gif)  no-repeat center center;}
-#table_saisir_voir tbody td input:focus {border:2px solid #00F}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau d'exploitation des résultats d'une évaluation                                               */

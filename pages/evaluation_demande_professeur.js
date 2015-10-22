@@ -30,12 +30,6 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var nb_caracteres_max = 2000;
-
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{0:{sorter:false},7:{sorter:'date_fr'},10:{sorter:false},11:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[9,0],[1,0],[3,1],[2,0]] ] ); };
@@ -466,7 +460,7 @@ $(document).ready
     (
       function()
       {
-        afficher_textarea_reste( $(this) , nb_caracteres_max );
+        afficher_textarea_reste( $(this) , 500 );
       }
     );
 

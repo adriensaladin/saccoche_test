@@ -30,12 +30,8 @@ $(document).ready
   function()
   {
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
     var mode = false;
-    var nb_caracteres_max = 2000;
+
     var prefixe_type =
     {
       'nom' :
@@ -219,7 +215,7 @@ $(document).ready
       $.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
       $('#f_message').focus().val(unescapeHtml(message_contenu));
-      afficher_textarea_reste( $('#f_message') , nb_caracteres_max );
+      afficher_textarea_reste( $('#f_message') , 999 );
     };
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +239,7 @@ $(document).ready
     (
       function()
       {
-        afficher_textarea_reste( $(this) , nb_caracteres_max );
+        afficher_textarea_reste( $(this) , 999 );
       }
     );
 

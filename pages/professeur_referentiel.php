@@ -34,23 +34,22 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Sous-Menu d'en-tête, selon les droits
 $SOUS_MENU = '';
 $tab_sous_menu = array(
-  'gestion'    => Lang::_("Créer / paramétrer les référentiels"),
-  'edition'    => Lang::_("Modifier le contenu des référentiels"),
-  'ressources' => Lang::_("Associer des ressources aux items"),
+  array( 'section'=>'gestion'    , 'txt'=>Lang::_("Créer / paramétrer les référentiels")  ),
+  array( 'section'=>'edition'    , 'txt'=>Lang::_("Modifier le contenu des référentiels") ),
+  array( 'section'=>'ressources' , 'txt'=>Lang::_("Associer des ressources aux items")    ),
 );
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+foreach($tab_sous_menu as $tab_infos)
 {
   // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
-  $sous_menu_class = 'referentiel_'.$sous_menu_section;
-  if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
+  if( strpos( $_SESSION['MENU'] , 'class="referentiel_'.$tab_infos['section'].'"' ) )
   {
-    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
   }
   else
   {
     $class = ' class="disabled"';
   }
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
 }
 
 // Afficher la bonne page et appeler le bon js / ajax par la suite

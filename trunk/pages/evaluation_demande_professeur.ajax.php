@@ -250,7 +250,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
-    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id);
+    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
     $tab_abonnes = explode(',',$listing_abonnes);
     foreach($tab_abonnes as $abonne_id)
@@ -315,7 +315,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
     $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
-    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id='.$devoir_id);
+    $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
     $tab_abonnes = explode(',',$listing_abonnes);
     foreach($tab_abonnes as $abonne_id)
@@ -363,7 +363,7 @@ if( ($action=='retirer') && $nb_demandes )
   $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref , implode(',',$tab_user_id) );
   if($listing_abonnes)
   {
-    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation_voir&devoir_id=');
+    $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id=');
     $tab_item_for_user = array();
     foreach($tab_user_item as $key)
     {

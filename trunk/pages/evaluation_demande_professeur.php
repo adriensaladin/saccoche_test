@@ -180,6 +180,6 @@ $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select
 <div id="bilan" class="hide">
   <hr />
   <ul class="puce">
-    <li>Vous pouvez ensuite <a id="bilan_lien" href="./index.php?page=evaluation_gestion&amp;section=selection&amp;devoir_id=0&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
+    <li>Vous pouvez ensuite <a id="bilan_lien" href="./index.php?page=evaluation&amp;section=gestion_selection&amp;devoir_id=0&amp;groupe_id=0">voir l'évaluation correspondante ainsi obtenue</a>.</li>
   </ul>
 </div>

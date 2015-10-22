@@ -209,6 +209,7 @@ $tab_droits_par_page = array
   'consultation_algorithme'                 => $tab_droits_profil_eleve_parent_prof_dir,
   'consultation_codes_couleurs'             => $tab_droits_profil_eleve_parent_prof_dir,
   'consultation_groupe_periode'             => $tab_droits_profil_eleve_parent_prof_dir,
+  'evaluation'                              => $tab_droits_profil_eleve_parent_prof_dir,
   'evaluation_voir'                         => $tab_droits_profil_eleve_parent_prof_dir,
   'releve'                                  => $tab_droits_profil_eleve_parent_prof_dir,
   'releve_bilan_chronologique'              => $tab_droits_profil_eleve_parent_prof_dir,

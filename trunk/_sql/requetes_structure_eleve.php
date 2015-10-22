@@ -166,16 +166,41 @@ public static function DB_lister_devoirs_eleve($eleve_id,$date_debut_mysql,$date
     $listing_groupes = $DB_ROW['eleve_classe_id'].$virgule.$DB_ROW['eleve_groupes_id'];
     // Cette fonction peut être appelée avec un autre profil.
     $sql_view = ( ($user_profil_type=='eleve') || ($user_profil_type=='parent') ) ? 'AND devoir_visible_date<=NOW() ' : '' ;
-    $DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom, jointure_texte, jointure_audio ';
+    $DB_SQL = 'SELECT sacoche_devoir.* , ';
+    $DB_SQL.= 'sacoche_user.user_genre AS prof_genre , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom , ';
+    $DB_SQL.= 'jointure_texte , jointure_audio , ';
+    $DB_SQL.= 'COUNT(DISTINCT sacoche_jointure_devoir_item.item_id) AS items_nombre ';
     $DB_SQL.= 'FROM sacoche_devoir ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve ON ( sacoche_devoir.devoir_id=sacoche_jointure_devoir_eleve.devoir_id AND sacoche_jointure_devoir_eleve.eleve_id=:eleve_id ) ';
     $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item ON ( sacoche_devoir.devoir_id = sacoche_jointure_devoir_item.devoir_id ) ';
     $DB_SQL.= 'WHERE groupe_id IN('.$listing_groupes.') AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" '.$sql_view ;
-    // $DB_SQL.= 'GROUP BY sacoche_devoir.devoir_id ';
+    $DB_SQL.= 'GROUP BY sacoche_devoir.devoir_id ';
     $DB_SQL.= 'ORDER BY devoir_date DESC, sacoche_devoir.devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
     $DB_VAR = array(':eleve_id'=>$eleve_id);
     return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
+}
+
+/**
+ * lister_nb_saisies_par_evaluation
+ *
+ * @param int      $eleve_id
+ * @param string   $listing_devoir_id   soit une chaine de devoir (string), soit un devoir unique (int)
+ * @return array   tableau (devoir_id;saisies_nombre)
+ */
+public static function DB_lister_nb_saisies_par_evaluation($eleve_id,$listing_devoir_id)
+{
+  $DB_SQL = 'SELECT COUNT(saisie_note) AS saisies_nombre, devoir_id ';
+  $DB_SQL.= 'FROM sacoche_saisie ';
+  $DB_SQL.= 'WHERE devoir_id IN('.$listing_devoir_id.') AND eleve_id=:eleve_id ';
+  $DB_SQL.= 'AND saisie_note!="PA" ';
+  $DB_SQL.= 'GROUP BY devoir_id ';
+  $DB_VAR = array(
+    ':eleve_id'          => $eleve_id,
+    ':listing_devoir_id' => $listing_devoir_id,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

@@ -118,11 +118,12 @@ Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
         <th>Professeur</th>
         <th>Description</th>
         <th>Docs</th>
+        <th>Saisies</th>
         <th class="nu"></th>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="nu" colspan="5"></td></tr>
+      <tr><td class="nu" colspan="6"></td></tr>
     </tbody>
   </table>
 </form>

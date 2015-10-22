@@ -33,41 +33,42 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFI
 {
   $SOUS_MENU = '';
   $tab_sous_menu = array(
-    array( 'section'=>'reglages_ordre_matieres'  , 'txt'=>Lang::_("Ordre d'affichage des matières")     ),
-    array( 'section'=>'reglages_format_synthese' , 'txt'=>Lang::_("Format de synthèse par référentiel") ),
-    array( 'section'=>'reglages_configuration'   , 'txt'=>Lang::_("Configuration des bilans officiels") ),
-    array( 'section'=>'reglages_mise_en_page'    , 'txt'=>Lang::_("Mise en page des bilans officiels")  ),
+    'reglages_ordre_matieres'  => Lang::_("Ordre d'affichage des matières"),
+    'reglages_format_synthese' => Lang::_("Format de synthèse par référentiel"),
+    'reglages_configuration'   => Lang::_("Configuration des bilans officiels"),
+    'reglages_mise_en_page'    => Lang::_("Mise en page des bilans officiels"),
   );
-  foreach($tab_sous_menu as $tab_infos)
+  foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {
-    $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
   }
   if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   {
     $SOUS_MENU .= '<br />'.NL;
     $tab_sous_menu = array(
-      array( 'section'=>'assiduite'        , 'txt'=>Lang::_("Absences / Retards")   ),
-      array( 'section'=>'accueil_releve'   , 'txt'=>Lang::_("Relevé d'évaluations") ),
-      array( 'section'=>'accueil_bulletin' , 'txt'=>Lang::_("Bulletin scolaire")    ),
+      'assiduite'        => Lang::_("Absences / Retards"),
+      'accueil_releve'   => Lang::_("Relevé d'évaluations"),
+      'accueil_bulletin' => Lang::_("Bulletin scolaire"),
     );
-    foreach($tab_sous_menu as $tab_infos)
+    foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
     {
-      $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-      $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+      $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+      $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
     }
     $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-    $tab_sous_menu = array( 1 =>
-      array( 'section'=>'accueil_palier1' , 'txt'=>Lang::_("Maîtrise du palier 1") ),
-      array( 'section'=>'accueil_palier2' , 'txt'=>Lang::_("Maîtrise du palier 2") ),
-      array( 'section'=>'accueil_palier3' , 'txt'=>Lang::_("Maîtrise du palier 3") ),
+    $tab_sous_menu = array(
+      'accueil_palier1' => Lang::_("Maîtrise du palier 1"),
+      'accueil_palier2' => Lang::_("Maîtrise du palier 2"),
+      'accueil_palier3' => Lang::_("Maîtrise du palier 3"),
     );
-    foreach($tab_sous_menu as $palier_id => $tab_infos)
+    foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
     {
+      $palier_id = (int)substr($sous_menu_section,-1);
       if(in_array($palier_id,$tab_paliers_actifs))
       {
-        $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-        $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+        $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+        $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
       }
     }
   }

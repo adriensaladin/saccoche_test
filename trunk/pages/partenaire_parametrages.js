@@ -35,7 +35,7 @@ $(document).ready
     (
       function()
       {
-        afficher_textarea_reste( $(this) , 500 );
+        afficher_textarea_reste( $(this) , 999 );
       }
     );
 

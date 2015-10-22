@@ -74,7 +74,7 @@ $tab_sous_menu = array
   'evaluation' => array
   (
     'consultation_nombre_saisies' => array( 'texte' => Lang::_("Nombre de saisies")     , 'class' => 'statistiques'    , 'href' => 'page=consultation_nombre_saisies' ),
-    'evaluation_voir'             => array( 'texte' => Lang::_("Liste des évaluations") , 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir'             ),
+    'evaluation_voir'             => array( 'texte' => Lang::_("Liste des évaluations") , 'class' => 'evaluation_voir' , 'href' => 'page=evaluation_voir' ),
   ),
   'validation' => array
   (
@@ -86,13 +86,13 @@ $tab_sous_menu = array
   ),
   'releve' => array
   (
-    'releve_recherche'             => array( 'texte' => Lang::_("Recherche ciblée")                , 'class' => 'releve_recherche'      , 'href' => 'page=releve&amp;section=recherche'             ),
-    'releve_grille_referentiel'    => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'         , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
-    'releve_items'                 => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'                 ),
-    'releve_synthese'              => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'              ),
-    'releve_chronologique'         => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
-    'releve_socle'                 => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),
-    'releve_synthese_socle'        => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        ),
+    'releve_recherche'          => array( 'texte' => Lang::_("Recherche ciblée")                , 'class' => 'releve_recherche'      , 'href' => 'page=releve&amp;section=recherche'             ),
+    'releve_grille_referentiel' => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'         , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
+    'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'                 ),
+    'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'              ),
+    'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
+    'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),
+    'releve_synthese_socle'     => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        ),
   ),
   'officiel' => array
   (

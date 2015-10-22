@@ -26,50 +26,62 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Fiches brevet")) : html(Lang::_("Notanet & Fiches brevet")) ;
+$TITRE = html(Lang::_("Évaluations"));
 
 // Sous-Menu d'en-tête
-if($_SESSION['USER_PROFIL_TYPE']!='professeur')
+if( ($_SESSION['USER_PROFIL_TYPE']!='parent') && ($_SESSION['USER_PROFIL_TYPE']!='directeur') )
 {
   $SOUS_MENU = '';
-  $tab_sous_menu = array(
-    'series'   => Lang::_("Étape n°1 : Séries"),
-    'epreuves' => Lang::_("Étape n°2 : Épreuves"),
-    'moyennes' => Lang::_("Étape n°3 : Notes"),
-    'notanet'  => Lang::_("Étape n°4 : Export Notanet"),
-    'fiches'   => Lang::_("Étape n°5 : Fiches brevet"),
+  if($_SESSION['USER_PROFIL_TYPE']=='professeur')
+  {
+    $tab_sous_menu = array(
+      'demande_professeur' => Lang::_("Demandes d'évaluations formulées"),
+      'gestion_groupe'     => Lang::_("Évaluer une classe ou un groupe"),
+      'gestion_selection'  => Lang::_("Évaluer des élèves sélectionnés"),
+      'ponctuelle'         => Lang::_("Évaluer un élève à la volée"),
+      'voir'               => Lang::_("Liste des évaluations"),
+    );
+  }
+  else if($_SESSION['USER_PROFIL_TYPE']=='eleve')
+  {
+    $tab_sous_menu = array(
+      'voir'          => Lang::_("Liste des évaluations"),
+      'demande_eleve' => Lang::_("Demandes d'évaluations formulées"),
+    );
+  }
+  $tab_class_differente = array(
+    'demande_eleve'      => 'evaluation_demande',
+    'demande_professeur' => 'evaluation_demande',
+    'gestion_groupe'     => 'evaluation_gestion',
+    'gestion_selection'  => 'evaluation_gestion',
+    'ponctuelle'         => 'evaluation_gestion',
   );
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {
+    $sous_menu_class = isset($tab_class_differente[$sous_menu_section]) ? $tab_class_differente[$sous_menu_section] : 'evaluation_'.$sous_menu_section ;
     $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
     $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
   }
 }
 
-if($_SESSION['USER_PROFIL_TYPE']=='professeur')
-{
-  $SECTION = 'fiches';
-}
-if($SECTION=='accueil')
-{
-  echo'<p>'.NL;
-  echo  '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__notanet_fiches_brevet">DOC : Notanet &amp; Fiches brevet</a></span><br />'.NL;
-  echo  '<span class="astuce">Effectuer dans l\'ordre les étapes ci-dessus&hellip;</span>'.NL;
-  echo'</p>'.NL;
-  echo'<hr />'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-
 // Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
+if(substr($SECTION,0,8)=='gestion_')
 {
-  $PAGE = $PAGE.'_'.$SECTION ;
-  require($fichier_section);
+  $PAGE = 'evaluation_gestion';
+  $SECTION = substr($SECTION,8);
+  require(CHEMIN_DOSSIER_PAGES.$PAGE.'.php');
 }
 else
 {
-  echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
+  $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+  if(is_file($fichier_section))
+  {
+    $PAGE = $PAGE.'_'.$SECTION ;
+    require($fichier_section);
+  }
+  else
+  {
+    echo'<p><span class="astuce">'.$PAGE.'_'.$SECTION.'&hellip;</span></p>'.NL;
+  }
 }
 ?>

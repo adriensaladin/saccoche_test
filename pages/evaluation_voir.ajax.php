@@ -61,11 +61,26 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   {
     exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !');
   }
+  // Récupérer le nb de saisies déjà effectuées par évaluation (ça posait trop de problème dans la requête précédente : saisies comptées plusieurs fois, évaluations sans saisies non retournées...)
+  $tab_devoir_id = array();
   foreach($DB_TAB as $DB_ROW)
   {
+    $tab_devoir_id[$DB_ROW['devoir_id']] = $DB_ROW['devoir_id'];
+  }
+  $tab_nb_saisies_effectuees = array_fill_keys($tab_devoir_id,0);
+  $DB_TAB2 = DB_STRUCTURE_ELEVE::DB_lister_nb_saisies_par_evaluation( $eleve_id , implode(',',$tab_devoir_id) );
+  foreach($DB_TAB2 as $DB_ROW)
+  {
+    $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']] = $DB_ROW['saisies_nombre'];
+  }
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $nb_saisies_possibles = $DB_ROW['items_nombre'];
     $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
     $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
     $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+    $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
+    $remplissage_class    = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
     $q_texte       = ($DB_ROW['jointure_texte'])     ? '<q class="texte_consulter" title="Commentaire écrit disponible."></q>' : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
     $q_audio       = ($DB_ROW['jointure_audio'])     ? '<q class="audio_ecouter" title="Commentaire audio disponible."></q>'   : '<q class="audio_ecouter_non" title="Pas de commentaire audio."></q>' ;
     // Afficher une ligne du tableau
@@ -74,6 +89,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     echo  '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>';
     echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
     echo  '<td>'.$image_sujet.$image_corrige.'</td>';
+    echo  '<td class="hc '.$remplissage_class.'">'.$remplissage_nombre.'</td>';
     echo  '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
     echo    '<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
     echo    $q_texte;

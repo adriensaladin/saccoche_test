@@ -34,14 +34,14 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Sous-Menu d'en-tête
 $SOUS_MENU = '';
 $tab_sous_menu = array(
-  array( 'section'=>'gestion' , 'txt'=>Lang::_("Parents (gestion)")  ),
-  array( 'section'=>'adresse' , 'txt'=>Lang::_("Parents & adresses") ),
-  array( 'section'=>'eleve'   , 'txt'=>Lang::_("Parents & élèves")   ),
+  'gestion' => Lang::_("Parents (gestion)"),
+  'adresse' => Lang::_("Parents & adresses"),
+  'eleve'   => Lang::_("Parents & élèves"),
 );
-foreach($tab_sous_menu as $tab_infos)
+foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
 {
-  $class = ($tab_infos['section']==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$tab_infos['section'].'">'.html($tab_infos['txt']).'</a>'.NL;
+  $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
 }
 
 // Afficher la bonne page et appeler le bon js / ajax par la suite

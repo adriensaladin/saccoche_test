@@ -125,20 +125,22 @@ public static function DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id
  * @param int    $devoir_id
  * @param int    $prof_id
  * @param int    $groupe_id
+ * @param string $description
  * @return bool
  */
-public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id,$groupe_id)
+public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id,$groupe_id,$description)
 {
   $DB_SQL = 'SELECT 1 ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND proprio_id=:proprio_id AND groupe_id=:groupe_id AND groupe_type=:type4 ' ;
+  $DB_SQL.= 'WHERE devoir_id=:devoir_id AND proprio_id=:proprio_id AND groupe_id=:groupe_id AND groupe_type=:type4 AND devoir_info=:description ' ;
   $DB_SQL.= 'LIMIT 1';
   $DB_VAR = array(
-    ':devoir_id'  => $devoir_id,
-    ':proprio_id' => $prof_id,
-    ':groupe_id'  => $groupe_id,
-    ':type4'      => 'eval',
+    ':devoir_id'   => $devoir_id,
+    ':proprio_id'  => $prof_id,
+    ':groupe_id'   => $groupe_id,
+    ':type4'       => 'eval',
+    ':description' => $description,
   );
   return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

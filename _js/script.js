@@ -1024,6 +1024,7 @@ $(document).ready
     /**
      * Initialisation
      */
+    var nb_caracteres_max = 2000;
     infobulle();
 
     /**
@@ -1634,7 +1635,7 @@ $(document).ready
                 (
                   function()
                   {
-                    afficher_textarea_reste( $(this) , 500 );
+                    afficher_textarea_reste( $(this) , nb_caracteres_max );
                   }
                 );
                 // Fonction à définir avant new AjaxUpload() sinon Firefox plante

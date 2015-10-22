@@ -450,10 +450,12 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 <?php
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
+$check_cart_restriction = (Form::$tab_choix['cart_restriction']) ? ' checked' : '' ;
 $select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/);
 $select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/);
 $select_cart_contenu  = HtmlForm::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
 $select_orientation   = HtmlForm::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
+$select_cart_hauteur  = HtmlForm::afficher_select(Form::$tab_select_cart_hauteur  , 'f_hauteur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_hauteur']  /*selection*/ , '' /*optgroup*/);
 $select_couleur       = HtmlForm::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
 $select_fond          = HtmlForm::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/);
 $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
@@ -471,7 +473,8 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
     <label class="tab">Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_marge_min ?><br />
-    <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1" /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label>
+    <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1"<?php echo $check_cart_restriction ?> /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label><br />
+    <label class="tab" for="f_detail">Hauteur des blocs :</label><?php echo $select_cart_hauteur ?><br />
   </div>
   <span class="tab"></span><button id="valider_imprimer" type="button" class="valider">Générer le cartouche</button> <button id="fermer_zone_imprimer" type="button" class="retourner">Retour</button> <label id="ajax_msg_imprimer">&nbsp;</label>
   <input id="imprimer_ref"          name="f_ref"          type="hidden" value="" />
@@ -518,7 +521,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
 </div>
 
 <div id="zone_saisir_voir" class="hide">
-  <h2>Saisir / Voir les acquisitions à une évaluation</h2>
+  <h2>Saisir / Voir les acquisitions d'une évaluation</h2>
   <p>
     <b id="titre_saisir_voir"></b> <button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir_voir" type="button" class="retourner">Retour</button> <label id="ajax_msg_saisir_voir"></label>
   </p>
@@ -601,6 +604,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <input id="enregistrer_texte_msg_url"   name="f_msg_url"   type="hidden" value="" />
     <input id="enregistrer_texte_msg_autre" name="f_msg_autre" type="hidden" value="" />
   </p>
+  <p id="report_tableau_texte"></p>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_enregistrer_audio" class="hide"><fieldset>
@@ -608,7 +612,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <hr />
   <ul class="puce">
     <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_audio">DOC : Commentaire audio personnalisé.</a></span></li>
-    <li><span class="danger">Fonctionnalité expérimentale ! <span class="fluo">Usage du navigateur Chrome quasi-obligatoire !</span></span></li>
+    <li><span class="danger">Fonctionnalité expérimentale ! <span class="fluo">Usage du navigateur Chrome ou Edge quasi-obligatoire !</span></span></li>
     <li><span class="astuce">Enregistrement de <?php echo $AUDIO_DUREE_MAX ?> s maximum, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre.<br />Dans tous les cas l'enregistrement ne peut techniquement pas dépasser 120 secondes." /></span></li>
   </ul>
   <hr />
@@ -629,6 +633,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <input id="enregistrer_audio_msg_autre" name="f_msg_autre" type="hidden" value="" />
     <input id="enregistrer_audio_msg_data"  name="f_msg_data"  type="hidden" value="" />
   </div>
+  <p id="report_tableau_audio"></p>
 </fieldset></form>
 
 <div id="zone_confirmer_fermer_saisir" class="hide">

@@ -27,9 +27,45 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Relevés / Synthèses"));
-?>
 
-<?php
+// Sous-Menu d'en-tête
+$SOUS_MENU = '';
+$tab_sous_menu = array(
+  'recherche'           => Lang::_("Recherche ciblée"),
+  'grille_referentiel'  => Lang::_("Grille d'items d'un référentiel"),
+  'items'               => Lang::_("Relevé d'items"),
+  'synthese'            => Lang::_("Synthèse d'items"),
+  'bilan_chronologique' => Lang::_("Bilan chronologique"),
+  'socle'               => Lang::_("Relevé de maîtrise du socle"),
+  'synthese_socle'      => Lang::_("Synthèse de maîtrise du socle"),
+);
+$tab_class_differente = array(
+  'grille_referentiel'  => 'releve_grille',
+  'bilan_chronologique' => 'releve_chrono',
+);
+if( ($_SESSION['USER_PROFIL_TYPE']!='professeur') &&  ($_SESSION['USER_PROFIL_TYPE']!='directeur') )
+{
+  unset($tab_sous_menu['recherche']);
+}
+foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+{
+  // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
+  $sous_menu_class = isset($tab_class_differente[$sous_menu_section]) ? $tab_class_differente[$sous_menu_section] : 'releve_'.$sous_menu_section ;
+  // Les élèves et les parents n'ont pas accès à tous les sous-menus
+  if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class ) )
+  {
+    if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
+    {
+      $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+    }
+    else
+    {
+      $class = ' class="disabled"';
+    }
+    $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+  }
+}
+
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

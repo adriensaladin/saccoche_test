@@ -332,7 +332,7 @@ class SessionUser
         $_SESSION['TAB_PROFILS_DROIT']['NOM_LONG_PLURIEL'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_pluriel'];
       }
     }
-    // Enregistrer en session les couleurs er paramètres pour les codes de notation, les états d'acquisition, les validations
+    // Enregistrer en session les couleurs et paramètres pour les codes de notation, les états d'acquisition, les validations
     SessionUser::memoriser_couleurs();
     // Fabriquer $_SESSION['NOTE'][i]['FICHIER'] en fonction de $_SESSION['USER_DALTONISME']
     // remarque : $_SESSION['USER_DALTONISME'] ne peut être utilisé que pour les profils élèves/parents/profs/directeurs, pas les admins ni le webmestre
@@ -344,6 +344,8 @@ class SessionUser
     SessionUser::memoriser_menu();
     // Juste pour davantage de lisibilité si besoin de debug...
     ksort($_SESSION);
+    // Fichiers des symboles personnalisées uploadés par l'établissement à mettre en place si besoin
+    SessionUser::actualiser_fichiers_symboles_perso();
     // Enfin, on profite de cet événement pour faire du ménage ou simuler une tâche planifiée
     SessionUser::cron();
   }
@@ -446,7 +448,7 @@ class SessionUser
   }
 
   /**
-   * Compléter la session avec les couleurs er paramètres pour les codes de notation, les états d'acquisition, les états de validation
+   * Compléter la session avec les couleurs et paramètres pour les codes de notation, les états d'acquisition, les états de validation
    * 
    * @param void
    * @return void
@@ -594,6 +596,26 @@ class SessionUser
       $numero_menu++;
     }
     $_SESSION['MENU'] .= '</ul></li></ul>'.NL;
+  }
+
+  /**
+   * Fichiers des symboles personnalisées uploadés par l'établissement à mettre en place si besoin
+   * 
+   * @param void
+   * @return void
+   */
+  public static function actualiser_fichiers_symboles_perso()
+  {
+    $DB_TAB = DB_STRUCTURE_IMAGE::DB_lister_images_notes();
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $image_nom = 'upload_'.$DB_ROW['image_note_id'];
+        FileSystem::ecrire_fichier( FileSystem::chemin_fichier_symbole($image_nom,'h','perso') , base64_decode($DB_ROW['image_contenu_h']) );
+        FileSystem::ecrire_fichier( FileSystem::chemin_fichier_symbole($image_nom,'v','perso') , base64_decode($DB_ROW['image_contenu_v']) );
+      }
+    }
   }
 
   /**

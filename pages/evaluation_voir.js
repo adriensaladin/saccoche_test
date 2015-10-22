@@ -36,10 +36,10 @@ $(document).ready
 
     var groupe_id   = 0;
     var groupe_type = '';
-    var nb_caracteres_max = 999;
+    var nb_caracteres_max = 2000;
 
     // tri des tableaux (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},3:{sorter:false},4:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{0:{sorter:'date_fr'},3:{sorter:false},4:{sorter:false},5:{sorter:false}} });
     $('#table_voir'  ).tablesorter({ headers:{} });
     var tableau_tri_action = function(){ $('#table_action').trigger( 'sorton' , [ [[0,1]] ] ); };
     var tableau_tri_voir   = function(){ $('#table_voir'  ).trigger( 'sorton' ); };
@@ -251,7 +251,7 @@ $(document).ready
       {
         var objet_tds  = $(this).parent().parent().find('td');
         // Récupérer les informations de la ligne concernée
-        var devoir_id  = objet_tds.eq(4).attr('id').substring(7); // "devoir_" + id
+        var devoir_id  = objet_tds.eq(5).attr('id').substring(7); // "devoir_" + id
         var texte_date = objet_tds.eq(0).html();
         var texte_prof = objet_tds.eq(1).html();
         var texte_info = objet_tds.eq(2).html();
@@ -304,7 +304,7 @@ $(document).ready
       {
         var objet_tds  = $(this).parent().parent().find('td');
         // Récupérer les informations de la ligne concernée
-        var devoir_id  = objet_tds.eq(4).attr('id').substring(7); // "devoir_" + id
+        var devoir_id  = objet_tds.eq(5).attr('id').substring(7); // "devoir_" + id
         var texte_date = objet_tds.eq(0).html();
         var texte_prof = objet_tds.eq(1).html();
         var texte_info = objet_tds.eq(2).html();

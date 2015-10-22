@@ -139,15 +139,15 @@ class PDF_grille_referentiel extends PDF
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
-    $this->Cell( $this->reference_largeur , $this->cases_hauteur , To::pdf($theme_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
-    $this->Cell( $this->intitule_largeur , $this->cases_hauteur , To::pdf($theme_nom)  , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , $this->fond );
+    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($theme_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
+    $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($theme_nom)  , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , $this->fond );
     if($this->colonne_vide_largeur)
     {
       // Ajouter une case vide sur la hauteur du nombre d'items du thème
       $abscisse = $this->GetX();
       $ordonnee = $this->GetY();
       $this->SetXY( $this->page_largeur - $this->marge_droite - $this->colonne_vide_largeur , $ordonnee );
-      $this->Cell( $this->colonne_vide_largeur , $this->cases_hauteur * ($theme_nb_lignes-1) , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->colonne_vide_largeur , $this->cases_hauteur * ($theme_nb_lignes-1) , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
       $this->SetXY( $abscisse , $ordonnee );
     }
     $this->SetFont('Arial' , '' , $this->taille_police);

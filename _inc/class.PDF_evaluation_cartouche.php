@@ -197,7 +197,7 @@ class PDF_evaluation_cartouche extends PDF
     }
   }
 
-  public function commentaire_interligne($decalage_nb_lignes,$commentaire,$commentaire_nb_lignes)
+  public function commentaire_interligne( $decalage_nb_lignes , $commentaire , $commentaire_nb_lignes , $lignes_vide_nb )
   {
     if($decalage_nb_lignes)
     {
@@ -214,7 +214,15 @@ class PDF_evaluation_cartouche extends PDF
       $this->SetFont('Arial' , '' , 9);
       $this->afficher_appreciation( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , 9 /*taille_police*/ , 4 /*taille_interligne*/ , $commentaire );
     }
-    $this->SetXY($this->marge_gauche , $this->GetY() + 2*$this->cases_hauteur);
+    // positionnement, dont marge
+    $this->SetXY($this->marge_gauche , $this->GetY() + (2+$lignes_vide_nb)*$this->cases_hauteur);
+    // trait de séparation
+    $this->choisir_couleur_trait('gris_moyen');
+    $this->SetLineWidth(0.1);
+    $this->SetDash(1,2); // active le pointillé
+    $this->Line( 4 , $this->GetY()-$this->cases_hauteur , $this->page_largeur - 4 , $this->GetY()-$this->cases_hauteur );
+    $this->SetDash(); //enlève le pointillé
+    $this->choisir_couleur_trait('noir');
   }
 
 }

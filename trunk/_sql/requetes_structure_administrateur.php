@@ -104,7 +104,7 @@ public static function DB_recuperer_referentiels_themes()
 }
 
 /**
- * recuperer_arborescence_paliers
+ * rechercher_users
  *
  * @param string   champ_nom
  * @param string   champ_val
@@ -118,6 +118,25 @@ public static function DB_rechercher_users($champ_nom,$champ_val)
   $DB_SQL.= 'WHERE user_'.$champ_nom.' LIKE :champ_val ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(':champ_val'=>$champ_val);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * rechercher_eleves
+ *
+ * @param string   user_nom
+ * @param int      user_statut
+ * @return array
+ */
+public static function DB_rechercher_eleves($user_nom_like,$user_statut)
+{
+  $where_statut = ($user_statut) ? 'user_sortie_date>NOW() ' : 'user_sortie_date<NOW() ' ;
+  $DB_SQL = 'SELECT user_id, user_nom, user_prenom, user_login ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
+  $DB_SQL.= 'WHERE user_nom LIKE :user_nom_like AND user_profil_type="eleve" AND '.$where_statut;
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+  $DB_VAR = array(':user_nom_like'=>$user_nom_like);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -503,7 +522,7 @@ public static function DB_lister_parents_par_eleve()
  */
 public static function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
 {
-  $DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, resp_legal_num ';
+  $DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, parent.user_login, sacoche_parent_adresse.*, resp_legal_num ';
   $DB_SQL.= 'FROM sacoche_user AS eleve ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
@@ -1251,12 +1270,12 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * - Le champ "connexion_date" est traité avec DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion().
+ * - Certains champ ("user_langue", "user_daltonisme", "user_connexion_date", "eleve_langue", "eleve_brevet_serie" , "user_param_accueil") ne sont ici forcés que via la fusion de comptes élèves.
  * - On peut envisager une modification de "profil_sigle" entre personnels.
  * - La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil_sigle'=>$val , ':genre'=>$val , ':nom'=>$val , ':prenom'=>$val , ':birth_date'=>$val , ':courriel'=>$val , ':email_origine'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   de la forme ':champ' => $val (voir ci-dessous)
  * @return void
  */
 public static function DB_modifier_user($user_id,$DB_VAR)
@@ -1266,23 +1285,28 @@ public static function DB_modifier_user($user_id,$DB_VAR)
   {
     switch($key)
     {
-      case ':sconet_id'    : $tab_set[] = 'user_sconet_id='     .$key; break;
-      case ':sconet_num'   : $tab_set[] = 'user_sconet_elenoet='.$key; break;
-      case ':reference'    : $tab_set[] = 'user_reference='     .$key; break;
-      case ':profil_sigle' : $tab_set[] = 'user_profil_sigle='  .$key; break;
-      case ':genre'        : $tab_set[] = 'user_genre='         .$key; break;
-      case ':nom'          : $tab_set[] = 'user_nom='           .$key; break;
-      case ':prenom'       : $tab_set[] = 'user_prenom='        .$key; break;
-      case ':birth_date'   : $tab_set[] = 'user_naissance_date='.$key; break;
-      case ':courriel'     : $tab_set[] = 'user_email='         .$key; break;
-      case ':email_origine': $tab_set[] = 'user_email_origine=' .$key; break;
-      case ':login'        : $tab_set[] = 'user_login='         .$key; break;
-      case ':password'     : $tab_set[] = 'user_password='      .$key; break;
-      case ':daltonisme'   : $tab_set[] = 'user_daltonisme='    .$key; break;
-      case ':sortie_date'  : $tab_set[] = 'user_sortie_date='   .$key; break;
-      case ':classe'       : $tab_set[] = 'eleve_classe_id='    .$key; break;
-      case ':id_ent'       : $tab_set[] = 'user_id_ent='        .$key; break;
-      case ':id_gepi'      : $tab_set[] = 'user_id_gepi='       .$key; break;
+      case ':sconet_id'     : $tab_set[] = 'user_sconet_id='     .$key; break;
+      case ':sconet_num'    : $tab_set[] = 'user_sconet_elenoet='.$key; break;
+      case ':reference'     : $tab_set[] = 'user_reference='     .$key; break;
+      case ':profil_sigle'  : $tab_set[] = 'user_profil_sigle='  .$key; break;
+      case ':genre'         : $tab_set[] = 'user_genre='         .$key; break;
+      case ':nom'           : $tab_set[] = 'user_nom='           .$key; break;
+      case ':prenom'        : $tab_set[] = 'user_prenom='        .$key; break;
+      case ':birth_date'    : $tab_set[] = 'user_naissance_date='.$key; break;
+      case ':courriel'      : $tab_set[] = 'user_email='         .$key; break;
+      case ':email_origine' : $tab_set[] = 'user_email_origine=' .$key; break;
+      case ':login'         : $tab_set[] = 'user_login='         .$key; break;
+      case ':password'      : $tab_set[] = 'user_password='      .$key; break;
+      case ':langue'        : $tab_set[] = 'user_langue='        .$key; break;
+      case ':daltonisme'    : $tab_set[] = 'user_daltonisme='    .$key; break;
+      case ':connexion_date': $tab_set[] = 'user_connexion_date='.$key; break;
+      case ':sortie_date'   : $tab_set[] = 'user_sortie_date='   .$key; break;
+      case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break;
+      case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
+      case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
+      case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
+      case ':id_gepi'       : $tab_set[] = 'user_id_gepi='       .$key; break;
+      case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
     }
   }
   $DB_SQL = 'UPDATE sacoche_user ';
@@ -2281,6 +2305,38 @@ public static function DB_optimiser_tables_structure()
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'OPTIMIZE TABLE '.$DB_ROW['Name']);
     }
+  }
+}
+
+/**
+ * Fusionner les données associées à 2 comptes élèves (sauf tables sacoche_user, sacoche_jointure_user_groupe, sacoche_jointure_parent_eleve, sacoche_jointure_message_destinataire)
+ *
+ * @param int   $user_id_ancien
+ * @param int   $user_id_actuel
+ * @return bool
+ */
+public static function DB_fusionner_donnees_comptes_eleves($user_id_ancien,$user_id_actuel)
+{
+  $tab_table_champ = array(
+    'sacoche_saisie'                   => 'eleve_id' ,
+    'sacoche_demande'                  => 'eleve_id' ,
+    'sacoche_jointure_devoir_eleve'    => 'eleve_id' ,
+    'sacoche_jointure_user_entree'     => 'user_id' ,
+    'sacoche_jointure_user_pilier'     => 'user_id' ,
+    'sacoche_jointure_user_abonnement' => 'user_id' ,
+    'sacoche_notification'             => 'user_id' ,
+    'sacoche_officiel_assiduite'       => 'user_id' ,
+    'sacoche_brevet_fichier'           => 'user_id' ,
+    'sacoche_officiel_fichier'         => 'user_id' ,
+    'sacoche_officiel_saisie'          => 'eleve_ou_classe_id' ,
+    'sacoche_brevet_saisie'            => 'eleve_ou_classe_id' ,
+  );
+  foreach($tab_table_champ as $table_nom => $champ_nom)
+  {
+    $where_add = ($champ_nom=='eleve_ou_classe_id') ? ' AND saisie_type="eleve"' : '' ;
+    // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$champ_nom.'='.$user_id_actuel.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );
   }
 }
 

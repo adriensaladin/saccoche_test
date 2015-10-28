@@ -125,9 +125,10 @@ class DB_STRUCTURE_MAJ_BASE extends DB
     {
       if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
       {
+        // Les 4 premières requêtes sont à cause des serveurs en mode STRICT qui sinon recrachent "#1406 - Data too long for column saisie_note" si on veut directement convertir en CHAR(2)
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'].'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note CHAR(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note enum("VV","V","R","RR","ABS","DISP","NE","NF","NN","NR","REQ","AB","DI","PA") COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
         return;
       }
       else
@@ -147,17 +148,17 @@ class DB_STRUCTURE_MAJ_BASE extends DB
     {
       if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
       {
-        // Il ne sert à rien de compter le nombre de modifs à effectuer d'ordonner un LIMIT à l'UPDATE en conséquence poru le faire par morceaux
+        // Il ne sert à rien de compter le nombre de modifs à effectuer puis d'ordonner un LIMIT à l'UPDATE en conséquence pour le faire par morceaux
         // car ce n'est pas la modification qui prend du temps, c'est le parcours de la table.
         // Ainsi avec un LIMIT les premières modifs iront très vite car des lignes seront trouvées rapidement,
-        // mais le dernier dépassement les 10s même s'il n'y a plus de ligne à modifier à cause du temps de parcours de la table.
+        // mais le dernier remplacement dépasse les 10s même s'il n'y a plus de ligne à modifier à cause du temps de parcours de la table.
         // Quand à ajouter un INDEX provisoire sur le champ "saisie_note", cela prend 20s,
         // donc même si après les UPDATE vont + vite on est bloqué avant.
         // Du coup on lance un UPDATE sans LIMIT ; en cas de dépassement du max_execution_time, l'erreur PHP ne sera pas visible (requête AJAX)
         // et la requête SQL sera quand même exécutée en entier, ce qui est le plus important.
-        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = '2015-10-16b';
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="1" WHERE saisie_note="RR" ' );
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'].'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="AB"  WHERE saisie_note="ABS" ' );
         return;
       }
       else
@@ -178,8 +179,8 @@ class DB_STRUCTURE_MAJ_BASE extends DB
       if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
       {
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="2" WHERE saisie_note="R" ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'].'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="DI"  WHERE saisie_note="DISP" ' );
         return;
       }
       else
@@ -200,8 +201,8 @@ class DB_STRUCTURE_MAJ_BASE extends DB
       if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
       {
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="3" WHERE saisie_note="V" ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'].'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="PA"  WHERE saisie_note="REQ" ' );
         return;
       }
       else
@@ -222,8 +223,8 @@ class DB_STRUCTURE_MAJ_BASE extends DB
       if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
       {
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="4" WHERE saisie_note="VV" ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'].'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note CHAR(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
         return;
       }
       else
@@ -237,6 +238,72 @@ class DB_STRUCTURE_MAJ_BASE extends DB
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $version_from = '2015-10-16f';
+    $version_to   = '2015-10-16g';
+
+    if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
+    {
+      if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = '2015-10-16f';
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="1" WHERE saisie_note="RR" ' );
+        return;
+      }
+      else
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement 2015-10-16g
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $version_from = '2015-10-16g';
+    $version_to   = '2015-10-16h';
+
+    if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
+    {
+      if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="2" WHERE saisie_note="R" ' );
+        return;
+      }
+      else
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement 2015-10-16h
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $version_from = '2015-10-16h';
+    $version_to   = '2015-10-16i';
+
+    if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
+    {
+      if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="3" WHERE saisie_note="V" ' );
+        return;
+      }
+      else
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement 2015-10-16i
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $version_from = '2015-10-16i';
     $version_to   = ''; // à modifier si autre traitement ultérieur
 
     if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
@@ -245,7 +312,7 @@ class DB_STRUCTURE_MAJ_BASE extends DB
       {
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="PA" WHERE saisie_note="RE" ' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="4" WHERE saisie_note="VV" ' );
         return;
       }
       else

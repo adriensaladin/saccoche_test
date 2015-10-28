@@ -86,8 +86,8 @@ Layout::add( 'js_inline_before' , 'var LOGIN_LONGUEUR_MAX = '.LOGIN_LONGUEUR_MAX
     </thead>
     <tbody>
       <tr class="vide"><td class="nu" colspan="12"></td><td class="nu"></td></tr>
-  </tbody>
-</table>
+    </tbody>
+  </table>
 </div>
 
 <form action="#" method="post" id="form_gestion" class="hide">

@@ -90,7 +90,7 @@ Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUE
 // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
 $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'TIME'  => $_SERVER['REQUEST_TIME'] ,
-  'DELAI' => 3, // en secondes, est ensuite incrémenté en cas d'erreur
+  'DELAI' => 2, // en secondes, est ensuite incrémenté en cas d'erreur
 );
 ?>
 

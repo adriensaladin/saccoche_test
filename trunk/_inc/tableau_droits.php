@@ -102,6 +102,7 @@ $tab_droits_par_page = array
   'administrateur_dump'                     => $tab_droits_profil_administrateur,
   'administrateur_eleve'                    => $tab_droits_profil_administrateur,
   'administrateur_eleve_classe'             => $tab_droits_profil_administrateur,
+  'administrateur_eleve_fusion'             => $tab_droits_profil_administrateur,
   'administrateur_eleve_gestion'            => $tab_droits_profil_administrateur,
   'administrateur_eleve_groupe'             => $tab_droits_profil_administrateur,
   'administrateur_eleve_photo'              => $tab_droits_profil_administrateur,

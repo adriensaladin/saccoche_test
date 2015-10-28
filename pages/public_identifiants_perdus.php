@@ -73,7 +73,7 @@ if($PROFIL=='structure')
 list($html_imgs,$captcha_soluce) = captcha();
 $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'TIME'    => $_SERVER['REQUEST_TIME'] ,
-  'DELAI'   => 4, // en secondes, est ensuite incrémenté en cas d'erreur
+  'DELAI'   => 5, // en secondes, est ensuite incrémenté en cas d'erreur
   'CAPTCHA' => $captcha_soluce,
 );
 

@@ -75,7 +75,7 @@ if($courriel)
 list($html_imgs,$captcha_soluce) = captcha();
 $_SESSION['TMP']['CAPTCHA'] = array(
   'TIME'   => $_SERVER['REQUEST_TIME'] ,
-  'DELAI'  => 4, // en secondes, est ensuite incrémenté en cas d'erreur
+  'DELAI'  => 5, // en secondes, est ensuite incrémenté en cas d'erreur
   'SOLUCE' => $captcha_soluce,
 );
 

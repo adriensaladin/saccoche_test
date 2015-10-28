@@ -886,20 +886,15 @@ $(document).ready
             success : function(responseHTML)
             {
               initialiser_compteur();
-              var tab_infos = responseHTML.split(']¤[');
-              if( (tab_infos.length!=2) || (tab_infos[0]!='ok') )
+              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-              }
-              else
-              {
-                var lien = tab_infos[1];
-                var lien_image  = (lien) ? 'oui' : 'non' ;
-                var lien_title  = (lien) ? lien : 'Absence de ressource.' ;
-                $('#n3_'+element2_id).children('b').find('img').eq(3).attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 $('#ajax_msg').parent().remove();
                 $('q[data-action=fus2]').remove();
                 afficher_masquer_images_action('show');
+              }
+              else
+              {
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }

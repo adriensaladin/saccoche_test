@@ -434,10 +434,9 @@ class ServeurCommunautaire
    * @param string    $sesamath_key
    * @param int       $item_id
    * @param string    $item_lien
-   * @param string    $format_retour   'html' | 'json'
    * @return string   contenu html ou un message d'erreur
    */
-  public static function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_lien,$format_retour)
+  public static function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_lien)
   {
     $tab_post = array();
     $tab_post['fichier']        = 'liens_ressources_elaborer_editer';
@@ -445,7 +444,6 @@ class ServeurCommunautaire
     $tab_post['sesamath_key']   = $sesamath_key;
     $tab_post['item_id']        = $item_id;
     $tab_post['item_lien']      = $item_lien;
-    $tab_post['format_retour']  = $format_retour;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );

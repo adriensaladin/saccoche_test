@@ -40,7 +40,6 @@ $tab_sous_menu = array(
   'langue'  => Lang::_("Élèves & langues"),
   'parent'  => Lang::_("Élèves & parents"),
   'photo'   => Lang::_("Élèves & photos"),
-  'fusion'  => Lang::_("Fusion de comptes"),
 );
 foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
 {

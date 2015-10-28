@@ -1493,7 +1493,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
 public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_id=0)
 {
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
-  $select = 'SELECT parent.user_id AS valeur, CONCAT(parent.user_nom," ",parent.user_prenom," (",parent.user_login,")") AS texte ';
+  $select = 'SELECT parent.user_id AS valeur, CONCAT(parent.user_nom," ",parent.user_prenom) AS texte ';
   $where  = 'WHERE parent_profil.user_profil_type=:profil_type AND parent.'.$test_date_sortie.' ';
   $ljoin  = '';
   $group  = '';

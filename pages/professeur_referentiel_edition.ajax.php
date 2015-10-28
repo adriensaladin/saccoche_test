@@ -304,7 +304,6 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
 
 if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_nom && $nom && $nom2 )
 {
-  list($lien_item_degageant,$lien_item_absorbant) = DB_STRUCTURE_REFERENTIEL::DB_recuperer_liens_items_fusionnes($element_id,$element2_id);
   $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id,FALSE /*with_notes*/);
   if(!$test_delete)
   {
@@ -316,66 +315,14 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
   }
   // Mettre à jour les références vers l'item absorbant
   DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items($element_id,$element2_id);
-  // Mettre à jour si besoin les ressources associées pour l'item absorbant
-  if($lien_item_degageant)
-  {
-    if(!$lien_item_absorbant)
-    {
-      DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($element2_id,$lien_item_degageant);
-      $lien_retour = $lien_item_degageant;
-    }
-    else
-    {
-      $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
-      if($acces_serveur_communautaire)
-      {
-        $tab_elements = array();
-        if(strpos($lien_item_degageant,SERVEUR_RESS_HTML)===FALSE)
-        {
-          $tab_elements[] = array( $nom => $lien_item_degageant );
-        }
-        else
-        {
-          $tab_contenu_page = unserialize( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $element_id , $lien_item_degageant , 'json' ) );
-          if($tab_contenu_page!==FALSE)
-          {
-            $tab_elements = array_merge( $tab_elements , $tab_contenu_page );
-          }
-        }
-        $objet = 'page_create';
-        if(strpos($lien_item_absorbant,SERVEUR_RESS_HTML)===FALSE)
-        {
-          $tab_elements[] = array( $nom2 => $lien_item_absorbant );
-        }
-        else
-        {
-          $tab_contenu_page = unserialize( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $element2_id , $lien_item_absorbant , 'json' ) );
-          if($tab_contenu_page!==FALSE)
-          {
-            $tab_elements = array_merge( $tab_elements , $tab_contenu_page );
-          }
-        }
-        $lien_retour = ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $element2_id , $nom2 , $objet , serialize($tab_elements) );
-        DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($element2_id,$lien_retour);
-      }
-      else
-      {
-        $lien_retour = $lien_item_absorbant;
-      }
-    }
-  }
-  else
-  {
-    $lien_retour = $lien_item_absorbant;
-  }
   // Log de l'action
-  SACocheLog::ajouter('Fusion d\'éléments de référentiel (item / '.$element_id.' '.$nom.' / '.$element2_id.' '.$nom2.').');
+  SACocheLog::ajouter('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a fusionné dans le référentiel ['.$matiere_nom.'] :'."\r\n".$nom.' -> '.$nom2."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
-  exit('ok]¤['.$lien_retour);
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

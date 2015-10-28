@@ -657,8 +657,6 @@ define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?page=guide_admin');   // URL 
 define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?page=guide_rentree'); // URL de la page "Guide de changement d'année (administrateur de SACoche)"
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?page=news');          // URL de la page "Historique des nouveautés"
 define('SERVEUR_RSS'            ,SERVEUR_PROJET.'/_rss/rss.xml');        // URL du fichier comportant le flux RSS
-define('SERVEUR_RESS_HTML'      ,SERVEUR_PROJET.'/__ress_html/');        // URL du dossier avec les pags de ressources associées aux items
-
 define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL de la page expliquant les Conventions ENT
 
 // ============================================================================

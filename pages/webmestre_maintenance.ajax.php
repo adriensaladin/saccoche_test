@@ -34,18 +34,18 @@ $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '' ;
 // Bloquer ou débloquer l'application
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='bloquer')
-{
-  ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0',$motif);
-  exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
-}
-
 if($action=='debloquer')
 {
   ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
   exit('<label class="valide">Application accessible.</label>');
+}
+
+if($action=='bloquer')
+{
+  ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0',$motif);
+  exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ if($action=='maj_etape4')
   $tbody = '';
   // Bloquer l'application
   ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-  LockAcces::bloquer_application('automate','0','Mise à jour des fichiers en cours.');
+  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0','Mise à jour des fichiers en cours.');
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
   ksort($_SESSION['tmp']['dossier']);
   foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
@@ -200,7 +200,7 @@ if($action=='maj_etape4')
       if( !FileSystem::creer_dossier($dossier_install.$dossier) )
       {
         ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-        LockAcces::debloquer_application('automate','0');
+        LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
         exit(']¤['.'pb'.']¤['."Dossier ".$dossier." non créé ou inaccessible en écriture !");
       }
     }
@@ -226,7 +226,7 @@ if($action=='maj_etape4')
         if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
         {
           ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-          LockAcces::debloquer_application('automate','0');
+          LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
           exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
         }
         $tbody .= '<tr><td class="b">Fichier modifié</td><td>'.$fichier.'</td></tr>';
@@ -238,7 +238,7 @@ if($action=='maj_etape4')
       if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
       {
         ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-        LockAcces::debloquer_application('automate','0');
+        LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
         exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
       }
       $tbody .= '<tr><td class="v">Fichier ajouté</td><td>'.$fichier.'</td></tr>';
@@ -252,7 +252,7 @@ if($action=='maj_etape4')
   }
   // Débloquer l'application
   ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-  LockAcces::debloquer_application('automate','0');
+  LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
   // Enregistrement du rapport
   $_SESSION['tmp']['rapport_filename'] = 'rapport_maj_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody );
@@ -435,7 +435,7 @@ if( ($action=='maj_bases_etabl') && $step )
     {
       $maj_classique = TRUE;
       // Bloquer l'application
-      LockAcces::bloquer_application('automate',$base_id,'Mise à jour de la base en cours.');
+      LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id,'Mise à jour de la base en cours.');
       // Lancer une mise à jour de la base
       DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
     }
@@ -448,7 +448,7 @@ if( ($action=='maj_bases_etabl') && $step )
     if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
     {
       // Débloquer l'application
-      LockAcces::debloquer_application('automate',$base_id);
+      LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id);
       array_shift($_SESSION['tmp']['base_id']);
       exit('continuer');
     }
@@ -463,7 +463,7 @@ if( ($action=='maj_bases_etabl') && $step )
       DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
       if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
       {
-        LockAcces::debloquer_application('automate',$base_id);
+        LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id);
         array_shift($_SESSION['tmp']['base_id']);
       }
       exit('continuer');

@@ -158,25 +158,6 @@ public static function DB_recuperer_theme_ordre_max($domaine_id)
 }
 
 /**
- * DB_recuperer_liens_items_fusionnes
- *
- * @param int    $item_id_degageant
- * @param int    $item_id_absorbant
- * @return array
- */
-public static function DB_recuperer_liens_items_fusionnes($item_id_degageant,$item_id_absorbant)
-{
-  $DB_SQL = 'SELECT item_lien ';
-  $DB_SQL.= 'FROM sacoche_referentiel_item ';
-  $DB_SQL.= 'WHERE item_id = :item_id ';
-  $DB_VAR = array(':item_id'=>$item_id_degageant);
-  $lien_item_degageant = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  $DB_VAR = array(':item_id'=>$item_id_absorbant);
-  $lien_item_absorbant = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return array($lien_item_degageant,$lien_item_absorbant);
-}
-
-/**
  * Tester la présence d'un référentiel
  *
  * @param int    $matiere_id

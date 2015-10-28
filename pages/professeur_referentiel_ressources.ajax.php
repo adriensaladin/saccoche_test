@@ -67,12 +67,12 @@ if( ($action=='Enregistrer_lien') && $item_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
+// Élaborer ou éditer sur le serveur communautaire une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Charger_ressources') && $item_id )
 {
-  exit( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_lien ) );
+  exit( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_lien , 'html' ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

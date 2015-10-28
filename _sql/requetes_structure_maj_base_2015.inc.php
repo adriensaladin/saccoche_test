@@ -1115,12 +1115,16 @@ if($version_base_structure_actuelle=='2015-09-13')
     $nb_notes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT COUNT(*) FROM sacoche_saisie ' );
     if($nb_notes<100000)
     {
+      // Les 4 premières requêtes sont à cause des serveurs en mode STRICT qui sinon recrachent "#1406 - Data too long for column saisie_note" si on veut directement convertir en CHAR(2)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note enum("VV","V","R","RR","ABS","DISP","NE","NF","NN","NR","REQ","AB","DI","PA") COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="AB"  WHERE saisie_note="ABS" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="DI"  WHERE saisie_note="DISP" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="PA"  WHERE saisie_note="REQ" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note CHAR(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="1"  WHERE saisie_note="RR" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="2"  WHERE saisie_note="R" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="3"  WHERE saisie_note="V" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="4"  WHERE saisie_note="VV" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="PA" WHERE saisie_note="RE" ' );
     }
     else
     {

@@ -35,7 +35,7 @@ $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : 
 
 <p>
   <span class="astuce">Pour gérer ses abonnements aux notifications, utiliser le menu <a href="./index.php?page=compte_email"><?php echo $menu ?> [Adresse e-mail &amp; Abonnements]</a>.</span><br />
-  <span class="astuce">Les notifications sont automatiquement retirées passé un délai de 2 mois.</span>
+  <span class="astuce">Les notifications consultées sont automatiquement retirées passé un délai de 2 mois.</span>
 </p>
 
 <hr />

@@ -344,10 +344,10 @@ class SessionUser
     SessionUser::memoriser_menu();
     // Juste pour davantage de lisibilité si besoin de debug...
     ksort($_SESSION);
-    // Fichiers des symboles personnalisées uploadés par l'établissement à mettre en place si besoin
-    SessionUser::actualiser_fichiers_symboles_perso();
-    // Enfin, on profite de cet événement pour faire du ménage ou simuler une tâche planifiée
+    // On profite de cet événement pour faire du ménage ou simuler une tâche planifiée
     SessionUser::cron();
+    // Enfin, on écrit si besoin les fichiers des symboles personnalisées uploadés par l'établissement
+    SessionUser::actualiser_fichiers_symboles_perso();
   }
 
   /**

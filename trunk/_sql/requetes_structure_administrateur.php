@@ -1301,7 +1301,8 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':daltonisme'    : $tab_set[] = 'user_daltonisme='    .$key; break;
       case ':connexion_date': $tab_set[] = 'user_connexion_date='.$key; break;
       case ':sortie_date'   : $tab_set[] = 'user_sortie_date='   .$key; break;
-      case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break;
+      case ':classe'        : $tab_set[] = 'eleve_classe_id='    .$key; break; // Historiquement comme ça dans les administrateur_fichier_user.ajax.stepXX.php
+      case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break; // Serait plus cohérent, mais pas utilisé
       case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
       case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
       case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
@@ -1309,11 +1310,14 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
     }
   }
-  $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
-  $DB_SQL.= 'WHERE user_id=:user_id ';
-  $DB_VAR[':user_id'] = $user_id;
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  if(count($tab_set))
+  {
+    $DB_SQL = 'UPDATE sacoche_user ';
+    $DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
+    $DB_SQL.= 'WHERE user_id=:user_id ';
+    $DB_VAR[':user_id'] = $user_id;
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
 }
 
 /**

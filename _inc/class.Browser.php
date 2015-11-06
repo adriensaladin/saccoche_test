@@ -29,15 +29,15 @@
 
 define(  'CHROME_VERSION_MINI_REQUISE'   , 3  ); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2009).');
 define(  'CHROME_VERSION_MINI_CONSEILLEE', 5  );
-define(  'CHROME_VERSION_LAST'           ,46  ); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_LAST'           ,44  ); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3.5); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3.5 minimum (sortie en 2009).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4  );
-define( 'FIREFOX_VERSION_LAST'           ,42  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'https://www.mozilla.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,40  ); define( 'FIREFOX_URL_DOWNLOAD'          , 'https://www.mozilla.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
-define(   'OPERA_VERSION_LAST'           ,33  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
+define(   'OPERA_VERSION_LAST'           ,30  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
 
 define(    'EDGE_VERSION_MINI_REQUISE'   ,12  ); define(    'EDGE_TEXTE_MINI_REQUIS'      , 'Version 12 minimum (sortie en 2015).');
 define(    'EDGE_VERSION_MINI_CONSEILLEE',12  );

@@ -66,9 +66,9 @@ $nb_profs   = count($tab_profs);
 if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $selection_nom && $nb_items && $origine )
 {
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( $proprio = DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom ) )
+  if( DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom ) )
   {
-    exit('Erreur : nom déjà utilisé (par '.html($proprio).') !');
+    exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
   }
   // Insérer l'enregistrement ; y associe automatiquement le prof, en propriétaire de la sélection
   $selection_id2 = DB_STRUCTURE_SELECTION_ITEM::DB_ajouter( $_SESSION['USER_ID'] , $selection_nom );
@@ -113,9 +113,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $select
 if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 {
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
-  if( $proprio = DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom , $selection_id ) )
+  if( DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom , $selection_id ) )
   {
-    exit('Erreur : nom déjà utilisé (par '.html($proprio).') !');
+    exit('Erreur : nom de cette sélection d\'items déjà utilisé !');
   }
   // Tester les droits
   $proprio_id = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_id( $selection_id );

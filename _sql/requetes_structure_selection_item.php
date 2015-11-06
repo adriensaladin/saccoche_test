@@ -109,13 +109,12 @@ public static function DB_lister($user_id)
  *
  * @param string $selection_item_nom
  * @param int    $selection_item_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
- * @return string | NULL
+ * @return int
  */
 public static function DB_tester_nom($selection_item_nom,$selection_item_id=FALSE)
 {
-  $DB_SQL = 'SELECT CONCAT(prof.user_prenom," ",prof.user_nom) ';
+  $DB_SQL = 'SELECT selection_item_id ';
   $DB_SQL.= 'FROM sacoche_selection_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user AS prof ON sacoche_selection_item.proprio_id=prof.user_id ';
   $DB_SQL.= 'WHERE selection_item_nom=:selection_item_nom ';
   $DB_SQL.= ($selection_item_id) ? 'AND selection_item_id!=:selection_item_id ' : '' ;
   $DB_SQL.= 'LIMIT 1'; // utile
@@ -123,7 +122,7 @@ public static function DB_tester_nom($selection_item_nom,$selection_item_id=FALS
     ':selection_item_nom' => $selection_item_nom,
     ':selection_item_id'  => $selection_item_id,
   );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

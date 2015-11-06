@@ -18,7 +18,6 @@ Requis pour l'utilisation de phpCAS::setCasServerCACert().
 A/ [certificats/cacert.pem] est issu de http://curl.haxx.se/docs/caextract.html
 B/ [certificats/ca-bundle.crt] a été généré par Daniel à partir des certificats de Firefox du dépôt Debian
  (cf ssl:/sso/_docs_dev/readme_certificat_CAS.php)
- -> plus en 11/2015 : "j'ai pris la concaténation à jour de ma debian, et ça marche pour tout le monde en étant plus petit"
 
 Très curieusement, seul A fonctionne sur mon PC pour la vérification de certains domaines, alors que B est plus complet.
 Du coup, j'ai généré [certificats/certificats.txt] qui est la concaténation des deux !

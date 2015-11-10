@@ -672,7 +672,6 @@ define('IS_HEBERGEMENT_SESAMATH', $is_hebergement_sesamath);
 // define('IS_HEBERGEMENT_SESAMATH', TRUE);
 
 // Pour forcer la minification des js et css y compris sur un serveur local
-define('FORCE_MINIFY', FALSE);
 // define('FORCE_MINIFY' , TRUE);
 
 // indiquer si une convention Établissement-ENT est requise et à compter de quand

@@ -345,7 +345,7 @@ class Layout
     $fichier_original_chemin = $chemin;
     $fichier_original_date   = filemtime($fichier_original_chemin);
     $fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
-    if( (SERVEUR_TYPE == 'PROD') || !empty(FORCE_MINIFY) || isset($_GET['minify']) )
+    if( (SERVEUR_TYPE == 'PROD') || defined('FORCE_MINIFY') || isset($_GET['minify']) )
     {
       // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux.
       // En cas d'appel depuis le site du projet il faut éventuellement respecter le chemin vers le site du projet.
